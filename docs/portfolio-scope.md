@@ -4,9 +4,9 @@ Captured 2026-09-12 from the workspace v2 blueprint. This copy travels with the 
 
 # Project 3: File Sync - Local-First File Synchronization and Versioning
 
-Proposed root: `<repo>` (new repository; product name TBD).
+Root: `<repo>` (new private repository; product name TBD).
 Decision locked: 2026-09-12. Language: **Go**. Initial platform: **Linux**.
-Status: approved project scope, not an implemented or verified system.
+Status: documentation scaffold initialized and pushed; no implemented or verified sync system yet.
 
 ## Purpose and User Workflow
 
