@@ -1,0 +1,25 @@
+# Local secrets and configuration
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+# User content and runtime state
+.runtime/
+.local/
+data/
+artifacts/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+# Build and tool outputs
+bin/
+dist/
+coverage/
+coverage.out
+node_modules/
+*.test
+*.prof
+.DS_Store
