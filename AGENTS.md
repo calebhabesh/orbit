@@ -1,0 +1,18 @@
+# Implementation guidance
+
+This repository is currently a planning scaffold. Start at [the implementation plan](docs/implementation-plan.md) and [packet status](docs/implementation/status.md). Work on the first eligible packet unless the user selects another task.
+
+- Read [scope](docs/portfolio-scope.md) and [glossary](CONTEXT.md) before changing behavior.
+- For causal state, messages, membership, or acknowledgements, read [protocol](docs/protocol.md).
+- For scanning, publication, SQLite, restore, or cleanup, read [persistence](docs/persistence.md).
+- For authentication, resource limits, configuration, packaging, or diagnostics, read [operations](docs/operations.md).
+- For tests, failure claims, benchmarks, or release evidence, read [verification](docs/verification.md).
+- Read the selected packet and its prerequisites before implementation. Treat unresolved design gates as work to finish, not permission to invent a guarantee.
+
+Keep protocol and recovery semantics in their owning modules. CLI and UI use the same control operations. Reuse TLS, hashing, HTTP, and database implementations; implement the sync engine here.
+
+For each packet, record actual commands/results and remaining limitations in its status entry. Mark complete only when every acceptance criterion has evidence. Keep unexecuted checks labeled unexecuted. Update the owning specification when an experiment changes a design; seek user input only for changes to approved product scope or guarantees.
+
+Preserve unrelated changes. Use disposable roots for fault tests; require an explicit disposable-environment marker before destructive harness actions. Never run fault injection against personal folders or an existing VPS workload.
+
+Routine dependency selection, implementation details, and reversible fixes are authorized by the build task. No per-packet approval ritual is required. Complete eligible work and maintain a resumable handoff.

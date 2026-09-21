@@ -1,20 +1,21 @@
 # File Sync
 
-A planned Go application for synchronizing selected folders between trusted Linux devices, preserving concurrent offline edits, resuming interrupted transfers, and restoring earlier versions.
+A planned Go application that synchronizes selected folders across trusted Linux devices, preserves concurrent offline versions, resumes interrupted transfers, and restores retained history.
 
-**Status:** planning scaffold only. No sync engine, CLI, or UI has been implemented or tested yet. Product name is provisional.
+**Status:** P00 foundation implementation is in progress: the Go CLI/agent
+skeleton, private state/config handling, exclusive locking, SQLite migration
+runner, test harness guardrails, and local build checks exist. Synchronization,
+protocol behavior, benchmark results, and release binaries do not exist yet.
 
-## Scope
+The completed release targets a Linux laptop, Raspberry Pi, and Oracle Cloud VPS as equal replicas. The VPS can forward stored versions between devices online at different times. Development starts with a two-peer CLI slice; three-host correctness and failure evidence are release requirements.
 
-- Go background agent and CLI; SQLite metadata on each device.
-- Versioned HTTPS protocol between two explicitly paired Linux peers.
-- Chunk integrity, resumable transfer, causal version tracking and conflict preservation.
-- Small React/TypeScript web interface served locally by the agent after CLI correctness is established.
-- Direct peer synchronization first; an always-on storage peer is a later extension.
+## Start here
 
-## Implementation documents
+- [Implementation plan](docs/implementation-plan.md): reading order, build sequence, gates, and builder workflow.
+- [Approved scope](docs/portfolio-scope.md): product requirements and exclusions.
+- [Domain glossary](CONTEXT.md): precise project vocabulary.
+- [Build status](docs/implementation/status.md): packet progress and outstanding design experiments.
 
-- [Implementation roadmap](docs/implementation-roadmap.md): milestones, protocol decisions and acceptance checks.
-- [Locked portfolio scope](docs/portfolio-scope.md): complete agreed product boundaries and evidence requirements.
+Go agent and CLI; SQLite metadata; immutable filesystem content; authenticated HTTPS; a small embedded React/TypeScript interface after CLI correctness. This project implements its own reconciliation and transfer logic and reuses established database, transport, and cryptographic libraries.
 
-The implementation will study established synchronization designs, including [Syncthing's protocol](https://docs.syncthing.net/specs/bep-v1.html), while identifying the project's own code and acknowledging reused components.
+The engineering story is causal reconciliation and recovery under failure. Evidence must distinguish deterministic simulations, process-crash tests, abrupt-reset experiments, and actual multi-host use. Synchronization and retained history do not constitute an independent backup guarantee.
