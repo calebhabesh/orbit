@@ -1,6 +1,6 @@
 # Comprehensive implementation plan
 
-Planning baseline: 2026-09-20. Intended builders: Gemini 3.8 Flash and Sol 5.6 Medium, or another implementation agent following the same contracts. This document does not assert model availability or implementation capability. Status: documentation only.
+Planning baseline: 2026-09-20. Intended builders: Gemini 3.8 Flash and Sol 5.6 Medium, or another implementation agent following the same contracts. This document does not assert model availability or implementation capability. Status: P00 complete; P01 is next.
 
 ## Read in this order
 

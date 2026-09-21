@@ -1,11 +1,11 @@
 # Implementation status
 
-Updated: 2026-09-20. P00 implementation and local checks have begun; hosted CI
-is still unexecuted. No packet is complete merely because its plan is written.
+Updated: 2026-09-21. P00 is complete with local, emulated arm64 and hosted
+amd64/arm64 evidence. P01 is the first eligible packet.
 
 | Packet | State | Dependencies | Evidence |
 | --- | --- | --- | --- |
-| P00 Skeleton/toolchain | in_progress | none | [local evidence](../evidence/p00-20260920/summary.md); hosted CI unexecuted |
+| P00 Skeleton/toolchain | complete | none | [evidence](../evidence/p00-20260920/summary.md); [hosted CI](https://github.com/calebhabesh/file-sync/actions/runs/35559786069) |
 | P01 Design experiments | pending | P00 | none |
 | P02 Model/history | pending | P01 relevant gates | none |
 | P03 Durable repository | pending | P00, P02 | none |
@@ -32,16 +32,15 @@ D1 publication races; D2 working basis/same-author lineage; D3 membership retire
 
 ## Next action
 
-Commit/push the current P00 implementation and obtain a successful hosted CI
-run. Record its URL/result below, then mark P00 complete and begin P01. Do not
-create UI scaffolding or benchmark claims before the earlier gates.
+Begin P01 architecture experiments and contract freeze. Execute D1–D5 in
+disposable environments, record counterexamples and traces, and update each
+owning specification before dependent production work.
 
 ## P00 — Reproducible project skeleton
 
 Packet: P00
 
-State: `in_progress` — implementation and local acceptance checks pass; a
-hosted CI result is still unexecuted.
+State: `complete`.
 
 Prerequisites and design gates checked: no dependencies or design gates. Read
 scope, glossary, architecture, operations, persistence, and verification.
@@ -61,7 +60,10 @@ development tree and a fresh clone of a temporary committed snapshot;
 amd64 and arm64 static binaries built. The arm64 binary ran `version` and the
 SQLite-backed `init` command through explicit QEMU 7.2 user-mode emulation.
 The resulting database reported `user_version=1`; state/config/database modes
-were `0700/0600/0600`. Full commands and outputs are in
+were `0700/0600/0600`. Hosted CI run
+[35559786069](https://github.com/calebhabesh/file-sync/actions/runs/35559786069)
+passed `make check` and `make test-race` on native GitHub-hosted amd64 and
+arm64 runners. Full commands and outputs are in
 [commands](../evidence/p00-20260920/commands.md).
 
 Evidence paths: [summary](../evidence/p00-20260920/summary.md),
@@ -69,20 +71,18 @@ Evidence paths: [summary](../evidence/p00-20260920/summary.md),
 `tests/integration`, dependency decision in
 [dependencies](../dependencies.md).
 
-Unexecuted checks / limitations: hosted GitHub Actions has not run because the
-changes are uncommitted/unpushed. No real arm64 host was available; QEMU does
-not establish Raspberry Pi hardware, kernel, filesystem or storage behavior.
-P03 still owns full SQLite connection, WAL/checkpoint and crash-boundary
-verification. P15 owns final dependency notices and packaging. No fault
-injection was run.
+Unexecuted checks / limitations: no Raspberry Pi execution has occurred;
+GitHub's native arm64 runner and local QEMU do not establish Raspberry Pi
+filesystem, storage or service behavior. P03 still owns full SQLite
+connection, WAL/checkpoint and crash-boundary verification. P15 owns final
+dependency notices and packaging. No fault injection was run.
 
 Owner explanation notes: the SQLite driver choice determines whether target C
 toolchains/libc coupling enter packaging. A cross-compiled binary alone proves
 neither execution nor target filesystem/storage behavior; QEMU narrows only
 the instruction/runtime gap. See the evidence summary for the full answer.
 
-Next eligible work: finish P00 with hosted CI evidence. P01 remains dependency-
-blocked until P00 is complete.
+Next eligible work: P01 architecture experiments and contract freeze.
 
 ## Completion entry template
 

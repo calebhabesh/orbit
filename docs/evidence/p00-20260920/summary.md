@@ -1,8 +1,8 @@
 # P00 local evidence — 2026-09-20
 
-Revision baseline: `43e89b295dbfa53a0c7f5919b6017432931d2b1e` plus the
-uncommitted P00 and planning worktree. Development host: Arch Linux amd64,
-kernel `7.2.4-arch1-2`, Go `1.27.1-X:nodwarf5`, SQLite CLI `3.53.4`.
+Implementation revision: `0b81bde52b4376b12d6448c41e5262aed1150ef8`.
+Development host: Arch Linux amd64, kernel `7.2.4-arch1-2`, Go
+`1.27.1-X:nodwarf5`, SQLite CLI `3.53.4`.
 
 ## Result
 
@@ -18,9 +18,10 @@ kernel `7.2.4-arch1-2`, Go `1.27.1-X:nodwarf5`, SQLite CLI `3.53.4`.
   command created a schema-version-1 SQLite database and private config/state
   files. This establishes emulated instruction/runtime compatibility, not Pi
   kernel, filesystem, storage, or hardware compatibility.
-- `actionlint` v1.7.7 accepted the workflow, but no hosted GitHub Actions run
-  has occurred for the uncommitted worktree. P00 therefore remains
-  `in_progress` rather than complete.
+- `actionlint` v1.7.7 accepted the workflow. Hosted CI run
+  [35559786069](https://github.com/calebhabesh/file-sync/actions/runs/35559786069)
+  passed `make check` and `make test-race` on GitHub-hosted amd64 and native
+  arm64 runners. P00 is complete.
 
 No destructive fault injection was run. The arm64 state was created beneath
 `/tmp/filesync-p00-arm64.hzD0e8`; it contains only generated P00 test data.

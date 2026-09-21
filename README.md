@@ -2,9 +2,9 @@
 
 A planned Go application that synchronizes selected folders across trusted Linux devices, preserves concurrent offline versions, resumes interrupted transfers, and restores retained history.
 
-**Status:** P00 foundation implementation is in progress: the Go CLI/agent
+**Status:** P00 foundation implementation is complete: the Go CLI/agent
 skeleton, private state/config handling, exclusive locking, SQLite migration
-runner, test harness guardrails, and local build checks exist. Synchronization,
+runner, test harness guardrails, and amd64/arm64 CI exist. Synchronization,
 protocol behavior, benchmark results, and release binaries do not exist yet.
 
 The completed release targets a Linux laptop, Raspberry Pi, and Oracle Cloud VPS as equal replicas. The VPS can forward stored versions between devices online at different times. Development starts with a two-peer CLI slice; three-host correctness and failure evidence are release requirements.

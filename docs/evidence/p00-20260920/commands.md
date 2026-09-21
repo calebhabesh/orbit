@@ -48,6 +48,8 @@ attempt failed with `exec format error` because host binfmt was unavailable.
 The successful check invokes an extracted `qemu-aarch64-static` explicitly and
 does not alter host binfmt registration.
 
-Hosted GitHub Actions: **unexecuted**. The workflow exists and passed local
-static validation; it cannot run against this uncommitted worktree without an
-external push.
+Hosted GitHub Actions run
+[35559786069](https://github.com/calebhabesh/file-sync/actions/runs/35559786069):
+**passed** on 2026-09-21. Both the amd64 and native arm64 jobs passed
+`make check` and `make test-race` for commit
+`0b81bde52b4376b12d6448c41e5262aed1150ef8`.
