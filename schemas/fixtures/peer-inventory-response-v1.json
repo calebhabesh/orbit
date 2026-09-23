@@ -1,0 +1,16 @@
+{
+  "protocol_version": "1",
+  "snapshot_token": "7373737373737373737373737373737373737373737373737373737373737373",
+  "next_cursor": "1",
+  "done": true,
+  "entries": [
+    {
+      "author_id": "4141414141414141414141414141414141414141414141414141414141414141",
+      "counter": "1",
+      "path": "empty.txt",
+      "kind": "file",
+      "availability": "ready",
+      "envelope_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    }
+  ]
+}

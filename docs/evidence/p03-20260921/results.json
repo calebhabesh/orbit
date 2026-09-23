@@ -1,0 +1,36 @@
+{
+  "packet": "P03",
+  "date": "2026-09-21",
+  "base_revision": "eff887b159d80d3cbec4ced301a429c71355a222",
+  "environment": {
+    "go": "go1.27.1-X:nodwarf5 linux/amd64",
+    "kernel": "Linux 7.2.4-arch1-2 x86_64",
+    "filesystem": "ext4 rw,relatime",
+    "sqlite": "modernc.org/sqlite v1.59.0; WAL; foreign_keys=ON; synchronous=FULL"
+  },
+  "passed": [
+    "make test-model",
+    "make check",
+    "make test-race",
+    "make test-faults",
+    "go test -count=1 ./...",
+    "git diff --check"
+  ],
+  "kill_boundaries": [
+    "object.flushed",
+    "object.installed",
+    "object.recorded",
+    "sql.version.before_commit",
+    "sql.version.after_commit",
+    "sql.readiness.before_commit",
+    "sql.readiness.after_commit"
+  ],
+  "not_run": [
+    "hosted CI",
+    "native arm64 execution",
+    "abrupt VM reset",
+    "physical power loss",
+    "forced real-filesystem ENOSPC",
+    "alternate filesystem"
+  ]
+}

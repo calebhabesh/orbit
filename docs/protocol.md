@@ -1,12 +1,32 @@
 # Protocol and causal-state specification
 
-Status: implementable design baseline, not an implemented or proven protocol. P01/P02 freeze canonical fixtures and model semantics before production networking. Protocol name is provisional; initial wire version is `1`. No Syncthing wire compatibility is claimed.
+Status: P01/P02 froze membership and causal fixtures; P05 implements and
+freezes authenticated v1 peer wrappers, bounded parsing, snapshot inventory,
+envelope fetch and manifest-scoped chunk serving. Transfer orchestration,
+receipts and status remain for P06 and later packets. Protocol name is
+provisional. No Syncthing wire compatibility is claimed.
 
 ## 1. Identities and membership
 
 Use cryptographically random persistent device identities bound to pinned peer public keys using established TLS libraries. Device identity is distinct from display name, network address, local database path, and shared-folder identity. A database reset, restored old database, or lost causal counter requires a new identity and explicit reenrollment; reusing a certificate with rolled-back counters is unsupported. Detect known mismatches and refuse; do not claim all offline rollback is automatically detectable.
 
-A shared folder has a random stable ID independent of its local root path. Each device explicitly approves its membership configuration: revision number, prior revision digest, active device IDs/key pins, and retirement data. Canonically encode and hash this configuration. P01 freezes serialization fixtures. A single owner distributes the identical revision through the CLI; any device can be the owner's administration endpoint, but revisions are a linear sequence, not concurrently merged configuration edits.
+A shared folder has a random stable 32-byte ID independent of its local root
+path. Device IDs and SHA-256 public-key pins are also 32-byte values. Each
+device explicitly approves its membership configuration: revision number,
+prior revision digest, active device IDs/key pins, and retirement references.
+The P01 canonical membership encoding is the ASCII domain separator
+`filesync-membership-v1` followed by NUL, folder ID, big-endian `uint64`
+revision, 32-byte prior digest (all zero for the first revision), big-endian
+`uint16` active count, active `(device ID, key pin)` pairs sorted by device ID,
+big-endian `uint16` retirement count, then retirement `(device ID,
+retired-at revision, snapshot digest)` tuples sorted by device ID. Duplicate
+or active-and-retired identities are invalid. The SHA-256 of those bytes is
+the membership digest. Golden bytes are in
+`tests/designgates/testdata/membership-revision-v1.hex`.
+
+A single owner distributes the identical revision through the CLI; any device
+can be the owner's administration endpoint, but revisions are a linear
+sequence, not concurrently merged configuration edits.
 
 Peers exchange data for a folder only when their locally approved membership revision/digest agrees. Mismatch pauses that folder's exchange and cleanup while local captures may continue. Enrollment and retirement are explicit maintenance operations; this sacrifices configuration-change availability to avoid silently inconsistent membership. Configuration updates never modify file causal ancestry.
 
@@ -37,7 +57,18 @@ Missing vector entries mean zero. `a` dominates `b` when every entry of `a` is a
 
 To create a version, join the vectors of its explicit parents, then set its author's component to a newly allocated counter strictly above its previous folder counter and any own component in those parents. Allocation and version insertion are one metadata transaction. Gaps between events for a particular path are allowed because counters are folder-wide; they do not mean the receiver possesses intervening versions on other paths.
 
-**Working basis is not all known heads.** Receiving B's edit while A still edits its own working copy does not mean A's next save has reviewed B's contents. Ordinary local capture extends the working basis and required local author lineage, not every downloaded version. Same-path events by one author must remain causally ordered. If the working basis cannot include the latest same-author event without implicitly resolving an unreviewed state, preserve candidate bytes and block creation for explicit review; D2 must demonstrate this case. Do not mint two same-author sibling branches and compare them using ordinary version vectors.
+**Working basis is not all known heads.** Receiving B's edit while A still
+edits its own working copy does not mean A's next save has reviewed B's
+contents. Ordinary local capture extends only the persisted working basis and
+the latest accepted same-path event by the local author; it never adds other
+known heads merely because they were received. Same-path events by one author
+must remain causally ordered. If the working basis neither contains nor
+causally covers the latest local-author event, preserve the observed candidate
+bytes and block event creation for explicit review. Do not mint two
+same-author sibling branches and compare them using ordinary version vectors.
+The D2 model fixes these outcomes: an edit based on A1 after receiving B1
+creates A2 with parent A1 and leaves B1 concurrent; an edit still based on A1
+after A2 exists is blocked.
 
 A normal unchanged scan creates no event. Mode-only executable changes do create events. Identical concurrent contents retain separate causal identities; UI may show an equal-content conflict, but may not silently merge it. Repeated observation of an already recorded deletion creates no event.
 
@@ -60,11 +91,32 @@ Notation omits folder/path when identical:
 
 Baseline: exact UTF-8 relative paths with `/` separators. Reject absolute paths, empty segments, `.`/`..`, NUL, invalid UTF-8, and reserved agent-internal names. Do not silently normalize Unicode or case; reject locally unrepresentable paths. JSON encoding and URL routing must preserve names exactly, with display escaping for control characters. Paths go in validated request bodies, not concatenated filesystem URLs. Pin byte/segment/depth limits in [operations](operations.md).
 
-Roots cannot overlap, contain the state directory, be nested inside another registered root, or traverse unsupported symlinks. Internal publication scratch directories are reserved, excluded from scans, protected, and validated on startup. The root itself is a container, not a deletable replicated path.
+Roots cannot overlap, contain the state directory, be nested inside another
+registered root, or contain another registered root. Registration rejects
+symlinks in the configured absolute path. Internal publication scratch
+directories are reserved, excluded from scans, protected, and validated on
+startup. The root itself is a container, not a deletable replicated path.
+After registration, operations are relative to a verified root descriptor and
+do not cross symlinks or nested mount points.
 
-Explicit directory versions represent empty directories. Parent directories created to materialize a child do not fabricate user-authored versions. Child existence imposes a structural requirement on all ancestors. A file or tombstone at an ancestor may block materialization; preserve both histories and report a structural conflict rather than recursively deleting children.
+Explicit directory versions represent directory existence, including empty
+directories. A local scan may author an observed directory, but parent
+directories created while applying a child are persisted as projection
+scaffolds. A later scan suppresses those scaffolds rather than fabricating
+local directory versions; applying an explicit remote directory changes the
+basis from scaffold to explicit. Empty unused scaffolds are removed as part of
+the operation that removed their last projected child when safe. Child
+existence imposes a structural requirement on all ancestors. A file or
+tombstone at an ancestor may block materialization; preserve both histories
+and report a structural conflict rather than recursively deleting children.
 
-Directory deletion is a local batch over observed descendants plus the directory. It is not a cross-file atomic transaction. The batch carries a preview/generation token; arrivals after the preview require reevaluation. Tombstones describe paths individually. A new concurrent child must survive as a structural conflict. D5 freezes the directory projection and scan rules, including preventing structural scaffolding from generating spurious edits on every scan.
+Directory deletion is a local batch over observed descendants plus the
+directory. It is not a cross-file atomic transaction. The batch carries a
+preview/generation token covering the subtree; any local observation or
+accepted arrival in that subtree invalidates the token and requires
+reevaluation. Tombstones describe paths individually. A new concurrent child
+survives as a structural conflict. Bootstrap scans and scans with an
+unverified root or incomplete subtree never infer absence-based tombstones.
 
 ## 5. Resolution and restore
 
@@ -78,7 +130,16 @@ Restore names a historical source version and a reviewed current head set. Sourc
 
 Use HTTPS with bounded JSON metadata and raw binary chunk responses. Decimal counters/sizes in JSON are canonical unsigned decimal strings to avoid JavaScript integer truncation; validate ranges. Freeze field encoding, unknown-field policy, stable error bodies, and golden fixtures in P02/P05. Reject duplicate JSON keys and unsupported protocol versions. Do not hash arbitrary JSON textual serialization as a version identity.
 
-Initial endpoints (method and path names may be refined before P05 fixtures freeze):
+P02 freezes the version-envelope JSON field spellings in
+`schemas/fixtures/version-envelope-v1.json`: fixed IDs and SHA-256 digests are
+64 lowercase hexadecimal characters; counters, revisions, sizes and chunk
+lengths are canonical unsigned decimal strings; parents and vector entries use
+their domain-defined sorted order; absent optional values are omitted rather
+than encoded as `null`. Envelope decoders reject unknown fields, duplicate
+keys, noncanonical numbers and trailing JSON values. P05 still owns endpoint
+wrappers, paging, complete request/response schemas and stable wire errors.
+
+Initial endpoints:
 
 | Operation | Purpose |
 | --- | --- |
@@ -89,7 +150,33 @@ Initial endpoints (method and path names may be refined before P05 fixtures free
 | `POST /peer/v1/receipts` | Direct peer durable receipts for exact version IDs |
 | `POST /peer/v1/status` | Current per-version availability/application/conflict status |
 
+P05 froze the first four endpoint paths in this table. P06 implements and
+freezes `POST /peer/v1/receipts` and `POST /peer/v1/status` with closed JSON
+objects and bounded batches (1..128). Exact schemas and golden examples are
+documented in [the peer v1 schema](../schemas/peer-v1.md).
+Every request repeats the TLS-authenticated device ID plus folder membership
+revision/digest; authorization is rechecked per request. Direct durable receipts
+are recorded in `peer_progress` upon receipt. Status exchanges report metadata
+knowledge, readiness, stored, applied, conflict, and blocked state.
+
+The P05 listener uses TLS 1.3, requires a client certificate, caps headers at
+32 KiB and metadata bodies/responses at 8 MiB, and applies 5-second header,
+15-second read, 30-second write and 30-second idle deadlines. Self-signed
+device certificates are authenticated by their explicitly approved SHA-256
+SPKI pin. Clients perform ordinary certificate verification against the exact
+out-of-band certificate and additionally compare the pin; they do not disable
+certificate verification. Before parsing a body, the process admits at most 32
+concurrent requests and applies a 128-request burst/64-request-per-second
+token bucket; later scheduler work may refine fairness per peer.
+
 Both sides can initiate reconciliation. First release uses full paged inventories; incremental indexes are optional after measurement. Snapshot token and cursor bind all pages to one consistent view. Expired snapshots restart safely. Concurrent changes are picked up by subsequent sessions. Start with a 30-second snapshot lifetime and a bounded number of open snapshots; avoid holding long SQLite read transactions that indefinitely prevent WAL checkpoints. Bound snapshot lifetime, memory, response size and request count. Inventory pages contain compact summaries; large manifests are fetched separately.
+
+P05 materializes each authorized inventory into schema-v4 snapshot rows in one
+short SQLite transaction. A peer may hold at most four snapshots per folder;
+each expires after 30 seconds. Pages contain at most 128 entries. Completion or
+expiry does not imply the receiver accepted any entry. `SNAPSHOT_EXPIRED`
+requires a fresh token and cursor `0`; materialized rows prevent concurrent
+versions from being skipped or inserted into an older page sequence.
 
 Chunk baseline: fixed 1 MiB chunks, final chunk shortened, SHA-256 per chunk and full file. Zero-length file has no chunks and the standard empty-file digest. Validate ordered lengths sum exactly to file size, no overflow, chunk count/size caps, hash encoding, and kind/manifest consistency. Repeated chunk hashes are permitted; positions are defined by the manifest. Whole-file validation catches incorrect ordering.
 
@@ -109,9 +196,27 @@ Enrollment uses an approved membership revision and an existing-peer metadata sn
 
 Retirement baseline: pause membership-dependent exchange/GC; converge known metadata among all surviving members; produce an identical retirement record and next membership revision; explicitly approve/import it on each survivor; then resume. If a survivor is unavailable, wait or explicitly retire it too. This is an operator maintenance procedure, not a consensus protocol.
 
-The retirement record identifies the exact accepted versions of the retired author included in the survivor snapshot (canonical ID/envelope digest set, pageable). These remain forwardable historical records. Previously unknown versions authored by the retired identity are rejected/quarantined for owner recovery, not silently admitted on the strength of an old revision. Previously unseen successor histories that depend on rejected ancestors are also blocked. Retired components remain in vectors; do not renumber identities or truncate causal ancestry.
+The retirement snapshot is a canonical stream that identifies the exact
+accepted versions of the retired author included by the survivors. Its
+encoding is the ASCII domain separator `filesync-retirement-v1` followed by
+NUL, folder ID, big-endian `uint64` configuration revision being retired,
+retired device ID, big-endian `uint64` entry count, then
+`(author counter, 32-byte immutable-envelope digest)` entries sorted by
+counter. Duplicate counters are invalid. Transport may page this stream by
+entry offset, but approval is for the SHA-256 of the complete canonical
+stream. The next membership revision carries that digest and retired-at
+revision. Golden bytes are in
+`tests/designgates/testdata/retirement-snapshot-v1.hex`.
 
-The owner preview explicitly states that uncaptured/unexchanged changes on the retired device are not imported by retirement. Recover its filesystem contents by enrolling under a new identity with a preview. D3 must model this procedure and freeze its artifacts before P09. The chosen conservatism is intentional: no automatic, partition-tolerant membership changes in v1.
+Those exact records remain forwardable historical records. Previously unknown
+versions authored by the retired identity, or a known ID with a different
+envelope digest, are rejected/quarantined for owner recovery rather than
+silently admitted on the strength of an old revision. Previously unseen
+successor histories that depend on rejected ancestors are also blocked.
+Retired components remain in vectors; do not renumber identities or truncate
+causal ancestry.
+
+The owner preview explicitly states that uncaptured/unexchanged changes on the retired device are not imported by retirement. Recover its filesystem contents by enrolling under a new identity with a preview. The D3 fixtures and model freeze these artifacts and admission outcomes for P09. The chosen conservatism is intentional: no automatic, partition-tolerant membership changes in v1.
 
 ## 9. Conditional convergence claim
 

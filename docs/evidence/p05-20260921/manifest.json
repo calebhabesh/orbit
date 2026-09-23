@@ -1,0 +1,24 @@
+{
+  "packet": "P05",
+  "run_date": "2026-09-21",
+  "base_revision": "eff887b159d80d3cbec4ced301a429c71355a222",
+  "working_tree": "uncommitted P01-P05 changes",
+  "protocol_version": "1",
+  "schema_version": 4,
+  "go": "go1.27.1-X:nodwarf5 linux/amd64",
+  "host": {
+    "kernel": "Linux 7.2.4-arch1-2",
+    "architecture": "x86_64",
+    "filesystem": "ext4",
+    "mount_options_observed": "rw,relatime"
+  },
+  "network": "real loopback TCP with TLS 1.3 and mutual client certificates",
+  "fixtures": [
+    "schemas/fixtures/peer-hello-request-v1.json",
+    "schemas/fixtures/peer-inventory-request-v1.json",
+    "schemas/fixtures/peer-inventory-response-v1.json",
+    "schemas/fixtures/peer-versions-request-v1.json",
+    "schemas/fixtures/peer-chunk-request-v1.json",
+    "schemas/fixtures/peer-error-v1.json"
+  ]
+}

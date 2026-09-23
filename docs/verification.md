@@ -1,6 +1,9 @@
 # Verification and evidence contract
 
-Status: planned checks, none executed against an application yet. This file defines independent oracles and the claims each experiment may support.
+Status: P01–P06 local design, model, repository, workspace, authenticated
+wire and verified transfer checks have executed; multi-head reconciliation,
+operations and release checks remain planned. This file defines independent
+oracles and the claims each experiment may support.
 
 ## Invariants
 

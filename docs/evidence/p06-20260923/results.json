@@ -1,0 +1,39 @@
+{
+  "packet": "P06",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass"},
+    {"command": "make check", "result": "pass", "notes": "vet, unit/model, integration (including P06 two-peer CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p06-20260923/manifest.json and results.json", "result": "pass"}
+  ],
+  "acceptance_assertions": {
+    "empty_files_arrive_byte_for_byte": "pass",
+    "small_files_arrive_byte_for_byte": "pass",
+    "multi_chunk_files_arrive_byte_for_byte": "pass",
+    "repeated_chunk_files_arrive_byte_for_byte": "pass",
+    "duplicate_chunks_reused_without_refetching": "pass",
+    "corrupted_chunk_rejected": "pass",
+    "interrupted_transfer_resumes_without_retransmitting_verified_chunks": "pass",
+    "lost_receipts_replay_safe_and_idempotent": "pass",
+    "peer_status_differentiates_stored_from_applied": "pass",
+    "sender_disappearance_after_store_allows_independent_local_apply": "pass",
+    "two_agent_local_demo_isolated_roots_real_tls": "pass",
+    "sigkill_restart_at_chunk_verified_boundary": "pass",
+    "sigkill_restart_at_readiness_before_boundary": "pass",
+    "sigkill_restart_at_readiness_after_boundary": "pass",
+    "sigkill_restart_at_receipt_before_send_boundary": "pass",
+    "sigkill_restart_at_receipt_after_send_boundary": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking",
+    "internet-exposed listener testing",
+    "high-concurrency transfer soak",
+    "network partition/proxy throttled-link campaigns"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "packet": "P04",
+  "date": "2026-09-21",
+  "base_revision": "eff887b159d80d3cbec4ced301a429c71355a222",
+  "environment": {
+    "os": "Linux 7.2.4-arch1-2",
+    "architecture": "amd64",
+    "filesystem": "ext4",
+    "mount_options": "rw,relatime",
+    "go": "go1.27.1-X:nodwarf5"
+  },
+  "checks": {
+    "make_test_model": "pass",
+    "make_check": "pass",
+    "make_test_race": "pass",
+    "make_test_faults": "pass",
+    "go_test_uncached_all": "pass",
+    "git_diff_check": "pass"
+  },
+  "publication_sigkill_cases": {
+    "existing_file": 10,
+    "new_file": 9,
+    "parent_scaffold": 1,
+    "directory_and_tombstone": 10,
+    "total": 30,
+    "passed": 30
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 P04 execution",
+    "abrupt VM reset",
+    "physical power loss",
+    "real-filesystem ENOSPC",
+    "alternate filesystem",
+    "nested-mount fault injection"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "format": "filesync-history-fixtures-v1",
+  "counter_encoding": "canonical unsigned decimal strings",
+  "cases": [
+    {"id":"A1","label":"empty-file","author":"A","counter":"1","parents":[],"kind":"file","size":"0","executable":false},
+    {"id":"A2","label":"executable-only","author":"A","counter":"2","parents":["A1"],"kind":"file","same_bytes_as":"A1","executable":true},
+    {"id":"B1","label":"equal-byte-independent","author":"B","counter":"1","parents":[],"kind":"file","same_bytes_as":"A1","expected":"concurrent"},
+    {"id":"C1","label":"concurrent-tombstone","author":"C","counter":"1","parents":[],"kind":"tombstone","expected":"conflicts-with-file-heads"},
+    {"id":"A3","label":"reviewed-resolution","author":"A","counter":"3","parents":["A2","B1"],"kind":"file","expected_remaining_concurrent":"C1"},
+    {"id":"C2","label":"third-party-forwarded","author":"C","counter":"2","parents":["C1"],"kind":"file","transport_sender":"B","expected_author":"C"},
+    {"id":"A4","label":"structural-parent","author":"A","counter":"4","path":"tree","parents":[],"kind":"file"},
+    {"id":"B2","label":"structural-child","author":"B","counter":"2","path":"tree/child","parents":[],"kind":"file","expected":"structural-conflict"}
+  ]
+}

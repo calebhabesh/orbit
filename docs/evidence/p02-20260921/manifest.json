@@ -1,0 +1,11 @@
+{
+  "run_id": "p02-20260921",
+  "base_revision": "eff887b159d80d3cbec4ced301a429c71355a222",
+  "working_tree": "uncommitted P01 and P02 changes",
+  "go": "go1.27.1-X:nodwarf5 linux/amd64",
+  "host": "Linux 7.2.4-arch1-2 x86_64",
+  "packet": "P02",
+  "seeds": [2, 17, 101, 20260921],
+  "generated_events_per_seed": 128,
+  "exhaustive_bound": "all author schedules of length 1 through 4 for 2 and 3 actors"
+}

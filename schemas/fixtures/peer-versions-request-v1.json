@@ -1,0 +1,13 @@
+{
+  "protocol_version": "1",
+  "device_id": "4242424242424242424242424242424242424242424242424242424242424242",
+  "folder_id": "4646464646464646464646464646464646464646464646464646464646464646",
+  "membership_revision": "1",
+  "membership_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "versions": [
+    {
+      "author_id": "4141414141414141414141414141414141414141414141414141414141414141",
+      "counter": "1"
+    }
+  ]
+}

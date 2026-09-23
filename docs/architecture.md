@@ -101,6 +101,11 @@ Remote application: prepare recoverable intent → preserve observed competing l
 
 ## Design gates
 
+P01 closed D1–D5 with the executable outcomes in
+[design-gates](design-gates.md). The table remains the dependency map; later
+packets must implement and revalidate those contracts at their production
+fault boundaries.
+
 | Gate | Required experiment and decision | Blocks |
 | --- | --- | --- |
 | D1 | Linux publication prototype: overwrite/rename editors, open descriptors, symlink swaps, crash at each transition; document supported writer model and recovery outcomes | P04 and any automatic replacement |

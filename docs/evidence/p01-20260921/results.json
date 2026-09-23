@@ -1,0 +1,48 @@
+{
+  "result": "pass",
+  "gates": {
+    "D1": {
+      "result": "pass",
+      "observations": [
+        "plain rename lost a save-by-rename inode after a successful precheck",
+        "RENAME_EXCHANGE retained the displaced inode",
+        "a long-lived descriptor continued writing the displaced inode",
+        "openat2 rejected a swapped intermediate symlink with ELOOP",
+        "old and new variants remained named at each modeled crash gap"
+      ]
+    },
+    "D2": {
+      "result": "pass",
+      "observations": [
+        "ordinary capture did not cover an unreviewed remote head",
+        "stale same-author basis blocked event creation",
+        "equal bytes retained distinct ancestry",
+        "unreviewed C remained concurrent with an A/B resolution"
+      ]
+    },
+    "D3": {
+      "result": "pass",
+      "membership_digest": "84560dcb0304c7a7b4d3aa5eb0ed4420577d46b68ef9c40692410e7f30f7987d",
+      "retirement_digest": "09629ab3321e761ac3844c7120784a63e380d417c6d6f9b924bd5ee22a87638d"
+    },
+    "D4": {
+      "result": "pass",
+      "reference_interleavings_checked": 15,
+      "observations": [
+        "new references cancel intent or reinstall verified bytes before commit",
+        "active serve lease excludes deletion intent",
+        "crash states lose no protected object"
+      ]
+    },
+    "D5": {
+      "result": "pass",
+      "observations": [
+        "projection scaffolds created no authored directory versions",
+        "device/inode plus registration marker detected root replacement and marker mismatch",
+        "parent/child incompatibilities remained structural conflicts",
+        "new child invalidated directory deletion preview",
+        "bootstrap and incomplete scans inferred no tombstones"
+      ]
+    }
+  }
+}

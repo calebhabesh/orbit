@@ -1,0 +1,42 @@
+{
+  "packet": "P05",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass"},
+    {"command": "make check", "result": "pass", "notes": "vet, unit/model, integration, amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass"},
+    {"command": "make test-faults", "result": "pass"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p05-20260921/manifest.json and results.json", "result": "pass"}
+  ],
+  "wire_assertions": {
+    "real_tls_listener": "pass",
+    "paired_metadata_exchange": "pass",
+    "unpaired_peer_rejected": "pass",
+    "claimed_device_wrong_key_rejected": "pass",
+    "wrong_server_pin_rejected_by_client": "pass",
+    "revoked_peer_rejected": "pass",
+    "wrong_folder_rejected": "pass",
+    "membership_mismatch_explicit": "pass",
+    "protocol_mismatch_explicit": "pass",
+    "snapshot_stable_across_129_entries": "pass",
+    "snapshot_expiry_requires_restart": "pass",
+    "duplicate_keys_rejected": "pass",
+    "eight_mib_body_limit": "pass",
+    "page_128_accepted_and_129_rejected": "pass",
+    "version_batch_129_rejected": "pass",
+    "chunk_requires_authorized_manifest_version": "pass",
+    "identity_reused_across_reopen": "pass",
+    "insecure_identity_permissions_rejected": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking",
+    "internet-exposed listener testing",
+    "TLS certificate expiry/rotation workflow",
+    "large concurrent connection soak",
+    "network partition/proxy campaign"
+  ]
+}

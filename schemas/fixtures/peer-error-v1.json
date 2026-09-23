@@ -1,0 +1,7 @@
+{
+  "protocol_version": "1",
+  "code": "MEMBERSHIP_MISMATCH",
+  "message": "folder membership does not match",
+  "retryable": false,
+  "action": "import and approve the same membership revision"
+}

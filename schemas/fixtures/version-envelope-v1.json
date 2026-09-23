@@ -1,0 +1,22 @@
+{
+  "protocol_version": "1",
+  "folder_id": "4646464646464646464646464646464646464646464646464646464646464646",
+  "path": "empty.txt",
+  "author_id": "4141414141414141414141414141414141414141414141414141414141414141",
+  "counter": "1",
+  "parents": [],
+  "vector": [
+    {
+      "author_id": "4141414141414141414141414141414141414141414141414141414141414141",
+      "counter": "1"
+    }
+  ],
+  "kind": "file",
+  "manifest": {
+    "size": "0",
+    "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "chunks": [],
+    "executable": false
+  },
+  "authored_revision": "1"
+}

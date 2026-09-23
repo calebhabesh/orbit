@@ -12,6 +12,12 @@ Local control: loopback binding, strict Host/Origin validation, no permissive CO
 
 Use request timeouts, TLS verification, body limits, bounded decompression (or disable it initially), validated integer ranges, escaped UI filenames, and path-safe filesystem operations. Bind peer listener to explicitly configured interfaces. Existing private-network reachability is an operational prerequisite; the application still authenticates peers. Document needed ports without changing the owner's firewall or VPS services automatically.
 
+P05 leaves the peer listener disabled unless `serve --peer-listen <address>` is
+provided. `identity --certificate` exports only the public certificate plus the
+device/key-pin display; `pair-approve` requires the peer device ID and key pin
+received out of band. There is no network enrollment endpoint. Initial pairing
+installs the same canonical folder membership revision on both devices.
+
 ## Initial engineering limits
 
 | Resource | Baseline | Behavior at limit |

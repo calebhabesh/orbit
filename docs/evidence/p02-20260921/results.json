@@ -1,0 +1,24 @@
+{
+  "packet": "P02",
+  "result": "pass",
+  "checks": {
+    "make test-model": "pass",
+    "make check": "pass",
+    "make test-race": "pass",
+    "make test-faults": "pass",
+    "git diff --check": "pass"
+  },
+  "enumerated_histories": 150,
+  "seeded_schedules": 4,
+  "events_per_seed": 128,
+  "mutation_check": "test-only scalar-winner mutant detected by independent reachability oracle",
+  "fixtures": [
+    "history-v1.json",
+    "normalized-heads-v1.txt",
+    "version-envelope-v1.json"
+  ],
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 test execution"
+  ]
+}

@@ -23,6 +23,11 @@ root/
   ... user paths ...
 ```
 
+P05 stores one Ed25519 private key and self-signed peer certificate together in
+`identity/peer-identity.pem` with mode `0600` beneath the `0700` identity
+directory. Existing material is never silently regenerated when unreadable or
+insecure. Reopening and reconnecting reuse the same key and device identity.
+
 Use XDG defaults and explicit overrides; never place managed state inside a synchronized root. Root scratch names are reserved and excluded. Validate scratch ownership/type and root registration before use. Backups must be outside roots or explicitly excluded at registration. Treat scratch objects as budgeted storage even when on another filesystem.
 
 One process holds an exclusive state-directory lock. Prevent a root from being registered twice under different folder IDs in that process. Document that running unrelated sync software over the same roots is outside tested operation.
@@ -46,13 +51,51 @@ Remote content readiness uses the same object durability discipline. Verify asse
 
 ## 4. Scanning and working basis
 
-Root identity includes a registration marker plus observed filesystem identity; verify it on startup and before scans/deletion application. Missing marker, changed mount/root identity, permission failures or incomplete enumeration pause deletion inference. A marker alone is not proof against every mount/replacement scenario; D5 defines accepted root checks and failure modes.
+Root registration stores the configured absolute path, the opened root's
+device/inode pair, and a random registration ID. The same registration ID is
+stored in the database and in an owner-only regular marker inside
+`.filesync-internal`; the scratch directory and marker must not be symlinks or
+hard-linked files. Registration walks the absolute path without following
+symlinks, permits the root itself to be a mount point, and rejects overlap
+with state or another root. Startup and every scan/deletion application reopen
+the configured path, compare device/inode and marker, and retain the root
+descriptor for the operation. A mismatch, inaccessible component, nested
+mount encountered beneath the descriptor, or incomplete enumeration pauses
+deletion inference. Bind mounts or a privileged replacement that deliberately
+reproduces both identity and marker are outside this check; a marker alone is
+not presented as mount authenticity.
 
 A scan records success/failure per subtree. Only successfully and completely enumerated supported regions are eligible for absence-based tombstones. First enrollment has a separate bootstrap mode where absence never means deletion. Mass-deletion candidates remain local pending proposals until approved; do not publish tombstones first and ask later.
 
 Notifications are hints. Periodic scans reconcile missed notifications and restart gaps. Stat metadata may optimize scheduling; it is not a cryptographic content identity. Define periodic full-content verification so same-size edits with restored timestamps are eventually found under the supported writer model.
 
-Stable-read baseline uses a safely opened descriptor, pre/post metadata checks, and bounded retries. Arbitrary concurrent writes can evade stat-only checks or produce mixed reads; D1 must decide whether a second matching read/hash is warranted for the supported workload and document its limits. Quiescent file capture must succeed; continuously changing files may be explicitly blocked. No application-consistent or every-write capture guarantee.
+P04's initial scanner hashes every supported regular file on every explicit
+scan. This is deliberately more conservative than the later notification and
+daily full-content schedule in P12. It suppresses an unchanged observation by
+comparing the whole-file digest, executable bit, and persisted working basis;
+mtime alone never suppresses capture.
+
+P04 deletion review defaults to an absolute threshold of 100 missing tracked
+paths **or** a ratio of at least 25% when at least 10 paths are missing.
+Both thresholds are configurable through the workspace options; a zero
+threshold disables that arm. The preview records a random token and scan
+generation. A subsequent scan invalidates it, and approval revalidates root
+identity and every candidate's absence before authoring tombstones. Bootstrap
+and incomplete subtrees infer no deletions. P12/P13 will expose persistent
+operator configuration and structured control responses.
+
+Stable capture opens the path through the verified root descriptor, records
+descriptor identity/size/mtime/ctime, streams and hashes that same descriptor,
+then repeats `fstat` and verifies the path still names the opened inode. A
+change or short/long read preserves the prior captured version and retries
+within a bound. Save-by-rename therefore makes the attempted observation stale
+rather than silently capturing the displaced inode. P01 rejected an
+unconditional second matching read/hash: it doubles quiescent-file IO yet
+still cannot prove safety against an arbitrary cooperating writer. P04 must
+exercise in-place overwrite, truncate/write and save-by-rename patterns
+against the chosen metadata checks. Continuously changing files are blocked
+with `UNSTABLE_FILE`. No application-consistent or every-write capture
+guarantee is made.
 
 Track working basis separately from heads. Suppress scan feedback for application-owned writes through persisted basis/content comparison, not a timing delay. A crash followed by a scan must not create a new authored version of a just-applied remote file. Unexpected bytes become a local candidate and pass the causal creation rules in [protocol](protocol.md).
 
@@ -68,15 +111,64 @@ The implementation must recover each row below. State names are illustrative; re
 | `FILESYSTEM_PUBLISHED` | New path may be installed but DB basis old | Complete required flushes and metadata only if observed output still matches; otherwise capture competing state |
 | `COMMITTED` | Applied basis durable; leftover recovery objects possible | Clean only unreferenced scratch; retain policy-protected historical content |
 
-Before replacing an existing path, preserve the supported observed local contents durably or defer. If the path changes during preparation, keep the candidate and reconcile instead of silently treating it as the old version. Stage output on the root filesystem; a cross-filesystem rename is not the publication mechanism. Parent creation, rename, unlink and directory removal have explicit flush/recovery steps. Fsyncing a file alone does not establish durability of its directory entry.
+Before replacing an existing regular file, preserve the supported observed
+local contents durably or defer. Stage verified output beneath the root's
+`.filesync-internal` directory, on the same `st_dev` as the target, and flush
+it before publication. Revalidate through already opened root/parent
+descriptors. For an existing regular target, v1 uses Linux
+`renameat2(RENAME_EXCHANGE)` so the actual displaced namespace object remains
+named in scratch even if an editor saved after the earlier observation. Move
+that displaced object to a unique recovery name, flush the affected
+directories, and only then complete the applied-basis commit. A new target
+uses `RENAME_NOREPLACE`; structural changes have a separate subtree plan.
+Lack of required `renameat2` or descriptor-safe resolution support blocks
+automatic publication on that host with a diagnostic rather than falling
+back to a lossy plain rename. Parent creation, rename, unlink and directory
+removal have explicit flush/recovery steps. Fsyncing a file alone does not
+establish durability of its directory entry.
 
-A replacement/rename does not prevent another process from writing through an already open descriptor. The implementation must not promise preservation of every uncaptured write. D1 must test save-by-rename, ordinary overwrite, and long-lived descriptor writers, then specify when automatic publication is supported, deferred or blocked. Preserve displaced objects long enough for the chosen supported protocol; do not claim a finite delay proves no writer remains. If a stronger guarantee requires cooperative writers or a managed filesystem, report that as a scope tradeoff rather than sneaking it into v1.
+The D1 experiment demonstrates that a pre-rename stat cannot close the race:
+an editor can save-by-rename after the stat and a later plain rename removes
+the editor's only name. Exchange preserves that inode for recovery. It also
+demonstrates that a writer holding the old descriptor continues writing the
+displaced scratch inode after exchange. Automatic publication supports
+quiescent files, completed save-by-rename, and in-place writes detected before
+exchange; an observation change preserves a candidate and defers. Arbitrary
+writes through a descriptor held across replacement are outside the v1
+capture guarantee. Recovery keeps and classifies the displaced object as a
+candidate, but no finite retention delay is claimed to prove the writer has
+closed. A path whose type changes or whose result is ambiguous is blocked for
+review.
 
 Journal recovery runs before ordinary scans/sync. On ambiguity, preserve all available variants and block the affected path for review. Good captured content wins over cleanup convenience. A blocked working path must not prevent serving already verified immutable versions elsewhere.
 
+P04 reserves workspace stage plus the observed regular target's byte count
+against the repository's configured data budget before staging. A committed
+recovery copy retains its conservative reservation until an explicit later
+review/cleanup operation; P10 owns reclaiming those copies safely. The actual
+root scratch bytes are on the root filesystem, so this accounting is a budget
+admission bound, not an OS-level free-space reservation. ENOSPC and fsync
+errors can still occur after admission and must leave the journal recoverable.
+An unexpected displaced file is retained under a unique recovery name and
+reports `LATE_EDITOR_CANDIDATE`; it is not silently folded into the applied
+basis. This classification does not claim that a long-lived writer has closed.
+Projection-created parent directories use a durable pending-scaffold record
+before `mkdirat`; recovery checks that record before any ordinary scan. A
+crash between mkdir and the scaffold's durable completion retains the
+directory but marks it `AMBIGUOUS_SCAFFOLD` instead of authoring an empty
+directory version. Missing scaffold paths are removed from the scaffold set,
+so a later explicit recreation can be captured as a directory version.
+
 ## 6. Directory and path safety
 
-Use descriptor-rooted operations and appropriate no-follow/type checks for every sensitive read, creation, replacement and deletion. Lexical path cleaning followed by ordinary path opening is insufficient for symlink races. Select current supported Go/OS facilities in D1 and test their actual behavior, including intermediate components and mount boundaries. API availability must be checked against the pinned Go toolchain.
+Use Linux `openat2` relative to a verified root/parent descriptor with
+`RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_XDEV`, plus no-follow
+`fstatat` checks and descriptor-relative `renameat2`/unlink operations, for
+every sensitive read, creation, replacement and deletion. Registration walks
+the absolute root path without symlinks but does not use `NO_XDEV` until the
+root descriptor is reached. The P01 experiment on the pinned Go/x/sys
+versions and Linux 7.2 rejected a swapped intermediate symlink with `ELOOP`.
+Lexical path cleaning followed by ordinary path opening is insufficient.
 
 Reject symlinks and special files before reading them. Treat regular files with multiple links as unsupported for automatic mutation until the hard-link policy is proven; diagnostics must distinguish this from a symlink. Never follow a device node or FIFO as though it were a file. Unsupported objects block affected operations without deleting them.
 
@@ -98,7 +190,20 @@ Protected content roots:
 
 Do not conflate a working-copy file with an immutable recovery copy. Working files may change independently. Do not require every peer to receive every superseded payload forever; peers can catch up to current history while expired historical payloads are visibly unavailable. Metadata and current/conflicting content requirements remain intact.
 
-GC protocol: compute candidates under a consistent metadata generation → acquire durable deletion intents that exclude new references → unlink unreferenced objects under repository coordination → flush required directories → finalize metadata. New captures/fetches must pin/recreate content rather than race an in-flight deletion. A crash at any step yields either retained extra bytes or a recoverable missing unreferenced object, never a missing protected object. D4 validates interleavings with serving, restore, publication and enrollment.
+GC protocol: compute candidates under a consistent metadata generation →
+acquire durable deletion intents that exclude new references → unlink
+unreferenced objects under repository coordination → flush required
+directories → finalize metadata. Intent creation, reference commits, and
+lease acquisition use the serialized repository mutation boundary. A new
+capture/fetch/publication/restore reference cancels an intent; if unlink
+already occurred, verified bytes must be reinstalled before its reference can
+commit. A serve lease starts only while the object exists and no intent is
+active. Startup reconciles intents before admitting either references or GC.
+A crash at any step yields either retained extra bytes or a recoverable
+missing unreferenced object, never a missing protected object. Policy expiry
+and an offline peer's possible historical interest are not safety pins:
+current heads, pending publication/fallback, explicit retention, active
+transfer/serve, restore/resolution, and recovery candidates are.
 
 Orphan cleanup uses separate proven-unreferenced classification; age alone is not proof. Startup reconciles interrupted GC before admitting reference changes. Membership mismatch suspends membership-dependent cleanup. Retired author entries remain valid history; retirement does not delete their content automatically.
 
@@ -109,3 +214,33 @@ Budget metadata/WAL, immutable chunks, transfer temporaries, root staging, quara
 Handle ENOSPC from writes, fsync, rename metadata, SQLite commit and checkpoint, not just a preflight free-space check. Successful preflight does not reserve OS capacity against other processes. Leave a configured emergency reserve for metadata recovery; if even recovery cannot write, remain read-only/blocked with a diagnostic.
 
 Verify hashes on content reads for transfer/restore. Corruption invalidates current availability, quarantines the object, and blocks affected versions. Fetch matching bytes from an authorized peer with current availability, verify them, then restore readiness. If no verified copy exists, report unavailable versions explicitly. Repeatedly bad peers are throttled and diagnosed. Integrity checks never rewrite history to point at a different payload.
+
+## 9. Metadata backup and identity recovery
+
+The P03 repository backup primitive uses SQLite `VACUUM INTO` while the
+repository owns its serialized database connection. This produces a
+transactionally consistent destination containing committed WAL state; copying
+only `metadata.sqlite` from a live WAL database is not a supported backup.
+The destination must not already exist and belongs under an excluded
+operations/backup location, never a synchronized root.
+
+A backup is suitable for inspection and upgrade rollback only while it retains
+the current causal counters. Restoring older metadata, resetting the database,
+or otherwise losing an author counter invalidates that device identity for new
+authorship. Recovery must create a new device identity and use reviewed
+reenrollment; it must not reuse the old certificate/identity and continue from
+a rolled-back counter. Binary rollback against the unchanged current database
+is a distinct operation and still requires schema compatibility. P15 owns the
+operator-facing backup, migration, restore, and identity-reset workflow.
+
+Schema v4 adds approved peer inventory snapshots and their materialized
+entries. They are bounded, short-lived transport state rather than causal
+receipt or permanent history. Expired rows are deleted before new snapshot
+admission; no long SQLite read transaction is held across network pagination.
+
+Schema v5 adds resumable peer transfer records (`transfers`, `transfer_chunks`)
+with per-chunk verified progress, content pins (`content_pins` owner_kind='transfer'),
+direct durable receipts and peer status (`peer_progress`, `peer_contacts`).
+Active transfers reserve disk budget, pin verified chunks against premature collection,
+track attempts and last errors, and survive restarts so already verified chunks are
+reused without retransmitting across the network.

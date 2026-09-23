@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"path/filepath"
 	"testing"
 
@@ -46,7 +47,7 @@ func TestOpenRefusesNewerSchema(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := raw.ExecContext(ctx, "PRAGMA user_version = 2"); err != nil {
+	if _, err := raw.ExecContext(ctx, fmt.Sprintf("PRAGMA user_version = %d", CurrentSchema+1)); err != nil {
 		t.Fatal(err)
 	}
 	if err := raw.Close(); err != nil {

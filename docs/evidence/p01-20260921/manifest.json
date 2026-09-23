@@ -1,0 +1,14 @@
+{
+  "packet": "P01",
+  "date": "2026-09-21",
+  "base_revision": "eff887b",
+  "tree_state": "P01 working tree",
+  "host": {
+    "os": "Linux",
+    "kernel": "7.2.4-arch1-2",
+    "architecture": "amd64",
+    "go": "go1.27.1-X:nodwarf5",
+    "experiment_filesystem": "ext4"
+  },
+  "suite": "go test -count=1 -v ./tests/designgates"
+}
