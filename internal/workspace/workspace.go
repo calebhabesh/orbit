@@ -201,9 +201,14 @@ func ensureScratch(rootFD int, rootDevice uint64, registrationID [32]byte) error
 	if err := unix.Fstat(scratchFD, &stat); err != nil || uint64(stat.Dev) != rootDevice || stat.Uid != uint32(os.Geteuid()) || stat.Mode&0o077 != 0 {
 		return errors.New("root scratch is not a private same-filesystem directory owned by this user")
 	}
-	markerFD, err := unix.Openat(scratchFD, markerName, unix.O_WRONLY|unix.O_CREAT|unix.O_EXCL|unix.O_CLOEXEC|unix.O_NOFOLLOW, 0o600)
+	markerFD, err := unix.Openat(scratchFD, markerName, unix.O_WRONLY|unix.O_CREAT|unix.O_TRUNC|unix.O_CLOEXEC|unix.O_NOFOLLOW, 0o600)
 	if err != nil {
 		return fmt.Errorf("create private root marker: %w", err)
+	}
+	var mStat unix.Stat_t
+	if err := unix.Fstat(markerFD, &mStat); err != nil || mStat.Nlink != 1 || mStat.Mode&unix.S_IFREG == 0 {
+		unix.Close(markerFD)
+		return errors.New("root marker is not a single-link regular file")
 	}
 	marker := []byte(hex.EncodeToString(registrationID[:]) + "\n")
 	if _, err := unix.Write(markerFD, marker); err != nil {
@@ -302,6 +307,11 @@ type DeletionPreview struct {
 	Paths      []string
 }
 
+type ScanOptions struct {
+	FullContent bool
+	Paths       []string
+}
+
 type ScanResult struct {
 	Captured []history.Envelope
 	Issues   []ScanIssue
@@ -309,6 +319,10 @@ type ScanResult struct {
 }
 
 func (workspace *Workspace) Scan(ctx context.Context, folder history.ID) (ScanResult, error) {
+	return workspace.ScanWithOptions(ctx, folder, ScanOptions{FullContent: true})
+}
+
+func (workspace *Workspace) ScanWithOptions(ctx context.Context, folder history.ID, opts ScanOptions) (ScanResult, error) {
 	if err := workspace.Recover(ctx, folder); err != nil {
 		return ScanResult{}, err
 	}
@@ -328,7 +342,7 @@ func (workspace *Workspace) Scan(ctx context.Context, folder history.ID) (ScanRe
 	result := ScanResult{}
 	seen := map[string]bool{}
 	failed := map[string]bool{}
-	if err := workspace.walk(ctx, root, "", scaffolds, seen, failed, &result); err != nil {
+	if err := workspace.walk(ctx, root, "", scaffolds, seen, failed, opts, &result); err != nil {
 		return result, err
 	}
 	for path := range scaffolds {
@@ -392,7 +406,7 @@ func underFailed(path string, failed map[string]bool) bool {
 	return false
 }
 
-func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, directory string, scaffolds map[string]bool, seen, failed map[string]bool, result *ScanResult) error {
+func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, directory string, scaffolds map[string]bool, seen, failed map[string]bool, opts ScanOptions, result *ScanResult) error {
 	fd := root.fd
 	owned := false
 	if directory != "" {
@@ -456,7 +470,7 @@ func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, director
 					result.Captured = append(result.Captured, envelope)
 				}
 			}
-			if err := workspace.walk(ctx, root, path, scaffolds, seen, failed, result); err != nil {
+			if err := workspace.walk(ctx, root, path, scaffolds, seen, failed, opts, result); err != nil {
 				return err
 			}
 		case unix.S_IFREG:
@@ -471,6 +485,17 @@ func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, director
 				failed[path] = true
 				result.Issues = append(result.Issues, ScanIssue{path, "HARD_LINK_UNSUPPORTED", ErrUnsupportedEntry})
 				continue
+			}
+			if !opts.FullContent {
+				projection, err := workspace.repo.Projection(ctx, root.registration.Folder, path)
+				if err == nil && projection.Kind == history.KindFile && projection.Digest != (history.Digest{}) {
+					if projection.ObservedSize == uint64(stat.Size) &&
+						projection.ObservedMtimeNS == stat.Mtim.Nano() &&
+						projection.ObservedInode == uint64(stat.Ino) &&
+						((stat.Mode&0o111 != 0) == projection.Executable) {
+						continue
+					}
+				}
 			}
 			envelope, changed, err := workspace.captureFile(ctx, root, path)
 			if err != nil {
@@ -552,6 +577,7 @@ func (workspace *Workspace) captureFileOnce(ctx context.Context, root *openedRoo
 	}
 	projection, projectionErr := workspace.repo.Projection(ctx, root.registration.Folder, path)
 	if projectionErr == nil && projection.Kind == history.KindFile && projection.Digest == manifest.Digest && projection.Executable == manifest.Executable {
+		_ = workspace.repo.UpdateObservedStat(ctx, root.registration.Folder, path, uint64(named.Size), named.Mtim.Nano(), named.Ctim.Nano(), uint64(named.Ino))
 		return history.Envelope{}, false, nil
 	}
 	var basis []history.VersionID
@@ -561,6 +587,9 @@ func (workspace *Workspace) captureFileOnce(ctx context.Context, root *openedRoo
 		return history.Envelope{}, false, projectionErr
 	}
 	envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: root.registration.Folder, Path: path, Basis: basis, Kind: history.KindFile, Manifest: manifest, AuthoredRevision: 1, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
+	if err == nil {
+		_ = workspace.repo.UpdateObservedStat(ctx, root.registration.Folder, path, uint64(named.Size), named.Mtim.Nano(), named.Ctim.Nano(), uint64(named.Ino))
+	}
 	return envelope, err == nil, err
 }
 
@@ -670,6 +699,27 @@ func (workspace *Workspace) Apply(ctx context.Context, id history.VersionID) err
 	default:
 		return history.ErrInvalidEnvelope
 	}
+}
+
+// PathExists reports whether path currently exists on disk beneath the workspace root.
+// If no workspace root is registered for this folder, it returns false, nil.
+func (workspace *Workspace) PathExists(ctx context.Context, folder history.ID, path string) (bool, error) {
+	root, err := workspace.openRoot(ctx, folder)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, nil
+		}
+		return false, err
+	}
+	defer root.close()
+	var st unix.Stat_t
+	if err := statPath(root.fd, path, &st); err != nil {
+		if errors.Is(err, unix.ENOENT) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
 }
 
 func (workspace *Workspace) guardApplyTarget(ctx context.Context, root *openedRoot, envelope history.Envelope) error {
@@ -985,7 +1035,11 @@ func (workspace *Workspace) applyTombstone(ctx context.Context, root *openedRoot
 		if err := workspace.repo.CommitPublication(ctx, publication.OperationID); err != nil {
 			return err
 		}
-		return workspace.releaseIfNoRecovery(ctx, root, publication)
+		if err := workspace.releaseIfNoRecovery(ctx, root, publication); err != nil {
+			return err
+		}
+		_ = workspace.pruneEmptyScaffolds(ctx, root, publication.Folder, publication.Path)
+		return nil
 	}
 	if err != nil {
 		return err
@@ -1024,7 +1078,57 @@ func (workspace *Workspace) applyTombstone(ctx context.Context, root *openedRoot
 	if err := workspace.repo.CommitPublication(ctx, publication.OperationID); err != nil {
 		return err
 	}
-	return workspace.releaseIfNoRecovery(ctx, root, publication)
+	if err := workspace.releaseIfNoRecovery(ctx, root, publication); err != nil {
+		return err
+	}
+	_ = workspace.pruneEmptyScaffolds(ctx, root, publication.Folder, publication.Path)
+	return nil
+}
+
+func (workspace *Workspace) pruneEmptyScaffolds(ctx context.Context, root *openedRoot, folder history.ID, childPath string) error {
+	for parent := parentDir(childPath); parent != ""; parent = parentDir(parent) {
+		isScaffold, err := workspace.repo.IsScaffold(ctx, folder, parent)
+		if err != nil || !isScaffold {
+			break
+		}
+		hasActive, err := workspace.repo.HasActiveDescendantProjections(ctx, folder, parent)
+		if err != nil || hasActive {
+			break
+		}
+		grandParent := root.fd
+		name := parent
+		owned := false
+		if idx := strings.LastIndex(parent, "/"); idx >= 0 {
+			gpDir := parent[:idx]
+			name = parent[idx+1:]
+			fd, err := safeOpen(root.fd, gpDir, unix.O_RDONLY|unix.O_DIRECTORY, 0)
+			if err != nil {
+				break
+			}
+			grandParent = fd
+			owned = true
+		}
+		unlinkErr := unix.Unlinkat(grandParent, name, unix.AT_REMOVEDIR)
+		if unlinkErr == nil {
+			_ = unix.Fsync(grandParent)
+			_ = workspace.repo.RemoveAnyScaffold(ctx, folder, parent)
+		}
+		if owned {
+			unix.Close(grandParent)
+		}
+		if unlinkErr != nil {
+			break
+		}
+	}
+	return nil
+}
+
+func parentDir(p string) string {
+	idx := strings.LastIndex(p, "/")
+	if idx <= 0 {
+		return ""
+	}
+	return p[:idx]
 }
 
 func (workspace *Workspace) Recover(ctx context.Context, folder history.ID) error {
@@ -1295,4 +1399,93 @@ func fileMatches(file *os.File, manifest *history.Manifest) (bool, error) {
 		return false, err
 	}
 	return uint64(n) == manifest.Size && bytes.Equal(hasher.Sum(nil), manifest.Digest[:]), nil
+}
+
+// ReclaimRecoveryCopies safely scans the workspace scratch directory for unreferenced
+// or committed recovery files, releases their storage reservations, and unlinks them.
+func (workspace *Workspace) ReclaimRecoveryCopies(ctx context.Context, folder history.ID) (int, uint64, error) {
+	root, err := workspace.openRoot(ctx, folder)
+	if err != nil {
+		return 0, 0, err
+	}
+	defer root.close()
+
+	duplicate, err := unix.Dup(root.scratch)
+	if err != nil {
+		return 0, 0, err
+	}
+	dir := os.NewFile(uintptr(duplicate), scratchName)
+	entries, err := dir.ReadDir(-1)
+	dir.Close()
+	if err != nil {
+		return 0, 0, err
+	}
+
+	pubs, err := workspace.repo.Publications(ctx, folder)
+	if err != nil {
+		return 0, 0, err
+	}
+	// Active (non-committed) publications must not have their recovery files reclaimed
+	activeRecovery := make(map[string]bool)
+	for _, p := range pubs {
+		if p.Phase != "COMMITTED" && p.RecoveryPath != "" {
+			activeRecovery[p.RecoveryPath] = true
+		}
+	}
+
+	var reclaimedCount int
+	var reclaimedBytes uint64
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasPrefix(name, "recovery-") {
+			continue
+		}
+		if activeRecovery[name] {
+			continue
+		}
+
+		var st unix.Stat_t
+		if err := unix.Fstatat(root.scratch, name, &st, 0); err == nil && st.Mode&unix.S_IFMT == unix.S_IFREG {
+			reclaimedBytes += uint64(st.Size)
+		}
+		if err := unix.Unlinkat(root.scratch, name, 0); err != nil && !errors.Is(err, syscall.ENOENT) {
+			continue
+		}
+		reclaimedCount++
+
+		opID := strings.TrimPrefix(name, "recovery-")
+		_ = workspace.repo.ReleaseReservation(ctx, "publication-"+opID)
+		_ = workspace.repo.RemovePublication(ctx, opID)
+	}
+
+	if reclaimedCount > 0 {
+		_ = unix.Fsync(root.scratch)
+	}
+	return reclaimedCount, reclaimedBytes, nil
+}
+
+func (workspace *Workspace) Unregister(ctx context.Context, folder history.ID) error {
+	return workspace.repo.UnregisterFolder(ctx, folder)
+}
+
+func (workspace *Workspace) Pause(ctx context.Context, folder history.ID, reason string) error {
+	return workspace.repo.PauseFolder(ctx, folder, reason)
+}
+
+func (workspace *Workspace) Resume(ctx context.Context, folder history.ID) error {
+	return workspace.repo.ResumeFolder(ctx, folder)
+}
+
+func (workspace *Workspace) Revalidate(ctx context.Context, folder history.ID) error {
+	opened, err := workspace.openRoot(ctx, folder)
+	if err != nil {
+		_ = workspace.repo.PauseFolder(ctx, folder, "ROOT_UNAVAILABLE")
+		return err
+	}
+	opened.close()
+	reg, err := workspace.repo.Root(ctx, folder)
+	if err == nil && reg.Paused && reg.PauseReason == "ROOT_UNAVAILABLE" {
+		_ = workspace.repo.ResumeFolder(ctx, folder)
+	}
+	return nil
 }

@@ -37,6 +37,11 @@ func (db *DB) InstallChunk(ctx context.Context, digest history.Digest, length ui
 	if length > history.ChunkSize {
 		return fmt.Errorf("%w: chunk too large", ErrContentMismatch)
 	}
+	if err := db.checkFreeSpaceReserve(ctx); err != nil {
+		return err
+	}
+	// D4: new reference cancels active GC intent
+	_, _ = db.db.ExecContext(ctx, `DELETE FROM gc_intents WHERE digest=?`, digest[:])
 	if db.budgetBytes > 0 {
 		usage, err := db.usageUnlocked()
 		if err != nil {

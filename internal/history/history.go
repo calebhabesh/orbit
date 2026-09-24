@@ -234,6 +234,7 @@ type ResolutionAction uint8
 const (
 	ResolutionSelect ResolutionAction = iota + 1
 	ResolutionManualMerge
+	ResolutionRestore
 )
 
 type ResolutionRequest struct {
@@ -263,18 +264,72 @@ func (h *History) PlanResolution(request ResolutionRequest) (ResolutionPlan, err
 	if request.ExpectedHeadToken != HeadToken(ids) || !sameIDs(ids, request.Reviewed) {
 		return ResolutionPlan{}, ErrStaleView
 	}
-	if request.Action != ResolutionSelect && request.Action != ResolutionManualMerge {
+	if request.Action != ResolutionSelect && request.Action != ResolutionManualMerge && request.Action != ResolutionRestore {
 		return ResolutionPlan{}, fmt.Errorf("%w: unknown resolution action", ErrInvalidEnvelope)
 	}
 	if request.Action == ResolutionSelect {
 		if request.Selected == nil || !containsID(ids, *request.Selected) {
 			return ResolutionPlan{}, fmt.Errorf("%w: selected version was not reviewed", ErrInvalidEnvelope)
 		}
+	} else if request.Action == ResolutionRestore {
+		if request.Selected == nil {
+			return ResolutionPlan{}, fmt.Errorf("%w: restore requires a source version", ErrInvalidEnvelope)
+		}
+		if _, ok := h.versions[*request.Selected]; !ok {
+			return ResolutionPlan{}, fmt.Errorf("%w: historical version not found", ErrInvalidEnvelope)
+		}
 	} else if request.Selected != nil {
 		return ResolutionPlan{}, fmt.Errorf("%w: manual merge cannot select stored bytes", ErrInvalidEnvelope)
 	}
 	parents := append([]VersionID(nil), ids...)
 	return ResolutionPlan{Parents: parents, Action: request.Action, Selected: request.Selected}, nil
+}
+
+// PlanResolutionCapture validates current heads against reviewed heads and expected token,
+// and derives the resolution vector and sorted parent set for the new version.
+func (h *History) PlanResolutionCapture(folder, author ID, path string, reviewed []VersionID, expectedHeadToken Digest, nextCounter uint64) ([]VersionID, []ClockEntry, error) {
+	if nextCounter == 0 {
+		return nil, nil, ErrCounterOverflow
+	}
+	heads := h.Heads(folder, path)
+	if len(heads) == 0 {
+		return nil, nil, fmt.Errorf("%w: no heads to resolve", ErrInvalidEnvelope)
+	}
+	ids := make([]VersionID, len(heads))
+	for i := range heads {
+		ids[i] = heads[i].ID
+	}
+	if expectedHeadToken != HeadToken(ids) || !sameIDs(ids, reviewed) {
+		return nil, nil, ErrStaleView
+	}
+	parents, err := h.validatedBasis(folder, path, reviewed)
+	if err != nil {
+		return nil, nil, err
+	}
+	var latest *Envelope
+	for _, envelope := range h.versions {
+		if envelope.ID.Folder == folder && envelope.ID.Author == author && envelope.Path == path && (latest == nil || envelope.ID.Counter > latest.ID.Counter) {
+			copy := envelope
+			latest = &copy
+		}
+	}
+	if latest != nil && (latest.ID.Counter == math.MaxUint64 || nextCounter <= latest.ID.Counter) {
+		return nil, nil, ErrCounterOverflow
+	}
+	vector, err := deriveVector(parents, author, nextCounter)
+	if err != nil {
+		return nil, nil, err
+	}
+	sortedParents := append([]VersionID(nil), reviewed...)
+	sort.Slice(sortedParents, func(i, j int) bool {
+		return CompareVersionID(sortedParents[i], sortedParents[j]) < 0
+	})
+	return sortedParents, vector, nil
+}
+
+// DeriveVector joins parent vectors and advances the author component to counter.
+func DeriveVector(parents []Envelope, author ID, counter uint64) ([]ClockEntry, error) {
+	return deriveVector(parents, author, counter)
 }
 
 type StructuralConflict struct {

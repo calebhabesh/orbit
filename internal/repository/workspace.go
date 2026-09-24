@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
 )
@@ -29,6 +30,8 @@ type RootRegistration struct {
 	RegistrationID    [32]byte
 	ScanGeneration    uint64
 	BootstrapComplete bool
+	Paused            bool
+	PauseReason       string
 }
 
 func (db *DB) StateDir() string { return db.stateDir }
@@ -130,7 +133,8 @@ func (db *DB) Root(ctx context.Context, folder history.ID) (RootRegistration, er
 	var device, inode int64
 	var registration []byte
 	var bootstrap int
-	err := db.db.QueryRowContext(ctx, `SELECT root_path,root_device,root_inode,registration_id,scan_generation,bootstrap_complete FROM folders WHERE folder_id=? AND root_path IS NOT NULL`, folder[:]).Scan(&result.Path, &device, &inode, &registration, &result.ScanGeneration, &bootstrap)
+	var paused int
+	err := db.db.QueryRowContext(ctx, `SELECT root_path,root_device,root_inode,registration_id,scan_generation,bootstrap_complete,COALESCE(paused,0),COALESCE(pause_reason,'') FROM folders WHERE folder_id=? AND root_path IS NOT NULL`, folder[:]).Scan(&result.Path, &device, &inode, &registration, &result.ScanGeneration, &bootstrap, &paused, &result.PauseReason)
 	if errors.Is(err, sql.ErrNoRows) {
 		return result, ErrRootNotRegistered
 	}
@@ -143,7 +147,150 @@ func (db *DB) Root(ctx context.Context, folder history.ID) (RootRegistration, er
 	copy(result.RegistrationID[:], registration)
 	result.Device, result.Inode = uint64(device), uint64(inode)
 	result.BootstrapComplete = bootstrap == 1
+	result.Paused = paused == 1
 	return result, nil
+}
+
+func (db *DB) RegisteredFolders(ctx context.Context) ([]RootRegistration, error) {
+	rows, err := db.db.QueryContext(ctx, `SELECT folder_id,root_path,root_device,root_inode,registration_id,scan_generation,bootstrap_complete,COALESCE(paused,0),COALESCE(pause_reason,'') FROM folders WHERE root_path IS NOT NULL ORDER BY rowid`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var results []RootRegistration
+	for rows.Next() {
+		var item RootRegistration
+		var folderRaw, regRaw []byte
+		var dev, ino int64
+		var bootstrap int
+		var paused int
+		if err := rows.Scan(&folderRaw, &item.Path, &dev, &ino, &regRaw, &item.ScanGeneration, &bootstrap, &paused, &item.PauseReason); err != nil {
+			return nil, err
+		}
+		copy(item.Folder[:], folderRaw)
+		copy(item.RegistrationID[:], regRaw)
+		item.Device = uint64(dev)
+		item.Inode = uint64(ino)
+		item.BootstrapComplete = bootstrap == 1
+		item.Paused = paused == 1
+		results = append(results, item)
+	}
+	return results, rows.Err()
+}
+
+type FolderRecord struct {
+	Folder             history.ID `json:"folder"`
+	LocalAuthor        history.ID `json:"local_author"`
+	NextCounter        uint64     `json:"next_counter"`
+	MembershipRevision uint64     `json:"membership_revision"`
+	RootPath           string     `json:"root_path,omitempty"`
+	RootDevice         uint64     `json:"root_device,omitempty"`
+	RootInode          uint64     `json:"root_inode,omitempty"`
+	RegistrationID     [32]byte   `json:"registration_id,omitempty"`
+	ScanGeneration     uint64     `json:"scan_generation"`
+	BootstrapComplete  bool       `json:"bootstrap_complete"`
+	Paused             bool       `json:"paused"`
+	PauseReason        string     `json:"pause_reason,omitempty"`
+}
+
+func (db *DB) Folders(ctx context.Context) ([]FolderRecord, error) {
+	rows, err := db.db.QueryContext(ctx, `SELECT folder_id, local_author, next_counter, membership_revision, COALESCE(root_path,''), COALESCE(root_device,0), COALESCE(root_inode,0), COALESCE(registration_id,X''), scan_generation, bootstrap_complete, COALESCE(paused,0), COALESCE(pause_reason,'') FROM folders ORDER BY rowid`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var results []FolderRecord
+	for rows.Next() {
+		var item FolderRecord
+		var folderRaw, authorRaw, counterRaw, revRaw, regRaw []byte
+		var dev, ino int64
+		var bootstrap int
+		var paused int
+		if err := rows.Scan(&folderRaw, &authorRaw, &counterRaw, &revRaw, &item.RootPath, &dev, &ino, &regRaw, &item.ScanGeneration, &bootstrap, &paused, &item.PauseReason); err != nil {
+			return nil, err
+		}
+		copy(item.Folder[:], folderRaw)
+		copy(item.LocalAuthor[:], authorRaw)
+		item.NextCounter, _ = decodeUint(counterRaw)
+		item.MembershipRevision, _ = decodeUint(revRaw)
+		if len(regRaw) == 32 {
+			copy(item.RegistrationID[:], regRaw)
+		}
+		item.RootDevice = uint64(dev)
+		item.RootInode = uint64(ino)
+		item.BootstrapComplete = bootstrap == 1
+		item.Paused = paused == 1
+		results = append(results, item)
+	}
+	return results, rows.Err()
+}
+
+func (db *DB) PauseFolder(ctx context.Context, folder history.ID, reason string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	if reason == "" {
+		reason = "OPERATOR_PAUSED"
+	}
+	result, err := db.db.ExecContext(ctx, `UPDATE folders SET paused=1, pause_reason=? WHERE folder_id=?`, reason, folder[:])
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		return ErrFolderUnknown
+	}
+	return nil
+}
+
+func (db *DB) ResumeFolder(ctx context.Context, folder history.ID) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	result, err := db.db.ExecContext(ctx, `UPDATE folders SET paused=0, pause_reason=NULL WHERE folder_id=?`, folder[:])
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		return ErrFolderUnknown
+	}
+	return nil
+}
+
+func (db *DB) UnregisterFolder(ctx context.Context, folder history.ID) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	tx, err := db.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	result, err := tx.ExecContext(ctx, `UPDATE folders SET root_path=NULL, root_device=NULL, root_inode=NULL, registration_id=NULL, paused=0, pause_reason=NULL WHERE folder_id=? AND root_path IS NOT NULL`, folder[:])
+	if err != nil {
+		return err
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		return ErrRootNotRegistered
+	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM workspace_scaffolds WHERE folder_id=?`, folder[:]); err != nil {
+		return err
+	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM deletion_proposals WHERE folder_id=?`, folder[:]); err != nil {
+		return err
+	}
+	if _, err := tx.ExecContext(ctx, `DELETE FROM path_projections WHERE folder_id=?`, folder[:]); err != nil {
+		return err
+	}
+	return tx.Commit()
 }
 
 type Projection struct {
@@ -155,10 +302,22 @@ type Projection struct {
 	Executable            bool
 	PublicationGeneration uint64
 	BlockReason           string
+	ObservedSize          uint64
+	ObservedMtimeNS       int64
+	ObservedCtimeNS       int64
+	ObservedInode         uint64
+	LastScannedNS         int64
 }
 
 func (db *DB) Projection(ctx context.Context, folder history.ID, path string) (Projection, error) {
 	return loadProjection(ctx, db.db, folder, path)
+}
+
+func (db *DB) UpdateObservedStat(ctx context.Context, folder history.ID, path string, size uint64, mtimeNS, ctimeNS int64, inode uint64) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	_, err := db.db.ExecContext(ctx, `UPDATE path_projections SET observed_size=?, observed_mtime_ns=?, observed_ctime_ns=?, observed_inode=?, last_scanned_ns=? WHERE folder_id=? AND path=?`, int64(size), mtimeNS, ctimeNS, int64(inode), time.Now().UnixNano(), folder[:], path)
+	return err
 }
 
 func (db *DB) Projections(ctx context.Context, folder history.ID) ([]Projection, error) {
@@ -194,7 +353,8 @@ func loadProjection(ctx context.Context, q queryer, folder history.ID, path stri
 	var kind sql.NullInt64
 	var digest []byte
 	var executable sql.NullInt64
-	err := q.QueryRowContext(ctx, `SELECT publication_generation,COALESCE(block_reason,''),observed_kind,observed_digest,observed_executable FROM path_projections WHERE folder_id=? AND path=?`, folder[:], path).Scan(&result.PublicationGeneration, &result.BlockReason, &kind, &digest, &executable)
+	var observedSize, observedMtime, observedCtime, observedInode, lastScanned sql.NullInt64
+	err := q.QueryRowContext(ctx, `SELECT publication_generation,COALESCE(block_reason,''),observed_kind,observed_digest,observed_executable,observed_size,observed_mtime_ns,observed_ctime_ns,observed_inode,last_scanned_ns FROM path_projections WHERE folder_id=? AND path=?`, folder[:], path).Scan(&result.PublicationGeneration, &result.BlockReason, &kind, &digest, &executable, &observedSize, &observedMtime, &observedCtime, &observedInode, &lastScanned)
 	if err != nil {
 		return result, err
 	}
@@ -203,6 +363,21 @@ func loadProjection(ctx context.Context, q queryer, folder history.ID, path stri
 	}
 	copy(result.Digest[:], digest)
 	result.Executable = executable.Valid && executable.Int64 == 1
+	if observedSize.Valid && observedSize.Int64 > 0 {
+		result.ObservedSize = uint64(observedSize.Int64)
+	}
+	if observedMtime.Valid {
+		result.ObservedMtimeNS = observedMtime.Int64
+	}
+	if observedCtime.Valid {
+		result.ObservedCtimeNS = observedCtime.Int64
+	}
+	if observedInode.Valid && observedInode.Int64 > 0 {
+		result.ObservedInode = uint64(observedInode.Int64)
+	}
+	if lastScanned.Valid {
+		result.LastScannedNS = lastScanned.Int64
+	}
 	rows, err := q.QueryContext(ctx, `SELECT author_id,counter FROM projection_basis WHERE folder_id=? AND path=? ORDER BY position`, folder[:], path)
 	if err != nil {
 		return result, err
@@ -293,6 +468,7 @@ func (db *DB) WriteVersion(ctx context.Context, id history.VersionID, destinatio
 			return envelope, closeErr
 		}
 		if written != int64(chunk.Length) || !equalHash(part, chunk.Digest) {
+			_, _ = db.QuarantineChunk(ctx, chunk.Digest, "stage file checksum mismatch")
 			return envelope, ErrContentMismatch
 		}
 		total += uint64(written)
@@ -377,6 +553,20 @@ func (db *DB) CommitPublication(ctx context.Context, operation string) error {
 		return ErrNotReady
 	}
 	if err := setProjectionTx(ctx, tx, folder, path, []history.VersionID{id}, envelope.Kind, envelope.Manifest, author[:], encodeUint(counter), ""); err != nil {
+		return err
+	}
+	if envelope.Kind == history.KindDirectory {
+		if _, err := tx.ExecContext(ctx, `DELETE FROM workspace_scaffolds WHERE folder_id=? AND path=?`, folder[:], path); err != nil {
+			return err
+		}
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE path_projections SET
+		observed_size=(SELECT observed_size FROM publication_journal WHERE operation_id=?),
+		observed_mtime_ns=(SELECT observed_mtime_ns FROM publication_journal WHERE operation_id=?),
+		observed_ctime_ns=(SELECT observed_ctime_ns FROM publication_journal WHERE operation_id=?),
+		observed_inode=(SELECT observed_inode FROM publication_journal WHERE operation_id=?),
+		last_scanned_ns=?
+		WHERE folder_id=? AND path=?`, operation, operation, operation, operation, time.Now().UnixNano(), folder[:], path); err != nil {
 		return err
 	}
 	if _, err := tx.ExecContext(ctx, `UPDATE publication_journal SET phase='COMMITTED' WHERE operation_id=?`, operation); err != nil {
@@ -472,6 +662,25 @@ func (db *DB) Scaffolds(ctx context.Context, folder history.ID) (map[string]bool
 		result[path] = true
 	}
 	return result, rows.Err()
+}
+
+func (db *DB) IsScaffold(ctx context.Context, folder history.ID, path string) (bool, error) {
+	var present int
+	err := db.db.QueryRowContext(ctx, `SELECT 1 FROM workspace_scaffolds WHERE folder_id=? AND path=? AND pending=0`, folder[:], path).Scan(&present)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
+func (db *DB) HasActiveDescendantProjections(ctx context.Context, folder history.ID, dirPath string) (bool, error) {
+	prefix := dirPath + "/"
+	var present int
+	err := db.db.QueryRowContext(ctx, `SELECT 1 FROM path_projections WHERE folder_id=? AND substr(path, 1, ?)=? AND observed_kind!=? LIMIT 1`, folder[:], len(prefix), prefix, int(history.KindTombstone)).Scan(&present)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	return err == nil, err
 }
 
 func (db *DB) BeginScan(ctx context.Context, folder history.ID) (uint64, error) {

@@ -215,6 +215,31 @@ func TestReviewedResolutionAndStructuralConflict(t *testing.T) {
 	if _, err := h.PlanResolution(ResolutionRequest{folder, "x", ids, HeadToken([]VersionID{a1.ID}), ResolutionSelect, &selected}); !errors.Is(err, ErrStaleView) {
 		t.Fatalf("stale token error=%v", err)
 	}
+	restorePlan, err := h.PlanResolution(ResolutionRequest{folder, "x", ids, HeadToken(ids), ResolutionRestore, &selected})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(restorePlan.Parents) != 2 || *restorePlan.Selected != selected {
+		t.Fatal("restore plan invalid")
+	}
+	missingID := VersionID{folder, a, 999}
+	if _, err := h.PlanResolution(ResolutionRequest{folder, "x", ids, HeadToken(ids), ResolutionRestore, &missingID}); err == nil {
+		t.Fatal("expected error for missing historical version in restore")
+	}
+
+	capturedParents, capturedVector, err := h.PlanResolutionCapture(folder, a, "x", ids, HeadToken(ids), 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(capturedParents) != 2 {
+		t.Fatalf("captured parents = %d, want 2", len(capturedParents))
+	}
+	if capturedVector[0].Counter != 2 && capturedVector[1].Counter != 2 {
+		t.Fatalf("captured vector does not advance counter: %v", capturedVector)
+	}
+	if _, _, err := h.PlanResolutionCapture(folder, a, "x", ids, HeadToken([]VersionID{a1.ID}), 2); !errors.Is(err, ErrStaleView) {
+		t.Fatalf("stale token error=%v, want ErrStaleView", err)
+	}
 	blocker := envelope(folder, a, 2, "parent", KindFile, nil, fileManifest("file", false))
 	child := envelope(folder, b, 2, "parent/child", KindFile, nil, fileManifest("child", false))
 	if err := h.Accept(blocker); err != nil {

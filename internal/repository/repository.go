@@ -12,12 +12,22 @@ import (
 	"strings"
 	"sync"
 
+	"golang.org/x/sys/unix"
 	_ "modernc.org/sqlite"
+
+	"github.com/calebhabesh/file-sync/internal/history"
 )
 
-const CurrentSchema = 5
+const CurrentSchema = 10
 
-var ErrIncompatibleSchema = errors.New("metadata schema is newer than this binary")
+var (
+	ErrIncompatibleSchema     = errors.New("metadata schema is newer than this binary")
+	ErrMetadataBudgetExceeded = errors.New("metadata budget exceeded")
+	ErrStorageExhausted       = errors.New("filesystem free-space reserve exhausted")
+	ErrGCIntentActive         = errors.New("GC intent is active on object")
+	ErrCleanupSuspended       = errors.New("cleanup suspended due to active configuration change or pending maintenance")
+	ErrContentCorrupt         = errors.New("content is corrupt and has been quarantined")
+)
 
 // FaultHook runs at a named durability boundary. It is nil in production.
 type FaultHook func(name string) error
@@ -40,19 +50,29 @@ const (
 	HookPublicationCommit   = "publication.committed"
 	HookTransferProgress    = "transfer.progress"
 	HookReceiptRecorded     = "receipt.recorded"
+	HookGCIntent            = "gc.intent"
+	HookGCUnlink            = "gc.unlink"
+	HookGCFinalization      = "gc.finalization"
+	HookChunkQuarantined    = "integrity.chunk.quarantined"
+	HookIntegrityScanned    = "integrity.scanned"
+	HookRepairInstalled     = "repair.installed"
 )
 
 type Options struct {
-	FaultHook   FaultHook
-	BudgetBytes uint64
+	FaultHook             FaultHook
+	BudgetBytes           uint64
+	MetadataBudgetBytes   uint64
+	FreeSpaceReserveBytes uint64
 }
 
 type DB struct {
-	db          *sql.DB
-	stateDir    string
-	hook        FaultHook
-	budgetBytes uint64
-	mu          sync.Mutex
+	db                    *sql.DB
+	stateDir              string
+	hook                  FaultHook
+	budgetBytes           uint64
+	metadataBudgetBytes   uint64
+	freeSpaceReserveBytes uint64
+	mu                    sync.Mutex
 }
 
 func Open(ctx context.Context, stateDir string) (*DB, error) {
@@ -87,7 +107,18 @@ func OpenWithOptions(ctx context.Context, stateDir string, options Options) (*DB
 	// every connection in use has the required DSN PRAGMAs.
 	sqlDB.SetMaxOpenConns(1)
 	sqlDB.SetMaxIdleConns(1)
-	db := &DB{db: sqlDB, stateDir: stateDir, hook: options.FaultHook, budgetBytes: options.BudgetBytes}
+	metadataBudget := options.MetadataBudgetBytes
+	if metadataBudget == 0 {
+		metadataBudget = 256 * 1024 * 1024
+	}
+	db := &DB{
+		db:                    sqlDB,
+		stateDir:              stateDir,
+		hook:                  options.FaultHook,
+		budgetBytes:           options.BudgetBytes,
+		metadataBudgetBytes:   metadataBudget,
+		freeSpaceReserveBytes: options.FreeSpaceReserveBytes,
+	}
 	if err := db.migrate(ctx); err != nil {
 		sqlDB.Close()
 		return nil, err
@@ -97,6 +128,14 @@ func OpenWithOptions(ctx context.Context, stateDir string, options Options) (*DB
 		return nil, err
 	}
 	if err := db.indexInstalledObjects(ctx); err != nil {
+		sqlDB.Close()
+		return nil, err
+	}
+	if err := db.reconcileGCIntents(ctx); err != nil {
+		sqlDB.Close()
+		return nil, err
+	}
+	if _, err := db.RecoverInFlightDurableTasks(ctx); err != nil {
 		sqlDB.Close()
 		return nil, err
 	}
@@ -202,6 +241,61 @@ var migrations = map[int]func(context.Context, *sql.DB) error{
 		}
 		return tx.Commit()
 	},
+	6: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV6); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	7: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV7); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	8: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV8); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	9: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV9); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	10: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV10); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
 }
 
 const schemaV2 = `
@@ -294,6 +388,191 @@ CREATE TABLE peer_contacts (
 ) STRICT;
 PRAGMA user_version = 5;`
 
+const schemaV6 = `
+CREATE TABLE retirement_snapshots (
+ folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+ revision BLOB NOT NULL CHECK(length(revision)=8),
+ retired_device BLOB NOT NULL CHECK(length(retired_device)=32),
+ snapshot_digest BLOB NOT NULL CHECK(length(snapshot_digest)=32),
+ canonical_snapshot BLOB NOT NULL,
+ PRIMARY KEY(folder_id, revision, retired_device),
+ FOREIGN KEY(folder_id, revision) REFERENCES membership_revisions(folder_id, revision) ON DELETE CASCADE
+) STRICT;
+CREATE TABLE retirement_snapshot_entries (
+ folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+ revision BLOB NOT NULL CHECK(length(revision)=8),
+ retired_device BLOB NOT NULL CHECK(length(retired_device)=32),
+ counter BLOB NOT NULL CHECK(length(counter)=8),
+ envelope_digest BLOB NOT NULL CHECK(length(envelope_digest)=32),
+ PRIMARY KEY(folder_id, revision, retired_device, counter),
+ FOREIGN KEY(folder_id, revision, retired_device) REFERENCES retirement_snapshots(folder_id, revision, retired_device) ON DELETE CASCADE
+) STRICT;
+CREATE TABLE resumable_maintenance (
+ maintenance_id TEXT PRIMARY KEY,
+ folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+ target_device BLOB NOT NULL CHECK(length(target_device)=32),
+ phase TEXT NOT NULL,
+ state BLOB,
+ updated_ns INTEGER NOT NULL,
+ FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+ALTER TABLE peer_progress ADD COLUMN direct INTEGER NOT NULL DEFAULT 1 CHECK(direct IN (0,1));
+PRAGMA user_version = 6;`
+
+const schemaV7 = `
+CREATE TABLE folder_retention (
+	folder_id BLOB PRIMARY KEY CHECK(length(folder_id)=32),
+	retention_days INTEGER NOT NULL DEFAULT 30,
+	min_superseded INTEGER NOT NULL DEFAULT 20,
+	FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+PRAGMA user_version = 7;`
+
+const schemaV8 = `
+CREATE TABLE quarantined_chunks (
+	digest BLOB PRIMARY KEY CHECK(length(digest)=32),
+	quarantine_path TEXT NOT NULL,
+	length BLOB NOT NULL CHECK(length(length)=8),
+	reason TEXT NOT NULL,
+	quarantined_ns INTEGER NOT NULL,
+	repaired INTEGER NOT NULL DEFAULT 0 CHECK(repaired IN (0,1))
+) STRICT;
+CREATE TABLE peer_integrity_incidents (
+	peer_id BLOB NOT NULL CHECK(length(peer_id)=32),
+	folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+	chunk_digest BLOB NOT NULL CHECK(length(chunk_digest)=32),
+	incident_ns INTEGER NOT NULL,
+	error_reason TEXT NOT NULL,
+	PRIMARY KEY(peer_id, folder_id, chunk_digest, incident_ns)
+) STRICT;
+PRAGMA user_version = 8;`
+
+const schemaV9 = `
+ALTER TABLE path_projections ADD COLUMN observed_size INTEGER;
+ALTER TABLE path_projections ADD COLUMN observed_mtime_ns INTEGER;
+ALTER TABLE path_projections ADD COLUMN observed_ctime_ns INTEGER;
+ALTER TABLE path_projections ADD COLUMN observed_inode INTEGER;
+ALTER TABLE path_projections ADD COLUMN last_scanned_ns INTEGER NOT NULL DEFAULT 0;
+CREATE TABLE durable_work_tasks (
+	task_id TEXT PRIMARY KEY,
+	folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+	task_kind TEXT NOT NULL CHECK(task_kind IN ('scan','sync','repair','gc')),
+	peer_id BLOB CHECK(peer_id IS NULL OR length(peer_id)=32),
+	target_path TEXT,
+	version_author BLOB CHECK(version_author IS NULL OR length(version_author)=32),
+	version_counter BLOB CHECK(version_counter IS NULL OR length(version_counter)=8),
+	state TEXT NOT NULL CHECK(state IN ('queued','running','retry','exhausted','completed','canceled')),
+	attempts INTEGER NOT NULL DEFAULT 0,
+	max_attempts INTEGER NOT NULL DEFAULT 5,
+	last_error TEXT,
+	error_code TEXT,
+	retry_after_ns INTEGER NOT NULL DEFAULT 0,
+	created_ns INTEGER NOT NULL,
+	updated_ns INTEGER NOT NULL,
+	file_size INTEGER NOT NULL DEFAULT 0,
+	age_counter INTEGER NOT NULL DEFAULT 0,
+	FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+CREATE INDEX durable_work_state ON durable_work_tasks(state, folder_id);
+PRAGMA user_version = 9;`
+
+const schemaV10 = `
+ALTER TABLE folders ADD COLUMN paused INTEGER NOT NULL DEFAULT 0 CHECK(paused IN (0,1));
+ALTER TABLE folders ADD COLUMN pause_reason TEXT;
+CREATE TABLE event_logs (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	timestamp_ns INTEGER NOT NULL,
+	operation_id TEXT NOT NULL,
+	folder_id BLOB,
+	version_author BLOB,
+	version_counter BLOB,
+	peer_id BLOB,
+	phase TEXT NOT NULL,
+	error_code TEXT,
+	duration_ns INTEGER
+) STRICT;
+CREATE INDEX event_logs_ts ON event_logs(timestamp_ns);
+PRAGMA user_version = 10;`
+
+func (db *DB) reconcileGCIntents(ctx context.Context) error {
+	rows, err := db.db.QueryContext(ctx, `SELECT digest, state FROM gc_intents`)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	type intentRow struct {
+		digest history.Digest
+		state  string
+	}
+	var list []intentRow
+	for rows.Next() {
+		var raw []byte
+		var state string
+		if err := rows.Scan(&raw, &state); err != nil {
+			return err
+		}
+		var d history.Digest
+		copy(d[:], raw)
+		list = append(list, intentRow{digest: d, state: state})
+	}
+	if err := rows.Err(); err != nil {
+		return err
+	}
+
+	for _, item := range list {
+		objPath := db.objectPath(item.digest)
+		_, statErr := os.Lstat(objPath)
+		if statErr == nil {
+			// Object file still exists on disk.
+			// D4: crash after intent retains extra bytes safely. Cancel intent.
+			_, _ = db.db.ExecContext(ctx, `DELETE FROM gc_intents WHERE digest=?`, item.digest[:])
+		} else if errors.Is(statErr, os.ErrNotExist) {
+			// Object file was unlinked before crash.
+			var refCount int
+			_ = db.db.QueryRowContext(ctx, `SELECT count(*) FROM object_references WHERE digest=?`, item.digest[:]).Scan(&refCount)
+			var pinCount int
+			_ = db.db.QueryRowContext(ctx, `SELECT count(*) FROM content_pins WHERE digest=?`, item.digest[:]).Scan(&pinCount)
+			if refCount == 0 && pinCount == 0 {
+				// Safely finalize unreferenced object.
+				_, _ = db.db.ExecContext(ctx, `DELETE FROM gc_intents WHERE digest=?`, item.digest[:])
+				_, _ = db.db.ExecContext(ctx, `DELETE FROM objects WHERE digest=?`, item.digest[:])
+			}
+		}
+	}
+	return nil
+}
+
+func (db *DB) checkMetadataBudget(ctx context.Context) error {
+	if db.metadataBudgetBytes == 0 {
+		return nil
+	}
+	var size uint64
+	for _, name := range []string{"metadata.sqlite", "metadata.sqlite-wal", "metadata.sqlite-shm"} {
+		info, err := os.Stat(filepath.Join(db.stateDir, name))
+		if err == nil && info.Mode().IsRegular() {
+			size += uint64(info.Size())
+		}
+	}
+	if size >= db.metadataBudgetBytes {
+		return ErrMetadataBudgetExceeded
+	}
+	return nil
+}
+
+func (db *DB) checkFreeSpaceReserve(ctx context.Context) error {
+	if db.freeSpaceReserveBytes == 0 {
+		return nil
+	}
+	var stat unix.Statfs_t
+	if err := unix.Statfs(db.stateDir, &stat); err == nil {
+		available := stat.Bavail * uint64(stat.Bsize)
+		if available < db.freeSpaceReserveBytes {
+			return ErrStorageExhausted
+		}
+	}
+	return nil
+}
+
 func (db *DB) PutInstallationValue(ctx context.Context, key string, value []byte) error {
 	_, err := db.db.ExecContext(ctx, `INSERT INTO installation_metadata (key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value`, key, value)
 	return err
@@ -334,4 +613,12 @@ func (db *DB) Backup(ctx context.Context, destination string) error {
 		return fmt.Errorf("create SQLite backup: %w", err)
 	}
 	return nil
+}
+
+func (db *DB) UserVersion(ctx context.Context) (int, error) {
+	var version int
+	if err := db.db.QueryRowContext(ctx, "PRAGMA user_version").Scan(&version); err != nil {
+		return 0, err
+	}
+	return version, nil
 }

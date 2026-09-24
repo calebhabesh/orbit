@@ -889,3 +889,147 @@ func TestStageBudgetRefusalPreservesPriorVersion(t *testing.T) {
 		t.Fatalf("prior content lost: %v", err)
 	}
 }
+
+func TestReclaimRecoveryCopies(t *testing.T) {
+	ctx := context.Background()
+	work, db, folder, root := testWorkspace(t)
+
+	// Create an unreferenced recovery file and a reservation
+	scratchDir := filepath.Join(root, scratchName)
+	orphanPath := filepath.Join(scratchDir, "recovery-op123")
+	if err := os.WriteFile(orphanPath, []byte("recovery content"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Reserve(ctx, "publication-op123", uint64(len("recovery content")), "test"); err != nil {
+		t.Fatal(err)
+	}
+
+	// Also create an active publication with a recovery file
+	activePub := repository.Publication{
+		OperationID:  "active-op",
+		Folder:       folder,
+		Path:         "active.txt",
+		Kind:         history.KindFile,
+		StagePath:    "stage-active-op",
+		RecoveryPath: "recovery-active-op",
+		Phase:        "PREPARED",
+	}
+	if err := db.PreparePublication(ctx, activePub); err != nil {
+		t.Fatal(err)
+	}
+	activeRecoveryPath := filepath.Join(scratchDir, "recovery-active-op")
+	if err := os.WriteFile(activeRecoveryPath, []byte("active recovery content"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// Reclaim recovery copies
+	count, bytesReclaimed, err := work.ReclaimRecoveryCopies(ctx, folder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if count != 1 {
+		t.Fatalf("reclaimed count = %d, want 1", count)
+	}
+	if bytesReclaimed != uint64(len("recovery content")) {
+		t.Fatalf("reclaimed bytes = %d, want %d", bytesReclaimed, len("recovery content"))
+	}
+
+	// Orphan recovery file should be gone
+	if _, err := os.Stat(orphanPath); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("orphan recovery file still exists: %v", err)
+	}
+	// Active recovery file must still exist
+	if _, err := os.Stat(activeRecoveryPath); err != nil {
+		t.Fatalf("active recovery file was removed: %v", err)
+	}
+}
+
+func TestDualScanCadenceAndEqualSizeTimestampPreservingEdits(t *testing.T) {
+	ctx := context.Background()
+	work, db, folder, root := testWorkspace(t)
+
+	filePath := filepath.Join(root, "test.txt")
+	content1 := []byte("initial content 1234") // 20 bytes
+	if err := os.WriteFile(filePath, content1, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	info1, err := os.Stat(filePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	initialMtime := info1.ModTime()
+
+	// Initial scan captures the file
+	res1, err := work.Scan(ctx, folder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res1.Captured) != 1 {
+		t.Fatalf("res1.Captured = %d, want 1", len(res1.Captured))
+	}
+
+	// Quick scan with unchanged file: no new captures
+	res2, err := work.ScanWithOptions(ctx, folder, ScanOptions{FullContent: false})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res2.Captured) != 0 {
+		t.Fatalf("res2.Captured = %d, want 0", len(res2.Captured))
+	}
+
+	// Perform equal-size timestamp-preserving edit:
+	content2 := []byte("altered content 5678") // exactly 20 bytes
+	if err := os.WriteFile(filePath, content2, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(filePath, initialMtime, initialMtime); err != nil {
+		t.Fatal(err)
+	}
+
+	// Quick scan (FullContent: false) checks stat: size & mtime match, so it skips hashing!
+	res3, err := work.ScanWithOptions(ctx, folder, ScanOptions{FullContent: false})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res3.Captured) != 0 {
+		t.Fatalf("quick scan captured %d items, want 0 (stat-preserving edit)", len(res3.Captured))
+	}
+
+	// Full-content scan (FullContent: true) forces re-hashing: detects the edit and captures!
+	res4, err := work.ScanWithOptions(ctx, folder, ScanOptions{FullContent: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res4.Captured) != 1 {
+		t.Fatalf("full-content scan captured = %d, want 1 (detected edit)", len(res4.Captured))
+	}
+
+	// Subsequent scan: no authoring of echo version (Invariant I17)
+	res5, err := work.ScanWithOptions(ctx, folder, ScanOptions{FullContent: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res5.Captured) != 0 {
+		t.Fatalf("subsequent scan captured = %d, want 0", len(res5.Captured))
+	}
+
+	// Root unavailable test (Invariant I11):
+	// Temporarily corrupt registration marker
+	markerPath := filepath.Join(root, ".filesync-internal", "registration")
+	if err := os.WriteFile(markerPath, []byte("invalid marker"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	_, err = work.Scan(ctx, folder)
+	if !errors.Is(err, ErrRootUnavailable) {
+		t.Fatalf("expected ErrRootUnavailable, got %v", err)
+	}
+	// Verify that projections are preserved and NO deletions were authored
+	projections, err := db.Projections(ctx, folder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(projections) != 1 || projections[0].Kind != history.KindFile {
+		t.Fatalf("projections corrupted after root unavailable: %+v", projections)
+	}
+}

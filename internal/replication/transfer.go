@@ -14,6 +14,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/file-sync/internal/workspace"
 )
 
 const (
@@ -43,11 +44,17 @@ type Publisher interface {
 	Apply(context.Context, history.VersionID) error
 }
 
+type BandwidthLimiter interface {
+	Acquire(ctx context.Context, peer *history.ID, bytes int) error
+}
+
 type TransferOptions struct {
-	Workers int
-	Retries int
-	Now     func() time.Time
-	Hook    func(string) error
+	Workers   int
+	Retries   int
+	Now       func() time.Time
+	Hook      func(string) error
+	Fallbacks []PeerClient
+	Limiter   BandwidthLimiter
 }
 
 type Syncer struct {
@@ -62,6 +69,8 @@ type Syncer struct {
 	retries    int
 	now        func() time.Time
 	hook       func(string) error
+	fallbacks  []PeerClient
+	limiter    BandwidthLimiter
 }
 
 type SyncResult struct {
@@ -84,7 +93,7 @@ func NewSyncer(repo *repository.DB, publisher Publisher, client PeerClient, loca
 	if options.Now == nil {
 		options.Now = time.Now
 	}
-	return &Syncer{repo: repo, publisher: publisher, client: client, local: local, peer: peer, folder: folder, membership: membership, workers: options.Workers, retries: options.Retries, now: options.Now, hook: options.Hook}
+	return &Syncer{repo: repo, publisher: publisher, client: client, local: local, peer: peer, folder: folder, membership: membership, workers: options.Workers, retries: options.Retries, now: options.Now, hook: options.Hook, fallbacks: options.Fallbacks, limiter: options.Limiter}
 }
 
 func (syncer *Syncer) callHook(name string) error {
@@ -170,6 +179,9 @@ func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 		}
 		for _, id := range heads {
 			if err := syncer.publisher.Apply(ctx, id); err != nil {
+				if errors.Is(err, workspace.ErrStructuralConflict) {
+					continue
+				}
 				return result, err
 			}
 			result.VersionsApplied++
@@ -291,6 +303,7 @@ func (syncer *Syncer) fetchVersion(ctx context.Context, id history.VersionID) (i
 		fetchAt   int
 	}
 	jobsByDigest := map[history.Digest]*chunkJob{}
+	var jobList []*chunkJob
 	reused := 0
 	for position, chunk := range envelope.Manifest.Chunks {
 		available, err := syncer.repo.VerifiedChunk(ctx, chunk)
@@ -310,6 +323,7 @@ func (syncer *Syncer) fetchVersion(ctx context.Context, id history.VersionID) (i
 		if job == nil {
 			job = &chunkJob{chunk: chunk, fetchAt: position}
 			jobsByDigest[chunk.Digest] = job
+			jobList = append(jobList, job)
 		} else {
 			reused++
 		}
@@ -363,7 +377,7 @@ func (syncer *Syncer) fetchVersion(ctx context.Context, id history.VersionID) (i
 		}()
 	}
 sendJobs:
-	for _, job := range jobsByDigest {
+	for _, job := range jobList {
 		select {
 		case jobs <- job:
 		case <-workerCtx.Done():
@@ -402,12 +416,17 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 	for attempt := 0; attempt < syncer.retries; attempt++ {
 		data, err := syncer.client.Chunk(ctx, request, chunk)
 		if err == nil {
+			if syncer.limiter != nil {
+				if lErr := syncer.limiter.Acquire(ctx, &syncer.peer, len(data)); lErr != nil {
+					return lErr
+				}
+			}
 			return syncer.repo.InstallChunk(ctx, chunk.Digest, chunk.Length, bytes.NewReader(data))
 		}
 		last = err
 		var wire *WireError
 		if errors.As(err, &wire) && !wire.Body.Retryable {
-			return err
+			break
 		}
 		if attempt+1 < syncer.retries {
 			delay := time.Duration(1<<attempt) * 10 * time.Millisecond
@@ -418,6 +437,15 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 			}
 		}
 	}
+
+	for _, fallback := range syncer.fallbacks {
+		data, err := fallback.Chunk(ctx, request, chunk)
+		if err == nil {
+			return syncer.repo.InstallChunk(ctx, chunk.Digest, chunk.Length, bytes.NewReader(data))
+		}
+		last = err
+	}
+
 	return fmt.Errorf("RETRY_EXHAUSTED after %d attempts: %w", syncer.retries, last)
 }
 

@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"math"
@@ -36,7 +37,34 @@ var (
 )
 
 type ID [32]byte
+
+func (id ID) MarshalText() ([]byte, error) {
+	return []byte(hex.EncodeToString(id[:])), nil
+}
+
+func (id *ID) UnmarshalText(text []byte) error {
+	raw, err := hex.DecodeString(string(text))
+	if err != nil || len(raw) != 32 {
+		return errors.New("ID must be 64 hexadecimal characters")
+	}
+	copy(id[:], raw)
+	return nil
+}
+
 type Digest [32]byte
+
+func (d Digest) MarshalText() ([]byte, error) {
+	return []byte(hex.EncodeToString(d[:])), nil
+}
+
+func (d *Digest) UnmarshalText(text []byte) error {
+	raw, err := hex.DecodeString(string(text))
+	if err != nil || len(raw) != 32 {
+		return errors.New("digest must be 64 hexadecimal characters")
+	}
+	copy(d[:], raw)
+	return nil
+}
 
 type VersionID struct {
 	Folder  ID

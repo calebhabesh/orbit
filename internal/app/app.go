@@ -8,12 +8,19 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"syscall"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/config"
+	"github.com/calebhabesh/file-sync/internal/control"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/file-sync/internal/scheduler"
 	"github.com/calebhabesh/file-sync/internal/state"
 	"github.com/calebhabesh/file-sync/internal/workspace"
 )
@@ -60,7 +67,26 @@ func Initialize(ctx context.Context, stateDir string, deps Dependencies) (config
 	return cfg, nil
 }
 
+type ServeOptions struct {
+	PeerAddress       string
+	ControlAddress    string // loopback control listener, e.g. "127.0.0.1:8080"
+	Ready             io.Writer
+	Profile           string        // "laptop" or "pi"
+	BandwidthLimitBps int64         // 0 = unlimited
+	SyncInterval      time.Duration // default 5m
+	FullScanInterval  time.Duration // default 24h
+	NoWatch           bool
+	ClientFactory     scheduler.ClientFactory
+}
+
 func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) error {
+	return ServeWithOptions(ctx, stateDir, ServeOptions{
+		PeerAddress: peerAddress,
+		Ready:       ready,
+	})
+}
+
+func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) error {
 	if err := state.ValidateDirectory(stateDir); err != nil {
 		return err
 	}
@@ -69,6 +95,10 @@ func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) e
 		return err
 	}
 	defer lock.Close()
+
+	pidPath := filepath.Join(stateDir, ".agent.pid")
+	_ = os.WriteFile(pidPath, []byte(strconv.Itoa(os.Getpid())+"\n"), 0o600)
+	defer os.Remove(pidPath)
 
 	cfg, err := config.Load(stateDir)
 	if err != nil {
@@ -88,17 +118,91 @@ func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) e
 		return err
 	}
 
-	if peerAddress == "" {
-		fmt.Fprintf(ready, "agent ready: device=%s schema=%d peer-listener=disabled\n", cfg.DeviceID, repository.CurrentSchema)
+	ws := workspace.New(db, workspace.Options{})
+
+	profileType := scheduler.ProfileLaptop
+	if opts.Profile == string(scheduler.ProfilePi) {
+		profileType = scheduler.ProfilePi
+	}
+	prof := scheduler.GetProfile(profileType)
+	if opts.SyncInterval > 0 {
+		prof.ReconcileInterval = opts.SyncInterval
+	}
+	if opts.FullScanInterval > 0 {
+		prof.FullScanInterval = opts.FullScanInterval
+	}
+
+	var limiter *scheduler.BandwidthLimiter
+	if opts.BandwidthLimitBps > 0 {
+		limiter = scheduler.NewBandwidthLimiter(opts.BandwidthLimitBps)
+	}
+
+	sched, err := scheduler.NewScheduler(db, ws, scheduler.SchedulerOptions{
+		Profile:       prof,
+		Limiter:       limiter,
+		NoWatch:       opts.NoWatch,
+		ClientFactory: opts.ClientFactory,
+	})
+	if err != nil {
+		return fmt.Errorf("create scheduler: %w", err)
+	}
+
+	if err := sched.Start(ctx); err != nil {
+		return fmt.Errorf("start scheduler: %w", err)
+	}
+	defer sched.Stop()
+
+	var ctrlServer *control.Server
+	var ctrlListener net.Listener
+	var ctrlAddr string
+	if opts.ControlAddress != "" {
+		ctrlListener, err = net.Listen("tcp", opts.ControlAddress)
+		if err != nil {
+			return fmt.Errorf("listen for control: %w", err)
+		}
+		defer ctrlListener.Close()
+		ctrlAddr = ctrlListener.Addr().String()
+
+		ctrl := control.New(db, ws, control.Options{LocalDevice: deviceID})
+		ctrlServer, err = control.NewServer(ctrl, stateDir)
+		if err != nil {
+			return fmt.Errorf("create control server: %w", err)
+		}
+
+		addrFile := filepath.Join(stateDir, "control.addr")
+		_ = os.WriteFile(addrFile, []byte(ctrlAddr+"\n"), 0o600)
+		defer os.Remove(addrFile)
+
+		go func() {
+			_ = ctrlServer.Serve(ctrlListener)
+		}()
+		defer func() {
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			defer cancel()
+			_ = ctrlServer.Shutdown(shutdownCtx)
+		}()
+	}
+
+	ctrlStatus := ""
+	if ctrlAddr != "" {
+		ctrlStatus = fmt.Sprintf(" control-listener=http://%s", ctrlAddr)
+	}
+
+	if opts.PeerAddress == "" {
+		if opts.Ready != nil {
+			fmt.Fprintf(opts.Ready, "agent ready: device=%s schema=%d peer-listener=disabled%s\n", cfg.DeviceID, repository.CurrentSchema, ctrlStatus)
+		}
 		<-ctx.Done()
 		return nil
 	}
-	listener, err := net.Listen("tcp", peerAddress)
+	listener, err := net.Listen("tcp", opts.PeerAddress)
 	if err != nil {
 		return fmt.Errorf("listen for peers: %w", err)
 	}
 	defer listener.Close()
-	fmt.Fprintf(ready, "agent ready: device=%s schema=%d peer-listener=%s key-pin=%x\n", cfg.DeviceID, repository.CurrentSchema, listener.Addr(), identity.KeyPin)
+	if opts.Ready != nil {
+		fmt.Fprintf(opts.Ready, "agent ready: device=%s schema=%d peer-listener=%s key-pin=%x%s\n", cfg.DeviceID, repository.CurrentSchema, listener.Addr(), identity.KeyPin, ctrlStatus)
+	}
 	return replication.NewServer(db, identity).Serve(ctx, listener)
 }
 
@@ -133,4 +237,50 @@ func decodeDeviceID(text string) (history.ID, error) {
 	}
 	copy(id[:], raw)
 	return id, nil
+}
+
+// StopAgent sends SIGTERM to the running agent identified in stateDir and waits for it to exit.
+func StopAgent(stateDir string, timeout time.Duration) error {
+	if err := state.ValidateDirectory(stateDir); err != nil {
+		return err
+	}
+	pidPath := filepath.Join(stateDir, ".agent.pid")
+	data, err := os.ReadFile(pidPath)
+	if err != nil {
+		// Check if lock is held anyway
+		testLock, lockErr := state.Acquire(stateDir)
+		if lockErr == nil {
+			_ = testLock.Close()
+			return errors.New("agent is not running")
+		}
+		return fmt.Errorf("read agent pid file %s: %w", pidPath, err)
+	}
+
+	pidStr := strings.TrimSpace(string(data))
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil {
+		return fmt.Errorf("invalid pid %q in %s: %w", pidStr, pidPath, err)
+	}
+
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		return fmt.Errorf("find process %d: %w", pid, err)
+	}
+
+	if err := proc.Signal(syscall.SIGTERM); err != nil {
+		return fmt.Errorf("signal process %d: %w", pid, err)
+	}
+
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		time.Sleep(100 * time.Millisecond)
+		testLock, lockErr := state.Acquire(stateDir)
+		if lockErr == nil {
+			_ = testLock.Close()
+			_ = os.Remove(pidPath)
+			return nil
+		}
+	}
+
+	return fmt.Errorf("timed out after %v waiting for agent (pid %d) to stop", timeout, pid)
 }

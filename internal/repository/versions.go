@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/protocol"
 )
 
 var (
@@ -66,13 +67,19 @@ type LocalVersionRequest struct {
 func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionRequest) (history.Envelope, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
+	if err := db.checkMetadataBudget(ctx); err != nil {
+		return history.Envelope{}, err
+	}
+	if err := db.checkFreeSpaceReserve(ctx); err != nil {
+		return history.Envelope{}, err
+	}
 	tx, err := db.db.BeginTx(ctx, nil)
 	if err != nil {
 		return history.Envelope{}, err
 	}
 	defer tx.Rollback()
-	var authorRaw, counterRaw []byte
-	if err := tx.QueryRowContext(ctx, `SELECT local_author,next_counter FROM folders WHERE folder_id=?`, request.Folder[:]).Scan(&authorRaw, &counterRaw); errors.Is(err, sql.ErrNoRows) {
+	var authorRaw, counterRaw, revRaw []byte
+	if err := tx.QueryRowContext(ctx, `SELECT local_author,next_counter,membership_revision FROM folders WHERE folder_id=?`, request.Folder[:]).Scan(&authorRaw, &counterRaw, &revRaw); errors.Is(err, sql.ErrNoRows) {
 		return history.Envelope{}, ErrFolderUnknown
 	} else if err != nil {
 		return history.Envelope{}, err
@@ -90,6 +97,15 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 		return history.Envelope{}, history.ErrCounterOverflow
 	}
 	counter++
+	authoredRevision := request.AuthoredRevision
+	if authoredRevision == 0 {
+		authoredRevision, _ = decodeUint(revRaw)
+	}
+	var authorState string
+	err = tx.QueryRowContext(ctx, `SELECT state FROM membership_entries WHERE folder_id=? AND revision=? AND device_id=?`, request.Folder[:], revRaw, author[:]).Scan(&authorState)
+	if err == nil && authorState != "active" {
+		return history.Envelope{}, errors.New("local author is retired or not active in this folder")
+	}
 	h, err := loadHistory(ctx, tx, request.Folder)
 	if err != nil {
 		return history.Envelope{}, err
@@ -98,7 +114,7 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 	if err != nil {
 		return history.Envelope{}, err
 	}
-	envelope := history.Envelope{ID: history.VersionID{Folder: request.Folder, Author: author, Counter: counter}, Path: request.Path, Parents: parents, Vector: vector, Kind: request.Kind, Manifest: cloneManifest(request.Manifest), AuthoredRevision: request.AuthoredRevision, DisplayTime: request.DisplayTime}
+	envelope := history.Envelope{ID: history.VersionID{Folder: request.Folder, Author: author, Counter: counter}, Path: request.Path, Parents: parents, Vector: vector, Kind: request.Kind, Manifest: cloneManifest(request.Manifest), AuthoredRevision: authoredRevision, DisplayTime: request.DisplayTime}
 	if err := h.Accept(envelope); err != nil {
 		return history.Envelope{}, err
 	}
@@ -123,7 +139,7 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 	if err := addObjectReferences(ctx, tx, envelope); err != nil {
 		return history.Envelope{}, err
 	}
-	if err := setProjectionTx(ctx, tx, envelope.ID.Folder, envelope.Path, []history.VersionID{envelope.ID}, envelope.Kind, envelope.Manifest, nil, nil, ""); err != nil {
+	if err := setProjectionTx(ctx, tx, envelope.ID.Folder, envelope.Path, []history.VersionID{envelope.ID}, envelope.Kind, envelope.Manifest, author[:], encodeUint(counter), ""); err != nil {
 		return history.Envelope{}, err
 	}
 	if err := db.callHook(HookBeforeVersionCommit); err != nil {
@@ -144,6 +160,12 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 func (db *DB) ImportMetadata(ctx context.Context, envelope history.Envelope) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
+	if err := db.checkMetadataBudget(ctx); err != nil {
+		return err
+	}
+	if err := db.checkFreeSpaceReserve(ctx); err != nil {
+		return err
+	}
 	tx, err := db.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -161,6 +183,31 @@ func (db *DB) ImportMetadata(ctx context.Context, envelope history.Envelope) err
 			return history.ErrDuplicateID
 		}
 		return nil
+	}
+	var revRaw []byte
+	if err := tx.QueryRowContext(ctx, `SELECT membership_revision FROM folders WHERE folder_id=?`, envelope.ID.Folder[:]).Scan(&revRaw); err != nil {
+		return err
+	}
+	var memberState string
+	err = tx.QueryRowContext(ctx, `SELECT state FROM membership_entries WHERE folder_id=? AND revision=? AND device_id=?`, envelope.ID.Folder[:], revRaw, envelope.ID.Author[:]).Scan(&memberState)
+	if errors.Is(err, sql.ErrNoRows) {
+		var activeCount int
+		_ = tx.QueryRowContext(ctx, `SELECT count(*) FROM membership_entries WHERE folder_id=? AND revision=?`, envelope.ID.Folder[:], revRaw).Scan(&activeCount)
+		if activeCount > 0 {
+			return ErrUnauthorized
+		}
+	} else if err != nil {
+		return err
+	} else if memberState == "retired" {
+		fingerprint := EnvelopeDigest(envelope)
+		var storedDigest []byte
+		err := tx.QueryRowContext(ctx, `SELECT envelope_digest FROM retirement_snapshot_entries WHERE folder_id=? AND revision=? AND retired_device=? AND counter=?`,
+			envelope.ID.Folder[:], revRaw, envelope.ID.Author[:], encodeUint(envelope.ID.Counter)).Scan(&storedDigest)
+		if errors.Is(err, sql.ErrNoRows) || !bytes.Equal(storedDigest, fingerprint[:]) {
+			return ErrRetiredAuthorVersionRejected
+		} else if err != nil {
+			return err
+		}
 	}
 	if err := h.Accept(envelope); err != nil {
 		return err
@@ -220,6 +267,29 @@ func (db *DB) MarkContentReady(ctx context.Context, id history.VersionID) error 
 	return db.callHook(HookAfterReadyCommit)
 }
 
+func (db *DB) VersionsByAuthor(ctx context.Context, folder, author history.ID) ([]protocol.RetiredVersion, error) {
+	rows, err := db.db.QueryContext(ctx, `SELECT counter, envelope_digest FROM versions WHERE folder_id=? AND author_id=? ORDER BY counter`, folder[:], author[:])
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var list []protocol.RetiredVersion
+	for rows.Next() {
+		var counterRaw, digestRaw []byte
+		if err := rows.Scan(&counterRaw, &digestRaw); err != nil {
+			return nil, err
+		}
+		counter, err := decodeUint(counterRaw)
+		if err != nil {
+			return nil, err
+		}
+		var d history.Digest
+		copy(d[:], digestRaw)
+		list = append(list, protocol.RetiredVersion{Counter: counter, EnvelopeDigest: d})
+	}
+	return list, rows.Err()
+}
+
 func (db *DB) MetadataKnown(ctx context.Context, id history.VersionID) (bool, error) {
 	var one int
 	err := db.db.QueryRowContext(ctx, `SELECT 1 FROM versions WHERE folder_id=? AND author_id=? AND counter=?`, id.Folder[:], id.Author[:], encodeUint(id.Counter)).Scan(&one)
@@ -237,7 +307,24 @@ func (db *DB) ContentReady(ctx context.Context, id history.VersionID) (bool, err
 	return state == "ready", err
 }
 func (db *DB) CanIssueDurableReceipt(ctx context.Context, id history.VersionID) (bool, error) {
-	return db.ContentReady(ctx, id)
+	ready, err := db.ContentReady(ctx, id)
+	if err != nil || !ready {
+		return false, err
+	}
+	var quarantinedCount int
+	err = db.db.QueryRowContext(ctx, `
+		SELECT count(*)
+		FROM manifest_chunks mc
+		JOIN quarantined_chunks qc ON qc.digest=mc.digest AND qc.repaired=0
+		WHERE mc.folder_id=? AND mc.author_id=? AND mc.counter=?
+	`, id.Folder[:], id.Author[:], encodeUint(id.Counter)).Scan(&quarantinedCount)
+	if err != nil {
+		return false, err
+	}
+	if quarantinedCount > 0 {
+		return false, nil
+	}
+	return true, nil
 }
 
 // VerifyVersionContent rehashes every object and the ordered whole file. It is
@@ -253,7 +340,17 @@ func (db *DB) VerifyVersionContent(ctx context.Context, id history.VersionID) er
 	if envelope.Kind != history.KindFile {
 		return nil
 	}
-	return db.VerifyManifest(envelope.Manifest)
+	if err := db.VerifyManifest(envelope.Manifest); err != nil {
+		if errors.Is(err, ErrContentMismatch) && envelope.Manifest != nil {
+			for _, ch := range envelope.Manifest.Chunks {
+				if db.verifyObjectFile(ch.Digest, ch.Length) != nil {
+					_, _ = db.QuarantineChunk(ctx, ch.Digest, "corrupt manifest chunk")
+				}
+			}
+		}
+		return err
+	}
+	return nil
 }
 
 func (db *DB) WorkingApplied(ctx context.Context, id history.VersionID) (bool, error) {

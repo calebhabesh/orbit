@@ -1,0 +1,24 @@
+{
+  "protocol_version": "1",
+  "folder_id": "4646464646464646464646464646464646464646464646464646464646464646",
+  "path": "lost-or-corrupt.txt",
+  "version_id": {
+    "folder_id": "4646464646464646464646464646464646464646464646464646464646464646",
+    "author_id": "4141414141414141414141414141414141414141414141414141414141414141",
+    "counter": "1"
+  },
+  "status": "unavailable",
+  "content_state": "unavailable",
+  "reason": "no remaining copy yields valid chunk bytes across all authorized peers",
+  "total_chunks": 1,
+  "repaired_chunks": 0,
+  "quarantined_chunks": [
+    {
+      "digest": "b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c",
+      "length": 36,
+      "reason": "checksum mismatch: hash does not match chunk digest",
+      "quarantine_path": "quarantine/b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c_1727092800000000000"
+    }
+  ],
+  "action": "restore from backup, author replacement version, or connect an offline peer holding the replica"
+}

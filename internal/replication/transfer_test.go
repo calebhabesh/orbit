@@ -571,3 +571,78 @@ func TestSyncerSenderDisappearsAfterStoreBeforeApply(t *testing.T) {
 		t.Fatalf("applied content mismatch: %v", err)
 	}
 }
+
+type failingChunkClient struct {
+	PeerClient
+	failingChunk history.Digest
+}
+
+func (c *failingChunkClient) Chunk(ctx context.Context, req ChunkRequest, chunk history.Chunk) ([]byte, error) {
+	if chunk.Digest == c.failingChunk {
+		return nil, &WireError{Status: 410, Body: ErrorResponse{Code: "CONTENT_EXPIRED", Message: "content expired on primary peer", Retryable: false}}
+	}
+	return c.PeerClient.Chunk(ctx, req, chunk)
+}
+
+func TestSyncerChunkFallbackTransfer(t *testing.T) {
+	fix := newSyncFixture(t)
+	content := []byte("fallback chunk transfer content")
+	if err := os.WriteFile(filepath.Join(fix.senderRoot, "fallback.txt"), content, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := fix.senderWork.Scan(context.Background(), fix.folder); err != nil {
+		t.Fatal(err)
+	}
+
+	chunkDigest := sha256.Sum256(content)
+	failingPrimary := &failingChunkClient{
+		PeerClient:   fix.client,
+		failingChunk: chunkDigest,
+	}
+
+	// 1. Without fallbacks, sync should fail
+	noFallbackSyncer := NewSyncer(
+		fix.receiverRepo,
+		fix.receiverWork,
+		failingPrimary,
+		fix.receiverID.DeviceID,
+		fix.senderID.DeviceID,
+		fix.folder,
+		fix.approved,
+		TransferOptions{Retries: 1},
+	)
+	if _, err := noFallbackSyncer.Sync(context.Background()); err == nil {
+		t.Fatal("expected sync failure without fallback peers")
+	}
+
+	// 2. With fallback peer (fix.client), chunk is retrieved from fallback
+	syncer := NewSyncer(
+		fix.receiverRepo,
+		fix.receiverWork,
+		failingPrimary,
+		fix.receiverID.DeviceID,
+		fix.senderID.DeviceID,
+		fix.folder,
+		fix.approved,
+		TransferOptions{
+			Retries:   1,
+			Fallbacks: []PeerClient{fix.client},
+		},
+	)
+	res, err := syncer.Sync(context.Background())
+	if err != nil {
+		t.Fatalf("sync with fallback failed: %v", err)
+	}
+	if res.ChunksFetched != 1 {
+		t.Fatalf("chunks fetched = %d, want 1", res.ChunksFetched)
+	}
+	if res.VersionsApplied != 1 {
+		t.Fatalf("versions applied = %d, want 1", res.VersionsApplied)
+	}
+
+	// Verify file is correctly written
+	appliedData, err := os.ReadFile(filepath.Join(fix.receiverRoot, "fallback.txt"))
+	if err != nil || !bytes.Equal(appliedData, content) {
+		t.Fatalf("applied content mismatch: %v", err)
+	}
+}

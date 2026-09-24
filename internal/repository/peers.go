@@ -16,10 +16,11 @@ import (
 )
 
 var (
-	ErrUnauthorized       = errors.New("peer is not authorized for this folder")
-	ErrMembershipMismatch = errors.New("membership revision or digest mismatch")
-	ErrSnapshotExpired    = errors.New("inventory snapshot expired or unknown")
-	ErrSnapshotLimit      = errors.New("too many open inventory snapshots")
+	ErrUnauthorized                 = errors.New("peer is not authorized for this folder")
+	ErrMembershipMismatch           = errors.New("membership revision or digest mismatch")
+	ErrSnapshotExpired              = errors.New("inventory snapshot expired or unknown")
+	ErrSnapshotLimit                = errors.New("too many open inventory snapshots")
+	ErrRetiredAuthorVersionRejected = errors.New("retired-author version absent from approved snapshot")
 )
 
 type ApprovedMembership struct {
@@ -29,7 +30,7 @@ type ApprovedMembership struct {
 
 // ApproveMembership durably installs an exact owner-reviewed membership
 // revision. Existing revisions are immutable and replay-idempotent.
-func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Membership) (ApprovedMembership, error) {
+func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Membership, snapshots ...protocol.RetirementSnapshot) (ApprovedMembership, error) {
 	digest, err := protocol.MembershipDigest(membership)
 	if err != nil {
 		return ApprovedMembership{}, err
@@ -80,6 +81,45 @@ func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Members
 		if _, err := tx.ExecContext(ctx, `INSERT INTO membership_entries(folder_id,revision,device_id,key_pin,state,retired_at,retirement_snapshot) VALUES(?,?,?,?, 'retired',?,?)`, membership.Folder[:], encodeUint(membership.Revision), member.Device[:], make([]byte, 32), encodeUint(member.RetiredAt), member.SnapshotDigest[:]); err != nil {
 			return ApprovedMembership{}, err
 		}
+		var storedSnapshot bool
+		for _, snapshot := range snapshots {
+			if snapshot.Folder == membership.Folder && snapshot.RetiredDevice == member.Device {
+				snapDigest, err := protocol.RetirementSnapshotDigest(snapshot)
+				if err != nil {
+					return ApprovedMembership{}, err
+				}
+				if snapDigest != member.SnapshotDigest {
+					return ApprovedMembership{}, fmt.Errorf("retirement snapshot digest mismatch for device %x", member.Device)
+				}
+				raw, err := protocol.EncodeRetirementSnapshot(snapshot)
+				if err != nil {
+					return ApprovedMembership{}, err
+				}
+				if _, err := tx.ExecContext(ctx, `INSERT INTO retirement_snapshots(folder_id,revision,retired_device,snapshot_digest,canonical_snapshot) VALUES(?,?,?,?,?) ON CONFLICT(folder_id,revision,retired_device) DO UPDATE SET canonical_snapshot=excluded.canonical_snapshot`,
+					membership.Folder[:], encodeUint(membership.Revision), member.Device[:], snapDigest[:], raw); err != nil {
+					return ApprovedMembership{}, err
+				}
+				for _, v := range snapshot.AcceptedByRetiree {
+					if _, err := tx.ExecContext(ctx, `INSERT INTO retirement_snapshot_entries(folder_id,revision,retired_device,counter,envelope_digest) VALUES(?,?,?,?,?) ON CONFLICT(folder_id,revision,retired_device,counter) DO UPDATE SET envelope_digest=excluded.envelope_digest`,
+						membership.Folder[:], encodeUint(membership.Revision), member.Device[:], encodeUint(v.Counter), v.EnvelopeDigest[:]); err != nil {
+						return ApprovedMembership{}, err
+					}
+				}
+				storedSnapshot = true
+				break
+			}
+		}
+		if !storedSnapshot && currentRevision > 0 {
+			// Copy forward snapshot entries from prior revision if available.
+			_, _ = tx.ExecContext(ctx, `INSERT INTO retirement_snapshots(folder_id,revision,retired_device,snapshot_digest,canonical_snapshot)
+				SELECT folder_id,?,retired_device,snapshot_digest,canonical_snapshot FROM retirement_snapshots
+				WHERE folder_id=? AND revision=? AND retired_device=?`,
+				encodeUint(membership.Revision), membership.Folder[:], encodeUint(currentRevision), member.Device[:])
+			_, _ = tx.ExecContext(ctx, `INSERT INTO retirement_snapshot_entries(folder_id,revision,retired_device,counter,envelope_digest)
+				SELECT folder_id,?,retired_device,counter,envelope_digest FROM retirement_snapshot_entries
+				WHERE folder_id=? AND revision=? AND retired_device=?`,
+				encodeUint(membership.Revision), membership.Folder[:], encodeUint(currentRevision), member.Device[:])
+		}
 	}
 	if _, err := tx.ExecContext(ctx, `UPDATE folders SET membership_revision=?,membership_digest=? WHERE folder_id=?`, encodeUint(membership.Revision), digest[:], membership.Folder[:]); err != nil {
 		return ApprovedMembership{}, err
@@ -88,6 +128,149 @@ func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Members
 		return ApprovedMembership{}, err
 	}
 	return ApprovedMembership{Revision: membership.Revision, Digest: digest}, nil
+}
+
+// GetMembership reconstructs the approved membership for a folder.
+func (db *DB) GetMembership(ctx context.Context, folder history.ID, targetRevision ...uint64) (protocol.Membership, ApprovedMembership, error) {
+	var rev uint64
+	var digestBytes []byte
+	if len(targetRevision) > 0 && targetRevision[0] > 0 {
+		rev = targetRevision[0]
+		err := db.db.QueryRowContext(ctx, `SELECT digest FROM membership_revisions WHERE folder_id=? AND revision=?`, folder[:], encodeUint(rev)).Scan(&digestBytes)
+		if errors.Is(err, sql.ErrNoRows) {
+			return protocol.Membership{}, ApprovedMembership{}, ErrFolderUnknown
+		} else if err != nil {
+			return protocol.Membership{}, ApprovedMembership{}, err
+		}
+	} else {
+		var revBytes []byte
+		err := db.db.QueryRowContext(ctx, `SELECT membership_revision, membership_digest FROM folders WHERE folder_id=?`, folder[:]).Scan(&revBytes, &digestBytes)
+		if errors.Is(err, sql.ErrNoRows) {
+			return protocol.Membership{}, ApprovedMembership{}, ErrFolderUnknown
+		} else if err != nil {
+			return protocol.Membership{}, ApprovedMembership{}, err
+		}
+		var decodeErr error
+		rev, decodeErr = decodeUint(revBytes)
+		if decodeErr != nil {
+			return protocol.Membership{}, ApprovedMembership{}, decodeErr
+		}
+	}
+	var priorDigestBytes []byte
+	err := db.db.QueryRowContext(ctx, `SELECT prior_digest FROM membership_revisions WHERE folder_id=? AND revision=?`, folder[:], encodeUint(rev)).Scan(&priorDigestBytes)
+	if err != nil {
+		return protocol.Membership{}, ApprovedMembership{}, err
+	}
+	membership := protocol.Membership{
+		Folder:   folder,
+		Revision: rev,
+	}
+	copy(membership.PriorDigest[:], priorDigestBytes)
+
+	rows, err := db.db.QueryContext(ctx, `SELECT device_id, key_pin, state, COALESCE(retired_at, ?), COALESCE(retirement_snapshot, ?) FROM membership_entries WHERE folder_id=? AND revision=? ORDER BY device_id`, encodeUint(0), make([]byte, 32), folder[:], encodeUint(rev))
+	if err != nil {
+		return protocol.Membership{}, ApprovedMembership{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var devRaw, pinRaw, retiredAtRaw, snapshotRaw []byte
+		var state string
+		if err := rows.Scan(&devRaw, &pinRaw, &state, &retiredAtRaw, &snapshotRaw); err != nil {
+			return protocol.Membership{}, ApprovedMembership{}, err
+		}
+		var dev history.ID
+		var pin, snap history.Digest
+		copy(dev[:], devRaw)
+		copy(pin[:], pinRaw)
+		copy(snap[:], snapshotRaw)
+		retiredAt, _ := decodeUint(retiredAtRaw)
+
+		if state == "active" {
+			membership.Active = append(membership.Active, protocol.ActiveMember{Device: dev, KeyPin: pin})
+		} else {
+			membership.Retired = append(membership.Retired, protocol.RetiredMember{Device: dev, RetiredAt: retiredAt, SnapshotDigest: snap})
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return protocol.Membership{}, ApprovedMembership{}, err
+	}
+	var d history.Digest
+	copy(d[:], digestBytes)
+	return membership, ApprovedMembership{Revision: rev, Digest: d}, nil
+}
+
+// GetRetirementSnapshot returns an approved retirement snapshot.
+func (db *DB) GetRetirementSnapshot(ctx context.Context, folder history.ID, revision uint64, retiredDevice history.ID) (protocol.RetirementSnapshot, error) {
+	var canonical []byte
+	err := db.db.QueryRowContext(ctx, `SELECT canonical_snapshot FROM retirement_snapshots WHERE folder_id=? AND revision=? AND retired_device=?`, folder[:], encodeUint(revision), retiredDevice[:]).Scan(&canonical)
+	if err != nil {
+		return protocol.RetirementSnapshot{}, err
+	}
+	return protocol.DecodeRetirementSnapshot(canonical)
+}
+
+// ListRetirementSnapshots returns all retirement snapshots approved in a revision.
+func (db *DB) ListRetirementSnapshots(ctx context.Context, folder history.ID, revision uint64) ([]protocol.RetirementSnapshot, error) {
+	rows, err := db.db.QueryContext(ctx, `SELECT canonical_snapshot FROM retirement_snapshots WHERE folder_id=? AND revision=?`, folder[:], encodeUint(revision))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var list []protocol.RetirementSnapshot
+	for rows.Next() {
+		var canonical []byte
+		if err := rows.Scan(&canonical); err != nil {
+			return nil, err
+		}
+		snap, err := protocol.DecodeRetirementSnapshot(canonical)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, snap)
+	}
+	return list, rows.Err()
+}
+
+// PeerMembers returns active and retired members for a folder.
+func (db *DB) PeerMembers(ctx context.Context, folder history.ID) ([]protocol.ActiveMember, []protocol.RetiredMember, uint64, history.Digest, error) {
+	m, app, err := db.GetMembership(ctx, folder)
+	if err != nil {
+		return nil, nil, 0, history.Digest{}, err
+	}
+	return m.Active, m.Retired, app.Revision, app.Digest, nil
+}
+
+// SaveResumableMaintenance persists ongoing retirement maintenance state.
+func (db *DB) SaveResumableMaintenance(ctx context.Context, id string, folder, targetDevice history.ID, phase string, state []byte, now time.Time) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	_, err := db.db.ExecContext(ctx, `INSERT INTO resumable_maintenance(maintenance_id, folder_id, target_device, phase, state, updated_ns)
+		VALUES(?,?,?,?,?,?)
+		ON CONFLICT(maintenance_id) DO UPDATE SET phase=excluded.phase, state=excluded.state, updated_ns=excluded.updated_ns`,
+		id, folder[:], targetDevice[:], phase, state, now.UnixNano())
+	return err
+}
+
+// GetResumableMaintenance returns active maintenance state for a folder.
+func (db *DB) GetResumableMaintenance(ctx context.Context, folder history.ID) (string, history.ID, string, []byte, error) {
+	var id, phase string
+	var targetRaw, state []byte
+	err := db.db.QueryRowContext(ctx, `SELECT maintenance_id, target_device, phase, state FROM resumable_maintenance WHERE folder_id=? ORDER BY updated_ns DESC LIMIT 1`, folder[:]).Scan(&id, &targetRaw, &phase, &state)
+	if err != nil {
+		return "", history.ID{}, "", nil, err
+	}
+	var target history.ID
+	copy(target[:], targetRaw)
+	return id, target, phase, state, nil
+}
+
+// DeleteResumableMaintenance removes a completed or aborted maintenance state.
+func (db *DB) DeleteResumableMaintenance(ctx context.Context, id string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	_, err := db.db.ExecContext(ctx, `DELETE FROM resumable_maintenance WHERE maintenance_id=?`, id)
+	return err
 }
 
 // AuthorizePeer maps a presented key pin to the claimed active device and
@@ -240,7 +423,19 @@ func (db *DB) ReadAuthorizedChunk(ctx context.Context, id history.VersionID, ind
 		return nil, history.Chunk{}, ErrNotReady
 	}
 	chunk := envelope.Manifest.Chunks[index]
+
+	leaseID := fmt.Sprintf("serve-%d-%x-%d", time.Now().UnixNano(), chunk.Digest[:4], index)
+	if err := db.AcquireServeLease(ctx, chunk.Digest, leaseID); err != nil {
+		return nil, history.Chunk{}, err
+	}
+	defer func() {
+		_ = db.ReleaseServeLease(ctx, chunk.Digest, leaseID)
+	}()
+
 	if err := db.verifyObjectFile(chunk.Digest, chunk.Length); err != nil {
+		if errors.Is(err, ErrContentMismatch) {
+			_, _ = db.QuarantineChunk(ctx, chunk.Digest, "corrupt chunk on read")
+		}
 		return nil, history.Chunk{}, err
 	}
 	data, err := os.ReadFile(db.objectPath(chunk.Digest))
@@ -248,6 +443,7 @@ func (db *DB) ReadAuthorizedChunk(ctx context.Context, id history.VersionID, ind
 		return nil, history.Chunk{}, err
 	}
 	if uint64(len(data)) != chunk.Length {
+		_, _ = db.QuarantineChunk(ctx, chunk.Digest, "chunk length changed")
 		return nil, history.Chunk{}, fmt.Errorf("%w: chunk length changed", ErrContentMismatch)
 	}
 	return data, chunk, nil

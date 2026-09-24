@@ -51,3 +51,45 @@ func TestMembershipEncodingMatchesP01GoldenFixture(t *testing.T) {
 		t.Fatal("production membership encoding differs from the P01 golden fixture")
 	}
 }
+
+func TestRetirementSnapshotEncodingMatchesP01GoldenFixture(t *testing.T) {
+	snapshot := RetirementSnapshot{
+		Folder:           repeatedID('F'),
+		ConfigurationRev: 7,
+		RetiredDevice:    repeatedID('B'),
+		AcceptedByRetiree: []RetiredVersion{
+			{Counter: 9, EnvelopeDigest: repeatedDigest('y')},
+			{Counter: 2, EnvelopeDigest: repeatedDigest('x')},
+		},
+	}
+	got, err := EncodeRetirementSnapshot(snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantHex, err := os.ReadFile("../../tests/designgates/testdata/retirement-snapshot-v1.hex")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if hex.EncodeToString(got) != strings.TrimSpace(string(wantHex)) {
+		t.Fatalf("production retirement snapshot differs from golden fixture\ngot:  %s\nwant: %s", hex.EncodeToString(got), strings.TrimSpace(string(wantHex)))
+	}
+
+	decoded, err := DecodeRetirementSnapshot(got)
+	if err != nil {
+		t.Fatalf("decode retirement snapshot: %v", err)
+	}
+	if decoded.Folder != snapshot.Folder || decoded.ConfigurationRev != snapshot.ConfigurationRev || decoded.RetiredDevice != snapshot.RetiredDevice || len(decoded.AcceptedByRetiree) != 2 {
+		t.Fatalf("decoded snapshot mismatch: %+v", decoded)
+	}
+	if decoded.AcceptedByRetiree[0].Counter != 2 || decoded.AcceptedByRetiree[1].Counter != 9 {
+		t.Fatalf("decoded versions not sorted: %+v", decoded.AcceptedByRetiree)
+	}
+
+	digest, err := RetirementSnapshotDigest(snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if digest != sha256.Sum256(got) {
+		t.Fatal("digest mismatch")
+	}
+}

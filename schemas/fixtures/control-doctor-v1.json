@@ -1,0 +1,24 @@
+{
+  "overall_status": "OK",
+  "checks": [
+    {
+      "name": "state_permissions",
+      "category": "permissions",
+      "status": "OK",
+      "message": "state directory permissions are owner-only"
+    },
+    {
+      "name": "storage_budget",
+      "category": "storage",
+      "status": "OK",
+      "message": "free storage space satisfies minimum reserve (512 MiB)"
+    },
+    {
+      "name": "database_schema",
+      "category": "compatibility",
+      "status": "OK",
+      "message": "database schema version matches binary version"
+    }
+  ],
+  "generated_at": "2026-09-23T12:00:00Z"
+}

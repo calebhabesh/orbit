@@ -310,12 +310,19 @@ func loadHistoryReadOnly(ctx context.Context, db *DB, folder history.ID) (*histo
 	return h, nil
 }
 
-// UnappliedSingleHeads is P06's deliberately narrow publication policy.
-// Conflicting paths are left untouched for P07 reconciliation.
+// UnappliedSingleHeads returns paths that have exactly one causally maximal head,
+// are content-ready, are not yet working-applied, and are not blocked by structural
+// conflicts. Conflicting and structurally blocked paths are left unapplied.
 func (db *DB) UnappliedSingleHeads(ctx context.Context, folder history.ID) ([]history.VersionID, error) {
 	h, err := loadHistoryReadOnly(ctx, db, folder)
 	if err != nil {
 		return nil, err
+	}
+	structural := h.StructuralConflicts(folder)
+	structurallyBlocked := map[string]bool{}
+	for _, sc := range structural {
+		structurallyBlocked[sc.AncestorPath] = true
+		structurallyBlocked[sc.DescendantPath] = true
 	}
 	rows, err := db.db.QueryContext(ctx, `SELECT DISTINCT path FROM versions WHERE folder_id=? ORDER BY path`, folder[:])
 	if err != nil {
@@ -335,6 +342,9 @@ func (db *DB) UnappliedSingleHeads(ctx context.Context, folder history.ID) ([]hi
 	}
 	var result []history.VersionID
 	for _, path := range paths {
+		if structurallyBlocked[path] {
+			continue
+		}
 		heads := h.Heads(folder, path)
 		if len(heads) != 1 {
 			continue
@@ -355,6 +365,10 @@ func (db *DB) UnappliedSingleHeads(ctx context.Context, folder history.ID) ([]hi
 }
 
 func (db *DB) RecordPeerReceipt(ctx context.Context, folder, peer history.ID, version history.VersionID, now time.Time) error {
+	return db.RecordPeerReceiptWithOptions(ctx, folder, peer, version, true, now)
+}
+
+func (db *DB) RecordPeerReceiptWithOptions(ctx context.Context, folder, peer history.ID, version history.VersionID, direct bool, now time.Time) error {
 	if version.Folder != folder {
 		return errors.New("receipt folder mismatch")
 	}
@@ -364,9 +378,13 @@ func (db *DB) RecordPeerReceipt(ctx context.Context, folder, peer history.ID, ve
 	if err := db.db.QueryRowContext(ctx, `SELECT 1 FROM versions WHERE folder_id=? AND author_id=? AND counter=?`, folder[:], version.Author[:], encodeUint(version.Counter)).Scan(&present); err != nil {
 		return fmt.Errorf("receipt names unknown version: %w", err)
 	}
-	_, err := db.db.ExecContext(ctx, `INSERT INTO peer_progress(folder_id,peer_id,version_author,version_counter,receipt,last_contact_ns)
-		VALUES(?,?,?,?,1,?) ON CONFLICT(folder_id,peer_id,version_author,version_counter)
-		DO UPDATE SET receipt=1,last_contact_ns=excluded.last_contact_ns`, folder[:], peer[:], version.Author[:], encodeUint(version.Counter), now.UnixNano())
+	directInt := 0
+	if direct {
+		directInt = 1
+	}
+	_, err := db.db.ExecContext(ctx, `INSERT INTO peer_progress(folder_id,peer_id,version_author,version_counter,receipt,direct,last_contact_ns)
+		VALUES(?,?,?,?,1,?,?) ON CONFLICT(folder_id,peer_id,version_author,version_counter)
+		DO UPDATE SET receipt=1,direct=excluded.direct,last_contact_ns=excluded.last_contact_ns`, folder[:], peer[:], version.Author[:], encodeUint(version.Counter), directInt, now.UnixNano())
 	if err != nil {
 		return err
 	}
@@ -378,9 +396,17 @@ func (db *DB) RecordPeerReceipt(ctx context.Context, folder, peer history.ID, ve
 }
 
 func (db *DB) RecordPeerStatus(ctx context.Context, folder, peer history.ID, version history.VersionID, status string, now time.Time) error {
-	_, err := db.db.ExecContext(ctx, `INSERT INTO peer_progress(folder_id,peer_id,version_author,version_counter,receipt,remote_status,last_contact_ns)
-		VALUES(?,?,?,?,0,?,?) ON CONFLICT(folder_id,peer_id,version_author,version_counter)
-		DO UPDATE SET remote_status=excluded.remote_status,last_contact_ns=excluded.last_contact_ns`, folder[:], peer[:], version.Author[:], encodeUint(version.Counter), status, now.UnixNano())
+	return db.RecordPeerStatusWithOptions(ctx, folder, peer, version, status, true, now)
+}
+
+func (db *DB) RecordPeerStatusWithOptions(ctx context.Context, folder, peer history.ID, version history.VersionID, status string, direct bool, now time.Time) error {
+	directInt := 0
+	if direct {
+		directInt = 1
+	}
+	_, err := db.db.ExecContext(ctx, `INSERT INTO peer_progress(folder_id,peer_id,version_author,version_counter,receipt,direct,remote_status,last_contact_ns)
+		VALUES(?,?,?,?,0,?,?,?) ON CONFLICT(folder_id,peer_id,version_author,version_counter)
+		DO UPDATE SET remote_status=excluded.remote_status,direct=excluded.direct,last_contact_ns=excluded.last_contact_ns`, folder[:], peer[:], version.Author[:], encodeUint(version.Counter), directInt, status, now.UnixNano())
 	if err != nil {
 		return err
 	}
@@ -390,15 +416,16 @@ func (db *DB) RecordPeerStatus(ctx context.Context, folder, peer history.ID, ver
 }
 
 type PeerProgress struct {
-	Peer        history.ID
-	Version     history.VersionID
-	Receipt     bool
-	RemoteState string
-	LastContact time.Time
+	Peer        history.ID        `json:"peer"`
+	Version     history.VersionID `json:"version"`
+	Receipt     bool              `json:"receipt"`
+	Direct      bool              `json:"direct"`
+	RemoteState string            `json:"remote_state"`
+	LastContact time.Time         `json:"last_contact"`
 }
 
 func (db *DB) PeerProgress(ctx context.Context, folder history.ID) ([]PeerProgress, error) {
-	rows, err := db.db.QueryContext(ctx, `SELECT peer_id,version_author,version_counter,receipt,COALESCE(remote_status,''),COALESCE(last_contact_ns,0)
+	rows, err := db.db.QueryContext(ctx, `SELECT peer_id,version_author,version_counter,receipt,COALESCE(direct,1),COALESCE(remote_status,''),COALESCE(last_contact_ns,0)
 		FROM peer_progress WHERE folder_id=? AND version_author IS NOT NULL ORDER BY peer_id,version_author,version_counter`, folder[:])
 	if err != nil {
 		return nil, err
@@ -408,9 +435,9 @@ func (db *DB) PeerProgress(ctx context.Context, folder history.ID) ([]PeerProgre
 	for rows.Next() {
 		var item PeerProgress
 		var peerRaw, authorRaw, counterRaw []byte
-		var receipt int
+		var receipt, direct int
 		var contact int64
-		if err := rows.Scan(&peerRaw, &authorRaw, &counterRaw, &receipt, &item.RemoteState, &contact); err != nil {
+		if err := rows.Scan(&peerRaw, &authorRaw, &counterRaw, &receipt, &direct, &item.RemoteState, &contact); err != nil {
 			return nil, err
 		}
 		copy(item.Peer[:], peerRaw)
@@ -421,6 +448,7 @@ func (db *DB) PeerProgress(ctx context.Context, folder history.ID) ([]PeerProgre
 			return nil, err
 		}
 		item.Receipt = receipt == 1
+		item.Direct = direct == 1
 		if contact > 0 {
 			item.LastContact = time.Unix(0, contact)
 		}
