@@ -1,0 +1,32 @@
+[Unit]
+Description=File Sync Background Engine
+Documentation=https://github.com/calebhabesh/file-sync
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/filesync serve --state=%h/.local/share/filesync
+ExecStop=/usr/bin/filesync stop --state=%h/.local/share/filesync
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+# Environment & resource bounds (Operations baseline)
+LimitNOFILE=65536
+MemoryHigh=512M
+MemoryMax=1G
+
+# Systemd User Service Hardening
+# Note: Arbitrary user workspace roots are supported across %h.
+# ProtectSystem protects OS directories (/usr, /boot, /etc) from user daemon tampering.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=%h/.local/share/filesync %h
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=filesync
+
+[Install]
+WantedBy=default.target

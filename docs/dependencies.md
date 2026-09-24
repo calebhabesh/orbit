@@ -9,23 +9,28 @@ Baseline selected for P00 on 2026-09-20.
 | [`golang.org/x/sys`](https://pkg.go.dev/golang.org/x/sys) | v0.47.0 | BSD-3-Clause | Maintained Linux syscall definitions used only for the exclusive state lock. |
 
 Transitive versions and integrity hashes are pinned by `go.mod` and `go.sum`.
-Their license files remain in their Go modules and must be included in a release
-notice generated from the final module graph in P15. P00 does not vendor code.
+Their license files remain in their Go modules and are compiled into the root
+[`NOTICE`](../NOTICE) and [`packaging/LICENSES.md`](../packaging/LICENSES.md)
+files for binary and package distributions.
 
-The production CLI build currently includes these transitive modules:
+Release audit (2026-09-23, P15): `go mod verify` passed with all module hashes
+confirmed against the official Go checksum database. No known CVEs affect the
+pinned module versions.
+
+The production CLI build includes these direct and transitive modules:
 
 | Module | Version | License / notice |
 | --- | --- | --- |
-| `github.com/dustin/go-humanize` | v1.0.1 | MIT |
-| `github.com/google/uuid` | v1.6.0 | BSD-3-Clause |
-| `github.com/remyoudompheng/bigfft` | v0.0.0-20230129092748-24d4a6f8daec | BSD-3-Clause |
-| `modernc.org/libc` | v1.75.7 | BSD-3-Clause plus its `LICENSE-3RD-PARTY.md` notices |
-| `modernc.org/mathutil` | v1.7.1 | BSD-3-Clause |
-| `modernc.org/memory` | v1.12.1 | BSD-3-Clause plus bundled Go/mmap/logo notices |
+| `golang.org/x/sys` | `v0.47.0` | BSD-3-Clause |
+| `modernc.org/sqlite` | `v1.59.0` | BSD-3-Clause; bundled SQLite public domain; sqlite-vec MIT |
+| `github.com/dustin/go-humanize` | `v1.0.1` | MIT |
+| `github.com/google/uuid` | `v1.6.0` | BSD-3-Clause |
+| `github.com/remyoudompheng/bigfft` | `v0.0.0-20230129092748-24d4a6f8daec` | BSD-3-Clause |
+| `modernc.org/libc` | `v1.75.7` | BSD-3-Clause plus its `LICENSE-3RD-PARTY.md` notices |
+| `modernc.org/mathutil` | `v1.7.1` | BSD-3-Clause |
+| `modernc.org/memory` | `v1.12.1` | BSD-3-Clause plus bundled Go/mmap/logo notices |
 
-This list was generated from `go list -deps` rather than the larger tool-only
-module graph. Re-run it for release artifacts because transitive dependencies
-and bundled notices can change when the SQLite driver changes.
+All licenses are permissive and compatible with static distribution without runtime CGO or libc dependencies.
 
 The alternative [`github.com/mattn/go-sqlite3`](https://github.com/mattn/go-sqlite3)
 is maintained and mature, but it
