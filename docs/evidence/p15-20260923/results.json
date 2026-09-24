@@ -1,0 +1,56 @@
+{
+  "packet": "P15",
+  "status": "complete",
+  "date": "2026-09-23",
+  "requirements_verified": {
+    "S20": {
+      "title": "Versioned protocol and database; clear incompatibility errors; deliberate migrations and recovery procedures; Linux binaries for tested device architectures",
+      "status": "satisfied",
+      "evidence": "Statically-linked CGO-free Linux amd64 and arm64 binaries compiled with version metadata linker flags. Schema versions tracked via user_version with transactional migrations (1-10); incompatible newer databases are rejected with explicit ErrIncompatibleSchema errors (I20). Safe recovery workflow restores consistent SQLite backups and resets causal identity (I08)."
+    },
+    "S21": {
+      "title": "systemd user service, structured diagnostics, sensitive-data-conscious support export, upgrade and uninstall preserving user data",
+      "status": "satisfied",
+      "evidence": "systemd user service unit template provided with hardening and documented lingering configuration. Upgrade preflight check verifies state permissions, lock status, and schema compatibility before upgrade. Packaging scripts and postrm hooks preserve state directories (~/.local/share/filesync) and workspace directories upon uninstall."
+    }
+  },
+  "invariants_verified": {
+    "I08": {
+      "title": "Counter and event creation are atomic; identity rollback is never knowingly reused",
+      "status": "verified",
+      "evidence": "Restoring an older SQLite database backup via filesync maintenance restore-backup automatically resets the cryptographic device ID, generates fresh TLS credentials, clears stale peer links, and resets author counters to 0, ensuring rolled-back causal counters cannot collide with historical envelopes on peers."
+    },
+    "I20": {
+      "title": "Limits, schema/protocol incompatibility and failed migrations preserve recoverable state",
+      "status": "verified",
+      "evidence": "Older binaries refuse to run against newer database schemas with clear diagnostic errors. Interrupted or failing migration transactions cleanly roll back table modifications without incrementing PRAGMA user_version."
+    }
+  },
+  "tests": {
+    "TestP15VersionAndBuildMetadata": "PASS",
+    "TestP15ReleaseBinaryExcludesDestructiveTestHooks": "PASS",
+    "TestP15EmbeddedUIWithoutNode": "PASS",
+    "TestP15ConfigValidation": "PASS",
+    "TestP15AgentStop": "PASS",
+    "TestP15UpgradePreflight": "PASS",
+    "TestP15InterruptedMigrationRollback": "PASS",
+    "TestP15ConsistentBackupAndRestoreSafety": "PASS",
+    "TestP15PackagingOutputsAndChecksums": "PASS",
+    "TestP15UninstallPreservesUserData": "PASS"
+  },
+  "packages_generated": [
+    "filesync-v1.0.0-linux-amd64.tar.gz",
+    "filesync_1.0.0_amd64.deb",
+    "filesync-1.0.0-1.x86_64.rpm",
+    "filesync-v1.0.0-linux-arm64.tar.gz",
+    "filesync_1.0.0_arm64.deb",
+    "filesync-1.0.0-1.aarch64.rpm",
+    "SHA256SUMS"
+  ],
+  "runbooks_delivered": [
+    "docs/runbooks/install.md",
+    "docs/runbooks/upgrade.md",
+    "docs/runbooks/rollback.md",
+    "docs/runbooks/uninstall.md"
+  ]
+}

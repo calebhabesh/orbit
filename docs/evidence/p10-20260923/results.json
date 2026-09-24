@@ -1,0 +1,30 @@
+{
+  "packet": "P10",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass", "notes": "ReferenceSetOracle interleavings, serve lease exclusion, shared chunks, pending fallback, 50-year forward/backward clock jumps, crash-state transitions, plus DAG schedules"},
+    {"command": "make check", "result": "pass", "notes": "fmt-check, vet, unit/model, integration (P00, P04, P06, P07, P08, P09, P10 CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass", "notes": "0 race warnings across all packages"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates D1-D5, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p10-20260923/manifest.json and results.json", "result": "pass"}
+  ],
+  "acceptance_assertions": {
+    "interrupted_gc_loses_no_protected_object": "pass",
+    "expired_history_visibly_unavailable_while_current_reconciliation_succeeds": "pass",
+    "long_offline_peers_do_not_resurrect_deletions": "pass",
+    "storage_exhaustion_pauses_safely_with_actionable_diagnostics": "pass",
+    "full_file_staging_budgeted_despite_chunk_reuse": "pass",
+    "clock_jumps_do_not_accelerate_protected_expiry": "pass",
+    "multi_peer_fallback_chunk_transfer": "pass",
+    "workspace_recovery_copies_reclaimed_safely": "pass",
+    "gc_reference_set_model_oracle_interleaving_agreement": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking (P17)",
+    "internet-exposed listener testing"
+  ]
+}

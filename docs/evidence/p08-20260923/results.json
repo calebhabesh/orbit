@@ -1,0 +1,34 @@
+{
+  "packet": "P08",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass"},
+    {"command": "make check", "result": "pass", "notes": "vet, unit/model, integration (including P06, P07, P08 CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates D1-D5, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p08-20260923/manifest.json and results.json", "result": "pass"}
+  ],
+  "acceptance_assertions": {
+    "replay_creates_one_logical_resolution_or_restore": "pass",
+    "unseen_version_arriving_after_resolution_remains_concurrent": "pass",
+    "pre_commit_changed_heads_produce_stale_view_response": "pass",
+    "destination_name_collisions_preserve_existing_files": "pass",
+    "partial_keep_copies_resumes_without_duplicate_copies": "pass",
+    "restored_executable_status_follows_selected_historical_version": "pass",
+    "restore_chooses_old_bytes_but_extends_reviewed_current_causal_state": "pass",
+    "content_states_ready_pending_unavailable_expired_exposed_accurately": "pass",
+    "reused_idempotency_key_with_changed_arguments_fails_with_conflict": "pass",
+    "response_loss_after_commit_recovers_cached_result": "pass",
+    "expired_idempotency_records_rejected": "pass",
+    "cli_and_control_operations_unified": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking",
+    "internet-exposed listener testing",
+    "three-peer forwarding topologies (P09)"
+  ]
+}

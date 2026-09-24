@@ -1,0 +1,36 @@
+{
+  "packet": "P07",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass"},
+    {"command": "make check", "result": "pass", "notes": "vet, unit/model, integration (including P06 and P07 CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates D1-D5, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p07-20260923/manifest.json and results.json", "result": "pass"}
+  ],
+  "acceptance_assertions": {
+    "offline_edit_edit_matches_model_across_delivery_orders": "pass",
+    "offline_edit_delete_matches_model": "pass",
+    "offline_repeated_delete_matches_model": "pass",
+    "equal_byte_conflict_preserves_distinct_ancestry": "pass",
+    "executable_only_mode_change_detected_and_reconciled": "pass",
+    "protected_fallback_content_while_remote_pending": "pass",
+    "unreviewed_received_heads_never_advance_working_basis": "pass",
+    "structural_conflict_preserves_children_without_recursive_deletion": "pass",
+    "restart_and_rescan_preserves_conflicts_with_zero_extra_versions": "pass",
+    "scaffold_pruned_when_last_child_deleted": "pass",
+    "scaffold_retained_when_siblings_or_untracked_files_present": "pass",
+    "filesync_conflicts_cli_exposes_text_and_json": "pass",
+    "working_bytes_preserved_on_disk_during_conflict": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking",
+    "internet-exposed listener testing",
+    "interactive manual resolution (P08)",
+    "three-peer forwarding topologies (P09)"
+  ]
+}

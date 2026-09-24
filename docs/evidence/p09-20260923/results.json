@@ -1,0 +1,33 @@
+{
+  "packet": "P09",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass"},
+    {"command": "make check", "result": "pass", "notes": "fmt-check, vet, unit/model, integration (including P06, P07, P08, P09 CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass", "notes": "0 race warnings across all packages"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates D1-D5, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p09-20260923/manifest.json and results.json", "result": "pass"}
+  ],
+  "acceptance_assertions": {
+    "three_peer_forwarding_preserves_authors_and_vectors": "pass",
+    "direct_vs_indirect_progress_labeling": "pass",
+    "offline_three_way_concurrent_edits_and_resolution_late_arrival_converge": "pass",
+    "retirement_snapshot_canonical_encoding_matches_gate_d3_hex": "pass",
+    "retirement_preview_and_idempotent_execution": "pass",
+    "membership_export_preview_import_approve_lifecycle": "pass",
+    "access_termination_upon_peer_revocation_or_retirement": "pass",
+    "stale_membership_revision_sync_rejection": "pass",
+    "unknown_retired_author_events_rejected": "pass",
+    "divergent_existing_folder_enrollment_preview_and_bootstrap": "pass",
+    "metadata_loss_reinstall_under_new_identity": "pass",
+    "dag_model_oracle_reachability_agreement": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking (P17)",
+    "internet-exposed listener testing"
+  ]
+}

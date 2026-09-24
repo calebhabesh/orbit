@@ -1,0 +1,30 @@
+{
+  "packet": "P11",
+  "passed": true,
+  "checks": [
+    {"command": "make test-model", "result": "pass", "notes": "ReferenceSetOracle corruption and repair interleavings, multi-version affected accounting, quarantine transitions, availability statuses"},
+    {"command": "make check", "result": "pass", "notes": "fmt-check, vet, unit/model, integration (P00-P11 CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass", "notes": "0 race warnings across all packages"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates D1-D5, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass"},
+    {"command": "git diff --check", "result": "pass"},
+    {"command": "python -m json.tool docs/evidence/p11-20260923/manifest.json and results.json", "result": "pass"}
+  ],
+  "acceptance_assertions": {
+    "injected_corruption_shared_chunk_diagnoses_all_affected_versions": "pass",
+    "authorized_replica_repairs_correctly_without_changing_causal_identity": "pass",
+    "no_remaining_copy_yields_explicit_unavailable_state": "pass",
+    "repair_through_unauthorized_folder_rejected": "pass",
+    "scan_repair_restart_and_gc_interleavings_preserve_required_pins": "pass",
+    "no_success_receipt_newly_issued_for_known_corrupt_content": "pass",
+    "verified_reads_immediately_quarantine_corrupt_chunks_and_invalidate_availability": "pass",
+    "five_availability_states_and_transient_peer_unavailable_distinguished": "pass",
+    "unavailable_content_fixture_produced": "pass"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking (P17)",
+    "internet-exposed listener testing"
+  ]
+}

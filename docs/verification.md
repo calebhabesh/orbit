@@ -1,9 +1,11 @@
 # Verification and evidence contract
 
-Status: P01–P06 local design, model, repository, workspace, authenticated
-wire and verified transfer checks have executed; multi-head reconciliation,
-operations and release checks remain planned. This file defines independent
-oracles and the claims each experiment may support.
+Status: P01–P09 local design, model, repository, workspace, authenticated
+wire, verified transfer, bidirectional reconciliation/conflict projection,
+reviewed resolution/restore, and three-peer forwarding/membership lifecycle checks have executed;
+retention, garbage collection, operations and release checks remain
+planned. This file defines independent oracles and the claims each experiment
+may support.
 
 ## Invariants
 

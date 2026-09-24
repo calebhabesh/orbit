@@ -1,10 +1,14 @@
 # Protocol and causal-state specification
 
-Status: P01/P02 froze membership and causal fixtures; P05 implements and
-freezes authenticated v1 peer wrappers, bounded parsing, snapshot inventory,
-envelope fetch and manifest-scoped chunk serving. Transfer orchestration,
-receipts and status remain for P06 and later packets. Protocol name is
-provisional. No Syncthing wire compatibility is claimed.
+Status: P01/P02 froze membership and causal fixtures; P05 implemented
+authenticated v1 peer wrappers, bounded parsing, snapshot inventory, envelope
+fetch and manifest-scoped chunk serving; P06 completed resumable two-peer
+transfers, durable receipts and status reporting; P07 completed bidirectional
+reconciliation, multi-head conflict projection and structural conflict isolation;
+P08 completed reviewed resolution, historical restore, export and safe control replay;
+P09 completed three-peer forwarding, membership distribution, canonical retirement
+snapshots, and access termination. Retention, GC, operations and release checks remain planned.
+Protocol name is provisional. No Syncthing wire compatibility is claimed.
 
 ## 1. Identities and membership
 

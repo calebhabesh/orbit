@@ -1,0 +1,37 @@
+{
+  "packet": "P12",
+  "passed": true,
+  "checks": [
+    {"command": "make check", "result": "pass", "notes": "fmt-check, vet, unit/model, integration (P00-P12 CLI), amd64 build, arm64 cross-build"},
+    {"command": "make test-race", "result": "pass", "notes": "0 race warnings across all packages"},
+    {"command": "make test-faults", "result": "pass", "notes": "P01 design gates D1-D5, P03/P04/P06 SIGKILL boundary restarts"},
+    {"command": "go test -count=1 ./...", "result": "pass", "notes": "all unit, model, integration, and fault tests passing uncached"},
+    {"command": "git diff --check", "result": "pass", "notes": "clean formatting and zero trailing whitespace issues"}
+  ],
+  "acceptance_assertions": {
+    "bounded_queue_1024_rejection_under_sustained_backlog": "pass",
+    "large_file_progress_amid_sustained_small_edits_via_aging": "pass",
+    "equal_size_timestamp_preserving_edits_captured_by_full_scan": "pass",
+    "repeated_watcher_feedback_creates_zero_authored_versions": "pass",
+    "root_unavailable_pauses_folder_without_creating_deletions": "pass",
+    "work_subcommands_status_retry_cancel_list_verified": "pass",
+    "continuous_serve_profiles_laptop_and_pi_verified": "pass",
+    "token_bucket_bandwidth_limiter_rate_and_burst_throttling": "pass",
+    "notification_loss_or_overflow_recovered_by_reconciliation_scan": "pass",
+    "retry_classification_exponential_jitter_and_exhaustion_at_5": "pass",
+    "crash_recovery_resets_in_flight_running_tasks_to_queued": "pass",
+    "all_configured_resource_limits_validated_with_user_outcomes": "pass"
+  },
+  "invariants_verified": {
+    "I11": "Unavailable roots create no deletions (verified in TestP12RootUnavailablePauseFolderNoDeletions)",
+    "I13": "Bounded resources; large-file progress amid small edits via aging (verified in TestP12BoundedQueueAndFairScheduling)",
+    "I17": "Scan after apply/restart or repeated watcher feedback creates no authored versions (verified in TestP12WatcherFeedbackSuppression)",
+    "I20": "Limits preserve recoverable state (verified in TestP12CrashRecoveryOfInFlightTasks)"
+  },
+  "unexecuted": [
+    "hosted CI",
+    "native arm64 execution",
+    "physical multi-host networking (P17)",
+    "internet-exposed listener testing"
+  ]
+}

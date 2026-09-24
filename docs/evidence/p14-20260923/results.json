@@ -1,0 +1,50 @@
+{
+  "packet": "P14",
+  "status": "complete",
+  "date": "2026-09-23",
+  "requirements_verified": {
+    "S08": {
+      "title": "Reviewed conflict actions (select winner, keep copies, manual merge)",
+      "status": "satisfied",
+      "evidence": "Web UI provides dedicated modal for reviewed conflict actions with radio selection for winner, dry-run path preview for keep-copies, and content text editor for manual merge. All mutating actions enforce expected_head_token and reviewed version IDs, rejected with 409 STALE_VIEW if concurrent heads change."
+    },
+    "S16": {
+      "title": "Qualified status, storage warnings, and unavailable historical content",
+      "status": "satisfied",
+      "evidence": "Folders view displays qualified per-peer progress (direct receipts only, non-transitive), storage reserve warnings (512 MiB reserve and 256 MiB WAL cap), and files view explicitly differentiates ready, pending, unavailable, and expired content availability states with disabled restore triggers."
+    },
+    "S18": {
+      "title": "Automatic agent/shared UI with zero runtime Node dependency",
+      "status": "satisfied",
+      "evidence": "Embedded React/TypeScript/Vite static assets compiled to dist/ and embedded into the Go binary via //go:embed. Runs entirely self-contained without Node at runtime; browser closing does not stop synchronization."
+    }
+  },
+  "invariants_verified": {
+    "I16": {
+      "title": "Cross-origin browser requests cannot mutate state or read sensitive data; control endpoints require local authentication",
+      "status": "verified",
+      "evidence": "Loopback server validates Host and Origin headers, serves static assets and session bootstrap, issues HttpOnly SameSite=Strict cookies and per-session CSRF tokens. Mutating operations mandate X-CSRF-Token headers."
+    },
+    "I19": {
+      "title": "Safe recovery preserves user data; UI and CLI use the same control operations",
+      "status": "verified",
+      "evidence": "Web interface routes all state reads and mutations through the exact same /api/v1/... control endpoints as CLI commands. Pending/failed operations never render as successful completion."
+    }
+  },
+  "tests": {
+    "TestP14EmbeddedWebInterfaceAndSPARouting": "PASS",
+    "TestP14EndToEndConflictWorkflows": "PASS",
+    "TestP14FilesInspectionAndRestoreWorkflow": "PASS",
+    "TestP14FilenameMarkupEscaping": "PASS"
+  },
+  "screenshots_captured": [
+    "screenshot-01-bootstrap-login.png",
+    "screenshot-02-folders-work.png",
+    "screenshot-03-doctor-modal.png",
+    "screenshot-04-files-history.png",
+    "screenshot-05-restore-preview.png",
+    "screenshot-06-conflicts-view.png",
+    "screenshot-07-conflict-resolve-modal.png",
+    "screenshot-08-mobile-responsive.png"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "packet": "P13",
+  "status": "complete",
+  "date": "2026-09-23",
+  "requirements_verified": {
+    "S05": {
+      "title": "Deterministic conflict inspection and head resolution",
+      "status": "satisfied",
+      "evidence": "POST /api/v1/conflicts/select and POST /api/v1/conflicts/keep-copies exposed via authenticated control API with stale-view head token protection."
+    },
+    "S13": {
+      "title": "Local control operations and authenticated loopback interface",
+      "status": "satisfied",
+      "evidence": "Loopback control server with strict Host/Origin checking, one-use bootstrap tokens, SameSite cookies, CSRF protection, and Bearer CLI token authentication."
+    },
+    "S16": {
+      "title": "Support bundle export with sanitization and redaction",
+      "status": "satisfied",
+      "evidence": "Support export writes locally to tar.gz, redacts paths to pseudonyms by default, excludes all private keys, session tokens, and file contents."
+    },
+    "S19": {
+      "title": "Safe unregistration and uninstall without replicated deletions",
+      "status": "satisfied",
+      "evidence": "Unregistering folder removes database registrations while leaving files intact on disk and authoring zero deletion tombstones."
+    },
+    "S20": {
+      "title": "Comprehensive doctor and diagnostic health checks",
+      "status": "satisfied",
+      "evidence": "Doctor checks identity permissions, state dir permissions, root mounts/markers, free disk budget (512 MiB reserve), membership limits (16 active), schema compatibility, and recovery needs."
+    },
+    "S21": {
+      "title": "Stable error taxonomy with safe next actions",
+      "status": "satisfied",
+      "evidence": "All 15 stable error categories registered in control package with tested retryability and safe remediation actions."
+    }
+  },
+  "invariants_verified": {
+    "I09": {
+      "title": "Retired or removed device cannot author accepted versions; removal preserves user files",
+      "status": "verified",
+      "test": "TestP13FolderLifecycleAndZeroReplicatedDeletes"
+    },
+    "I15": {
+      "title": "Support exports and diagnostics contain no keys, plaintext file content, or session tokens; paths redacted by default",
+      "status": "verified",
+      "test": "TestP13SupportExportSanitizationAndRedaction"
+    },
+    "I16": {
+      "title": "Cross-origin browser requests cannot mutate state or read sensitive data; control endpoints require local authentication",
+      "status": "verified",
+      "test": "TestP13LoopbackControlSecurityAndBootstrap"
+    },
+    "I19": {
+      "title": "Safe recovery preserves user data; recovering state cannot cause silent data loss on remote peers",
+      "status": "verified",
+      "test": "TestP13MaintenanceBackupCheckRecoveryAndReset"
+    },
+    "I20": {
+      "title": "Interrupted operations restart safely; crash leaves system in consistent recoverable state",
+      "status": "verified",
+      "test": "TestP13MaintenanceBackupCheckRecoveryAndReset"
+    }
+  },
+  "tests": {
+    "TestP13CLIDiagnosticsAndDoctor": "PASS",
+    "TestP13SupportExportSanitizationAndRedaction": "PASS",
+    "TestP13FolderLifecycleAndZeroReplicatedDeletes": "PASS",
+    "TestP13MaintenanceBackupCheckRecoveryAndReset": "PASS",
+    "TestP13LoopbackControlSecurityAndBootstrap": "PASS",
+    "TestP13ErrorCategoriesHaveSafeNextActions": "PASS"
+  },
+  "runbooks_created": [
+    "docs/runbooks/full-disk.md",
+    "docs/runbooks/root-unavailable.md",
+    "docs/runbooks/retired-lost-device.md",
+    "docs/runbooks/corrupt-content.md",
+    "docs/runbooks/stuck-conflict.md",
+    "docs/runbooks/expired-history.md",
+    "docs/runbooks/incompatible-versions.md",
+    "docs/runbooks/database-recovery.md"
+  ]
+}

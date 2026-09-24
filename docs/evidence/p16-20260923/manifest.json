@@ -1,0 +1,18 @@
+{
+  "packet": "P16",
+  "name": "Reproducible failure campaign and local demo",
+  "date": "2026-09-23",
+  "files": [
+    "tests/faults/p16_boundaries_audit_test.go",
+    "tests/faults/p16_invariants_matrix_test.go",
+    "tests/faults/p16_abrupt_reset_test.go",
+    "tests/faults/p16_fuzz_test.go",
+    "scripts/local_demo.go",
+    "Makefile",
+    "docs/evidence/p16-20260923/manifest.json",
+    "docs/evidence/p16-20260923/results.json",
+    "docs/evidence/p16-20260923/commands.md",
+    "docs/evidence/p16-20260923/summary.md",
+    "docs/implementation/status.md"
+  ]
+}
