@@ -17,6 +17,8 @@ artifacts/
 # Build and tool outputs
 bin/
 dist/
+!web/dist/
+!web/dist/**
 coverage/
 coverage.out
 node_modules/
