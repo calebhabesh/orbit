@@ -114,14 +114,70 @@ def pair(nodes):
             node.put(peer.role + ".pem", peer.cert)
 
 
+class SSHRelay:
+    """Route local TLS through an actual SSH host and back; no remote storage."""
+    def __init__(self, destination, alias):
+        self.processes = []
+        try:
+            reverse = subprocess.Popen(["ssh", "-N", "-o", "BatchMode=yes", "-o", "ExitOnForwardFailure=yes",
+                "-R", f"127.0.0.1:0:{destination[0]}:{destination[1]}", alias], stderr=subprocess.PIPE, text=True)
+            self.processes.append(reverse)
+            import selectors
+            with selectors.DefaultSelector() as selector:
+                selector.register(reverse.stderr, selectors.EVENT_READ)
+                deadline = time.monotonic() + 15
+                while time.monotonic() < deadline:
+                    if reverse.poll() is not None:
+                        raise RuntimeError("relay reverse forwarding failed")
+                    if selector.select(0.2):
+                        match = re.search(r"Allocated port (\d+)", reverse.stderr.readline())
+                        if match:
+                            remote = int(match[1])
+                            break
+                else:
+                    raise RuntimeError("relay reverse allocation timeout")
+            port = reserved_port()
+            forward = subprocess.Popen(["ssh", "-N", "-o", "BatchMode=yes", "-o", "ExitOnForwardFailure=yes",
+                "-L", f"127.0.0.1:{port}:127.0.0.1:{remote}", alias], stderr=subprocess.PIPE)
+            self.processes.append(forward)
+            deadline = time.monotonic() + 15
+            while time.monotonic() < deadline:
+                if forward.poll() is not None:
+                    raise RuntimeError("relay local forwarding failed")
+                try:
+                    with socket.create_connection(("127.0.0.1", port), 0.1):
+                        self.destination = ("127.0.0.1", port)
+                        break
+                except OSError:
+                    time.sleep(0.025)
+            else:
+                raise RuntimeError("relay local forwarding timeout")
+        except BaseException:
+            self.close()
+            raise
+
+    def close(self):
+        for process in self.processes:
+            if process.poll() is None:
+                process.terminate()
+            process.wait(timeout=5)
+
+
 class Proxy:
     """Counts actual TLS-bearing TCP stream bytes; excludes IP/TCP/SSH headers."""
-    def __init__(self, destination, bandwidth=0, latency=0):
-        self.destination = destination
+    def __init__(self, destination, bandwidth=0, latency=0, relay=None):
+        self.relay = SSHRelay(destination, relay) if relay else None
+        self.destination = self.relay.destination if self.relay else destination
         self.bandwidth, self.latency = bandwidth, latency
         self.listener = socket.socket()
-        self.listener.bind(("127.0.0.1", 0))
-        self.listener.listen()
+        try:
+            self.listener.bind(("127.0.0.1", 0))
+            self.listener.listen()
+        except BaseException:
+            self.listener.close()
+            if self.relay:
+                self.relay.close()
+            raise
         self.port = self.listener.getsockname()[1]
         self.counts = [0, 0]
         self.lock = threading.Lock()
@@ -178,6 +234,8 @@ class Proxy:
             conn.close()
         for thread in self.threads:
             thread.join(timeout=3)
+        if self.relay:
+            self.relay.close()
 
     def metrics(self):
         with self.lock:
@@ -192,7 +250,7 @@ def reserved_port():
 
 
 @contextmanager
-def link(source, target, remote_port, bandwidth=0, latency=0):
+def link(source, target, remote_port, bandwidth=0, latency=0, relay=None):
     processes = []
     proxy = None
     try:
@@ -212,7 +270,7 @@ def link(source, target, remote_port, bandwidth=0, latency=0):
                     time.sleep(0.025)
             else:
                 raise RuntimeError("SSH local forwarding timeout")
-        proxy = Proxy(("127.0.0.1", port), bandwidth, latency)
+        proxy = Proxy(("127.0.0.1", port), bandwidth, latency, relay)
         target_port = proxy.port
         if target.host != "local":
             command = ["ssh", "-N", "-o", "BatchMode=yes", "-o", "ExitOnForwardFailure=yes", "-R",

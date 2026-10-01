@@ -42,8 +42,9 @@ def flush_dir(path):
 
 
 class FullFileBaseline:
-    def __init__(self, source, receiver, resume=False):
+    def __init__(self, source, receiver, resume=False, relay=None):
         self.source, self.receiver = source, receiver
+        self.relay = relay
         self.root = Path(source.root) / "data"
         self.destination = Path(receiver.root) / "baseline"
         self.destination.mkdir(exist_ok=resume)
@@ -109,7 +110,7 @@ class FullFileBaseline:
         return Connection("peer.filesync.invalid", port, context=self.context)
 
     def run(self, bandwidth=0, latency=0):
-        proxy = Proxy(self.server.server_address, bandwidth, latency)
+        proxy = Proxy(self.server.server_address, bandwidth, latency, self.relay)
         start = time.monotonic()
         self.payload_bytes = 0
         try:
@@ -194,6 +195,7 @@ def main():
     parser.add_argument("--large-mib", type=int, default=1024)
     parser.add_argument("--mixed-extra-mib", type=int, nargs="*", default=[],
                         help="additional independently seeded objects for the mixed workload")
+    parser.add_argument("--relay", help="route both TLS streams through an actual SSH host and back; stores remain local")
     parser.add_argument("--resume-after-initial", action="store_true",
                         help="resume an interrupted one-repetition campaign after its completed initial workload")
     args = parser.parse_args()
@@ -202,6 +204,8 @@ def main():
     prepare_output(args.output, resume=args.resume_after_initial)
     report = {"type": "synthetic", "seed": 20261001, "success": False, "runs": [],
               "dimensions": {"small_files": args.small_files, "large_mib": args.large_mib, "mixed_extra_mib": args.mixed_extra_mib, "repetitions": args.repetitions},
+              "network_relay": args.relay,
+              "network_topology": "local sender and receiver storage; optional two SSH forwarding channels route TLS via the named host and back. This measures the cloud route, not remote disk performance",
               "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
               "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",
               "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
@@ -251,7 +255,7 @@ def main():
                 source, receiver = nodes
                 if not args.resume_after_initial:
                     pair(nodes)
-                baseline = FullFileBaseline(source, receiver, resume=args.resume_after_initial)
+                baseline = FullFileBaseline(source, receiver, resume=args.resume_after_initial, relay=args.relay)
                 root = Path(source.root) / "data"
                 if not args.resume_after_initial:
                     report["hosts"].append({"repetition": repetition, "roots": [n.root for n in nodes],
@@ -270,7 +274,7 @@ def main():
                         start = time.monotonic()
                         source.scan()
                         scan_seconds = time.monotonic() - start
-                        entry["filesync"] = sync(source, receiver, bandwidth=bandwidth, latency=latency)
+                        entry["filesync"] = sync(source, receiver, bandwidth=bandwidth, latency=latency, relay=args.relay)
                         entry["filesync"]["scan_seconds"] = scan_seconds
                         entry["receiver_storage_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "state").rglob("*") if p.is_file())
                         entry["filesync"]["total_seconds"] = entry["filesync"]["seconds"] + scan_seconds
