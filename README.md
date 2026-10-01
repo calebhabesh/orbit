@@ -92,7 +92,8 @@ services are preserved. Roots are retained for inspection.
 python3 -m unittest discover -s scripts/validation -p 'test_*.py'
 go run scripts/three_host_pilot.go --laptop laptop --pi rpi --vps vps
 go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1
-python3 scripts/validation/service_lifecycle.py --output /tmp/filesync-lifecycle-evidence
+python3 scripts/validation/service_lifecycle.py --hosts laptop rpi vps \
+  --output /tmp/filesync-lifecycle-evidence
 python3 scripts/validation/abrupt_reset.py --kernel /path/to/vmlinuz \
   --output /tmp/filesync-reset-evidence
 ```
@@ -113,7 +114,15 @@ Its full-file baseline also uses mutual TLS, hashes and durably installs files,
 and skips unchanged files after hashing. TCP/IP and SSH headers are excluded.
 Different history/storage work and warm filesystem caches limit timing comparisons.
 Raw runs, failed experiments, and negative results remain in the evidence.
+The [measured results](docs/evidence/release-20261001/measured-results.md) show
+workload-specific byte counts, timing ranges, chunk reuse and storage costs.
 An automated demo does not establish the required personal-use pilot.
+
+Use a new empty evidence directory per run; scripts refuse to overwrite prior
+results. To reproduce the checked source and package hashes, follow the exact
+revision and commands in the [release manifest](docs/evidence/release-20261001/manifest.json).
+The [prepared personal pilot](docs/evidence/release-20261001/personal-pilot/handoff.md)
+is available on the laptop, Pi and VPS, with owner activity still pending.
 
 See [the case study](docs/case-study.md), [architecture](docs/architecture.md),
 [protocol](docs/protocol.md), [verification](docs/verification.md), and

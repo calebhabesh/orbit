@@ -247,7 +247,7 @@ reused without retransmitting across the network.
 
 ## Recorded abrupt-reset experiment
 
-The [2026-10-01 campaign](evidence/release-20261001/reset/abrupt-reset.json)
+The [2026-10-01 campaign](evidence/release-20261001/release-candidate/reset/abrupt-reset.json)
 uses QEMU/KVM, a new raw ext4 image with virtio-blk `cache=none`, and a static
 Go guest init. The host stops the dedicated QEMU child without guest shutdown
 or unmount; a newly booted guest reopens SQLite and runs journal recovery.

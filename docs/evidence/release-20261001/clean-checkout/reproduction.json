@@ -1,0 +1,28 @@
+{
+  "source_commit": "916e9519639c3b12897aec56d398900564049c32",
+  "checkout": "/tmp/filesync-reproduction-3c_deu9v/checkout",
+  "started_utc": "2026-10-01T14:36:52Z",
+  "checks": [
+    {
+      "name": "status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exit_code": 0,
+      "seconds": 0.014543646015226841
+    },
+    {
+      "name": "check",
+      "command": [
+        "make",
+        "check"
+      ],
+      "exit_code": 2,
+      "seconds": 46.20149457099615
+    }
+  ],
+  "success": false,
+  "artifact_sha256": {}
+}

@@ -3,7 +3,7 @@
 **Packet:** P15
 **Date:** 2026-09-23
 **Status:** `complete`
-**Prerequisites:** P14 complete. Read [scope](../../portfolio-scope.md), [operations](../../operations.md), [verification](../../verification.md), and [04-delivery](../04-delivery.md).
+**Prerequisites:** P14 complete. Read [scope](../../portfolio-scope.md), [operations](../../operations.md), [verification](../../verification.md), and [04-delivery](../../implementation/04-delivery.md).
 **Requirements Satisfied:** S20 (versioned protocol/database, migrations, target device binaries), S21 (systemd user service, upgrade/uninstall preserving user data).
 **Invariants Verified:** I08 (counter monotonicity; identity rollback never knowingly reused), I20 (limits, schema/protocol incompatibility and failed migrations preserve recoverable state).
 
@@ -19,9 +19,9 @@ Packet P15 delivers release packaging, systemd user-service integration, reprodu
    - **RPM (`.rpm`)**: Standard v3.0 RPM binary packages containing CPIO payloads and post-uninstallation data preservation guards.
    - **Tarball (`.tar.gz`)**: Standalone archives containing binary, systemd service unit, license notices, and user/system install and uninstall scripts (`install.sh`, `uninstall.sh`).
 2. **Reproducible Release Tooling ([`scripts/build_packages.go`](../../../scripts/build_packages.go))**: Builds use `-trimpath` and deterministic timestamps (`SOURCE_DATE_EPOCH` / fixed release timestamp `1790208000`), stamping git commit, date, architecture, and version metadata into binary linker symbols without relying on external host packaging tools.
-3. **Embedded UI with Zero Runtime Node Dependency ([`S18`](../../../docs/implementation-plan.md#L86))**: Production packages embed all React 19/TypeScript web console assets directly inside the binary. The daemon operates entirely without Node.js, npm, or external web servers.
+3. **Embedded UI with Zero Runtime Node Dependency ([`S18`](../../portfolio-scope.md#release-requirements))**: Production packages embed all React 19/TypeScript web console assets directly inside the binary. The daemon operates entirely without Node.js, npm, or external web servers.
 4. **Systemd User Service & Hardening ([`packaging/systemd/filesync.service`](../../../packaging/systemd/filesync.service))**: Service unit integrates into systemd user sessions with graceful shutdown (`TimeoutStopSec=30s`), auto-restart on failure, `NoNewPrivileges=yes`, `ProtectSystem=strict`, and explicit documentation for user session lingering (`loginctl enable-linger $USER`). User workspace folders are permitted anywhere under `%h` without artificial sandbox traps.
-5. **Data Preservation Guarantee ([`S21`](../../../docs/portfolio-scope.md#L35))**: Ordinary package removal (`dpkg -r`, `rpm -e`, or `uninstall.sh`) removes only executables and service definitions. Local state directories (`~/.local/share/filesync`, `~/.filesync`) and all synchronized workspace roots are strictly preserved on disk.
+5. **Data Preservation Guarantee ([`S21`](../../portfolio-scope.md#release-requirements))**: Ordinary package removal (`dpkg -r`, `rpm -e`, or `uninstall.sh`) removes only executables and service definitions. Local state directories (`~/.local/share/filesync`, `~/.filesync`) and all synchronized workspace roots are strictly preserved on disk.
 6. **Destructive Test Hooks Excluded**: Production binaries accept no CLI flags or configuration parameters for test hooks. The engine's internal `FaultHook` is `nil` in all production execution paths.
 
 ---

@@ -1,0 +1,33 @@
+go vet ./...
+go test ./internal/... ./model/...
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/control	6.106s
+ok  	github.com/calebhabesh/file-sync/internal/history	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/replication	31.935s
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.334s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	1.398s
+ok  	github.com/calebhabesh/file-sync/internal/state	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.286s
+ok  	github.com/calebhabesh/file-sync/model	0.117s
+go test ./tests/integration/...
+--- FAIL: TestP15VersionAndBuildMetadata (0.00s)
+    p15_packaging_lifecycle_test.go:49: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+--- FAIL: TestP15ReleaseBinaryExcludesDestructiveTestHooks (0.00s)
+    p15_packaging_lifecycle_test.go:73: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+--- FAIL: TestP15EmbeddedUIWithoutNode (0.00s)
+    p15_packaging_lifecycle_test.go:88: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+--- FAIL: TestP15ConfigValidation (0.00s)
+    p15_packaging_lifecycle_test.go:163: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+--- FAIL: TestP15AgentStop (0.00s)
+    p15_packaging_lifecycle_test.go:200: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+--- FAIL: TestP15UpgradePreflight (0.00s)
+    p15_packaging_lifecycle_test.go:259: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+--- FAIL: TestP15ConsistentBackupAndRestoreSafety (0.00s)
+    p15_packaging_lifecycle_test.go:356: binary /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync not found, run make build first: stat /tmp/filesync-reproduction-3c_deu9v/checkout/bin/filesync: no such file or directory
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	12.717s
+FAIL
+make: *** [Makefile:35: test-integration] Error 1

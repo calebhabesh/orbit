@@ -1,0 +1,3 @@
+PASS native user-service lifecycle: laptop
+PASS native user-service lifecycle: rpi
+PASS native user-service lifecycle: vps

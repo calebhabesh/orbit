@@ -1,0 +1,8 @@
+PASS 1 unchanged_tree: FileSync=16819651 baseline=1135011 TLS/TCP bytes
+PASS 1 large_initial: FileSync=1092963334 baseline=1076324361 TLS/TCP bytes
+PASS 1 tail_overwrite: FileSync=18013520 baseline=1076324361 TLS/TCP bytes
+PASS 1 append: FileSync=16284033 baseline=1076328479 TLS/TCP bytes
+PASS 1 mixed_initial: FileSync=37224031 baseline=22140529 TLS/TCP bytes
+PASS 1 prefix_insert: FileSync=36464527 baseline=22140552 TLS/TCP bytes
+PASS 1 rename: FileSync=16691432 baseline=1076328602 TLS/TCP bytes
+PASS 1 delete: FileSync=16182928 baseline=1135129 TLS/TCP bytes

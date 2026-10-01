@@ -1,0 +1,1 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=5861f93 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync

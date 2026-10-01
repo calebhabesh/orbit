@@ -1,0 +1,5 @@
+=== RUN   TestBackgroundSyncFromPersistedPeerEndpoints
+    background_sync_test.go:131: 16-MiB archive arrived while 9 ordinary small edits were produced
+--- PASS: TestBackgroundSyncFromPersistedPeerEndpoints (0.77s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.776s

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/pilot_setup.py", line 85, in <module>
+    if __name__=="__main__": main()
+                             ~~~~^^
+  File "<repo>/scripts/validation/pilot_setup.py", line 74, in main
+    else: raise RuntimeError("ordinary background edit did not reach all native pilot hosts")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: ordinary background edit did not reach all native pilot hosts

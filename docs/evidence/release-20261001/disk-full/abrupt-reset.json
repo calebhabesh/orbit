@@ -1,0 +1,38 @@
+{
+  "fault": "SIGKILL of dedicated QEMU VM, then cold guest boot; no clean guest unmount",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "c2f559dc69776df1a4f7d998a9c9475fbea78afd9a9074aee00834dc58a42134",
+  "guest_init_sha256": "1fc8791e7e4290ffa3d39856c1a53cf83b677027a2e522a9e4f7fa84d4bc815b",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-01T14:52:23Z",
+  "runs": [
+    {
+      "hook": "enospc.object",
+      "success": true,
+      "setup_seconds": 0.7099608550197445,
+      "enospc_seconds": 0.7721874410053715,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.object error=write incoming chunk: write /disk/state/incoming/chunk-913963785: no space left on device\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.object protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.sqlite",
+      "success": true,
+      "setup_seconds": 0.6790444389916956,
+      "enospc_seconds": 0.7803915359836537,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.sqlite error=database or disk is full (13)\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.sqlite protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.checkpoint",
+      "success": true,
+      "setup_seconds": 0.69238284099265,
+      "enospc_seconds": 0.7809536989952903,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.checkpoint error=checkpoint WAL: database or disk is full (13)\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.checkpoint protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.staging",
+      "success": false,
+      "setup_seconds": 0.7371581960178446
+    }
+  ],
+  "success": false
+}

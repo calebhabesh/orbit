@@ -1,0 +1,23 @@
+PASS 1 small_files_initial: FileSync=388356194 baseline=351004357 TLS/TCP bytes
+PASS 1 unchanged_tree: FileSync=16416058 baseline=1135018 TLS/TCP bytes
+PASS 1 large_initial: FileSync=1094576409 baseline=1076324375 TLS/TCP bytes
+PASS 1 tail_overwrite: FileSync=18153330 baseline=1076324375 TLS/TCP bytes
+PASS 1 append: FileSync=17125920 baseline=1076328493 TLS/TCP bytes
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/benchmark.py", line 336, in <module>
+    "median_tls_tcp_savings_percent": statistics.median(r["tls_tcp_savings_percent"] for r in runs),
+    
+  File "<repo>/scripts/validation/benchmark.py", line 311, in main
+    out.write(b"E" * 4096)
+    ^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/benchmark.py", line 270, in measure
+    entry = {"repetition": repetition, "workload": name, "bandwidth_bytes_second": bandwidth,
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/harness.py", line 253, in sync
+    def link(source, target, remote_port, bandwidth=0, latency=0, relay=None):
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        processes = []
+        ^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/harness.py", line 72, in cli
+    raise RuntimeError(f"{self.role}: {args}: {result}")
+RuntimeError: receiver: ('sync', '--folder', '71ab63a9f9684fc0ada409ea41aa0ae071ab63a9f9684fc0ada409ea41aa0ae0', '--peer-url', 'https://127.0.0.1:42731', '--peer-device', '7b3642d81f30e4f1ed792d44e8c9652e79f5660239136b60116449fcac157e09', '--peer-certificate', '/home/owner/filesync-validation-k4vpmq2h/source.pem', '--json'): {'returncode': 1, 'stdout': '', 'stderr': 'filesync: RETRY_EXHAUSTED after 5 attempts: peer error RETRY_EXHAUSTED: peer request rate limit reached\n', 'resources': {'sampled_peak_fds': 12, 'sampled_peak_rss_kib': 32124, 'user_seconds': 3.711071, 'system_seconds': 1.250573, 'peak_rss_kib': 31596, 'sampling_interval_seconds': 0.02}}

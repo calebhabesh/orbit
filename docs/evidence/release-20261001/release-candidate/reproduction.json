@@ -1,0 +1,133 @@
+{
+  "source_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "checkout": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+  "started_utc": "2026-10-01T17:17:08Z",
+  "checks": [
+    {
+      "name": "status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 0.013789679011097178
+    },
+    {
+      "name": "check",
+      "command": [
+        "make",
+        "check"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 53.85092677100329
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./..."
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 66.47747230401728
+    },
+    {
+      "name": "demo",
+      "command": [
+        "make",
+        "demo"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 0.2975421769951936
+    },
+    {
+      "name": "reset",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/release-20261001/release-candidate/reset"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 35.57926954899449
+    },
+    {
+      "name": "disk-full",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/release-20261001/release-candidate/disk-full",
+        "--hook",
+        "enospc.object",
+        "--hook",
+        "enospc.sqlite",
+        "--hook",
+        "enospc.checkpoint",
+        "--hook",
+        "enospc.staging",
+        "--hook",
+        "enospc.fsync"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 7.979509586002678
+    },
+    {
+      "name": "checksum",
+      "command": [
+        "sha256sum",
+        "-c",
+        "SHA256SUMS"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout/dist",
+      "exit_code": 0,
+      "seconds": 0.03251044001081027
+    },
+    {
+      "name": "package-repeat",
+      "command": [
+        "make",
+        "package"
+      ],
+      "cwd": "/tmp/filesync-reproduction-rrn4odw3/checkout",
+      "exit_code": 0,
+      "seconds": 1.04640418998315
+    }
+  ],
+  "success": true,
+  "cleanup": "fresh marked checkout retained; no existing environment reset",
+  "artifact_sha256": {
+    "SHA256SUMS": "cb28ef62b41c06bfe30c8080fb9afcaedd36b742ca08ed3927e41833ab209871",
+    "filesync-1.0.0-1.aarch64.rpm": "9822143fccdd5e4526b838fcfa54776aa77f90f63de405ccfb18e791f5402e1e",
+    "filesync-1.0.0-1.x86_64.rpm": "10c7294a88eb9d69d61fcff9f67f7368859e98f37d77fde0467ccbd5e26786ab",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "5ae69dd00fee2b05c0675ad43f59da7662d7c0be4f6a80a0dd725f8172c4ecf3",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "1f06d280044d85d35c2b535de143fddcffd4ff55ee863a285395e69a578820d8",
+    "filesync_1.0.0_amd64.deb": "8de180f416937c0264223aec0b90a3f022da6bb4f9027e37cfcc4ac2c9e4425d",
+    "filesync_1.0.0_arm64.deb": "424923730029e74988c013af0e6c3af04d0669323877d40ff640e7ffa3ca570d"
+  },
+  "binary_version": "filesync 1.0.0 (commit=e13e53a, built=2026-10-01, linux/amd64, go=go1.27.1-X:nodwarf5)\n",
+  "repeat_artifact_sha256": {
+    "SHA256SUMS": "cb28ef62b41c06bfe30c8080fb9afcaedd36b742ca08ed3927e41833ab209871",
+    "filesync-1.0.0-1.aarch64.rpm": "9822143fccdd5e4526b838fcfa54776aa77f90f63de405ccfb18e791f5402e1e",
+    "filesync-1.0.0-1.x86_64.rpm": "10c7294a88eb9d69d61fcff9f67f7368859e98f37d77fde0467ccbd5e26786ab",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "5ae69dd00fee2b05c0675ad43f59da7662d7c0be4f6a80a0dd725f8172c4ecf3",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "1f06d280044d85d35c2b535de143fddcffd4ff55ee863a285395e69a578820d8",
+    "filesync_1.0.0_amd64.deb": "8de180f416937c0264223aec0b90a3f022da6bb4f9027e37cfcc4ac2c9e4425d",
+    "filesync_1.0.0_arm64.deb": "424923730029e74988c013af0e6c3af04d0669323877d40ff640e7ffa3ca570d"
+  },
+  "packages_identical_on_repeat": true,
+  "final_tracked_changes": ""
+}

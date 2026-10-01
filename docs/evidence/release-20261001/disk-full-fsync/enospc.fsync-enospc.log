@@ -1,0 +1,11 @@
+c[?7l[2J[0mSeaBIOS (version Arch Linux 1.17.0-2-2)
+Booting from ROM...
+Probing EDD (edd=off to disable)... oc[?7l[2J[    0.180529] virt/tdx: TDX not supported by the host platform
+panic: fsync syscall fault not observed: flush object shard parent: sync /disk/state/objects/sha256: no space left on device
+
+goroutine 1 [running]:
+main.fsyncWorker()
+	./reset_guest.go:164 +0x365
+main.main()
+	./reset_guest.go:171 +0x85
+FILESYNC_RESET_FAIL exit status 2

@@ -40,12 +40,13 @@ A stale token is rejected; choosing again requires reviewing the new heads.
 Restore uses historical bytes with the current reviewed heads as parents,
 creating a new version rather than rolling back history or counters.
 
-The [actual-host results](evidence/release-20261001/workstation-demo-final/three-host.json)
+The [packaged actual-host results](evidence/release-20261001/laptop-release-packaged-final/three-host.json)
 record three-head agreement, late-arrival conflict preservation, stale-request
 rejection, forwarding with the author listener stopped, and historical restore.
-These are scripted checks on a workstation, Pi and VPS. The prescribed laptop
-was unreachable through its configured SSH address, and owner personal use is
-still a release gate.
+These are scripted checks on the actual laptop, Pi and Oracle VPS using
+binaries extracted from verified packages. The receiving process was actually
+stopped mid-file; restart reused durable chunks and verified the whole hash.
+Owner personal use remains a separate release gate.
 
 ## Recovery evidence
 
@@ -53,7 +54,7 @@ Process-fault tests stop real helper processes before/after named durable
 boundaries and reopen the repository. They establish the tested process
 recovery outcomes, while kernel caches remain alive.
 
-The [VM campaign](evidence/release-20261001/reset/abrupt-reset.json) instead
+The [clean-snapshot VM campaign](evidence/release-20261001/release-candidate/reset/abrupt-reset.json) instead
 stops a dedicated QEMU/KVM instance at production hooks and boots a fresh guest
 on its disposable ext4 disk. An unflushed overwrite is lost in the negative
 control; protected content remains hash-valid and publication recovery
@@ -61,6 +62,11 @@ completes at the selected boundaries. Successful flushes and the recorded
 virtual block-device behavior are assumptions. Host power loss, broken flush
 promises, arbitrary descriptor-held editor writes and physical Pi media resets
 are outside this experiment.
+
+The same checkout passed four actual disk-exhaustion cases (incoming writes,
+SQLite growth, checkpoint allocation and publication staging) plus a separately
+labeled fsync/fdatasync error injected into a VM child with seccomp. See the
+[storage-failure results](evidence/release-20261001/release-candidate/disk-full/abrupt-reset.json).
 
 The earlier file-readback/orderly-reopen test has been renamed
 `TestP16StorageBarrierSmoke`. It supports ordinary IO assertions, not resets.
@@ -106,12 +112,52 @@ and 0.104 seconds afterwards (one sample each). See the
 [after](evidence/release-20261001/history-profile-after.log) logs. This is a
 narrow regression measurement, not a general synchronization speedup claim.
 The raw synthetic campaigns are linked in the [release report](evidence/release-20261001/summary.md).
+The [measured results](evidence/release-20261001/measured-results.md) give
+workload-specific stream counts, sample sizes, times and accumulated storage.
+In the three 100-MiB archive repetitions, a 4-KiB tail overwrite fetched one
+chunk and reused 99, reducing TLS/TCP stream bytes by 98.89% (median).
+Prefix insertion fetched all 21 chunks of a 20-MiB-plus-one-byte file and used
+0.66% more stream bytes than the baseline (median). These are byte comparisons;
+they do not establish a general wall-time improvement.
+
+Finite storage budgets exposed another defect: inventory admission traversed
+the entire object store for each summary. An unchanged 10,000-file replica
+repeatedly exceeded the sender's 30-second snapshot lifetime. Admission now
+writes one bounded page per quota check. The same populated fixture then
+[completed without expiry](evidence/release-20261001/inventory-page-warm-regression.json).
+Per-object budget accounting still traverses storage, and durable per-file
+operations remain expensive. Those are measured limitations rather than a
+throughput guarantee.
+
+A later full-size transfer exposed contention between chunk workers during
+server backpressure. Successful workers kept consuming newly available request
+capacity while a throttled worker exhausted its five attempts. The
+[controlled regression failed](evidence/release-20261001/chunk-backpressure-before.log).
+Chunk workers now share the sync session's bounded cooldown, allowing capacity
+to recover before more requests. The [regression passed after the fix](evidence/release-20261001/chunk-backpressure-after.log),
+with cancellation and race checks recorded separately. The accepted final
+measurements use the repaired `e13e53a` packages.
+
+The plain-rename design was rejected during publication experiments: an
+editor can replace the inode after a pre-rename stat. Exchange keeps the
+actually displaced inode named for recovery. It preserves the supported
+observed write but cannot promise capture of arbitrary future writes through
+a descriptor the editor retains.
 
 Native user-service experiments also found a default-state path mismatch and
 a standalone system-install binary-path mismatch. Both were fixed. The
-[executed lifecycle checks](evidence/release-20261001/lifecycle/service-lifecycle.json)
+[packaged lifecycle checks](evidence/release-20261001/lifecycle-release-packaged-final/service-lifecycle.json)
 cover service restart, embedded UI delivery without Node, and state/root
 preservation on three reachable native hosts.
+
+Native Ubuntu capture also exposed a systemd/AppArmor interaction with
+filesystem namespace hardening; a running service alone did not prove it could
+scan its registered root. The portable unit retains unprivileged ownership,
+resource limits and `NoNewPrivileges`, and the lifecycle oracle now requires
+an ordinary edit to be captured. Background replication uses persisted peer
+endpoints, finite persisted limits and coalesced durable tasks; restart loading
+selects active tasks before the queue limit, so old completed history cannot
+hide pending work.
 
 ## Attribution and ownership
 

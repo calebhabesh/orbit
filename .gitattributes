@@ -1,0 +1,2 @@
+# Preserve captured validation logs exactly, including terminal CRLF and spacing.
+docs/evidence/release-20261001/**/*.log -text whitespace=-trailing-space,-blank-at-eof

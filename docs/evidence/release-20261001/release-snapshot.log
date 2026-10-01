@@ -1,0 +1,8 @@
+PASS status
+PASS check
+PASS race
+PASS demo
+PASS reset
+PASS disk-full
+PASS checksum
+PASS package-repeat

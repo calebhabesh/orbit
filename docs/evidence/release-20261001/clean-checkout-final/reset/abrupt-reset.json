@@ -1,0 +1,156 @@
+{
+  "fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "c2f559dc69776df1a4f7d998a9c9475fbea78afd9a9074aee00834dc58a42134",
+  "guest_init_sha256": "0a67d3fee786b180faad1dbdea6180fa79d55670e358ee630d45cdd267e02a12",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-01T15:25:51Z",
+  "runs": [
+    {
+      "hook": "dirty-cache-control",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7170532350137364,
+      "mutate_seconds": 0.69158648600569,
+      "verify_seconds": 0.7217127020121552,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=dirty-cache-control versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "object.flushed",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.67650085297646,
+      "mutate_seconds": 0.7143648229830433,
+      "verify_seconds": 0.7052955240069423,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=object.flushed versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "object.installed",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7232948449964169,
+      "mutate_seconds": 0.6653431490121875,
+      "verify_seconds": 0.7174500490073115,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=object.installed versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "object.recorded",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7157016860146541,
+      "mutate_seconds": 0.7377264430106152,
+      "verify_seconds": 0.710136865003733,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=object.recorded versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "sql.version.before_commit",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.758749043015996,
+      "mutate_seconds": 0.7027677860169206,
+      "verify_seconds": 0.6627019159786869,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=sql.version.before_commit versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "sql.version.after_commit",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.6868524359888397,
+      "mutate_seconds": 0.6955978159967344,
+      "verify_seconds": 0.6975925389851909,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=sql.version.after_commit versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.prepared",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.6976160530175548,
+      "mutate_seconds": 0.680965148989344,
+      "verify_seconds": 0.6988546100037638,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.prepared versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.stage.flushed",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7136544449895155,
+      "mutate_seconds": 0.7056215770135168,
+      "verify_seconds": 0.6461298470094334,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.stage.flushed versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.staged",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.706289623019984,
+      "mutate_seconds": 0.6914784649852663,
+      "verify_seconds": 0.6910078749933746,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.staged versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.intent",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7037827069871128,
+      "mutate_seconds": 0.6948666209937073,
+      "verify_seconds": 0.6670081400079653,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.intent versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.exchange.before",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7167118139914237,
+      "mutate_seconds": 0.7199782179959584,
+      "verify_seconds": 0.6824384480132721,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.exchange.before versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.filesystem.transition",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7141288749990053,
+      "mutate_seconds": 0.6644462690164801,
+      "verify_seconds": 0.7145210930029862,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.filesystem.transition versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.recovery.named",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.6907853539742064,
+      "mutate_seconds": 0.7112550169986207,
+      "verify_seconds": 0.7063983819971327,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.recovery.named versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.directory.flushed",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.7140741659968626,
+      "mutate_seconds": 0.7204274820105638,
+      "verify_seconds": 0.6916507149871904,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.directory.flushed versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.renamed",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.722241148003377,
+      "mutate_seconds": 0.6563137559860479,
+      "verify_seconds": 0.6888818489969708,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.renamed versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.committed",
+      "success": true,
+      "kind": "abrupt guest stop/reboot",
+      "setup_seconds": 0.680982126010349,
+      "mutate_seconds": 0.7139622580143623,
+      "verify_seconds": 0.7269625719927717,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.committed versions=2 dirty_cache_discarded=true"
+    }
+  ],
+  "success": true
+}

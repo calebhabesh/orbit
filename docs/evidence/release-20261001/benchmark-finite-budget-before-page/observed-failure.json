@@ -1,0 +1,26 @@
+{
+  "record_kind": "partial observations copied from captured tool output; original JSON/log inadvertently overwritten by the package-selection attempt",
+  "snapshot": "90b75ce development build, before bounded-page spool write",
+  "binary_sha256": "8e5724e43a5d2c263a260362d4d1a82bec663085ad03c02a3d2abb035cd9338b",
+  "roots": [
+    "/home/owner/filesync-validation-n0xsrygc",
+    "/home/owner/filesync-validation-hdyqhqwc"
+  ],
+  "initial_observation": {
+    "file_count": 10000,
+    "payload_bytes": 346650550,
+    "filesync_tls_tcp_bytes": 386428373,
+    "baseline_tls_tcp_bytes": 351004302,
+    "filesync_scan_seconds": 168.16829620298813,
+    "filesync_sync_seconds": 1126.083911195019,
+    "baseline_seconds": 36.30289593600901
+  },
+  "failure": {
+    "workload": "unchanged_tree",
+    "error": "filesync: peer inventory snapshot repeatedly expired",
+    "receiver_user_seconds": 36.989918,
+    "receiver_system_seconds": 60.780177
+  },
+  "corrected_fixture_check": "../inventory-page-warm-regression.json",
+  "limitation": "Omitted fields are unavailable, not estimated. This partial record is not used for final benchmark summaries."
+}

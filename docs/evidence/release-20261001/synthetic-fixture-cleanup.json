@@ -1,0 +1,54 @@
+{
+  "utc": "2026-10-01T17:06:26.565306+00:00",
+  "reason": "reclaim only finished historical unlimited-budget benchmark fixtures for fresh final measurements; logs and hashes retained",
+  "deleted": [
+    {
+      "root": "/home/owner/filesync-validation-u6lnimti",
+      "marker_validated": true,
+      "working_digest": "d9120a0f7652dc8859218998c5de411c49e7e6336895f1b0ce514cbe1273db3b"
+    },
+    {
+      "root": "/home/owner/filesync-validation-g6zmewke",
+      "marker_validated": true,
+      "working_digest": "d9120a0f7652dc8859218998c5de411c49e7e6336895f1b0ce514cbe1273db3b"
+    },
+    {
+      "root": "/home/owner/filesync-validation-gxg616gs",
+      "marker_validated": true,
+      "working_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "source_report": "benchmark-repeated-9cb690e/benchmarks.json"
+    },
+    {
+      "root": "/home/owner/filesync-validation-3krjo8a0",
+      "marker_validated": true,
+      "working_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "source_report": "benchmark-repeated-9cb690e/benchmarks.json"
+    },
+    {
+      "root": "/home/owner/filesync-validation-nss7zfa6",
+      "marker_validated": true,
+      "working_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "source_report": "benchmark-repeated-9cb690e/benchmarks.json"
+    },
+    {
+      "root": "/home/owner/filesync-validation-axvabjt4",
+      "marker_validated": true,
+      "working_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "source_report": "benchmark-repeated-9cb690e/benchmarks.json"
+    },
+    {
+      "root": "/home/owner/filesync-validation-2bqadr2b",
+      "marker_validated": true,
+      "working_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "source_report": "benchmark-repeated-9cb690e/benchmarks.json"
+    },
+    {
+      "root": "/home/owner/filesync-validation-zgi99n1_",
+      "marker_validated": true,
+      "working_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "source_report": "benchmark-repeated-9cb690e/benchmarks.json"
+    }
+  ],
+  "personal_or_vps_paths_touched": false,
+  "updated_utc": "2026-10-01T17:27:22.955016+00:00"
+}

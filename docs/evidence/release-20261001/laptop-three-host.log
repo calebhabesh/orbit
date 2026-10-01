@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/three_host.py", line 198, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/validation/three_host.py", line 163, in main
+    raise RuntimeError("restart did not reuse exact verified chunk progress")
+RuntimeError: restart did not reuse exact verified chunk progress

@@ -1,0 +1,20 @@
+{
+  "source_commit": "9cb690e44f556796f3a3123c1fb22d43d3ba0595",
+  "started_utc": "2026-10-01T16:03:59Z",
+  "type": "ordinary service upgrade; no fault injection or owner-use claim",
+  "hosts": [
+    {
+      "host": "laptop",
+      "root": "/home/caleb2002/FileSyncPilot-20261001",
+      "before": {
+        "systemd": "MainPID=64722\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 64722,
+        "control_address": "127.0.0.1:41703",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "binary_sha256": "cddb73ba1e568570fac296ffbb6c66578be7b89be6e2ce986b29883c0e9229df"
+    }
+  ],
+  "success": false
+}

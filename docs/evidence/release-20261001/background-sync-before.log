@@ -1,0 +1,5 @@
+--- FAIL: TestBackgroundSyncFromPersistedPeerEndpoints (12.48s)
+    background_sync_test.go:84: ordinary edit did not arrive through background sync
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	12.484s
+FAIL

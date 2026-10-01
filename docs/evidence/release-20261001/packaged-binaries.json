@@ -1,0 +1,16 @@
+{
+  "source_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "artifacts": {
+    "amd64": {
+      "archive_sha256": "5ae69dd00fee2b05c0675ad43f59da7662d7c0be4f6a80a0dd725f8172c4ecf3",
+      "binary_sha256": "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10",
+      "archive": "filesync-v1.0.0-linux-amd64.tar.gz"
+    },
+    "arm64": {
+      "archive_sha256": "1f06d280044d85d35c2b535de143fddcffd4ff55ee863a285395e69a578820d8",
+      "binary_sha256": "fcf7559b434346049f66da4e8f091d8a330842628b86c1b3e1b0af2ecea3318a",
+      "archive": "filesync-v1.0.0-linux-arm64.tar.gz"
+    }
+  },
+  "native_campaign": "laptop-release-packaged-final"
+}

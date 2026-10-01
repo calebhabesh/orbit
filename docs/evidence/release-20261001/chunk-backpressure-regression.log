@@ -1,0 +1,3 @@
+ok  	github.com/calebhabesh/file-sync/internal/replication	32.498s
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.304s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	7.460s

@@ -1,0 +1,11 @@
+{
+  "reason": "archive extraction selected a slash-prefixed name but the archive uses a root-level filesync; startup proceeded with development binaries. Targeted benchmark cancelled before accepting its measurements, then extraction corrected. Native development runs retained separately.",
+  "benchmark_pid": 966414,
+  "stopped_marked_cli_pids": [
+    976848
+  ],
+  "roots": [
+    "/home/owner/filesync-validation-lc42_txv"
+  ],
+  "evidence_loss": "Original benchmark-finite-budget expiry report/log overwritten at restart; captured observations retained as a labeled partial record"
+}

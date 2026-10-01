@@ -1,0 +1,80 @@
+{
+  "source_commit": "9cb690e44f556796f3a3123c1fb22d43d3ba0595",
+  "started_utc": "2026-10-01T16:07:05Z",
+  "type": "ordinary service upgrade; no fault injection or owner-use claim",
+  "hosts": [
+    {
+      "host": "laptop",
+      "root": "/home/caleb2002/FileSyncPilot-20261001",
+      "before": {
+        "systemd": "MainPID=64722\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 64722,
+        "control_address": "127.0.0.1:41703",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "binary_sha256": "cddb73ba1e568570fac296ffbb6c66578be7b89be6e2ce986b29883c0e9229df",
+      "after": {
+        "systemd": "MainPID=106092\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 106092,
+        "control_address": "127.0.0.1:45677",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      },
+      "version": "filesync 1.0.0 (commit=9cb690e, built=2026-10-01, linux/amd64, go=go1.27.1-X:nodwarf5)",
+      "success": true
+    },
+    {
+      "host": "rpi",
+      "root": "/home/owner/FileSyncPilot-20261001",
+      "before": {
+        "systemd": "MainPID=3691700\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3691700,
+        "control_address": "127.0.0.1:37403",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "binary_sha256": "e30b85cfc4dbebd668ec07368d0d42bb71e8a3caa64f933df142c1ab93fd1c90",
+      "after": {
+        "systemd": "MainPID=3699000\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3699000,
+        "control_address": "127.0.0.1:37115",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      },
+      "version": "filesync 1.0.0 (commit=9cb690e, built=2026-10-01, linux/arm64, go=go1.27.1-X:nodwarf5)",
+      "success": true
+    },
+    {
+      "host": "vps",
+      "root": "/home/ubuntu/FileSyncPilot-20261001",
+      "before": {
+        "systemd": "MainPID=3912999\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3912999,
+        "control_address": "127.0.0.1:46277",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "binary_sha256": "e30b85cfc4dbebd668ec07368d0d42bb71e8a3caa64f933df142c1ab93fd1c90",
+      "after": {
+        "systemd": "MainPID=3964745\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3964745,
+        "control_address": "127.0.0.1:33667",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      },
+      "version": "filesync 1.0.0 (commit=9cb690e, built=2026-10-01, linux/arm64, go=go1.27.1-X:nodwarf5)",
+      "success": true
+    }
+  ],
+  "success": true
+}

@@ -1,0 +1,68 @@
+{
+  "source_commit": "9cb690e44f556796f3a3123c1fb22d43d3ba0595",
+  "type": "automated setup validation; owner activity not inferred",
+  "timestamp_utc": "2026-10-01T16:23:33Z",
+  "file": "automated-package-check-590fd5fbe53e.txt",
+  "sha256": "ecae6c96f82ef85ae42b0a73d54ce5a275e0b3993425e43a03f2599596b705ac",
+  "manual_scan_or_sync": false,
+  "hosts": [
+    {
+      "host": "laptop",
+      "service": {
+        "systemd": "MainPID=106092\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 106092,
+        "control_address": "127.0.0.1:45677",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      },
+      "limits": {
+        "format_version": 1,
+        "data_budget_bytes": 1073741824,
+        "metadata_budget_bytes": 268435456,
+        "free_space_reserve_bytes": 536870912
+      }
+    },
+    {
+      "host": "rpi",
+      "service": {
+        "systemd": "MainPID=3699000\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3699000,
+        "control_address": "127.0.0.1:37115",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      },
+      "limits": {
+        "format_version": 1,
+        "data_budget_bytes": 1073741824,
+        "metadata_budget_bytes": 268435456,
+        "free_space_reserve_bytes": 536870912
+      }
+    },
+    {
+      "host": "vps",
+      "service": {
+        "systemd": "MainPID=3964745\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3964745,
+        "control_address": "127.0.0.1:33667",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      },
+      "limits": {
+        "format_version": 1,
+        "data_budget_bytes": 1073741824,
+        "metadata_budget_bytes": 268435456,
+        "free_space_reserve_bytes": 536870912
+      }
+    }
+  ],
+  "success": true
+}

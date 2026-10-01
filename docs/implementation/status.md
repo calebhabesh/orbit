@@ -1,9 +1,11 @@
 # Implementation status
 
-Updated: 2026-10-01. P00–P15 implementation is delivered. P16 release
-validation has new VM-reset evidence; P17 remains `in_progress` until the
-required laptop and personal-use acceptance evidence is recorded. Earlier
-blanket completion and estimated benchmark claims are withdrawn.
+Updated: 2026-10-01. P00–P16 have implementation and scoped validation evidence.
+Packaged laptop/Pi/VPS demonstrations now pass. P17 remains `in_progress` while
+actual owner use/explanation are recorded. Current measurements passed 45/45.
+Earlier blanket completion and estimated benchmark claims are withdrawn.
+Earlier packet entries retain the limitations of their original dated checks;
+the release report records subsequent validation.
 
 | Packet | State | Dependencies | Evidence |
 | --- | --- | --- | --- |
@@ -23,7 +25,7 @@ blanket completion and estimated benchmark claims are withdrawn.
 | P13 Operator controls | complete | P12 | [evidence](../evidence/p13-20260923/summary.md) |
 | P14 Web interface | complete | P13 | [evidence](../evidence/p14-20260923/summary.md) |
 | P15 Packaging/lifecycle | complete | P14 | [evidence](../evidence/p15-20260923/summary.md) |
-| P16 Fault campaign | complete | P15 | [evidence](../evidence/p16-20260923/summary.md) |
+| P16 Fault campaign | complete | P15 | [clean reproduction](../evidence/release-20261001/release-candidate/reproduction.json); [invariant/scenario map](../evidence/release-20261001/invariant-map.md) |
 | P17 Pilot/release evidence | in_progress | P16 | [current evidence](../evidence/release-20261001/summary.md); [corrected historical report](../evidence/p17-20260924/summary.md) |
 
 Packet definitions: [foundations](01-foundations.md), [replication](02-replication.md), [operations](03-operations.md), [delivery](04-delivery.md).
@@ -38,11 +40,13 @@ listed production implementation and fault-evidence obligations.
 
 ## Next action
 
-Finish P17 release validation. The configured `laptop` alias at 192.168.88.83
-returns “No route to host”; obtain its reachable address and run the actual
-laptop/Pi/VPS campaign. Collect owner-reported personal use with normal edits,
-offline/reconnect and restart, reporting the actual duration. Scripted
-workstation/Pi/VPS scenarios are separate evidence. Continue from the
+Collect actual owner use of
+`/home/caleb2002/FileSyncPilot-20261001/data`: normal edits, offline/reconnect
+and ordinary restart, with actual start/end times and observed results.
+The native campaign now uses `ssh laptop`; hardware access is resolved.
+Owner explanation without agent assistance is still required. The
+[pilot handoff](../evidence/release-20261001/personal-pilot/handoff.md) records
+the persistent services and workstation gateway dependency. Continue from the
 [current release report](../evidence/release-20261001/summary.md).
 
 ## P00 — Reproducible project skeleton
@@ -898,10 +902,10 @@ Next eligible work: P16 reproducible failure campaign and local demo.
 
 ## P16 — Reproducible failure campaign and local demo
 
-Packet: P16. State: `in_progress` while final source-snapshot checks run.
+Packet: P16. State: `complete` for the recorded failure models and boundaries.
 
-Prerequisites: P15 implementation and native user-service lifecycle now
-executed on the workstation, Pi and VPS. Read scope, glossary, protocol,
+Prerequisites: P15 implementation and packaged native user-service lifecycle
+executed on the laptop, Pi and VPS. Read scope, glossary, protocol,
 persistence, operations, verification and delivery packet contracts.
 
 The 2026-09-23 local model/invariant/process-fault results remain historical
@@ -929,8 +933,14 @@ storage flush promises. An unused hook alias was rejected by the first harness
 attempt and removed from the executed matrix; the actual directory-flush hook
 is included. No failed attempt is counted as passing.
 
-Remaining: final `make check`, race, clean-snapshot demonstration and invariant
-matrix record. Unexecuted physical resets stay outside this VM claim.
+Final source snapshot `e13e53a` passed `make check`, uncached race checks,
+local demo, the 16-case VM matrix, all five storage-failure cases, package
+checksums and identical repeat builds of all six amd64/arm64 archives/packages.
+The checkout stayed clean. Every invariant and scenario has a named passing
+check or scoped experiment in the [matrix](../evidence/release-20261001/invariant-map.md).
+Two 15-second fuzz campaigns passed without a failing input. Physical resets,
+alternate filesystems and broken hardware flush promises remain unexecuted
+and outside the published VM claim.
 
 ## P17 — Three-host pilot, measurements and case study
 
@@ -946,16 +956,23 @@ repository inventory spool and path-history queries, metadata retry handling,
 regression tests, and packaging/default-state corrections. Existing unrelated
 `TODO.md` is preserved.
 
-Actual results on reachable hardware: the rebuilt engine passed normal sync,
+Actual results on the prescribed hardware: verified packaged binaries passed normal sync,
 three independent offline heads with matching tokens, reviewed resolution,
 late C arrival preserving a conflict, stale-token rejection, A→VPS→B with A's
 listener stopped, an actually interrupted 12-chunk file followed by verified
 chunk reuse and whole-file hash equality, historical restore as a new version,
-and restart/integrity checks. These were scripted checks on workstation/Pi/VPS;
-the laptop address is currently unreachable. Dedicated roots and exact PIDs
+and restart/integrity checks. These were scripted checks on laptop/Pi/VPS.
+The reports' binary hashes match the checked amd64/arm64 archives. Dedicated roots and exact PIDs
 isolate each run; existing pilot folders and unrelated services remain intact.
 Native user-service install/restart/embedded UI/uninstall checks passed on all
 three reachable hosts, preserving state and workspace bytes.
+
+Ordinary background capture and peer pulls now use persisted authenticated
+endpoints; finite budgets survive reopening. Coalescing cannot redispatch a
+running pull; completed history cannot hide active work after restart. Native
+capture found and fixed the portable unit's Ubuntu AppArmor namespace issue.
+The persistent personal pilot is prepared and gracefully upgraded with
+consistent backups. Its setup edits are explicitly automated, not adoption.
 
 Measurement work found and fixed a real 1,024-version inventory rejection,
 explicit server-backpressure failures, and folder-wide history reconstruction
@@ -963,14 +980,37 @@ for per-path operations. The pre-fix regression failed; the repaired test and
 relevant suites pass. A single local 1,000-directory capture sample improved
 from 14.402 s to 0.104 s; this is a microbenchmark, not a general speedup.
 A 20-file/40-MiB measured smoke campaign passed all nine workload checks. The
-full 10,000-file/1-GiB campaign is being rerun after the scaling fix. Counters
+full 10,000-file/1-GiB campaign passed all nine workloads with verified package
+binaries. Three smaller repetitions with 10/20/100-MiB mixed objects passed
+27/27; the actual VPS-route campaign passed 9/9. Counters
 measure both encrypted TCP directions, not estimated payload or physical wire.
 The verified full-file HTTPS baseline skips unchanged files after hashing;
 unchanged scans and deletion can therefore favor the baseline.
 
-Remaining acceptance evidence: laptop/Pi/VPS execution, real owner pilot with
-actual duration/offline/reconnect/restart, final benchmark/reproduction records,
-and owner explanation without agent assistance. Approval of product scope is
+A later full-size mixed transfer exposed chunk retries that exhausted during
+server backpressure. The controlled regression failed before the shared
+50/100/200/400-ms chunk-pool cooldown and passed afterwards, including
+cancellation and repeated race checks. Fresh final campaigns use `e13e53a`.
+
+A finite-budget unchanged-tree run exposed per-summary storage traversal that
+outlived inventory expiry. Bounded page admission fixed it; the same populated
+10,000-file fixture passed. An orchestration mistake overwrote part of that
+failed record; retained captured observations are labeled partial, not used
+in final summaries. Evidence-directory guards now refuse accidental overwrite.
+
+The interrupted full-size parent was absent after its successful initial
+workload. The original report was preserved and continuation used a new log;
+marker, binary and fixture digests were verified before remaining workloads.
+[Measured results](../evidence/release-20261001/measured-results.md) now record
+actual bytes, sample counts, timing ranges, receiver resources and storage costs.
+Host space pressure and concurrent fixture cleanup limit timing interpretation.
+On owner request, nonessential marked validation folders were removed on all
+four hosts after process/service checks; active benchmark roots waited until
+report completion. Raw evidence and personal pilot services remain intact.
+
+Remaining acceptance evidence: real owner pilot with actual
+duration/offline/reconnect/restart, and owner explanation
+without agent assistance. Approval of product scope is
 not required for these implementation/evidence tasks. Next eligible work is
 continuing P17, not declaring every requirement complete.
 

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/upgrade_pilot.py", line 74, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/validation/upgrade_pilot.py", line 45, in main
+    node.cli("maintenance", "backup", "--out", node.root + "/pre-upgrade-" + expected_hash[:12] + ".sqlite")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/harness.py", line 72, in cli
+    raise RuntimeError(f"{self.role}: {args}: {result}")
+RuntimeError: laptop: ('maintenance', 'backup', '--out', '/home/caleb2002/FileSyncPilot-20261001/pre-upgrade-cddb73ba1e56.sqlite'): {'returncode': 1, 'stdout': '', 'stderr': 'filesync: state directory is already owned by another agent\n', 'resources': {'sampled_peak_fds': 3, 'sampled_peak_rss_kib': 4644, 'user_seconds': 0.0015329999999999999, 'system_seconds': 0.000766, 'peak_rss_kib': 19832, 'sampling_interval_seconds': 0.02}}

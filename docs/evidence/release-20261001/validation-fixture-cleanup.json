@@ -1,0 +1,736 @@
+{
+  "reason": "Owner requested removal of nonessential generated validation folders on all four hosts",
+  "hosts": [
+    {
+      "ssh_alias": "local",
+      "utc": "2026-10-01T18:22:23.743844+00:00",
+      "host": "owner-desktop",
+      "home": "/home/owner",
+      "deleted": [
+        {
+          "root": "/home/owner/filesync-validation-2va7sj5a",
+          "allocated_bytes": 508989440,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-2zhlu3vz",
+          "allocated_bytes": 1087246336,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-3bf_wdwv",
+          "allocated_bytes": 47095808,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-7d3k0y4b",
+          "allocated_bytes": 361484288,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-_ao3koth",
+          "allocated_bytes": 21610496,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-bqrur9cp",
+          "allocated_bytes": 47067136,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-dglgoqnt",
+          "allocated_bytes": 508985344,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-f1can9ga",
+          "allocated_bytes": 21577728,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-gy1j0g5_",
+          "allocated_bytes": 183664640,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-hdyqhqwc",
+          "allocated_bytes": 1150496768,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-hqd45odc",
+          "allocated_bytes": 2971942912,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-kav7y738",
+          "allocated_bytes": 98848768,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-kbd_v3kv",
+          "allocated_bytes": 21581824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-kiznf1pv",
+          "allocated_bytes": 21581824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-klume4va",
+          "allocated_bytes": 21610496,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-lc42_txv",
+          "allocated_bytes": 30441472,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-m8jk7ll9",
+          "allocated_bytes": 183730176,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-n0xsrygc",
+          "allocated_bytes": 778907648,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-oqpurj_r",
+          "allocated_bytes": 775487488,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-pm39bz5q",
+          "allocated_bytes": 150847488,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-qjsv1qib",
+          "allocated_bytes": 21590016,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-rdekb9lx",
+          "allocated_bytes": 564809728,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-sy968nu0",
+          "allocated_bytes": 47083520,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-tip9vb7x",
+          "allocated_bytes": 21610496,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-u7a8x07l",
+          "allocated_bytes": 1087254528,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-ulyrw721",
+          "allocated_bytes": 335233024,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-up68u93k",
+          "allocated_bytes": 1087262720,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-uus0wsgt",
+          "allocated_bytes": 21602304,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-w_tud_y8",
+          "allocated_bytes": 21577728,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-xcsyk73e",
+          "allocated_bytes": 335142912,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-xj_br69e",
+          "allocated_bytes": 508989440,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-yb02y8ns",
+          "allocated_bytes": 21663744,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-zmde3wn4",
+          "allocated_bytes": 21643264,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        }
+      ],
+      "skipped": [
+        {
+          "root": "/home/owner/filesync-validation-7u9wrjxf",
+          "reason": "active or explicitly preserved"
+        },
+        {
+          "root": "/home/owner/filesync-validation-gkgpluz5",
+          "reason": "active or explicitly preserved"
+        }
+      ],
+      "allocated_bytes_removed": 13088661504,
+      "available_bytes_after": 20756361216,
+      "pilot_folders_preserved": true,
+      "release_reports_preserved": true
+    },
+    {
+      "ssh_alias": "laptop",
+      "utc": "2026-10-01T18:22:24.344131+00:00",
+      "host": "owner-laptop",
+      "home": "/home/caleb2002",
+      "deleted": [
+        {
+          "root": "/home/caleb2002/filesync-validation-1dob50q9",
+          "allocated_bytes": 47116288,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-27t5ecum",
+          "allocated_bytes": 21676032,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-45hp6ll9",
+          "allocated_bytes": 21684224,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-7hyic5ww",
+          "allocated_bytes": 21626880,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-aawi277i",
+          "allocated_bytes": 47001600,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-dmlxl9oo",
+          "allocated_bytes": 47099904,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-fozdbmcq",
+          "allocated_bytes": 47124480,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-lk62tm9v",
+          "allocated_bytes": 47124480,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-lr707jv_",
+          "allocated_bytes": 21676032,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-oin0lcjg",
+          "allocated_bytes": 21676032,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-rfhq7mu5",
+          "allocated_bytes": 47116288,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-ri4113pj",
+          "allocated_bytes": 21676032,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-vzo9vzft",
+          "allocated_bytes": 21684224,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/caleb2002/filesync-validation-xmglkwbc",
+          "allocated_bytes": 47116288,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        }
+      ],
+      "skipped": [],
+      "allocated_bytes_removed": 481398784,
+      "available_bytes_after": 18922356736,
+      "pilot_folders_preserved": true,
+      "release_reports_preserved": true
+    },
+    {
+      "ssh_alias": "rpi",
+      "utc": "2026-10-01T18:22:25.618258+00:00",
+      "host": "owner-pi",
+      "home": "/home/owner",
+      "deleted": [
+        {
+          "root": "/home/owner/filesync-validation-1ni93t4d",
+          "allocated_bytes": 46018560,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-3f93i1ji",
+          "allocated_bytes": 45912064,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-57ud3lus",
+          "allocated_bytes": 20557824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-5hpgdiix",
+          "allocated_bytes": 20557824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-6rr8gs7_",
+          "allocated_bytes": 20549632,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-7w7id90f",
+          "allocated_bytes": 45985792,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-808vag_k",
+          "allocated_bytes": 20615168,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-em18zhdk",
+          "allocated_bytes": 45830144,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-fbsgk8lq",
+          "allocated_bytes": 45752320,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-hs8bkata",
+          "allocated_bytes": 20471808,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-hzan56hd",
+          "allocated_bytes": 47017984,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-jsp55oto",
+          "allocated_bytes": 46960640,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-juchaeu6",
+          "allocated_bytes": 46862336,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-lyq2x29x",
+          "allocated_bytes": 46858240,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-ox_2lonw",
+          "allocated_bytes": 20631552,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-pongo_ps",
+          "allocated_bytes": 20557824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-xastnzvc",
+          "allocated_bytes": 20467712,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-yqlkx02t",
+          "allocated_bytes": 45912064,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/owner/filesync-validation-zh7faq67",
+          "allocated_bytes": 20451328,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        }
+      ],
+      "skipped": [],
+      "allocated_bytes_removed": 647970816,
+      "available_bytes_after": 41839624192,
+      "pilot_folders_preserved": true,
+      "release_reports_preserved": true
+    },
+    {
+      "ssh_alias": "vps",
+      "utc": "2026-10-01T18:22:26.490202+00:00",
+      "host": "main-instance-vnic",
+      "home": "/home/ubuntu",
+      "deleted": [
+        {
+          "root": "/home/ubuntu/filesync-validation-3wzfuwe5",
+          "allocated_bytes": 20496384,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-71p0nsy2",
+          "allocated_bytes": 20615168,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-861c22_8",
+          "allocated_bytes": 45973504,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-ao5dimby",
+          "allocated_bytes": 45875200,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-ddofmqen",
+          "allocated_bytes": 20557824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-liqcxvi_",
+          "allocated_bytes": 20631552,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-ln1a90ll",
+          "allocated_bytes": 45891584,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-mkncjd2e",
+          "allocated_bytes": 45973504,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-mw8ksl8s",
+          "allocated_bytes": 45875200,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-o0nhoz_8",
+          "allocated_bytes": 45948928,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-prdfk_0r",
+          "allocated_bytes": 20557824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-pzs18_kl",
+          "allocated_bytes": 20590592,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-qdfefwb2",
+          "allocated_bytes": 20549632,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-qey39zdv",
+          "allocated_bytes": 45973504,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-rp3mofhf",
+          "allocated_bytes": 20557824,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-vo0wakqv",
+          "allocated_bytes": 20467712,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-xzxs12tt",
+          "allocated_bytes": 46030848,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-z1k5ymrt",
+          "allocated_bytes": 20451328,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        },
+        {
+          "root": "/home/ubuntu/filesync-validation-zj8hxvmj",
+          "allocated_bytes": 46047232,
+          "disposable_marker_validated": true,
+          "no_active_process": true,
+          "no_registered_service": true
+        }
+      ],
+      "skipped": [],
+      "allocated_bytes_removed": 619065344,
+      "available_bytes_after": 39947837440,
+      "pilot_folders_preserved": true,
+      "release_reports_preserved": true
+    }
+  ],
+  "release_reports_preserved": true,
+  "pilot_folders_preserved": true,
+  "active_benchmark_roots_preserved_until_completed": true,
+  "relocated_fixture": {
+    "utc": "2026-10-01T18:17:59.452451+00:00",
+    "reason": "workstation disk space exhaustion during final validation",
+    "original_root": "/home/owner/filesync-validation-k4vpmq2h",
+    "preserved_at": "/tmp/filesync-space-rescue-20261001/inactive-fixtures/filesync-validation-k4vpmq2h",
+    "source_report": "docs/evidence/release-20261001/benchmark-before-shared-backoff/benchmarks.json",
+    "disposable_marker_validated": true,
+    "no_active_owned_process": true,
+    "allocated_bytes_freed": 6535118848,
+    "regular_files_verified": 31051,
+    "all_regular_file_hashes_match": true,
+    "release_reports_preserved": true,
+    "personal_or_vps_paths_touched": false,
+    "temporary_storage": "RAM-backed /tmp; retain until obsolete fixture may be discarded",
+    "subsequently_discarded_utc": "2026-10-01T18:26:40.754470+00:00",
+    "owner_authorized_discard_of_nonessential_fixture": true
+  },
+  "completed_benchmark_cleanup": {
+    "utc": "2026-10-01T18:25:52.442299+00:00",
+    "host": "owner-desktop",
+    "home": "/home/owner",
+    "deleted": [
+      {
+        "root": "/home/owner/filesync-validation-7u9wrjxf",
+        "allocated_bytes": 2970714112,
+        "disposable_marker_validated": true,
+        "no_active_process": true,
+        "no_registered_service": true
+      },
+      {
+        "root": "/home/owner/filesync-validation-gkgpluz5",
+        "allocated_bytes": 7684083712,
+        "disposable_marker_validated": true,
+        "no_active_process": true,
+        "no_registered_service": true
+      }
+    ],
+    "skipped": [],
+    "allocated_bytes_removed": 10654797824,
+    "available_bytes_after": 31457792000,
+    "pilot_folders_preserved": true,
+    "release_reports_preserved": true
+  },
+  "benchmark_report_preserved_sha256": "12c120a63a7e1f98076278c4663325bcdefea6ca4f809640eea198bbfad5789b",
+  "completed_utc": "2026-10-01T18:31:01.857371+00:00",
+  "post_cleanup_read_only_checks": [
+    {
+      "ssh_alias": "laptop",
+      "pilot_root_exists": true,
+      "pilot_marker_exists": true,
+      "data_root_exists": true,
+      "remaining_validation_folders": [],
+      "service_state": "active"
+    },
+    {
+      "ssh_alias": "rpi",
+      "pilot_root_exists": true,
+      "pilot_marker_exists": true,
+      "data_root_exists": true,
+      "remaining_validation_folders": [],
+      "service_state": "active"
+    },
+    {
+      "ssh_alias": "vps",
+      "pilot_root_exists": true,
+      "pilot_marker_exists": true,
+      "data_root_exists": true,
+      "remaining_validation_folders": [],
+      "service_state": "active"
+    }
+  ],
+  "workstation_remaining_validation_folders": []
+}

@@ -72,7 +72,7 @@ systemctl --user stop filesync.service
 #### Step 2: Restore from Consistent Backup
 Execute `filesync maintenance restore-backup`:
 ```bash
-filesync maintenance restore-backup --backup ~/.local/share/filesync/pre-upgrade-backup.sqlite
+filesync maintenance restore-backup --backup ~/.local/state/filesync/pre-upgrade-backup.sqlite
 ```
 
 What this command does:

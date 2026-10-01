@@ -1,0 +1,1498 @@
+{
+  "type": "synthetic",
+  "seed": 20261001,
+  "success": true,
+  "runs": [
+    {
+      "repetition": 0,
+      "workload": "small_files_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 70,
+          "metadata_added": 70,
+          "chunks_fetched": 30,
+          "chunks_reused": 0,
+          "versions_stored": 30,
+          "receipts_sent": 70,
+          "versions_applied": 70
+        },
+        "seconds": 1.182649300986668,
+        "receiver_resources": {
+          "sampled_peak_fds": 14,
+          "sampled_peak_rss_kib": 24196,
+          "user_seconds": 0.128721,
+          "system_seconds": 0.049929,
+          "peak_rss_kib": 23408,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 110909,
+        "response_tls_tcp_bytes": 1319754,
+        "total_tls_tcp_bytes": 1430663,
+        "proxy_errors": [],
+        "scan_seconds": 0.20116586500080302,
+        "total_seconds": 1.3838151659874711
+      },
+      "receiver_storage_bytes": 1634165,
+      "receiver_root_bytes": 1203116,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 2837281,
+      "baseline": {
+        "seconds": 0.040548240998759866,
+        "payload_bytes": 1203051,
+        "request_tls_tcp_bytes": 14015,
+        "response_tls_tcp_bytes": 1229098,
+        "total_tls_tcp_bytes": 1243113,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 1203051,
+      "file_count": 30,
+      "source_payload_bytes": 1203051,
+      "workload_digest": "ba7921b7200dbde1c557ef98016d2a14dd917920fc4fb0baa0660659895639fc",
+      "tls_tcp_savings_percent": -15.087124018492283
+    },
+    {
+      "repetition": 0,
+      "workload": "unchanged_tree",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 70,
+          "metadata_added": 0,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 70,
+          "versions_applied": 0
+        },
+        "seconds": 0.2726508339983411,
+        "receiver_resources": {
+          "sampled_peak_fds": 11,
+          "sampled_peak_rss_kib": 23524,
+          "user_seconds": 0.022668999999999998,
+          "system_seconds": 0.009672,
+          "peak_rss_kib": 22896,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 50177,
+        "response_tls_tcp_bytes": 55166,
+        "total_tls_tcp_bytes": 105343,
+        "proxy_errors": [],
+        "scan_seconds": 0.037154242978431284,
+        "total_seconds": 0.3098050769767724
+      },
+      "receiver_storage_bytes": 1634165,
+      "receiver_root_bytes": 1203116,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 2837281,
+      "baseline": {
+        "seconds": 0.00568766298238188,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2149,
+        "response_tls_tcp_bytes": 6796,
+        "total_tls_tcp_bytes": 8945,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 1203051,
+      "file_count": 30,
+      "source_payload_bytes": 1203051,
+      "workload_digest": "ba7921b7200dbde1c557ef98016d2a14dd917920fc4fb0baa0660659895639fc",
+      "tls_tcp_savings_percent": -1077.6746785913917
+    },
+    {
+      "repetition": 0,
+      "workload": "large_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 71,
+          "metadata_added": 1,
+          "chunks_fetched": 100,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 71,
+          "versions_applied": 1
+        },
+        "seconds": 1.292214810004225,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 29612,
+          "user_seconds": 0.568608,
+          "system_seconds": 0.159294,
+          "peak_rss_kib": 29172,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 178119,
+        "response_tls_tcp_bytes": 105156343,
+        "total_tls_tcp_bytes": 105334462,
+        "proxy_errors": [],
+        "scan_seconds": 0.5931885669997428,
+        "total_seconds": 1.8854033770039678
+      },
+      "receiver_storage_bytes": 106631029,
+      "receiver_root_bytes": 106060716,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 212691745,
+      "baseline": {
+        "seconds": 0.17134262499166653,
+        "payload_bytes": 104857600,
+        "request_tls_tcp_bytes": 4306,
+        "response_tls_tcp_bytes": 105008764,
+        "total_tls_tcp_bytes": 105013070,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106060651,
+      "file_count": 31,
+      "source_payload_bytes": 106060651,
+      "workload_digest": "9cac0de4c9f21628594a691f88e24de3dec66ec88394485114a9a1294a9e5ee1",
+      "tls_tcp_savings_percent": -0.3060495231688831
+    },
+    {
+      "repetition": 0,
+      "workload": "tail_overwrite",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 72,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 99,
+          "versions_stored": 1,
+          "receipts_sent": 72,
+          "versions_applied": 1
+        },
+        "seconds": 0.9395058460067958,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 23816,
+          "user_seconds": 0.526242,
+          "system_seconds": 0.082436,
+          "peak_rss_kib": 23268,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 52655,
+        "response_tls_tcp_bytes": 1117571,
+        "total_tls_tcp_bytes": 1170226,
+        "proxy_errors": [],
+        "scan_seconds": 0.35320701202726923,
+        "total_seconds": 1.292712858034065
+      },
+      "receiver_storage_bytes": 107745141,
+      "receiver_root_bytes": 210918316,
+      "receiver_root_scratch_bytes": 104857665,
+      "receiver_managed_bytes": 318663457,
+      "baseline": {
+        "seconds": 0.22342031498556025,
+        "payload_bytes": 104857600,
+        "request_tls_tcp_bytes": 4306,
+        "response_tls_tcp_bytes": 105008764,
+        "total_tls_tcp_bytes": 105013070,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106060651,
+      "file_count": 31,
+      "source_payload_bytes": 106060651,
+      "workload_digest": "4b473c5e4afbbce46ed6618f06857d58b611da9426238e48f1d4419918a38850",
+      "tls_tcp_savings_percent": 98.8856377591856
+    },
+    {
+      "repetition": 0,
+      "workload": "append",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 73,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 100,
+          "versions_stored": 1,
+          "receipts_sent": 73,
+          "versions_applied": 1
+        },
+        "seconds": 0.9554522770049516,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 26476,
+          "user_seconds": 0.542948,
+          "system_seconds": 0.077487,
+          "peak_rss_kib": 25608,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 53321,
+        "response_tls_tcp_bytes": 72538,
+        "total_tls_tcp_bytes": 125859,
+        "proxy_errors": [],
+        "scan_seconds": 0.35272375799831934,
+        "total_seconds": 1.308176035003271
+      },
+      "receiver_storage_bytes": 107831157,
+      "receiver_root_bytes": 315780012,
+      "receiver_root_scratch_bytes": 209715265,
+      "receiver_managed_bytes": 423611169,
+      "baseline": {
+        "seconds": 0.22639091301243752,
+        "payload_bytes": 104861696,
+        "request_tls_tcp_bytes": 4306,
+        "response_tls_tcp_bytes": 105012882,
+        "total_tls_tcp_bytes": 105017188,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106064747,
+      "file_count": 31,
+      "source_payload_bytes": 106064747,
+      "workload_digest": "e2f8368d566808caf200794896ba7d03c4db25a7383bdc9ecee2a81a3035e0c9",
+      "tls_tcp_savings_percent": 99.8801539039495
+    },
+    {
+      "repetition": 0,
+      "workload": "mixed_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 76,
+          "metadata_added": 3,
+          "chunks_fetched": 130,
+          "chunks_reused": 0,
+          "versions_stored": 3,
+          "receipts_sent": 76,
+          "versions_applied": 3
+        },
+        "seconds": 1.8806578069925308,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 33312,
+          "user_seconds": 0.800249,
+          "system_seconds": 0.248717,
+          "peak_rss_kib": 34652,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 240002,
+        "response_tls_tcp_bytes": 136709096,
+        "total_tls_tcp_bytes": 136949098,
+        "proxy_errors": [],
+        "scan_seconds": 0.808667505014455,
+        "total_seconds": 2.6893253120069858
+      },
+      "receiver_storage_bytes": 244223861,
+      "receiver_root_bytes": 452094892,
+      "receiver_root_scratch_bytes": 209715265,
+      "receiver_managed_bytes": 696318753,
+      "baseline": {
+        "seconds": 0.29183231698698364,
+        "payload_bytes": 136314880,
+        "request_tls_tcp_bytes": 8619,
+        "response_tls_tcp_bytes": 136515524,
+        "total_tls_tcp_bytes": 136524143,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379627,
+      "file_count": 34,
+      "source_payload_bytes": 242379627,
+      "workload_digest": "bc96a6b25936ee28d43159369196b66522812894e088b9c9dc43c42ad73cebf3",
+      "tls_tcp_savings_percent": -0.3112672899180824
+    },
+    {
+      "repetition": 0,
+      "workload": "prefix_insert",
+      "bandwidth_bytes_second": 8388608,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0.002,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 77,
+          "metadata_added": 1,
+          "chunks_fetched": 21,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 77,
+          "versions_applied": 1
+        },
+        "seconds": 1.8758680140017532,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 31352,
+          "user_seconds": 0.264499,
+          "system_seconds": 0.08499,
+          "peak_rss_kib": 30252,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 75978,
+        "response_tls_tcp_bytes": 21076366,
+        "total_tls_tcp_bytes": 21152344,
+        "proxy_errors": [],
+        "scan_seconds": 0.2685000660130754,
+        "total_seconds": 2.1443680800148286
+      },
+      "receiver_storage_bytes": 265207670,
+      "receiver_root_bytes": 473066413,
+      "receiver_root_scratch_bytes": 230686785,
+      "receiver_managed_bytes": 738274083,
+      "baseline": {
+        "seconds": 3.4553096989984624,
+        "payload_bytes": 20971521,
+        "request_tls_tcp_bytes": 4305,
+        "response_tls_tcp_bytes": 21010390,
+        "total_tls_tcp_bytes": 21014695,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379628,
+      "file_count": 34,
+      "source_payload_bytes": 242379628,
+      "workload_digest": "4e1f71c45770d608608e7ea04a1d3fd5781823dbac3f221496e1858e1f82497f",
+      "tls_tcp_savings_percent": -0.6550130753741668
+    },
+    {
+      "repetition": 0,
+      "workload": "rename",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 79,
+          "metadata_added": 2,
+          "chunks_fetched": 0,
+          "chunks_reused": 101,
+          "versions_stored": 1,
+          "receipts_sent": 79,
+          "versions_applied": 2
+        },
+        "seconds": 0.9792301249981392,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 22448,
+          "user_seconds": 0.550487,
+          "system_seconds": 0.08435999999999999,
+          "peak_rss_kib": 23056,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 57308,
+        "response_tls_tcp_bytes": 73288,
+        "total_tls_tcp_bytes": 130596,
+        "proxy_errors": [],
+        "scan_seconds": 0.4784279330051504,
+        "total_seconds": 1.4576580580032896
+      },
+      "receiver_storage_bytes": 265297782,
+      "receiver_root_bytes": 577928109,
+      "receiver_root_scratch_bytes": 335548481,
+      "receiver_managed_bytes": 843225891,
+      "baseline": {
+        "seconds": 0.34099144401261583,
+        "payload_bytes": 104861696,
+        "request_tls_tcp_bytes": 4314,
+        "response_tls_tcp_bytes": 105013214,
+        "total_tls_tcp_bytes": 105017528,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379628,
+      "file_count": 34,
+      "source_payload_bytes": 242379628,
+      "workload_digest": "3144c1146b210cb61e4b42f36a42359c23b9b39200bd12716df0e31331ec63da",
+      "tls_tcp_savings_percent": 99.8756436163685
+    },
+    {
+      "repetition": 0,
+      "workload": "delete",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 80,
+          "metadata_added": 1,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 80,
+          "versions_applied": 1
+        },
+        "seconds": 0.43462499999441206,
+        "receiver_resources": {
+          "sampled_peak_fds": 14,
+          "sampled_peak_rss_kib": 25716,
+          "user_seconds": 0.14561,
+          "system_seconds": 0.024801,
+          "peak_rss_kib": 25124,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 57400,
+        "response_tls_tcp_bytes": 63402,
+        "total_tls_tcp_bytes": 120802,
+        "proxy_errors": [],
+        "scan_seconds": 0.15535929799079895,
+        "total_seconds": 0.589984297985211
+      },
+      "receiver_storage_bytes": 265297782,
+      "receiver_root_bytes": 577928109,
+      "receiver_root_scratch_bytes": 356520002,
+      "receiver_managed_bytes": 843225891,
+      "baseline": {
+        "seconds": 0.19661671400535852,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2149,
+        "response_tls_tcp_bytes": 7130,
+        "total_tls_tcp_bytes": 9279,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 221408107,
+      "file_count": 33,
+      "source_payload_bytes": 221408107,
+      "workload_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "tls_tcp_savings_percent": -1201.8859790925746
+    },
+    {
+      "repetition": 1,
+      "workload": "small_files_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 70,
+          "metadata_added": 70,
+          "chunks_fetched": 30,
+          "chunks_reused": 0,
+          "versions_stored": 30,
+          "receipts_sent": 70,
+          "versions_applied": 70
+        },
+        "seconds": 1.1853766290005296,
+        "receiver_resources": {
+          "sampled_peak_fds": 14,
+          "sampled_peak_rss_kib": 26564,
+          "user_seconds": 0.157796,
+          "system_seconds": 0.038555,
+          "peak_rss_kib": 25384,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 110350,
+        "response_tls_tcp_bytes": 1319430,
+        "total_tls_tcp_bytes": 1429780,
+        "proxy_errors": [],
+        "scan_seconds": 0.18399332300759852,
+        "total_seconds": 1.3693699520081282
+      },
+      "receiver_storage_bytes": 1634165,
+      "receiver_root_bytes": 1203116,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 2837281,
+      "baseline": {
+        "seconds": 0.034488034987589344,
+        "payload_bytes": 1203051,
+        "request_tls_tcp_bytes": 14015,
+        "response_tls_tcp_bytes": 1229093,
+        "total_tls_tcp_bytes": 1243108,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 1203051,
+      "file_count": 30,
+      "source_payload_bytes": 1203051,
+      "workload_digest": "ba7921b7200dbde1c557ef98016d2a14dd917920fc4fb0baa0660659895639fc",
+      "tls_tcp_savings_percent": -15.016555279187326
+    },
+    {
+      "repetition": 1,
+      "workload": "unchanged_tree",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 70,
+          "metadata_added": 0,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 70,
+          "versions_applied": 0
+        },
+        "seconds": 0.25897890198393725,
+        "receiver_resources": {
+          "sampled_peak_fds": 11,
+          "sampled_peak_rss_kib": 23492,
+          "user_seconds": 0.022897,
+          "system_seconds": 0.008041,
+          "peak_rss_kib": 22816,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 50177,
+        "response_tls_tcp_bytes": 55165,
+        "total_tls_tcp_bytes": 105342,
+        "proxy_errors": [],
+        "scan_seconds": 0.034996177011635154,
+        "total_seconds": 0.2939750789955724
+      },
+      "receiver_storage_bytes": 1634165,
+      "receiver_root_bytes": 1203116,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 2837281,
+      "baseline": {
+        "seconds": 0.005467893002787605,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2149,
+        "response_tls_tcp_bytes": 6795,
+        "total_tls_tcp_bytes": 8944,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 1203051,
+      "file_count": 30,
+      "source_payload_bytes": 1203051,
+      "workload_digest": "ba7921b7200dbde1c557ef98016d2a14dd917920fc4fb0baa0660659895639fc",
+      "tls_tcp_savings_percent": -1077.7951699463329
+    },
+    {
+      "repetition": 1,
+      "workload": "large_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 71,
+          "metadata_added": 1,
+          "chunks_fetched": 100,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 71,
+          "versions_applied": 1
+        },
+        "seconds": 1.261513545003254,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 30328,
+          "user_seconds": 0.60197,
+          "system_seconds": 0.169963,
+          "peak_rss_kib": 29700,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 167484,
+        "response_tls_tcp_bytes": 105145614,
+        "total_tls_tcp_bytes": 105313098,
+        "proxy_errors": [],
+        "scan_seconds": 0.6623535020044073,
+        "total_seconds": 1.9238670470076613
+      },
+      "receiver_storage_bytes": 106631029,
+      "receiver_root_bytes": 106060716,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 212691745,
+      "baseline": {
+        "seconds": 0.1917930920026265,
+        "payload_bytes": 104857600,
+        "request_tls_tcp_bytes": 4306,
+        "response_tls_tcp_bytes": 105008762,
+        "total_tls_tcp_bytes": 105013068,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106060651,
+      "file_count": 31,
+      "source_payload_bytes": 106060651,
+      "workload_digest": "9cac0de4c9f21628594a691f88e24de3dec66ec88394485114a9a1294a9e5ee1",
+      "tls_tcp_savings_percent": -0.28570729882875234
+    },
+    {
+      "repetition": 1,
+      "workload": "tail_overwrite",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 72,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 99,
+          "versions_stored": 1,
+          "receipts_sent": 72,
+          "versions_applied": 1
+        },
+        "seconds": 2.489684124971973,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 26460,
+          "user_seconds": 0.542524,
+          "system_seconds": 0.079918,
+          "peak_rss_kib": 25692,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 52655,
+        "response_tls_tcp_bytes": 1117570,
+        "total_tls_tcp_bytes": 1170225,
+        "proxy_errors": [],
+        "scan_seconds": 0.3873560290085152,
+        "total_seconds": 2.877040153980488
+      },
+      "receiver_storage_bytes": 107749237,
+      "receiver_root_bytes": 210918316,
+      "receiver_root_scratch_bytes": 104857665,
+      "receiver_managed_bytes": 318667553,
+      "baseline": {
+        "seconds": 0.24698189698392525,
+        "payload_bytes": 104857600,
+        "request_tls_tcp_bytes": 4306,
+        "response_tls_tcp_bytes": 105008762,
+        "total_tls_tcp_bytes": 105013068,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106060651,
+      "file_count": 31,
+      "source_payload_bytes": 106060651,
+      "workload_digest": "4b473c5e4afbbce46ed6618f06857d58b611da9426238e48f1d4419918a38850",
+      "tls_tcp_savings_percent": 98.88563869022472
+    },
+    {
+      "repetition": 1,
+      "workload": "append",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 73,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 100,
+          "versions_stored": 1,
+          "receipts_sent": 73,
+          "versions_applied": 1
+        },
+        "seconds": 2.4351361540029757,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 24588,
+          "user_seconds": 0.5462319999999999,
+          "system_seconds": 0.099727,
+          "peak_rss_kib": 23732,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 53321,
+        "response_tls_tcp_bytes": 72537,
+        "total_tls_tcp_bytes": 125858,
+        "proxy_errors": [],
+        "scan_seconds": 0.36319796901079826,
+        "total_seconds": 2.798334123013774
+      },
+      "receiver_storage_bytes": 107827061,
+      "receiver_root_bytes": 315780012,
+      "receiver_root_scratch_bytes": 209715265,
+      "receiver_managed_bytes": 423607073,
+      "baseline": {
+        "seconds": 0.2415897790051531,
+        "payload_bytes": 104861696,
+        "request_tls_tcp_bytes": 4306,
+        "response_tls_tcp_bytes": 105012880,
+        "total_tls_tcp_bytes": 105017186,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106064747,
+      "file_count": 31,
+      "source_payload_bytes": 106064747,
+      "workload_digest": "e2f8368d566808caf200794896ba7d03c4db25a7383bdc9ecee2a81a3035e0c9",
+      "tls_tcp_savings_percent": 99.8801548538922
+    },
+    {
+      "repetition": 1,
+      "workload": "mixed_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 76,
+          "metadata_added": 3,
+          "chunks_fetched": 130,
+          "chunks_reused": 0,
+          "versions_stored": 3,
+          "receipts_sent": 76,
+          "versions_applied": 3
+        },
+        "seconds": 5.232863032986643,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 30152,
+          "user_seconds": 0.821641,
+          "system_seconds": 0.265913,
+          "peak_rss_kib": 29608,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 236956,
+        "response_tls_tcp_bytes": 136708209,
+        "total_tls_tcp_bytes": 136945165,
+        "proxy_errors": [],
+        "scan_seconds": 2.3902545220043976,
+        "total_seconds": 7.62311755499104
+      },
+      "receiver_storage_bytes": 244227957,
+      "receiver_root_bytes": 452094892,
+      "receiver_root_scratch_bytes": 209715265,
+      "receiver_managed_bytes": 696322849,
+      "baseline": {
+        "seconds": 0.32110482099233195,
+        "payload_bytes": 136314880,
+        "request_tls_tcp_bytes": 8619,
+        "response_tls_tcp_bytes": 136515520,
+        "total_tls_tcp_bytes": 136524139,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379627,
+      "file_count": 34,
+      "source_payload_bytes": 242379627,
+      "workload_digest": "bc96a6b25936ee28d43159369196b66522812894e088b9c9dc43c42ad73cebf3",
+      "tls_tcp_savings_percent": -0.30838941969082434
+    },
+    {
+      "repetition": 1,
+      "workload": "prefix_insert",
+      "bandwidth_bytes_second": 8388608,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0.002,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 77,
+          "metadata_added": 1,
+          "chunks_fetched": 21,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 77,
+          "versions_applied": 1
+        },
+        "seconds": 3.5384415360167623,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 30608,
+          "user_seconds": 0.281837,
+          "system_seconds": 0.070536,
+          "peak_rss_kib": 29576,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 75978,
+        "response_tls_tcp_bytes": 21076362,
+        "total_tls_tcp_bytes": 21152340,
+        "proxy_errors": [],
+        "scan_seconds": 0.6117708579986356,
+        "total_seconds": 4.150212394015398
+      },
+      "receiver_storage_bytes": 265207670,
+      "receiver_root_bytes": 473066413,
+      "receiver_root_scratch_bytes": 230686785,
+      "receiver_managed_bytes": 738274083,
+      "baseline": {
+        "seconds": 3.458194956998341,
+        "payload_bytes": 20971521,
+        "request_tls_tcp_bytes": 4305,
+        "response_tls_tcp_bytes": 21010388,
+        "total_tls_tcp_bytes": 21014693,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379628,
+      "file_count": 34,
+      "source_payload_bytes": 242379628,
+      "workload_digest": "4e1f71c45770d608608e7ea04a1d3fd5781823dbac3f221496e1858e1f82497f",
+      "tls_tcp_savings_percent": -0.6550036205620557
+    },
+    {
+      "repetition": 1,
+      "workload": "rename",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 79,
+          "metadata_added": 2,
+          "chunks_fetched": 0,
+          "chunks_reused": 101,
+          "versions_stored": 1,
+          "receipts_sent": 79,
+          "versions_applied": 2
+        },
+        "seconds": 3.142433255998185,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 26636,
+          "user_seconds": 0.616629,
+          "system_seconds": 0.111426,
+          "peak_rss_kib": 25760,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 57308,
+        "response_tls_tcp_bytes": 73288,
+        "total_tls_tcp_bytes": 130596,
+        "proxy_errors": [],
+        "scan_seconds": 0.4675236409821082,
+        "total_seconds": 3.609956896980293
+      },
+      "receiver_storage_bytes": 265301878,
+      "receiver_root_bytes": 577928109,
+      "receiver_root_scratch_bytes": 335548481,
+      "receiver_managed_bytes": 843229987,
+      "baseline": {
+        "seconds": 0.37946413102326915,
+        "payload_bytes": 104861696,
+        "request_tls_tcp_bytes": 4314,
+        "response_tls_tcp_bytes": 105013212,
+        "total_tls_tcp_bytes": 105017526,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379628,
+      "file_count": 34,
+      "source_payload_bytes": 242379628,
+      "workload_digest": "3144c1146b210cb61e4b42f36a42359c23b9b39200bd12716df0e31331ec63da",
+      "tls_tcp_savings_percent": 99.8756436140002
+    },
+    {
+      "repetition": 1,
+      "workload": "delete",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 80,
+          "metadata_added": 1,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 80,
+          "versions_applied": 1
+        },
+        "seconds": 1.9931411249854136,
+        "receiver_resources": {
+          "sampled_peak_fds": 14,
+          "sampled_peak_rss_kib": 23748,
+          "user_seconds": 0.165158,
+          "system_seconds": 0.027756,
+          "peak_rss_kib": 23004,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 57400,
+        "response_tls_tcp_bytes": 63401,
+        "total_tls_tcp_bytes": 120801,
+        "proxy_errors": [],
+        "scan_seconds": 0.20548979597515427,
+        "total_seconds": 2.198630920960568
+      },
+      "receiver_storage_bytes": 265301878,
+      "receiver_root_bytes": 577928109,
+      "receiver_root_scratch_bytes": 356520002,
+      "receiver_managed_bytes": 843229987,
+      "baseline": {
+        "seconds": 0.20013718400150537,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2149,
+        "response_tls_tcp_bytes": 7129,
+        "total_tls_tcp_bytes": 9278,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 221408107,
+      "file_count": 33,
+      "source_payload_bytes": 221408107,
+      "workload_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "tls_tcp_savings_percent": -1202.0155205863332
+    },
+    {
+      "repetition": 2,
+      "workload": "small_files_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 70,
+          "metadata_added": 70,
+          "chunks_fetched": 30,
+          "chunks_reused": 0,
+          "versions_stored": 30,
+          "receipts_sent": 70,
+          "versions_applied": 70
+        },
+        "seconds": 6.625210872007301,
+        "receiver_resources": {
+          "sampled_peak_fds": 14,
+          "sampled_peak_rss_kib": 24520,
+          "user_seconds": 0.19550599999999999,
+          "system_seconds": 0.074872,
+          "peak_rss_kib": 23560,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 107496,
+        "response_tls_tcp_bytes": 1317840,
+        "total_tls_tcp_bytes": 1425336,
+        "proxy_errors": [],
+        "scan_seconds": 1.2326236820081249,
+        "total_seconds": 7.857834554015426
+      },
+      "receiver_storage_bytes": 1634165,
+      "receiver_root_bytes": 1203116,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 2837281,
+      "baseline": {
+        "seconds": 0.15226433300995268,
+        "payload_bytes": 1203051,
+        "request_tls_tcp_bytes": 14035,
+        "response_tls_tcp_bytes": 1229098,
+        "total_tls_tcp_bytes": 1243133,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 1203051,
+      "file_count": 30,
+      "source_payload_bytes": 1203051,
+      "workload_digest": "ba7921b7200dbde1c557ef98016d2a14dd917920fc4fb0baa0660659895639fc",
+      "tls_tcp_savings_percent": -14.656758367769186
+    },
+    {
+      "repetition": 2,
+      "workload": "unchanged_tree",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 70,
+          "metadata_added": 0,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 70,
+          "versions_applied": 0
+        },
+        "seconds": 1.6148067630128935,
+        "receiver_resources": {
+          "sampled_peak_fds": 11,
+          "sampled_peak_rss_kib": 25616,
+          "user_seconds": 0.033458999999999996,
+          "system_seconds": 0.015208,
+          "peak_rss_kib": 24876,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 50178,
+        "response_tls_tcp_bytes": 55166,
+        "total_tls_tcp_bytes": 105344,
+        "proxy_errors": [],
+        "scan_seconds": 0.0466443810146302,
+        "total_seconds": 1.6614511440275237
+      },
+      "receiver_storage_bytes": 1634165,
+      "receiver_root_bytes": 1203116,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 2837281,
+      "baseline": {
+        "seconds": 0.005679966998286545,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2153,
+        "response_tls_tcp_bytes": 6796,
+        "total_tls_tcp_bytes": 8949,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 1203051,
+      "file_count": 30,
+      "source_payload_bytes": 1203051,
+      "workload_digest": "ba7921b7200dbde1c557ef98016d2a14dd917920fc4fb0baa0660659895639fc",
+      "tls_tcp_savings_percent": -1077.1594591574476
+    },
+    {
+      "repetition": 2,
+      "workload": "large_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 71,
+          "metadata_added": 1,
+          "chunks_fetched": 100,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 71,
+          "versions_applied": 1
+        },
+        "seconds": 5.018516529991757,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 28100,
+          "user_seconds": 0.6197159999999999,
+          "system_seconds": 0.16411199999999998,
+          "peak_rss_kib": 27628,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 183408,
+        "response_tls_tcp_bytes": 105162052,
+        "total_tls_tcp_bytes": 105345460,
+        "proxy_errors": [],
+        "scan_seconds": 2.3674851010146085,
+        "total_seconds": 7.386001631006366
+      },
+      "receiver_storage_bytes": 106631029,
+      "receiver_root_bytes": 106060716,
+      "receiver_root_scratch_bytes": 65,
+      "receiver_managed_bytes": 212691745,
+      "baseline": {
+        "seconds": 0.20119025398162194,
+        "payload_bytes": 104857600,
+        "request_tls_tcp_bytes": 4314,
+        "response_tls_tcp_bytes": 105008764,
+        "total_tls_tcp_bytes": 105013078,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106060651,
+      "file_count": 31,
+      "source_payload_bytes": 106060651,
+      "workload_digest": "9cac0de4c9f21628594a691f88e24de3dec66ec88394485114a9a1294a9e5ee1",
+      "tls_tcp_savings_percent": -0.3165148630344783
+    },
+    {
+      "repetition": 2,
+      "workload": "tail_overwrite",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 72,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 99,
+          "versions_stored": 1,
+          "receipts_sent": 72,
+          "versions_applied": 1
+        },
+        "seconds": 2.874123782006791,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 26316,
+          "user_seconds": 0.527726,
+          "system_seconds": 0.093126,
+          "peak_rss_kib": 25432,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 52656,
+        "response_tls_tcp_bytes": 1117571,
+        "total_tls_tcp_bytes": 1170227,
+        "proxy_errors": [],
+        "scan_seconds": 0.3838641520123929,
+        "total_seconds": 3.2579879340191837
+      },
+      "receiver_storage_bytes": 107745141,
+      "receiver_root_bytes": 210918316,
+      "receiver_root_scratch_bytes": 104857665,
+      "receiver_managed_bytes": 318663457,
+      "baseline": {
+        "seconds": 0.23312448398792185,
+        "payload_bytes": 104857600,
+        "request_tls_tcp_bytes": 4314,
+        "response_tls_tcp_bytes": 105008764,
+        "total_tls_tcp_bytes": 105013078,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106060651,
+      "file_count": 31,
+      "source_payload_bytes": 106060651,
+      "workload_digest": "4b473c5e4afbbce46ed6618f06857d58b611da9426238e48f1d4419918a38850",
+      "tls_tcp_savings_percent": 98.88563689181646
+    },
+    {
+      "repetition": 2,
+      "workload": "append",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 73,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 100,
+          "versions_stored": 1,
+          "receipts_sent": 73,
+          "versions_applied": 1
+        },
+        "seconds": 2.9442489839857444,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 24760,
+          "user_seconds": 0.551221,
+          "system_seconds": 0.07410599999999999,
+          "peak_rss_kib": 23896,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 53322,
+        "response_tls_tcp_bytes": 72538,
+        "total_tls_tcp_bytes": 125860,
+        "proxy_errors": [],
+        "scan_seconds": 0.38151156398816966,
+        "total_seconds": 3.325760547973914
+      },
+      "receiver_storage_bytes": 107831157,
+      "receiver_root_bytes": 315780012,
+      "receiver_root_scratch_bytes": 209715265,
+      "receiver_managed_bytes": 423611169,
+      "baseline": {
+        "seconds": 0.236706970987143,
+        "payload_bytes": 104861696,
+        "request_tls_tcp_bytes": 4314,
+        "response_tls_tcp_bytes": 105012882,
+        "total_tls_tcp_bytes": 105017196,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 106064747,
+      "file_count": 31,
+      "source_payload_bytes": 106064747,
+      "workload_digest": "e2f8368d566808caf200794896ba7d03c4db25a7383bdc9ecee2a81a3035e0c9",
+      "tls_tcp_savings_percent": 99.88015296085415
+    },
+    {
+      "repetition": 2,
+      "workload": "mixed_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 76,
+          "metadata_added": 3,
+          "chunks_fetched": 130,
+          "chunks_reused": 0,
+          "versions_stored": 3,
+          "receipts_sent": 76,
+          "versions_applied": 3
+        },
+        "seconds": 6.128069811995374,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 28404,
+          "user_seconds": 0.8684219999999999,
+          "system_seconds": 0.26966799999999996,
+          "peak_rss_kib": 27496,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 230623,
+        "response_tls_tcp_bytes": 136701933,
+        "total_tls_tcp_bytes": 136932556,
+        "proxy_errors": [],
+        "scan_seconds": 2.9980918530200142,
+        "total_seconds": 9.126161665015388
+      },
+      "receiver_storage_bytes": 244219765,
+      "receiver_root_bytes": 452094892,
+      "receiver_root_scratch_bytes": 209715265,
+      "receiver_managed_bytes": 696314657,
+      "baseline": {
+        "seconds": 0.4478032329934649,
+        "payload_bytes": 136314880,
+        "request_tls_tcp_bytes": 8635,
+        "response_tls_tcp_bytes": 136515524,
+        "total_tls_tcp_bytes": 136524159,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379627,
+      "file_count": 34,
+      "source_payload_bytes": 242379627,
+      "workload_digest": "bc96a6b25936ee28d43159369196b66522812894e088b9c9dc43c42ad73cebf3",
+      "tls_tcp_savings_percent": -0.2991389970766978
+    },
+    {
+      "repetition": 2,
+      "workload": "prefix_insert",
+      "bandwidth_bytes_second": 8388608,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0.002,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 77,
+          "metadata_added": 1,
+          "chunks_fetched": 21,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 77,
+          "versions_applied": 1
+        },
+        "seconds": 3.4323604570236057,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 29888,
+          "user_seconds": 0.277952,
+          "system_seconds": 0.06439199999999999,
+          "peak_rss_kib": 28916,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 75983,
+        "response_tls_tcp_bytes": 21076367,
+        "total_tls_tcp_bytes": 21152350,
+        "proxy_errors": [],
+        "scan_seconds": 0.5745074430014938,
+        "total_seconds": 4.0068679000250995
+      },
+      "receiver_storage_bytes": 265203574,
+      "receiver_root_bytes": 473066413,
+      "receiver_root_scratch_bytes": 230686785,
+      "receiver_managed_bytes": 738269987,
+      "baseline": {
+        "seconds": 3.469040487019811,
+        "payload_bytes": 20971521,
+        "request_tls_tcp_bytes": 4313,
+        "response_tls_tcp_bytes": 21010390,
+        "total_tls_tcp_bytes": 21014703,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379628,
+      "file_count": 34,
+      "source_payload_bytes": 242379628,
+      "workload_digest": "4e1f71c45770d608608e7ea04a1d3fd5781823dbac3f221496e1858e1f82497f",
+      "tls_tcp_savings_percent": -0.6550033088738028
+    },
+    {
+      "repetition": 2,
+      "workload": "rename",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 79,
+          "metadata_added": 2,
+          "chunks_fetched": 0,
+          "chunks_reused": 101,
+          "versions_stored": 1,
+          "receipts_sent": 79,
+          "versions_applied": 2
+        },
+        "seconds": 3.1175067799922545,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 26612,
+          "user_seconds": 0.642892,
+          "system_seconds": 0.11376199999999999,
+          "peak_rss_kib": 26084,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 57309,
+        "response_tls_tcp_bytes": 73288,
+        "total_tls_tcp_bytes": 130597,
+        "proxy_errors": [],
+        "scan_seconds": 0.46536919599748217,
+        "total_seconds": 3.5828759759897366
+      },
+      "receiver_storage_bytes": 265301878,
+      "receiver_root_bytes": 577928109,
+      "receiver_root_scratch_bytes": 335548481,
+      "receiver_managed_bytes": 843229987,
+      "baseline": {
+        "seconds": 0.4865460319851991,
+        "payload_bytes": 104861696,
+        "request_tls_tcp_bytes": 4322,
+        "response_tls_tcp_bytes": 105013214,
+        "total_tls_tcp_bytes": 105017536,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 242379628,
+      "file_count": 34,
+      "source_payload_bytes": 242379628,
+      "workload_digest": "3144c1146b210cb61e4b42f36a42359c23b9b39200bd12716df0e31331ec63da",
+      "tls_tcp_savings_percent": 99.87564267361977
+    },
+    {
+      "repetition": 2,
+      "workload": "delete",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 80,
+          "metadata_added": 1,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 80,
+          "versions_applied": 1
+        },
+        "seconds": 2.016490423004143,
+        "receiver_resources": {
+          "sampled_peak_fds": 14,
+          "sampled_peak_rss_kib": 21464,
+          "user_seconds": 0.194816,
+          "system_seconds": 0.037748,
+          "peak_rss_kib": 23136,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 57401,
+        "response_tls_tcp_bytes": 63402,
+        "total_tls_tcp_bytes": 120803,
+        "proxy_errors": [],
+        "scan_seconds": 0.20565621301648207,
+        "total_seconds": 2.222146636020625
+      },
+      "receiver_storage_bytes": 265301878,
+      "receiver_root_bytes": 577928109,
+      "receiver_root_scratch_bytes": 356520002,
+      "receiver_managed_bytes": 843229987,
+      "baseline": {
+        "seconds": 0.20396467900718562,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2153,
+        "response_tls_tcp_bytes": 7130,
+        "total_tls_tcp_bytes": 9283,
+        "proxy_errors": []
+      },
+      "baseline_storage_bytes": 221408107,
+      "file_count": 33,
+      "source_payload_bytes": 221408107,
+      "workload_digest": "b624566323bf426adc1c274d9d52aaaa30a84b02a8da03aeebc0175c76d36c5e",
+      "tls_tcp_savings_percent": -1201.3357750727134
+    }
+  ],
+  "dimensions": {
+    "small_files": 30,
+    "large_mib": 100,
+    "mixed_extra_mib": [
+      10,
+      100
+    ],
+    "repetitions": 3
+  },
+  "network_relay": null,
+  "network_topology": "local sender and receiver storage; optional two SSH forwarding channels route TLS via the named host and back. This measures the cloud route, not remote disk performance",
+  "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
+  "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",
+  "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
+  "throttle": "Configured bandwidth is per response TCP stream; four-worker ceilings are equal but stream utilization differs. Delay is per read, not calibrated RTT",
+  "storage_measurement": "Apparent regular-file bytes: receiver state, working root and internal recovery/staging separately; baseline working files. Not filesystem allocated blocks",
+  "storage_limits": "Fresh File Sync states use init's finite 10-GiB data, 256-MiB metadata and 512-MiB free-space reserve defaults; raw receiver totals are recorded",
+  "baseline": "TLS 1.3 mutual auth, full SHA256 on both sides, flush received bytes, atomic replace + directory fsync, four workers; unchanged files skipped by full hash",
+  "timing": "sender scan/hash + sync to durable receipt/publication; baseline source/destination hash + durable publication. Server/tunnel startup and final comparison excluded",
+  "limitations": "Python baseline vs Go engine; baseline retains only working tree, engine additionally commits history/content/journals. No equivalent CPU-work or generic speedup claim",
+  "hosts": [
+    {
+      "repetition": 0,
+      "roots": [
+        "/home/owner/filesync-validation-dglgoqnt",
+        "/home/owner/filesync-validation-2zhlu3vz"
+      ],
+      "inventory": {
+        "hostname": "owner-desktop",
+        "kernel": "Linux 7.2.7-arch1-1",
+        "arch": "x86_64",
+        "os": "NAME=\"Arch Linux\"\nPRETTY_NAME=\"Arch Linux\"\nID=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147;209\"\nHOME_URL=\"https://archlinux.org/\"\nDOCUMENTATION_URL=\"https://wiki.archlinux.org/\"\nSUPPORT_URL=\"https://bbs.archlinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"\nPRIVACY_POLICY_URL=\"https://terms.archlinux.org/docs/privacy-policy/\"\nLOGO=archlinux-logo\n",
+        "filesystem": "ext4 rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 9700X 8-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0xb404038\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"92%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"5582.3008\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"605.3100\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7586.21\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"384 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"8 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"32 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used   Available Use% Mounted on\n/dev/nvme0n1p2 414092607488 379288784896 13721206784  97% /\n",
+        "route": "default via 192.168.88.1 dev enp6s0 proto dhcp src 192.168.88.171 metric 100 \n10.0.0.0/24 dev wg-oracle-vps proto kernel scope link src 10.0.0.2 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 \n172.18.0.0/16 dev br-1bddba983444 proto kernel scope link src 172.18.0.1 linkdown \n172.19.0.0/16 dev br-7433a5568ce3 proto kernel scope link src 172.19.0.1 \n172.20.0.0/16 dev br-3113072c7e20 proto kernel scope link src 172.20.0.1 \n172.24.0.0/16 dev br-c33b68a59282 proto kernel scope link src 172.24.0.1 \n192.168.88.0/24 dev enp6s0 proto kernel scope link src 192.168.88.171 metric 100 \n"
+      },
+      "binary_sha256": "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+    },
+    {
+      "repetition": 1,
+      "roots": [
+        "/home/owner/filesync-validation-xj_br69e",
+        "/home/owner/filesync-validation-up68u93k"
+      ],
+      "inventory": {
+        "hostname": "owner-desktop",
+        "kernel": "Linux 7.2.7-arch1-1",
+        "arch": "x86_64",
+        "os": "NAME=\"Arch Linux\"\nPRETTY_NAME=\"Arch Linux\"\nID=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147;209\"\nHOME_URL=\"https://archlinux.org/\"\nDOCUMENTATION_URL=\"https://wiki.archlinux.org/\"\nSUPPORT_URL=\"https://bbs.archlinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"\nPRIVACY_POLICY_URL=\"https://terms.archlinux.org/docs/privacy-policy/\"\nLOGO=archlinux-logo\n",
+        "filesystem": "ext4 rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 9700X 8-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0xb404038\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"96%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"5582.3008\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"605.3100\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7586.21\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"384 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"8 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"32 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used   Available Use% Mounted on\n/dev/nvme0n1p2 414092607488 381979607040 11030384640  98% /\n",
+        "route": "default via 192.168.88.1 dev enp6s0 proto dhcp src 192.168.88.171 metric 100 \n10.0.0.0/24 dev wg-oracle-vps proto kernel scope link src 10.0.0.2 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 \n172.18.0.0/16 dev br-1bddba983444 proto kernel scope link src 172.18.0.1 linkdown \n172.19.0.0/16 dev br-7433a5568ce3 proto kernel scope link src 172.19.0.1 \n172.20.0.0/16 dev br-3113072c7e20 proto kernel scope link src 172.20.0.1 \n172.24.0.0/16 dev br-c33b68a59282 proto kernel scope link src 172.24.0.1 \n192.168.88.0/24 dev enp6s0 proto kernel scope link src 192.168.88.171 metric 100 \n"
+      },
+      "binary_sha256": "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+    },
+    {
+      "repetition": 2,
+      "roots": [
+        "/home/owner/filesync-validation-2va7sj5a",
+        "/home/owner/filesync-validation-u7a8x07l"
+      ],
+      "inventory": {
+        "hostname": "owner-desktop",
+        "kernel": "Linux 7.2.7-arch1-1",
+        "arch": "x86_64",
+        "os": "NAME=\"Arch Linux\"\nPRETTY_NAME=\"Arch Linux\"\nID=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147;209\"\nHOME_URL=\"https://archlinux.org/\"\nDOCUMENTATION_URL=\"https://wiki.archlinux.org/\"\nSUPPORT_URL=\"https://bbs.archlinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"\nPRIVACY_POLICY_URL=\"https://terms.archlinux.org/docs/privacy-policy/\"\nLOGO=archlinux-logo\n",
+        "filesystem": "ext4 rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 9700X 8-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0xb404038\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"94%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"5582.3008\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"605.3100\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7586.21\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"384 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"8 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"32 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used  Available Use% Mounted on\n/dev/nvme0n1p2 414092607488 383605166080 9404825600  98% /\n",
+        "route": "default via 192.168.88.1 dev enp6s0 proto dhcp src 192.168.88.171 metric 100 \n10.0.0.0/24 dev wg-oracle-vps proto kernel scope link src 10.0.0.2 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 \n172.18.0.0/16 dev br-1bddba983444 proto kernel scope link src 172.18.0.1 linkdown \n172.19.0.0/16 dev br-7433a5568ce3 proto kernel scope link src 172.19.0.1 \n172.20.0.0/16 dev br-3113072c7e20 proto kernel scope link src 172.20.0.1 \n172.24.0.0/16 dev br-c33b68a59282 proto kernel scope link src 172.24.0.1 \n192.168.88.0/24 dev enp6s0 proto kernel scope link src 192.168.88.171 metric 100 \n"
+      },
+      "binary_sha256": "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+    }
+  ],
+  "summaries": [
+    {
+      "workload": "append",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": 99.8801539039495,
+      "median_filesync_seconds": 2.798334123013774,
+      "median_baseline_seconds": 0.236706970987143
+    },
+    {
+      "workload": "delete",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": -1201.8859790925746,
+      "median_filesync_seconds": 2.198630920960568,
+      "median_baseline_seconds": 0.20013718400150537
+    },
+    {
+      "workload": "large_initial",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": -0.3060495231688831,
+      "median_filesync_seconds": 1.9238670470076613,
+      "median_baseline_seconds": 0.1917930920026265
+    },
+    {
+      "workload": "mixed_initial",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": -0.30838941969082434,
+      "median_filesync_seconds": 7.62311755499104,
+      "median_baseline_seconds": 0.32110482099233195
+    },
+    {
+      "workload": "prefix_insert",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": -0.6550036205620557,
+      "median_filesync_seconds": 4.0068679000250995,
+      "median_baseline_seconds": 3.458194956998341
+    },
+    {
+      "workload": "rename",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": 99.8756436140002,
+      "median_filesync_seconds": 3.5828759759897366,
+      "median_baseline_seconds": 0.37946413102326915
+    },
+    {
+      "workload": "small_files_initial",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": -15.016555279187326,
+      "median_filesync_seconds": 1.3838151659874711,
+      "median_baseline_seconds": 0.040548240998759866
+    },
+    {
+      "workload": "tail_overwrite",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": 98.8856377591856,
+      "median_filesync_seconds": 2.877040153980488,
+      "median_baseline_seconds": 0.23312448398792185
+    },
+    {
+      "workload": "unchanged_tree",
+      "samples": 3,
+      "median_tls_tcp_savings_percent": -1077.6746785913917,
+      "median_filesync_seconds": 0.3098050769767724,
+      "median_baseline_seconds": 0.005679966998286545
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "manifest_version": 1,
+  "generated_utc": "2026-10-01T18:29:38.067565+00:00",
+  "release_acceptance_complete": false,
+  "engine_source_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "current_harness_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "build_version": "filesync 1.0.0 (commit=e13e53a, built=2026-10-01, linux/amd64, go=go1.27.1-X:nodwarf5)",
+  "protocol_version": "1",
+  "database_schema": 10,
+  "configuration_format": 1,
+  "artifact_sha256": {
+    "SHA256SUMS": "cb28ef62b41c06bfe30c8080fb9afcaedd36b742ca08ed3927e41833ab209871",
+    "filesync-1.0.0-1.aarch64.rpm": "9822143fccdd5e4526b838fcfa54776aa77f90f63de405ccfb18e791f5402e1e",
+    "filesync-1.0.0-1.x86_64.rpm": "10c7294a88eb9d69d61fcff9f67f7368859e98f37d77fde0467ccbd5e26786ab",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "5ae69dd00fee2b05c0675ad43f59da7662d7c0be4f6a80a0dd725f8172c4ecf3",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "1f06d280044d85d35c2b535de143fddcffd4ff55ee863a285395e69a578820d8",
+    "filesync_1.0.0_amd64.deb": "8de180f416937c0264223aec0b90a3f022da6bb4f9027e37cfcc4ac2c9e4425d",
+    "filesync_1.0.0_arm64.deb": "424923730029e74988c013af0e6c3af04d0669323877d40ff640e7ffa3ca570d"
+  },
+  "packaged_binaries": {
+    "amd64": {
+      "archive_sha256": "5ae69dd00fee2b05c0675ad43f59da7662d7c0be4f6a80a0dd725f8172c4ecf3",
+      "binary_sha256": "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10",
+      "archive": "filesync-v1.0.0-linux-amd64.tar.gz"
+    },
+    "arm64": {
+      "archive_sha256": "1f06d280044d85d35c2b535de143fddcffd4ff55ee863a285395e69a578820d8",
+      "binary_sha256": "fcf7559b434346049f66da4e8f091d8a330842628b86c1b3e1b0af2ecea3318a",
+      "archive": "filesync-v1.0.0-linux-arm64.tar.gz"
+    }
+  },
+  "environments": [
+    {
+      "role": "laptop",
+      "ssh_alias": "laptop",
+      "root": "/home/caleb2002/filesync-validation-xmglkwbc",
+      "inventory": {
+        "hostname": "owner-laptop",
+        "kernel": "Linux 7.0.0-30-generic",
+        "arch": "x86_64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 5800U with Radeon Graphics\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"25\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"80\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"55%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"4508.0859\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"407.3580\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"3792.74\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"4 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"16 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; Safe RET\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Mitigation; Clear CPU buffers\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB before exit to userspace\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used   Available Use% Mounted on\n/dev/nvme0n1p5 153681051648 127283478528 18516475904  88% /\n",
+        "route": "default via 192.168.88.1 dev wlp2s0 proto dhcp src 192.168.88.83 metric 600 \n192.168.88.0/24 dev wlp2s0 proto kernel scope link src 192.168.88.83 metric 600 \n"
+      },
+      "binary_sha256": "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+    },
+    {
+      "role": "pi",
+      "ssh_alias": "rpi",
+      "root": "/home/owner/filesync-validation-7w7id90f",
+      "inventory": {
+        "hostname": "owner-pi",
+        "kernel": "Linux 6.12.93+rpt-rpi-v8",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "filesystem": "ext4   rw,noatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Cortex-A72\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"3\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per cluster:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"-\"\n      },{\n         \"field\": \"Cluster(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r0p3\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"100%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"1800.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"600.0000\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"108.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm crc32 cpuid\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"128 KiB (4 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"192 KiB (4 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"1 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"NUMA node1 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda2      61006897152 16627445760 41262481408  29% /\n",
+        "route": "default via 192.168.88.1 dev eth0 proto dhcp src 192.168.88.63 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-c37d9e23a592 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-bde881461879 proto kernel scope link src 172.19.0.1 \n192.168.88.0/24 dev eth0 proto kernel scope link src 192.168.88.63 metric 100 \n"
+      },
+      "binary_sha256": "fcf7559b434346049f66da4e8f091d8a330842628b86c1b3e1b0af2ecea3318a"
+    },
+    {
+      "role": "vps",
+      "ssh_alias": "vps",
+      "root": "/home/ubuntu/filesync-validation-zj8hxvmj",
+      "inventory": {
+        "hostname": "main-instance-vnic",
+        "kernel": "Linux 6.17.0-1018-oracle",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime,discard,errors=remount-ro,commit=30",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Neoverse-N1\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r3p1\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"50.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; CSV2, BHB\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda1      50884108288 11463729152 39403601920  23% /\n",
+        "route": "default via 10.0.0.1 dev enp0s6 proto dhcp src 10.0.0.187 metric 100 \n10.0.0.0/24 dev wg0 proto kernel scope link src 10.0.0.1 \n10.0.0.0/24 dev enp0s6 proto kernel scope link src 10.0.0.187 metric 100 \n10.0.0.1 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.0.0/16 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.169.254 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-5f4d10805c99 proto kernel scope link src 172.18.0.1 \n"
+      },
+      "binary_sha256": "fcf7559b434346049f66da4e8f091d8a330842628b86c1b3e1b0af2ecea3318a"
+    }
+  ],
+  "benchmark_workstation_inventory": {
+    "hostname": "owner-desktop",
+    "kernel": "Linux 7.2.7-arch1-1",
+    "arch": "x86_64",
+    "os": "NAME=\"Arch Linux\"\nPRETTY_NAME=\"Arch Linux\"\nID=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147;209\"\nHOME_URL=\"https://archlinux.org/\"\nDOCUMENTATION_URL=\"https://wiki.archlinux.org/\"\nSUPPORT_URL=\"https://bbs.archlinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"\nPRIVACY_POLICY_URL=\"https://terms.archlinux.org/docs/privacy-policy/\"\nLOGO=archlinux-logo\n",
+    "filesystem": "ext4 rw,relatime",
+    "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 9700X 8-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0xb404038\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"92%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"5582.3008\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"605.3100\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7586.21\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"384 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"8 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"32 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+    "storage": "Filesystem        1B-blocks         Used   Available Use% Mounted on\n/dev/nvme0n1p2 414092607488 379288784896 13721206784  97% /\n",
+    "route": "default via 192.168.88.1 dev enp6s0 proto dhcp src 192.168.88.171 metric 100 \n10.0.0.0/24 dev wg-oracle-vps proto kernel scope link src 10.0.0.2 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 \n172.18.0.0/16 dev br-1bddba983444 proto kernel scope link src 172.18.0.1 linkdown \n172.19.0.0/16 dev br-7433a5568ce3 proto kernel scope link src 172.19.0.1 \n172.20.0.0/16 dev br-3113072c7e20 proto kernel scope link src 172.20.0.1 \n172.24.0.0/16 dev br-c33b68a59282 proto kernel scope link src 172.24.0.1 \n192.168.88.0/24 dev enp6s0 proto kernel scope link src 192.168.88.171 metric 100 \n"
+  },
+  "benchmark_campaigns": [
+    {
+      "report": "benchmark-release/benchmarks.json",
+      "harness_revision": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+      "complete": true,
+      "completed_samples": 9,
+      "total_samples": 9,
+      "dimensions": {
+        "small_files": 10000,
+        "large_mib": 1024,
+        "mixed_extra_mib": [],
+        "repetitions": 1
+      },
+      "binary_sha256": [
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+      ]
+    },
+    {
+      "report": "benchmark-repeated/benchmarks.json",
+      "harness_revision": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+      "complete": true,
+      "completed_samples": 27,
+      "total_samples": 27,
+      "dimensions": {
+        "small_files": 30,
+        "large_mib": 100,
+        "mixed_extra_mib": [
+          10,
+          100
+        ],
+        "repetitions": 3
+      },
+      "binary_sha256": [
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10",
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10",
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+      ]
+    },
+    {
+      "report": "benchmark-vps-route/benchmarks.json",
+      "harness_revision": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+      "complete": true,
+      "completed_samples": 9,
+      "total_samples": 9,
+      "dimensions": {
+        "small_files": 10,
+        "large_mib": 16,
+        "mixed_extra_mib": [
+          10,
+          30
+        ],
+        "repetitions": 1
+      },
+      "binary_sha256": [
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+      ]
+    }
+  ],
+  "seed": 20261001,
+  "model_seeds": [
+    2,
+    17,
+    101,
+    20260921
+  ],
+  "storage_limits": {
+    "fresh_states": {
+      "data_bytes": 10737418240,
+      "metadata_bytes": 268435456,
+      "free_reserve_bytes": 536870912
+    },
+    "owner_pilot_data_bytes": 1073741824,
+    "finite_budget_accounting": "state/incoming/objects/quarantine and planned staging; measured receiver state bytes reported separately from working tree"
+  },
+  "reset": {
+    "kernel_sha256": "c2f559dc69776df1a4f7d998a9c9475fbea78afd9a9074aee00834dc58a42134",
+    "guest_init_sha256": "9ba18111f922daf8159f445ca60774ec7c6309c0e5075397499b49b730109410",
+    "qemu": "QEMU emulator version 11.1.1",
+    "fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
+    "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+    "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim"
+  },
+  "measurement_limits": [
+    "TLS/TCP stream bytes include both directions, HTTP/TLS records and handshakes; IP/TCP/SSH/VPN headers excluded",
+    "Warm filesystem caches; fresh application stores per repetition; validation shares the workstation",
+    "Full-size campaign one sample; repeated smaller campaign three samples; observed ranges, no p99 or statistical tail claim",
+    "Proxy delay is per 64-KiB read, not calibrated RTT; throttling in these runs is per response TCP stream, not an aggregate link cap",
+    "Baseline hashes and flushes working files but retains no immutable history; algorithms perform different storage/metadata work",
+    "CPU/FD/RSS samples cover File Sync receiver process; baseline CPU and RSS not instrumented",
+    "VPS-route comparator stores locally and routes through two SSH forwarding channels via the actual VPS; native VPS storage verified separately",
+    "Final campaign overlapped workstation space pressure and owner-requested inactive-fixture cleanup; timings are shared-host observations"
+  ],
+  "accepted_report_paths": [
+    "release-candidate/reproduction.json",
+    "release-candidate/reset/abrupt-reset.json",
+    "release-candidate/disk-full/abrupt-reset.json",
+    "laptop-release-packaged-final/three-host.json",
+    "lifecycle-release-packaged-final/service-lifecycle.json",
+    "personal-pilot/package-upgrade-e13e53a.json",
+    "personal-pilot/post-upgrade-background.json",
+    "benchmark-release/benchmarks.json",
+    "benchmark-repeated/benchmarks.json",
+    "benchmark-vps-route/benchmarks.json"
+  ],
+  "remaining_acceptance": [
+    "actual owner normal edits, offline/reconnect, restart and measured duration",
+    "owner product/causal/recovery/GC/bottleneck explanation without agent assistance"
+  ],
+  "report_sha256": {
+    "release-candidate/reproduction.json": "f95336e24437dfbb48c91393064d690d1f623cfa64e476786128bf2487616786",
+    "release-candidate/reset/abrupt-reset.json": "6f5515d6f0af3895b21ddfc0d8dad324fe8aed0569b24e2a321d7bd63652708f",
+    "release-candidate/disk-full/abrupt-reset.json": "fa6b63f3d368c59efd2635239ecda6f420503e50f6100e9ef90eac7e5962b5fd",
+    "laptop-release-packaged-final/three-host.json": "5e66f288112865e75c6424f7735a3645975abc75f4a0fd61472786480ee633c3",
+    "lifecycle-release-packaged-final/service-lifecycle.json": "1e13b887c9c9a1f5d1ded139fe68054100bcbefccfdf7da9dbff99821c76543b",
+    "personal-pilot/package-upgrade-e13e53a.json": "f497e1a9de438dbd9282648c739868aa00986d6b7fdf7e2737f075aef441be5f",
+    "personal-pilot/post-upgrade-background.json": "c08ec327eedfca35cb890aea155c070c7a66301b9e8cb4feab4277f49bab19b0",
+    "benchmark-release/benchmarks.json": "12c120a63a7e1f98076278c4663325bcdefea6ca4f809640eea198bbfad5789b",
+    "benchmark-repeated/benchmarks.json": "ec06889004c21f3a99144ce4c20c1804e9b9bb290d6fd1a9fa81084ac37ed760",
+    "benchmark-vps-route/benchmarks.json": "fb783a3e935218a4e572f657e845346d75e287ed7b18e39886aff9e473ca98f5"
+  },
+  "historical_reports": [
+    "release-snapshot-final/reproduction.json",
+    "benchmark-before-shared-backoff/benchmarks.json",
+    "benchmark-repeated-9cb690e/benchmarks.json",
+    "benchmark-vps-route-9cb690e/benchmarks.json"
+  ],
+  "measured_results": "measured-results.md",
+  "benchmark_continuation": {
+    "initial_report": "benchmark-release/benchmarks-interrupted-initial.json",
+    "initial_report_sha256": "02b9b445a29034db025a9ef20385b63366f0549baa90a2a7c9b1d8d382cff98e",
+    "original_log": "benchmark-release.log",
+    "resume_log": "benchmark-release-resume-20261001.log",
+    "original_initial_row_preserved": true
+  },
+  "fixture_cleanup_report": "validation-fixture-cleanup.json",
+  "validation_roots": "Recorded paths are provenance; nonessential fixtures were removed after owner-authorized marker/process/service checks",
+  "documentation_audit": "documentation-audit.json",
+  "derived_evidence_sha256": {
+    "measured-results.md": "6987ad8da62dee1de13dfe4b075befd0b8b46cf45d4199d4acd86885d002168f",
+    "summary.md": "897c7fa30df16c6fb3469a9cf95a934fe77bea253aa5e0b7eadedaf5207b3253",
+    "commands.md": "d53529a5dfcdbaee6d2b835ebe68fd60923aaa6b11b90fe75015905623d6be24",
+    "invariant-map.md": "fc67f3e56a41ac04ba15ebe582ea813a47cf440552190e6657a0876b75277a3b",
+    "validation-fixture-cleanup.json": "d1506c5f4722073d59c77de2ac591941d371fb1c6422a317bd5256e376b0b7ac",
+    "space-relocation.json": "dede5e63a4c14f650f9dc8d227faf6a54a3a4da4eaac0e0320b5500b8f42b7d4",
+    "cleanup-inventory.py": "e07bad92adb8631187268c641899cd9817ea30a0193e4b62809719ddfbc27383",
+    "cleanup-worker.py": "5688217b921215027fa994c08aa3a60263a832ea26c61d6eb5bcc6fa10abd46c",
+    "documentation-audit.json": "1b6cb74c9507dba504a61f234ec9668d7d6ac874ae0375e1e0f9f6e54be195de",
+    "personal-pilot/handoff.md": "5b8793df1b1fa86b9605945a45a64c5c71f2f521d73e9cf459642ca21b6a3819"
+  }
+}

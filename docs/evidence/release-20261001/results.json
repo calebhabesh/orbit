@@ -1,0 +1,141 @@
+{
+  "engine_source_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "p16_complete": true,
+  "p17_complete": false,
+  "clean_snapshot": true,
+  "packages_bit_identical_on_repeat": true,
+  "vm_reset_cases": {
+    "passed": 16,
+    "total": 16
+  },
+  "storage_failure_cases": {
+    "passed": 5,
+    "total": 5,
+    "naturally_full_guest_filesystem": 4,
+    "injected_fsync_error": 1
+  },
+  "actual_host_campaign": {
+    "success": true,
+    "seconds": 103.24751270399429,
+    "resume": {
+      "partial": {
+        "verified_before_restart": 5,
+        "request_tls_tcp_bytes": 23395,
+        "response_tls_tcp_bytes": 8688225,
+        "total_tls_tcp_bytes": 8711620,
+        "proxy_errors": []
+      },
+      "resumed": {
+        "result": {
+          "inventoried": 12,
+          "metadata_added": 0,
+          "chunks_fetched": 7,
+          "chunks_reused": 5,
+          "versions_stored": 1,
+          "receipts_sent": 12,
+          "versions_applied": 1
+        },
+        "seconds": 4.845692874980159,
+        "receiver_resources": {
+          "sampled_peak_fds": 17,
+          "sampled_peak_rss_kib": 26308,
+          "user_seconds": 2.011376,
+          "system_seconds": 0.24040299999999998,
+          "peak_rss_kib": 25764,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 21973,
+        "response_tls_tcp_bytes": 7369775,
+        "total_tls_tcp_bytes": 7391748,
+        "proxy_errors": []
+      },
+      "hashes": {
+        "expected_sha256": "80a397e3515f74505599bbe3af63d78d9d7a46695fc155ede0394c35ba4a9704",
+        "observed": {
+          "laptop": "80a397e3515f74505599bbe3af63d78d9d7a46695fc155ede0394c35ba4a9704",
+          "pi": "80a397e3515f74505599bbe3af63d78d9d7a46695fc155ede0394c35ba4a9704"
+        }
+      }
+    }
+  },
+  "native_user_service_lifecycle": true,
+  "personal_pilot_prepared": true,
+  "personal_owner_activity": "unexecuted/unconfirmed; preparation is not adoption",
+  "benchmark_campaigns": [
+    {
+      "report": "benchmark-release/benchmarks.json",
+      "harness_revision": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+      "complete": true,
+      "completed_samples": 9,
+      "total_samples": 9,
+      "dimensions": {
+        "small_files": 10000,
+        "large_mib": 1024,
+        "mixed_extra_mib": [],
+        "repetitions": 1
+      },
+      "binary_sha256": [
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+      ]
+    },
+    {
+      "report": "benchmark-repeated/benchmarks.json",
+      "harness_revision": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+      "complete": true,
+      "completed_samples": 27,
+      "total_samples": 27,
+      "dimensions": {
+        "small_files": 30,
+        "large_mib": 100,
+        "mixed_extra_mib": [
+          10,
+          100
+        ],
+        "repetitions": 3
+      },
+      "binary_sha256": [
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10",
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10",
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+      ]
+    },
+    {
+      "report": "benchmark-vps-route/benchmarks.json",
+      "harness_revision": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+      "complete": true,
+      "completed_samples": 9,
+      "total_samples": 9,
+      "dimensions": {
+        "small_files": 10,
+        "large_mib": 16,
+        "mixed_extra_mib": [
+          10,
+          30
+        ],
+        "repetitions": 1
+      },
+      "binary_sha256": [
+        "3faced0d56a2487c16700083bee9f66db8ac9460b408aac20bc47793dd94ed10"
+      ]
+    }
+  ],
+  "remaining_acceptance": [
+    "actual owner normal edits, offline/reconnect, restart and measured duration",
+    "owner product/causal/recovery/GC/bottleneck explanation without agent assistance"
+  ],
+  "personal_pilot_background_sync": true,
+  "owner_explanation": "unexecuted/unconfirmed; must be recorded without agent assistance",
+  "measured_results": "measured-results.md",
+  "accepted_report_paths": [
+    "release-candidate/reproduction.json",
+    "release-candidate/reset/abrupt-reset.json",
+    "release-candidate/disk-full/abrupt-reset.json",
+    "laptop-release-packaged-final/three-host.json",
+    "lifecycle-release-packaged-final/service-lifecycle.json",
+    "personal-pilot/package-upgrade-e13e53a.json",
+    "personal-pilot/post-upgrade-background.json",
+    "benchmark-release/benchmarks.json",
+    "benchmark-repeated/benchmarks.json",
+    "benchmark-vps-route/benchmarks.json"
+  ]
+}

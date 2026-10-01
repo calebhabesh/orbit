@@ -1,0 +1,5 @@
+c[?7l[2J[0mSeaBIOS (version Arch Linux 1.17.0-2-2)
+Booting from ROM...
+Probing EDD (edd=off to disable)... oc[?7l[2J[    0.156294] virt/tdx: TDX not supported by the host platform
+FILESYNC_ENOSPC_ERROR hook=enospc.staging error=write stage-0bd555b1cc1d2f8531e3c2e7e7f9110a: no space left on device
+FILESYNC_ENOSPC_VERIFY_OK hook=enospc.staging protected_hashes=true reopened=true

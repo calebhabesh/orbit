@@ -1,0 +1,3 @@
+ok  	github.com/calebhabesh/file-sync/internal/config	1.006s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	1.849s
+ok  	github.com/calebhabesh/file-sync/tests/integration	1.639s

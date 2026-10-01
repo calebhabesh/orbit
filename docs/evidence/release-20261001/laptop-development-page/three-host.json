@@ -1,0 +1,1364 @@
+{
+  "type": "automated actual-host demonstration",
+  "personal_pilot": "not established by this script",
+  "started_utc": "2026-10-01T15:58:38Z",
+  "hosts": [
+    {
+      "role": "laptop",
+      "ssh_alias": "laptop",
+      "root": "/home/caleb2002/filesync-validation-rfhq7mu5",
+      "inventory": {
+        "hostname": "owner-laptop",
+        "kernel": "Linux 7.0.0-30-generic",
+        "arch": "x86_64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 5800U with Radeon Graphics\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"25\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"80\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"59%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"4508.0859\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"407.3580\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"3792.74\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"4 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"16 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; Safe RET\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Mitigation; Clear CPU buffers\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB before exit to userspace\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used   Available Use% Mounted on\n/dev/nvme0n1p5 153681051648 127141416960 18658537472  88% /\n",
+        "route": "default via 192.168.88.1 dev wlp2s0 proto dhcp src 192.168.88.83 metric 600 \n192.168.88.0/24 dev wlp2s0 proto kernel scope link src 192.168.88.83 metric 600 \n"
+      },
+      "binary_sha256": "926ee88966ed826129dddc74b4007b31ec39a7a637bce91e75ff30f43b229c55",
+      "device": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566"
+    },
+    {
+      "role": "pi",
+      "ssh_alias": "rpi",
+      "root": "/home/owner/filesync-validation-yqlkx02t",
+      "inventory": {
+        "hostname": "owner-pi",
+        "kernel": "Linux 6.12.93+rpt-rpi-v8",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "filesystem": "ext4   rw,noatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Cortex-A72\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"3\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per cluster:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"-\"\n      },{\n         \"field\": \"Cluster(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r0p3\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"100%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"1800.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"600.0000\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"108.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm crc32 cpuid\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"128 KiB (4 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"192 KiB (4 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"1 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"NUMA node1 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda2      61006897152 16489848832 41400078336  29% /\n",
+        "route": "default via 192.168.88.1 dev eth0 proto dhcp src 192.168.88.63 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-c37d9e23a592 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-bde881461879 proto kernel scope link src 172.19.0.1 \n192.168.88.0/24 dev eth0 proto kernel scope link src 192.168.88.63 metric 100 \n"
+      },
+      "binary_sha256": "e445972a2215a1da9871fe5347c2e65445e9d7fed9377b8b6760922ec54c3e3a",
+      "device": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92"
+    },
+    {
+      "role": "vps",
+      "ssh_alias": "vps",
+      "root": "/home/ubuntu/filesync-validation-861c22_8",
+      "inventory": {
+        "hostname": "main-instance-vnic",
+        "kernel": "Linux 6.17.0-1018-oracle",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime,discard,errors=remount-ro,commit=30",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Neoverse-N1\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r3p1\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"50.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; CSV2, BHB\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda1      50884108288 11329929216 39537401856  23% /\n",
+        "route": "default via 10.0.0.1 dev enp0s6 proto dhcp src 10.0.0.187 metric 100 \n10.0.0.0/24 dev wg0 proto kernel scope link src 10.0.0.1 \n10.0.0.0/24 dev enp0s6 proto kernel scope link src 10.0.0.187 metric 100 \n10.0.0.1 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.0.0/16 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.169.254 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-5f4d10805c99 proto kernel scope link src 172.18.0.1 \n"
+      },
+      "binary_sha256": "e445972a2215a1da9871fe5347c2e65445e9d7fed9377b8b6760922ec54c3e3a",
+      "device": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060"
+    }
+  ],
+  "scenarios": {
+    "normal_sync": {
+      "a_to_vps": {
+        "result": {
+          "inventoried": 1,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 1,
+          "versions_applied": 1
+        },
+        "seconds": 0.4470155189919751,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 14300,
+          "user_seconds": 0.020359,
+          "system_seconds": 0.0067209999999999995,
+          "peak_rss_kib": 18420,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 5431,
+        "response_tls_tcp_bytes": 4892,
+        "total_tls_tcp_bytes": 10323,
+        "proxy_errors": []
+      },
+      "vps_to_pi": {
+        "result": {
+          "inventoried": 1,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 1,
+          "versions_applied": 1
+        },
+        "seconds": 0.8053033000032883,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 14792,
+          "user_seconds": 0.046394,
+          "system_seconds": 0.027063,
+          "peak_rss_kib": 17616,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 5431,
+        "response_tls_tcp_bytes": 4892,
+        "total_tls_tcp_bytes": 10323,
+        "proxy_errors": []
+      },
+      "hashes": {
+        "expected_sha256": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+        "observed": {
+          "laptop": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+          "pi": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+          "vps": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc"
+        }
+      }
+    },
+    "initial_history": [
+      {
+        "id": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 1
+        },
+        "path": "note.txt",
+        "kind": 1,
+        "parents": null,
+        "vector": [
+          {
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 1
+          }
+        ],
+        "manifest": {
+          "Size": 54,
+          "Digest": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+          "Chunks": [
+            {
+              "Digest": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+              "Length": 54
+            }
+          ],
+          "Executable": false
+        },
+        "display_time": "2026-10-01T15:58:55.291481269Z",
+        "content_state": "ready",
+        "is_head": true,
+        "applied": true
+      }
+    ],
+    "three_way_conflict": {
+      "laptop": {
+        "path": "three.txt",
+        "heads": [
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+              "Counter": 1
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 32,
+              "Digest": "0da75cc6dd4997aff7352f0e0bd69e61bb6f1571d4b3d458f1e9222e974c63f7",
+              "Chunks": [
+                {
+                  "Digest": "0da75cc6dd4997aff7352f0e0bd69e61bb6f1571d4b3d458f1e9222e974c63f7",
+                  "Length": 32
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+                "Counter": 1
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+              "Counter": 1
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 31,
+              "Digest": "024712af6d08ac283b164fa5ba71c6f9e9f30b06958c23cf9fbf126e7b4dee9f",
+              "Chunks": [
+                {
+                  "Digest": "024712af6d08ac283b164fa5ba71c6f9e9f30b06958c23cf9fbf126e7b4dee9f",
+                  "Length": 31
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+                "Counter": 1
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+              "Counter": 2
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 35,
+              "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+              "Chunks": [
+                {
+                  "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+                  "Length": 35
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+                "Counter": 2
+              }
+            ],
+            "applied": true,
+            "content_state": "ready"
+          }
+        ],
+        "head_token": "eee7bbd4845bdedb6abd55d9bd4274f78d7f27c8819ce4b712636a106c0d5644",
+        "applied": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 2
+        },
+        "conflict_kind": "edit-edit"
+      },
+      "pi": {
+        "path": "three.txt",
+        "heads": [
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+              "Counter": 1
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 32,
+              "Digest": "0da75cc6dd4997aff7352f0e0bd69e61bb6f1571d4b3d458f1e9222e974c63f7",
+              "Chunks": [
+                {
+                  "Digest": "0da75cc6dd4997aff7352f0e0bd69e61bb6f1571d4b3d458f1e9222e974c63f7",
+                  "Length": 32
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+                "Counter": 1
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+              "Counter": 1
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 31,
+              "Digest": "024712af6d08ac283b164fa5ba71c6f9e9f30b06958c23cf9fbf126e7b4dee9f",
+              "Chunks": [
+                {
+                  "Digest": "024712af6d08ac283b164fa5ba71c6f9e9f30b06958c23cf9fbf126e7b4dee9f",
+                  "Length": 31
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+                "Counter": 1
+              }
+            ],
+            "applied": true,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+              "Counter": 2
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 35,
+              "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+              "Chunks": [
+                {
+                  "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+                  "Length": 35
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+                "Counter": 2
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          }
+        ],
+        "head_token": "eee7bbd4845bdedb6abd55d9bd4274f78d7f27c8819ce4b712636a106c0d5644",
+        "applied": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "Counter": 1
+        },
+        "conflict_kind": "edit-edit"
+      },
+      "vps": {
+        "path": "three.txt",
+        "heads": [
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+              "Counter": 1
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 32,
+              "Digest": "0da75cc6dd4997aff7352f0e0bd69e61bb6f1571d4b3d458f1e9222e974c63f7",
+              "Chunks": [
+                {
+                  "Digest": "0da75cc6dd4997aff7352f0e0bd69e61bb6f1571d4b3d458f1e9222e974c63f7",
+                  "Length": 32
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+                "Counter": 1
+              }
+            ],
+            "applied": true,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+              "Counter": 1
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 31,
+              "Digest": "024712af6d08ac283b164fa5ba71c6f9e9f30b06958c23cf9fbf126e7b4dee9f",
+              "Chunks": [
+                {
+                  "Digest": "024712af6d08ac283b164fa5ba71c6f9e9f30b06958c23cf9fbf126e7b4dee9f",
+                  "Length": 31
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+                "Counter": 1
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+              "Counter": 2
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 35,
+              "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+              "Chunks": [
+                {
+                  "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+                  "Length": 35
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+                "Counter": 2
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          }
+        ],
+        "head_token": "eee7bbd4845bdedb6abd55d9bd4274f78d7f27c8819ce4b712636a106c0d5644",
+        "applied": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "Counter": 1
+        },
+        "conflict_kind": "edit-edit"
+      }
+    },
+    "three_way_resolution": {
+      "folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+      "path": "three.txt",
+      "action": "select",
+      "resolved_id": {
+        "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+        "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+        "Counter": 3
+      },
+      "envelope": {
+        "ID": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 3
+        },
+        "Path": "three.txt",
+        "Parents": [
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 1
+          },
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 1
+          },
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 2
+          }
+        ],
+        "Vector": [
+          {
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 1
+          },
+          {
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 1
+          },
+          {
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 3
+          }
+        ],
+        "Kind": 1,
+        "Manifest": {
+          "Size": 35,
+          "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+          "Chunks": [
+            {
+              "Digest": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+              "Length": 35
+            }
+          ],
+          "Executable": false
+        },
+        "AuthoredRevision": 1,
+        "DisplayTime": "2026-10-01T15:59:15.143963242Z"
+      },
+      "applied": true
+    },
+    "three_way_resolved_hashes": {
+      "expected_sha256": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+      "observed": {
+        "laptop": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+        "pi": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424",
+        "vps": "9a5ff40af46d43ba0d83b9119db6238a8f2d665650937413b6d579fda19bd424"
+      }
+    },
+    "offline_capture": {
+      "all_peer_daemons_stopped": true
+    },
+    "a_b_reconnect": {
+      "result": {
+        "inventoried": 6,
+        "metadata_added": 1,
+        "chunks_fetched": 1,
+        "chunks_reused": 0,
+        "versions_stored": 1,
+        "receipts_sent": 6,
+        "versions_applied": 0
+      },
+      "seconds": 1.3585971889842767,
+      "receiver_resources": {
+        "sampled_peak_fds": 13,
+        "sampled_peak_rss_kib": 14940,
+        "user_seconds": 0.06786099999999999,
+        "system_seconds": 0.020357999999999998,
+        "peak_rss_kib": 17624,
+        "sampling_interval_seconds": 0.02
+      },
+      "request_tls_tcp_bytes": 8841,
+      "response_tls_tcp_bytes": 8921,
+      "total_tls_tcp_bytes": 17762,
+      "proxy_errors": []
+    },
+    "b_a_reconnect": {
+      "result": {
+        "inventoried": 7,
+        "metadata_added": 1,
+        "chunks_fetched": 1,
+        "chunks_reused": 0,
+        "versions_stored": 1,
+        "receipts_sent": 7,
+        "versions_applied": 0
+      },
+      "seconds": 0.6497116849932354,
+      "receiver_resources": {
+        "sampled_peak_fds": 12,
+        "sampled_peak_rss_kib": 15264,
+        "user_seconds": 0.018231,
+        "system_seconds": 0.016205,
+        "peak_rss_kib": 19556,
+        "sampling_interval_seconds": 0.02
+      },
+      "request_tls_tcp_bytes": 9409,
+      "response_tls_tcp_bytes": 9544,
+      "total_tls_tcp_bytes": 18953,
+      "proxy_errors": []
+    },
+    "reviewed_a_b_resolution": {
+      "folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+      "path": "note.txt",
+      "action": "select",
+      "resolved_id": {
+        "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+        "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+        "Counter": 5
+      },
+      "envelope": {
+        "ID": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 5
+        },
+        "Path": "note.txt",
+        "Parents": [
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 2
+          },
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 4
+          }
+        ],
+        "Vector": [
+          {
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 2
+          },
+          {
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 5
+          }
+        ],
+        "Kind": 1,
+        "Manifest": {
+          "Size": 24,
+          "Digest": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+          "Chunks": [
+            {
+              "Digest": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+              "Length": 24
+            }
+          ],
+          "Executable": false
+        },
+        "AuthoredRevision": 1,
+        "DisplayTime": "2026-10-01T15:59:28.357430795Z"
+      },
+      "applied": true
+    },
+    "late_c_arrival": {
+      "result": {
+        "inventoried": 6,
+        "metadata_added": 1,
+        "chunks_fetched": 1,
+        "chunks_reused": 0,
+        "versions_stored": 1,
+        "receipts_sent": 6,
+        "versions_applied": 0
+      },
+      "seconds": 0.5530365000013262,
+      "receiver_resources": {
+        "sampled_peak_fds": 12,
+        "sampled_peak_rss_kib": 15424,
+        "user_seconds": 0.014952,
+        "system_seconds": 0.014952,
+        "peak_rss_kib": 19816,
+        "sampling_interval_seconds": 0.02
+      },
+      "request_tls_tcp_bytes": 9032,
+      "response_tls_tcp_bytes": 9415,
+      "total_tls_tcp_bytes": 18447,
+      "proxy_errors": []
+    },
+    "late_arrival_conflict": {
+      "heads": {
+        "path": "note.txt",
+        "heads": [
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+              "Counter": 2
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 21,
+              "Digest": "f4f574a6e72421567734751f6a0a2bc790189d20f3a47077fe264d63adf16b2e",
+              "Chunks": [
+                {
+                  "Digest": "f4f574a6e72421567734751f6a0a2bc790189d20f3a47077fe264d63adf16b2e",
+                  "Length": 21
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+                "Counter": 2
+              },
+              {
+                "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+                "Counter": 1
+              }
+            ],
+            "applied": false,
+            "content_state": "ready"
+          },
+          {
+            "id": {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+              "Counter": 5
+            },
+            "kind": 1,
+            "manifest": {
+              "Size": 24,
+              "Digest": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+              "Chunks": [
+                {
+                  "Digest": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+                  "Length": 24
+                }
+              ],
+              "Executable": false
+            },
+            "vector": [
+              {
+                "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+                "Counter": 2
+              },
+              {
+                "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+                "Counter": 5
+              }
+            ],
+            "applied": true,
+            "content_state": "ready"
+          }
+        ],
+        "head_token": "396a65bf36b8b3b837241178eee59eabf9b37c2ca55a75e6b45cfb4a120bbbcb",
+        "applied": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 5
+        },
+        "conflict_kind": "edit-edit"
+      },
+      "stale_request_rejected": true
+    },
+    "final_resolution": {
+      "folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+      "path": "note.txt",
+      "action": "select",
+      "resolved_id": {
+        "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+        "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+        "Counter": 6
+      },
+      "envelope": {
+        "ID": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 6
+        },
+        "Path": "note.txt",
+        "Parents": [
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 2
+          },
+          {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 5
+          }
+        ],
+        "Vector": [
+          {
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 2
+          },
+          {
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 2
+          },
+          {
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 6
+          }
+        ],
+        "Kind": 1,
+        "Manifest": {
+          "Size": 24,
+          "Digest": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+          "Chunks": [
+            {
+              "Digest": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+              "Length": 24
+            }
+          ],
+          "Executable": false
+        },
+        "AuthoredRevision": 1,
+        "DisplayTime": "2026-10-01T15:59:31.268879501Z"
+      },
+      "applied": true
+    },
+    "resolved_hashes": {
+      "expected_sha256": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+      "observed": {
+        "laptop": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+        "pi": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b",
+        "vps": "88f39548285ea2e4c49c0fc1adf369cab7389c3ea3a12e40cb2ecebac7edf66b"
+      }
+    },
+    "forward_to_vps": {
+      "result": {
+        "inventoried": 11,
+        "metadata_added": 1,
+        "chunks_fetched": 1,
+        "chunks_reused": 0,
+        "versions_stored": 1,
+        "receipts_sent": 11,
+        "versions_applied": 1
+      },
+      "seconds": 0.6440840959839988,
+      "receiver_resources": {
+        "sampled_peak_fds": 15,
+        "sampled_peak_rss_kib": 15112,
+        "user_seconds": 0.028163999999999998,
+        "system_seconds": 0.013104999999999999,
+        "peak_rss_kib": 18420,
+        "sampling_interval_seconds": 0.02
+      },
+      "request_tls_tcp_bytes": 12062,
+      "response_tls_tcp_bytes": 12319,
+      "total_tls_tcp_bytes": 24381,
+      "proxy_errors": []
+    },
+    "forward_to_pi": {
+      "result": {
+        "inventoried": 11,
+        "metadata_added": 1,
+        "chunks_fetched": 1,
+        "chunks_reused": 0,
+        "versions_stored": 1,
+        "receipts_sent": 11,
+        "versions_applied": 1
+      },
+      "seconds": 1.5751435959828086,
+      "receiver_resources": {
+        "sampled_peak_fds": 15,
+        "sampled_peak_rss_kib": 15320,
+        "user_seconds": 0.078586,
+        "system_seconds": 0.041360999999999995,
+        "peak_rss_kib": 17752,
+        "sampling_interval_seconds": 0.02
+      },
+      "request_tls_tcp_bytes": 12062,
+      "response_tls_tcp_bytes": 12319,
+      "total_tls_tcp_bytes": 24381,
+      "proxy_errors": []
+    },
+    "forward_hashes": {
+      "expected_sha256": "97d5fe02c73eb467f3e87874ab0e47d86c75bfd57319c80d06cdd090a10540b8",
+      "observed": {
+        "laptop": "97d5fe02c73eb467f3e87874ab0e47d86c75bfd57319c80d06cdd090a10540b8",
+        "pi": "97d5fe02c73eb467f3e87874ab0e47d86c75bfd57319c80d06cdd090a10540b8",
+        "vps": "97d5fe02c73eb467f3e87874ab0e47d86c75bfd57319c80d06cdd090a10540b8"
+      }
+    },
+    "forwarded_history": [
+      {
+        "id": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 7
+        },
+        "path": "forward.txt",
+        "kind": 1,
+        "parents": null,
+        "vector": [
+          {
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 7
+          }
+        ],
+        "manifest": {
+          "Size": 52,
+          "Digest": "97d5fe02c73eb467f3e87874ab0e47d86c75bfd57319c80d06cdd090a10540b8",
+          "Chunks": [
+            {
+              "Digest": "97d5fe02c73eb467f3e87874ab0e47d86c75bfd57319c80d06cdd090a10540b8",
+              "Length": 52
+            }
+          ],
+          "Executable": false
+        },
+        "display_time": "2026-10-01T15:59:39.039845191Z",
+        "content_state": "ready",
+        "is_head": true,
+        "applied": true
+      }
+    ],
+    "qualified_a_status": {
+      "versions": [
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 1
+          },
+          "Path": "three.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 2
+          },
+          "Path": "note.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 1
+          },
+          "Path": "three.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 2
+          },
+          "Path": "note.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 1
+          },
+          "Path": "note.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 2
+          },
+          "Path": "three.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 3
+          },
+          "Path": "three.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": true,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 4
+          },
+          "Path": "note.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 5
+          },
+          "Path": "note.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": false,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 6
+          },
+          "Path": "note.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": true,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        },
+        {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 7
+          },
+          "Path": "forward.txt",
+          "MetadataKnown": true,
+          "Stored": true,
+          "Applied": true,
+          "Conflict": false,
+          "Blocked": false,
+          "ContentState": "ready"
+        }
+      ],
+      "peers": [
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 1
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:40.479002224-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 2
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready,applied",
+          "last_contact": "2026-10-01T11:59:40.488409686-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 1
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:40.50053796-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 2
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "unknown",
+          "last_contact": "2026-10-01T11:59:40.510121956-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 1
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:40.519061579-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 2
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:40.530087987-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 3
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready,applied",
+          "last_contact": "2026-10-01T11:59:40.540067486-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 4
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "unknown",
+          "last_contact": "2026-10-01T11:59:40.550368406-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 5
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "unknown",
+          "last_contact": "2026-10-01T11:59:40.559584664-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 6
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "",
+          "last_contact": "2026-10-01T11:59:40.568549264-04:00"
+        },
+        {
+          "peer": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 7
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "",
+          "last_contact": "2026-10-01T11:59:40.603981081-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+            "Counter": 1
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:27.274038357-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 1
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:27.276155031-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+            "Counter": 2
+          },
+          "receipt": false,
+          "direct": true,
+          "remote_state": "ready,applied,conflict",
+          "last_contact": "2026-10-01T11:59:27.277777214-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 1
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready,conflict",
+          "last_contact": "2026-10-01T11:59:27.279304337-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 2
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready",
+          "last_contact": "2026-10-01T11:59:27.280765895-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 3
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready,applied",
+          "last_contact": "2026-10-01T11:59:27.282201243-04:00"
+        },
+        {
+          "peer": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+          "version": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 4
+          },
+          "receipt": true,
+          "direct": true,
+          "remote_state": "ready,conflict",
+          "last_contact": "2026-10-01T11:59:27.283639267-04:00"
+        }
+      ]
+    },
+    "forward_status_assertion": {
+      "original_author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+      "a_does_not_claim_b_receipt": true
+    },
+    "interrupted_resume": {
+      "partial": {
+        "verified_before_restart": 4,
+        "request_tls_tcp_bytes": 25100,
+        "response_tls_tcp_bytes": 6765319,
+        "total_tls_tcp_bytes": 6790419,
+        "proxy_errors": []
+      },
+      "resumed": {
+        "result": {
+          "inventoried": 12,
+          "metadata_added": 0,
+          "chunks_fetched": 8,
+          "chunks_reused": 4,
+          "versions_stored": 1,
+          "receipts_sent": 12,
+          "versions_applied": 1
+        },
+        "seconds": 5.153079463983886,
+        "receiver_resources": {
+          "sampled_peak_fds": 17,
+          "sampled_peak_rss_kib": 27008,
+          "user_seconds": 1.997338,
+          "system_seconds": 0.225442,
+          "peak_rss_kib": 26728,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 24678,
+        "response_tls_tcp_bytes": 8421996,
+        "total_tls_tcp_bytes": 8446674,
+        "proxy_errors": []
+      },
+      "hashes": {
+        "expected_sha256": "80a397e3515f74505599bbe3af63d78d9d7a46695fc155ede0394c35ba4a9704",
+        "observed": {
+          "laptop": "80a397e3515f74505599bbe3af63d78d9d7a46695fc155ede0394c35ba4a9704",
+          "pi": "80a397e3515f74505599bbe3af63d78d9d7a46695fc155ede0394c35ba4a9704"
+        }
+      }
+    },
+    "restore": {
+      "result": {
+        "folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+        "path": "note.txt",
+        "action": "restore",
+        "resolved_id": {
+          "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+          "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+          "Counter": 9
+        },
+        "envelope": {
+          "ID": {
+            "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+            "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+            "Counter": 9
+          },
+          "Path": "note.txt",
+          "Parents": [
+            {
+              "Folder": "ca8fd80e1ee942828a9e48b82e724021ca8fd80e1ee942828a9e48b82e724021",
+              "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+              "Counter": 6
+            }
+          ],
+          "Vector": [
+            {
+              "Author": "93e77153b5aeafe6dc5ab7894cb7314f2e70c7c4c520f2a8736ee94083aeb060",
+              "Counter": 2
+            },
+            {
+              "Author": "c410865de83f58657276f11ed31b631fe37f08d239b89bd1cc997c376e6eea92",
+              "Counter": 2
+            },
+            {
+              "Author": "fb91f660d5e94e48762cf554fe98f852bde5740eaf73fdc6599618ef3c4bd566",
+              "Counter": 9
+            }
+          ],
+          "Kind": 1,
+          "Manifest": {
+            "Size": 54,
+            "Digest": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+            "Chunks": [
+              {
+                "Digest": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+                "Length": 54
+              }
+            ],
+            "Executable": false
+          },
+          "AuthoredRevision": 1,
+          "DisplayTime": "2026-10-01T16:00:00.295032635Z"
+        },
+        "applied": true
+      },
+      "hashes": {
+        "expected_sha256": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+        "observed": {
+          "laptop": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+          "pi": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc",
+          "vps": "3dc008bea5610b97144ddde43e75081ab7415ce6f5953d3af78e328fae6dfdcc"
+        }
+      }
+    },
+    "restart": {
+      "laptop": {
+        "sqlite": "ok"
+      },
+      "pi": {
+        "sqlite": "ok"
+      },
+      "vps": {
+        "sqlite": "ok"
+      }
+    }
+  },
+  "success": true,
+  "seconds": 96.74097890799749
+}

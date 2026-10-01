@@ -3,7 +3,7 @@
 **Packet:** P14
 **Date:** 2026-09-23
 **Status:** `complete`
-**Prerequisites:** P13 complete. Read [scope](../../portfolio-scope.md), [operations](../../operations.md), [verification](../../verification.md), and [04-delivery](../04-delivery.md).
+**Prerequisites:** P13 complete. Read [scope](../../portfolio-scope.md), [operations](../../operations.md), [verification](../../verification.md), and [04-delivery](../../implementation/04-delivery.md).
 **Requirements Satisfied:** S08 (reviewed conflict actions), S16 (qualified status), S18 (automatic agent/shared UI).
 **Invariants Verified:** I16 (control authentication, loopback defense, CSRF, stale-view rejection), I19 (UI and CLI use the same operations, display qualified progress, safe recovery).
 

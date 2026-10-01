@@ -1,0 +1,23 @@
+{
+  "checked_utc": "2026-10-01T18:33:06.053196+00:00",
+  "engine_source_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "markdown_files_checked": 77,
+  "local_links_and_anchors_checked": 270,
+  "local_link_failures": [],
+  "release_json_files_parsed": 70,
+  "accepted_report_hashes_verified": 10,
+  "benchmark_measurements_passed": 45,
+  "benchmark_table_traffic_and_savings_cells_match_raw_samples": true,
+  "unique_invariant_checks_with_explicit_pass_records": 20,
+  "engine_and_measured_harness_unchanged_from_validated_commit": true,
+  "todo_sha256_unchanged": "7b5679a0aad6036c3c147de5624fbffc1bd3b71ffd89acf9cfe9a015e47f4019",
+  "p17_remains_incomplete": true,
+  "cleanup_and_active_personal_services_verified": true,
+  "limitations": [
+    "External URL availability was not rechecked by this local documentation audit",
+    "Current measurements are scoped synthetic runs; owner use/explanation remain unconfirmed",
+    "Shared workstation load, space pressure and concurrent cleanup limit timing interpretation"
+  ],
+  "staged_captured_logs_verified_byte_for_byte": 446,
+  "raw_log_line_endings_and_whitespace_preserved": true
+}

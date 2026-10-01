@@ -1,0 +1,121 @@
+{
+  "source_commit": "90b75ce70a7e4b34c9b08fa23daf0d11410b8b11",
+  "checkout": "/tmp/filesync-reproduction-sld02zy4/checkout",
+  "started_utc": "2026-10-01T15:23:57Z",
+  "checks": [
+    {
+      "name": "status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exit_code": 0,
+      "seconds": 0.013080398988677189
+    },
+    {
+      "name": "check",
+      "command": [
+        "make",
+        "check"
+      ],
+      "exit_code": 0,
+      "seconds": 50.75484840301215
+    },
+    {
+      "name": "race",
+      "command": [
+        "make",
+        "test-race"
+      ],
+      "exit_code": 0,
+      "seconds": 62.900537724024616
+    },
+    {
+      "name": "demo",
+      "command": [
+        "make",
+        "demo"
+      ],
+      "exit_code": 0,
+      "seconds": 0.3792769850115292
+    },
+    {
+      "name": "reset",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/release-20261001/clean-checkout-final/reset"
+      ],
+      "exit_code": 0,
+      "seconds": 35.12904716999037
+    },
+    {
+      "name": "disk-full",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/release-20261001/clean-checkout-final/disk-full",
+        "--hook",
+        "enospc.object",
+        "--hook",
+        "enospc.sqlite",
+        "--hook",
+        "enospc.checkpoint",
+        "--hook",
+        "enospc.staging",
+        "--hook",
+        "enospc.fsync"
+      ],
+      "exit_code": 0,
+      "seconds": 8.109061998024117
+    },
+    {
+      "name": "checksum",
+      "command": [
+        "sha256sum",
+        "-c",
+        "SHA256SUMS"
+      ],
+      "exit_code": 0,
+      "seconds": 0.03211258299415931
+    },
+    {
+      "name": "package-repeat",
+      "command": [
+        "make",
+        "package"
+      ],
+      "exit_code": 0,
+      "seconds": 1.0395155659934971
+    }
+  ],
+  "success": true,
+  "artifact_sha256": {
+    "SHA256SUMS": "29927f7089c284a09bb7278c2838b036c32641edc87f522cc9eb3ce973db9c52",
+    "filesync-1.0.0-1.aarch64.rpm": "afac34139af4249d58fb7f4599cbcf525c3d29c79078c2d59fa6f60ff5aa63a1",
+    "filesync-1.0.0-1.x86_64.rpm": "ab15fe8bab80ea029bd26314ffd5858c453e7a0f0950d77415a3f0f0e0c06a78",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "88e80be05b63b3b1256f881b1e773e9dc90ac1278a3810d9e2a3c3aecab2103b",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "1dd6be751eb056904fc27bf45be6cac7856bc3e7c8b3a79d7d2173cce9ceb4e6",
+    "filesync_1.0.0_amd64.deb": "63541b8644f4769121d0de202ffe86f195fc5ae9b803ffe3a5b14d27268b0e9d",
+    "filesync_1.0.0_arm64.deb": "89c91ef546bc077b2bd1224864c9f60b264315ba7916785f0a22a955b68597cf"
+  },
+  "binary_version": "filesync 1.0.0 (commit=90b75ce, built=2026-10-01, linux/amd64, go=go1.27.1-X:nodwarf5)\n",
+  "repeat_artifact_sha256": {
+    "SHA256SUMS": "29927f7089c284a09bb7278c2838b036c32641edc87f522cc9eb3ce973db9c52",
+    "filesync-1.0.0-1.aarch64.rpm": "afac34139af4249d58fb7f4599cbcf525c3d29c79078c2d59fa6f60ff5aa63a1",
+    "filesync-1.0.0-1.x86_64.rpm": "ab15fe8bab80ea029bd26314ffd5858c453e7a0f0950d77415a3f0f0e0c06a78",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "88e80be05b63b3b1256f881b1e773e9dc90ac1278a3810d9e2a3c3aecab2103b",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "1dd6be751eb056904fc27bf45be6cac7856bc3e7c8b3a79d7d2173cce9ceb4e6",
+    "filesync_1.0.0_amd64.deb": "63541b8644f4769121d0de202ffe86f195fc5ae9b803ffe3a5b14d27268b0e9d",
+    "filesync_1.0.0_arm64.deb": "89c91ef546bc077b2bd1224864c9f60b264315ba7916785f0a22a955b68597cf"
+  },
+  "packages_identical_on_repeat": true,
+  "final_tracked_changes": ""
+}

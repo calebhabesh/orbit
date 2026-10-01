@@ -1,0 +1,4 @@
+ok  	github.com/calebhabesh/file-sync/internal/config	0.001s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.081s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.603s

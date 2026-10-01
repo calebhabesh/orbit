@@ -1,0 +1,50 @@
+{
+  "source_commit": "e13e53ac3b8cfd616a20691fe70d5bb689a2e56c",
+  "type": "automated preparation; owner activity not inferred",
+  "timestamp_utc": "2026-10-01T17:38:46Z",
+  "file": "automated-package-check-f5709037a879.txt",
+  "sha256": "56553872f12aa3e3bdc85b4449a0f371bc6a0abbe7da26c46a3e10ecf7f36d50",
+  "manual_scan_or_sync": false,
+  "hosts": [
+    {
+      "host": "laptop",
+      "service": {
+        "systemd": "MainPID=109915\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 109915,
+        "control_address": "127.0.0.1:36281",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      }
+    },
+    {
+      "host": "rpi",
+      "service": {
+        "systemd": "MainPID=3704097\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 3704097,
+        "control_address": "127.0.0.1:41745",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      }
+    },
+    {
+      "host": "vps",
+      "service": {
+        "systemd": "MainPID=4010982\nExecMainStatus=0\nActiveState=active\nSubState=running\n",
+        "pid": 4010982,
+        "control_address": "127.0.0.1:42665",
+        "embedded_ui_status": 200,
+        "embedded_ui_sha256": "a6272d81b74a246378ae1777d66fe2e43951c18e946f45df15e2508e4c697b04"
+      },
+      "integrity": {
+        "sqlite": "ok"
+      }
+    }
+  ],
+  "success": true
+}

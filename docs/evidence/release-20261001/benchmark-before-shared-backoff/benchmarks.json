@@ -1,0 +1,273 @@
+{
+  "type": "synthetic",
+  "seed": 20261001,
+  "success": false,
+  "runs": [
+    {
+      "repetition": 0,
+      "workload": "small_files_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 10080,
+          "metadata_added": 10080,
+          "chunks_fetched": 10000,
+          "chunks_reused": 0,
+          "versions_stored": 10000,
+          "receipts_sent": 10080,
+          "versions_applied": 10080
+        },
+        "seconds": 1048.342879349977,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 45452,
+          "user_seconds": 130.419883,
+          "system_seconds": 140.648355,
+          "peak_rss_kib": 44516,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 21001263,
+        "response_tls_tcp_bytes": 367354931,
+        "total_tls_tcp_bytes": 388356194,
+        "proxy_errors": [],
+        "scan_seconds": 117.12273246099357,
+        "total_seconds": 1165.4656118109706
+      },
+      "receiver_storage_bytes": 372145088,
+      "baseline": {
+        "seconds": 38.978987494978355,
+        "payload_bytes": 346650550,
+        "request_tls_tcp_bytes": 1269265,
+        "response_tls_tcp_bytes": 349735092,
+        "total_tls_tcp_bytes": 351004357,
+        "proxy_errors": []
+      },
+      "file_count": 10000,
+      "source_payload_bytes": 346650550,
+      "workload_digest": "a047a7a8c31a85ec49319d4391d201873e7e28a8c797d0412cbe5e8b0e700b1b",
+      "tls_tcp_savings_percent": -10.641416909819146
+    },
+    {
+      "repetition": 0,
+      "workload": "unchanged_tree",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 10080,
+          "metadata_added": 0,
+          "chunks_fetched": 0,
+          "chunks_reused": 0,
+          "versions_stored": 0,
+          "receipts_sent": 10080,
+          "versions_applied": 0
+        },
+        "seconds": 179.79611712897895,
+        "receiver_resources": {
+          "sampled_peak_fds": 12,
+          "sampled_peak_rss_kib": 44676,
+          "user_seconds": 15.599599,
+          "system_seconds": 1.682254,
+          "peak_rss_kib": 43896,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 8062135,
+        "response_tls_tcp_bytes": 8353923,
+        "total_tls_tcp_bytes": 16416058,
+        "proxy_errors": [],
+        "scan_seconds": 1.8192546450009104,
+        "total_seconds": 181.61537177397986
+      },
+      "receiver_storage_bytes": 372145088,
+      "baseline": {
+        "seconds": 0.9049753150029574,
+        "payload_bytes": 0,
+        "request_tls_tcp_bytes": 2163,
+        "response_tls_tcp_bytes": 1132855,
+        "total_tls_tcp_bytes": 1135018,
+        "proxy_errors": []
+      },
+      "file_count": 10000,
+      "source_payload_bytes": 346650550,
+      "workload_digest": "a047a7a8c31a85ec49319d4391d201873e7e28a8c797d0412cbe5e8b0e700b1b",
+      "tls_tcp_savings_percent": -1346.3257851417334
+    },
+    {
+      "repetition": 0,
+      "workload": "large_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 10081,
+          "metadata_added": 1,
+          "chunks_fetched": 1024,
+          "chunks_reused": 0,
+          "versions_stored": 1,
+          "receipts_sent": 10081,
+          "versions_applied": 1
+        },
+        "seconds": 236.5723081069882,
+        "receiver_resources": {
+          "sampled_peak_fds": 16,
+          "sampled_peak_rss_kib": 47356,
+          "user_seconds": 32.797176,
+          "system_seconds": 16.692042,
+          "peak_rss_kib": 46920,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 9753388,
+        "response_tls_tcp_bytes": 1084823021,
+        "total_tls_tcp_bytes": 1094576409,
+        "proxy_errors": [],
+        "scan_seconds": 26.659570685995277,
+        "total_seconds": 263.2318787929835
+      },
+      "receiver_storage_bytes": 1446960064,
+      "baseline": {
+        "seconds": 4.399329581996426,
+        "payload_bytes": 1073741824,
+        "request_tls_tcp_bytes": 4334,
+        "response_tls_tcp_bytes": 1076320041,
+        "total_tls_tcp_bytes": 1076324375,
+        "proxy_errors": []
+      },
+      "file_count": 10001,
+      "source_payload_bytes": 1420392374,
+      "workload_digest": "176c1c76e9b7bc7899149f37258c063934b733947e128d78e92e709a03200d30",
+      "tls_tcp_savings_percent": -1.6957744731926239
+    },
+    {
+      "repetition": 0,
+      "workload": "tail_overwrite",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 10082,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 1023,
+          "versions_stored": 1,
+          "receipts_sent": 10082,
+          "versions_applied": 1
+        },
+        "seconds": 182.1184579889814,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 43100,
+          "user_seconds": 16.123449,
+          "system_seconds": 2.8522689999999997,
+          "peak_rss_kib": 42508,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 8437955,
+        "response_tls_tcp_bytes": 9715375,
+        "total_tls_tcp_bytes": 18153330,
+        "proxy_errors": [],
+        "scan_seconds": 25.86305539001478,
+        "total_seconds": 207.98151337899617
+      },
+      "receiver_storage_bytes": 1448709056,
+      "baseline": {
+        "seconds": 4.216058493999299,
+        "payload_bytes": 1073741824,
+        "request_tls_tcp_bytes": 4334,
+        "response_tls_tcp_bytes": 1076320041,
+        "total_tls_tcp_bytes": 1076324375,
+        "proxy_errors": []
+      },
+      "file_count": 10001,
+      "source_payload_bytes": 1420392374,
+      "workload_digest": "c25878c6902a7ac0e2ed7f2aff3d6bf9af50a70daaa6cd6445c9c33123325fc8",
+      "tls_tcp_savings_percent": 98.31339599644392
+    },
+    {
+      "repetition": 0,
+      "workload": "append",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": true,
+      "filesync": {
+        "result": {
+          "inventoried": 10083,
+          "metadata_added": 1,
+          "chunks_fetched": 1,
+          "chunks_reused": 1024,
+          "versions_stored": 1,
+          "receipts_sent": 10083,
+          "versions_applied": 1
+        },
+        "seconds": 180.6031061160029,
+        "receiver_resources": {
+          "sampled_peak_fds": 15,
+          "sampled_peak_rss_kib": 46972,
+          "user_seconds": 15.571221,
+          "system_seconds": 2.387042,
+          "peak_rss_kib": 46168,
+          "sampling_interval_seconds": 0.02
+        },
+        "request_tls_tcp_bytes": 8449467,
+        "response_tls_tcp_bytes": 8676453,
+        "total_tls_tcp_bytes": 17125920,
+        "proxy_errors": [],
+        "scan_seconds": 16.414969113015104,
+        "total_seconds": 197.018075229018
+      },
+      "receiver_storage_bytes": 1449401280,
+      "baseline": {
+        "seconds": 5.004256478016032,
+        "payload_bytes": 1073745920,
+        "request_tls_tcp_bytes": 4334,
+        "response_tls_tcp_bytes": 1076324159,
+        "total_tls_tcp_bytes": 1076328493,
+        "proxy_errors": []
+      },
+      "file_count": 10001,
+      "source_payload_bytes": 1420396470,
+      "workload_digest": "53f4ba061072b6b66713aeaec7e3fc13c4c5cd638f88c432cd7e55e505d612bf",
+      "tls_tcp_savings_percent": 98.40885750852273
+    },
+    {
+      "repetition": 0,
+      "workload": "mixed_initial",
+      "bandwidth_bytes_second": 0,
+      "proxy_delay_seconds_per_64k_read_each_direction": 0,
+      "success": false,
+      "error": "receiver: ('sync', '--folder', '71ab63a9f9684fc0ada409ea41aa0ae071ab63a9f9684fc0ada409ea41aa0ae0', '--peer-url', 'https://127.0.0.1:42731', '--peer-device', '7b3642d81f30e4f1ed792d44e8c9652e79f5660239136b60116449fcac157e09', '--peer-certificate', '/home/owner/filesync-validation-k4vpmq2h/source.pem', '--json'): {'returncode': 1, 'stdout': '', 'stderr': 'filesync: RETRY_EXHAUSTED after 5 attempts: peer error RETRY_EXHAUSTED: peer request rate limit reached\\n', 'resources': {'sampled_peak_fds': 12, 'sampled_peak_rss_kib': 32124, 'user_seconds': 3.711071, 'system_seconds': 1.250573, 'peak_rss_kib': 31596, 'sampling_interval_seconds': 0.02}}"
+    }
+  ],
+  "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
+  "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",
+  "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
+  "storage_limits": "Fresh File Sync states use init's finite 10-GiB data, 256-MiB metadata and 512-MiB free-space reserve defaults; raw receiver totals are recorded",
+  "baseline": "TLS 1.3 mutual auth, full SHA256 on both sides, flush received bytes, atomic replace + directory fsync, four workers; unchanged files skipped by full hash",
+  "timing": "sender scan/hash + sync to durable receipt/publication; baseline source/destination hash + durable publication. Server/tunnel startup and final comparison excluded",
+  "limitations": "Python baseline vs Go engine; baseline retains only working tree, engine additionally commits history/content/journals. No equivalent CPU-work or generic speedup claim",
+  "hosts": [
+    {
+      "repetition": 0,
+      "roots": [
+        "/home/owner/filesync-validation-hqd45odc",
+        "/home/owner/filesync-validation-k4vpmq2h"
+      ],
+      "inventory": {
+        "hostname": "owner-desktop",
+        "kernel": "Linux 7.2.7-arch1-1",
+        "arch": "x86_64",
+        "os": "NAME=\"Arch Linux\"\nPRETTY_NAME=\"Arch Linux\"\nID=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147;209\"\nHOME_URL=\"https://archlinux.org/\"\nDOCUMENTATION_URL=\"https://wiki.archlinux.org/\"\nSUPPORT_URL=\"https://bbs.archlinux.org/\"\nBUG_REPORT_URL=\"https://gitlab.archlinux.org/groups/archlinux/-/issues\"\nPRIVACY_POLICY_URL=\"https://terms.archlinux.org/docs/privacy-policy/\"\nLOGO=archlinux-logo\n",
+        "filesystem": "ext4 rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 9700X 8-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Microcode version:\",\n         \"data\": \"0xb404038\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"97%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"5582.3008\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"605.3100\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"7586.21\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"384 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"8 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"32 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used   Available Use% Mounted on\n/dev/nvme0n1p2 414092607488 374683979776 18326011904  96% /\n",
+        "route": "default via 192.168.88.1 dev enp6s0 proto dhcp src 192.168.88.171 metric 100 \n10.0.0.0/24 dev wg-oracle-vps proto kernel scope link src 10.0.0.2 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 \n172.18.0.0/16 dev br-1bddba983444 proto kernel scope link src 172.18.0.1 linkdown \n172.19.0.0/16 dev br-7433a5568ce3 proto kernel scope link src 172.19.0.1 \n172.20.0.0/16 dev br-3113072c7e20 proto kernel scope link src 172.20.0.1 \n172.24.0.0/16 dev br-c33b68a59282 proto kernel scope link src 172.24.0.1 \n192.168.88.0/24 dev enp6s0 proto kernel scope link src 192.168.88.171 metric 100 \n"
+      },
+      "binary_sha256": "cddb73ba1e568570fac296ffbb6c66578be7b89be6e2ce986b29883c0e9229df"
+    }
+  ],
+  "summaries": []
+}

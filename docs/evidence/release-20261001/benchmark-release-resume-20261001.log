@@ -1,0 +1,12 @@
+Source engine commit: e13e53ac3b8cfd616a20691fe70d5bb689a2e56c
+Command: python3 scripts/validation/benchmark.py --output docs/evidence/release-20261001/benchmark-release --small-files 10000 --large-mib 1024 --repetitions 1 --resume-after-initial
+PASS 1 unchanged_tree: FileSync=15924220 baseline=1135011 TLS/TCP bytes
+PASS 1 large_initial: FileSync=1093236578 baseline=1076324361 TLS/TCP bytes
+PASS 1 tail_overwrite: FileSync=18165796 baseline=1076324361 TLS/TCP bytes
+PASS 1 append: FileSync=17120577 baseline=1076328479 TLS/TCP bytes
+PASS 1 mixed_initial: FileSync=36987423 baseline=22140529 TLS/TCP bytes
+PASS 1 prefix_insert: FileSync=37166327 baseline=22140552 TLS/TCP bytes
+PASS 1 rename: FileSync=17124348 baseline=1076328602 TLS/TCP bytes
+PASS 1 delete: FileSync=17025710 baseline=1135129 TLS/TCP bytes
+
+Exit status: 0

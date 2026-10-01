@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-01T18:17:59.452451+00:00",
+  "reason": "workstation disk space exhaustion during final validation",
+  "original_root": "/home/owner/filesync-validation-k4vpmq2h",
+  "preserved_at": "/tmp/filesync-space-rescue-20261001/inactive-fixtures/filesync-validation-k4vpmq2h",
+  "source_report": "docs/evidence/release-20261001/benchmark-before-shared-backoff/benchmarks.json",
+  "disposable_marker_validated": true,
+  "no_active_owned_process": true,
+  "allocated_bytes_freed": 6535118848,
+  "regular_files_verified": 31051,
+  "all_regular_file_hashes_match": true,
+  "release_reports_preserved": true,
+  "personal_or_vps_paths_touched": false,
+  "temporary_storage": "RAM-backed /tmp; retain until obsolete fixture may be discarded",
+  "subsequently_discarded_utc": "2026-10-01T18:26:40.754470+00:00",
+  "owner_authorized_discard_of_nonessential_fixture": true
+}

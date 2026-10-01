@@ -1,0 +1,30 @@
+{
+  "prior_failure": "benchmark-finite-budget-before-page/observed-failure.json",
+  "purpose": "unchanged populated 10000-file finite-budget regression",
+  "success": true,
+  "binary_sha256": "926ee88966ed826129dddc74b4007b31ec39a7a637bce91e75ff30f43b229c55",
+  "sync": {
+    "result": {
+      "inventoried": 10080,
+      "metadata_added": 0,
+      "chunks_fetched": 0,
+      "chunks_reused": 0,
+      "versions_stored": 0,
+      "receipts_sent": 10080,
+      "versions_applied": 0
+    },
+    "seconds": 173.9030985640129,
+    "receiver_resources": {
+      "sampled_peak_fds": 12,
+      "sampled_peak_rss_kib": 38508,
+      "user_seconds": 11.238518,
+      "system_seconds": 1.558097,
+      "peak_rss_kib": 37612,
+      "sampling_interval_seconds": 0.02
+    },
+    "request_tls_tcp_bytes": 8369302,
+    "response_tls_tcp_bytes": 8526083,
+    "total_tls_tcp_bytes": 16895385,
+    "proxy_errors": []
+  }
+}
