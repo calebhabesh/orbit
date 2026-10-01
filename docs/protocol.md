@@ -242,3 +242,10 @@ successful row iteration; a lost final response can restart inventory safely.
 Explicit retryable HTTP 429/503 responses use at most five metadata attempts
 with 50/100/200/400 ms cancellable backoff. Transport delivery remains
 idempotent, with no exactly-once claim.
+
+Chunk fetches also retain at most five attempts with the same initial backoff.
+Their cooldown is shared by a sync session's chunk pool: successful workers
+wait when another worker observes backpressure. This prevents fast workers
+from consuming every refilled server token while another exhausts its retries.
+Cancellation interrupts cooldown waits. Persistent pressure still produces a
+visible exhausted state for the scheduler's bounded later work cycle.

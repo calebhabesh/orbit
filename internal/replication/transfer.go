@@ -20,9 +20,10 @@ import (
 )
 
 const (
-	MaxTransferWorkers = 4
-	MaxQueuedVersions  = 1024
-	MaxRetryAttempts   = 5
+	MaxTransferWorkers  = 4
+	MaxQueuedVersions   = 1024
+	MaxRetryAttempts    = 5
+	InitialRetryBackoff = 50 * time.Millisecond
 )
 
 const (
@@ -60,19 +61,21 @@ type TransferOptions struct {
 }
 
 type Syncer struct {
-	repo       *repository.DB
-	publisher  Publisher
-	client     PeerClient
-	local      history.ID
-	peer       history.ID
-	folder     history.ID
-	membership repository.ApprovedMembership
-	workers    int
-	retries    int
-	now        func() time.Time
-	hook       func(string) error
-	fallbacks  []PeerClient
-	limiter    BandwidthLimiter
+	repo            *repository.DB
+	publisher       Publisher
+	client          PeerClient
+	local           history.ID
+	peer            history.ID
+	folder          history.ID
+	membership      repository.ApprovedMembership
+	workers         int
+	retries         int
+	now             func() time.Time
+	hook            func(string) error
+	fallbacks       []PeerClient
+	limiter         BandwidthLimiter
+	chunkRetryMu    sync.Mutex
+	chunkRetryUntil time.Time
 }
 
 type SyncResult struct {
@@ -476,6 +479,9 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 	request := ChunkRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, FolderID: folder, Revision: revision, MembershipDigest: digest, AuthorID: hex.EncodeToString(id.Author[:]), Counter: strconv.FormatUint(id.Counter, 10), ChunkIndex: strconv.Itoa(position)}
 	var last error
 	for attempt := 0; attempt < syncer.retries; attempt++ {
+		if err := syncer.waitChunkRetry(ctx); err != nil {
+			return err
+		}
 		data, err := syncer.client.Chunk(ctx, request, chunk)
 		if err == nil {
 			if syncer.limiter != nil {
@@ -491,12 +497,14 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 			break
 		}
 		if attempt+1 < syncer.retries {
-			delay := time.Duration(1<<attempt) * 10 * time.Millisecond
-			select {
-			case <-time.After(delay):
-			case <-ctx.Done():
-				return ctx.Err()
+			// Backpressure pauses the whole chunk pool. Successful workers
+			// must not consume every new server token while one worker retries.
+			until := time.Now().Add(InitialRetryBackoff << attempt)
+			syncer.chunkRetryMu.Lock()
+			if until.After(syncer.chunkRetryUntil) {
+				syncer.chunkRetryUntil = until
 			}
+			syncer.chunkRetryMu.Unlock()
 		}
 	}
 
@@ -509,6 +517,27 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 	}
 
 	return fmt.Errorf("RETRY_EXHAUSTED after %d attempts: %w", syncer.retries, last)
+}
+
+func (syncer *Syncer) waitChunkRetry(ctx context.Context) error {
+	for {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		syncer.chunkRetryMu.Lock()
+		delay := time.Until(syncer.chunkRetryUntil)
+		syncer.chunkRetryMu.Unlock()
+		if delay <= 0 {
+			return nil
+		}
+		timer := time.NewTimer(delay)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return ctx.Err()
+		case <-timer.C:
+		}
+	}
 }
 
 func (syncer *Syncer) sendReceipt(ctx context.Context, id history.VersionID) error {

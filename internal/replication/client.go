@@ -131,7 +131,7 @@ func (client *Client) postJSON(ctx context.Context, path string, input, output a
 		}
 		// Only explicit pre-admission backpressure is retried here. Causal
 		// mutations/receipts remain idempotent, with a bounded retry budget.
-		timer := time.NewTimer((50 * time.Millisecond) << attempt)
+		timer := time.NewTimer(InitialRetryBackoff << attempt)
 		select {
 		case <-ctx.Done():
 			timer.Stop()

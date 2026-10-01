@@ -209,6 +209,8 @@ def main():
               "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
               "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",
               "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
+              "throttle": "Configured bandwidth is per response TCP stream; four-worker ceilings are equal but stream utilization differs. Delay is per read, not calibrated RTT",
+              "storage_measurement": "Apparent regular-file bytes: receiver state, working root and internal recovery/staging separately; baseline working files. Not filesystem allocated blocks",
               "storage_limits": "Fresh File Sync states use init's finite 10-GiB data, 256-MiB metadata and 512-MiB free-space reserve defaults; raw receiver totals are recorded",
               "baseline": "TLS 1.3 mutual auth, full SHA256 on both sides, flush received bytes, atomic replace + directory fsync, four workers; unchanged files skipped by full hash",
               "timing": "sender scan/hash + sync to durable receipt/publication; baseline source/destination hash + durable publication. Server/tunnel startup and final comparison excluded",
@@ -277,8 +279,12 @@ def main():
                         entry["filesync"] = sync(source, receiver, bandwidth=bandwidth, latency=latency, relay=args.relay)
                         entry["filesync"]["scan_seconds"] = scan_seconds
                         entry["receiver_storage_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "state").rglob("*") if p.is_file())
+                        entry["receiver_root_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "data").rglob("*") if p.is_file())
+                        entry["receiver_root_scratch_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "data/.filesync-internal").rglob("*") if p.is_file())
+                        entry["receiver_managed_bytes"] = entry["receiver_storage_bytes"] + entry["receiver_root_bytes"]
                         entry["filesync"]["total_seconds"] = entry["filesync"]["seconds"] + scan_seconds
                         entry["baseline"] = baseline.run(bandwidth, latency)
+                        entry["baseline_storage_bytes"] = sum(p.stat().st_size for p in baseline.destination.rglob("*") if p.is_file())
                         expected = inventory(root)
                         if inventory(Path(receiver.root) / "data") != expected:
                             raise RuntimeError("File Sync resulting tree differs")
