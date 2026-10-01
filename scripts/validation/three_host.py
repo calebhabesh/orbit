@@ -9,7 +9,7 @@ import random
 import time
 import uuid
 
-from harness import Node, link, pair, sync
+from harness import Node, link, pair, sync, prepare_output
 
 
 def conflicts(node, path):
@@ -43,7 +43,7 @@ def main():
     parser.add_argument("--vps", default="vps")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=True)
+    prepare_output(args.output)
     start = time.monotonic()
     nodes = [Node(args.laptop, "laptop"), Node(args.pi, "pi"), Node(args.vps, "vps")]
     a, b, c = nodes

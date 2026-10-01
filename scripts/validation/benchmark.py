@@ -17,7 +17,7 @@ import time
 import urllib.parse
 import uuid
 
-from harness import Node, Proxy, pair, sync
+from harness import Node, Proxy, pair, sync, prepare_output
 
 
 def digest(path):
@@ -197,7 +197,7 @@ def main():
     args = parser.parse_args()
     if args.repetitions < 1 or args.small_files < 1 or args.large_mib < 1:
         parser.error("positive workload dimensions required")
-    args.output.mkdir(parents=True, exist_ok=True)
+    prepare_output(args.output, resume=args.resume_after_initial)
     report = {"type": "synthetic", "seed": 20261001, "success": False, "runs": [],
               "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
               "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",

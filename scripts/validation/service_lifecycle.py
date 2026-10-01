@@ -7,7 +7,7 @@ from pathlib import Path
 import time
 import uuid
 
-from harness import Node
+from harness import Node, prepare_output
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     parser.add_argument("--hosts", nargs="+", default=["local", "rpi", "vps"])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=True)
+    prepare_output(args.output)
     template = Path("packaging/systemd/filesync.service").read_text()
     results = []
     try:

@@ -1,6 +1,8 @@
 # Operator Runbook: Safe Upgrade and Preflight Procedure
 
-This runbook defines the standard operating procedure for upgrading File Sync binaries and applying database schema migrations without service interruption, torn databases, or split-brain replication.
+Upgrade uses a graceful service stop, a consistent SQLite backup, compatibility
+checks and health checks before restarting replication. Use the actual state
+directory and service unit for your installation in the commands below.
 
 ---
 
@@ -54,9 +56,13 @@ filesync maintenance preflight
 ### Step 3: Create a Consistent SQLite Backup
 Take a transactionally consistent backup using SQLite `VACUUM INTO`:
 ```bash
-filesync maintenance backup --out ~/.local/share/filesync/pre-upgrade-backup.sqlite
+filesync maintenance backup --out ~/.local/state/filesync/pre-upgrade-backup.sqlite
 ```
-**Why VACUUM INTO is required**: Live SQLite databases operate in WAL mode. Copying `metadata.sqlite` with `cp` omits uncheckpointed WAL frames and risks torn pages. `filesync maintenance backup` guarantees an atomic, fully-checkpointed snapshot.
+The CLI requires exclusive state ownership, so stop the agent before backup.
+SQLite `VACUUM INTO` creates a consistent snapshot including committed WAL
+content. Copying only a live `metadata.sqlite` file can omit that content.
+Keep the backup together with the documented identity-rollback recovery plan;
+it is not an independent copy of all historical payloads.
 
 ---
 

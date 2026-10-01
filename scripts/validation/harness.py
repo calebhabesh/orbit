@@ -17,6 +17,15 @@ import uuid
 AGENT = Path(__file__).with_name("host_agent.py").read_text()
 
 
+def prepare_output(path, resume=False):
+    path = Path(path)
+    if path.is_symlink():
+        raise RuntimeError("evidence directory must not be a symlink")
+    path.mkdir(parents=True, exist_ok=True)
+    if not resume and any(path.iterdir()):
+        raise RuntimeError("evidence directory must be empty; preserve previous results")
+
+
 class Node:
     def __init__(self, host, role, purpose="validation"):
         self.host, self.role, self.root = host, role, None

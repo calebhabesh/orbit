@@ -11,6 +11,8 @@ import subprocess
 import tempfile
 import time
 
+from harness import prepare_output
+
 HOOKS = ["dirty-cache-control", "object.flushed", "object.installed", "object.recorded",
          "sql.version.before_commit", "sql.version.after_commit", "publication.prepared",
          "publication.stage.flushed", "publication.staged", "publication.intent",
@@ -75,7 +77,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--hook", action="append", help="subset (default: entire boundary matrix)")
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=True)
+    prepare_output(args.output)
     report = {"fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
               "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
               "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",

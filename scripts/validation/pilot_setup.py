@@ -8,14 +8,14 @@ import subprocess
 import time
 import uuid
 
-from harness import Node,pair
+from harness import Node,pair,prepare_output
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output",required=True,type=Path)
     args=parser.parse_args()
-    args.output.mkdir(parents=True,exist_ok=True)
+    prepare_output(args.output)
     report={"purpose":"prepared owner pilot; automated preparation is not owner adoption",
             "started_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"hosts":[],"success":False,
             "network":"Dedicated SSH forwarding via workstation's existing VPS route. Workstation gateway must stay on; no firewall/VPN settings changed",
