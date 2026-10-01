@@ -192,13 +192,16 @@ def main():
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--small-files", type=int, default=1000)
     parser.add_argument("--large-mib", type=int, default=1024)
+    parser.add_argument("--mixed-extra-mib", type=int, nargs="*", default=[],
+                        help="additional independently seeded objects for the mixed workload")
     parser.add_argument("--resume-after-initial", action="store_true",
                         help="resume an interrupted one-repetition campaign after its completed initial workload")
     args = parser.parse_args()
-    if args.repetitions < 1 or args.small_files < 1 or args.large_mib < 1:
+    if args.repetitions < 1 or args.small_files < 1 or args.large_mib < 1 or any(n < 1 for n in args.mixed_extra_mib):
         parser.error("positive workload dimensions required")
     prepare_output(args.output, resume=args.resume_after_initial)
     report = {"type": "synthetic", "seed": 20261001, "success": False, "runs": [],
+              "dimensions": {"small_files": args.small_files, "large_mib": args.large_mib, "mixed_extra_mib": args.mixed_extra_mib, "repetitions": args.repetitions},
               "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
               "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",
               "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
@@ -308,6 +311,8 @@ def main():
                 measure("append")
                 shifted = root / "prefix.bin"
                 write_random(shifted, 20 * 1024 * 1024, 19)
+                for index, size in enumerate(args.mixed_extra_mib):
+                    write_random(root / f"mixed-{index}.bin", size * 1024 * 1024, 23 + index)
                 measure("mixed_initial")
                 shifted.write_bytes(b"X" + shifted.read_bytes())
                 measure("prefix_insert", bandwidth=8 * 1024 * 1024, latency=0.002)
