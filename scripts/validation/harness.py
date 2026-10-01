@@ -127,6 +127,8 @@ class Proxy:
             try:
                 client, _ = self.listener.accept()
                 server = socket.create_connection(self.destination, timeout=15)
+                client.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
+                server.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
                 server.settimeout(None)
                 self.connections.extend([client, server])
                 for source, target, direction in [(client, server, 0), (server, client, 1)]:

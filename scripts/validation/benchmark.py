@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import random
 import ssl
+import socket
 import statistics
 import threading
 import time
@@ -52,6 +53,10 @@ class FullFileBaseline:
 
         class Handler(http.server.BaseHTTPRequestHandler):
             protocol_version = "HTTP/1.1"
+
+            def setup(self):
+                self.request.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
+                super().setup()
 
             def log_message(self, *args):
                 pass
@@ -99,6 +104,7 @@ class FullFileBaseline:
             def connect(conn):
                 import socket
                 sock = socket.create_connection(("127.0.0.1", port), timeout=30)
+                sock.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
                 conn.sock = self.context.wrap_socket(sock, server_hostname="peer.filesync.invalid")
         return Connection("peer.filesync.invalid", port, context=self.context)
 
@@ -195,6 +201,8 @@ def main():
     report = {"type": "synthetic", "seed": 20261001, "success": False, "runs": [],
               "measurement": "TCP stream bytes in both directions INCLUDING TLS records/handshake; EXCLUDING IP/TCP and SSH headers",
               "cache": "fresh application stores per repetition; warm OS page cache, no privileged cache drops",
+              "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
+              "storage_limits": "Fresh File Sync states use init's finite 10-GiB data, 256-MiB metadata and 512-MiB free-space reserve defaults; raw receiver totals are recorded",
               "baseline": "TLS 1.3 mutual auth, full SHA256 on both sides, flush received bytes, atomic replace + directory fsync, four workers; unchanged files skipped by full hash",
               "timing": "sender scan/hash + sync to durable receipt/publication; baseline source/destination hash + durable publication. Server/tunnel startup and final comparison excluded",
               "limitations": "Python baseline vs Go engine; baseline retains only working tree, engine additionally commits history/content/journals. No equivalent CPU-work or generic speedup claim",

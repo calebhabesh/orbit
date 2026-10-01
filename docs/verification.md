@@ -152,3 +152,18 @@ TLS/TCP stream bytes, rather than physical-link wire bytes. The algorithms
 perform different history/storage work, so their times do not establish a
 universal speedup. Proxy delay is stated per read, not claimed as calibrated RTT.
 Automated sessions remain distinct from owner-reported personal use.
+
+The current benchmark enables TCP_NODELAY on proxy and baseline sockets to
+match Go's defaults. Earlier proxy runs retained default Nagle behavior;
+their measured byte counts remain historical evidence, while their timings
+include artificial proxy/delayed-ACK stalls. Current finite storage admission
+costs are included in the release run. Primary API reference:
+[Go TCPConn.SetNoDelay](https://pkg.go.dev/net#TCPConn.SetNoDelay).
+
+Actual disk exhaustion runs in new guest ext4 images cover incoming writes,
+SQLite WAL growth, checkpoint allocation and 2-MiB publication staging.
+`enospc.fsync` is a separate VM-child syscall experiment: a seccomp filter
+returns ENOSPC from fsync/fdatasync, then the parent checks protected content.
+It is explicitly fault injection rather than a naturally full filesystem's
+delayed-allocation flush behavior. See
+[Linux seccomp filter semantics](https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html).
