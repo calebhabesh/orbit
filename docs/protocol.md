@@ -234,6 +234,8 @@ Inventories are fetched in pages of at most 128 summaries into a temporary,
 budgeted spool under `state/incoming`, before slower content/storage work.
 The 1,024-entry limit applies to an individual ancestry fetch, rather than the
 size of a folder. Each pass streams the spool and releases per-fetch caches.
+Storage admission writes a bounded page at once; checking the entire storage
+tree per summary made an unchanged populated replica exceed snapshot expiry.
 Snapshot expiry restarts the inventory with a truncated spool. A cursor that
 fails to advance is rejected. Completed sender snapshots are released after
 successful row iteration; a lost final response can restart inventory safely.

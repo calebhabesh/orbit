@@ -137,7 +137,9 @@ Consulted for architecture planning on 2026-09-20; recheck version-sensitive API
 - `go run scripts/three_host_pilot.go --laptop laptop --pi rpi --vps vps`
   performs the scripted actual-host scenarios in fresh private roots. It stops
   the receiving sync process after observing durable verified chunk progress,
-  restarts it, checks exact remaining fetch counts, and verifies whole-file hashes.
+  restarts it, checks reuse of every recorded verified chunk and bounds new
+  fetches by the remaining count, then verifies whole-file hashes. A chunk may
+  become durable before its progress row commits, allowing additional reuse.
 - `go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1`
   generates deterministic synthetic fixtures and counts actual encrypted TCP
   bytes. Both alternatives use TLS 1.3 mutual authentication and whole-file
@@ -145,6 +147,11 @@ Consulted for architecture planning on 2026-09-20; recheck version-sensitive API
   contents, flushes received files, and publishes through rename/directory flush.
   Raw sample counts accompany every summary. These are warm filesystem-cache
   runs, with fresh application stores per repetition.
+- `python3 scripts/validation/reproduce_release.py --source COMMIT --kernel /path/to/vmlinuz --output /empty/evidence`
+  checks an explicit committed revision in a new marked checkout, records all
+  commands, runs local/race/demo/reset/disk-exhaustion checks and verifies
+  checksums plus identical packages on a second build. Native host campaigns
+  use binaries extracted from those checked archives.
 
 Traffic counters include TLS record/handshake and HTTP overhead in both
 stream directions; they exclude TCP/IP and SSH encapsulation. Call them

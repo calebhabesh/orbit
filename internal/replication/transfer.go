@@ -241,7 +241,6 @@ func (syncer *Syncer) inventory(ctx context.Context, device, folder, revision, d
 		if _, err := spool.Seek(0, io.SeekStart); err != nil {
 			return nil, err
 		}
-		encoder := json.NewEncoder(spool)
 		token, cursor := "", "0"
 		for {
 			response, err := syncer.client.Inventory(ctx, InventoryRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, FolderID: folder, Revision: revision, MembershipDigest: digest, SnapshotToken: token, Cursor: cursor, PageSize: strconv.Itoa(MaxInventoryPage)})
@@ -255,10 +254,18 @@ func (syncer *Syncer) inventory(ctx context.Context, device, folder, revision, d
 			if len(response.Entries) > MaxInventoryPage {
 				return nil, errors.New("peer inventory page exceeds requested bound")
 			}
+			// Admit one bounded page at a time. Checking the complete on-disk
+			// budget for every entry becomes quadratic on a populated replica
+			// and can outlive the sender's snapshot even for an unchanged tree.
+			var page bytes.Buffer
+			encoder := json.NewEncoder(&page)
 			for _, entry := range response.Entries {
 				if err := encoder.Encode(entry); err != nil {
 					return nil, err
 				}
+			}
+			if _, err := spool.Write(page.Bytes()); err != nil {
+				return nil, err
 			}
 			if response.Done {
 				success = true
