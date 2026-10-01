@@ -123,6 +123,26 @@ func (client *Client) Chunk(ctx context.Context, request ChunkRequest, expected 
 }
 
 func (client *Client) postJSON(ctx context.Context, path string, input, output any) error {
+	for attempt := 0; attempt < MaxRetryAttempts; attempt++ {
+		err := client.postJSONOnce(ctx, path, input, output)
+		var wire *WireError
+		if !errors.As(err, &wire) || !wire.Body.Retryable || (wire.Status != http.StatusTooManyRequests && wire.Status != http.StatusServiceUnavailable) || attempt == MaxRetryAttempts-1 {
+			return err
+		}
+		// Only explicit pre-admission backpressure is retried here. Causal
+		// mutations/receipts remain idempotent, with a bounded retry budget.
+		timer := time.NewTimer((50 * time.Millisecond) << attempt)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return ctx.Err()
+		case <-timer.C:
+		}
+	}
+	return errors.New("peer metadata retry budget exhausted")
+}
+
+func (client *Client) postJSONOnce(ctx context.Context, path string, input, output any) error {
 	data, err := json.Marshal(input)
 	if err != nil {
 		return err

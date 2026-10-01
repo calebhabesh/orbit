@@ -1,0 +1,139 @@
+{
+  "fault": "SIGKILL of dedicated QEMU VM, then cold guest boot; no clean guest unmount",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "c2f559dc69776df1a4f7d998a9c9475fbea78afd9a9074aee00834dc58a42134",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-01T13:48:35Z",
+  "runs": [
+    {
+      "hook": "dirty-cache-control",
+      "success": true,
+      "setup_seconds": 0.7358211760001723,
+      "mutate_seconds": 0.6715673739963677,
+      "verify_seconds": 0.7139123429951724,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "object.flushed",
+      "success": true,
+      "setup_seconds": 0.7388244140020106,
+      "mutate_seconds": 0.7579072160006035,
+      "verify_seconds": 0.6603294209926389,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "object.installed",
+      "success": true,
+      "setup_seconds": 0.7544038720079698,
+      "mutate_seconds": 0.6855525459977798,
+      "verify_seconds": 0.7293280799931381,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "object.recorded",
+      "success": true,
+      "setup_seconds": 0.6773584579932503,
+      "mutate_seconds": 0.7144982239988167,
+      "verify_seconds": 0.7314006900123786,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "sql.version.before_commit",
+      "success": true,
+      "setup_seconds": 0.6994311250164174,
+      "mutate_seconds": 0.7292467939842027,
+      "verify_seconds": 0.7454649730061647,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "sql.version.after_commit",
+      "success": true,
+      "setup_seconds": 0.7309097819961607,
+      "mutate_seconds": 0.7123445290199015,
+      "verify_seconds": 0.6967092639824841,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.prepared",
+      "success": true,
+      "setup_seconds": 0.6826695170020685,
+      "mutate_seconds": 0.7223028260050341,
+      "verify_seconds": 0.6824221739952918,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.stage.flushed",
+      "success": true,
+      "setup_seconds": 0.7243283359857742,
+      "mutate_seconds": 0.7071725560235791,
+      "verify_seconds": 0.7593727479979862,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.staged",
+      "success": true,
+      "setup_seconds": 0.7270689540018793,
+      "mutate_seconds": 0.6944159319973551,
+      "verify_seconds": 0.6811442530015483,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.intent",
+      "success": true,
+      "setup_seconds": 0.7450771319854539,
+      "mutate_seconds": 0.7155560349929146,
+      "verify_seconds": 0.7082502760167699,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.exchange.before",
+      "success": true,
+      "setup_seconds": 0.7325917959969956,
+      "mutate_seconds": 0.6483776840032078,
+      "verify_seconds": 0.7044905420043506,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.filesystem.transition",
+      "success": true,
+      "setup_seconds": 0.7221975660067983,
+      "mutate_seconds": 0.7117790289921686,
+      "verify_seconds": 0.7348159659886733,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.recovery.named",
+      "success": true,
+      "setup_seconds": 0.7373390670109075,
+      "mutate_seconds": 0.7061704120133072,
+      "verify_seconds": 0.6190929200092796,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.directory.flushed",
+      "success": true,
+      "setup_seconds": 0.6558970730111469,
+      "mutate_seconds": 0.7189850980066694,
+      "verify_seconds": 0.6739221639872994,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.renamed",
+      "success": true,
+      "setup_seconds": 0.6937500500062015,
+      "mutate_seconds": 0.7461977039929479,
+      "verify_seconds": 0.7539728299889248,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    },
+    {
+      "hook": "publication.committed",
+      "success": true,
+      "setup_seconds": 0.6933553659764584,
+      "mutate_seconds": 0.7032102869998198,
+      "verify_seconds": 0.7292522760108113,
+      "oracle": "FILESYNC_RESET_VERIFY_OK"
+    }
+  ],
+  "success": true
+}

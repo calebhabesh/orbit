@@ -408,8 +408,17 @@ func (db *DB) InventoryPage(ctx context.Context, token [32]byte, folder, peer hi
 		page.Entries = append(page.Entries, entry)
 		page.NextCursor++
 	}
+	if err := rows.Err(); err != nil {
+		return InventoryPage{}, err
+	}
+	if err := rows.Close(); err != nil {
+		return InventoryPage{}, err
+	}
 	page.Done = true
-	return page, rows.Err()
+	if _, err := db.db.ExecContext(ctx, `DELETE FROM inventory_snapshots WHERE token=?`, token[:]); err != nil {
+		return InventoryPage{}, err
+	}
+	return page, nil
 }
 
 // ReadAuthorizedChunk verifies the requested version is ready and the index is

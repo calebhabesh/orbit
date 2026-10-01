@@ -25,3 +25,7 @@ node_modules/
 *.test
 *.prof
 .DS_Store
+
+# Python validation caches
+__pycache__/
+*.pyc

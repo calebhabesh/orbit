@@ -7,7 +7,7 @@ transfers, durable receipts and status reporting; P07 completed bidirectional
 reconciliation, multi-head conflict projection and structural conflict isolation;
 P08 completed reviewed resolution, historical restore, export and safe control replay;
 P09 completed three-peer forwarding, membership distribution, canonical retirement
-snapshots, and access termination. Retention, GC, operations and release checks remain planned.
+snapshots, and access termination. P10–P15 implement storage policy and operator interfaces. Release validation remains tracked in [status](implementation/status.md).
 Protocol name is provisional. No Syncthing wire compatibility is claimed.
 
 ## 1. Identities and membership
@@ -227,3 +227,16 @@ The owner preview explicitly states that uncaptured/unexchanged changes on the r
 For an agreed membership configuration, after local writes stop and valid required histories/content can flow through a temporally connected peer graph, fair retries and successful local processing should eventually yield equivalent accepted head/conflict state at participating replicas. Working-folder equivalence additionally requires resolved structural/content conflicts, available content, supported paths, and successful publication.
 
 Convergence is not promised while disk pressure blocks ingestion, all copies of required bytes are lost, configurations disagree, or an authorized participant fabricates histories. Finite model/fault tests support the stated scenarios; they are not a general proof.
+
+## Inventory admission after release validation
+
+Inventories are fetched in pages of at most 128 summaries into a temporary,
+budgeted spool under `state/incoming`, before slower content/storage work.
+The 1,024-entry limit applies to an individual ancestry fetch, rather than the
+size of a folder. Each pass streams the spool and releases per-fetch caches.
+Snapshot expiry restarts the inventory with a truncated spool. A cursor that
+fails to advance is rejected. Completed sender snapshots are released after
+successful row iteration; a lost final response can restart inventory safely.
+Explicit retryable HTTP 429/503 responses use at most five metadata attempts
+with 50/100/200/400 ms cancellable backoff. Transport delivery remains
+idempotent, with no exactly-once claim.

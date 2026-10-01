@@ -1,11 +1,10 @@
 # Verification and evidence contract
 
-Status: P01–P09 local design, model, repository, workspace, authenticated
-wire, verified transfer, bidirectional reconciliation/conflict projection,
-reviewed resolution/restore, and three-peer forwarding/membership lifecycle checks have executed;
-retention, garbage collection, operations and release checks remain
-planned. This file defines independent oracles and the claims each experiment
-may support.
+Status: local design/model, unit, integration and process-fault suites exist
+through P17. Required release experiments and their remaining gaps are in
+[packet status](implementation/status.md) and the
+[2026-10-01 evidence](evidence/release-20261001/summary.md). Passing a named
+check verifies its stated oracle; it does not prove every failure model.
 
 ## Invariants
 
@@ -80,7 +79,7 @@ Use namespaces/containers or a protocol proxy for partitions/delay/drop behavior
 - Scheduled/manual campaign: broader seeds, fuzzing, real filesystem fault matrices, long-running resource/fairness checks.
 - Release: packaged binaries, local demo from clean checkout, actual three-host workflow, documented abrupt-reset experiments and personal pilot.
 
-Choose commands in P00 when build files exist. Planned targets: `make check`, `make test`, `make test-race`, `make test-integration`, `make test-model`, `make test-faults`, `make demo`, `make build`, `make evidence`. These are required deliverables, not currently available commands. Publish what each target executes and any privilege requirements. Destructive tests are never a hidden dependency of ordinary checks.
+The Makefile provides these validation targets: `make check`, `make test`, `make test-race`, `make test-integration`, `make test-model`, `make test-faults`, `make demo`, `make build`, `make evidence`. The explicit QEMU abrupt-reset target is separate from ordinary checks. Publish what each target executes and any privilege requirements. Destructive tests are never a hidden dependency of ordinary checks.
 
 ## Benchmark plan
 
@@ -125,3 +124,31 @@ Consulted for architecture planning on 2026-09-20; recheck version-sensitive API
 - [Linux rename](https://man7.org/linux/man-pages/man2/rename.2.html): namespace replacement does not invalidate existing open descriptors.
 - [Linux fsync](https://man7.org/linux/man-pages/man2/fsync.2.html): directory-entry durability requires separate consideration.
 - [Go os documentation](https://pkg.go.dev/os): check descriptor-rooted APIs against the selected toolchain; name validation alone is not race-safe containment.
+
+## Current executable release campaigns
+
+- `python3 -m unittest discover -s scripts/validation -p 'test_*.py'` exercises
+  the actual host worker's marker, path/link and process-identity refusals.
+- `make demo` runs the local multi-process demonstration without cloud access.
+- `python3 scripts/validation/abrupt_reset.py --kernel /path/to/vmlinuz --output /path/to/evidence`
+  boots newly created ext4 images, stops only the child QEMU process at actual
+  production hooks, then boots a fresh guest to verify protected hashes and
+  recovery. Its dirty-cache negative control must lose an unflushed overwrite.
+- `go run scripts/three_host_pilot.go --laptop laptop --pi rpi --vps vps`
+  performs the scripted actual-host scenarios in fresh private roots. It stops
+  the receiving sync process after observing durable verified chunk progress,
+  restarts it, checks exact remaining fetch counts, and verifies whole-file hashes.
+- `go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1`
+  generates deterministic synthetic fixtures and counts actual encrypted TCP
+  bytes. Both alternatives use TLS 1.3 mutual authentication and whole-file
+  verification; the full-file baseline hashes existing files and skips unchanged
+  contents, flushes received files, and publishes through rename/directory flush.
+  Raw sample counts accompany every summary. These are warm filesystem-cache
+  runs, with fresh application stores per repetition.
+
+Traffic counters include TLS record/handshake and HTTP overhead in both
+stream directions; they exclude TCP/IP and SSH encapsulation. Call them
+TLS/TCP stream bytes, rather than physical-link wire bytes. The algorithms
+perform different history/storage work, so their times do not establish a
+universal speedup. Proxy delay is stated per read, not claimed as calibrated RTT.
+Automated sessions remain distinct from owner-reported personal use.

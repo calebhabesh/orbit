@@ -96,13 +96,17 @@ func (db *DB) CreateResolutionVersion(ctx context.Context, request ResolutionVer
 		return history.Envelope{}, history.ErrCounterOverflow
 	}
 	counter++
+	// Folder-wide identity checks remain global even when causal state is per path.
+	if err := rejectExistingVersionID(ctx, tx, history.VersionID{Folder: request.Folder, Author: author, Counter: counter}); err != nil {
+		return history.Envelope{}, err
+	}
 
 	authoredRevision := request.AuthoredRevision
 	if authoredRevision == 0 {
 		authoredRevision, _ = decodeUint(revRaw)
 	}
 
-	h, err := loadHistory(ctx, tx, request.Folder)
+	h, err := loadHistory(ctx, tx, request.Folder, request.Path)
 	if err != nil {
 		return history.Envelope{}, err
 	}
@@ -206,13 +210,17 @@ func (db *DB) CreateCopyVersion(ctx context.Context, request CopyVersionRequest)
 		return history.Envelope{}, history.ErrCounterOverflow
 	}
 	counter++
+	// Folder-wide identity checks remain global even when causal state is per path.
+	if err := rejectExistingVersionID(ctx, tx, history.VersionID{Folder: request.Folder, Author: author, Counter: counter}); err != nil {
+		return history.Envelope{}, err
+	}
 
 	authoredRevision := request.AuthoredRevision
 	if authoredRevision == 0 {
 		authoredRevision, _ = decodeUint(revRaw)
 	}
 
-	h, err := loadHistory(ctx, tx, request.Folder)
+	h, err := loadHistory(ctx, tx, request.Folder, request.Path)
 	if err != nil {
 		return history.Envelope{}, err
 	}
@@ -426,7 +434,7 @@ func (db *DB) ContentAvailability(ctx context.Context, id history.VersionID) (Co
 
 // PathActiveInRepository reports whether any non-tombstone causal heads exist for path.
 func (db *DB) PathActiveInRepository(ctx context.Context, folder history.ID, path string) (bool, error) {
-	h, err := loadHistoryReadOnly(ctx, db, folder)
+	h, err := loadHistoryReadOnly(ctx, db, folder, path)
 	if err != nil {
 		return false, err
 	}
@@ -475,7 +483,7 @@ func (db *DB) PathHistory(ctx context.Context, folder history.ID, path string) (
 
 // Heads returns the current causal heads for path in folder.
 func (db *DB) Heads(ctx context.Context, folder history.ID, path string) ([]history.Envelope, error) {
-	h, err := loadHistoryReadOnly(ctx, db, folder)
+	h, err := loadHistoryReadOnly(ctx, db, folder, path)
 	if err != nil {
 		return nil, err
 	}

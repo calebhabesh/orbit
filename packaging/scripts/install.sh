@@ -22,7 +22,8 @@ if [ "${MODE}" = "system" ]; then
     install -m 0755 "${BIN_SRC}" "${INSTALL_BIN}"
 
     install -d -m 0755 /usr/lib/systemd/user
-    install -m 0644 "${SERVICE_SRC}" "${INSTALL_SERVICE}"
+    sed "s|/usr/bin/filesync|${INSTALL_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
+    chmod 0644 "${INSTALL_SERVICE}"
 
     echo "Installed binary: ${INSTALL_BIN}"
     echo "Installed service: ${INSTALL_SERVICE}"

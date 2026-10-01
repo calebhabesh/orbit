@@ -11,7 +11,7 @@ Per File Sync's Portfolio Scope (`docs/portfolio-scope.md`) and Operations Speci
 
 When you uninstall the `filesync` package:
 1. **Workspace Files are NEVER Deleted**: All files, directories, documents, and code stored inside your synchronized workspace roots remain completely untouched.
-2. **Metadata & History are Preserved**: The SQLite database (`metadata.sqlite`), cryptographic keys (`tls.key`), content chunks (`objects/`), and configuration (`config.json`) stored in `~/.local/share/filesync` or `~/.filesync` are preserved.
+2. **Metadata & History are Preserved**: The SQLite database (`metadata.sqlite`), cryptographic keys (`tls.key`), content chunks (`objects/`), and configuration (`config.json`) stored in `~/.local/state/filesync` or `~/.filesync` are preserved.
 3. **Reinstallation is Seamless**: If you reinstall `filesync` in the future, your node identity, key pins, and folder registrations immediately resume without needing re-pairing or re-downloading existing chunks.
 
 ---
@@ -63,7 +63,7 @@ systemctl --user status filesync.service || echo "service successfully unregiste
 
 Verify that your user data and state remain intact:
 ```bash
-ls -la ~/.local/share/filesync/metadata.sqlite
+ls -la ~/.local/state/filesync/metadata.sqlite
 ls -la <path-to-your-synced-folders>
 ```
 
@@ -78,7 +78,7 @@ Only if you explicitly intend to permanently delete all local synchronization st
 systemctl --user stop filesync.service 2>/dev/null || true
 
 # 2. Delete state directory (removes local SQLite DB, keys, and chunk cache)
-rm -rf ~/.local/share/filesync ~/.filesync
+rm -rf ~/.local/state/filesync ~/.filesync
 
 # NOTE: Your workspace folders containing your actual user documents
 # still remain intact. If you wish to delete workspace files as well,

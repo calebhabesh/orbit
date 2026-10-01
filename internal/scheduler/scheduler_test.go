@@ -138,6 +138,23 @@ func TestSchedulerRootUnavailablePausesFolder(t *testing.T) {
 	}
 	defer s.Stop()
 
+	// Wait for the startup scan to complete before submitting the fault scan.
+	// Otherwise an earlier scan can pause the folder while this task stays queued.
+	deadline := time.Now().Add(2 * time.Second)
+	for {
+		completed, err := db.ListDurableTasks(ctx, repository.TaskFilter{Folder: folder, Kind: "scan", State: "completed", Limit: 1})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(completed) > 0 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("startup scan did not complete")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+
 	// Invalidate root marker
 	markerPath := filepath.Join(rootDir, ".filesync-internal", "registration")
 	_ = os.Remove(markerPath)
@@ -156,7 +173,12 @@ func TestSchedulerRootUnavailablePausesFolder(t *testing.T) {
 	for i := 0; i < 50; i++ {
 		time.Sleep(20 * time.Millisecond)
 		st, _ := s.Status(folder)
-		if st.Paused && st.PauseReason == "ROOT_UNAVAILABLE" {
+		task, err := db.GetDurableTask(ctx, taskID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Pause state and durable task outcome are recorded at separate boundaries.
+		if st.Paused && st.PauseReason == "ROOT_UNAVAILABLE" && task.ErrorCode == "ROOT_UNAVAILABLE" {
 			paused = true
 			break
 		}

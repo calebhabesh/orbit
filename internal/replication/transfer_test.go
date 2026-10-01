@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -644,5 +645,24 @@ func TestSyncerChunkFallbackTransfer(t *testing.T) {
 	appliedData, err := os.ReadFile(filepath.Join(fix.receiverRoot, "fallback.txt"))
 	if err != nil || !bytes.Equal(appliedData, content) {
 		t.Fatalf("applied content mismatch: %v", err)
+	}
+}
+
+func TestSyncInventoryLargerThanMemoryQueue(t *testing.T) {
+	fix := newSyncFixture(t)
+	for i := 0; i < MaxQueuedVersions+1; i++ {
+		_, err := fix.senderRepo.CreateLocalVersion(fix.ctx, repository.LocalVersionRequest{Folder: fix.folder, Path: fmt.Sprintf("dir-%04d", i), Kind: history.KindDirectory, AuthoredRevision: 1})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	syncer := fix.newSyncer(TransferOptions{})
+	syncer.publisher = nil
+	result, err := syncer.Sync(fix.ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.MetadataAdded != MaxQueuedVersions+1 || result.ReceiptsSent != MaxQueuedVersions+1 {
+		t.Fatalf("incomplete inventory: %+v", result)
 	}
 }

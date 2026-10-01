@@ -5,8 +5,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/filesync serve --state=%h/.local/share/filesync
-ExecStop=/usr/bin/filesync stop --state=%h/.local/share/filesync
+ExecStart=/usr/bin/filesync serve --state=%h/.local/state/filesync --control-listen=127.0.0.1:8080
+ExecStop=/usr/bin/filesync stop --state=%h/.local/state/filesync
 Restart=on-failure
 RestartSec=5s
 TimeoutStopSec=30s
@@ -21,7 +21,7 @@ MemoryMax=1G
 # ProtectSystem protects OS directories (/usr, /boot, /etc) from user daemon tampering.
 NoNewPrivileges=yes
 ProtectSystem=strict
-ReadWritePaths=%h/.local/share/filesync %h
+ReadWritePaths=%h/.local/state/filesync %h
 
 # Logging
 StandardOutput=journal

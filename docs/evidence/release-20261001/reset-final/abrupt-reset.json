@@ -1,0 +1,140 @@
+{
+  "fault": "SIGKILL of dedicated QEMU VM, then cold guest boot; no clean guest unmount",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "c2f559dc69776df1a4f7d998a9c9475fbea78afd9a9074aee00834dc58a42134",
+  "guest_init_sha256": "61a8aef2117f7cbfeebcac1434dd24053937067c043bf4c53051958980b7450e",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-01T14:21:39Z",
+  "runs": [
+    {
+      "hook": "dirty-cache-control",
+      "success": true,
+      "setup_seconds": 0.7792032629949972,
+      "mutate_seconds": 0.7030370860011317,
+      "verify_seconds": 0.6798543889890425,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=dirty-cache-control versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "object.flushed",
+      "success": true,
+      "setup_seconds": 0.6993512560147792,
+      "mutate_seconds": 0.676905435975641,
+      "verify_seconds": 0.6765654970076866,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=object.flushed versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "object.installed",
+      "success": true,
+      "setup_seconds": 0.7605165949789807,
+      "mutate_seconds": 0.6961818109848537,
+      "verify_seconds": 0.7212558430037461,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=object.installed versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "object.recorded",
+      "success": true,
+      "setup_seconds": 0.7138685699901544,
+      "mutate_seconds": 0.6802896519948263,
+      "verify_seconds": 0.7062528620008379,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=object.recorded versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "sql.version.before_commit",
+      "success": true,
+      "setup_seconds": 0.7163128409883939,
+      "mutate_seconds": 0.6894230009929743,
+      "verify_seconds": 0.6980390810058452,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=sql.version.before_commit versions=1 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "sql.version.after_commit",
+      "success": true,
+      "setup_seconds": 0.7457448070053943,
+      "mutate_seconds": 0.6885211379849352,
+      "verify_seconds": 0.6807188829989173,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=sql.version.after_commit versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.prepared",
+      "success": true,
+      "setup_seconds": 1.0702397270069923,
+      "mutate_seconds": 0.8665031830023509,
+      "verify_seconds": 0.72335449399543,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.prepared versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.stage.flushed",
+      "success": true,
+      "setup_seconds": 0.7360863070061896,
+      "mutate_seconds": 0.7097876259940676,
+      "verify_seconds": 0.6915948310052045,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.stage.flushed versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.staged",
+      "success": true,
+      "setup_seconds": 0.7301599649945274,
+      "mutate_seconds": 0.7314473050064407,
+      "verify_seconds": 0.6944062529946677,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.staged versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.intent",
+      "success": true,
+      "setup_seconds": 0.7076909419847652,
+      "mutate_seconds": 0.6994693560118321,
+      "verify_seconds": 0.7211840089876205,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.intent versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.exchange.before",
+      "success": true,
+      "setup_seconds": 0.7133807820209768,
+      "mutate_seconds": 0.6999886480043642,
+      "verify_seconds": 0.663735480979085,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.exchange.before versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.filesystem.transition",
+      "success": true,
+      "setup_seconds": 0.69312141998671,
+      "mutate_seconds": 0.6625115819915663,
+      "verify_seconds": 0.6847187679959461,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.filesystem.transition versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.recovery.named",
+      "success": true,
+      "setup_seconds": 0.7219741999870166,
+      "mutate_seconds": 0.6988590210094117,
+      "verify_seconds": 0.6900761630095076,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.recovery.named versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.directory.flushed",
+      "success": true,
+      "setup_seconds": 0.6893227230175398,
+      "mutate_seconds": 0.6821955679915845,
+      "verify_seconds": 0.6945351320027839,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.directory.flushed versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.renamed",
+      "success": true,
+      "setup_seconds": 0.7010381550062448,
+      "mutate_seconds": 0.6902830679900944,
+      "verify_seconds": 0.6850383990094997,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.renamed versions=2 dirty_cache_discarded=true"
+    },
+    {
+      "hook": "publication.committed",
+      "success": true,
+      "setup_seconds": 0.7506375499942806,
+      "mutate_seconds": 0.7036236340063624,
+      "verify_seconds": 0.6976438410056289,
+      "oracle": "FILESYNC_RESET_VERIFY_OK hook=publication.committed versions=2 dirty_cache_discarded=true"
+    }
+  ],
+  "success": true
+}

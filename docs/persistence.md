@@ -1,6 +1,6 @@
 # Persistence, filesystem safety and retention
 
-Status: design baseline. D1/D4/D5 experiments must establish the exact implementation contract. This document owns durability and cleanup rules.
+Status: implementation contract; D1/D4/D5 outcomes are in [design gates](design-gates.md). Release evidence is tracked separately. This document owns durability and cleanup rules.
 
 ## 1. Fault model
 
@@ -244,3 +244,24 @@ direct durable receipts and peer status (`peer_progress`, `peer_contacts`).
 Active transfers reserve disk budget, pin verified chunks against premature collection,
 track attempts and last errors, and survive restarts so already verified chunks are
 reused without retransmitting across the network.
+
+## Recorded abrupt-reset experiment
+
+The [2026-10-01 campaign](evidence/release-20261001/reset/abrupt-reset.json)
+uses QEMU/KVM, a new raw ext4 image with virtio-blk `cache=none`, and a static
+Go guest init. The host stops the dedicated QEMU child without guest shutdown
+or unmount; a newly booted guest reopens SQLite and runs journal recovery.
+An existing unflushed overwrite disappears in the negative control, showing
+that guest dirty pages are discarded. Protected captured content survives the
+selected object, version-commit and publication boundaries.
+This observes guest-reset behavior under the recorded kernel/hypervisor and
+successful-flush assumptions. Host storage remains running; physical power
+loss, host-controller cache loss and Pi media behavior are unexecuted.
+See [QEMU's cache options](https://www.qemu.org/docs/master/system/invocation.html)
+and [SQLite WAL synchronization](https://www.sqlite.org/wal.html).
+
+Inventory transport spools count as incoming data and are capped by both the
+metadata spool limit and configured data/free-space budgets. Closing a session
+removes its spool. A killed process can leave a non-authoritative spool; it is
+never content-ready or published, remains budgeted, and can be removed during
+inspected maintenance after the owning agent has stopped.

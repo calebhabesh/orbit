@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -67,6 +68,21 @@ func run() error {
 		return err
 	}
 
+	// Embed an explicit source revision; deterministic packaging timestamps stay
+	// fixed. Export FILESYNC_BUILD_COMMIT for source archives without Git metadata.
+	buildCommit := os.Getenv("FILESYNC_BUILD_COMMIT")
+	if buildCommit == "" {
+		output, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output()
+		if err != nil {
+			return fmt.Errorf("set FILESYNC_BUILD_COMMIT when building an archive without git metadata: %w", err)
+		}
+		buildCommit = strings.TrimSpace(string(output))
+	}
+	buildDate := os.Getenv("FILESYNC_BUILD_DATE")
+	if buildDate == "" {
+		buildDate = "2026-10-01"
+	}
+
 	// 1. Build binaries for amd64 and arm64
 	for _, arch := range supportedArchs {
 		binTarget := filepath.Join(binDir, fmt.Sprintf("filesync-linux-%s", arch.GoArch))
@@ -76,7 +92,7 @@ func run() error {
 
 		fmt.Printf("Building binary for linux/%s -> %s\n", arch.GoArch, binTarget)
 		cmd := exec.Command("go", "build", "-trimpath",
-			"-ldflags", fmt.Sprintf("-X main.version=%s -X main.commit=release -X main.date=2026-09-23", PackageVersion),
+			"-ldflags", fmt.Sprintf("-X main.version=%s -X main.commit=%s -X main.date=%s", PackageVersion, buildCommit, buildDate),
 			"-o", binTarget, "./cmd/filesync")
 		cmd.Env = append(os.Environ(), "CGO_ENABLED=0", "GOOS=linux", "GOARCH="+arch.GoArch)
 		cmd.Dir = repoRoot

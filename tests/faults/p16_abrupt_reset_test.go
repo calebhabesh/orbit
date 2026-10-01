@@ -13,23 +13,15 @@ import (
 	"github.com/calebhabesh/file-sync/internal/workspace"
 )
 
-// TestP16AbruptResetStorageAssumptions exercises and validates the narrower
-// durability assumptions of abrupt power loss / VM hard reset compared to process SIGKILL:
-//
-//  1. Un-fsynced dirty page discard: In an abrupt reset, dirty OS page buffers that
-//     have not been flushed via fsync() are discarded.
-//  2. Verified chunk durability: File Sync explicitly flushes chunk payload files
-//     (f.Sync()) and containing object directories (syncDir) before recording metadata.
-//  3. SQLite WAL durability: PRAGMA synchronous=FULL ensures WAL frames are flushed
-//     before transaction commit returns.
-//  4. Two-phase publication recovery across crash boundaries: Staging files in
-//     scratch space never compromise destination files if power is lost before rename.
-func TestP16AbruptResetStorageAssumptions(t *testing.T) {
+// TestP16StorageBarrierSmoke checks ordinary file IO, orderly database reopen,
+// and scratch isolation. It never resets a machine or discards dirty caches.
+// Abrupt-reset evidence requires scripts/validation/abrupt_reset.py.
+func TestP16StorageBarrierSmoke(t *testing.T) {
 	ctx := context.Background()
 	folder := faultID('F')
 	author := faultID('A')
 
-	t.Run("FsyncFlushDurabilityVsUnflushedDiscard", func(t *testing.T) {
+	t.Run("FlushedFileReadback", func(t *testing.T) {
 		disposable := testkit.NewDisposable(t)
 		filePath := filepath.Join(disposable, "flushed_test.dat")
 		f, err := os.OpenFile(filePath, os.O_CREATE|os.O_RDWR, 0o600)
@@ -40,7 +32,7 @@ func TestP16AbruptResetStorageAssumptions(t *testing.T) {
 		if _, err := f.Write(data); err != nil {
 			t.Fatal(err)
 		}
-		// Explicit fsync guarantees storage barrier
+		// Exercise fsync; immediate readback alone does not demonstrate durability.
 		if err := f.Sync(); err != nil {
 			t.Fatalf("f.Sync failed: %v", err)
 		}
@@ -52,7 +44,7 @@ func TestP16AbruptResetStorageAssumptions(t *testing.T) {
 		}
 	})
 
-	t.Run("SQLiteWALAbruptRecovery", func(t *testing.T) {
+	t.Run("OrderlySQLiteReopen", func(t *testing.T) {
 		disposable := testkit.NewDisposable(t)
 		state := filepath.Join(disposable, "state")
 		_ = os.Mkdir(state, 0o700)
@@ -81,26 +73,26 @@ func TestP16AbruptResetStorageAssumptions(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		// Abruptly close DB connection without graceful checkpoint
+		// Orderly close; this may checkpoint and is not a simulated reset.
 		db.Close()
 
 		// Reopen repository: SQLite replays WAL and verifies PRAGMA quick_check
 		reopened, err := repository.Open(ctx, state)
 		if err != nil {
-			t.Fatalf("failed to reopen DB after abrupt close: %v", err)
+			t.Fatalf("failed to reopen DB after orderly close: %v", err)
 		}
 		defer reopened.Close()
 
 		known, err := reopened.MetadataKnown(ctx, v.ID)
 		if err != nil || !known {
-			t.Fatalf("committed version lost after abrupt close: known=%v, err=%v", known, err)
+			t.Fatalf("committed version lost after orderly close: known=%v, err=%v", known, err)
 		}
 		if err := reopened.VerifyVersionContent(ctx, v.ID); err != nil {
-			t.Fatalf("corrupted content after abrupt close: %v", err)
+			t.Fatalf("corrupted content after orderly close: %v", err)
 		}
 	})
 
-	t.Run("TwoPhasePublicationCrashScenarios", func(t *testing.T) {
+	t.Run("ScratchIsolationAndOrdinaryCapture", func(t *testing.T) {
 		disposable := testkit.NewDisposable(t)
 		state := filepath.Join(disposable, "state")
 		root := filepath.Join(disposable, "root")
@@ -123,7 +115,7 @@ func TestP16AbruptResetStorageAssumptions(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		// Scenario 1: Abrupt reset during staging (before rename)
+		// Place a scratch fixture; no publication or crash is performed.
 		// Staging file in .filesync-internal/stage has no link at destination.
 		// Destination file remains completely intact.
 		destPath := filepath.Join(root, "safe_doc.txt")
@@ -148,9 +140,7 @@ func TestP16AbruptResetStorageAssumptions(t *testing.T) {
 			t.Fatalf("destination file corrupted by orphan staging: got %q, want %q", currentDestBytes, originalBytes)
 		}
 
-		// Scenario 2: Abrupt reset after atomic rename and directory fsync
-		// The destination file has transitioned on disk, but SQLite path_projections
-		// has not updated. Workspace scan reconciles the observation.
+		// Exercise ordinary replacement and capture; no journal recovery occurs.
 		newVersionBytes := []byte("new version published on disk")
 		if err := os.WriteFile(destPath, newVersionBytes, 0o600); err != nil {
 			t.Fatal(err)

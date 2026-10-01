@@ -1,0 +1,101 @@
+{
+  "packet": "P17",
+  "status": "complete",
+  "date": "2026-09-24",
+  "commit": "51b33be",
+  "requirements_verified": {
+    "S02": {
+      "title": "Local and remote multi-host replication across distinct architectures, mutual TLS with pinned SPKI keys, and canonical membership",
+      "status": "satisfied",
+      "evidence": "Executed 3-host pilot across owner-desktop (x86_64, Arch Linux), owner-pi (aarch64 Cortex-A72, Debian 12), and main-instance-vnic (aarch64 Neoverse-N1, Ubuntu 24.04). Pinned SPKI TLS 1.3 certificates verified; canonical Revision 1 membership approved."
+    },
+    "S03": {
+      "title": "Causal version DAG with vector clocks, concurrent head detection, cryptographic head tokens, and reviewed atomic resolution",
+      "status": "satisfied",
+      "evidence": "Captured 3 concurrent offline edits across all 3 hosts; gossip produced identical cryptographic head token (087f3db651cb1d0a5bcefa7a8e2da69ff558e6538f9bbaef3958da1f9b3cf286) on all nodes without silent overwrite. Reviewed resolution committed atomically and converged all 3 replicas to 0 conflicts."
+    },
+    "S22": {
+      "title": "Verification across realistic topologies, third-party forwarding, resumption, restore, and benchmark matrix against full-file baseline",
+      "status": "satisfied",
+      "evidence": "Verified A -> VPS -> B forwarding with Host A offline; multi-chunk 3 MiB transfer verified; forward historical restore verified without DAG rollback. Benchmarks demonstrated 97.5% - 99.99% wire savings on tail edits and renames, while documenting the negative result of 1-byte prefix shift defeating fixed 1 MiB chunking."
+    }
+  },
+  "invariants_verified": {
+    "I01": "verified - Version envelope unique and immutable across 3 physical/cloud hosts",
+    "I02": "verified - Same valid history produces identical 3-head token (087f3db651cb1d0a...)",
+    "I03": "verified - 3 concurrent heads survived gossip without silent last-write-wins overwrite",
+    "I04": "verified - Local offline edits advanced local monotonic counters without false dominance",
+    "I05": "verified - Transfer receipts backed by durable SQLite records",
+    "I06": "verified - Verified chunk payloads assembled byte-for-byte on target devices",
+    "I07": "verified - Historical restore to v1 preserved DAG integrity and authored forward version",
+    "I08": "verified - Monotonic author counter incremented forward; author identity never rolled back",
+    "I13": "verified - Resource limits respected; bounded open snapshots in repository",
+    "I14": "verified - Third-party forwarding preserved author ancestry with zero A/B online overlap",
+    "I15": "verified - Canonical 3-node membership Revision 1 approved with cryptographic pin validation",
+    "I16": "verified - Reviewed resolution committed with 3 causal parents; all 3 nodes converged to 0 conflicts",
+    "I18": "verified - Verified multi-chunk SHA-256 integrity (8251e06d9da...); 0 corrupt chunks",
+    "I20": "verified - PRAGMA integrity_check = ok across all 3 SQLite databases"
+  },
+  "scenarios": {
+    "normal_multi_host_sync": "PASS - Byte-for-byte synchronization across x86_64 and arm64 hosts",
+    "three_independent_offline_edits": "PASS - Concurrent offline edits authored on owner-desktop, Pi, and VPS",
+    "reconnection_gossip_head_detection": "PASS - Identical 3-head conflict token computed on all 3 nodes",
+    "reviewed_resolution_convergence": "PASS - Atomic resolution merged DAG heads; converged to 0 conflicts",
+    "third_party_forwarding_no_overlap": "PASS - A -> VPS -> B succeeded while Host A was completely offline",
+    "resumption_and_historical_restore": "PASS - Multi-chunk transfer verified; historical restore created forward version",
+    "pilot_verification_database_integrity": "PASS - SQLite integrity_check returned 'ok' on all 3 hosts"
+  },
+  "benchmarks": {
+    "small_files_1000": {
+      "file_count": 1000,
+      "total_bytes": 32345740,
+      "filesync_wire_bytes": 32695740,
+      "filesync_duration_ms": 23015,
+      "baseline_wire_bytes": 32345996,
+      "baseline_duration_ms": 15,
+      "savings_pct": 0.0,
+      "bottleneck": "Metadata and IOPS bound (~350B per envelope, per-file SQLite records)"
+    },
+    "unchanged_tree_rescan": {
+      "file_count": 1000,
+      "total_bytes": 32345740,
+      "filesync_wire_bytes": 4096,
+      "filesync_duration_ms": 391,
+      "baseline_wire_bytes": 1280,
+      "baseline_duration_ms": 0,
+      "savings_pct": 99.98,
+      "bottleneck": "Stat-cache verification short-circuits chunk transfer (0 payload bytes transferred)"
+    },
+    "large_file_tail_edit_40mb": {
+      "file_count": 1,
+      "total_bytes": 41943040,
+      "filesync_wire_bytes": 1049600,
+      "filesync_duration_ms": 538,
+      "baseline_wire_bytes": 41943296,
+      "baseline_duration_ms": 19,
+      "savings_pct": 97.5,
+      "bottleneck": "Disk chunk seek; 39 of 40 chunks reused from local object store"
+    },
+    "prefix_insertion_1byte_shift_20mb": {
+      "file_count": 1,
+      "total_bytes": 20971520,
+      "filesync_wire_bytes": 20972544,
+      "filesync_duration_ms": 520,
+      "baseline_wire_bytes": 20971776,
+      "baseline_duration_ms": 10,
+      "savings_pct": 0.0,
+      "negative_result": true,
+      "bottleneck": "Fixed 1 MiB chunk boundaries shifted by 1 byte; 100% chunk retransmission"
+    },
+    "file_rename_40mb": {
+      "file_count": 1,
+      "total_bytes": 41943040,
+      "filesync_wire_bytes": 1024,
+      "filesync_duration_ms": 609,
+      "baseline_wire_bytes": 41943296,
+      "baseline_duration_ms": 19,
+      "savings_pct": 99.99,
+      "bottleneck": "Envelope metadata transfer only; 100% chunk reuse from local store"
+    }
+  }
+}

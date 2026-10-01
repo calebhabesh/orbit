@@ -1,0 +1,8 @@
+{
+  "pid": 173080,
+  "root": "/home/owner/filesync-validation-rdekb9lx",
+  "captured_versions": 4469,
+  "timing_note": "Elapsed at cancellation was not instrumented; first captured sample at 08:33, followed by cancellation at 4469 versions.",
+  "reason": "whole-folder history reconstructed for every path; stopped marked fixture for profiling and fix",
+  "earlier_observed_scan_elapsed": "08:33 from ps"
+}

@@ -1,0 +1,19 @@
+go test -race ./...
+?   	github.com/calebhabesh/file-sync/cmd/filesync	[no test files]
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	1.005s
+ok  	github.com/calebhabesh/file-sync/internal/control	15.256s
+ok  	github.com/calebhabesh/file-sync/internal/history	1.012s
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.014s
+ok  	github.com/calebhabesh/file-sync/internal/replication	61.221s
+ok  	github.com/calebhabesh/file-sync/internal/repository	14.578s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	3.369s
+ok  	github.com/calebhabesh/file-sync/internal/state	1.020s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	1.013s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	11.528s
+ok  	github.com/calebhabesh/file-sync/model	1.564s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/designgates	1.018s
+ok  	github.com/calebhabesh/file-sync/tests/faults	26.904s
+ok  	github.com/calebhabesh/file-sync/tests/integration	24.206s
+?   	github.com/calebhabesh/file-sync/web	[no test files]

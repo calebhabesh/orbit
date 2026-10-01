@@ -1,6 +1,6 @@
 # Security, resource limits and operator interface
 
-Status: design baseline. Numeric defaults below are starting values to validate on real hardware, not measured recommendations.
+Status: implemented baseline. The limits below are configuration/admission bounds; release evidence describes the workloads actually exercised.
 
 ## Trust and authentication
 

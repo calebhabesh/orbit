@@ -1,0 +1,16 @@
+{
+  "fault": "SIGKILL of dedicated QEMU VM, then cold guest boot; no clean guest unmount",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "c2f559dc69776df1a4f7d998a9c9475fbea78afd9a9074aee00834dc58a42134",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-01T13:47:47Z",
+  "runs": [
+    {
+      "hook": "publication.flushed",
+      "success": false,
+      "setup_seconds": 0.7180388559936546
+    }
+  ],
+  "success": false
+}

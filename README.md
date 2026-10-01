@@ -1,23 +1,114 @@
 # File Sync
 
-A planned Go application that synchronizes selected folders across trusted Linux devices, preserves concurrent offline versions, resumes interrupted transfers, and restores retained history.
+File Sync synchronizes selected folders between trusted Linux devices. A Go
+agent watches ordinary files, retains captured versions in immutable storage,
+and exchanges them over authenticated HTTPS. SQLite stores causal history,
+working-copy state, transfer progress, and recovery journals.
 
-**Status:** P00–P06 are complete locally: causal history, durable content, safe
-workspace capture, journaled Linux publication, persistent peer identity, the
-bounded authenticated wire layer, and two-peer verified transfer have tests and
-recorded evidence. Multi-head reconciliation, continuous synchronization,
-benchmark results, and release binaries do not exist yet. See the packet status
-for unexecuted platform and fault checks.
+Independent offline edits remain separate heads until you explicitly resolve
+reviewed versions. You can select a version, supply a manual merge, keep copies,
+or restore retained content as a new change. A VPS can store and forward a
+version while its author is offline; it has no conflict authority.
 
-The completed release targets a Linux laptop, Raspberry Pi, and Oracle Cloud VPS as equal replicas. The VPS can forward stored versions between devices online at different times. Development starts with a two-peer CLI slice; three-host correctness and failure evidence are release requirements.
+Replicas hold readable content. TLS protects transfers. Captured-version
+protection assumes supported local filesystems and storage that honors flushes;
+it does not cover every intermediate editor write, disk loss, or arbitrary
+writes through descriptors held across replacement. See the
+[approved scope](docs/portfolio-scope.md) and [persistence contract](docs/persistence.md).
 
-## Start here
+**Release validation remains in progress.** The [status tracker](docs/implementation/status.md)
+and [current evidence](docs/evidence/release-20261001/summary.md) distinguish
+local tests, actual-host demonstrations, VM resets, benchmarks, and personal use.
+The earlier 2026-09-24 estimated wire-savings figures have been withdrawn.
 
-- [Implementation plan](docs/implementation-plan.md): reading order, build sequence, gates, and builder workflow.
-- [Approved scope](docs/portfolio-scope.md): product requirements and exclusions.
-- [Domain glossary](CONTEXT.md): precise project vocabulary.
-- [Build status](docs/implementation/status.md): packet progress and outstanding design experiments.
+## Build and local demonstration
 
-Go agent and CLI; SQLite metadata; immutable filesystem content; authenticated HTTPS; a small embedded React/TypeScript interface after CLI correctness. This project implements its own reconciliation and transfer logic and reuses established database, transport, and cryptographic libraries.
+Use the Go toolchain pinned in `go.mod` (1.27.1), Make, and Linux with the
+required descriptor-relative filesystem calls. The binary embeds the web UI
+and needs no Node runtime. Rebuilding frontend assets requires the pinned npm
+lockfile: `cd web`, `npm ci`, then `npm run build`.
 
-The engineering story is causal reconciliation and recovery under failure. Evidence must distinguish deterministic simulations, process-crash tests, abrupt-reset experiments, and actual multi-host use. Synchronization and retained history do not constitute an independent backup guarantee.
+```sh
+make build build-arm64
+./bin/filesync version
+make demo
+make check
+make test-race
+```
+
+`make demo` creates disposable loopback peers and cleans up its own paths.
+`make check` runs formatting, vet, unit/model/integration/process-fault checks,
+builds both architectures, and generates packages. The VM reset experiment is
+an explicit separate command, never part of ordinary installation or checks.
+
+## Setup and daily operation
+
+A folder ID is 64 hexadecimal characters, shared by its enrolled devices.
+Start with a dedicated folder and state directory:
+
+```sh
+STATE="$PWD/filesync-state"
+ROOT="$PWD/filesync-notes"
+FOLDER_ID="0101010101010101010101010101010101010101010101010101010101010101"
+mkdir -m 0700 "$ROOT"
+./bin/filesync init --state "$STATE"
+./bin/filesync register --state "$STATE" --folder "$FOLDER_ID" --root "$ROOT"
+./bin/filesync identity --state "$STATE" --certificate
+./bin/filesync scan --state "$STATE" --folder "$FOLDER_ID"
+./bin/filesync serve --state "$STATE" --peer-listen 127.0.0.1:8443 \
+  --control-listen 127.0.0.1:8080
+```
+
+Exchange public certificates and key pins out of band, approve the same folder
+membership on every device, and configure reachable peer addresses. The
+[local demo](scripts/local_demo.go) shows two-peer pairing; the
+[actual-host harness](scripts/validation/three_host.py) uses canonical
+three-member approval. See the [installation runbook](docs/runbooks/install.md)
+for packages and user-service configuration.
+
+Use `conflicts --json` to inspect reviewed head IDs and their token. A selection
+names the path, selected `author:counter`, reviewed IDs, and current token:
+
+```sh
+./bin/filesync resolve select --state "$STATE" --folder "$FOLDER_ID" \
+  --path note.txt --selected "$SELECTED_VERSION" --reviewed "$REVIEWED_VERSIONS" \
+  --head-token "$HEAD_TOKEN" --idempotency-key "$OPERATION_ID"
+./bin/filesync restore --state "$STATE" --folder "$FOLDER_ID" \
+  --path note.txt --source "$HISTORICAL_VERSION" --preview --json
+```
+
+`filesync <command> -h` lists actual flags. CLI/control/UI share the same engine
+operations. Per-peer status distinguishes saved, stored, applied, conflicted,
+and unavailable contents; a VPS receipt does not establish a Pi receipt.
+
+## Reproduce release experiments
+
+Python 3 is required for validation orchestration. Remote commands require
+existing SSH aliases and a Python interpreter; each run creates fresh private
+marked roots and tracks its exact processes. Existing pilot folders and other
+services are preserved. Roots are retained for inspection.
+
+```sh
+python3 -m unittest discover -s scripts/validation -p 'test_*.py'
+go run scripts/three_host_pilot.go --laptop laptop --pi rpi --vps vps
+go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1
+python3 scripts/validation/service_lifecycle.py --output /tmp/filesync-lifecycle-evidence
+python3 scripts/validation/abrupt_reset.py --kernel /path/to/vmlinuz \
+  --output /tmp/filesync-reset-evidence
+```
+
+The reset experiment requires QEMU/KVM, `mkfs.ext4`, and a kernel with built-in
+virtio-blk/ext4/devtmpfs support. It discards guest dirty caches and tests
+selected production boundaries, under the recorded virtual storage assumptions.
+It does not demonstrate a physical Pi power cut.
+
+The synthetic benchmark counts TLS-bearing TCP stream bytes in both directions.
+Its full-file baseline also uses mutual TLS, hashes and durably installs files,
+and skips unchanged files after hashing. TCP/IP and SSH headers are excluded.
+Different history/storage work and warm filesystem caches limit timing comparisons.
+Raw runs, failed experiments, and negative results remain in the evidence.
+An automated demo does not establish the required personal-use pilot.
+
+See [the case study](docs/case-study.md), [architecture](docs/architecture.md),
+[protocol](docs/protocol.md), [verification](docs/verification.md), and
+[operator runbooks](docs/runbooks/install.md).

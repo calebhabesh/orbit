@@ -259,7 +259,7 @@ func (db *DB) VersionStatus(ctx context.Context, id history.VersionID) (VersionS
 	if err != nil {
 		return status, err
 	}
-	h, err := loadHistoryReadOnly(ctx, db, id.Folder)
+	h, err := loadHistoryReadOnly(ctx, db, id.Folder, envelope.Path)
 	if err != nil {
 		return status, err
 	}
@@ -273,41 +273,8 @@ func (db *DB) VersionStatus(ctx context.Context, id history.VersionID) (VersionS
 	return status, nil
 }
 
-func loadHistoryReadOnly(ctx context.Context, db *DB, folder history.ID) (*history.History, error) {
-	rows, err := db.db.QueryContext(ctx, `SELECT author_id,counter FROM versions WHERE folder_id=? ORDER BY rowid`, folder[:])
-	if err != nil {
-		return nil, err
-	}
-	var ids []history.VersionID
-	for rows.Next() {
-		var authorRaw, counterRaw []byte
-		if err := rows.Scan(&authorRaw, &counterRaw); err != nil {
-			rows.Close()
-			return nil, err
-		}
-		var author history.ID
-		copy(author[:], authorRaw)
-		counter, err := decodeUint(counterRaw)
-		if err != nil {
-			rows.Close()
-			return nil, err
-		}
-		ids = append(ids, history.VersionID{Folder: folder, Author: author, Counter: counter})
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	h := history.New()
-	for _, id := range ids {
-		envelope, _, err := db.envelopeAndState(ctx, db.db, id)
-		if err != nil {
-			return nil, err
-		}
-		if err := h.Accept(envelope); err != nil {
-			return nil, err
-		}
-	}
-	return h, nil
+func loadHistoryReadOnly(ctx context.Context, db *DB, folder history.ID, paths ...string) (*history.History, error) {
+	return loadHistoryQuery(ctx, db.db, folder, paths...)
 }
 
 // UnappliedSingleHeads returns paths that have exactly one causally maximal head,

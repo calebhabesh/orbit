@@ -1,6 +1,6 @@
 # Implementation guidance
 
-This repository is currently a planning scaffold. Start at [the implementation plan](docs/implementation-plan.md) and [packet status](docs/implementation/status.md). Work on the first eligible packet unless the user selects another task.
+This repository has a working implementation with release validation in progress. Start at [the implementation plan](docs/implementation-plan.md) and [packet status](docs/implementation/status.md). Work on the first eligible packet unless the user selects another task.
 
 - Read [scope](docs/portfolio-scope.md) and [glossary](CONTEXT.md) before changing behavior.
 - For causal state, messages, membership, or acknowledgements, read [protocol](docs/protocol.md).

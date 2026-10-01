@@ -97,6 +97,10 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 		return history.Envelope{}, history.ErrCounterOverflow
 	}
 	counter++
+	// Folder-wide identity checks remain global even when causal state is per path.
+	if err := rejectExistingVersionID(ctx, tx, history.VersionID{Folder: request.Folder, Author: author, Counter: counter}); err != nil {
+		return history.Envelope{}, err
+	}
 	authoredRevision := request.AuthoredRevision
 	if authoredRevision == 0 {
 		authoredRevision, _ = decodeUint(revRaw)
@@ -106,7 +110,7 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 	if err == nil && authorState != "active" {
 		return history.Envelope{}, errors.New("local author is retired or not active in this folder")
 	}
-	h, err := loadHistory(ctx, tx, request.Folder)
+	h, err := loadHistory(ctx, tx, request.Folder, request.Path)
 	if err != nil {
 		return history.Envelope{}, err
 	}
@@ -171,7 +175,19 @@ func (db *DB) ImportMetadata(ctx context.Context, envelope history.Envelope) err
 		return err
 	}
 	defer tx.Rollback()
-	h, err := loadHistory(ctx, tx, envelope.ID.Folder)
+	// Check immutable identity across every path before loading path-local
+	// causal state; narrowing history must never permit moving an existing ID.
+	existing, _, existingErr := db.envelopeAndState(ctx, tx, envelope.ID)
+	if existingErr == nil {
+		if !sameEnvelope(existing, envelope) {
+			return history.ErrDuplicateID
+		}
+		return nil
+	}
+	if !errors.Is(existingErr, sql.ErrNoRows) {
+		return existingErr
+	}
+	h, err := loadHistory(ctx, tx, envelope.ID.Folder, envelope.Path)
 	if errors.Is(err, ErrFolderUnknown) {
 		return err
 	}
@@ -508,14 +524,38 @@ func (db *DB) envelopeAndState(ctx context.Context, q queryer, id history.Versio
 	return e, state, nil
 }
 
-func loadHistory(ctx context.Context, tx *sql.Tx, folder history.ID) (*history.History, error) {
+func rejectExistingVersionID(ctx context.Context, q queryer, id history.VersionID) error {
+	var present int
+	err := q.QueryRowContext(ctx, `SELECT 1 FROM versions WHERE folder_id=? AND author_id=? AND counter=?`, id.Folder[:], id.Author[:], encodeUint(id.Counter)).Scan(&present)
+	if err == nil {
+		return history.ErrDuplicateID
+	}
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil
+	}
+	return err
+}
+
+func loadHistory(ctx context.Context, tx *sql.Tx, folder history.ID, paths ...string) (*history.History, error) {
 	var present int
 	if err := tx.QueryRowContext(ctx, `SELECT 1 FROM folders WHERE folder_id=?`, folder[:]).Scan(&present); errors.Is(err, sql.ErrNoRows) {
 		return nil, ErrFolderUnknown
 	} else if err != nil {
 		return nil, err
 	}
-	rows, err := tx.QueryContext(ctx, `SELECT author_id,counter FROM versions WHERE folder_id=? ORDER BY rowid`, folder[:])
+	return loadHistoryQuery(ctx, tx, folder, paths...)
+}
+
+// Causality and ordinary capture are per path; structural/GC callers request
+// full-folder history. The existing versions_path index bounds path queries.
+func loadHistoryQuery(ctx context.Context, q queryer, folder history.ID, paths ...string) (*history.History, error) {
+	query := `SELECT author_id,counter FROM versions WHERE folder_id=?`
+	args := []any{folder[:]}
+	if len(paths) > 0 {
+		query += ` AND path=?`
+		args = append(args, paths[0])
+	}
+	rows, err := q.QueryContext(ctx, query+` ORDER BY rowid`, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -528,13 +568,23 @@ func loadHistory(ctx context.Context, tx *sql.Tx, folder history.ID) (*history.H
 		}
 		var author history.ID
 		copy(author[:], a)
-		counter, _ := decodeUint(c)
+		counter, err := decodeUint(c)
+		if err != nil {
+			rows.Close()
+			return nil, err
+		}
 		ids = append(ids, history.VersionID{Folder: folder, Author: author, Counter: counter})
 	}
-	rows.Close()
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return nil, err
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
 	h := history.New()
 	for _, id := range ids {
-		e, _, err := (&DB{}).envelopeAndState(ctx, tx, id)
+		e, _, err := (&DB{}).envelopeAndState(ctx, q, id)
 		if err != nil {
 			return nil, err
 		}

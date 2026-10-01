@@ -13,9 +13,12 @@ Their license files remain in their Go modules and are compiled into the root
 [`NOTICE`](../NOTICE) and [`packaging/LICENSES.md`](../packaging/LICENSES.md)
 files for binary and package distributions.
 
-Release audit (2026-09-23, P15): `go mod verify` passed with all module hashes
-confirmed against the official Go checksum database. No known CVEs affect the
-pinned module versions.
+Release audit (2026-10-01): `go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...`
+reported no vulnerabilities for the checked Go build. `npm ci` and `npm audit`
+reported zero dependency findings for the locked frontend graph. These are
+point-in-time tool results, not a guarantee of no future or unknown defects.
+Module integrity is checked separately with `go mod verify`. See the
+[release evidence](evidence/release-20261001/summary.md).
 
 The production CLI build includes these direct and transitive modules:
 

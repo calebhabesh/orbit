@@ -73,7 +73,7 @@ sudo ./install.sh system
 
 Initialize your node identity and local database:
 ```bash
-# Default state directory is ~/.local/share/filesync
+# Default state directory is ~/.local/state/filesync
 filesync init
 
 # Validate configuration and file permissions
@@ -82,8 +82,8 @@ filesync config validate
 
 Expected output:
 ```text
-initialized device <64-char-hex-device-id> in ~/.local/share/filesync
-configuration is valid: state_dir=~/.local/share/filesync device_id=<id> key_pin=<pin>
+initialized device <64-char-hex-device-id> in ~/.local/state/filesync
+configuration is valid: state_dir=~/.local/state/filesync device_id=<id> key_pin=<pin>
 ```
 
 ---

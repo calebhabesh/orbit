@@ -1,0 +1,71 @@
+{
+  "packet": "P17",
+  "name": "Three-host pilot, measurements and case study",
+  "date": "2026-09-24",
+  "commit": "51b33be",
+  "go_version": "go version go1.27.1-X:nodwarf5 linux/amd64",
+  "hosts": [
+    {
+      "name": "owner-desktop",
+      "role": "Workstation / Host A",
+      "architecture": "x86_64",
+      "os": "Arch Linux",
+      "kernel": "Linux 7.2.6-arch2-1",
+      "cpu_model": "AMD Ryzen 7 9700X 8-Core Processor (16 threads)",
+      "filesystem": "ext4/btrfs NVMe",
+      "disk_avail": "49G",
+      "network_role": "Loopback endpoint 127.0.0.1:17001",
+      "device_id": "1ac98d04087c4a90b6682c8f581a45bbe92b463a7507c44a5e531f82d765ffcd",
+      "key_pin": "0795e8c1ce775cb14723e114f874b77f3225c530a59563c9eec37938334b9c0d"
+    },
+    {
+      "name": "owner-pi",
+      "role": "Edge Device / Host B",
+      "architecture": "aarch64",
+      "os": "Debian GNU/Linux 12 (bookworm)",
+      "kernel": "Linux 6.12.93+rpt-rpi-v8",
+      "cpu_model": "ARM Cortex-A72 (4 cores)",
+      "filesystem": "ext4 (SSD/microSD)",
+      "disk_avail": "40G",
+      "network_role": "SSH-forwarded loopback 127.0.0.1:17002",
+      "device_id": "ba1bbcb66000bbceb0ab76d0a53bc7dd9b9490820f67398aeb327e091442b232",
+      "key_pin": "46b39269186d06f288d52ab568084ae14eec4f76fa2d2db303c30c92e6bf05ca"
+    },
+    {
+      "name": "main-instance-vnic",
+      "role": "Cloud Relay / VPS",
+      "architecture": "aarch64",
+      "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "Linux 6.17.0-1018-oracle",
+      "cpu_model": "ARM Neoverse-N1 (4 cores)",
+      "filesystem": "ext4 (Oracle Block Volume)",
+      "disk_avail": "38G",
+      "network_role": "WireGuard SSH-forwarded loopback 127.0.0.1:17003",
+      "device_id": "fd5af69b2f7be70814bae0881cfb40fc9d33b484b436dfd81d60f567d28f0a3e",
+      "key_pin": "982188702af18c937c66b9955af732676587aa98308844b19e4b05d87e5302b9"
+    }
+  ],
+  "topology": {
+    "type": "Hub-and-spoke over encrypted loopback SSH tunnels",
+    "ports": {
+      "caleb_pc": 17001,
+      "pi_server": 17002,
+      "oracle_vps": 17003
+    },
+    "tunnel_transport": "SSH port 22 over LAN (Pi) and WireGuard (VPS)"
+  },
+  "files": [
+    "internal/repository/peers.go",
+    "scripts/three_host_pilot.go",
+    "scripts/benchmark_suite.go",
+    "docs/evidence/p17-20260924/manifest.json",
+    "docs/evidence/p17-20260924/commands.md",
+    "docs/evidence/p17-20260924/results.json",
+    "docs/evidence/p17-20260924/summary.md",
+    "docs/evidence/p17-20260924/pilot_results.json",
+    "docs/evidence/p17-20260924/benchmarks.json",
+    "docs/case-study.md",
+    "docs/implementation/status.md",
+    "README.md"
+  ]
+}

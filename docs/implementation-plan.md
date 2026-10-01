@@ -1,6 +1,6 @@
 # Comprehensive implementation plan
 
-Planning baseline: 2026-09-20. Intended builders: Gemini 3.8 Flash and Sol 5.6 Medium, or another implementation agent following the same contracts. This document does not assert model availability or implementation capability. Status: P00–P06 complete; P07 is next.
+Planning baseline: 2026-09-20. Implementation exists through P17; current release acceptance and remaining validation are recorded in [packet status](implementation/status.md).
 
 ## Read in this order
 
@@ -17,7 +17,7 @@ Scope owns product requirements. Protocol owns causal/wire/membership semantics.
 - **Approved:** the scope and user-visible behavior agreed in the interview.
 - **Design baseline:** concrete engineering choices in this handoff; builders may refine them with evidence while preserving approved behavior.
 - **Design gate:** an identified hard question requiring a written outcome, executable experiment/model, and matching spec update before dependent implementation proceeds.
-- **Verified:** a claim supported by committed tests or recorded experiments on the current implementation. Nothing is verified yet.
+- **Verified:** a claim supported by committed tests or recorded experiments on the current implementation. Packet evidence records the scenarios actually verified.
 
 Do not present baseline pseudocode as a completed safety proof. Design gates are implementation tasks, not unexplained placeholders.
 

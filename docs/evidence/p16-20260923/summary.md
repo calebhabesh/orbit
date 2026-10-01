@@ -1,7 +1,7 @@
 # Packet P16: Reproducible Failure Campaign and Local Demo — Summary Report
 
 **Date:** 2026-09-23
-**Status:** Complete
+**Status:** Historical process-fault report; reset claims corrected 2026-10-01
 **Requirements Satisfied:** S11, S22
 **Invariants Verified:** I01–I20 (all 20 invariants verified with passing named tests)
 **Target Environment:** Linux amd64/arm64, Go 1.27.1, SQLite 3 (pure-Go modernc), ext4/btrfs with barriers enabled
@@ -14,7 +14,7 @@ Packet P16 consolidates the entire failure-testing and verification architecture
 1. **Named Invariant Test Suite (I01–I20):** Every invariant defined in `docs/verification.md` has an explicit, named automated test under `tests/faults/p16_invariants_matrix_test.go`.
 2. **Scenario Matrix Coverage (Rows 1–20):** All 20 scenarios from `docs/verification.md` are audited, documented, and verified.
 3. **Pre- and Post-Operation Crash Boundary Audit:** The failure boundary matrix was audited to eliminate pre- and post-operation crash gaps. New crash-kill tests cover `sql.checkpoint.before/after`, `gc.intent/unlink/finalization`, `control.select.committed/restore.committed`, and `integrity.chunk.quarantined/repair.installed`.
-4. **Controlled Abrupt-Reset Experiments:** Distinct experiments publish narrower filesystem and storage barrier assumptions separately from OS process-kill (SIGKILL) semantics.
+4. **Storage smoke checks:** Ordinary IO checks were originally mislabeled as resets; they are not abrupt-reset evidence.
 5. **Disposable Harness Safety Enforcements:** The testkit harness strictly refuses non-disposable paths, directories without `.filesync-disposable` markers, directory traversals, root targets, and symlinks.
 6. **Fuzzing & Race Verifications:** Protocol envelope deserialization and path sanitization engines passed extensive fuzz campaigns (75k+ and 187k+ iterations) with 0 panics, while `make test-race` verified 0 data races across all packages.
 7. **Safe Local Multi-Process Demo:** A self-contained, reproducible, multi-process replication demo (`scripts/local_demo.go` and `make demo`) runs in an isolated disposable directory with zero cloud credentials and leaves no background remnants.
@@ -68,32 +68,14 @@ Prior test suites exercised post-step hooks (`transfer.chunk.verified`, `publica
 
 ---
 
-## 4. Controlled Abrupt Reset vs. Process Kill (SIGKILL)
+## 4. Correction: no abrupt reset occurred in this historical campaign
 
-A central requirement of P16 is publishing the **narrower assumptions of storage/barrier abrupt resets separately from OS process-kill (SIGKILL)**.
-
-### A. Process Kill Semantics (SIGKILL)
-- **OS Kernel State:** The operating system kernel remains active.
-- **Page Cache:** Dirty pages in the OS page cache are unaffected by process death and are flushed to block devices asynchronously by kernel flusher threads.
-- **File Descriptors:** Open file descriptors are closed by the kernel; POSIX file locks are released.
-- **Recovery Tested:** Tests whether the application on restart can handle unclosed SQLite WAL logs, abandoned staging files (`.stage-*`), and unfinished network streams. SQLite WAL automatic recovery replays committed transactions from the WAL file.
-
-### B. Abrupt Reset Semantics (Power Loss / System Crash)
-- **OS Kernel State:** The OS kernel halts immediately without flushing caches.
-- **Page Cache:** All un-flushed dirty pages in RAM are discarded.
-- **Storage Controller Cache:** If the disk controller lacks a battery-backed write cache, unflushed volatile disk controller buffers are lost.
-- **Prerequisites & Assumptions:**
-  1. The underlying filesystem (ext4, XFS, btrfs) must have write barriers enabled (`barrier=1` / `flush`).
-  2. The storage hardware must correctly honor `fsync(2)` / `fdatasync(2)` cache flush commands without lying about physical media persistence.
-  3. Directory metadata durability requires explicit `fsync` on parent directories after file creation or atomic rename (`renameat`).
-  4. SQLite must run with `PRAGMA synchronous = FULL` (or `EXTRA`) in WAL mode to issue write barriers before committing WAL index headers.
-
-### Verification in `TestP16AbruptResetStorageAssumptions`:
-- **Unflushed Discard vs. Fsync Durability:** Demonstrated that unflushed dirty writes are discarded upon simulated abrupt reset, while `fsync`-ed writes survive with 100% byte integrity.
-- **SQLite WAL Abrupt Recovery:** Demonstrated that with `PRAGMA synchronous=FULL`, committed transactions survive sudden crash, whereas uncommitted transactions roll back cleanly without database corruption (`PRAGMA integrity_check = ok`).
-- **Two-Phase Publication:** Demonstrated that partially written staging files are completely isolated from active workspace files, preventing partial publications during power loss.
-
----
+`TestP16AbruptResetStorageAssumptions` wrote/read files, closed and reopened
+SQLite normally, and created scratch fixtures. It did not discard dirty kernel
+caches, reset a VM, or interrupt publication. Its former power-loss claims are
+withdrawn. The test is now accurately named `TestP16StorageBarrierSmoke`.
+The [2026-10-01 VM campaign](../release-20261001/reset/abrupt-reset.json)
+provides separate, narrower abrupt-reset evidence.
 
 ## 5. Harness Safety Enforcements
 
@@ -146,13 +128,11 @@ Process recovery establishes that an unexpected application crash (process termi
 - **Staging Cleanup:** Abandoned temporary files (`.stage-*`, `.download-*`) in the scratch directory are cleaned up or ignored by subsequent operations, preventing disk leaks or partial reads.
 - **Idempotent Retry:** Interrupted control operations (like `filesync resolve select`) can be re-issued with the same idempotency key and return identical results without producing duplicate DAG nodes.
 
-#### 3. Abrupt-Reset Behavior (Power Loss / System Crash)
-Abrupt-reset behavior establishes the physical durability boundaries when the host system experiences sudden power loss or kernel panic where the operating system page cache is immediately lost:
-- **Storage Barrier & Flush Durability (`TestP16AbruptResetStorageAssumptions`):** Distinguishes data written to the page cache from data committed through storage write barriers. Establishes that only data followed by explicit `fsync` (and parent directory `fsync`) is guaranteed to survive power loss.
-- **SQLite `PRAGMA synchronous = FULL`:** Guarantees that SQLite writes WAL frames and issues physical storage sync barriers before returning commit success to the application.
-- **Two-Phase Publication Barrier:** Guarantees that chunk blobs and metadata are synced to disk *before* the version receipt is committed or published to peers. If power is lost mid-transfer, the partially written chunk in staging is lost upon reboot, but because no receipt was ever fsynced, the peer simply requests the chunk again upon reconnection without corruption.
+#### 3. Abrupt-reset behavior
 
----
+Unexecuted in this 2026-09-23 campaign. Ordinary readback and orderly SQLite
+reopen do not establish power-loss recovery. See the correction above and the
+separately recorded VM campaign.
 
 ## 8. Verification Commands Run
 
@@ -160,7 +140,7 @@ Abrupt-reset behavior establishes the physical durability boundaries when the ho
 2. `make test-race` — PASS (0 data races across all packages).
 3. `make test-faults` — PASS (all design gates, crash boundaries, invariants I01–I20).
 4. `go test -v -run 'TestP16Invariant' ./tests/faults/...` — PASS (all 20 invariants verified).
-5. `go test -v -run 'TestP16Abrupt' ./tests/faults/...` — PASS (abrupt reset & barrier assumptions).
+5. `go test -v -run 'TestP16Abrupt' ./tests/faults/...` — PASS (ordinary IO smoke checks only).
 6. `go test -v -run 'TestP16Boundaries' ./tests/faults/...` — PASS (pre/post crash boundaries).
 7. `go test -fuzz=FuzzProtocolEnvelopeDecode -fuzztime=3s ./tests/faults/...` — PASS (75,680 execs).
 8. `go test -fuzz=FuzzPathSanitization -fuzztime=3s ./tests/faults/...` — PASS (187,541 execs).

@@ -5,8 +5,10 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"strconv"
 	"sync"
 	"time"
@@ -126,50 +128,78 @@ func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 	if err != nil {
 		return result, err
 	}
-	result.Inventoried = len(entries)
-
-	cache := map[history.VersionID]history.Envelope{}
-	visiting := map[history.VersionID]bool{}
-	for _, entry := range entries {
+	defer entries.Close()
+	// The snapshot is completely received before slow storage work. Replay the
+	// bounded disk spool in two passes, preserving metadata-before-content rules.
+	visit := func(run func(InventoryEntry) error) error {
+		if _, err := entries.Seek(0, io.SeekStart); err != nil {
+			return err
+		}
+		decoder := json.NewDecoder(entries)
+		for {
+			var entry InventoryEntry
+			if err := decoder.Decode(&entry); errors.Is(err, io.EOF) {
+				return nil
+			} else if err != nil {
+				return err
+			}
+			if err := run(entry); err != nil {
+				return err
+			}
+		}
+	}
+	if err := visit(func(entry InventoryEntry) error {
+		result.Inventoried++
 		id, err := parseInventoryID(syncer.folder, entry)
 		if err != nil {
-			return result, err
+			return err
 		}
 		known, err := syncer.repo.MetadataKnown(ctx, id)
 		if err != nil {
-			return result, err
+			return err
 		}
 		if !known {
+			// Cache only this ancestry fetch, never the entire folder's envelopes.
+			cache := map[history.VersionID]history.Envelope{}
+			visiting := map[history.VersionID]bool{}
 			added, err := syncer.importVersion(ctx, id, entry.EnvelopeDigest, cache, visiting, 0)
 			if err != nil {
-				return result, err
+				return err
 			}
 			result.MetadataAdded += added
 		}
+		return nil
+	}); err != nil {
+		return result, err
 	}
-
-	for _, entry := range entries {
+	if err := visit(func(entry InventoryEntry) error {
 		if entry.Availability != "ready" {
-			continue
+			return nil
 		}
-		id, _ := parseInventoryID(syncer.folder, entry)
+		id, err := parseInventoryID(syncer.folder, entry)
+		if err != nil {
+			return err
+		}
 		ready, err := syncer.repo.ContentReady(ctx, id)
 		if err != nil {
-			return result, err
+			return err
 		}
 		if !ready {
 			fetched, reused, err := syncer.fetchVersion(ctx, id)
 			if err != nil {
-				return result, err
+				return err
 			}
 			result.ChunksFetched += fetched
 			result.ChunksReused += reused
 			result.VersionsStored++
 		}
 		if err := syncer.sendReceipt(ctx, id); err != nil {
-			return result, err
+			return err
 		}
 		result.ReceiptsSent++
+		return nil
+	}); err != nil {
+		return result, err
 	}
 
 	if syncer.publisher != nil {
@@ -193,10 +223,25 @@ func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 	return result, nil
 }
 
-func (syncer *Syncer) inventory(ctx context.Context, device, folder, revision, digest string) ([]InventoryEntry, error) {
-	var entries []InventoryEntry
+func (syncer *Syncer) inventory(ctx context.Context, device, folder, revision, digest string) (*repository.InventorySpool, error) {
+	spool, err := syncer.repo.NewInventorySpool(ctx)
+	if err != nil {
+		return nil, err
+	}
+	success := false
+	defer func() {
+		if !success {
+			_ = spool.Close()
+		}
+	}()
 	for restarts := 0; restarts < 3; restarts++ {
-		entries = entries[:0]
+		if err := spool.Truncate(0); err != nil {
+			return nil, err
+		}
+		if _, err := spool.Seek(0, io.SeekStart); err != nil {
+			return nil, err
+		}
+		encoder := json.NewEncoder(spool)
 		token, cursor := "", "0"
 		for {
 			response, err := syncer.client.Inventory(ctx, InventoryRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, FolderID: folder, Revision: revision, MembershipDigest: digest, SnapshotToken: token, Cursor: cursor, PageSize: strconv.Itoa(MaxInventoryPage)})
@@ -207,12 +252,22 @@ func (syncer *Syncer) inventory(ctx context.Context, device, folder, revision, d
 				}
 				return nil, err
 			}
-			entries = append(entries, response.Entries...)
-			if len(entries) > MaxQueuedVersions {
-				return nil, errors.New("peer inventory exceeds the 1024-version work-cycle bound")
+			if len(response.Entries) > MaxInventoryPage {
+				return nil, errors.New("peer inventory page exceeds requested bound")
+			}
+			for _, entry := range response.Entries {
+				if err := encoder.Encode(entry); err != nil {
+					return nil, err
+				}
 			}
 			if response.Done {
-				return entries, nil
+				success = true
+				return spool, nil
+			}
+			next, err := strconv.ParseUint(response.NextCursor, 10, 64)
+			prior, priorErr := strconv.ParseUint(cursor, 10, 64)
+			if err != nil || priorErr != nil || next <= prior || response.SnapshotToken == "" {
+				return nil, errors.New("peer inventory cursor did not advance")
 			}
 			token, cursor = response.SnapshotToken, response.NextCursor
 		}

@@ -1,7 +1,9 @@
 # Implementation status
 
-Updated: 2026-09-23. P00 through P16 are complete. P17 is the first eligible
-packet.
+Updated: 2026-10-01. P00–P15 implementation is delivered. P16 release
+validation has new VM-reset evidence; P17 remains `in_progress` until the
+required laptop and personal-use acceptance evidence is recorded. Earlier
+blanket completion and estimated benchmark claims are withdrawn.
 
 | Packet | State | Dependencies | Evidence |
 | --- | --- | --- | --- |
@@ -22,7 +24,7 @@ packet.
 | P14 Web interface | complete | P13 | [evidence](../evidence/p14-20260923/summary.md) |
 | P15 Packaging/lifecycle | complete | P14 | [evidence](../evidence/p15-20260923/summary.md) |
 | P16 Fault campaign | complete | P15 | [evidence](../evidence/p16-20260923/summary.md) |
-| P17 Pilot/release evidence | pending | P16 | none |
+| P17 Pilot/release evidence | in_progress | P16 | [current evidence](../evidence/release-20261001/summary.md); [corrected historical report](../evidence/p17-20260924/summary.md) |
 
 Packet definitions: [foundations](01-foundations.md), [replication](02-replication.md), [operations](03-operations.md), [delivery](04-delivery.md).
 
@@ -36,14 +38,12 @@ listed production implementation and fault-evidence obligations.
 
 ## Next action
 
-Begin P17 three-host pilot, measurements and case study using the laptop, Pi and
-Oracle VPS with a dedicated non-sensitive shared folder. P16 consolidated the
-independent model, deterministic process hooks, adversarial protocol/path cases,
-GC/membership tests, and resource tests into repeatable targets, audited pre/post
-crash boundaries, ran controlled abrupt-reset experiments, verified all 20
-invariants (I01–I20) and scenario-matrix rows, and delivered a safe local
-multi-process demo. P17 will execute the three-host pilot, record real metrics,
-benchmark against full-file baseline, and author the project case study and README.
+Finish P17 release validation. The configured `laptop` alias at 192.168.88.83
+returns “No route to host”; obtain its reachable address and run the actual
+laptop/Pi/VPS campaign. Collect owner-reported personal use with normal edits,
+offline/reconnect and restart, reporting the actual duration. Scripted
+workstation/Pi/VPS scenarios are separate evidence. Continue from the
+[current release report](../evidence/release-20261001/summary.md).
 
 ## P00 — Reproducible project skeleton
 
@@ -898,42 +898,81 @@ Next eligible work: P16 reproducible failure campaign and local demo.
 
 ## P16 — Reproducible failure campaign and local demo
 
-Packet: P16
+Packet: P16. State: `in_progress` while final source-snapshot checks run.
 
-State: `complete`.
+Prerequisites: P15 implementation and native user-service lifecycle now
+executed on the workstation, Pi and VPS. Read scope, glossary, protocol,
+persistence, operations, verification and delivery packet contracts.
 
-Prerequisites and design gates checked: P15 complete. Builds on tests from every earlier packet. Read delivery, verification, operations, persistence, and protocol specifications. Audited requirements S11, S22 and Invariants I01–I20.
+The 2026-09-23 local model/invariant/process-fault results remain historical
+scenario evidence. Its so-called abrupt-reset test performed ordinary readback
+and orderly close/reopen; those durability claims were withdrawn and the test
+renamed `TestP16StorageBarrierSmoke`.
 
-Changed files: `tests/faults/p16_boundaries_audit_test.go`, `tests/faults/p16_invariants_matrix_test.go`, `tests/faults/p16_abrupt_reset_test.go`, `tests/faults/p16_fuzz_test.go`, `scripts/local_demo.go`, `Makefile`, P16 evidence directory (`manifest.json`, `results.json`, `commands.md`, `summary.md`), and this tracker.
+Changed files in the release correction: `scripts/validation/{abrupt_reset.py,
+reset_guest.go,host_agent.py,harness.py,test_safety.py}`, `scripts/local_demo.go`,
+`tests/faults/p16_abrupt_reset_test.go`, Makefile and owning specifications.
 
-Invariant IDs: I01–I20 (all 20 invariants verified with passing named tests). Requirements: S11, S22.
+Actual new results: local Go unit/model/integration/design-gate/fault command
+passed; `make demo` passed; host-worker safety checks passed (marker/token,
+traversal, symlink/hard-link and unrelated/reused PID refusal). QEMU/KVM
+abrupt-stop/reboot passed the dirty-cache negative control plus 15 selected
+object/version/publication boundaries. A second run uses the final repository
+changes; see the [release report](../evidence/release-20261001/summary.md) for
+exact commands, final results, environment and hashes.
 
-Commands and actual results:
-`make check` passed (fmt-check, vet, unit/model, integration P00-P15, model tests, fault tests, amd64 static build, arm64 cross-build, package generation);
-`make test-race` passed (0 race warnings across all packages);
-`make test-faults` passed (D1-D5 design gates, crash boundaries, abrupt-reset tests, invariants I01-I20);
-`go test -v -run 'TestP16Invariant' ./tests/faults/...` passed (all 20 named invariant tests pass);
-`go test -v -run 'TestP16Abrupt' ./tests/faults/...` passed (fsync durability vs unflushed discard, SQLite WAL abrupt recovery, 2-phase publication isolation);
-`go test -v -run 'TestP16Boundaries' ./tests/faults/...` passed (checkpoints, GC, control resolutions, quarantine/repair pre/post boundaries);
-`go test -fuzz=FuzzProtocolEnvelopeDecode -fuzztime=3s ./tests/faults/...` passed (75,680 fuzz iterations, 0 crashes);
-`go test -fuzz=FuzzPathSanitization -fuzztime=3s ./tests/faults/...` passed (187,541 fuzz iterations, 0 crashes);
-`make demo` / `go run ./scripts/local_demo.go --quick` passed (6-step local multi-process replication demo with automatic disposable setup and clean teardown);
-`git diff --check` passed clean.
+The VM experiment loses guest dirty cache, unlike daemon SIGKILL. It uses a
+new ext4 image and virtio-blk `cache=none`, verifies protected content and
+journal recovery after a fresh guest boot, and never stops an existing host
+workload. It does not establish physical Pi/VPS power-cut behavior or broken
+storage flush promises. An unused hook alias was rejected by the first harness
+attempt and removed from the executed matrix; the actual directory-flush hook
+is included. No failed attempt is counted as passing.
 
-Evidence paths: [summary](../evidence/p16-20260923/summary.md), [commands](../evidence/p16-20260923/commands.md), [results](../evidence/p16-20260923/results.json), [manifest](../evidence/p16-20260923/manifest.json), invariant tests in `tests/faults/p16_invariants_matrix_test.go`, boundary audit in `tests/faults/p16_boundaries_audit_test.go`, storage assumption tests in `tests/faults/p16_abrupt_reset_test.go`, fuzz suites in `tests/faults/p16_fuzz_test.go`, and demo script in `scripts/local_demo.go`.
+Remaining: final `make check`, race, clean-snapshot demonstration and invariant
+matrix record. Unexecuted physical resets stay outside this VM claim.
 
-Unexecuted checks / limitations: physical power-cut fault injection on physical VPS / Raspberry Pi hardware (P17 pilot scope). Controlled abrupt reset tests simulated unflushed page cache discard vs fsync barrier durability on local Linux ext4/btrfs filesystem.
+## P17 — Three-host pilot, measurements and case study
 
-Owner explanation notes:
-*Which findings establish algorithmic correctness, process recovery, and abrupt-reset behavior respectively:*
-1. Algorithmic Correctness:
-   Established by model tests (`model/dag_test.go`, `TestModel_DeterministicConvergence`, `TestModel_GarbageCollectionPreservesReachability`) and causal invariant checks (`TestP16InvariantI01`, `TestP16InvariantI02`, `TestP16InvariantI03`, `TestP16InvariantI04`, `TestP16InvariantI10`, `TestP16InvariantI12`, `TestP16InvariantI14`, `TestP16InvariantI16`). These mathematical and logical checks prove that the causal version DAG deterministically resolves concurrent heads into identical head tokens regardless of delivery ordering, that garbage collection reachability traversal guarantees zero protected chunk deletions, that third-party forwarding preserves authentic author ancestry, and that conflicts survive until explicit, atomic reviewed resolutions are committed.
-2. Process Recovery (SIGKILL / Crash Boundary Restart):
-   Established by subprocess crash tests (`TestP03`, `TestP04`, `TestP06`, `TestP16CheckpointBoundaries`, `TestP16GCBoundaries`, `TestP16ControlResolutionBoundaries`, `TestP16IntegrityQuarantineRepairBoundaries`). These tests kill running daemon processes with `SIGKILL` (`kill -9`) immediately before and after critical operation boundaries. They prove that upon process restart: (a) SQLite WAL recovery replays committed frames and rolls back unfinished transactions, (b) uncommitted staging blobs (`.stage-*`) and scratch files are cleaned up or safely superseded without corrupting active workspace files, (c) interrupted GC deletion runs reconcile unreferenced files on subsequent cycles, and (d) idempotency keys allow safe retry of in-flight control operations without generating duplicate causal envelopes.
-3. Abrupt-Reset Behavior (Power Loss / System Crash):
-   Established by controlled barrier tests (`TestP16AbruptResetStorageAssumptions`) and SQLite synchronization guarantees. Unlike process SIGKILL where dirty pages survive in the OS kernel page cache, an abrupt power failure discards all un-flushed memory. Findings establish that durability requires explicit `fsync` barriers on file contents and parent directories, that SQLite `PRAGMA synchronous = FULL` ensures WAL frame commit records reach physical non-volatile media before transaction acknowledgement, and that File Sync's two-phase publication protocol guarantees that staging chunks are fsynced prior to publishing or committing version receipts, so power interruption at any stage never leaves partially written chunks published or corrupt metadata registered.
+Packet: P17. State: `in_progress`.
 
-Next eligible work: P17 three-host pilot, measurements and case study.
+Requirements S02/S03/S22 remain unchanged. The 2026-09-24 37.53-second
+workstation/Pi/VPS demo is not a personal-use pilot. Its uninterrupted transfer
+is not interruption evidence; its estimated benchmark percentages are withdrawn.
+
+Changed files: safe remote and measured benchmark entry points under `scripts`,
+release evidence, README/case study, protocol/resource/storage specifications,
+repository inventory spool and path-history queries, metadata retry handling,
+regression tests, and packaging/default-state corrections. Existing unrelated
+`TODO.md` is preserved.
+
+Actual results on reachable hardware: the rebuilt engine passed normal sync,
+three independent offline heads with matching tokens, reviewed resolution,
+late C arrival preserving a conflict, stale-token rejection, A→VPS→B with A's
+listener stopped, an actually interrupted 12-chunk file followed by verified
+chunk reuse and whole-file hash equality, historical restore as a new version,
+and restart/integrity checks. These were scripted checks on workstation/Pi/VPS;
+the laptop address is currently unreachable. Dedicated roots and exact PIDs
+isolate each run; existing pilot folders and unrelated services remain intact.
+Native user-service install/restart/embedded UI/uninstall checks passed on all
+three reachable hosts, preserving state and workspace bytes.
+
+Measurement work found and fixed a real 1,024-version inventory rejection,
+explicit server-backpressure failures, and folder-wide history reconstruction
+for per-path operations. The pre-fix regression failed; the repaired test and
+relevant suites pass. A single local 1,000-directory capture sample improved
+from 14.402 s to 0.104 s; this is a microbenchmark, not a general speedup.
+A 20-file/40-MiB measured smoke campaign passed all nine workload checks. The
+full 10,000-file/1-GiB campaign is being rerun after the scaling fix. Counters
+measure both encrypted TCP directions, not estimated payload or physical wire.
+The verified full-file HTTPS baseline skips unchanged files after hashing;
+unchanged scans and deletion can therefore favor the baseline.
+
+Remaining acceptance evidence: laptop/Pi/VPS execution, real owner pilot with
+actual duration/offline/reconnect/restart, final benchmark/reproduction records,
+and owner explanation without agent assistance. Approval of product scope is
+not required for these implementation/evidence tasks. Next eligible work is
+continuing P17, not declaring every requirement complete.
 
 ## Completion entry template
 

@@ -100,24 +100,48 @@ func main() {
 	var disposableDir string
 	if *customDir != "" {
 		disposableDir = *customDir
-		_ = os.MkdirAll(disposableDir, 0o700)
-		_ = os.WriteFile(filepath.Join(disposableDir, testkit.Marker), []byte("disposable demo\n"), 0o600)
+		info, err := os.Lstat(disposableDir)
+		marker, markerErr := os.Lstat(filepath.Join(disposableDir, testkit.Marker))
+		if err != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 || markerErr != nil || !marker.Mode().IsRegular() {
+			fmt.Fprintln(os.Stderr, "--dir requires an existing nonsymlink directory with a disposable marker")
+			os.Exit(1)
+		}
 	} else {
 		temp, err := os.MkdirTemp("", "filesync-demo-*")
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "failed to create temp dir: %v\n", err)
+			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 		disposableDir = temp
-		_ = os.WriteFile(filepath.Join(disposableDir, testkit.Marker), []byte("disposable demo\n"), 0o600)
+		if err := os.WriteFile(filepath.Join(disposableDir, testkit.Marker), []byte("disposable demo\n"), 0600); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
+	for _, name := range []string{"node-a-state", "node-a-root", "node-b-state", "node-b-root"} {
+		if _, err := os.Lstat(filepath.Join(disposableDir, name)); !os.IsNotExist(err) {
+			fmt.Fprintln(os.Stderr, "demo requires fresh child paths; existing content is preserved")
+			os.Exit(1)
+		}
+	}
+	var created []string
 
 	// Trap SIGINT / SIGTERM for safe cleanup
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	cleanup := func() {
 		logInfo("Cleaning up disposable environment: %s", disposableDir)
-		_ = os.RemoveAll(disposableDir)
+		for _, path := range created {
+			if err := testkit.ValidateDestructiveTarget(disposableDir, path); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				continue
+			}
+			_ = os.RemoveAll(path)
+		}
+		if *customDir == "" {
+			_ = os.Remove(filepath.Join(disposableDir, testkit.Marker))
+			_ = os.Remove(disposableDir)
+		}
 	}
 	defer cleanup()
 	go func() {
@@ -137,6 +161,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "mkdir %s: %v\n", d, err)
 			os.Exit(1)
 		}
+		created = append(created, d)
 		if err := testkit.ValidateDestructiveTarget(disposableDir, d); err != nil {
 			fmt.Fprintf(os.Stderr, "security check failed: %v\n", err)
 			os.Exit(1)

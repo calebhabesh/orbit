@@ -1,0 +1,98 @@
+File: repository.test
+Build ID: 1b1eb0d3c27386861782f4de30e60a501f8d5839
+Type: cpu
+Time: 2026-10-01 10:15:57 EDT
+Duration: 104.84ms, Total samples = 110ms (104.92%)
+Showing nodes accounting for 110ms, 100% of 110ms total
+      flat  flat%   sum%        cum   cum%
+      30ms 27.27% 27.27%       50ms 45.45%  modernc.org/sqlite/lib._sqlite3VdbeExec
+      20ms 18.18% 45.45%       20ms 18.18%  internal/runtime/syscall/linux.Syscall6
+      10ms  9.09% 54.55%       50ms 45.45%  modernc.org/sqlite.(*stmt).exec
+      10ms  9.09% 63.64%       10ms  9.09%  modernc.org/sqlite/lib._checkConstraintExprNode
+      10ms  9.09% 72.73%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3VdbeAddOp3
+      10ms  9.09% 81.82%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WhereCodeOneLoopStart
+      10ms  9.09% 90.91%       10ms  9.09%  modernc.org/sqlite/lib._yy_find_shift_action
+      10ms  9.09%   100%       10ms  9.09%  runtime._ExternalCode
+         0     0%   100%       80ms 72.73%  database/sql.(*DB).execDC
+         0     0%   100%       80ms 72.73%  database/sql.(*DB).execDC.func2
+         0     0%   100%       20ms 18.18%  database/sql.(*Tx).Commit
+         0     0%   100%       20ms 18.18%  database/sql.(*Tx).Commit.func1
+         0     0%   100%       80ms 72.73%  database/sql.(*Tx).ExecContext
+         0     0%   100%       80ms 72.73%  database/sql.ctxDriverExec
+         0     0%   100%      100ms 90.91%  database/sql.withLock
+         0     0%   100%       90ms 81.82%  github.com/calebhabesh/file-sync/internal/repository.(*DB).CreateLocalVersion
+         0     0%   100%       10ms  9.09%  github.com/calebhabesh/file-sync/internal/repository.(*DB).migrate
+         0     0%   100%      100ms 90.91%  github.com/calebhabesh/file-sync/internal/repository.BenchmarkCaptureDistinctPaths
+         0     0%   100%       10ms  9.09%  github.com/calebhabesh/file-sync/internal/repository.Open (inline)
+         0     0%   100%       10ms  9.09%  github.com/calebhabesh/file-sync/internal/repository.OpenWithOptions
+         0     0%   100%       10ms  9.09%  github.com/calebhabesh/file-sync/internal/repository.init.func3
+         0     0%   100%       20ms 18.18%  github.com/calebhabesh/file-sync/internal/repository.insertEnvelope
+         0     0%   100%       30ms 27.27%  github.com/calebhabesh/file-sync/internal/repository.setProjectionTx
+         0     0%   100%       10ms  9.09%  modernc.org/libc.X__syscall3
+         0     0%   100%       10ms  9.09%  modernc.org/libc.Xfcntl
+         0     0%   100%       10ms  9.09%  modernc.org/libc.Xpwrite
+         0     0%   100%       10ms  9.09%  modernc.org/libc.___syscall_cp
+         0     0%   100%       80ms 72.73%  modernc.org/sqlite.(*conn).ExecContext
+         0     0%   100%       80ms 72.73%  modernc.org/sqlite.(*conn).exec
+         0     0%   100%       30ms 27.27%  modernc.org/sqlite.(*conn).prepare (inline)
+         0     0%   100%       40ms 36.36%  modernc.org/sqlite.(*conn).prepareV2
+         0     0%   100%       30ms 27.27%  modernc.org/sqlite.(*conn).step
+         0     0%   100%       30ms 27.27%  modernc.org/sqlite.(*stmt).exec.func2
+         0     0%   100%       20ms 18.18%  modernc.org/sqlite.(*tx).Commit
+         0     0%   100%       20ms 18.18%  modernc.org/sqlite.(*tx).exec
+         0     0%   100%       30ms 27.27%  modernc.org/sqlite.newStmt
+         0     0%   100%       20ms 18.18%  modernc.org/sqlite/lib.Xsqlite3_exec
+         0     0%   100%       40ms 36.36%  modernc.org/sqlite/lib.Xsqlite3_prepare_v2 (inline)
+         0     0%   100%       50ms 45.45%  modernc.org/sqlite/lib.Xsqlite3_step
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._addOp4IntSlow
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._btreeEndTransaction
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._growOp3
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._pagerUnlockAndRollback
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._pagerUnlockIfUnused (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._pagerWalFrames
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._pager_unlock
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._releasePageOne (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._seekAndWrite (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._seekAndWriteFd
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3AlterFinishAddColumn
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3BtreeCommitPhaseOne
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3BtreeCommitPhaseTwo
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3ExprReferencesUpdatedColumn
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3FinishCoding
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3GenerateConstraintChecks
+         0     0%   100%       40ms 36.36%  modernc.org/sqlite/lib._sqlite3LockAndPrepare
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3NestedParse
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3OsShmLock (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3OsWrite (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3PagerCommitPhaseOne
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3PagerUnrefPageOne
+         0     0%   100%       40ms 36.36%  modernc.org/sqlite/lib._sqlite3Parser
+         0     0%   100%       40ms 36.36%  modernc.org/sqlite/lib._sqlite3Prepare
+         0     0%   100%       40ms 36.36%  modernc.org/sqlite/lib._sqlite3RunParser
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3Select
+         0     0%   100%       50ms 45.45%  modernc.org/sqlite/lib._sqlite3Step
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3Update
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3VdbeAddOp4Int
+         0     0%   100%       20ms 18.18%  modernc.org/sqlite/lib._sqlite3VdbeHalt
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WalEndReadTransaction
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WalFrames (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WalkExpr (inline)
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WalkExprList
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WalkExprNN
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._sqlite3WhereBegin
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._unixShmLock
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._unixShmSystemLock
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._unixWrite
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._unlockBtreeIfUnused
+         0     0%   100%       20ms 18.18%  modernc.org/sqlite/lib._vdbeCommit
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._walFrames
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._walUnlockShared
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._walWriteOneFrame
+         0     0%   100%       10ms  9.09%  modernc.org/sqlite/lib._walWriteToLog
+         0     0%   100%       30ms 27.27%  modernc.org/sqlite/lib._yy_reduce
+         0     0%   100%       10ms  9.09%  runtime._System
+         0     0%   100%       20ms 18.18%  syscall.RawSyscall6
+         0     0%   100%       10ms  9.09%  syscall.Syscall
+         0     0%   100%       10ms  9.09%  syscall.Syscall6
+         0     0%   100%      100ms 90.91%  testing.(*B).run1.func1
+         0     0%   100%      100ms 90.91%  testing.(*B).runN
