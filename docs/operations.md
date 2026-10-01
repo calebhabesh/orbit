@@ -69,6 +69,15 @@ No host AppArmor, firewall or VPN policy is changed by installation.
 | Free-space reserve | 512 MiB initial target per storage filesystem, configurable | Pause growth; preserve diagnostics/recovery capacity |
 | Bandwidth | Optional global and per-peer cap; unlimited means no configured network cap, not unbounded memory | Token-budgeted streaming |
 
+Restart loading selects active durable tasks before applying the 1024-task
+limit, so completed history cannot hide pending work. Equivalent scans and
+peer pulls coalesce without resetting a running task. New task rows obey the
+metadata admission budget; stored retry errors are limited to 2048 bytes.
+Completed task records currently remain in SQLite. The soft metadata cap can
+therefore eventually require operator maintenance; automatic terminal-task
+pruning is not implemented, and state updates needed for recovery may exceed
+the admission threshold.
+
 P00/P12 must reconcile these values with actual serialization sizes, open-file limits, Pi memory, file size/staging needs and workload. Body/page/vector limits must be compatible; test maximum valid envelopes and reject over-limit envelopes explicitly. A configured cap does not establish tested performance at that cap. Metadata limits include non-version tables and operation logs; define separate bounded pruning for diagnostic/idempotency records where safe.
 
 Fairness baseline: round-robin among folders/peers, then small-file preference with aging so large files make progress. Reuse completed chunks. No speculative download of unlimited historical content. Admission accounts for the full pending storage plan; suspended tasks release memory while keeping required durable pins.

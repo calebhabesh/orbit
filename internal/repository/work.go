@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
@@ -77,6 +78,9 @@ func (db *DB) EnqueueDurableTask(ctx context.Context, task DurableTask) (string,
 	if activeCount >= MaxQueueCapacity {
 		return "", ErrQueueFull
 	}
+	if err := db.checkMetadataBudget(ctx); err != nil {
+		return "", err
+	}
 
 	if task.ID == "" {
 		var raw [16]byte
@@ -136,6 +140,9 @@ func (db *DB) GetDurableTask(ctx context.Context, taskID string) (DurableTask, e
 }
 
 func (db *DB) UpdateDurableTaskState(ctx context.Context, taskID string, state string, attempts int, lastError, errorCode string, retryAfterNS int64) error {
+	if len(lastError) > 2048 {
+		lastError = strings.ToValidUTF8(lastError[:2048], "?")
+	}
 	db.mu.Lock()
 	defer db.mu.Unlock()
 	_, err := db.db.ExecContext(ctx, `UPDATE durable_work_tasks SET
@@ -196,7 +203,9 @@ func (db *DB) ListDurableTasks(ctx context.Context, filter TaskFilter) ([]Durabl
 		query += ` AND folder_id=?`
 		args = append(args, filter.Folder[:])
 	}
-	if filter.State != "" {
+	if filter.State == "active" {
+		query += ` AND state IN ('queued','running','retry')`
+	} else if filter.State != "" {
 		query += ` AND state=?`
 		args = append(args, filter.State)
 	}

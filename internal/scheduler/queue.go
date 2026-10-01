@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -36,7 +37,7 @@ func (q *Queue) LoadFromDB(ctx context.Context) error {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
-	tasks, err := q.db.ListDurableTasks(ctx, repository.TaskFilter{Limit: q.maxCapacity})
+	tasks, err := q.db.ListDurableTasks(ctx, repository.TaskFilter{State: "active", Limit: q.maxCapacity})
 	if err != nil {
 		return err
 	}
@@ -94,6 +95,9 @@ func (q *Queue) Enqueue(ctx context.Context, task repository.DurableTask) (strin
 }
 
 func (q *Queue) UpdateState(ctx context.Context, taskID string, state string, attempts int, lastError, errorCode string, retryAfterNS int64) error {
+	if len(lastError) > 2048 {
+		lastError = strings.ToValidUTF8(lastError[:2048], "?")
+	}
 	if err := q.db.UpdateDurableTaskState(ctx, taskID, state, attempts, lastError, errorCode, retryAfterNS); err != nil {
 		return err
 	}
