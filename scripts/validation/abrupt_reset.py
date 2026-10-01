@@ -46,7 +46,7 @@ def boot(root, disk, kernel, mode, hook, logs):
     sel.register(proc.stdout, selectors.EVENT_READ)
     output = bytearray()
     token = {"setup": "FILESYNC_RESET_SETUP_OK", "mutate": "FILESYNC_RESET_READY " + hook,
-             "verify": "FILESYNC_RESET_VERIFY_OK"}[mode].encode()
+             "verify": "FILESYNC_RESET_VERIFY_OK", "enospc":"FILESYNC_ENOSPC_VERIFY_OK"}[mode].encode()
     started = time.monotonic()
     try:
         while time.monotonic() - started < 45:
@@ -76,7 +76,7 @@ def main():
     parser.add_argument("--hook", action="append", help="subset (default: entire boundary matrix)")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    report = {"fault": "SIGKILL of dedicated QEMU VM, then cold guest boot; no clean guest unmount",
+    report = {"fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
               "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
               "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
               "kernel_sha256": hashlib.sha256(args.kernel.read_bytes()).hexdigest(),
@@ -100,16 +100,19 @@ def main():
                 handle.truncate(256 * 1024 * 1024)
             validate(root, disk)
             subprocess.run(["mkfs.ext4", "-q", "-F", "-d", str(seed), str(disk)], check=True)
-            entry = {"hook": hook, "success": False}
+            entry = {"hook": hook, "success": False, "kind": "VM-child fsync syscall ENOSPC injection" if hook == "enospc.fsync" else "actual guest disk exhaustion" if hook.startswith("enospc.") else "abrupt guest stop/reboot"}
             report["runs"].append(entry)
             try:
-                for mode in ["setup", "mutate", "verify"]:
+                modes = ["setup", "enospc"] if hook.startswith("enospc.") else ["setup", "mutate", "verify"]
+                for mode in modes:
                     text, elapsed = boot(root, disk, args.kernel, mode, hook, args.output / f"{hook}-{mode}.log")
                     entry[mode + "_seconds"] = elapsed
                     if mode == "verify":
                         entry["oracle"] = text[text.index("FILESYNC_RESET_VERIFY_OK"):].strip()
+                    elif mode == "enospc":
+                        entry["oracle"] = text[text.index("FILESYNC_ENOSPC_ERROR"):].strip()
                 entry["success"] = True
-                print(f"PASS abrupt reset: {hook}", flush=True)
+                print(f"PASS {entry['kind']}: {hook}", flush=True)
             finally:
                 (args.output / "abrupt-reset.json").write_text(json.dumps(report, indent=2) + "\n")
             validate(root, disk)

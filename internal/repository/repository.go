@@ -15,6 +15,7 @@ import (
 	"golang.org/x/sys/unix"
 	_ "modernc.org/sqlite"
 
+	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/history"
 )
 
@@ -80,6 +81,19 @@ func Open(ctx context.Context, stateDir string) (*DB, error) {
 }
 
 func OpenWithOptions(ctx context.Context, stateDir string, options Options) (*DB, error) {
+	limits, err := config.LoadStorageLimits(stateDir)
+	if err != nil {
+		return nil, fmt.Errorf("load storage limits: %w", err)
+	}
+	if options.BudgetBytes == 0 {
+		options.BudgetBytes = limits.DataBudgetBytes
+	}
+	if options.MetadataBudgetBytes == 0 {
+		options.MetadataBudgetBytes = limits.MetadataBudgetBytes
+	}
+	if options.FreeSpaceReserveBytes == 0 {
+		options.FreeSpaceReserveBytes = limits.FreeSpaceReserveBytes
+	}
 	for _, dir := range []string{"objects/sha256", "incoming", "quarantine", "operations"} {
 		if err := os.MkdirAll(filepath.Join(stateDir, dir), 0o700); err != nil {
 			return nil, fmt.Errorf("create repository directory %s: %w", dir, err)

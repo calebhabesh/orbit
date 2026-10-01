@@ -16,12 +16,10 @@ LimitNOFILE=65536
 MemoryHigh=512M
 MemoryMax=1G
 
-# Systemd User Service Hardening
-# Note: Arbitrary user workspace roots are supported across %h.
-# ProtectSystem protects OS directories (/usr, /boot, /etc) from user daemon tampering.
+# Unix ownership protects system directories. Filesystem namespace sandboxing
+# can force Ubuntu's unprivileged_userns AppArmor profile, which rejects
+# descriptor-rooted access. Preserve host AppArmor/VPN/firewall policy.
 NoNewPrivileges=yes
-ProtectSystem=strict
-ReadWritePaths=%h/.local/state/filesync %h
 
 # Logging
 StandardOutput=journal

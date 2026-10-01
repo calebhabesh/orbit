@@ -18,6 +18,36 @@ device/key-pin display; `pair-approve` requires the peer device ID and key pin
 received out of band. There is no network enrollment endpoint. Initial pairing
 installs the same canonical folder membership revision on both devices.
 
+Background outbound synchronization reads owner-only `peers.json` in the
+state directory at startup. It contains `format_version: 1` and at most 64
+`peers` entries, each with canonical hex `folder`/`device`, an HTTPS origin
+`url`, and a public `certificate` path (relative to state or absolute).
+Endpoints locate previously approved members; they do not authorize membership.
+Malformed endpoints or unapproved certificate pins refuse startup. Restart
+after changing endpoints. Startup and the configured reconciliation interval
+queue bounded, coalesced pulls from these peers; each participant must configure
+the peers it pulls from. The daemon's identity authenticates those requests.
+Scheduled scans and publications serialize within each folder. Other folders
+can progress concurrently. Connection clients and idle sockets are reused and
+closed at shutdown; an absent bandwidth cap passes no limiter.
+
+`init` writes owner-only `limits.json` with an initial finite 10-GiB data
+budget, 256-MiB metadata admission budget and 512-MiB free-space reserve.
+Its version-1 fields are `data_budget_bytes`, `metadata_budget_bytes` and
+`free_space_reserve_bytes`; all must be positive. Select smaller/larger limits
+before starting the daemon and restart after changes. Repository open reads
+these limits for daemon and CLI operations alike. Legacy states without this
+file retain their prior limits until `init` is rerun; diagnostics must not
+describe their data budget as finite. The prepared personal pilot uses 1 GiB.
+
+The user service retains `NoNewPrivileges` and memory/descriptor limits without
+filesystem namespace sandboxing. On the tested Ubuntu laptop/VPS, namespace
+creation selected AppArmor's `unprivileged_userns` profile and descriptor-rooted
+folder access failed despite matching permissions/registration. Native file
+capture must pass before declaring service readiness. Unix ownership already
+prevents this unprivileged account from modifying system-owned directories.
+No host AppArmor, firewall or VPN policy is changed by installation.
+
 ## Initial engineering limits
 
 | Resource | Baseline | Behavior at limit |

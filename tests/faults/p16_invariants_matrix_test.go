@@ -946,9 +946,10 @@ func TestP16HarnessRefusesUnsafePaths(t *testing.T) {
 	}
 }
 
-// TestP16ScenarioMatrix_AllRowsCovered documents and validates evidence for all 20 rows
-// of the Scenario Matrix required by docs/verification.md.
-func TestP16ScenarioMatrix_AllRowsCovered(t *testing.T) {
+// TestP16ScenarioCatalogHasDescriptions checks the catalog's structure only.
+// Passing it is not evidence that its referenced scenarios were executed.
+// Actual outcomes and remaining gaps belong in the release evidence map.
+func TestP16ScenarioCatalogHasDescriptions(t *testing.T) {
 	type scenarioRow struct {
 		ID             int
 		Name           string
@@ -957,25 +958,25 @@ func TestP16ScenarioMatrix_AllRowsCovered(t *testing.T) {
 	}
 
 	matrix := []scenarioRow{
-		{1, "Three offline edits, every reconnect order", "I01-I04, I14", "TestP08ThreeOfflineEditsReconnection, TestBoundedExhaustiveActorSchedulesAgree"},
-		{2, "Resolve A/B, later receive C", "I02-I04, I16", "TestP08ResolveABThenReceiveC, model/dag_test.go"},
-		{3, "Equal-byte independent writes", "I01-I04", "TestP07EqualByteIndependentWrites, TestD2WorkingBasisIndependentTraces"},
-		{4, "Same-author edit from stale basis", "I04, I08", "TestD2StaleBasisRefusal, TestP16InvariantI04"},
-		{5, "Delete vs edit; repeat delete; restore deleted file", "I02, I03, I16", "TestP08DeleteVsEditRepeatDeleteRestore"},
+		{1, "Three offline edits, every reconnect order", "I01-I04, I14", "TestP16InvariantI02_SameValidHistoryEquivalentHeads; model schedules; actual-host scripted campaign"},
+		{2, "Resolve A/B, later receive C", "I02-I04, I16", "TestD2ResolutionCoversOnlyReviewedHeads; actual-host late-C campaign"},
+		{3, "Equal-byte independent writes", "I01-I04", "TestReconciliationEqualByteConflict; TestD2EqualBytesDoNotEraseAncestry"},
+		{4, "Same-author edit from stale basis", "I04, I08", "TestD2SameAuthorStaleBasisBlocksCandidate"},
+		{5, "Delete vs edit; repeat delete; restore deleted file", "I02, I03, I16", "TestReconciliationOfflineEditDelete; TestReconciliationRepeatedDelete; TestP08CLIResolutionRestoreControlReplay"},
 		{6, "Existing divergent enrollment folders", "I03, I11", "TestD5DivergentEnrollmentCreatesIndependentHistories"},
 		{7, "Parent delete vs new child; file/directory collision", "I12", "TestD5ParentDeleteOrFileVsChildIsStructuralConflict, TestP16InvariantI12"},
-		{8, "Editor rename/overwrite during transfer/apply", "I04, I07, I17", "TestD1PublicationOverwritesAndRenames"},
+		{8, "Editor rename/overwrite during transfer/apply", "I04, I07, I17", "TestD1ExchangePreservesObservedOverwriteAndSaveByRename; TestOpenDescriptorAfterExchangeWritesRecoveryCandidate"},
 		{9, "Root unmount/replacement; unreadable subtree", "I11", "TestP16InvariantI11, TestP12RootUnavailablePauseFolderNoDeletions"},
 		{10, "Crash before/after every durable boundary", "I05-I08", "TestP03KillRestartBoundaries, TestP04PublicationKillRestartBoundaries, TestP06TransferKillRestartBoundaries, TestP16CheckpointBoundaries, TestP16GCBoundaries"},
-		{11, "Transfer drop mid-chunk/mid-file; lost receipt", "I01, I05, I06", "TestP06InterruptedTransferResumption, TestP06TransferKillRestartBoundaries"},
-		{12, "ENOSPC during write/fsync/SQLite/checkpoint/staging", "I05, I07, I13", "internal/repository/p03_test.go, internal/workspace/workspace_test.go"},
-		{13, "Bit flip in current/history/shared chunk", "I06, I18", "TestP11CorruptionQuarantineAndPeerRepair, TestP16InvariantI18"},
-		{14, "GC races receive/serve/restore/publication/restart", "I07, I10", "TestD4GCPreservationAndServePins, TestP16GCBoundaries"},
-		{15, "Long-offline enrolled peer and expired history", "I02, I10, I15", "TestP10ExpiredHistoryCausalReconciliation"},
-		{16, "Retirement/config mismatch/stale rejoin", "I08, I15", "TestD3MembershipRetirementAdversarialCases, TestP09RetirementSafety"},
-		{17, "A->VPS->B with no A/B link or online overlap", "I14", "TestP09ForwardingWithoutDirectLink, TestP16InvariantI14"},
-		{18, "Unauthorized folder/hash, traversal, symlink race, malformed manifest", "I09, I20", "TestP06AdversarialSecurityAndPathTraversal, TestP16InvariantI09"},
-		{19, "Continuous small edits plus large archive", "I13", "TestP12ContinuousOperationFairnessAndConcurrency, TestP16InvariantI13"},
+		{11, "Transfer drop mid-chunk/mid-file; lost receipt", "I01, I05, I06", "TestSyncerInterruptedResume; TestSyncerLostReceiptReplaySafe; TestP06TransferKillRestartBoundaries; actual-host interruption"},
+		{12, "ENOSPC during write/fsync/SQLite/checkpoint/staging", "I05, I07, I13", "TestDiskFullFaultLeavesNoInstalledObject; TestStageFailureAndBudgetRefusalPreserveCapturedBytes; actual IO/SQLite exhaustion remains a release gap"},
+		{13, "Bit flip in current/history/shared chunk", "I06, I18", "TestP11IntegrityScanAndQuarantineAffectedVersions; TestRepairSharedChunkRestoresBothVersions"},
+		{14, "GC races receive/serve/restore/publication/restart", "I07, I10", "TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent; TestP16GCBoundaries"},
+		{15, "Long-offline enrolled peer and expired history", "I02, I10, I15", "TestP10LongOfflinePeerNoResurrectedDeletions"},
+		{16, "Retirement/config mismatch/stale rejoin", "I08, I15", "TestD3RetirementRejectsOldEpochResurrection; TestP09ThreePeerForwardingAndMembershipLifecycle"},
+		{17, "A->VPS->B with no A/B link or online overlap", "I14", "TestP09ThreePeerForwardingAndMembershipLifecycle; actual-host forwarding"},
+		{18, "Unauthorized folder/hash, traversal, symlink race, malformed manifest", "I09, I20", "TestAuthenticationAuthorizationAndCompatibilityMatrix; TestParentSymlinkSwapCannotPublishOutsideRoot; TestMalformedAndOverLimitInputsAreBounded"},
+		{19, "Continuous small edits plus large archive", "I13", "TestP12BoundedQueueAndFairScheduling; TestP16InvariantI13_BoundedWorkAndResourceLimits; sustained native mixed load remains unexecuted"},
 		{20, "Migration interrupted and newer schema opened", "I08, I20", "TestP15InterruptedMigrationRollback, TestP15UpgradePreflight, TestP16InvariantI20"},
 	}
 

@@ -102,6 +102,12 @@ virtio-blk/ext4/devtmpfs support. It discards guest dirty caches and tests
 selected production boundaries, under the recorded virtual storage assumptions.
 It does not demonstrate a physical Pi power cut.
 
+For continuous outbound sync, configure owner-only `peers.json` in the state
+directory with approved folder/device IDs, HTTPS origins and public certificates.
+`init` creates finite limits in `limits.json`. See the
+[configuration contract](docs/operations.md) for formats, defaults and restart
+behavior. Endpoint configuration does not replace membership approval.
+
 The synthetic benchmark counts TLS-bearing TCP stream bytes in both directions.
 Its full-file baseline also uses mutual TLS, hashes and durably installs files,
 and skips unchanged files after hashing. TCP/IP and SSH headers are excluded.

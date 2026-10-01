@@ -6,10 +6,15 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
+	"syscall"
 	"time"
+	"unsafe"
 
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/repository"
@@ -51,7 +56,125 @@ func stopAt(name string) error {
 	}
 }
 
+// Exhaust only the dedicated guest disk. Physical devices and host folders
+// never participate in this experiment.
+func fullDiskExperiment(db *repository.DB, ws *workspace.Workspace, hook string, baseID, nextID history.VersionID) {
+	if !strings.HasPrefix(hook, "enospc.") {
+		panic("invalid disk-full experiment")
+	}
+	if hook == "enospc.fsync" {
+		out, err := exec.Command("/init", "--fsync-worker").CombinedOutput()
+		fmt.Print(string(out))
+		must(err)
+		must(db.VerifyVersionContent(ctx, baseID))
+		fmt.Println("FILESYNC_ENOSPC_VERIFY_OK hook=enospc.fsync protected_hashes=true syscall_fault=true")
+		return
+	}
+	if hook == "enospc.checkpoint" {
+		// Grow committed WAL before filling the disk, then force the main database
+		// to allocate blocks while checkpointing that committed record.
+		must(db.PutInstallationValue(ctx, "checkpoint-growth", bytes.Repeat([]byte("W"), 2*1024*1024)))
+	}
+	filler, err := os.OpenFile("/disk/filler", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	must(err)
+	buffer := make([]byte, 64*1024)
+	for {
+		_, err = filler.Write(buffer)
+		if err != nil {
+			break
+		}
+	}
+	if !errors.Is(err, syscall.ENOSPC) {
+		panic(fmt.Sprintf("disk fill error: %v", err))
+	}
+	_ = filler.Sync()
+	must(filler.Close())
+	var operationErr error
+	switch hook {
+	case "enospc.object":
+		_, operationErr = db.StoreFile(ctx, bytes.NewReader(bytes.Repeat([]byte("D"), 2*1024*1024)), false)
+	case "enospc.sqlite":
+		operationErr = db.PutInstallationValue(ctx, "failed-growth", bytes.Repeat([]byte("S"), 2*1024*1024))
+	case "enospc.checkpoint":
+		operationErr = db.Checkpoint(ctx)
+	case "enospc.staging":
+		operationErr = ws.Apply(ctx, nextID)
+	default:
+		panic("unknown disk-full case")
+	}
+	if operationErr == nil {
+		panic("disk-full operation unexpectedly succeeded")
+	}
+	if !errors.Is(operationErr, syscall.ENOSPC) && !strings.Contains(strings.ToLower(operationErr.Error()), "full") && !strings.Contains(strings.ToLower(operationErr.Error()), "space") {
+		panic(fmt.Sprintf("operation failed for another reason: %v", operationErr))
+	}
+	fmt.Printf("FILESYNC_ENOSPC_ERROR hook=%s error=%v\n", hook, operationErr)
+	must(os.Remove("/disk/filler"))
+	if hook == "enospc.staging" {
+		must(ws.Recover(ctx, folder))
+	}
+	must(db.VerifyVersionContent(ctx, baseID))
+	if hook == "enospc.staging" {
+		data, err := os.ReadFile("/disk/root/note.txt")
+		must(err)
+		if !bytes.Equal(data, original) {
+			panic("disk-full staging changed working bytes")
+		}
+		must(db.VerifyVersionContent(ctx, nextID))
+	}
+	must(db.Close())
+	db, err = repository.Open(ctx, "/disk/state")
+	must(err)
+	must(db.VerifyVersionContent(ctx, baseID))
+	must(db.Checkpoint(ctx))
+	if hook == "enospc.checkpoint" {
+		data, err := db.InstallationValue(ctx, "checkpoint-growth")
+		must(err)
+		if len(data) != 2*1024*1024 {
+			panic("committed WAL record lost")
+		}
+	}
+	fmt.Printf("FILESYNC_ENOSPC_VERIFY_OK hook=%s protected_hashes=true reopened=true\n", hook)
+}
+
+func fsyncWorker() {
+	marker, err := os.ReadFile("/disk/.filesync-disposable")
+	must(err)
+	if string(marker) != "filesync disposable reset VM\n" {
+		panic("unmarked fsync-fault disk")
+	}
+	db, err := repository.Open(ctx, "/disk/state")
+	must(err)
+	// Precreate the shard so the fault reaches the incoming-file flush.
+	digest := sha256.Sum256(bytes.Repeat([]byte("F"), 1024*1024))
+	must(os.MkdirAll(fmt.Sprintf("/disk/state/objects/sha256/%02x", digest[0]), 0700))
+	// The filter is confined to this VM child process. Real fsync/fdatasync
+	// syscalls return ENOSPC; no production hook fakes a post-success error.
+	must(unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0))
+	filter := []unix.SockFilter{
+		{Code: unix.BPF_LD | unix.BPF_W | unix.BPF_ABS, K: 0},
+		{Code: unix.BPF_JMP | unix.BPF_JEQ | unix.BPF_K, Jt: 2, K: unix.SYS_FSYNC},
+		{Code: unix.BPF_JMP | unix.BPF_JEQ | unix.BPF_K, Jt: 1, K: unix.SYS_FDATASYNC},
+		{Code: unix.BPF_RET | unix.BPF_K, K: unix.SECCOMP_RET_ALLOW},
+		{Code: unix.BPF_RET | unix.BPF_K, K: unix.SECCOMP_RET_ERRNO | uint32(syscall.ENOSPC)},
+	}
+	program := unix.SockFprog{Len: uint16(len(filter)), Filter: &filter[0]}
+	_, _, errno := unix.RawSyscall(unix.SYS_SECCOMP, unix.SECCOMP_SET_MODE_FILTER, unix.SECCOMP_FILTER_FLAG_TSYNC, uintptr(unsafe.Pointer(&program)))
+	if errno != 0 {
+		panic(errno)
+	}
+	_, err = db.StoreFile(ctx, bytes.NewReader(bytes.Repeat([]byte("F"), 1024*1024)), false)
+	if !errors.Is(err, syscall.ENOSPC) || !strings.Contains(err.Error(), "flush incoming chunk") {
+		panic(fmt.Sprintf("fsync syscall fault not observed: %v", err))
+	}
+	fmt.Printf("FILESYNC_ENOSPC_ERROR hook=enospc.fsync error=%v\n", err)
+}
+
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "--fsync-worker" {
+		fsyncWorker()
+		return
+	}
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("FILESYNC_RESET_FAIL %v\n", err)
@@ -89,7 +212,10 @@ func main() {
 			hook = strings.TrimPrefix(field, "filesync.hook=")
 		}
 	}
-	publication := strings.HasPrefix(hook, "publication.")
+	publication := strings.HasPrefix(hook, "publication.") || hook == "enospc.staging"
+	if hook == "enospc.staging" {
+		successor = bytes.Repeat([]byte("R"), 2*1024*1024)
+	}
 	options := repository.Options{}
 	if mode == "mutate" {
 		options.FaultHook = func(name string) error {
@@ -145,6 +271,8 @@ func main() {
 			must(err)
 		}
 		panic("requested boundary not reached: " + hook)
+	case "enospc":
+		fullDiskExperiment(db, ws, hook, baseID, nextID)
 	case "verify":
 		must(db.VerifyVersionContent(ctx, baseID))
 		ids, err := db.VersionIDs(ctx, folder)

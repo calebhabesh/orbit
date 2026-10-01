@@ -41,11 +41,11 @@ def flush_dir(path):
 
 
 class FullFileBaseline:
-    def __init__(self, source, receiver):
+    def __init__(self, source, receiver, resume=False):
         self.source, self.receiver = source, receiver
         self.root = Path(source.root) / "data"
         self.destination = Path(receiver.root) / "baseline"
-        self.destination.mkdir()
+        self.destination.mkdir(exist_ok=resume)
         self.manifest, self.payload_bytes = {}, 0
         self.lock = threading.Lock()
         baseline = self
@@ -186,6 +186,8 @@ def main():
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--small-files", type=int, default=1000)
     parser.add_argument("--large-mib", type=int, default=1024)
+    parser.add_argument("--resume-after-initial", action="store_true",
+                        help="resume an interrupted one-repetition campaign after its completed initial workload")
     args = parser.parse_args()
     if args.repetitions < 1 or args.small_files < 1 or args.large_mib < 1:
         parser.error("positive workload dimensions required")
@@ -197,20 +199,57 @@ def main():
               "timing": "sender scan/hash + sync to durable receipt/publication; baseline source/destination hash + durable publication. Server/tunnel startup and final comparison excluded",
               "limitations": "Python baseline vs Go engine; baseline retains only working tree, engine additionally commits history/content/journals. No equivalent CPU-work or generic speedup claim",
               "hosts": [], "summaries": []}
+    if args.resume_after_initial:
+        report = json.loads((args.output / "benchmarks.json").read_text())
+        if args.repetitions != 1 or len(report["hosts"]) != 1 or len(report["runs"]) != 1 or \
+                report["runs"][0]["workload"] != "small_files_initial" or not report["runs"][0]["success"]:
+            raise RuntimeError("resume requires exactly one completed initial workload and no later mutation")
+        report["campaign_interruption"] = "orchestrator turn interrupted after initial workload; preserved roots and bytes checked before continuation"
     try:
         for repetition in range(args.repetitions):
             nodes = [Node("local", "source"), Node("local", "receiver")]
             baseline = None
             try:
                 folder = uuid.uuid4().hex * 2
-                for node in nodes:
-                    node.setup(folder)
+                if args.resume_after_initial:
+                    for node, saved_root in zip(nodes, report["hosts"][0]["roots"]):
+                        node.root = saved_root
+                        node.token = (Path(saved_root) / ".filesync-disposable").read_text().strip()
+                        node.inventory = node.call("inventory")
+                        # Reap only orphaned workers from this exact marked run.
+                        for pidfile in Path(saved_root).glob("*.pid.json"):
+                            name = pidfile.name.removesuffix(".pid.json")
+                            node.call("stop", name=name)
+                        identity = node.cli("identity", "--certificate")
+                        import re
+                        node.device = re.search(r"device=([a-f0-9]{64})", identity)[1]
+                        node.pin = re.search(r"key-pin=([a-f0-9]{64})", identity)[1]
+                        node.cert = identity[identity.index("-----BEGIN CERTIFICATE-----"):].encode()
+                        node.binary_hash = hashlib.sha256((Path(saved_root)/"filesync").read_bytes()).hexdigest()
+                        if node.binary_hash != report["hosts"][0]["binary_sha256"]:
+                            raise RuntimeError("resume binary differs from measured initial workload")
+                        c = __import__("sqlite3").connect(f"file:{saved_root}/state/metadata.sqlite?mode=ro",uri=True)
+                        try:
+                            folder = c.execute("select lower(hex(folder_id)) from folders").fetchone()[0]
+                        finally:
+                            c.close()
+                        node.folder = folder
+                else:
+                    for node in nodes:
+                        node.setup(folder)
                 source, receiver = nodes
-                pair(nodes)
-                baseline = FullFileBaseline(source, receiver)
+                if not args.resume_after_initial:
+                    pair(nodes)
+                baseline = FullFileBaseline(source, receiver, resume=args.resume_after_initial)
                 root = Path(source.root) / "data"
-                report["hosts"].append({"repetition": repetition, "roots": [n.root for n in nodes],
+                if not args.resume_after_initial:
+                    report["hosts"].append({"repetition": repetition, "roots": [n.root for n in nodes],
                                        "inventory": source.inventory, "binary_sha256": source.binary_hash})
+                else:
+                    expected = inventory(root)
+                    if inventory(Path(receiver.root)/"data") != expected or inventory(baseline.destination) != expected or \
+                            hashlib.sha256(json.dumps(expected,sort_keys=True).encode()).hexdigest() != report["runs"][0]["workload_digest"]:
+                        raise RuntimeError("resume fixture differs from completed initial workload")
 
                 def measure(name, bandwidth=0, latency=0):
                     entry = {"repetition": repetition, "workload": name, "bandwidth_bytes_second": bandwidth,
@@ -241,12 +280,13 @@ def main():
                     finally:
                         (args.output / "benchmarks.json").write_text(json.dumps(report, indent=2) + "\n")
 
-                rng = random.Random(20261001)
-                for i in range(args.small_files):
-                    path = root / f"d{i % 10}" / f"s{i % 7}" / f"note-{i}.bin"
-                    path.parent.mkdir(parents=True, exist_ok=True)
-                    path.write_bytes(rng.randbytes(rng.randrange(4096, 65537)))
-                measure("small_files_initial")
+                if not args.resume_after_initial:
+                    rng = random.Random(20261001)
+                    for i in range(args.small_files):
+                        path = root / f"d{i % 10}" / f"s{i % 7}" / f"note-{i}.bin"
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_bytes(rng.randbytes(rng.randrange(4096, 65537)))
+                    measure("small_files_initial")
                 measure("unchanged_tree")
                 large = root / "archive.bin"
                 write_random(large, args.large_mib * 1024 * 1024, 17)

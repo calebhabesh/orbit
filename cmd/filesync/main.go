@@ -1303,6 +1303,12 @@ func handleConfigValidate(args []string, stdout, stderr io.Writer) error {
 	if cfg.DeviceID == "" || len(cfg.DeviceID) != 64 {
 		return fmt.Errorf("invalid device_id in config.json: %q", cfg.DeviceID)
 	}
+	if _, err := config.LoadPeerEndpoints(actualStateDir); err != nil {
+		return fmt.Errorf("peer endpoints: %w", err)
+	}
+	if _, err := config.LoadStorageLimits(actualStateDir); err != nil {
+		return fmt.Errorf("storage limits: %w", err)
+	}
 	deviceID, err := parseID(cfg.DeviceID)
 	if err != nil {
 		return fmt.Errorf("parse device_id: %w", err)

@@ -73,6 +73,9 @@ func (l *BandwidthLimiter) Acquire(ctx context.Context, peer *history.ID, bytes 
 			if burstCap < 64*1024 {
 				burstCap = 64 * 1024
 			}
+			if burstCap < float64(bytes) {
+				burstCap = float64(bytes)
+			}
 			if l.globalTokens > burstCap {
 				l.globalTokens = burstCap
 			}
@@ -95,6 +98,9 @@ func (l *BandwidthLimiter) Acquire(ctx context.Context, peer *history.ID, bytes 
 				burstCap := float64(peerRate)
 				if burstCap < 64*1024 {
 					burstCap = 64 * 1024
+				}
+				if burstCap < float64(bytes) {
+					burstCap = float64(bytes)
 				}
 				if curTokens > burstCap {
 					curTokens = burstCap

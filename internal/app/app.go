@@ -50,6 +50,9 @@ func Initialize(ctx context.Context, stateDir string, deps Dependencies) (config
 	if err != nil {
 		return config.Config{}, err
 	}
+	if err := config.InitializeStorageLimits(stateDir); err != nil {
+		return config.Config{}, err
+	}
 	deviceID, err := decodeDeviceID(cfg.DeviceID)
 	if err != nil {
 		return config.Config{}, err
@@ -119,6 +122,55 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	}
 
 	ws := workspace.New(db, workspace.Options{})
+	endpoints, err := config.LoadPeerEndpoints(stateDir)
+	if err != nil {
+		return fmt.Errorf("load peer endpoints: %w", err)
+	}
+	var targets []scheduler.PeerTarget
+	clients := map[scheduler.PeerTarget]*replication.Client{}
+	for _, endpoint := range endpoints {
+		folder, err := decodeDeviceID(endpoint.Folder)
+		if err != nil {
+			return err
+		}
+		peer, err := decodeDeviceID(endpoint.Device)
+		if err != nil {
+			return err
+		}
+		data, err := os.ReadFile(endpoint.Certificate)
+		if err != nil {
+			return fmt.Errorf("read peer certificate: %w", err)
+		}
+		certificate, err := replication.ParsePeerCertificate(data)
+		if err != nil {
+			return err
+		}
+		membership, err := db.Membership(ctx, folder)
+		if err != nil {
+			return err
+		}
+		pin := replication.PublicKeyPin(certificate)
+		if err := db.AuthorizePeer(ctx, folder, peer, pin, membership.Revision, membership.Digest); err != nil {
+			return fmt.Errorf("configured peer is not approved: %w", err)
+		}
+		client, err := replication.NewClient(endpoint.URL, identity, certificate, pin)
+		if err != nil {
+			return err
+		}
+		defer client.CloseIdleConnections()
+		target := scheduler.PeerTarget{Folder: folder, Peer: peer}
+		targets = append(targets, target)
+		clients[target] = client
+	}
+	if opts.ClientFactory == nil && len(clients) > 0 {
+		opts.ClientFactory = func(folder, peer history.ID) (replication.PeerClient, error) {
+			client := clients[scheduler.PeerTarget{Folder: folder, Peer: peer}]
+			if client == nil {
+				return nil, errors.New("peer endpoint is not configured")
+			}
+			return client, nil
+		}
+	}
 
 	profileType := scheduler.ProfileLaptop
 	if opts.Profile == string(scheduler.ProfilePi) {
@@ -142,6 +194,8 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		Limiter:       limiter,
 		NoWatch:       opts.NoWatch,
 		ClientFactory: opts.ClientFactory,
+		LocalDevice:   deviceID,
+		Peers:         targets,
 	})
 	if err != nil {
 		return fmt.Errorf("create scheduler: %w", err)

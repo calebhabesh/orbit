@@ -28,10 +28,10 @@ vet:
 test:
 	$(GO) test ./internal/... ./model/...
 
-test-race:
+test-race: build
 	$(GO) test -race ./...
 
-test-integration:
+test-integration: build
 	$(GO) test ./tests/integration/...
 
 test-model:

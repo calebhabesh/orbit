@@ -130,6 +130,12 @@ def main():
         if a.device not in json.dumps(forwarded):
             raise RuntimeError("original author missing after forwarding")
         results["qualified_a_status"] = json.loads(a.cli("status", "--folder", folder, "--json"))
+        forward_id = forwarded[-1]["id"]
+        if any(p["peer"] == b.device and p["version"] == forward_id and p["receipt"]
+               for p in (results["qualified_a_status"]["peers"] or [])):
+            raise RuntimeError("A falsely claims B's receipt after forwarding without contact")
+        results["forward_status_assertion"] = {"original_author": forward_id["Author"],
+                                                "a_does_not_claim_b_receipt": True}
         # Distinct pseudorandom chunks avoid accidental fixture deduplication.
         payload = random.Random(20261001).randbytes(12 * 1024 * 1024)
         a.put("data/resume.bin", payload)
@@ -159,10 +165,15 @@ def main():
         finally:
             a.stop(name)
         resumed = sync(a, b)
-        if resumed["result"]["chunks_fetched"] != 12 - transferred or resumed["result"]["chunks_reused"] < transferred:
-            raise RuntimeError("restart did not reuse exact verified chunk progress")
         results["interrupted_resume"] = {"partial": partial, "resumed": resumed,
                                          "hashes": verify([a, b], "resume.bin", payload)}
+        counts = resumed["result"]
+        # An object can be durable just before its progress-row transaction.
+        # Reusing that extra verified object is valid; all recorded progress
+        # must be reused, and every distinct chunk must be accounted for.
+        if counts["chunks_fetched"] > 12 - transferred or counts["chunks_reused"] < transferred or \
+                counts["chunks_fetched"] + counts["chunks_reused"] != 12:
+            raise RuntimeError("restart did not reuse verified chunk progress")
         # Restore from the first recorded source, using a fresh reviewed preview.
         entries = history
         source = version_text(entries[0]["id"])

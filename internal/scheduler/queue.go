@@ -78,16 +78,17 @@ func (q *Queue) Enqueue(ctx context.Context, task repository.DurableTask) (strin
 	if err != nil {
 		return "", err
 	}
-
-	task.ID = taskID
-	if task.State == "" {
-		task.State = "queued"
+	stored, err := q.db.GetDurableTask(ctx, taskID)
+	if err != nil {
+		return "", err
 	}
 
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
-	q.tasks[taskID] = &task
+	if _, exists := q.tasks[taskID]; !exists && (stored.State == "queued" || stored.State == "running" || stored.State == "retry") {
+		q.tasks[taskID] = &stored
+	}
 	q.ensureFolderTrackingLocked(task.Folder)
 	return taskID, nil
 }

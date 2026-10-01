@@ -79,7 +79,7 @@ Use namespaces/containers or a protocol proxy for partitions/delay/drop behavior
 - Scheduled/manual campaign: broader seeds, fuzzing, real filesystem fault matrices, long-running resource/fairness checks.
 - Release: packaged binaries, local demo from clean checkout, actual three-host workflow, documented abrupt-reset experiments and personal pilot.
 
-The Makefile provides these validation targets: `make check`, `make test`, `make test-race`, `make test-integration`, `make test-model`, `make test-faults`, `make demo`, `make build`, `make evidence`. The explicit QEMU abrupt-reset target is separate from ordinary checks. Publish what each target executes and any privilege requirements. Destructive tests are never a hidden dependency of ordinary checks.
+The Makefile provides these validation targets: `make check`, `make test`, `make test-race`, `make test-integration`, `make test-model`, `make test-faults`, `make test-harness`, `make demo`, `make build`, and `make package`. Integration and race targets build the required binary first. Explicit QEMU abrupt-reset commands are separate from ordinary checks. Publish what each target executes and any privilege requirements. Destructive tests are never a hidden dependency of ordinary checks.
 
 ## Benchmark plan
 

@@ -249,7 +249,7 @@ func (workspace *Workspace) openRoot(ctx context.Context, folder history.ID) (*o
 		if fd >= 0 {
 			unix.Close(fd)
 		}
-		return nil, ErrRootUnavailable
+		return nil, fmt.Errorf("%w: root device/inode check failed: %v", ErrRootUnavailable, err)
 	}
 	how := &unix.OpenHow{Flags: unix.O_RDONLY | unix.O_DIRECTORY | unix.O_CLOEXEC | unix.O_NOFOLLOW, Resolve: unix.RESOLVE_BENEATH | unix.RESOLVE_NO_SYMLINKS | unix.RESOLVE_NO_XDEV}
 	scratch, err := unix.Openat2(fd, scratchName, how)
@@ -261,20 +261,20 @@ func (workspace *Workspace) openRoot(ctx context.Context, folder history.ID) (*o
 	if err := unix.Fstat(scratch, &scratchStat); err != nil || uint64(scratchStat.Dev) != registration.Device || scratchStat.Uid != uint32(os.Geteuid()) || scratchStat.Mode&0o077 != 0 {
 		unix.Close(scratch)
 		unix.Close(fd)
-		return nil, ErrRootUnavailable
+		return nil, fmt.Errorf("%w: scratch device/ownership/mode check failed: %v", ErrRootUnavailable, err)
 	}
 	marker, err := unix.Openat(scratch, markerName, unix.O_RDONLY|unix.O_CLOEXEC|unix.O_NOFOLLOW, 0)
 	if err != nil {
 		unix.Close(scratch)
 		unix.Close(fd)
-		return nil, ErrRootUnavailable
+		return nil, fmt.Errorf("%w: open registration marker: %v", ErrRootUnavailable, err)
 	}
 	var markerStat unix.Stat_t
 	if err := unix.Fstat(marker, &markerStat); err != nil || markerStat.Mode&unix.S_IFMT != unix.S_IFREG || markerStat.Nlink != 1 || markerStat.Uid != uint32(os.Geteuid()) || markerStat.Mode&0o077 != 0 || markerStat.Size != 65 {
 		unix.Close(marker)
 		unix.Close(scratch)
 		unix.Close(fd)
-		return nil, ErrRootUnavailable
+		return nil, fmt.Errorf("%w: registration marker type/ownership/size check failed: %v", ErrRootUnavailable, err)
 	}
 	data := make([]byte, 65)
 	n, readErr := unix.Read(marker, data)
@@ -283,7 +283,7 @@ func (workspace *Workspace) openRoot(ctx context.Context, folder history.ID) (*o
 	if readErr != nil || string(data[:n]) != want {
 		unix.Close(scratch)
 		unix.Close(fd)
-		return nil, ErrRootUnavailable
+		return nil, fmt.Errorf("%w: registration marker contents check failed: %v", ErrRootUnavailable, readErr)
 	}
 	return &openedRoot{fd: fd, scratch: scratch, registration: registration}, nil
 }

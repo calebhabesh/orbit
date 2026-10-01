@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import resource
+import socket
 import threading
 import signal
 import sqlite3
@@ -24,7 +25,7 @@ def validated_root(req):
     root_info = root.stat()
     if root_info.st_uid != os.getuid() or root_info.st_mode & 0o077:
         raise RuntimeError("run root must be private and owner-controlled")
-    marker = root / ".filesync-disposable"
+    marker = root / (".filesync-pilot" if req.get("purpose") == "pilot" else ".filesync-disposable")
     info = marker.lstat()
     if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid():
         raise RuntimeError("unsafe marker")
@@ -55,6 +56,8 @@ def identity(pid):
 
 def stop(root, name):
     record = json.loads(beneath(root, f"{name}.pid.json").read_text())
+    if (root / ".filesync-pilot").exists() and record["kind"] == "sync":
+        raise RuntimeError("fault interruption is forbidden in a personal pilot")
     pid = record["pid"]
     try:
         ticks, state = identity(pid)
@@ -79,9 +82,18 @@ def stop(root, name):
 def dispatch(req):
     action = req["action"]
     if action == "create":
-        root = Path(tempfile.mkdtemp(prefix="filesync-validation-", dir=Path.home())).resolve()
-        (root / ".filesync-disposable").write_text(req["token"])
-        (root / ".filesync-disposable").chmod(0o600)
+        if req.get("purpose") == "pilot":
+            name = req.get("pilot_name", "FileSyncPilot-20261001")
+            if not re.fullmatch(r"[A-Za-z0-9-]+", name):
+                raise RuntimeError("unsafe pilot directory name")
+            root = Path.home().resolve() / name
+            root.mkdir(mode=0o700)  # Never overwrite/reuse existing user data.
+            marker = root / ".filesync-pilot"
+        else:
+            root = Path(tempfile.mkdtemp(prefix="filesync-validation-", dir=Path.home())).resolve()
+            marker = root / ".filesync-disposable"
+        marker.write_text(req["token"])
+        marker.chmod(0o600)
         (root / "data").mkdir(mode=0o700)
         return {"root": str(root)}
     if action == "inventory":
@@ -94,6 +106,10 @@ def dispatch(req):
                 "storage": subprocess.check_output(["df", "-B1", str(Path.home())], text=True),
                 "route": subprocess.check_output(["ip", "route"], text=True)}
     root = validated_root(req)
+    if action == "reserve-port":
+        with socket.socket() as sock:
+            sock.bind((req.get("address","127.0.0.1"),0))
+            return {"port":sock.getsockname()[1]}
     if action == "put":
         target = beneath(root, req["path"])
         target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -139,6 +155,8 @@ def dispatch(req):
                 "resources": {**samples, "user_seconds": usage.ru_utime, "system_seconds": usage.ru_stime,
                               "peak_rss_kib": usage.ru_maxrss, "sampling_interval_seconds": 0.02}}
     if action == "start":
+        if req.get("purpose") == "pilot" and req["kind"] == "sync":
+            raise RuntimeError("fault workers are forbidden in a personal pilot")
         name = req["name"]
         if not re.fullmatch(r"[a-z0-9-]+", name):
             raise RuntimeError("unsafe worker name")
@@ -180,22 +198,30 @@ def dispatch(req):
             chunks = db.execute("SELECT COUNT(*) FROM transfer_chunks WHERE verified=1").fetchone()[0]
             ready = db.execute("SELECT COUNT(*) FROM versions WHERE content_state='ready'").fetchone()[0]
             return {"verified_chunks": chunks, "ready_versions": ready}
+    if action == "work-summary":
+        with sqlite3.connect(f"file:{root}/state/metadata.sqlite?mode=ro",uri=True) as db:
+            return {"work":db.execute("SELECT task_kind,state,last_error,count(*) FROM durable_work_tasks GROUP BY task_kind,state,last_error").fetchall(),
+                    "versions":db.execute("SELECT content_state,count(*) FROM versions GROUP BY content_state").fetchall()}
     if action == "integrity":
         with sqlite3.connect(f"file:{root}/state/metadata.sqlite?mode=ro", uri=True) as db:
             return {"sqlite": db.execute("PRAGMA integrity_check").fetchone()[0]}
     if action == "service-install":
-        unit = "filesync-validation-" + req["token"] + ".service"
+        unit = ("filesync-pilot-" if req.get("purpose") == "pilot" else "filesync-validation-") + req["token"] + ".service"
         target = beneath(root, unit)
         text = req["template"].replace("/usr/bin/filesync", str(root / "filesync"))
         text = text.replace("%h/.local/state/filesync", str(root / "state"))
         text = text.replace("127.0.0.1:8080", "127.0.0.1:0")
+        if req.get("peer_listen"):
+            text = text.replace("--control-listen=127.0.0.1:0", "--control-listen=127.0.0.1:0 --peer-listen=" + req["peer_listen"] + " --sync-interval=2s --profile=" + req.get("profile","laptop"))
         # Prefixing custom roots/binaries is the documented user override.
         target.write_text(text)
         for command in [["link", str(target)], ["daemon-reload"], ["start", unit]]:
             subprocess.run(["systemctl", "--user", *command], check=True, capture_output=True, text=True)
+        if req.get("purpose") == "pilot":
+            subprocess.run(["systemctl","--user","enable",unit],check=True,capture_output=True,text=True)
         return {"unit": unit}
     if action in ["service-check", "service-restart", "service-uninstall"]:
-        unit = "filesync-validation-" + req["token"] + ".service"
+        unit = ("filesync-pilot-" if req.get("purpose") == "pilot" else "filesync-validation-") + req["token"] + ".service"
         configured = subprocess.check_output(["systemctl", "--user", "show", unit, "--property=ExecStart", "--property=FragmentPath"], text=True)
         fragment = re.search(r"FragmentPath=(.*)", configured)
         if str(root / "filesync") not in configured or not fragment or Path(fragment[1]).resolve() != root / unit:
@@ -223,16 +249,18 @@ def dispatch(req):
             values = line.split()
             if values[3] == "0A" and values[9] in sockets:
                 ports.append(int(values[1].split(":")[1], 16))
-        if len(ports) != 1:
-            raise RuntimeError("expected one loopback control socket")
-        conn = http.client.HTTPConnection("127.0.0.1", ports[0], timeout=5)
+        address = (root / "state/control.addr").read_text().strip()
+        control_port = int(address.rsplit(":",1)[1])
+        if not address.startswith("127.0.0.1:") or control_port not in ports:
+            raise RuntimeError("expected owned loopback control socket")
+        conn = http.client.HTTPConnection("127.0.0.1", control_port, timeout=5)
         conn.request("GET", "/")
         response = conn.getresponse()
         data = response.read()
         conn.close()
         if response.status != 200 or b'<div id="root"' not in data:
             raise RuntimeError("embedded UI unavailable")
-        return {"systemd": info, "pid": pid, "embedded_ui_status": response.status, "embedded_ui_sha256": hashlib.sha256(data).hexdigest()}
+        return {"systemd": info, "pid": pid, "control_address":address, "embedded_ui_status": response.status, "embedded_ui_sha256": hashlib.sha256(data).hexdigest()}
     raise RuntimeError("unknown action")
 
 

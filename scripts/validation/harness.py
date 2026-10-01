@@ -18,13 +18,14 @@ AGENT = Path(__file__).with_name("host_agent.py").read_text()
 
 
 class Node:
-    def __init__(self, host, role):
+    def __init__(self, host, role, purpose="validation"):
         self.host, self.role, self.root = host, role, None
+        self.purpose = purpose
         self.token = uuid.uuid4().hex
         self.workers = []
 
     def call(self, action, **kwargs):
-        req = {"action": action, "root": self.root, "token": self.token, **kwargs}
+        req = {"action": action, "root": self.root, "token": self.token, "purpose":self.purpose, **kwargs}
         command = ["python3", "-c", AGENT]
         if self.host != "local":
             command = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", self.host, shlex.join(command)]

@@ -24,6 +24,7 @@ def main():
             node.setup(uuid.uuid4().hex * 2)
             node.put("data/keep.txt", b"installation and uninstall preserve these bytes\n")
             node.scan()
+            before_progress=node.call("progress")
             installed = False
             entry = {"host": host, "inventory": node.inventory, "root": node.root, "success": False,
                      "template_sha256": hashlib.sha256(template.encode()).hexdigest(), "binary_sha256": node.binary_hash}
@@ -33,6 +34,14 @@ def main():
                 installed = True
                 time.sleep(0.3)
                 entry["before"] = node.call("service-check")
+                edited=b"ordinary edit while installed service is running\n"
+                node.put("data/keep.txt",edited)
+                deadline=time.monotonic()+20
+                while time.monotonic()<deadline:
+                    if node.call("progress")["ready_versions"]>before_progress["ready_versions"]:break
+                    time.sleep(0.1)
+                else:raise RuntimeError("service is alive but cannot capture ordinary edits")
+                entry["ordinary_capture"]={"ready_versions_increased":True,"expected_sha256":hashlib.sha256(edited).hexdigest()}
                 entry["after"] = node.call("service-restart")
                 if entry["before"]["pid"] == entry["after"]["pid"]:
                     raise RuntimeError("restart did not change service process")
@@ -41,7 +50,7 @@ def main():
                     entry["uninstall"] = node.call("service-uninstall")
             entry["content"] = node.call("hash", path="keep.txt")
             entry["integrity"] = node.call("integrity")
-            if not all(entry["uninstall"].values()) or entry["integrity"]["sqlite"] != "ok":
+            if not all(entry["uninstall"].values()) or entry["integrity"]["sqlite"] != "ok" or entry["content"]["sha256"]!=entry["ordinary_capture"]["expected_sha256"]:
                 raise RuntimeError("state preservation failed")
             entry["success"] = True
             print(f"PASS native user-service lifecycle: {host}", flush=True)

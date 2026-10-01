@@ -15,11 +15,15 @@ import (
 
 type ClientFactory func(folder, peer history.ID) (replication.PeerClient, error)
 
+type PeerTarget struct{ Folder, Peer history.ID }
+
 type SchedulerOptions struct {
 	Profile       ResourceProfile
 	Limiter       *BandwidthLimiter
 	NoWatch       bool
 	ClientFactory ClientFactory
+	LocalDevice   history.ID
+	Peers         []PeerTarget
 }
 
 type FolderStatus struct {
@@ -36,6 +40,9 @@ type Scheduler struct {
 	db            *repository.DB
 	ws            *workspace.Workspace
 	clientFactory ClientFactory
+	localDevice   history.ID
+	peers         []PeerTarget
+	folderWork    map[history.ID]chan struct{}
 	profile       ResourceProfile
 	limiter       *BandwidthLimiter
 	noWatch       bool
@@ -78,6 +85,9 @@ func NewScheduler(db *repository.DB, ws *workspace.Workspace, opts SchedulerOpti
 		db:                 db,
 		ws:                 ws,
 		clientFactory:      opts.ClientFactory,
+		localDevice:        opts.LocalDevice,
+		peers:              append([]PeerTarget(nil), opts.Peers...),
+		folderWork:         map[history.ID]chan struct{}{},
 		profile:            opts.Profile,
 		limiter:            opts.Limiter,
 		noWatch:            opts.NoWatch,
@@ -150,7 +160,16 @@ func (s *Scheduler) Start(parentCtx context.Context) error {
 	go s.dispatchLoop()
 
 	s.notifyWork()
+	s.enqueuePeerSyncs()
 	return nil
+}
+
+func (s *Scheduler) enqueuePeerSyncs() {
+	for _, target := range s.peers {
+		peer := target.Peer
+		_, _ = s.queue.Enqueue(s.ctx, repository.DurableTask{Folder: target.Folder, Peer: &peer, Kind: "sync"})
+	}
+	s.notifyWork()
 }
 
 func (s *Scheduler) watchLoop() {
@@ -201,6 +220,7 @@ func (s *Scheduler) cadenceLoop() {
 		case <-s.ctx.Done():
 			return
 		case <-reconcileTicker.C:
+			s.enqueuePeerSyncs()
 			// Enqueue periodic reconciliation scans for all active folders
 			folders, err := s.db.RegisteredFolders(s.ctx)
 			if err != nil {
@@ -283,6 +303,11 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 
 	taskCtx, taskCancel := context.WithCancel(s.ctx)
 	s.mu.Lock()
+	gate := s.folderWork[task.Folder]
+	if gate == nil {
+		gate = make(chan struct{}, 1)
+		s.folderWork[task.Folder] = gate
+	}
 	s.runningTaskCancels[task.ID] = taskCancel
 	s.mu.Unlock()
 
@@ -292,6 +317,15 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 		s.mu.Unlock()
 		taskCancel()
 	}()
+	// Scanning and publication share one working tree. Serialize scheduled work
+	// per folder, while unrelated folders retain worker concurrency.
+	select {
+	case gate <- struct{}{}:
+		defer func() { <-gate }()
+	case <-taskCtx.Done():
+		_ = s.queue.UpdateState(context.Background(), task.ID, "queued", task.Attempts, "", "", 0)
+		return
+	}
 
 	var execErr error
 	switch task.Kind {
@@ -333,10 +367,22 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 				if mErr != nil {
 					execErr = mErr
 				} else {
-					syncer := replication.NewSyncer(s.db, s.ws, client, history.ID{}, *task.Peer, task.Folder, membership, replication.TransferOptions{
-						Workers: s.profile.TransferWorkers,
-						Limiter: s.limiter,
-					})
+					local := s.localDevice
+					if local == (history.ID{}) {
+						if reg, err := s.db.Folders(taskCtx); err == nil {
+							for _, f := range reg {
+								if f.Folder == task.Folder {
+									local = f.LocalAuthor
+									break
+								}
+							}
+						}
+					}
+					options := replication.TransferOptions{Workers: s.profile.TransferWorkers}
+					if s.limiter != nil {
+						options.Limiter = s.limiter
+					}
+					syncer := replication.NewSyncer(s.db, s.ws, client, local, *task.Peer, task.Folder, membership, options)
 					_, execErr = syncer.Sync(taskCtx)
 				}
 			}
