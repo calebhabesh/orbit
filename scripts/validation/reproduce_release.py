@@ -60,6 +60,7 @@ def main():
         run("checksum", ["sha256sum", "-c", "SHA256SUMS"], checkout / "dist")
         report["artifact_sha256"] = {p.name: digest(p) for p in sorted((checkout / "dist").iterdir()) if p.is_file()}
         report["binary_version"] = subprocess.check_output([str(checkout / "bin/filesync"), "version"], text=True)
+        report["orbit_version"] = subprocess.check_output([str(checkout / "bin/orbit"), "version"], text=True)
         run("package-repeat", ["make", "package"])
         report["repeat_artifact_sha256"] = {p.name: digest(p) for p in sorted((checkout / "dist").iterdir()) if p.is_file()}
         report["packages_identical_on_repeat"] = report["artifact_sha256"] == report["repeat_artifact_sha256"]

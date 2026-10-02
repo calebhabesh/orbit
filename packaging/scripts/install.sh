@@ -1,10 +1,38 @@
 #!/usr/bin/env bash
-# File Sync standalone installation script
+# Orbit and File Sync standalone installation script
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN_SRC="${SCRIPT_DIR}/filesync"
 SERVICE_SRC="${SCRIPT_DIR}/systemd/filesync.service"
+DESKTOP_SRC="${SCRIPT_DIR}/desktop/orbit.desktop"
+ICON_SRC="${SCRIPT_DIR}/icons/orbit.svg"
+
+# Fall back to packaging/ and bin/ paths if running from repository root or scripts dir
+if [ ! -f "${BIN_SRC}" ] && [ -f "${SCRIPT_DIR}/../../bin/filesync" ]; then
+    BIN_SRC="${SCRIPT_DIR}/../../bin/filesync"
+fi
+if [ ! -f "${BIN_SRC}" ] && [ -f "${SCRIPT_DIR}/bin/filesync" ]; then
+    BIN_SRC="${SCRIPT_DIR}/bin/filesync"
+fi
+if [ ! -f "${SERVICE_SRC}" ] && [ -f "${SCRIPT_DIR}/../systemd/filesync.service" ]; then
+    SERVICE_SRC="${SCRIPT_DIR}/../systemd/filesync.service"
+fi
+if [ ! -f "${SERVICE_SRC}" ] && [ -f "${SCRIPT_DIR}/packaging/systemd/filesync.service" ]; then
+    SERVICE_SRC="${SCRIPT_DIR}/packaging/systemd/filesync.service"
+fi
+if [ ! -f "${DESKTOP_SRC}" ] && [ -f "${SCRIPT_DIR}/../desktop/orbit.desktop" ]; then
+    DESKTOP_SRC="${SCRIPT_DIR}/../desktop/orbit.desktop"
+fi
+if [ ! -f "${DESKTOP_SRC}" ] && [ -f "${SCRIPT_DIR}/packaging/desktop/orbit.desktop" ]; then
+    DESKTOP_SRC="${SCRIPT_DIR}/packaging/desktop/orbit.desktop"
+fi
+if [ ! -f "${ICON_SRC}" ] && [ -f "${SCRIPT_DIR}/../icons/orbit.svg" ]; then
+    ICON_SRC="${SCRIPT_DIR}/../icons/orbit.svg"
+fi
+if [ ! -f "${ICON_SRC}" ] && [ -f "${SCRIPT_DIR}/packaging/icons/orbit.svg" ]; then
+    ICON_SRC="${SCRIPT_DIR}/packaging/icons/orbit.svg"
+fi
 
 if [ ! -f "${BIN_SRC}" ]; then
     echo "Error: filesync binary not found in ${SCRIPT_DIR}" >&2
@@ -14,34 +42,71 @@ fi
 MODE="${1:-user}"
 
 if [ "${MODE}" = "system" ]; then
-    echo "Installing File Sync system-wide (requires root)..."
+    echo "Installing Orbit system-wide (requires root)..."
     INSTALL_BIN="/usr/local/bin/filesync"
+    INSTALL_ORBIT_BIN="/usr/local/bin/orbit"
     INSTALL_SERVICE="/usr/lib/systemd/user/filesync.service"
+    INSTALL_ORBIT_SERVICE="/usr/lib/systemd/user/orbit.service"
+    INSTALL_APP_DIR="/usr/local/share/applications"
+    INSTALL_ICON_DIR="/usr/local/share/icons/hicolor/scalable/apps"
 
     install -d -m 0755 /usr/local/bin
     install -m 0755 "${BIN_SRC}" "${INSTALL_BIN}"
+    ln -sf "${INSTALL_BIN}" "${INSTALL_ORBIT_BIN}"
 
     install -d -m 0755 /usr/lib/systemd/user
-    sed "s|/usr/bin/filesync|${INSTALL_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
-    chmod 0644 "${INSTALL_SERVICE}"
+    if [ -f "${SERVICE_SRC}" ]; then
+        sed "s|/usr/bin/filesync|${INSTALL_BIN}|g; s|/usr/bin/orbit|${INSTALL_ORBIT_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
+        chmod 0644 "${INSTALL_SERVICE}"
+        ln -sf filesync.service "${INSTALL_ORBIT_SERVICE}"
+    fi
 
-    echo "Installed binary: ${INSTALL_BIN}"
-    echo "Installed service: ${INSTALL_SERVICE}"
+    if [ -f "${DESKTOP_SRC}" ]; then
+        install -d -m 0755 "${INSTALL_APP_DIR}"
+        sed "s|Exec=orbit launch|Exec=${INSTALL_ORBIT_BIN} launch|g" "${DESKTOP_SRC}" > "${INSTALL_APP_DIR}/orbit.desktop"
+        chmod 0644 "${INSTALL_APP_DIR}/orbit.desktop"
+    fi
+
+    if [ -f "${ICON_SRC}" ]; then
+        install -d -m 0755 "${INSTALL_ICON_DIR}"
+        install -m 0644 "${ICON_SRC}" "${INSTALL_ICON_DIR}/orbit.svg"
+    fi
+
+    echo "Installed binary: ${INSTALL_BIN} (symlinked: ${INSTALL_ORBIT_BIN})"
+    echo "Installed service: ${INSTALL_SERVICE} (symlinked: ${INSTALL_ORBIT_SERVICE})"
+    echo "Installed desktop launcher: ${INSTALL_APP_DIR}/orbit.desktop"
 else
-    echo "Installing File Sync for current user (${USER})..."
+    echo "Installing Orbit for current user (${USER})..."
     TARGET_BIN_DIR="${HOME}/.local/bin"
     TARGET_SERVICE_DIR="${HOME}/.config/systemd/user"
+    TARGET_APP_DIR="${HOME}/.local/share/applications"
+    TARGET_ICON_DIR="${HOME}/.local/share/icons/hicolor/scalable/apps"
 
     mkdir -p "${TARGET_BIN_DIR}"
     install -m 0755 "${BIN_SRC}" "${TARGET_BIN_DIR}/filesync"
+    ln -sf filesync "${TARGET_BIN_DIR}/orbit"
 
     mkdir -p "${TARGET_SERVICE_DIR}"
-    # Adjust service file to point to ~/.local/bin/filesync if user install
-    sed "s|/usr/bin/filesync|${TARGET_BIN_DIR}/filesync|g" "${SERVICE_SRC}" > "${TARGET_SERVICE_DIR}/filesync.service"
-    chmod 0644 "${TARGET_SERVICE_DIR}/filesync.service"
+    if [ -f "${SERVICE_SRC}" ]; then
+        sed "s|/usr/bin/filesync|${TARGET_BIN_DIR}/filesync|g; s|/usr/bin/orbit|${TARGET_BIN_DIR}/orbit|g" "${SERVICE_SRC}" > "${TARGET_SERVICE_DIR}/filesync.service"
+        chmod 0644 "${TARGET_SERVICE_DIR}/filesync.service"
+        ln -sf filesync.service "${TARGET_SERVICE_DIR}/orbit.service"
+    fi
 
-    echo "Installed binary: ${TARGET_BIN_DIR}/filesync"
-    echo "Installed service: ${TARGET_SERVICE_DIR}/filesync.service"
+    if [ -f "${DESKTOP_SRC}" ]; then
+        mkdir -p "${TARGET_APP_DIR}"
+        sed "s|Exec=orbit launch|Exec=${TARGET_BIN_DIR}/orbit launch|g" "${DESKTOP_SRC}" > "${TARGET_APP_DIR}/orbit.desktop"
+        chmod 0644 "${TARGET_APP_DIR}/orbit.desktop"
+    fi
+
+    if [ -f "${ICON_SRC}" ]; then
+        mkdir -p "${TARGET_ICON_DIR}"
+        install -m 0644 "${ICON_SRC}" "${TARGET_ICON_DIR}/orbit.svg"
+    fi
+
+    echo "Installed binary: ${TARGET_BIN_DIR}/filesync (symlinked: ${TARGET_BIN_DIR}/orbit)"
+    echo "Installed service: ${TARGET_SERVICE_DIR}/filesync.service (symlinked: ${TARGET_SERVICE_DIR}/orbit.service)"
+    echo "Installed desktop launcher: ${TARGET_APP_DIR}/orbit.desktop"
 
     # Check PATH
     if [[ ":$PATH:" != *":${TARGET_BIN_DIR}:"* ]]; then
@@ -50,12 +115,26 @@ else
     fi
 fi
 
-systemctl --user daemon-reload || true
+# Reload systemd user daemon and smoothly adopt existing service if running (G05 policy)
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user daemon-reload 2>/dev/null || true
+    if systemctl --user is-active --quiet filesync.service 2>/dev/null; then
+        echo "Existing filesync service is active; reloading unit..."
+        systemctl --user try-restart filesync.service 2>/dev/null || true
+    elif systemctl --user is-active --quiet orbit.service 2>/dev/null; then
+        echo "Existing orbit service is active; reloading unit..."
+        systemctl --user try-restart orbit.service 2>/dev/null || true
+    fi
+fi
+
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database "${TARGET_APP_DIR:-/usr/local/share/applications}" 2>/dev/null || true
+fi
 
 echo ""
 echo "Installation complete!"
 echo "Next steps:"
-echo "1. Initialize your device: filesync init"
-echo "2. Enable session lingering so the daemon runs across logout/boot: loginctl enable-linger ${USER}"
-echo "3. Enable and start the background sync service: systemctl --user enable --now filesync.service"
-echo "4. Open the operator console at http://127.0.0.1:8080 (or generate a bootstrap token with 'filesync control bootstrap-token')"
+echo "1. Launch Orbit directly: orbit (or 'orbit launch' to open browser UI)"
+echo "2. Check service and status: orbit status"
+echo "3. For headless servers/VPS, enable lingering: loginctl enable-linger ${USER}"
+echo "4. Enable and start background sync service: orbit service enable && orbit service start"

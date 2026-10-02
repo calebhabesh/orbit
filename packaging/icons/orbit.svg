@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <radialGradient id="coreGrad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect width="510" height="510" x="1" y="1" rx="111" fill="none" stroke="#334155" stroke-width="2"/>
+
+  <!-- Orbital Rings -->
+  <!-- Outer Orbit (inclined) -->
+  <ellipse cx="256" cy="256" rx="190" ry="85" fill="none" stroke="url(#ringGrad)" stroke-width="6" stroke-dasharray="16 8" transform="rotate(-28 256 256)" opacity="0.85"/>
+
+  <!-- Inner Orbit (counter-inclined) -->
+  <ellipse cx="256" cy="256" rx="140" ry="60" fill="none" stroke="#94a3b8" stroke-width="4" stroke-dasharray="8 6" transform="rotate(38 256 256)" opacity="0.6"/>
+
+  <!-- Center Core / Primary Replica -->
+  <circle cx="256" cy="256" r="44" fill="url(#coreGrad)" filter="url(#glow)"/>
+
+  <!-- Satellite Nodes / Trusted Replicas on Orbits -->
+  <!-- Node 1 on Outer Orbit -->
+  <circle cx="106" cy="180" r="16" fill="#38bdf8" stroke="#ffffff" stroke-width="3" filter="url(#glow)"/>
+
+  <!-- Node 2 on Outer Orbit -->
+  <circle cx="406" cy="332" r="16" fill="#818cf8" stroke="#ffffff" stroke-width="3" filter="url(#glow)"/>
+
+  <!-- Node 3 on Inner Orbit -->
+  <circle cx="345" cy="200" r="12" fill="#c084fc" stroke="#ffffff" stroke-width="2.5"/>
+
+  <!-- Node 4 on Inner Orbit -->
+  <circle cx="167" cy="312" r="12" fill="#38bdf8" stroke="#ffffff" stroke-width="2.5"/>
+</svg>

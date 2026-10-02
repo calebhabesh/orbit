@@ -8,6 +8,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -103,8 +104,27 @@ func run() error {
 		}
 	}
 
+	// Ensure bin/orbit symlink exists in repoRoot/bin
+	orbitSymlink := filepath.Join(binDir, "orbit")
+	_ = os.Remove(orbitSymlink)
+	if err := os.Symlink("filesync", orbitSymlink); err != nil {
+		return fmt.Errorf("create bin/orbit symlink: %w", err)
+	}
+
 	// Read common files
 	serviceBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/systemd/filesync.service"))
+	if err != nil {
+		return err
+	}
+	orbitServiceBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/systemd/orbit.service"))
+	if err != nil {
+		orbitServiceBytes = serviceBytes
+	}
+	desktopBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/desktop/orbit.desktop"))
+	if err != nil {
+		return err
+	}
+	iconBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/icons/orbit.svg"))
 	if err != nil {
 		return err
 	}
@@ -124,8 +144,61 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	licensesMdBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/LICENSES.md"))
+	if err != nil {
+		return err
+	}
 	readmeBytes, err := os.ReadFile(filepath.Join(repoRoot, "README.md"))
 	if err != nil {
+		return err
+	}
+
+	// Compute embedded asset metadata
+	var assetCount int
+	var assetDigest string
+	distWebDir := filepath.Join(repoRoot, "web/dist")
+	if fi, statErr := os.Stat(distWebDir); statErr == nil && fi.IsDir() {
+		h := sha256.New()
+		_ = filepath.Walk(distWebDir, func(p string, d os.FileInfo, walkErr error) error {
+			if walkErr != nil || d.IsDir() {
+				return nil
+			}
+			rel, _ := filepath.Rel(distWebDir, p)
+			data, readErr := os.ReadFile(p)
+			if readErr != nil {
+				return nil
+			}
+			assetCount++
+			h.Write([]byte(rel))
+			h.Write(data)
+			return nil
+		})
+		assetDigest = hex.EncodeToString(h.Sum(nil))
+	}
+
+	manifestData := map[string]any{
+		"product":               "Orbit",
+		"version":               PackageVersion,
+		"release":               PackageRelease,
+		"commit":                buildCommit,
+		"built":                 buildDate,
+		"schema_version":        13,
+		"config_format_version": 1,
+		"pure_go_sqlite":        true,
+		"node_runtime_required": false,
+		"embedded_assets": map[string]any{
+			"total_files":   assetCount,
+			"digest_sha256": assetDigest,
+		},
+		"license": "MIT",
+	}
+	manifestBytes, err := json.MarshalIndent(manifestData, "", "  ")
+	if err != nil {
+		return err
+	}
+	manifestBytes = append(manifestBytes, '\n')
+	manifestPath := filepath.Join(distDir, "release-manifest.json")
+	if err := os.WriteFile(manifestPath, manifestBytes, 0o644); err != nil {
 		return err
 	}
 
@@ -141,20 +214,34 @@ func run() error {
 			return fmt.Errorf("read binary %s: %w", binPath, err)
 		}
 
-		// A. Build tar.gz package
+		// A. Build tar.gz package (filesync and orbit)
 		tarGzName := fmt.Sprintf("%s-v%s-linux-%s.tar.gz", PackageName, PackageVersion, arch.GoArch)
 		tarGzPath := filepath.Join(distDir, tarGzName)
 		fmt.Printf("Generating %s...\n", tarGzName)
-		if err := buildTarGz(tarGzPath, binBytes, serviceBytes, installScriptBytes, uninstallScriptBytes, licenseBytes, noticeBytes, readmeBytes); err != nil {
+		if err := buildTarGz(tarGzPath, binBytes, serviceBytes, orbitServiceBytes, desktopBytes, iconBytes,
+			installScriptBytes, uninstallScriptBytes, licenseBytes, noticeBytes, licensesMdBytes, readmeBytes, manifestBytes); err != nil {
 			return fmt.Errorf("build tar.gz for %s: %w", arch.GoArch, err)
 		}
 		generatedPackages = append(generatedPackages, tarGzPath)
+
+		// Create matching orbit-v...tar.gz
+		orbitTarGzName := fmt.Sprintf("orbit-v%s-linux-%s.tar.gz", PackageVersion, arch.GoArch)
+		orbitTarGzPath := filepath.Join(distDir, orbitTarGzName)
+		tarData, err := os.ReadFile(tarGzPath)
+		if err != nil {
+			return err
+		}
+		if err := os.WriteFile(orbitTarGzPath, tarData, 0o644); err != nil {
+			return err
+		}
+		generatedPackages = append(generatedPackages, orbitTarGzPath)
 
 		// B. Build .deb package
 		debName := fmt.Sprintf("%s_%s_%s.deb", PackageName, PackageVersion, arch.DebArch)
 		debPath := filepath.Join(distDir, debName)
 		fmt.Printf("Generating %s...\n", debName)
-		if err := buildDeb(debPath, arch.DebArch, binBytes, serviceBytes, licenseBytes, noticeBytes); err != nil {
+		if err := buildDeb(debPath, arch.DebArch, binBytes, serviceBytes, desktopBytes, iconBytes,
+			licenseBytes, noticeBytes, licensesMdBytes, manifestBytes); err != nil {
 			return fmt.Errorf("build deb for %s: %w", arch.DebArch, err)
 		}
 		generatedPackages = append(generatedPackages, debPath)
@@ -163,11 +250,15 @@ func run() error {
 		rpmName := fmt.Sprintf("%s-%s-%s.%s.rpm", PackageName, PackageVersion, PackageRelease, arch.RpmArch)
 		rpmPath := filepath.Join(distDir, rpmName)
 		fmt.Printf("Generating %s...\n", rpmName)
-		if err := buildRpm(rpmPath, arch, binBytes, serviceBytes, licenseBytes, noticeBytes); err != nil {
+		if err := buildRpm(rpmPath, arch, binBytes, serviceBytes, orbitServiceBytes, desktopBytes, iconBytes,
+			licenseBytes, noticeBytes, licensesMdBytes, manifestBytes); err != nil {
 			return fmt.Errorf("build rpm for %s: %w", arch.RpmArch, err)
 		}
 		generatedPackages = append(generatedPackages, rpmPath)
 	}
+
+	// Include release-manifest.json in generated artifacts
+	generatedPackages = append(generatedPackages, manifestPath)
 
 	// 5. Generate SHA256SUMS
 	fmt.Println("Generating SHA256SUMS...")
@@ -195,7 +286,7 @@ func run() error {
 	return nil
 }
 
-func buildTarGz(outPath string, bin, service, installScript, uninstallScript, license, notice, readme []byte) error {
+func buildTarGz(outPath string, bin, service, orbitService, desktop, icon, installScript, uninstallScript, license, notice, licensesMd, readme, manifest []byte) error {
 	f, err := os.OpenFile(outPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o644)
 	if err != nil {
 		return err
@@ -211,17 +302,25 @@ func buildTarGz(outPath string, bin, service, installScript, uninstallScript, li
 	fixedTime := time.Unix(FixedTimestamp, 0).UTC()
 
 	entries := []struct {
-		Name string
-		Mode int64
-		Data []byte
+		Name     string
+		Mode     int64
+		Typeflag byte
+		Linkname string
+		Data     []byte
 	}{
-		{"filesync", 0755, bin},
-		{"systemd/filesync.service", 0644, service},
-		{"install.sh", 0755, installScript},
-		{"uninstall.sh", 0755, uninstallScript},
-		{"LICENSE", 0644, license},
-		{"NOTICE", 0644, notice},
-		{"README.md", 0644, readme},
+		{Name: "filesync", Mode: 0755, Typeflag: tar.TypeReg, Data: bin},
+		{Name: "orbit", Mode: 0755, Typeflag: tar.TypeSymlink, Linkname: "filesync"},
+		{Name: "systemd/filesync.service", Mode: 0644, Typeflag: tar.TypeReg, Data: service},
+		{Name: "systemd/orbit.service", Mode: 0644, Typeflag: tar.TypeSymlink, Linkname: "filesync.service"},
+		{Name: "desktop/orbit.desktop", Mode: 0644, Typeflag: tar.TypeReg, Data: desktop},
+		{Name: "icons/orbit.svg", Mode: 0644, Typeflag: tar.TypeReg, Data: icon},
+		{Name: "install.sh", Mode: 0755, Typeflag: tar.TypeReg, Data: installScript},
+		{Name: "uninstall.sh", Mode: 0755, Typeflag: tar.TypeReg, Data: uninstallScript},
+		{Name: "LICENSE", Mode: 0644, Typeflag: tar.TypeReg, Data: license},
+		{Name: "NOTICE", Mode: 0644, Typeflag: tar.TypeReg, Data: notice},
+		{Name: "LICENSES.md", Mode: 0644, Typeflag: tar.TypeReg, Data: licensesMd},
+		{Name: "README.md", Mode: 0644, Typeflag: tar.TypeReg, Data: readme},
+		{Name: "release-manifest.json", Mode: 0644, Typeflag: tar.TypeReg, Data: manifest},
 	}
 
 	for _, e := range entries {
@@ -235,19 +334,22 @@ func buildTarGz(outPath string, bin, service, installScript, uninstallScript, li
 			Uname:    "root",
 			Gname:    "root",
 			Format:   tar.FormatPAX,
-			Typeflag: tar.TypeReg,
+			Typeflag: e.Typeflag,
+			Linkname: e.Linkname,
 		}
 		if err := tw.WriteHeader(hdr); err != nil {
 			return err
 		}
-		if _, err := tw.Write(e.Data); err != nil {
-			return err
+		if len(e.Data) > 0 {
+			if _, err := tw.Write(e.Data); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-func buildDeb(outPath string, debArch string, bin, service, license, notice []byte) error {
+func buildDeb(outPath string, debArch string, bin, service, desktop, icon, license, notice, licensesMd, manifest []byte) error {
 	fixedTime := time.Unix(FixedTimestamp, 0).UTC()
 
 	// 1. control.tar.gz
@@ -255,6 +357,7 @@ func buildDeb(outPath string, debArch string, bin, service, license, notice []by
 	cgz := gzip.NewWriter(&controlBuf)
 	ctw := tar.NewWriter(cgz)
 
+	installedSize := (len(bin)*2 + len(service)*2 + len(desktop) + len(icon) + len(license) + len(notice) + len(licensesMd) + len(manifest)) / 1024
 	controlContent := fmt.Sprintf(`Package: %s
 Version: %s
 Section: utils
@@ -262,16 +365,16 @@ Priority: optional
 Architecture: %s
 Maintainer: File Sync Maintainers <maintainers@example.com>
 Installed-Size: %d
-Description: Distributed file synchronization agent with causal consistency
- File Sync is an autonomous background synchronization daemon providing
- SQLite-backed causal history tracking, embedded web management console,
- and crash-resilient two-phase working tree publication.
-`, PackageName, PackageVersion, debArch, (len(bin)+len(service)+len(license)+len(notice))/1024)
+Description: Orbit Personal File Manager and File Sync daemon
+ Orbit is a personal file manager and synchronization engine over trusted
+ Linux replicas, providing SQLite-backed causal history tracking, embedded
+ web management console, desktop integration, and crash-resilient publication.
+`, PackageName, PackageVersion, debArch, installedSize)
 
 	prermContent := `#!/bin/sh
 set -e
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl --user stop filesync.service 2>/dev/null || true
+    systemctl --user stop orbit.service filesync.service 2>/dev/null || true
 fi
 exit 0
 `
@@ -280,6 +383,14 @@ exit 0
 set -e
 if command -v systemctl >/dev/null 2>&1; then
     systemctl --user daemon-reload 2>/dev/null || true
+    if systemctl --user is-active --quiet filesync.service 2>/dev/null; then
+        systemctl --user try-restart filesync.service 2>/dev/null || true
+    elif systemctl --user is-active --quiet orbit.service 2>/dev/null; then
+        systemctl --user try-restart orbit.service 2>/dev/null || true
+    fi
+fi
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications 2>/dev/null || true
 fi
 exit 0
 `
@@ -289,9 +400,12 @@ set -e
 if command -v systemctl >/dev/null 2>&1; then
     systemctl --user daemon-reload 2>/dev/null || true
 fi
-# DATA PRESERVATION GUARANTEE (Invariant S21):
-# Package removal strictly preserves ~/.local/share/filesync, ~/.filesync,
-# and all operator workspace folder contents.
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications 2>/dev/null || true
+fi
+# DATA PRESERVATION GUARANTEE (Invariant S21 / I20):
+# Package removal strictly preserves ~/.local/share/filesync, ~/.local/state/filesync,
+# ~/.filesync, and all operator workspace folder contents.
 exit 0
 `
 
@@ -335,14 +449,22 @@ exit 0
 	dtw := tar.NewWriter(dgz)
 
 	dEntries := []struct {
-		Name string
-		Mode int64
-		Data []byte
+		Name     string
+		Mode     int64
+		Typeflag byte
+		Linkname string
+		Data     []byte
 	}{
-		{"./usr/bin/filesync", 0755, bin},
-		{"./usr/lib/systemd/user/filesync.service", 0644, service},
-		{"./usr/share/doc/filesync/copyright", 0644, license},
-		{"./usr/share/doc/filesync/NOTICE", 0644, notice},
+		{Name: "./usr/bin/filesync", Mode: 0755, Typeflag: tar.TypeReg, Data: bin},
+		{Name: "./usr/bin/orbit", Mode: 0755, Typeflag: tar.TypeSymlink, Linkname: "filesync"},
+		{Name: "./usr/lib/systemd/user/filesync.service", Mode: 0644, Typeflag: tar.TypeReg, Data: service},
+		{Name: "./usr/lib/systemd/user/orbit.service", Mode: 0644, Typeflag: tar.TypeSymlink, Linkname: "filesync.service"},
+		{Name: "./usr/share/applications/orbit.desktop", Mode: 0644, Typeflag: tar.TypeReg, Data: desktop},
+		{Name: "./usr/share/icons/hicolor/scalable/apps/orbit.svg", Mode: 0644, Typeflag: tar.TypeReg, Data: icon},
+		{Name: "./usr/share/doc/filesync/copyright", Mode: 0644, Typeflag: tar.TypeReg, Data: license},
+		{Name: "./usr/share/doc/filesync/NOTICE", Mode: 0644, Typeflag: tar.TypeReg, Data: notice},
+		{Name: "./usr/share/doc/filesync/LICENSES.md", Mode: 0644, Typeflag: tar.TypeReg, Data: licensesMd},
+		{Name: "./usr/share/doc/filesync/release-manifest.json", Mode: 0644, Typeflag: tar.TypeReg, Data: manifest},
 	}
 
 	for _, e := range dEntries {
@@ -352,13 +474,16 @@ exit 0
 			Size:     int64(len(e.Data)),
 			ModTime:  fixedTime,
 			Format:   tar.FormatPAX,
-			Typeflag: tar.TypeReg,
+			Typeflag: e.Typeflag,
+			Linkname: e.Linkname,
 		}
 		if err := dtw.WriteHeader(hdr); err != nil {
 			return err
 		}
-		if _, err := dtw.Write(e.Data); err != nil {
-			return err
+		if len(e.Data) > 0 {
+			if _, err := dtw.Write(e.Data); err != nil {
+				return err
+			}
 		}
 	}
 	if err := dtw.Close(); err != nil {
@@ -409,7 +534,7 @@ exit 0
 	return nil
 }
 
-func buildRpm(outPath string, arch ArchInfo, bin, service, license, notice []byte) error {
+func buildRpm(outPath string, arch ArchInfo, bin, service, orbitService, desktop, icon, license, notice, licensesMd, manifest []byte) error {
 	// Create CPIO payload (format "070701")
 	var cpioBuf bytes.Buffer
 	files := []struct {
@@ -418,9 +543,15 @@ func buildRpm(outPath string, arch ArchInfo, bin, service, license, notice []byt
 		Data []byte
 	}{
 		{"usr/bin/filesync", 0100755, bin},
+		{"usr/bin/orbit", 0100755, bin},
 		{"usr/lib/systemd/user/filesync.service", 0100644, service},
+		{"usr/lib/systemd/user/orbit.service", 0100644, orbitService},
+		{"usr/share/applications/orbit.desktop", 0100644, desktop},
+		{"usr/share/icons/hicolor/scalable/apps/orbit.svg", 0100644, icon},
 		{"usr/share/doc/filesync/LICENSE", 0100644, license},
 		{"usr/share/doc/filesync/NOTICE", 0100644, notice},
+		{"usr/share/doc/filesync/LICENSES.md", 0100644, licensesMd},
+		{"usr/share/doc/filesync/release-manifest.json", 0100644, manifest},
 	}
 
 	for i, f := range files {
@@ -588,8 +719,8 @@ func buildRpmMainHeader(rpmArch string, files []struct {
 	addString(1000, PackageName)
 	addString(1001, PackageVersion)
 	addString(1002, PackageRelease)
-	addString(1004, "Distributed file synchronization agent with causal consistency")
-	addString(1005, "Autonomous background synchronization agent with SQLite metadata and embedded web console.")
+	addString(1004, "Orbit Personal File Manager and File Sync daemon")
+	addString(1005, "Personal file manager and background synchronization agent with SQLite metadata, embedded web console, and desktop integration.")
 	addString(1014, "MIT")
 	addString(1016, "Applications/System")
 	addString(1021, "linux")
@@ -599,7 +730,7 @@ func buildRpmMainHeader(rpmArch string, files []struct {
 	addString(1126, "6")
 
 	// Post-uninstall script preserving user data
-	addString(1085, "#!/bin/sh\n# DATA PRESERVATION GUARANTEE (Invariant S21):\n# ~/.local/share/filesync and workspace files are strictly preserved\nexit 0\n")
+	addString(1085, "#!/bin/sh\n# DATA PRESERVATION GUARANTEE (Invariant S21):\n# ~/.local/state/filesync, ~/.filesync and workspace files are strictly preserved\nexit 0\n")
 
 	// File tags
 	var baseNames []string

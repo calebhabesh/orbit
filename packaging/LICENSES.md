@@ -21,3 +21,12 @@ See the root [`NOTICE`](../NOTICE) file for complete copyright assertions and li
 | `modernc.org/libc` | `v1.75.7` | BSD-3-Clause | C standard library emulation layer |
 | `modernc.org/mathutil` | `v1.7.1` | BSD-3-Clause | Mathematical utilities |
 | `modernc.org/memory` | `v1.12.1` | BSD-3-Clause | Memory management primitives |
+
+## Embedded Web UI Dependencies
+
+The single binary embeds pre-compiled Web UI assets. **Zero Node.js runtime or npm is required to run Orbit.**
+
+| Package | Version | License | Purpose |
+| --- | --- | --- | --- |
+| `react` | `19.3.0` | MIT | Component UI library |
+| `react-dom` | `19.3.0` | MIT | DOM rendering engine |

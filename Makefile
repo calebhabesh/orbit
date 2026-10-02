@@ -9,6 +9,7 @@ GOFLAGS ?=
 
 build:
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync ./cmd/filesync
+	ln -sf filesync bin/orbit
 
 build-arm64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync-linux-arm64 ./cmd/filesync
@@ -46,4 +47,4 @@ test-harness:
 check: fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package
 
 clean:
-	rm -rf bin/filesync bin/filesync-linux-arm64 dist/
+	rm -rf bin/filesync bin/orbit bin/filesync-linux-arm64 dist/

@@ -1,12 +1,12 @@
 [Unit]
-Description=File Sync Background Engine
+Description=Orbit File Synchronization Engine
 Documentation=https://github.com/calebhabesh/file-sync
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/filesync serve --state=%h/.local/state/filesync --control-listen=127.0.0.1:8080
-ExecStop=/usr/bin/filesync stop --state=%h/.local/state/filesync
+ExecStart=/usr/bin/orbit serve --state=%h/.local/state/filesync --control-listen=127.0.0.1:8080
+ExecStop=/usr/bin/orbit stop --state=%h/.local/state/filesync
 Restart=on-failure
 RestartSec=5s
 TimeoutStopSec=30s
@@ -24,8 +24,8 @@ NoNewPrivileges=yes
 # Logging
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=filesync
+SyslogIdentifier=orbit
 
 [Install]
 WantedBy=default.target
-Alias=orbit.service
+Alias=filesync.service

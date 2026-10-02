@@ -838,6 +838,10 @@ func (m *mockPeerClient) Status(_ context.Context, _ replication.StatusRequest) 
 	return replication.StatusResponse{}, nil
 }
 
+func (m *mockPeerClient) MembershipGet(_ context.Context, _ replication.MembershipGetRequest) (replication.MembershipGetResponse, error) {
+	return replication.MembershipGetResponse{}, nil
+}
+
 func repositoryID(fill byte) history.ID {
 	var id history.ID
 	for i := range id {

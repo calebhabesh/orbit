@@ -17,6 +17,8 @@ def main():
     args = parser.parse_args()
     prepare_output(args.output)
     template = Path("packaging/systemd/filesync.service").read_text()
+    desktop_template = Path("packaging/desktop/orbit.desktop").read_text()
+    icon_template = Path("packaging/icons/orbit.svg").read_text()
     results = []
     try:
         for index, host in enumerate(args.hosts):
@@ -27,7 +29,10 @@ def main():
             before_progress=node.call("progress")
             installed = False
             entry = {"host": host, "inventory": node.inventory, "root": node.root, "success": False,
-                     "template_sha256": hashlib.sha256(template.encode()).hexdigest(), "binary_sha256": node.binary_hash}
+                     "template_sha256": hashlib.sha256(template.encode()).hexdigest(),
+                     "desktop_sha256": hashlib.sha256(desktop_template.encode()).hexdigest(),
+                     "icon_sha256": hashlib.sha256(icon_template.encode()).hexdigest(),
+                     "binary_sha256": node.binary_hash}
             results.append(entry)
             try:
                 entry["installation"] = node.call("service-install", template=template)
