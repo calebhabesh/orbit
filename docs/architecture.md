@@ -2,6 +2,11 @@
 
 Status: design baseline; gates in P01 must validate the difficult seams before dependent production code. Product requirements live in [scope](portfolio-scope.md).
 
+The planned Orbit product extensions are in
+[Orbit architecture](orbit-architecture.md). Its gates must update owning
+contracts before implementation; this original engine ownership/data flow
+remains the foundation.
+
 ## Shape
 
 One Go process per device contains the engine, peer listener, local control listener, and background scheduler. SQLite and managed content are local to that process. CLI commands are control clients; the browser uses the same control operations. No independent frontend server is required at runtime.

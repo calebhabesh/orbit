@@ -10,6 +10,33 @@ P09 completed three-peer forwarding, membership distribution, canonical retireme
 snapshots, and access termination. P10–P15 implement storage policy and operator interfaces. Release validation remains tracked in [status](implementation/status.md).
 Protocol name is provisional. No Syncthing wire compatibility is claimed.
 
+## Orbit extension: network enrollment, sequential rollout & capability negotiation
+
+Status: frozen by gate outcomes [G02 and G05](orbit-design-gates.md). Implemented by packets O01/O02/O05.
+
+1. **Invitation Transport & Capability Scope**:
+   - An enrolled device issues short-lived (default 24h) workspace-scoped invitations.
+   - The issuing device stores only the SHA-256 verifier digest of the secret token; raw plaintext tokens are never stored in databases or logs.
+   - Possession of an invitation token grants **only** the capability to submit an unauthenticated join request to `/api/v1/enrollment/request`. It grants zero access to file data, chunks, directory manifests, or control APIs (Invariant I23).
+   - The enrollment endpoint enforces bounded payload size (max 16 KiB) and rate limiting (max 5 requests per IP) before allocation.
+
+2. **Joining Proof of Possession & Explicit Owner Approval**:
+   - The joining device creates its own fresh Ed25519 keypair and permanent DeviceID (`SHA256(public_key)`).
+   - The join request includes the public key, suggested label, and a signature proving possession of the private key over an enrollment challenge (challenge nonce + token digest + timestamp).
+   - Join requests are held in `pending_approval`.
+   - The workspace owner reviews the exact joining device ID, key pin, suggested label, and workspace on an enrolled device and explicitly approves or rejects. Automatic network join without owner approval is prohibited.
+
+3. **Sequential Linear Membership Rollout & Fork Recovery**:
+   - Approved enrollment creates a monotonic, linear membership revision: `Revision(N+1)`, with `PriorDigest = Hash(Revision N)`.
+   - Active peers apply revisions sequentially. Exact membership revision agreement remains required for content transfer.
+   - **Competing administration / Fork detection (Invariant I24)**: If two partitioned administrator devices approve concurrent joins from the same base revision (Revision N), both emit competing revisions with the same `PriorDigest`. Peers detect this as an explicit **Membership Fork** (`ErrMembershipFork`). Conflicting branches are **never silently auto-merged**. Content transfer is paused until the owner creates an explicit reconciling revision (Revision N+2).
+   - **Retirement irrevocability**: A device ID retired in any accepted membership revision cannot be revived.
+
+4. **Protocol Capability Negotiation**:
+   - Peers exchange a hello envelope containing `capabilities: [...]`.
+   - Legacy peers presenting only `base_sync_v1` establish standard synchronization; Orbit-specific endpoints are disabled for that connection without errors.
+   - Wire domain separators and version envelope hashing remain 100% compatible.
+
 ## 1. Identities and membership
 
 Use cryptographically random persistent device identities bound to pinned peer public keys using established TLS libraries. Device identity is distinct from display name, network address, local database path, and shared-folder identity. A database reset, restored old database, or lost causal counter requires a new identity and explicit reenrollment; reusing a certificate with rolled-back counters is unsupported. Detect known mismatches and refuse; do not claim all offline rollback is automatically detectable.

@@ -52,7 +52,7 @@ filesync storage recovery reclaim
 ```
 
 ### Step 3: Trigger SQLite WAL Checkpoint
-If SQLite write-ahead log (`repo.sqlite-wal`) is holding excess disk space:
+If SQLite write-ahead log (`metadata.sqlite-wal`) is holding excess disk space:
 ```bash
 filesync maintenance backup --out /mnt/external/backup.sqlite
 ```

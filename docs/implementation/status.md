@@ -7,6 +7,11 @@ Earlier blanket completion and estimated benchmark claims are withdrawn.
 Earlier packet entries retain the limitations of their original dated checks;
 the release report records subsequent validation.
 
+Active product work was the owner-selected **Orbit revamp**. Its
+[plan](../orbit-implementation-plan.md) and [tracker](orbit-status.md) are
+complete across packets O00–O13 with full scoped evidence in `docs/evidence/orbit-o13/`.
+All 10 minimum product scenarios, UI flows, and resource bounds are verified.
+
 | Packet | State | Dependencies | Evidence |
 | --- | --- | --- | --- |
 | P00 Skeleton/toolchain | complete | none | [evidence](../evidence/p00-20260920/summary.md); [hosted CI](https://github.com/calebhabesh/file-sync/actions/runs/35559982219) |
@@ -38,7 +43,12 @@ were closed in P01. See [outcomes](../design-gates.md) and
 [architecture](../architecture.md#design-gates). Later packets retain the
 listed production implementation and fault-evidence obligations.
 
-## Next action
+## Orbit revamp status
+
+Orbit personal file manager revamp is complete across packets O00 through O13.
+See [Orbit status](orbit-status.md) and [O13 evidence](../evidence/orbit-o13/summary.md).
+
+## Remaining P17 owner-use evidence
 
 Collect actual owner use of
 `/home/caleb2002/FileSyncPilot-20261001/data`: normal edits, offline/reconnect

@@ -5,6 +5,8 @@ implementation contracts, not general proofs. Sources are in
 `tests/designgates` and recorded results are in
 `docs/evidence/p01-20260921`.
 
+Orbit revamp design gates (G01–G05) are formally closed in [Orbit design gates](orbit-design-gates.md).
+
 ## D1 — Linux capture and publication races
 
 ### Counterexamples and traces

@@ -2,6 +2,43 @@
 
 Approved through the planning interview on 2026-09-20. Supersedes the 2026-09-12 two-peer-only release scope. These are requirements, not implementation claims. The repository owns File Sync's detailed scope; the parent portfolio blueprint summarizes it.
 
+## Orbit product direction — 2026-10-01
+
+The owner selected **Orbit** and authorized a usability/function revamp followed
+by a comprehensive implementation handoff. The agreed direction preserves
+S01–S22 and the exclusions below, while replacing the three-view operator
+presentation in S18 with a file-manager experience. New requirements and
+planning defaults are distinguished below. Defaults are concrete choices for
+the requested plan, not claims of implemented behavior or newly proven guarantees.
+The [product brief](orbit-product.md) owns journeys and presentation;
+the [Orbit plan](orbit-implementation-plan.md) sequences implementation.
+
+| ID | Requirement / planning default | Maturity |
+| --- | --- | --- |
+| U01 | User-facing product name Orbit; existing identity/history remain intact through rebranding | Approved name; compatibility baseline |
+| U02 | One owner, owner-operated storage, Linux only, complete local copies of joined folders | Approved |
+| U03 | Equal writable replicas; an always-on Pi/NAS/VPS is optional and has no conflict authority | Approved |
+| U04 | One default root at `~/Orbit` with Change location; additional shared folders in advanced setup; preview preexisting content | Approved |
+| U05 | Short-lived invitations from an enrolled device, explicit owner approval, persistent per-device authentication; defer Google/account login | Approved |
+| U06 | Existing LAN/private-network reachability; understandable endpoint checks; no discovery/NAT/relay infrastructure | Approved |
+| U07 | Familiar file-manager browsing and plain-language status instead of protocol identifiers in normal screens | Approved |
+| U08 | Embedded local browser interface and desktop launcher; headless administration through existing OS/SSH access | Planning default preserving the local-control trust model |
+| U09 | Human device/workspace names distinct from cryptographic identities; per-device settings and copy status remain explicit | Planning default |
+| U10 | Browse/search/sort, bounded previews, upload/download, create folders, within-workspace rename/move/delete, history/restore | Planning default for the requested functional revamp |
+| U11 | Needs attention, history, and Deleted files views retain reviewed conflicts and conditional historical restore; no fixed trash window | Planning default preserving existing guarantees |
+| U12 | Startup at OS login on desktops; documented optional unattended user-service configuration on storage hosts | Planning default |
+| U13 | Preserve existing state paths, roots, reserved scratch names, wire identities and legacy CLI/service compatibility during migration | Planning default |
+| U14 | Recovery through a surviving trusted device with retained OS/SSH access; replacement gets fresh identity; no remote account-recovery promise | Planning default preserving existing guarantees |
+| U15 | Restrained monochrome desktop design, keyboard access, clear feedback, no status conveyed by color alone | Planning default informed by the owner's TODO |
+| U16 | Common desktop create/join workflows use the launcher/UI; equivalent headless CLI/control operations remain available | Approved onboarding goal; concrete workflow baseline |
+
+Implement approved choices and planning defaults through the packets. Refine
+reversible implementation details with evidence. Changes to single-owner trust,
+supported platforms, retention/availability guarantees or excluded capabilities
+still require owner input. Network enrollment and automatic distribution of
+owner-approved membership are planned extensions: their design gates must close
+and their owning specifications must be updated before dependent implementation.
+
 ## Purpose and positioning
 
 Build a useful Linux folder-sync product demonstrating causal reconciliation, distributed failure handling, durable local storage, and engineering ownership. One owner uses ordinary editors and file managers across independent writable replicas. The primary resume story is preservation of captured work and predictable recovery, supported by measurements rather than technology count.

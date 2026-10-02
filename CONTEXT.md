@@ -1,8 +1,12 @@
-# File synchronization
+# Orbit file synchronization
 
 One owner synchronizes selected folders among trusted devices. Independent edits create histories that must remain understandable after devices reconnect.
 
 ## Language
+
+**Orbit**: The personal file synchronization product connecting an owner's trusted devices.
+
+**Owner**: The person who authorizes devices and manages their shared folders.
 
 **Device**: An enrolled machine identity. Reinstallation after identity or history loss creates a new device identity.
 
@@ -11,7 +15,14 @@ _Avoid_: Primary, leader, cloud authority
 
 **Shared folder**: A named replication group with a stable identity, explicit membership, and a local root on each member.
 
+**Workspace**: The user-facing name for a shared folder. It is the same replication group, rather than an additional level of membership.
+_Avoid_: Ring, account drive, global filesystem
+
 **Root**: The local directory registered as the working location for a shared folder.
+
+**Invitation**: A temporary invitation to request enrollment in a particular workspace. Possession of an invitation alone does not grant file access.
+
+**Enrollment**: Owner-approved admission of a device identity to a workspace, including review of its initial local contents.
 
 **Version**: An immutable recorded state of one relative path, including its causal ancestry and either file contents, directory existence, or deletion.
 _Avoid_: Timestamp winner, content hash as identity

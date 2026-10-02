@@ -31,6 +31,31 @@ check verifies its stated oracle; it does not prove every failure model.
 | I19 | UI and CLI issue the same operations and display qualified progress | Control/UI end-to-end |
 | I20 | Limits, schema/protocol incompatibility and failed migrations preserve recoverable state | Operations/integration |
 
+## Orbit revamp verification (planned)
+
+I01–I20 remain required. These additional oracles apply to the
+[Orbit packets](orbit-implementation-plan.md). Design gates G01–G05 formally closed
+foundational oracles for I21, I23, I24, I25, I26, and I20 in [Orbit design gates](orbit-design-gates.md),
+implemented in `tests/designgates/orbit_g*.go` and `model/membership.go`.
+
+| ID | Observable requirement | Primary test surface |
+| --- | --- | --- |
+| I21 | Local launch/bootstrap preserves session security and exclusive daemon ownership; closing the UI does not stop sync | Launcher/control/real browser |
+| I22 | Setup/retry/restart preserves preexisting files and identity; bootstrap absence never creates deletion; completion reflects actual capture/service state | Setup/workspace/process |
+| I23 | Invitation possession cannot grant data access; enrollment requires key possession and explicit approval of exact workspace/key; expired/revoked/replayed requests fail safely | Enrollment/control/adversarial peer |
+| I24 | Approved membership rollout validates authority and revision ancestry; mismatches/forks are explicit; data remains gated and retired devices cannot rejoin | Independent membership model/three-peer process |
+| I25 | Browse/content reports authorized locally known state accurately; queries/streams are bounded, requested bytes verified and reads protected against GC | Repository/control/browser/GC races |
+| I26 | File-operation replay/stale review/interruption preserves protected versions; partial multi-path work is explicit and cancellation cannot pretend committed effects were undone | Journal/model/process/browser |
+| I27 | Core workflows are keyboard accessible with visible focus and usable errors; UI never reports pending/failed engine work as complete | Real browser assertions/owner walkthrough |
+| I28 | Lifecycle-record pruning preserves pending work, journals/pins and causal metadata; expired idempotent replays cannot execute silently | Repository/scheduler/restart/resource |
+
+The real browser runner is an O04 deliverable using existing puppeteer-core.
+Source findings for identity reset/backup restore and inspection cleanup require
+executable reproductions in O00; source inspection alone is not fault evidence.
+Final Orbit evidence includes approval/offline membership rollout, file-action
+crashes/races, read/GC leases, fresh-key recovery, legacy migration, native
+packaged flows and actual owner use. Existing pilot data is never a fault target.
+
 ## Independent causal model
 
 Implement a small test-only event DAG oracle with explicit parent reachability rather than copying production vector-comparison code. It models accepted versions, reviewed resolutions, retirement acceptance, heads, and content availability as separate state. Include a separate simple reference-set oracle for GC. Production and model may share fixture encodings but not reconciliation or reachability algorithms.

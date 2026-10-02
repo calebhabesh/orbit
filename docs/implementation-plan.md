@@ -2,6 +2,15 @@
 
 Planning baseline: 2026-09-20. Implementation exists through P17; current release acceptance and remaining validation are recorded in [packet status](implementation/status.md).
 
+## Active product work: Orbit
+
+The owner selected an Orbit usability/UI/UX/function revamp on 2026-10-01.
+Use the [Orbit implementation plan](orbit-implementation-plan.md) and
+[Orbit status](implementation/orbit-status.md) for this work; O00 is first.
+The product brief and architecture are linked there. This document remains
+the original sync-engine plan. P17's actual owner use/explanation remains
+outstanding; the revamp does not retrospectively complete that evidence.
+
 ## Read in this order
 
 1. [Approved scope](portfolio-scope.md) and [glossary](../CONTEXT.md).

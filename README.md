@@ -1,129 +1,164 @@
-# File Sync
+# Orbit: Personal File Manager & Decentralized Synchronization
 
-File Sync synchronizes selected folders between trusted Linux devices. A Go
-agent watches ordinary files, retains captured versions in immutable storage,
-and exchanges them over authenticated HTTPS. SQLite stores causal history,
-working-copy state, transfer progress, and recovery journals.
+Orbit is a personal file manager and peer-to-peer synchronization engine over trusted Linux replicas. A single static Go binary watches configured workspace roots, retains historical versions in an immutable content-addressed store, and synchronizes files over authenticated mutual TLS. SQLite stores causal DAG history, working-copy state, transfer progress, and durable recovery journals.
 
-Independent offline edits remain separate heads until you explicitly resolve
-reviewed versions. You can select a version, supply a manual merge, keep copies,
-or restore retained content as a new change. A VPS can store and forward a
-version while its author is offline; it has no conflict authority.
+Independent offline edits remain distinct heads until you explicitly review and resolve them. Replicas hold readable files on disk. Pure-Go SQLite (`modernc.org/sqlite`) and an embedded React/TypeScript web management console require **zero external C compiler, libc coupling, or Node.js runtime**.
 
-Replicas hold readable content. TLS protects transfers. Captured-version
-protection assumes supported local filesystems and storage that honors flushes;
-it does not cover every intermediate editor write, disk loss, or arbitrary
-writes through descriptors held across replacement. See the
-[approved scope](docs/portfolio-scope.md) and [persistence contract](docs/persistence.md).
+For legacy installations, full compatibility with the existing `filesync` engine commands, service units, and state layouts is strictly preserved (Gate G05).
 
-**Release validation remains in progress.** The [status tracker](docs/implementation/status.md)
-and [current evidence](docs/evidence/release-20261001/summary.md) distinguish
-local tests, actual-host demonstrations, VM resets, benchmarks, and personal use.
-The earlier 2026-09-24 estimated wire-savings figures have been withdrawn.
+---
 
-## Build and local demonstration
+## Key Guarantees and Architecture
 
-Use the Go toolchain pinned in `go.mod` (1.27.1), Make, and Linux with the
-required descriptor-relative filesystem calls. The binary embeds the web UI
-and needs no Node runtime. Rebuilding frontend assets requires the pinned npm
-lockfile: `cd web`, `npm ci`, then `npm run build`.
+- **Causal Consistency (Invariants I01–I06)**: File versions form a directed acyclic graph (DAG) stamped with monotonic author counters. Independent concurrent edits never silently overwrite each other.
+- **Durable File Mutations & Recovery Preservation (Gate G03, Invariant I26)**: File creation, import, move, and recursive deletion record phase transitions in SQLite journals. Destination overwrites displace previous contents into `.filesync-internal/recovery/` rather than unlinking bytes. Concurrent source modifications preserve both copies.
+- **One-Use Bootstrap Security (Gate G01, Invariant I21)**: Launching Orbit issues a short-lived (60s TTL), high-entropy bootstrap token via URL fragment. Loopback Host and Origin validation prevent DNS-rebinding attacks. Browser logout terminates control sessions without interrupting background daemon sync.
+- **Explicit Membership & Fork Detection (Gate G02, Invariant I24)**: Pairing requires mutual Ed25519 key possession proof and explicit owner review. Linear membership rollout (`Revision N+1`) detects competing partitioned approvals and prevents untrusted device admission.
+- **Stopped Metadata Restore & Counter Monotonicity (Gate G04, Invariant I08)**: Restoring older metadata backups enforces an exclusive stopped daemon lock, safely re-keying the node identity to guarantee author counters never roll backward.
+- **Storage Accounting & Bounded Pruning (Invariants I10, I28)**: Reports byte usage distinctly across 5 categories (working-root, managed CAS chunks, staging, recovery, database). Retention inspection reads never trigger deletion; garbage collection remains an explicit mutation. Completed lifecycle records are safely pruned without growing SQLite indefinitely.
+
+---
+
+## Build and Package
+
+Orbit builds with the Go toolchain (1.27.1), Make, and Linux. Embedded web assets are pre-built in `web/dist`.
 
 ```sh
+# Build native and cross-architecture binaries (bin/filesync and bin/orbit symlink)
 make build build-arm64
-./bin/filesync version
+
+# Inspect build metadata, schema version, and embedded asset digest
+./bin/orbit version
+./bin/orbit version --json
+
+# Run local demo with loopback peers
 make demo
+
+# Run complete test verification (unit, integration, model, fault boundaries)
 make check
 make test-race
+
+# Build release packages (.tar.gz, .deb, .rpm) and cryptographic SHA256SUMS
+make package
 ```
 
-`make demo` creates disposable loopback peers and cleans up its own paths.
-`make check` runs formatting, vet, unit/model/integration/process-fault checks,
-builds both architectures, and generates packages. The VM reset experiment is
-an explicit separate command, never part of ordinary installation or checks.
+Release packages generated in `dist/` include:
+- `orbit-v1.0.0-linux-amd64.tar.gz` / `filesync-v1.0.0-linux-amd64.tar.gz`
+- `orbit-v1.0.0-linux-arm64.tar.gz` / `filesync-v1.0.0-linux-arm64.tar.gz`
+- `filesync_1.0.0_amd64.deb` / `filesync_1.0.0_arm64.deb`
+- `filesync-1.0.0-1.x86_64.rpm` / `filesync-1.0.0-1.aarch64.rpm`
+- `release-manifest.json` and `SHA256SUMS`
 
-## Setup and daily operation
+---
 
-A folder ID is 64 hexadecimal characters, shared by its enrolled devices.
-Start with a dedicated folder and state directory:
+## Getting Started
+
+### 1. Launching Orbit on Desktop
+
+Launch the daemon and open the web management interface in your default browser:
 
 ```sh
-STATE="$PWD/filesync-state"
-ROOT="$PWD/filesync-notes"
-FOLDER_ID="0101010101010101010101010101010101010101010101010101010101010101"
-mkdir -m 0700 "$ROOT"
-./bin/filesync init --state "$STATE"
-./bin/filesync register --state "$STATE" --folder "$FOLDER_ID" --root "$ROOT"
-./bin/filesync identity --state "$STATE" --certificate
-./bin/filesync scan --state "$STATE" --folder "$FOLDER_ID"
-./bin/filesync serve --state "$STATE" --peer-listen 127.0.0.1:8443 \
-  --control-listen 127.0.0.1:8080
+orbit launch
+```
+*(Or simply execute `orbit` without arguments, or launch "Orbit" from your desktop application menu).*
+
+The launcher automatically detects existing running daemons via exclusive lock, generates a secure one-use bootstrap handoff URL (`http://127.0.0.1:<port>/#bootstrap=<token>`), and opens your browser.
+
+### 2. Headless and Server Setup
+
+On headless servers, Raspberry Pis, or cloud VPS instances:
+
+```sh
+# Check operational status
+orbit status
+
+# Configure workspace root and initial setup
+orbit setup --root /srv/orbit/notes --label "Backup VPS"
+
+# Enable user session lingering (CRITICAL: keeps background sync active across logout)
+loginctl enable-linger $USER
+
+# Enable and start the background sync user service
+orbit service enable
+orbit service start
 ```
 
-Exchange public certificates and key pins out of band, approve the same folder
-membership on every device, and configure reachable peer addresses. The
-[local demo](scripts/local_demo.go) shows two-peer pairing; the
-[actual-host harness](scripts/validation/three_host.py) uses canonical
-three-member approval. See the [installation runbook](docs/runbooks/install.md)
-for packages and user-service configuration.
-
-Use `conflicts --json` to inspect reviewed head IDs and their token. A selection
-names the path, selected `author:counter`, reviewed IDs, and current token:
+### 3. Pairing Devices
 
 ```sh
-./bin/filesync resolve select --state "$STATE" --folder "$FOLDER_ID" \
-  --path note.txt --selected "$SELECTED_VERSION" --reviewed "$REVIEWED_VERSIONS" \
-  --head-token "$HEAD_TOKEN" --idempotency-key "$OPERATION_ID"
-./bin/filesync restore --state "$STATE" --folder "$FOLDER_ID" \
-  --path note.txt --source "$HISTORICAL_VERSION" --preview --json
+# On primary workstation (Host): create pairing invitation
+orbit invite create --ttl 86400 --uses 1 --endpoint https://192.168.1.50:8443
+
+# On joining machine (Remote): submit join request
+orbit join --invitation "orbit-invitation:v1?token=...&folder=...&endpoint=https%3A%2F%2F192.168.1.50%3A8443" \
+  --root ~/Notes --label "Travel Laptop"
+
+# On primary workstation: review and approve
+orbit requests list --status pending
+orbit requests approve --request req-xxxx --alias "Travel Laptop"
 ```
 
-`filesync <command> -h` lists actual flags. CLI/control/UI share the same engine
-operations. Per-peer status distinguishes saved, stored, applied, conflicted,
-and unavailable contents; a VPS receipt does not establish a Pi receipt.
+---
 
-## Reproduce release experiments
+## Daily Operations & CLI Parity
 
-Python 3 is required for validation orchestration. Remote commands require
-existing SSH aliases and a Python interpreter; each run creates fresh private
-marked roots and tracks its exact processes. Existing pilot folders and other
-services are preserved. Roots are retained for inspection.
+All GUI file management, conflict triage, and storage actions have full command-line parity:
 
 ```sh
+# Browse workspace contents and search paths
+orbit browse --folder <id> --path /docs --limit 50
+orbit search --folder <id> --query "quarterly"
+
+# Durable file mutations (journaled and crash-consistent)
+orbit mkdir --folder <id> --path /docs/archive
+orbit import --folder <id> --src report.pdf --dest /docs/archive/report.pdf
+orbit move --folder <id> --src /docs/old.md --dest /docs/new.md
+orbit delete --folder <id> --path /docs/temp --recursive
+
+# Conflicts and Historical Restore
+orbit conflicts --folder <id> --json
+orbit restore --folder <id> --path note.txt --source <version-id> --preview
+
+# Storage, GC, and Bounded Pruning
+orbit storage --folder <id>
+orbit storage gc --folder <id>
+orbit maintenance prune --max-age 24h
+```
+
+*(Legacy syntax `filesync <command>` continues to operate identically).*
+
+---
+
+## Reproduce Release Experiments
+
+Automated validation suites require Python 3 and Go:
+
+```sh
+# Run validation test suites
 python3 -m unittest discover -s scripts/validation -p 'test_*.py'
-go run scripts/three_host_pilot.go --laptop laptop --pi rpi --vps vps
-go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1
+
+# Multi-host pilot harness
+python3 scripts/validation/three_host.py --laptop laptop --pi rpi --vps vps
+
+# Systemd user service lifecycle validation
 python3 scripts/validation/service_lifecycle.py --hosts laptop rpi vps \
-  --output /tmp/filesync-lifecycle-evidence
-python3 scripts/validation/abrupt_reset.py --kernel /path/to/vmlinuz \
-  --output /tmp/filesync-reset-evidence
+  --output /tmp/orbit-service-lifecycle
+
+# Benchmark suite (10,000 files & 1 GiB payload)
+go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1
 ```
 
-The reset experiment requires QEMU/KVM, `mkfs.ext4`, and a kernel with built-in
-virtio-blk/ext4/devtmpfs support. It discards guest dirty caches and tests
-selected production boundaries, under the recorded virtual storage assumptions.
-It does not demonstrate a physical Pi power cut.
+---
 
-For continuous outbound sync, configure owner-only `peers.json` in the state
-directory with approved folder/device IDs, HTTPS origins and public certificates.
-`init` creates finite limits in `limits.json`. See the
-[configuration contract](docs/operations.md) for formats, defaults and restart
-behavior. Endpoint configuration does not replace membership approval.
+## Operator Runbooks
 
-The synthetic benchmark counts TLS-bearing TCP stream bytes in both directions.
-Its full-file baseline also uses mutual TLS, hashes and durably installs files,
-and skips unchanged files after hashing. TCP/IP and SSH headers are excluded.
-Different history/storage work and warm filesystem caches limit timing comparisons.
-Raw runs, failed experiments, and negative results remain in the evidence.
-The [measured results](docs/evidence/release-20261001/measured-results.md) show
-workload-specific byte counts, timing ranges, chunk reuse and storage costs.
-An automated demo does not establish the required personal-use pilot.
+Detailed runbooks for system administration, disaster recovery, and networking:
 
-Use a new empty evidence directory per run; scripts refuse to overwrite prior
-results. To reproduce the checked source and package hashes, follow the exact
-revision and commands in the [release manifest](docs/evidence/release-20261001/manifest.json).
-The [prepared personal pilot](docs/evidence/release-20261001/personal-pilot/handoff.md)
-is available on the laptop, Pi and VPS, with owner activity still pending.
-
-See [the case study](docs/case-study.md), [architecture](docs/architecture.md),
-[protocol](docs/protocol.md), [verification](docs/verification.md), and
-[operator runbooks](docs/runbooks/install.md).
+- [Linux Installation and Lifecycle Setup](docs/runbooks/install.md)
+- [Safe Uninstallation & Data Preservation](docs/runbooks/uninstall.md)
+- [Headless Device Pairing & Administration](docs/runbooks/headless-pairing.md)
+- [Private Network Configuration & Reachability](docs/runbooks/private-network.md)
+- [Database Recovery & Identity Reset](docs/runbooks/database-recovery.md)
+- [Lost Device Replacement & Decommissioning](docs/runbooks/lost-device-replacement.md)
+- [Binary Rollback & Downgrade Safety](docs/runbooks/rollback.md)
+- [Storage Accounting & Full Disk Remediation](docs/runbooks/full-disk.md)

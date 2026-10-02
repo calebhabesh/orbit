@@ -2,6 +2,30 @@
 
 Status: implementation contract; D1/D4/D5 outcomes are in [design gates](design-gates.md). Release evidence is tracked separately. This document owns durability and cleanup rules.
 
+## Orbit extension: file mutation journals, read leases & crash-consistent recovery
+
+Status: frozen by gate outcomes [G03 and G04](orbit-design-gates.md). Implemented by packets O01/O02/O03/O09.
+
+1. **Durable File Mutation Journals**:
+   - File actions (Import, CreateDir, Move, Delete) record phase transitions in SQLite: `Planned -> Staged -> Installed -> SourceVerified -> Completed`.
+   - Operations carry a durable Operation ID, idempotency key, and reviewed basis token.
+
+2. **Move Atomicity, Overwrite Safety & Source Race Protection**:
+   - Move installs the destination first, re-verifies the source, and only then deletes the source.
+   - If destination exists, an explicit reviewed overwrite token is required; the displaced file is atomically moved to `.filesync-internal/recovery/<opID>` before installation.
+   - **Concurrent source modification (Invariant I26)**: If the source file is modified concurrently by an editor or writer while the move is staging/installing (stat/hash mismatch), **the source is NOT deleted**. Both the new destination and the modified source file are preserved on disk. The operation completes with `StatusCompletedWithSourceRetained` and flags a clear attention item.
+   - **Subtree moves**: Directory moves review a snapshot of immediate children. If a new child is added before the move commits, the subtree token is invalidated (`ErrSubtreeInvalidated`), requiring re-review.
+
+3. **Content Read Leases & GC Protection**:
+   - Reading or previewing content via browser/CLI acquires a short-lived `ReadLease(versionID, chunkDigests, ttl)`.
+   - **Invariant I25**: Active read leases prevent Garbage Collection (GC) sweeps from unlinking required chunk objects, even if the version is unreferenced in latest heads. Expired leases are safely reclaimed.
+
+4. **Identity Recovery & Crash Consistency**:
+   - Identity reset and backup restoration require stopped exclusive state directory ownership (`state.Acquire`). Live mutation is fenced.
+   - The transition atomically rotates TLS identity (`peer-identity.pem`), updates SQLite `folders` (`local_author = newID`, `next_counter = 0`) while preserving historical DAGs, and writes `config.json`.
+   - **Interrupted transition detection (Invariant I20)**: On restart, startup consistency verification compares `config.DeviceID`, certificate identity, and `folders.local_author`. Any inconsistency returns `ErrIncompleteRecovery` and fences sync.
+   - **Missing chunk payloads (Invariant I18)**: Restoring a metadata database backup where local chunk files are missing marks versions `ContentUnavailable` and never serves synthetic or corrupt data.
+
 ## 1. Fault model
 
 Required: process termination at named boundaries; dropped connections; duplicate requests; full storage; permission failures; supported concurrent editor patterns; detectably corrupt managed content; documented abrupt-reset experiments. Assume supported local Linux filesystems and storage that honor successful flush requests. SQLite/state on network filesystems, broken storage flush guarantees, arbitrary hardware bit rot recovery without another valid copy, and filesystem-wide atomic snapshots are outside the contract.
@@ -265,3 +289,60 @@ metadata spool limit and configured data/free-space budgets. Closing a session
 removes its spool. A killed process can leave a non-authoritative spool; it is
 never content-ready or published, remains budgeted, and can be removed during
 inspected maintenance after the owning agent has stopped.
+
+## O07 browse generations and active reads
+
+Schema 12 adds a durable database-wide `browse_generation` and a reverse
+parent-reference index. Triggers on versions/parents, projections, scaffolds
+and folders invalidate directory, search, Deleted files and history cursors.
+An unrelated workspace change can conservatively invalidate a cursor. Pages
+are refreshed by starting without a cursor; no long-lived SQLite snapshot is
+held while the browser navigates. Reads never create directory versions.
+
+Directory/search queries combine locally accepted heads, observed projections
+and scaffolds in SQL, synthesize navigable ancestor rows, and materialize at
+most 200 results in Go. SQLite uses the folder/path and reverse-parent indexes;
+substring search still scans the selected folder's locally known paths.
+Working state is `observed` or `unobserved`, with pending/conflict/block flags;
+`observed` does not promise unchanged current disk bytes. Details/history keep
+exact captured identities separate. Locally present chunk metadata is an
+availability hint; exact content reads verify hashes again.
+
+`OpenVersionRead` derives every chunk from the exact stored manifest, checks
+readiness, object presence and deletion intents, and installs pins under the
+same mutex/transaction boundary as GC. Repeated chunk digests acquire one pin.
+It verifies the whole file before response headers and each chunk before
+emission, retaining one chunk buffer (1 MiB plus a length-check byte), alongside
+bounded manifest metadata. Corrupt chunks use the existing quarantine path.
+No replacement version is selected when a requested version is unavailable.
+
+A response owns `stream` pins until completion, error or cancellation. Its
+five-minute read-record timestamp cannot expire those live pins. Ordinary
+short leases are pruned at startup and during GC; active stream pins remain
+protected even if that record is pruned. `Close` releases response pins;
+startup removes abandoned stream pins after interrupted GC reconciliation.
+Startup relies on existing exclusive state ownership. A prepared lease is not
+a permission to consume bytes and does not bypass exact-version authorization.
+
+## O09 file mutation journals and recoverable file actions
+
+Schema 13 adds durable SQLite mutation tracking via `file_mutations` and
+`file_mutation_entries`. File actions (Import, CreateDir, Move, Delete) record
+atomic phase transitions: `PLANNED -> STAGED -> INSTALLED -> SOURCE_VERIFIED -> COMPLETED`.
+Each record includes folder ID, action kind, source/dest paths, reviewed snapshot
+tokens, overwrite flags, and operation IDs.
+
+Multi-path operations (such as directory subtree move) record sequenced entries in
+`file_mutation_entries` with position, source/destination paths, item kinds, and
+per-entry completion status.
+
+Recovery semantics (`Workspace.RecoverFileMutations`) executed at startup or
+workspace initialization:
+- `PLANNED` or `STAGED`: No changes committed to workspace filesystem; safely marks
+  phase `ABORTED` and cleans up temporary staging files.
+- `INSTALLED`: Destination is durably present on disk. For move operations, re-verifies
+  source hash against the reviewed token; if unchanged, safely authors a tombstone and
+  unlinks source, then marks `COMPLETED`. If concurrently modified, retains source
+  (`source_retained = 1`) and completes without deleting source (Invariant I26).
+- `SOURCE_VERIFIED`: Verification passed before interruption; ensures tombstone
+  publication and marks `COMPLETED`.

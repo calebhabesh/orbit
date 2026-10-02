@@ -2,6 +2,28 @@
 
 Status: implemented baseline. The limits below are configuration/admission bounds; release evidence describes the workloads actually exercised.
 
+## Orbit extension: local launch, bootstrap security & product settings
+
+Status: frozen by gate outcomes [G01 and G05](orbit-design-gates.md). Implemented by packets O01/O02/O03.
+
+1. **Singleton Daemon Locking and Ownership**:
+   - The launcher and daemon enforce exclusive ownership of the state directory via `.agent.lock` using `state.Acquire`.
+   - If a daemon is already active on the state directory, the launcher reuses the existing process and control interface rather than launching a duplicate.
+   - Initialized vs uninitialized state is detected at startup.
+
+2. **One-Use Browser Bootstrap Handoff (Invariant I21)**:
+   - The launcher initiates browser sessions using a short-lived (60s TTL) high-entropy bootstrap token passed as a URL fragment (`/#bootstrap=<token>`).
+   - The frontend immediately clears the fragment (`history.replaceState`) and exchanges the token via loopback `POST /api/v1/auth/bootstrap`.
+   - The exchange enforces strict loopback `Host` (`127.0.0.1`, `localhost`, `[::1]`) and `Origin` headers, rejecting external host names to prevent DNS rebinding attacks.
+   - Tokens are consumed immediately on first use; replays and expired requests are rejected.
+   - Upon successful exchange, the server issues an `HttpOnly`, `SameSite=Strict` session cookie and a CSRF token.
+   - **Session vs Daemon Synchronization**: Closing browser tabs or logging out terminates the UI session, but does **not** stop the background daemon or peer synchronization.
+
+3. **Product Settings Separation**:
+   - Product display preferences (device label, workspace display names, default workspace, UI theme) are stored in a separate `settings.json` or SQLite table.
+   - `config.json` remains strictly validated at `format_version: 1` (`format_version`, `device_id`, `created_at`).
+   - Orbit adopts existing `.filesync-internal` directories cleanly, and rejects unsupported newer database schemas (a `user_version` above `repository.CurrentSchema`) to preserve recoverable state (Invariant I20).
+
 ## Trust and authentication
 
 One owner; all enrolled replicas may read authorized folder contents in plaintext. Use established TLS with explicitly pinned identities and mutual authentication. Pairing exchanges identity fingerprints out of band and requires explicit local approval. Initial v1 needs no unauthenticated public pairing endpoint. Protect private keys/configuration with owner-only permissions and redact them from logs/support bundles.
@@ -125,3 +147,79 @@ Pin a supported Go release and dependencies in P00, verify SQLite driver packagi
 systemd user service: graceful cancellation, restart behavior, writable paths, configured roots and limits documented. Hardening must allow arbitrary explicitly configured user roots without pretending a fixed sandbox covers every setup. Logout/boot persistence may require user-service lingering; document owner steps instead of enabling privileged settings silently.
 
 Upgrade stops the agent, obtains a consistent backup, checks migration compatibility, applies migration transactionally where supported, and runs health checks before reopening replication. Recovery from an old metadata backup creates a fresh identity and safe reenrollment; it cannot resume rolled-back author counters. Distinguish binary rollback with unchanged DB from schema/data rollback. Newer DB/protocol versions fail clearly. Uninstall removes executables/service registration while preserving roots/state unless explicitly requested otherwise.
+
+## O07 workspace reads and preview policy
+
+The local control API adds authenticated `GET /api/v1/browse`, `/search`,
+`/browse/details`, `/browse/history`, `/browse/deleted`, and `/content`.
+All require a selected, registered workspace and the local identity's active
+membership when a membership is configured. They retain bearer/browser-cookie,
+loopback Host/Origin and browser-session enforcement. Invitation possession
+cannot authenticate a data read. Current schema is 12; newer schemas are
+refused through `repository.CurrentSchema`.
+
+Directory queries accept `folder`, relative `path` (empty only for root),
+`sort=name|size|mtime|kind`, `direction=asc|desc`, `limit=1..200` and `cursor`.
+Directories sort first, then the selected value, then the exact path ascending
+for deterministic ties. Cursor binding includes workspace, query/directory,
+generation and page parameters; malformed/mismatched cursors return 400 and
+stale generations return 409. Paths are validated before normalization, so
+absolute, traversal, reserved and empty-segment paths cannot alias valid ones.
+
+Search accepts `q` (maximum 256 UTF-8 bytes, trimmed) and a page limit/cursor.
+Matching is a literal substring of the full relative path, with SQLite's ASCII
+case folding; `%` and `_` are ordinary characters. Implicit directories can
+match. This is local knowledge, not remote live state or full-text search.
+History and Deleted files also paginate; history ordering is counter descending
+with author ties for presentation, never a cross-device winner rule.
+
+Content URLs contain only `folder`, exact `author`, decimal `counter`, and an
+optional `preview=text|raster`. They require authentication on every request;
+there is no bearer capability or filesystem path in the URL. Native attachment
+responses stream without constructing a whole-file browser Blob and support
+HTTP byte ranges and 416 for unsatisfiable ranges. CLI export uses the same
+pinned read. Content responses replace the ordinary absolute write timeout
+with a 30-second per-write idle timeout, allowing progressing large responses.
+A disconnected response releases pins; a new authenticated range read can
+resume the exact version if its content is still available.
+
+Text preview is UTF-8 without NUL, at most 1 MiB, served as `text/plain`.
+Raster preview is PNG/JPEG, at most 10 MiB encoded and 16,000,000 decoded pixels;
+GIF/APNG animation and active/vector formats use attachment download. Decoder
+header validation precedes browser preview; a malformed full image may still
+fail to render. All responses are `no-store`; content additionally uses
+`nosniff`, `sandbox; default-src 'none'`, and `no-referrer`. Attachment filenames
+are encoded with `mime.FormatMediaType` after control-character removal.
+Eight simultaneous HTTP content requests are admitted; excess requests return
+429. Manual read leases are capped at 128 records and 300 seconds, derive
+chunks from the requested manifest, and reject supplied digest mismatches.
+
+Headless `orbit browse`, `orbit search` and `orbit details` output JSON and use
+the same controller operations, falling back to the running daemon's control
+API. For example: `orbit browse --state STATE --folder HEX --path docs --limit 50`
+and `orbit search --state STATE --folder HEX --query notes`.
+
+## O09 file mutations: import, mkdir, move, delete
+
+The local control API adds authenticated mutation endpoints:
+- `POST /api/v1/files/import`: stream or upload file into workspace. Requires `folder`,
+  `path`, optional `overwrite=true`, and optional `reviewed_token`. Returns `ImportFileResult`.
+- `POST /api/v1/files/mkdir`: creates a directory with durable versioning. Requires `folder` and `path`.
+- `POST /api/v1/files/move`: renames or relocates a file or directory within workspace.
+  Requires `folder`, `source_path`, `dest_path`, optional `overwrite=true`, and
+  optional `reviewed_token`.
+- `POST /api/v1/files/delete`: deletes a file or directory. Requires `folder`, `path`,
+  and optional `recursive=true`.
+
+All mutation requests accept an `Idempotency-Key` header (or JSON field) cached for
+24 hours. Replays with matching parameters return the cached result; replays with
+changed parameters return 409 `IDEMPOTENCY_CONFLICT`.
+
+Headless CLI commands provide parity with the control API (Invariant I19):
+- `orbit import --state STATE --folder HEX --path PATH --file LOCAL_FILE [--overwrite]`
+- `orbit mkdir --state STATE --folder HEX --path PATH`
+- `orbit move --state STATE --folder HEX --source SRC --dest DST [--overwrite]` (alias: `orbit rename`)
+- `orbit delete --state STATE --folder HEX --path PATH [--recursive]`
+
+Commands connect to the live daemon via `.agent.lock` control URL, or execute directly
+against repository/workspace if the daemon is stopped.
