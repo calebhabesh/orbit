@@ -155,6 +155,7 @@ export const RestoreModal: React.FC<RestoreModalProps> = ({ folder, preview, onC
           </button>
           <button
             type="button"
+            id="btn-confirm-restore"
             className="btn btn-primary"
             onClick={handleConfirmRestore}
             disabled={!isRestorable || submitting}
