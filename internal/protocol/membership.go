@@ -13,22 +13,22 @@ import (
 const MaxActiveMembers = 16
 
 type ActiveMember struct {
-	Device history.ID
-	KeyPin history.Digest
+	Device history.ID     `json:"device"`
+	KeyPin history.Digest `json:"key_pin"`
 }
 
 type RetiredMember struct {
-	Device         history.ID
-	RetiredAt      uint64
-	SnapshotDigest history.Digest
+	Device         history.ID     `json:"device"`
+	RetiredAt      uint64         `json:"retired_at"`
+	SnapshotDigest history.Digest `json:"snapshot_digest"`
 }
 
 type Membership struct {
-	Folder      history.ID
-	Revision    uint64
-	PriorDigest history.Digest
-	Active      []ActiveMember
-	Retired     []RetiredMember
+	Folder      history.ID      `json:"folder"`
+	Revision    uint64          `json:"revision"`
+	PriorDigest history.Digest  `json:"prior_digest"`
+	Active      []ActiveMember  `json:"active"`
+	Retired     []RetiredMember `json:"retired"`
 }
 
 // EncodeMembership returns the canonical membership byte stream specified by

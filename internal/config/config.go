@@ -35,7 +35,6 @@ func DefaultStateDir() string {
 }
 
 func Initialize(stateDir string, now func() time.Time, random io.Reader) (Config, error) {
-	path := filepath.Join(stateDir, filename)
 	cfg, err := Load(stateDir)
 	if err == nil {
 		return cfg, nil
@@ -55,36 +54,60 @@ func Initialize(stateDir string, now func() time.Time, random io.Reader) (Config
 		DeviceID:      hex.EncodeToString(rawID),
 		CreatedAt:     now().UTC(),
 	}
+	if err := Save(stateDir, cfg); err != nil {
+		return Config{}, err
+	}
+	return cfg, nil
+}
+
+// Save atomically writes a validated configuration file to stateDir with mode 0600.
+func Save(stateDir string, cfg Config) error {
+	path := filepath.Join(stateDir, filename)
+	if cfg.FormatVersion != FormatVersion {
+		return fmt.Errorf("unsupported configuration format %d (supported: %d)", cfg.FormatVersion, FormatVersion)
+	}
+	decodedID, err := hex.DecodeString(cfg.DeviceID)
+	if err != nil || len(decodedID) != 32 {
+		return errors.New("configuration has an invalid device identity")
+	}
+	if cfg.CreatedAt.IsZero() {
+		return errors.New("configuration has no creation time")
+	}
+
 	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
-		return Config{}, fmt.Errorf("encode configuration: %w", err)
+		return fmt.Errorf("encode configuration: %w", err)
 	}
 	data = append(data, '\n')
 	temporary, err := os.CreateTemp(stateDir, ".config-*.tmp")
 	if err != nil {
-		return Config{}, fmt.Errorf("create temporary configuration: %w", err)
+		return fmt.Errorf("create temporary configuration: %w", err)
 	}
 	temporaryPath := temporary.Name()
 	defer os.Remove(temporaryPath)
 	if err := temporary.Chmod(0o600); err != nil {
 		temporary.Close()
-		return Config{}, fmt.Errorf("secure temporary configuration: %w", err)
+		return fmt.Errorf("secure temporary configuration: %w", err)
 	}
 	if _, err := temporary.Write(data); err != nil {
 		temporary.Close()
-		return Config{}, fmt.Errorf("write configuration: %w", err)
+		return fmt.Errorf("write configuration: %w", err)
 	}
 	if err := temporary.Sync(); err != nil {
 		temporary.Close()
-		return Config{}, fmt.Errorf("flush configuration: %w", err)
+		return fmt.Errorf("flush configuration: %w", err)
 	}
 	if err := temporary.Close(); err != nil {
-		return Config{}, fmt.Errorf("close configuration: %w", err)
+		return fmt.Errorf("close configuration: %w", err)
 	}
 	if err := os.Rename(temporaryPath, path); err != nil {
-		return Config{}, fmt.Errorf("install configuration: %w", err)
+		return fmt.Errorf("install configuration: %w", err)
 	}
-	return cfg, nil
+	if dirFile, err := os.Open(stateDir); err == nil {
+		_ = dirFile.Sync()
+		_ = dirFile.Close()
+	}
+	return nil
 }
 
 func Load(stateDir string) (Config, error) {

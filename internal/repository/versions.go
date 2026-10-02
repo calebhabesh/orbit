@@ -60,6 +60,7 @@ type LocalVersionRequest struct {
 	Manifest         *history.Manifest
 	AuthoredRevision uint64
 	DisplayTime      string
+	SkipProjection   bool
 }
 
 // CreateLocalVersion allocates the folder-wide author counter and commits the
@@ -114,7 +115,19 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 	if err != nil {
 		return history.Envelope{}, err
 	}
-	parents, vector, err := h.PlanOrdinaryCapture(request.Folder, author, request.Path, request.Basis, counter)
+	basis := request.Basis
+	if len(basis) == 0 {
+		proj, projErr := loadProjection(ctx, tx, request.Folder, request.Path)
+		if projErr == nil && len(proj.Basis) > 0 {
+			basis = proj.Basis
+		} else {
+			heads := h.Heads(request.Folder, request.Path)
+			for _, head := range heads {
+				basis = append(basis, head.ID)
+			}
+		}
+	}
+	parents, vector, err := h.PlanOrdinaryCapture(request.Folder, author, request.Path, basis, counter)
 	if err != nil {
 		return history.Envelope{}, err
 	}
@@ -143,8 +156,10 @@ func (db *DB) CreateLocalVersion(ctx context.Context, request LocalVersionReques
 	if err := addObjectReferences(ctx, tx, envelope); err != nil {
 		return history.Envelope{}, err
 	}
-	if err := setProjectionTx(ctx, tx, envelope.ID.Folder, envelope.Path, []history.VersionID{envelope.ID}, envelope.Kind, envelope.Manifest, author[:], encodeUint(counter), ""); err != nil {
-		return history.Envelope{}, err
+	if !request.SkipProjection {
+		if err := setProjectionTx(ctx, tx, envelope.ID.Folder, envelope.Path, []history.VersionID{envelope.ID}, envelope.Kind, envelope.Manifest, author[:], encodeUint(counter), ""); err != nil {
+			return history.Envelope{}, err
+		}
 	}
 	if err := db.callHook(HookBeforeVersionCommit); err != nil {
 		return history.Envelope{}, err
@@ -445,6 +460,15 @@ func insertEnvelope(ctx context.Context, tx *sql.Tx, e history.Envelope, state s
 		}
 	}
 	return nil
+}
+
+// SetAcquiredTime updates the acquired_ns timestamp for testing and retention reconciliation.
+func (db *DB) SetAcquiredTime(ctx context.Context, id history.VersionID, t time.Time) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	_, err := db.db.ExecContext(ctx, `UPDATE versions SET acquired_ns=? WHERE folder_id=? AND author_id=? AND counter=?`,
+		t.UnixNano(), id.Folder[:], id.Author[:], encodeUint(id.Counter))
+	return err
 }
 
 type queryer interface {

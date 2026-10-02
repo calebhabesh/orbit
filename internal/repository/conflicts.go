@@ -13,6 +13,7 @@ type ConflictHead struct {
 	Vector       []history.ClockEntry `json:"vector"`
 	Applied      bool                 `json:"applied"`
 	ContentState string               `json:"content_state"`
+	DisplayTime  string               `json:"display_time,omitempty"`
 }
 
 type ConflictSet struct {
@@ -78,6 +79,7 @@ func (db *DB) Conflicts(ctx context.Context, folder history.ID) ([]ConflictSet, 
 				Vector:       envelope.Vector,
 				Applied:      applied,
 				ContentState: state,
+				DisplayTime:  envelope.DisplayTime,
 			})
 			if head.Kind == history.KindTombstone {
 				tombstones++

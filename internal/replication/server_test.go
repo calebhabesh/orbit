@@ -533,3 +533,36 @@ func TestStatusEndpoint(t *testing.T) {
 		t.Fatalf("over-limit batch error = %#v", err)
 	}
 }
+
+func TestOrbitMembership_ReplicationGet(t *testing.T) {
+	fixture := newPeerFixture(t)
+	ctx := context.Background()
+
+	// 1. Query membership as active client member
+	resp, err := fixture.client.MembershipGet(ctx, MembershipGetRequest{
+		ProtocolVersion: ProtocolVersion,
+		FolderID:        hex.EncodeToString(fixture.folder[:]),
+		DeviceID:        hex.EncodeToString(fixture.clientID.DeviceID[:]),
+	})
+	if err != nil {
+		t.Fatalf("MembershipGet failed: %v", err)
+	}
+	if resp.Membership.Revision != 1 {
+		t.Fatalf("expected revision 1, got %d", resp.Membership.Revision)
+	}
+
+	// 2. Query as unknown/unauthorized device returns UNAUTHORIZED
+	attackerClient, err := NewClient(fixture.baseURL, fixture.attackerID, fixture.serverID.Leaf, fixture.serverID.KeyPin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = attackerClient.MembershipGet(ctx, MembershipGetRequest{
+		ProtocolVersion: ProtocolVersion,
+		FolderID:        hex.EncodeToString(fixture.folder[:]),
+		DeviceID:        hex.EncodeToString(fixture.attackerID.DeviceID[:]),
+	})
+	var wire *WireError
+	if !errors.As(err, &wire) || wire.Body.Code != "UNAUTHORIZED" {
+		t.Fatalf("expected UNAUTHORIZED, got: %v", err)
+	}
+}

@@ -21,6 +21,8 @@ var (
 	ErrSnapshotExpired              = errors.New("inventory snapshot expired or unknown")
 	ErrSnapshotLimit                = errors.New("too many open inventory snapshots")
 	ErrRetiredAuthorVersionRejected = errors.New("retired-author version absent from approved snapshot")
+	ErrMembershipFork               = errors.New("membership fork detected: concurrent conflicting revisions")
+	ErrRetiredMemberRevival         = errors.New("cannot revive retired member")
 )
 
 type ApprovedMembership struct {
@@ -56,12 +58,34 @@ func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Members
 		if membership.Revision == currentRevision && bytes.Equal(currentDigestRaw, digest[:]) {
 			return ApprovedMembership{Revision: membership.Revision, Digest: digest}, nil
 		}
-		if membership.Revision != currentRevision+1 || !bytes.Equal(currentDigestRaw, membership.PriorDigest[:]) {
+		if membership.Revision == currentRevision && !bytes.Equal(currentDigestRaw, digest[:]) {
+			return ApprovedMembership{}, ErrMembershipFork
+		}
+		if membership.Revision != currentRevision+1 {
 			return ApprovedMembership{}, ErrMembershipMismatch
 		}
-	} else if membership.Revision != currentRevision || membership.PriorDigest != (history.Digest{}) {
+		if !bytes.Equal(currentDigestRaw, membership.PriorDigest[:]) {
+			var forkCount int
+			_ = tx.QueryRowContext(ctx, `SELECT count(*) FROM membership_revisions WHERE folder_id=? AND prior_digest=?`, membership.Folder[:], membership.PriorDigest[:]).Scan(&forkCount)
+			if forkCount > 0 {
+				return ApprovedMembership{}, ErrMembershipFork
+			}
+			return ApprovedMembership{}, ErrMembershipMismatch
+		}
+	} else if membership.Revision == 0 {
 		return ApprovedMembership{}, ErrMembershipMismatch
 	}
+
+	for _, member := range membership.Active {
+		var retiredCount int
+		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM membership_entries WHERE folder_id=? AND device_id=? AND state='retired'`, membership.Folder[:], member.Device[:]).Scan(&retiredCount); err != nil {
+			return ApprovedMembership{}, err
+		}
+		if retiredCount > 0 {
+			return ApprovedMembership{}, ErrRetiredMemberRevival
+		}
+	}
+
 	if _, err := tx.ExecContext(ctx, `INSERT INTO membership_revisions(folder_id,revision,prior_digest,digest,approved) VALUES(?,?,?,?,1)`, membership.Folder[:], encodeUint(membership.Revision), membership.PriorDigest[:], digest[:]); err != nil {
 		return ApprovedMembership{}, err
 	}
@@ -198,6 +222,103 @@ func (db *DB) GetMembership(ctx context.Context, folder history.ID, targetRevisi
 	var d history.Digest
 	copy(d[:], digestBytes)
 	return membership, ApprovedMembership{Revision: rev, Digest: d}, nil
+}
+
+// DetectMembershipFork checks if candidate revision conflicts with local revisions.
+func (db *DB) DetectMembershipFork(ctx context.Context, folder history.ID, candidate protocol.Membership) error {
+	candidateDigest, err := protocol.MembershipDigest(candidate)
+	if err != nil {
+		return err
+	}
+	var currentRevisionRaw, currentDigestRaw []byte
+	if err := db.db.QueryRowContext(ctx, `SELECT membership_revision,membership_digest FROM folders WHERE folder_id=?`, folder[:]).Scan(&currentRevisionRaw, &currentDigestRaw); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrFolderUnknown
+		}
+		return err
+	}
+	currentRevision, err := decodeUint(currentRevisionRaw)
+	if err != nil {
+		return err
+	}
+
+	if candidate.Revision == currentRevision && !bytes.Equal(currentDigestRaw, candidateDigest[:]) {
+		return fmt.Errorf("%w: competing revision %d with digest %x vs local %x", ErrMembershipFork, candidate.Revision, candidateDigest, currentDigestRaw)
+	}
+
+	var conflictingDigest []byte
+	err = db.db.QueryRowContext(ctx, `SELECT digest FROM membership_revisions WHERE folder_id=? AND prior_digest=? AND revision=? AND digest!=?`, folder[:], candidate.PriorDigest[:], encodeUint(candidate.Revision), candidateDigest[:]).Scan(&conflictingDigest)
+	if err == nil && len(conflictingDigest) > 0 {
+		return fmt.Errorf("%w: competing revision %d with prior digest %x", ErrMembershipFork, candidate.Revision, candidate.PriorDigest)
+	}
+	return nil
+}
+
+// IsDeviceRetired reports whether a device ID was retired in any prior revision for this folder.
+func (db *DB) IsDeviceRetired(ctx context.Context, folder history.ID, device history.ID) (bool, error) {
+	var count int
+	err := db.db.QueryRowContext(ctx, `SELECT count(*) FROM membership_entries WHERE folder_id=? AND device_id=? AND state='retired'`, folder[:], device[:]).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// IsActiveOrHistoricalMember reports whether a device has ever been an active member in this folder.
+func (db *DB) IsActiveOrHistoricalMember(ctx context.Context, folder history.ID, device history.ID) (bool, error) {
+	var count int
+	err := db.db.QueryRowContext(ctx, `SELECT count(*) FROM membership_entries WHERE folder_id=? AND device_id=? AND state='active'`, folder[:], device[:]).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// GetMembershipRevisions returns all known membership revisions for a folder sorted by revision.
+func (db *DB) GetMembershipRevisions(ctx context.Context, folder history.ID) ([]protocol.Membership, error) {
+	rows, err := db.db.QueryContext(ctx, `SELECT revision FROM membership_revisions WHERE folder_id=? ORDER BY revision ASC`, folder[:])
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var revs []uint64
+	for rows.Next() {
+		var raw []byte
+		if err := rows.Scan(&raw); err != nil {
+			return nil, err
+		}
+		r, err := decodeUint(raw)
+		if err != nil {
+			return nil, err
+		}
+		revs = append(revs, r)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	var results []protocol.Membership
+	for _, r := range revs {
+		m, _, err := db.GetMembership(ctx, folder, r)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, m)
+	}
+	return results, nil
+}
+
+// DeviceKeyPin retrieves the known key pin for a device.
+func (db *DB) DeviceKeyPin(ctx context.Context, device history.ID) (history.Digest, error) {
+	var pinRaw []byte
+	err := db.db.QueryRowContext(ctx, `SELECT key_pin FROM devices WHERE device_id=?`, device[:]).Scan(&pinRaw)
+	if err != nil {
+		return history.Digest{}, err
+	}
+	var pin history.Digest
+	copy(pin[:], pinRaw)
+	return pin, nil
 }
 
 // GetRetirementSnapshot returns an approved retirement snapshot.

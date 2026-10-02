@@ -9,11 +9,22 @@ import (
 	"strings"
 )
 
-type History struct {
-	versions map[VersionID]Envelope
+type pathKey struct {
+	folder ID
+	path   string
 }
 
-func New() *History { return &History{versions: make(map[VersionID]Envelope)} }
+type History struct {
+	versions map[VersionID]Envelope
+	byPath   map[pathKey][]VersionID
+}
+
+func New() *History {
+	return &History{
+		versions: make(map[VersionID]Envelope),
+		byPath:   make(map[pathKey][]VersionID),
+	}
+}
 
 // Accept validates and retains an immutable envelope. Missing ancestry is a
 // retryable condition; conflicting reuse of an identity is an integrity error.
@@ -28,6 +39,11 @@ func (h *History) Accept(candidate Envelope) error {
 		return err
 	}
 	h.versions[candidate.ID] = cloneEnvelope(candidate)
+	if h.byPath == nil {
+		h.byPath = make(map[pathKey][]VersionID)
+	}
+	k := pathKey{folder: candidate.ID.Folder, path: candidate.Path}
+	h.byPath[k] = append(h.byPath[k], candidate.ID)
 	return nil
 }
 
@@ -85,14 +101,15 @@ func (h *History) validate(candidate Envelope) error {
 		return fmt.Errorf("%w: vector is not derived from explicit parents", ErrInvalidEnvelope)
 	}
 
-	for id, existing := range h.versions {
-		if id.Folder != candidate.ID.Folder {
-			continue
-		}
+	if h.byPath == nil {
+		h.byPath = make(map[pathKey][]VersionID)
+	}
+	k := pathKey{folder: candidate.ID.Folder, path: candidate.Path}
+	for _, id := range h.byPath[k] {
 		if id.Author == candidate.ID.Author && id.Counter == candidate.ID.Counter {
 			return ErrDuplicateID
 		}
-		if existing.Path != candidate.Path || id.Author != candidate.ID.Author {
+		if id.Author != candidate.ID.Author {
 			continue
 		}
 		if !h.candidateReaches(candidate, id) {
@@ -100,8 +117,13 @@ func (h *History) validate(candidate Envelope) error {
 		}
 	}
 	h.versions[candidate.ID] = cloneEnvelope(candidate)
+	h.byPath[k] = append(h.byPath[k], candidate.ID)
 	headCount := len(h.Heads(candidate.ID.Folder, candidate.Path))
 	delete(h.versions, candidate.ID)
+	h.byPath[k] = h.byPath[k][:len(h.byPath[k])-1]
+	if len(h.byPath[k]) == 0 {
+		delete(h.byPath, k)
+	}
 	if headCount > MaxHeads {
 		return fmt.Errorf("%w: concurrent head limit exceeded", ErrInvalidEnvelope)
 	}
@@ -144,9 +166,11 @@ func (h *History) Envelope(id VersionID) (Envelope, bool) {
 }
 
 func (h *History) Heads(folder ID, path string) []Envelope {
-	var candidates []Envelope
-	for _, envelope := range h.versions {
-		if envelope.ID.Folder == folder && envelope.Path == path {
+	k := pathKey{folder: folder, path: path}
+	ids := h.byPath[k]
+	candidates := make([]Envelope, 0, len(ids))
+	for _, id := range ids {
+		if envelope, ok := h.versions[id]; ok {
 			candidates = append(candidates, envelope)
 		}
 	}
@@ -203,10 +227,13 @@ func (h *History) PlanOrdinaryCapture(folder, author ID, path string, basis []Ve
 		return nil, nil, err
 	}
 	var latest *Envelope
-	for _, envelope := range h.versions {
-		if envelope.ID.Folder == folder && envelope.ID.Author == author && envelope.Path == path && (latest == nil || envelope.ID.Counter > latest.ID.Counter) {
-			copy := envelope
-			latest = &copy
+	k := pathKey{folder: folder, path: path}
+	for _, id := range h.byPath[k] {
+		if envelope, ok := h.versions[id]; ok {
+			if envelope.ID.Author == author && (latest == nil || envelope.ID.Counter > latest.ID.Counter) {
+				copyEnv := envelope
+				latest = &copyEnv
+			}
 		}
 	}
 	if latest != nil {
@@ -307,10 +334,13 @@ func (h *History) PlanResolutionCapture(folder, author ID, path string, reviewed
 		return nil, nil, err
 	}
 	var latest *Envelope
-	for _, envelope := range h.versions {
-		if envelope.ID.Folder == folder && envelope.ID.Author == author && envelope.Path == path && (latest == nil || envelope.ID.Counter > latest.ID.Counter) {
-			copy := envelope
-			latest = &copy
+	k := pathKey{folder: folder, path: path}
+	for _, id := range h.byPath[k] {
+		if envelope, ok := h.versions[id]; ok {
+			if envelope.ID.Author == author && (latest == nil || envelope.ID.Counter > latest.ID.Counter) {
+				copyEnv := envelope
+				latest = &copyEnv
+			}
 		}
 	}
 	if latest != nil && (latest.ID.Counter == math.MaxUint64 || nextCounter <= latest.ID.Counter) {
@@ -342,9 +372,9 @@ type StructuralConflict struct {
 func (h *History) StructuralConflicts(folder ID) []StructuralConflict {
 	var conflicts []StructuralConflict
 	paths := map[string]bool{}
-	for _, envelope := range h.versions {
-		if envelope.ID.Folder == folder {
-			paths[envelope.Path] = true
+	for k := range h.byPath {
+		if k.folder == folder {
+			paths[k.path] = true
 		}
 	}
 	for path := range paths {

@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
@@ -673,6 +674,10 @@ func (db *DB) RunGC(ctx context.Context, folder history.ID, policy *RetentionPol
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
+	if _, err := db.pruneExpiredReadLeases(ctx, now); err != nil {
+		return nil, err
+	}
+
 	protected, err := db.ComputeProtectedChunks(ctx, folder, &activePolicy, now)
 	if err != nil {
 		return nil, err
@@ -865,20 +870,29 @@ type FilesystemUsage struct {
 }
 
 type FolderStorageUsage struct {
-	FolderID      history.ID      `json:"folder_id"`
-	RootPath      string          `json:"root_path"`
-	StageBytes    uint64          `json:"stage_bytes"`
-	RecoveryBytes uint64          `json:"recovery_bytes"`
-	Filesystem    FilesystemUsage `json:"filesystem"`
+	FolderID         history.ID      `json:"folder_id"`
+	RootPath         string          `json:"root_path"`
+	WorkingRootBytes uint64          `json:"working_root_bytes"`
+	StageBytes       uint64          `json:"stage_bytes"`
+	RecoveryBytes    uint64          `json:"recovery_bytes"`
+	Filesystem       FilesystemUsage `json:"filesystem"`
 }
 
 type DetailedStorageUsage struct {
 	Usage
+	MetadataBytes         uint64               `json:"metadata_bytes"`
+	ObjectBytes           uint64               `json:"object_bytes"`
+	StagingBytes          uint64               `json:"staging_bytes"`
+	RecoveryBytes         uint64               `json:"recovery_bytes"`
+	QuarantineBytes       uint64               `json:"quarantine_bytes"`
+	TotalWorkingRootBytes uint64               `json:"total_working_root_bytes"`
+	TotalManagedBytes     uint64               `json:"total_managed_bytes"`
 	MetadataBudgetBytes   uint64               `json:"metadata_budget_bytes"`
 	DataBudgetBytes       uint64               `json:"data_budget_bytes"`
 	FreeSpaceReserveBytes uint64               `json:"free_space_reserve_bytes"`
 	StateFilesystem       FilesystemUsage      `json:"state_filesystem"`
 	Folders               []FolderStorageUsage `json:"folders"`
+	Warnings              []string             `json:"warnings,omitempty"`
 }
 
 func (db *DB) DetailedStorageUsage(ctx context.Context) (DetailedStorageUsage, error) {
@@ -894,11 +908,15 @@ func (db *DB) DetailedStorageUsage(ctx context.Context) (DetailedStorageUsage, e
 		return DetailedStorageUsage{}, err
 	}
 
+	freeReserve := db.freeSpaceReserveBytes
+	if freeReserve == 0 {
+		freeReserve = 512 * 1024 * 1024
+	}
 	result := DetailedStorageUsage{
 		Usage:                 usage,
 		MetadataBudgetBytes:   db.metadataBudgetBytes,
 		DataBudgetBytes:       db.budgetBytes,
-		FreeSpaceReserveBytes: db.freeSpaceReserveBytes,
+		FreeSpaceReserveBytes: freeReserve,
 		StateFilesystem:       getFilesystemUsage(db.stateDir),
 	}
 
@@ -908,6 +926,10 @@ func (db *DB) DetailedStorageUsage(ctx context.Context) (DetailedStorageUsage, e
 		return result, err
 	}
 	defer fRows.Close()
+
+	var totalStage uint64
+	var totalRecovery uint64
+	var totalWorkingRoot uint64
 
 	for fRows.Next() {
 		var fRaw []byte
@@ -924,23 +946,61 @@ func (db *DB) DetailedStorageUsage(ctx context.Context) (DetailedStorageUsage, e
 			Filesystem: getFilesystemUsage(root),
 		}
 
-		// Calculate scratch stage & recovery bytes beneath root/.filesync-internal
-		stageDir := filepath.Join(root, ".filesync-internal", "stage")
-		recoveryDir := filepath.Join(root, ".filesync-internal", "recovery")
-		_ = filepath.Walk(stageDir, func(_ string, info os.FileInfo, err error) error {
-			if err == nil && info.Mode().IsRegular() {
-				fu.StageBytes += uint64(info.Size())
+		// Calculate working root files bytes (excluding .filesync-internal)
+		_ = filepath.Walk(root, func(p string, info os.FileInfo, err error) error {
+			if err != nil {
+				return nil
+			}
+			if info.IsDir() && filepath.Base(p) == ".filesync-internal" {
+				return filepath.SkipDir
+			}
+			if info.Mode().IsRegular() {
+				fu.WorkingRootBytes += uint64(info.Size())
 			}
 			return nil
 		})
-		_ = filepath.Walk(recoveryDir, func(_ string, info os.FileInfo, err error) error {
-			if err == nil && info.Mode().IsRegular() {
+
+		// Calculate scratch stage & recovery bytes beneath root/.filesync-internal
+		internalDir := filepath.Join(root, ".filesync-internal")
+		_ = filepath.Walk(internalDir, func(p string, info os.FileInfo, err error) error {
+			if err != nil || !info.Mode().IsRegular() {
+				return nil
+			}
+			rel, _ := filepath.Rel(internalDir, p)
+			base := filepath.Base(p)
+			if strings.HasPrefix(rel, "stage") || strings.HasPrefix(base, "stage-") {
+				fu.StageBytes += uint64(info.Size())
+			} else if strings.HasPrefix(rel, "recovery") || strings.HasPrefix(base, "recovery-") {
 				fu.RecoveryBytes += uint64(info.Size())
 			}
 			return nil
 		})
 
+		totalWorkingRoot += fu.WorkingRootBytes
+		totalStage += fu.StageBytes
+		totalRecovery += fu.RecoveryBytes
 		result.Folders = append(result.Folders, fu)
+	}
+
+	result.TotalWorkingRootBytes = totalWorkingRoot
+	result.MetadataBytes = usage.Metadata
+	result.ObjectBytes = usage.Objects
+	result.StagingBytes = usage.Incoming + totalStage
+	result.RecoveryBytes = totalRecovery
+	result.QuarantineBytes = usage.Quarantine
+	result.TotalManagedBytes = usage.Total() + totalStage + totalRecovery
+
+	// Capacity checks covering state and root filesystems where separate
+	if result.StateFilesystem.AvailableBytes < result.FreeSpaceReserveBytes {
+		result.Warnings = append(result.Warnings, fmt.Sprintf("state filesystem free space (%d MiB) is below required %d MiB reserve", result.StateFilesystem.AvailableBytes/(1024*1024), result.FreeSpaceReserveBytes/(1024*1024)))
+	}
+	for _, folder := range result.Folders {
+		if folder.Filesystem.AvailableBytes < result.FreeSpaceReserveBytes {
+			result.Warnings = append(result.Warnings, fmt.Sprintf("sync folder %s free space (%d MiB) is below required %d MiB reserve", folder.RootPath, folder.Filesystem.AvailableBytes/(1024*1024), result.FreeSpaceReserveBytes/(1024*1024)))
+		}
+	}
+	if result.MetadataBytes > result.MetadataBudgetBytes {
+		result.Warnings = append(result.Warnings, fmt.Sprintf("metadata storage (%d MiB) exceeds soft budget (%d MiB)", result.MetadataBytes/(1024*1024), result.MetadataBudgetBytes/(1024*1024)))
 	}
 
 	return result, nil
@@ -960,4 +1020,67 @@ func getFilesystemUsage(path string) FilesystemUsage {
 		FreeBytes:      free,
 		AvailableBytes: avail,
 	}
+}
+
+type LifecyclePruneReport struct {
+	TasksPruned              int64 `json:"tasks_pruned"`
+	InvitationsPruned        int64 `json:"invitations_pruned"`
+	EnrollmentRequestsPruned int64 `json:"enrollment_requests_pruned"`
+	ReadLeasesPruned         int64 `json:"read_leases_pruned"`
+	OperationsPruned         int64 `json:"operations_pruned"`
+	ControlOpsPruned         int64 `json:"control_ops_pruned"`
+	TotalPruned              int64 `json:"total_pruned"`
+}
+
+// PruneLifecycleRecords performs safe, bounded pruning of completed/expired lifecycle records
+// older than cutoff, preserving pending work, causal DAG metadata, recovery journals, and content pins (Invariant I28).
+func (db *DB) PruneLifecycleRecords(ctx context.Context, cutoff time.Time) (LifecyclePruneReport, error) {
+	var report LifecyclePruneReport
+
+	// 1. Prune finished tasks (preserves queued, running, retry, exhausted)
+	tCount, err := db.PruneFinishedTasks(ctx, cutoff)
+	if err != nil {
+		return report, fmt.Errorf("prune finished tasks: %w", err)
+	}
+	report.TasksPruned = tCount
+
+	// 2. Prune expired invitations
+	invCount, err := db.PruneExpiredInvitations(ctx, cutoff)
+	if err != nil {
+		return report, fmt.Errorf("prune expired invitations: %w", err)
+	}
+	report.InvitationsPruned = invCount
+
+	// 3. Prune terminal enrollment requests (preserves pending)
+	enrCount, err := db.PruneTerminalEnrollmentRequests(ctx, cutoff)
+	if err != nil {
+		return report, fmt.Errorf("prune terminal enrollment requests: %w", err)
+	}
+	report.EnrollmentRequestsPruned = enrCount
+
+	// 4. Prune expired read leases
+	rlCount, err := db.PruneExpiredReadLeases(ctx, cutoff)
+	if err != nil {
+		return report, fmt.Errorf("prune expired read leases: %w", err)
+	}
+	report.ReadLeasesPruned = int64(rlCount)
+
+	// 5. Prune finished operations (preserves in-progress)
+	opCount, err := db.PruneFinishedOperations(ctx, cutoff)
+	if err != nil {
+		return report, fmt.Errorf("prune finished operations: %w", err)
+	}
+	report.OperationsPruned = opCount
+
+	// 6. Prune control operations (expired idempotency records)
+	ctrlCount, err := db.PruneControlOperations(ctx, cutoff)
+	if err != nil {
+		return report, fmt.Errorf("prune control operations: %w", err)
+	}
+	report.ControlOpsPruned = ctrlCount
+
+	report.TotalPruned = report.TasksPruned + report.InvitationsPruned + report.EnrollmentRequestsPruned +
+		report.ReadLeasesPruned + report.OperationsPruned + report.ControlOpsPruned
+
+	return report, nil
 }

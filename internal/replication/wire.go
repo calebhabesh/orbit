@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/protocol"
 )
 
 const (
@@ -142,6 +143,20 @@ type ErrorResponse struct {
 	Message         string `json:"message"`
 	Retryable       bool   `json:"retryable"`
 	Action          string `json:"action"`
+}
+
+type MembershipGetRequest struct {
+	ProtocolVersion string `json:"protocol_version"`
+	DeviceID        string `json:"device_id"`
+	FolderID        string `json:"folder_id"`
+	FromRevision    string `json:"from_revision,omitempty"`
+}
+
+type MembershipGetResponse struct {
+	ProtocolVersion string                        `json:"protocol_version"`
+	FolderID        string                        `json:"folder_id"`
+	Membership      protocol.Membership           `json:"membership"`
+	Snapshots       []protocol.RetirementSnapshot `json:"snapshots,omitempty"`
 }
 
 func parseID(text string) (history.ID, error) {

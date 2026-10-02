@@ -109,6 +109,8 @@ func (server *Server) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 		server.handleReceipts(writer, request)
 	case "/peer/v1/status":
 		server.handleStatus(writer, request)
+	case "/peer/v1/membership/get":
+		server.handleMembershipGet(writer, request)
 	default:
 		writeWireError(writer, http.StatusNotFound, "INVALID_REQUEST", "unknown peer endpoint", false, "use a versioned peer endpoint")
 	}
@@ -157,6 +159,9 @@ func (server *Server) requestIdentity(request *http.Request, deviceText string) 
 	device, err := parseID(deviceText)
 	if err != nil {
 		return device, history.Digest{}, err
+	}
+	if request.TLS == nil || len(request.TLS.PeerCertificates) == 0 {
+		return device, history.Digest{}, errors.New("missing client certificate")
 	}
 	return device, PublicKeyPin(request.TLS.PeerCertificates[0]), nil
 }
@@ -435,6 +440,56 @@ func (server *Server) handleStatus(writer http.ResponseWriter, request *http.Req
 		response.Entries = append(response.Entries, StatusEntry{VersionIDWire: wireID, MetadataKnown: status.MetadataKnown, ContentState: status.ContentState, Stored: status.Stored, Applied: status.Applied, Conflict: status.Conflict, Blocked: status.Blocked})
 	}
 	writeJSON(writer, http.StatusOK, response)
+}
+
+func (server *Server) handleMembershipGet(writer http.ResponseWriter, request *http.Request) {
+	var body MembershipGetRequest
+	if !readRequest(writer, request, &body) {
+		return
+	}
+	if body.ProtocolVersion != ProtocolVersion {
+		writeWireError(writer, http.StatusUpgradeRequired, "INCOMPATIBLE_VERSION", "protocol version is not supported", false, "use protocol version 1")
+		return
+	}
+	device, _, err := server.requestIdentity(request, body.DeviceID)
+	if err != nil {
+		writeWireError(writer, http.StatusUnauthorized, "UNAUTHORIZED", "unauthorized client identity", false, "pair client certificate")
+		return
+	}
+	folder, err := parseID(body.FolderID)
+	if err != nil {
+		writeWireError(writer, http.StatusBadRequest, "INVALID_REQUEST", "invalid folder ID", false, "send valid 64-hex folder ID")
+		return
+	}
+
+	// Gated authorization check: peer must be an active or historical member
+	isMember, err := server.repo.IsActiveOrHistoricalMember(request.Context(), folder, device)
+	if err != nil || !isMember {
+		writeWireError(writer, http.StatusForbidden, "UNAUTHORIZED", "peer is not a member of this folder", false, "obtain workspace membership approval")
+		return
+	}
+
+	// Retired device check: retired devices cannot fetch membership updates (Invariant I24)
+	retired, err := server.repo.IsDeviceRetired(request.Context(), folder, device)
+	if err == nil && retired {
+		writeWireError(writer, http.StatusForbidden, "RETIRED_MEMBER", "retired device cannot fetch membership updates (Invariant I24)", false, "enroll under fresh cryptographic identity")
+		return
+	}
+
+	membership, _, err := server.repo.GetMembership(request.Context(), folder)
+	if err != nil {
+		writeWireError(writer, http.StatusInternalServerError, "IO_ERROR", "cannot read local membership", true, "retry later")
+		return
+	}
+
+	snaps, _ := server.repo.ListRetirementSnapshots(request.Context(), folder, membership.Revision)
+
+	writeJSON(writer, http.StatusOK, MembershipGetResponse{
+		ProtocolVersion: ProtocolVersion,
+		FolderID:        body.FolderID,
+		Membership:      membership,
+		Snapshots:       snaps,
+	})
 }
 
 func parseWireVersion(folder history.ID, wire VersionIDWire) (history.VersionID, error) {

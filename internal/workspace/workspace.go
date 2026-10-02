@@ -36,6 +36,13 @@ const (
 	HookFilesystemTransition  = "publication.filesystem.transition"
 	HookRecoveryNamed         = "publication.recovery.named"
 	HookPublicationDirFlushed = "publication.directory.flushed"
+
+	// O09 file mutation journal hooks
+	HookFileMutationPlanned        = "file_mutation.planned"
+	HookFileMutationStaged         = "file_mutation.staged"
+	HookFileMutationInstalled      = "file_mutation.installed"
+	HookFileMutationSourceVerified = "file_mutation.source_verified"
+	HookFileMutationCompleted      = "file_mutation.completed"
 )
 
 var (
@@ -43,6 +50,14 @@ var (
 	ErrUnsupportedEntry   = errors.New("workspace entry type is unsupported")
 	ErrUnstableFile       = errors.New("UNSTABLE_FILE")
 	ErrStructuralConflict = errors.New("structural conflict blocks publication")
+
+	// O09 file mutation errors
+	ErrDestinationExists   = errors.New("destination already exists without overwrite approval")
+	ErrSubtreeInvalidated  = errors.New("directory subtree modified; reviewed token invalidated")
+	ErrConcurrentSourceMod = errors.New("source modified concurrently during move; retained")
+	ErrOperationCanceled   = errors.New("operation canceled")
+	ErrDirectoryNotEmpty   = errors.New("directory not empty")
+	ErrStaleReview         = errors.New("stale reviewed state; target was modified")
 )
 
 type FaultHook func(string) error
@@ -645,6 +660,10 @@ func (workspace *Workspace) ApproveDeletions(ctx context.Context, folder history
 }
 
 func (workspace *Workspace) Apply(ctx context.Context, id history.VersionID) error {
+	return workspace.ApplyWithOperationID(ctx, id, "")
+}
+
+func (workspace *Workspace) ApplyWithOperationID(ctx context.Context, id history.VersionID, opID string) error {
 	if err := workspace.Recover(ctx, id.Folder); err != nil {
 		return err
 	}
@@ -663,9 +682,13 @@ func (workspace *Workspace) Apply(ctx context.Context, id history.VersionID) err
 	if err := workspace.guardApplyTarget(ctx, root, envelope); err != nil {
 		return err
 	}
-	operation, err := workspace.randomToken()
-	if err != nil {
-		return err
+	operation := opID
+	if operation == "" {
+		var err error
+		operation, err = workspace.randomToken()
+		if err != nil {
+			return err
+		}
 	}
 	publication := repository.Publication{OperationID: operation, Folder: id.Folder, Path: envelope.Path, Intended: id, Kind: envelope.Kind, StagePath: "stage-" + operation, RecoveryPath: "recovery-" + operation}
 	if err := workspace.repo.PreparePublication(ctx, publication); err != nil {
@@ -1132,6 +1155,9 @@ func parentDir(p string) string {
 }
 
 func (workspace *Workspace) Recover(ctx context.Context, folder history.ID) error {
+	if err := workspace.RecoverFileMutations(ctx, folder); err != nil {
+		return err
+	}
 	publications, err := workspace.repo.Publications(ctx, folder)
 	if err != nil {
 		return err
@@ -1399,6 +1425,59 @@ func fileMatches(file *os.File, manifest *history.Manifest) (bool, error) {
 		return false, err
 	}
 	return uint64(n) == manifest.Size && bytes.Equal(hasher.Sum(nil), manifest.Digest[:]), nil
+}
+
+// InspectRecoveryCopies safely scans the workspace scratch directory for unreferenced
+// or committed recovery files without unlinking them or modifying reservations/publications.
+func (workspace *Workspace) InspectRecoveryCopies(ctx context.Context, folder history.ID) (int, uint64, error) {
+	root, err := workspace.openRoot(ctx, folder)
+	if err != nil {
+		return 0, 0, err
+	}
+	defer root.close()
+
+	duplicate, err := unix.Dup(root.scratch)
+	if err != nil {
+		return 0, 0, err
+	}
+	dir := os.NewFile(uintptr(duplicate), scratchName)
+	entries, err := dir.ReadDir(-1)
+	dir.Close()
+	if err != nil {
+		return 0, 0, err
+	}
+
+	pubs, err := workspace.repo.Publications(ctx, folder)
+	if err != nil {
+		return 0, 0, err
+	}
+	// Active (non-committed) publications must not have their recovery files counted as reclaimable
+	activeRecovery := make(map[string]bool)
+	for _, p := range pubs {
+		if p.Phase != "COMMITTED" && p.RecoveryPath != "" {
+			activeRecovery[p.RecoveryPath] = true
+		}
+	}
+
+	var count int
+	var totalBytes uint64
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasPrefix(name, "recovery-") {
+			continue
+		}
+		if activeRecovery[name] {
+			continue
+		}
+
+		var st unix.Stat_t
+		if err := unix.Fstatat(root.scratch, name, &st, 0); err == nil && st.Mode&unix.S_IFMT == unix.S_IFREG {
+			totalBytes += uint64(st.Size)
+		}
+		count++
+	}
+
+	return count, totalBytes, nil
 }
 
 // ReclaimRecoveryCopies safely scans the workspace scratch directory for unreferenced

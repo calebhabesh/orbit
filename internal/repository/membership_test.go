@@ -3,7 +3,9 @@ package repository_test
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"crypto/sha256"
+	"errors"
 	"testing"
 	"time"
 
@@ -385,5 +387,157 @@ func TestPeerProgressDirectVsIndirect(t *testing.T) {
 	}
 	if byPeer[nodeC].Direct {
 		t.Fatal("expected nodeC progress to be indirect")
+	}
+}
+
+func TestOrbitMembership_RepositoryForksAndRevivals(t *testing.T) {
+	ctx := context.Background()
+	db, err := repository.Open(ctx, testkit.NewDisposable(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	folder := id('F')
+	nodeA := id('A')
+	nodeB := id('B')
+	nodeC := id('C')
+
+	if err := db.EnsureFolder(ctx, folder, nodeA, 1); err != nil {
+		t.Fatal(err)
+	}
+
+	// Revision 1: [nodeA, nodeB]
+	rev1 := protocol.Membership{
+		Folder:   folder,
+		Revision: 1,
+		Active: []protocol.ActiveMember{
+			{Device: nodeA, KeyPin: digest('a')},
+			{Device: nodeB, KeyPin: digest('b')},
+		},
+	}
+	app1, err := db.ApproveMembership(ctx, rev1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Competing fork: same revision 1 with different digest
+	fork1 := rev1
+	fork1.Active = []protocol.ActiveMember{
+		{Device: nodeA, KeyPin: digest('a')},
+		{Device: nodeC, KeyPin: digest('c')},
+	}
+	if err := db.DetectMembershipFork(ctx, folder, fork1); !errors.Is(err, repository.ErrMembershipFork) {
+		t.Fatalf("expected ErrMembershipFork, got: %v", err)
+	}
+
+	// Revision 2: retire nodeB
+	snap := protocol.RetirementSnapshot{
+		Folder:           folder,
+		ConfigurationRev: 2,
+		RetiredDevice:    nodeB,
+	}
+	snapDigest, err := protocol.RetirementSnapshotDigest(snap)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rev2 := protocol.Membership{
+		Folder:      folder,
+		Revision:    2,
+		PriorDigest: app1.Digest,
+		Active: []protocol.ActiveMember{
+			{Device: nodeA, KeyPin: digest('a')},
+		},
+		Retired: []protocol.RetiredMember{
+			{Device: nodeB, RetiredAt: 2, SnapshotDigest: snapDigest},
+		},
+	}
+	app2, err := db.ApproveMembership(ctx, rev2, snap)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Verify nodeB is retired
+	retired, err := db.IsDeviceRetired(ctx, folder, nodeB)
+	if err != nil || !retired {
+		t.Fatalf("expected nodeB to be retired, got %v (err: %v)", retired, err)
+	}
+
+	// Invariant I24: Attempting to revive nodeB in Revision 3 must fail with ErrRetiredMemberRevival
+	rev3Bad := protocol.Membership{
+		Folder:      folder,
+		Revision:    3,
+		PriorDigest: app2.Digest,
+		Active: []protocol.ActiveMember{
+			{Device: nodeA, KeyPin: digest('a')},
+			{Device: nodeB, KeyPin: digest('b')},
+		},
+	}
+	_, err = db.ApproveMembership(ctx, rev3Bad)
+	if !errors.Is(err, repository.ErrRetiredMemberRevival) {
+		t.Fatalf("expected ErrRetiredMemberRevival, got: %v", err)
+	}
+}
+
+func TestOrbitEnrollment_RepositoryInvitations(t *testing.T) {
+	ctx := context.Background()
+	db, err := repository.Open(ctx, testkit.NewDisposable(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	folder := id('I')
+	nodeA := id('A')
+	if err := db.EnsureFolder(ctx, folder, nodeA, 1); err != nil {
+		t.Fatal(err)
+	}
+
+	var d1, d2 history.Digest
+	rand.Read(d1[:])
+	rand.Read(d2[:])
+
+	now := time.Now()
+	inv1 := repository.InvitationRecord{
+		Digest:    d1,
+		Folder:    folder,
+		CreatedNS: now.UnixNano(),
+		ExpiresNS: now.Add(time.Hour).UnixNano(),
+		MaxUses:   1,
+		UsesCount: 0,
+		Revoked:   false,
+	}
+	if err := db.CreateInvitation(ctx, inv1); err != nil {
+		t.Fatal(err)
+	}
+
+	// Consume invitation
+	if err := db.ConsumeInvitation(ctx, d1, now); err != nil {
+		t.Fatalf("ConsumeInvitation failed: %v", err)
+	}
+	// Replay must fail with ErrInvitationExpired
+	if err := db.ConsumeInvitation(ctx, d1, now); !errors.Is(err, repository.ErrInvitationExpired) {
+		t.Fatalf("expected ErrInvitationExpired on exhausted invitation, got: %v", err)
+	}
+
+	// Revocation
+	inv2 := repository.InvitationRecord{
+		Digest:    d2,
+		Folder:    folder,
+		CreatedNS: now.UnixNano(),
+		ExpiresNS: now.Add(time.Hour).UnixNano(),
+		MaxUses:   5,
+		UsesCount: 0,
+		Revoked:   false,
+	}
+	if err := db.CreateInvitation(ctx, inv2); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.RevokeInvitation(ctx, d2); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.ConsumeInvitation(ctx, d2, now); !errors.Is(err, repository.ErrInvitationRevoked) {
+		t.Fatalf("expected ErrInvitationRevoked, got: %v", err)
 	}
 }

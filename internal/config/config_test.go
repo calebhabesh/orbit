@@ -52,3 +52,40 @@ func TestLoadRejectsUnknownAndIncompatibleConfiguration(t *testing.T) {
 		})
 	}
 }
+
+func TestSaveAndLoadRoundtrip(t *testing.T) {
+	dir := t.TempDir()
+	now := time.Now().UTC().Truncate(time.Second)
+	cfg := Config{
+		FormatVersion: FormatVersion,
+		DeviceID:      string(bytes.Repeat([]byte{'a'}, 64)),
+		CreatedAt:     now,
+	}
+
+	if err := Save(dir, cfg); err != nil {
+		t.Fatalf("Save failed: %v", err)
+	}
+
+	loaded, err := Load(dir)
+	if err != nil {
+		t.Fatalf("Load failed: %v", err)
+	}
+	if loaded.FormatVersion != cfg.FormatVersion {
+		t.Errorf("FormatVersion = %d, want %d", loaded.FormatVersion, cfg.FormatVersion)
+	}
+	if loaded.DeviceID != cfg.DeviceID {
+		t.Errorf("DeviceID = %s, want %s", loaded.DeviceID, cfg.DeviceID)
+	}
+	if !loaded.CreatedAt.Equal(cfg.CreatedAt) {
+		t.Errorf("CreatedAt = %v, want %v", loaded.CreatedAt, cfg.CreatedAt)
+	}
+
+	// Mode must be 0600
+	info, err := os.Stat(filepath.Join(dir, filename))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Fatalf("config mode = %04o, want 0600", got)
+	}
+}

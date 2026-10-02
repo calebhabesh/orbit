@@ -41,6 +41,7 @@ type PeerClient interface {
 	Chunk(context.Context, ChunkRequest, history.Chunk) ([]byte, error)
 	Receipts(context.Context, ReceiptsRequest) (ReceiptsResponse, error)
 	Status(context.Context, StatusRequest) (StatusResponse, error)
+	MembershipGet(context.Context, MembershipGetRequest) (MembershipGetResponse, error)
 }
 
 type Publisher interface {

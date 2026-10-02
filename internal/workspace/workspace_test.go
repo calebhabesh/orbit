@@ -922,7 +922,25 @@ func TestReclaimRecoveryCopies(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Reclaim recovery copies
+	// 1. Inspect recovery copies (read-only; must leave files untouched)
+	for i := 0; i < 2; i++ {
+		inspectCount, inspectBytes, err := work.InspectRecoveryCopies(ctx, folder)
+		if err != nil {
+			t.Fatalf("InspectRecoveryCopies: %v", err)
+		}
+		if inspectCount != 1 {
+			t.Fatalf("inspect count = %d, want 1", inspectCount)
+		}
+		if inspectBytes != uint64(len("recovery content")) {
+			t.Fatalf("inspect bytes = %d, want %d", inspectBytes, len("recovery content"))
+		}
+		// File must still exist after inspection!
+		if _, err := os.Stat(orphanPath); err != nil {
+			t.Fatalf("orphan recovery file was removed by inspection! %v", err)
+		}
+	}
+
+	// 2. Reclaim recovery copies
 	count, bytesReclaimed, err := work.ReclaimRecoveryCopies(ctx, folder)
 	if err != nil {
 		t.Fatal(err)

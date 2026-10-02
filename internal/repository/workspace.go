@@ -611,21 +611,29 @@ func (db *DB) RemovePublication(ctx context.Context, operation string) error {
 }
 
 func (db *DB) MarkScaffold(ctx context.Context, folder history.ID, path string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
 	_, err := db.db.ExecContext(ctx, `INSERT INTO workspace_scaffolds(folder_id,path,pending) VALUES(?,?,1) ON CONFLICT DO NOTHING`, folder[:], path)
 	return err
 }
 
 func (db *DB) CompleteScaffold(ctx context.Context, folder history.ID, path string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
 	_, err := db.db.ExecContext(ctx, `UPDATE workspace_scaffolds SET pending=0 WHERE folder_id=? AND path=?`, folder[:], path)
 	return err
 }
 
 func (db *DB) RemoveScaffold(ctx context.Context, folder history.ID, path string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
 	_, err := db.db.ExecContext(ctx, `DELETE FROM workspace_scaffolds WHERE folder_id=? AND path=? AND pending=1`, folder[:], path)
 	return err
 }
 
 func (db *DB) RemoveAnyScaffold(ctx context.Context, folder history.ID, path string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
 	_, err := db.db.ExecContext(ctx, `DELETE FROM workspace_scaffolds WHERE folder_id=? AND path=?`, folder[:], path)
 	return err
 }

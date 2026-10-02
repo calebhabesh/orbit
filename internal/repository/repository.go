@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"golang.org/x/sys/unix"
 	_ "modernc.org/sqlite"
@@ -19,7 +20,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/history"
 )
 
-const CurrentSchema = 10
+const CurrentSchema = 13
 
 var (
 	ErrIncompatibleSchema     = errors.New("metadata schema is newer than this binary")
@@ -149,6 +150,14 @@ func OpenWithOptions(ctx context.Context, stateDir string, options Options) (*DB
 		sqlDB.Close()
 		return nil, err
 	}
+	if err := db.clearAbandonedReads(ctx); err != nil {
+		sqlDB.Close()
+		return nil, err
+	}
+	if _, err := db.PruneExpiredReadLeases(ctx, time.Now()); err != nil {
+		sqlDB.Close()
+		return nil, err
+	}
 	if _, err := db.RecoverInFlightDurableTasks(ctx); err != nil {
 		sqlDB.Close()
 		return nil, err
@@ -195,6 +204,16 @@ func (db *DB) migrate(ctx context.Context) error {
 			return fmt.Errorf("apply metadata migration %d: %w", next, err)
 		}
 		version = next
+	}
+	return nil
+}
+
+// InitSchemaV5ForTest initializes an empty database with schema version 5 for legacy testing.
+func InitSchemaV5ForTest(ctx context.Context, db *sql.DB) error {
+	for v := 1; v <= 5; v++ {
+		if err := migrations[v](ctx, db); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -306,6 +325,51 @@ var migrations = map[int]func(context.Context, *sql.DB) error{
 		}
 		defer tx.Rollback()
 		if _, err := tx.ExecContext(ctx, schemaV10); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	11: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV11); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	12: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, `CREATE TABLE browse_generation (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL) STRICT;
+INSERT INTO browse_generation VALUES(1,1);
+PRAGMA user_version=12;
+CREATE INDEX read_lease_expiry ON read_leases(expires_ns);
+CREATE INDEX version_parent_lookup ON version_parents(folder_id,parent_author,parent_counter);`); err != nil {
+			return err
+		}
+		for _, table := range []string{"versions", "version_parents", "path_projections", "workspace_scaffolds", "folders"} {
+			for _, action := range []string{"INSERT", "UPDATE", "DELETE"} {
+				query := fmt.Sprintf("CREATE TRIGGER browse_%s_%s AFTER %s ON %s BEGIN UPDATE browse_generation SET generation=generation+1 WHERE id=1; END", table, action, action, table)
+				if _, err := tx.ExecContext(ctx, query); err != nil {
+					return err
+				}
+			}
+		}
+		return tx.Commit()
+	},
+	13: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, schemaV13); err != nil {
 			return err
 		}
 		return tx.Commit()
@@ -508,6 +572,102 @@ CREATE TABLE event_logs (
 CREATE INDEX event_logs_ts ON event_logs(timestamp_ns);
 PRAGMA user_version = 10;`
 
+const schemaV11 = `
+ALTER TABLE folders ADD COLUMN display_name TEXT;
+CREATE TABLE invitations (
+	digest BLOB PRIMARY KEY CHECK(length(digest)=32),
+	folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+	created_ns INTEGER NOT NULL,
+	expires_ns INTEGER NOT NULL,
+	max_uses INTEGER NOT NULL DEFAULT 1,
+	uses_count INTEGER NOT NULL DEFAULT 0,
+	revoked INTEGER NOT NULL DEFAULT 0 CHECK(revoked IN (0,1)),
+	FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+CREATE TABLE enrollment_requests (
+	request_id TEXT PRIMARY KEY,
+	folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+	device_id BLOB NOT NULL CHECK(length(device_id)=32),
+	public_key BLOB NOT NULL CHECK(length(public_key)=32),
+	key_pin BLOB NOT NULL CHECK(length(key_pin)=32),
+	suggested_label TEXT NOT NULL,
+	status TEXT NOT NULL CHECK(status IN ('pending','approved','declined')),
+	created_ns INTEGER NOT NULL,
+	updated_ns INTEGER NOT NULL,
+	FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+CREATE INDEX enrollment_requests_folder ON enrollment_requests(folder_id, status);
+CREATE TABLE setup_state (
+	id INTEGER PRIMARY KEY CHECK(id=1),
+	phase TEXT NOT NULL,
+	root_path TEXT,
+	default_folder_id BLOB CHECK(default_folder_id IS NULL OR length(default_folder_id)=32),
+	completed INTEGER NOT NULL DEFAULT 0 CHECK(completed IN (0,1)),
+	updated_ns INTEGER NOT NULL
+) STRICT;
+CREATE TABLE operation_progress (
+	operation_id TEXT PRIMARY KEY,
+	kind TEXT NOT NULL,
+	phase TEXT NOT NULL,
+	progress_numerator INTEGER NOT NULL DEFAULT 0,
+	progress_denominator INTEGER NOT NULL DEFAULT 0,
+	details TEXT,
+	error_message TEXT,
+	retryable INTEGER NOT NULL DEFAULT 0 CHECK(retryable IN (0,1)),
+	canceled INTEGER NOT NULL DEFAULT 0 CHECK(canceled IN (0,1)),
+	created_ns INTEGER NOT NULL,
+	updated_ns INTEGER NOT NULL
+) STRICT;
+CREATE TABLE read_leases (
+	lease_id TEXT PRIMARY KEY,
+	folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+	version_author BLOB NOT NULL CHECK(length(version_author)=32),
+	version_counter BLOB NOT NULL CHECK(length(version_counter)=8),
+	expires_ns INTEGER NOT NULL,
+	created_ns INTEGER NOT NULL,
+	FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+CREATE TABLE read_lease_chunks (
+	lease_id TEXT NOT NULL,
+	chunk_digest BLOB NOT NULL CHECK(length(chunk_digest)=32),
+	PRIMARY KEY(lease_id, chunk_digest),
+	FOREIGN KEY(lease_id) REFERENCES read_leases(lease_id) ON DELETE CASCADE
+) STRICT;
+CREATE INDEX read_lease_chunks_digest ON read_lease_chunks(chunk_digest);
+PRAGMA user_version = 11;`
+
+const schemaV13 = `
+CREATE TABLE file_mutations (
+	operation_id TEXT PRIMARY KEY,
+	folder_id BLOB NOT NULL CHECK(length(folder_id)=32),
+	action TEXT NOT NULL CHECK(action IN ('import','mkdir','move','delete')),
+	source_path TEXT,
+	dest_path TEXT,
+	reviewed_token TEXT,
+	overwrite INTEGER NOT NULL DEFAULT 0 CHECK(overwrite IN (0,1)),
+	phase TEXT NOT NULL CHECK(phase IN ('PLANNED','STAGED','INSTALLED','SOURCE_VERIFIED','COMPLETED','ABORTED')),
+	stage_path TEXT,
+	recovery_path TEXT,
+	source_retained INTEGER NOT NULL DEFAULT 0 CHECK(source_retained IN (0,1)),
+	details TEXT,
+	created_ns INTEGER NOT NULL,
+	updated_ns INTEGER NOT NULL,
+	FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE
+) STRICT;
+CREATE INDEX file_mutations_folder ON file_mutations(folder_id, phase);
+CREATE TABLE file_mutation_entries (
+	operation_id TEXT NOT NULL,
+	position INTEGER NOT NULL,
+	source_path TEXT NOT NULL,
+	dest_path TEXT,
+	kind INTEGER NOT NULL,
+	phase TEXT NOT NULL CHECK(phase IN ('PENDING','COMPLETED','SKIPPED_RETAINED','FAILED')),
+	error_message TEXT,
+	PRIMARY KEY(operation_id, position),
+	FOREIGN KEY(operation_id) REFERENCES file_mutations(operation_id) ON DELETE CASCADE
+) STRICT;
+PRAGMA user_version = 13;`
+
 func (db *DB) reconcileGCIntents(ctx context.Context) error {
 	rows, err := db.db.QueryContext(ctx, `SELECT digest, state FROM gc_intents`)
 	if err != nil {
@@ -635,4 +795,18 @@ func (db *DB) UserVersion(ctx context.Context) (int, error) {
 		return 0, err
 	}
 	return version, nil
+}
+
+// ExecRaw executes a raw SQL statement on the underlying database connection.
+func (db *DB) ExecRaw(ctx context.Context, query string, args ...any) (sql.Result, error) {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	return db.db.ExecContext(ctx, query, args...)
+}
+
+// QueryRowRaw queries a single row on the underlying database connection.
+func (db *DB) QueryRowRaw(ctx context.Context, query string, args ...any) *sql.Row {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	return db.db.QueryRowContext(ctx, query, args...)
 }

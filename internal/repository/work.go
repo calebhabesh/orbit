@@ -340,3 +340,15 @@ func scanDurableTask(s rowScanner) (DurableTask, error) {
 	}
 	return task, nil
 }
+
+// PruneFinishedTasks deletes durable work tasks in completed or canceled state older than cutoff.
+// Pending tasks (queued, running, retry) and diagnostic tasks (exhausted) are strictly preserved (Invariant I28).
+func (db *DB) PruneFinishedTasks(ctx context.Context, cutoff time.Time) (int64, error) {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	res, err := db.db.ExecContext(ctx, `DELETE FROM durable_work_tasks WHERE state IN ('completed', 'canceled') AND updated_ns <= ?`, cutoff.UnixNano())
+	if err != nil {
+		return 0, err
+	}
+	return res.RowsAffected()
+}

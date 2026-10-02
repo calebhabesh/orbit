@@ -57,14 +57,77 @@ func LoadOrCreateIdentity(stateDir string, deviceID history.ID, now time.Time) (
 	if !errors.Is(statErr, os.ErrNotExist) {
 		return Identity{}, errors.New("peer identity is unreadable; do not silently replace it")
 	}
+	identityPEM, err := generateIdentityPEM(deviceID, now)
+	if err != nil {
+		return Identity{}, err
+	}
+	if err := writePrivateExclusive(identityPath, identityPEM); err != nil {
+		return Identity{}, err
+	}
+	return parseIdentity(deviceID, identityPEM, identityPEM)
+}
+
+// RotateIdentity generates a fresh ed25519 keypair and certificate for deviceID,
+// atomically replacing any existing peer-identity.pem.
+func RotateIdentity(stateDir string, deviceID history.ID, now time.Time) (Identity, error) {
+	if deviceID == (history.ID{}) {
+		return Identity{}, errors.New("device identity cannot be zero")
+	}
+	dir := filepath.Join(stateDir, "identity")
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return Identity{}, fmt.Errorf("create identity directory: %w", err)
+	}
+	dirInfo, err := os.Lstat(dir)
+	if err != nil || !dirInfo.IsDir() || dirInfo.Mode()&os.ModeSymlink != 0 || dirInfo.Mode().Perm()&0o077 != 0 {
+		return Identity{}, errors.New("identity directory must be a private nonsymlink directory (mode 0700)")
+	}
+	identityPath := filepath.Join(dir, "peer-identity.pem")
+
+	identityPEM, err := generateIdentityPEM(deviceID, now)
+	if err != nil {
+		return Identity{}, err
+	}
+
+	tempFile, err := os.CreateTemp(dir, ".peer-identity-*.tmp")
+	if err != nil {
+		return Identity{}, fmt.Errorf("create temporary identity: %w", err)
+	}
+	tempPath := tempFile.Name()
+	defer os.Remove(tempPath)
+	if err := tempFile.Chmod(0o600); err != nil {
+		tempFile.Close()
+		return Identity{}, fmt.Errorf("secure temporary identity: %w", err)
+	}
+	if _, err := tempFile.Write(identityPEM); err != nil {
+		tempFile.Close()
+		return Identity{}, fmt.Errorf("write temporary identity: %w", err)
+	}
+	if err := tempFile.Sync(); err != nil {
+		tempFile.Close()
+		return Identity{}, fmt.Errorf("flush temporary identity: %w", err)
+	}
+	if err := tempFile.Close(); err != nil {
+		return Identity{}, fmt.Errorf("close temporary identity: %w", err)
+	}
+	if err := os.Rename(tempPath, identityPath); err != nil {
+		return Identity{}, fmt.Errorf("replace peer identity: %w", err)
+	}
+	if dirFile, err := os.Open(dir); err == nil {
+		_ = dirFile.Sync()
+		_ = dirFile.Close()
+	}
+	return parseIdentity(deviceID, identityPEM, identityPEM)
+}
+
+func generateIdentityPEM(deviceID history.ID, now time.Time) ([]byte, error) {
 	public, private, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
-		return Identity{}, fmt.Errorf("generate peer key: %w", err)
+		return nil, fmt.Errorf("generate peer key: %w", err)
 	}
 	serialLimit := new(big.Int).Lsh(big.NewInt(1), 128)
 	serial, err := rand.Int(rand.Reader, serialLimit)
 	if err != nil {
-		return Identity{}, fmt.Errorf("generate certificate serial: %w", err)
+		return nil, fmt.Errorf("generate certificate serial: %w", err)
 	}
 	template := &x509.Certificate{
 		SerialNumber:          serial,
@@ -79,19 +142,15 @@ func LoadOrCreateIdentity(stateDir string, deviceID history.ID, now time.Time) (
 	}
 	der, err := x509.CreateCertificate(rand.Reader, template, template, public, private)
 	if err != nil {
-		return Identity{}, fmt.Errorf("create peer certificate: %w", err)
+		return nil, fmt.Errorf("create peer certificate: %w", err)
 	}
 	privateDER, err := x509.MarshalPKCS8PrivateKey(private)
 	if err != nil {
-		return Identity{}, fmt.Errorf("encode peer key: %w", err)
+		return nil, fmt.Errorf("encode peer key: %w", err)
 	}
 	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der})
 	keyPEM := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: privateDER})
-	identityPEM := append(append([]byte(nil), certPEM...), keyPEM...)
-	if err := writePrivateExclusive(identityPath, identityPEM); err != nil {
-		return Identity{}, err
-	}
-	return parseIdentity(deviceID, identityPEM, identityPEM)
+	return append(append([]byte(nil), certPEM...), keyPEM...), nil
 }
 
 func writePrivateExclusive(path string, data []byte) error {

@@ -83,6 +83,11 @@ func (client *Client) Status(ctx context.Context, request StatusRequest) (Status
 	return response, client.postJSON(ctx, "/peer/v1/status", request, &response)
 }
 
+func (client *Client) MembershipGet(ctx context.Context, request MembershipGetRequest) (MembershipGetResponse, error) {
+	var response MembershipGetResponse
+	return response, client.postJSON(ctx, "/peer/v1/membership/get", request, &response)
+}
+
 func (client *Client) Chunk(ctx context.Context, request ChunkRequest, expected history.Chunk) ([]byte, error) {
 	data, err := json.Marshal(request)
 	if err != nil {

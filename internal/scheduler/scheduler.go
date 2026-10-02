@@ -255,6 +255,8 @@ func (s *Scheduler) cadenceLoop() {
 					})
 				}
 			}
+			// Periodic bounded pruning of finished lifecycle records (Invariant I28)
+			_, _ = s.db.PruneLifecycleRecords(s.ctx, time.Now().Add(-24*time.Hour))
 			s.notifyWork()
 		}
 	}

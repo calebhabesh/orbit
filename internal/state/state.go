@@ -23,6 +23,9 @@ func EnsureDirectory(path string) error {
 	if err := os.MkdirAll(path, 0o700); err != nil {
 		return fmt.Errorf("create state directory: %w", err)
 	}
+	if err := os.Chmod(path, 0o700); err != nil {
+		return fmt.Errorf("secure state directory: %w", err)
+	}
 	return ValidateDirectory(path)
 }
 
