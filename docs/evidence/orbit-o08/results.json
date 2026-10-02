@@ -1,0 +1,54 @@
+{
+  "packet": "O08",
+  "state": "complete",
+  "requirements_satisfied": ["U07", "U10", "U11", "U15"],
+  "invariants_verified": ["I19", "I25", "I27"],
+  "checks": {
+    "scenario_browse": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario browse",
+      "steps_passed": 7,
+      "screenshots": [
+        "screenshot-17-deep-directory-breadcrumbs.png",
+        "screenshot-18-search-results.png",
+        "screenshot-19-grid-view.png",
+        "screenshot-20-status-distinctions.png",
+        "screenshot-21-browse-narrow-window.png"
+      ]
+    },
+    "scenario_previews": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario previews",
+      "steps_passed": 6,
+      "screenshots": [
+        "screenshot-22-text-preview.png",
+        "screenshot-23-image-preview.png",
+        "screenshot-24-history-timeline.png"
+      ]
+    },
+    "scenario_all": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario all",
+      "scenarios_passed": [
+        "setup",
+        "pairing",
+        "devices",
+        "browse",
+        "previews"
+      ]
+    },
+    "make_check": {
+      "result": "pass",
+      "command": "make check"
+    },
+    "make_test_race": {
+      "result": "pass",
+      "command": "make test-race"
+    }
+  },
+  "unexecuted": [
+    "O09 file creation, rename, move, and deletion dialogs/actions",
+    "O10 destructive file mutations and in-drawer conflict resolution",
+    "P17 owner-use testing and unaided explanation"
+  ]
+}

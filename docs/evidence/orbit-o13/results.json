@@ -1,0 +1,55 @@
+{
+  "packet": "O13",
+  "state": "complete",
+  "requirements_satisfied": [
+    "U01", "U02", "U03", "U04", "U05", "U06", "U07", "U08", "U09", "U10",
+    "U11", "U12", "U13", "U14", "U15", "U16",
+    "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10",
+    "S11", "S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20",
+    "S21", "S22"
+  ],
+  "invariants_verified": [
+    "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I10",
+    "I11", "I12", "I13", "I14", "I15", "I16", "I17", "I18", "I19", "I20",
+    "I21", "I22", "I23", "I24", "I25", "I26", "I27", "I28"
+  ],
+  "scenarios_verified": [
+    { "scenario": 1, "name": "FreshInstall_LaunchReuse_Adoption_DisallowedRoot", "result": "pass" },
+    { "scenario": 2, "name": "Invitation_Approval_Expiry_Rollout_CatchUp", "result": "pass" },
+    { "scenario": 3, "name": "ExistingContentJoin_HubForwarding_ReplicaStatus", "result": "pass" },
+    { "scenario": 4, "name": "NestedBrowseSearchPreview_JournaledMutations_Races", "result": "pass" },
+    { "scenario": 5, "name": "ThreeOfflineEdits_ReviewedResolution_LateArrival_Restore", "result": "pass" },
+    { "scenario": 6, "name": "SessionSecurity_ServiceRestart_SingletonLock_HeadlessCLI", "result": "pass" },
+    { "scenario": 7, "name": "MissingChunkDiagnosed_ReadLease_SafePruning", "result": "pass" },
+    { "scenario": 8, "name": "LostDeviceRetirement_ReplacementKey_StoppedBackupRestore", "result": "pass" },
+    { "scenario": 9, "name": "LegacySchemaAdoption_RollbackRefusal_UninstallDataPreservation", "result": "pass" },
+    { "scenario": 10, "name": "KeyboardAccessibility_UnusualFilenames_ResponsiveLayout", "result": "pass" }
+  ],
+  "resource_scaling": {
+    "file_count": 10000,
+    "directories": 100,
+    "generation_time_ms": 439.5,
+    "root_page_browse_ms": 110.4,
+    "root_page_json_bytes": 8754,
+    "deep_subdir_browse_ms": 170.6,
+    "search_latency_ms": 110.7,
+    "heap_allocated_mb": 0.59,
+    "stream_overhead_mb": 1.7
+  },
+  "browser_ui_suite": {
+    "result": "pass",
+    "scenarios_passed": 10,
+    "screenshots_captured": 38
+  },
+  "checks": {
+    "make_check": "pass",
+    "make_test_race": "pass",
+    "make_demo": "pass",
+    "service_lifecycle": "pass"
+  },
+  "unexecuted": [
+    "Bare-metal physical power loss / KVM abrupt-reset (covered via in-process process termination, SQLite crash consistency, write-ahead log recovery, and transaction rollback; physical hardware cut unexecuted)",
+    "Multi-node physical hardware deployment on Raspberry Pi (cross-compilation for arm64 tested and verified; physical execution on physical Pi hardware unexecuted)",
+    "P17 owner live personal pilot execution in user's personal live data directory (disposable end-to-end verification completed; live personal pilot reserved for Caleb's unaided evaluation)"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "packet": "O11",
+  "recorded_utc": "2026-10-02T12:17:00+00:00",
+  "base_commit": "0a16d84c8e2acf8d5d0f712f42663aa292c42e29",
+  "source_state": "dirty worktree including inherited O00-O10; hashes identify tested source; no clean-checkout claim",
+  "schema": 13,
+  "peer_protocol": 1,
+  "source_sha256": {
+    "internal/repository/gc.go": "4db4b91bbc081dc5b4e022b5114645dfcd448f5b06937aab6e0de4e65d1335ab",
+    "internal/repository/versions.go": "f8f22511999002953ff317810ffcb3cb4fba07137c28aff73238d9c0b60e8d07",
+    "internal/repository/repository.go": "31ae9049f2aef7ced589bd5c0ba52f63773890138374930cce17626eff28aec0",
+    "tests/integration/orbit_storage_test.go": "b451de2be5e6b1a31c73cf853fc70fc59caca0abfc784d15c1d68021aeebbc35",
+    "tests/integration/orbit_pruning_test.go": "7a6f97710e870c79fd9b2f964603744657af28a107f21cc781a547b688a93f59",
+    "tests/integration/orbit_retirement_test.go": "79548f58d146c5d3325efb58e6c55dbae00d3694c143099a616e9453133c7cdd",
+    "docs/runbooks/lost-device-replacement.md": "341fd69da465cf8b3c3096df0594226571e0e1f79f4fc4c31924a390979cbe81",
+    "web/src/views/SettingsView.tsx": "b54ed740d407e43047b245f8cf44e0ec0916c09930f37fdaeca6f3e133182528",
+    "web/src/components/RetentionModal.tsx": "309fa8114790d278b2e68bee4e44378b534a46eafa0f21294c1f7747436e239b",
+    "web/src/components/UnregisterModal.tsx": "015c2cf82d84961145a0b3ab2bd0fd7b50c979b60d5a3295ceb1d84b3bbb87da",
+    "scripts/orbit_ui_test.mjs": "6983cdaa955d0ad3d9813a02daca5a78b4d34b8597e7d69fbf824f4dd0183d9b"
+  },
+  "screenshots_sha256": {
+    "docs/evidence/orbit-o11/screenshots/screenshot-34-settings-storage-accounting.png": "741df7340b332f5fab6e25d175bde88c195f48d8a3165501dc743debecd9e791",
+    "docs/evidence/orbit-o11/screenshots/screenshot-35-retention-preview-modal.png": "4c7cdcfee7641af77982879d8a034d0c9a4a44e236cacfb4ac70dd6edc507e54",
+    "docs/evidence/orbit-o11/screenshots/screenshot-36-unregister-folder-modal.png": "9aedcda42671278f193775105b4e97934cd2a4260385a6bcf2cb908346748039",
+    "docs/evidence/orbit-o11/screenshots/screenshot-37-recovery-root-unavailable.png": "7439f3fc96a626ab7d28747f5a5bf0cd05be7e85b5e1fd7386bd2af3661f6997",
+    "docs/evidence/orbit-o11/screenshots/screenshot-38-lost-device-runbook.png": "4e19787c431582a3e51f0836a4731de7e290eb25919c0c96a27198004e5020e7"
+  }
+}

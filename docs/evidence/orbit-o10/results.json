@@ -1,0 +1,54 @@
+{
+  "packet": "O10",
+  "state": "complete",
+  "requirements_satisfied": ["U07", "U10", "U11", "U15"],
+  "invariants_verified": ["I03", "I16", "I19", "I26", "I27"],
+  "checks": {
+    "scenario_file_actions": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario file-actions",
+      "screenshots": [
+        "screenshot-25-create-folder-modal.png",
+        "screenshot-26-upload-overwrite-modal.png",
+        "screenshot-27-move-file-modal.png",
+        "screenshot-28-delete-file-modal.png",
+        "screenshot-29-stale-view-context-retention.png"
+      ]
+    },
+    "scenario_history": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario history",
+      "screenshots": [
+        "screenshot-30-file-history-drawer.png",
+        "screenshot-31-deleted-files-view.png"
+      ]
+    },
+    "scenario_attention": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario attention",
+      "screenshots": [
+        "screenshot-32-needs-attention-view.png",
+        "screenshot-33-conflict-resolve-modal.png"
+      ]
+    },
+    "make_test_model": {
+      "result": "pass",
+      "command": "make test-model"
+    },
+    "make_test_faults": {
+      "result": "pass",
+      "command": "make test-faults"
+    },
+    "make_test_race": {
+      "result": "pass",
+      "command": "make test-race"
+    },
+    "make_check": {
+      "result": "pass",
+      "command": "make check"
+    }
+  },
+  "unexecuted": [
+    "P17 owner-use testing and unaided explanation"
+  ]
+}

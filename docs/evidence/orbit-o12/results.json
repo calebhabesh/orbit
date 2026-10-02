@@ -1,0 +1,60 @@
+{
+  "packet": "O12",
+  "state": "complete",
+  "requirements_satisfied": ["U01", "U08", "U12", "U13", "U14", "U16", "S20", "S21", "S22"],
+  "invariants_verified": ["I08", "I19", "I20", "I21", "I28"],
+  "checks": {
+    "frontend_build": {
+      "result": "pass",
+      "command": "cd web && npm ci && npm run build && cd .."
+    },
+    "reproducible_packaging": {
+      "result": "pass",
+      "command": "make package",
+      "artifacts": [
+        "filesync-v1.0.0-linux-amd64.tar.gz",
+        "orbit-v1.0.0-linux-amd64.tar.gz",
+        "filesync_1.0.0_amd64.deb",
+        "filesync-1.0.0-1.x86_64.rpm",
+        "filesync-v1.0.0-linux-arm64.tar.gz",
+        "orbit-v1.0.0-linux-arm64.tar.gz",
+        "filesync_1.0.0_arm64.deb",
+        "filesync-1.0.0-1.aarch64.rpm",
+        "release-manifest.json",
+        "SHA256SUMS"
+      ]
+    },
+    "orbit_packaging_integration_tests": {
+      "result": "pass",
+      "command": "go test -count=1 -v ./tests/integration -run 'TestOrbitPackaging|TestOrbitTarball|TestOrbitVersion|TestOrbitInstall|TestOrbitLegacy|TestOrbitSchema|TestOrbitStopped'",
+      "passed_tests": [
+        "TestOrbitPackagingArtifacts",
+        "TestOrbitTarballContentsAndSymlinks",
+        "TestOrbitVersionAndManifestMetadata",
+        "TestOrbitInstallAndUninstallScriptLifecycle",
+        "TestOrbitLegacyStateAdoption",
+        "TestOrbitSchemaRollbackRefusal",
+        "TestOrbitStoppedMetadataRestoreFreshIdentity"
+      ]
+    },
+    "service_lifecycle_validation": {
+      "result": "pass",
+      "command": "python3 scripts/validation/service_lifecycle.py --hosts local --output <disposable-dir>"
+    },
+    "make_check": {
+      "result": "pass",
+      "command": "make check"
+    },
+    "make_test_race": {
+      "result": "pass",
+      "command": "make test-race"
+    },
+    "make_demo": {
+      "result": "pass",
+      "command": "make demo"
+    }
+  },
+  "unexecuted": [
+    "P17 owner-use testing and unaided explanation"
+  ]
+}

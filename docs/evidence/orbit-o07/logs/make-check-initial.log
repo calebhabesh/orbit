@@ -1,0 +1,24 @@
+go vet ./...
+go test ./internal/... ./model/...
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/control	0.379s
+ok  	github.com/calebhabesh/file-sync/internal/history	(cached)
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/replication	32.505s
+ok  	github.com/calebhabesh/file-sync/internal/repository	1.468s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	7.471s
+ok  	github.com/calebhabesh/file-sync/internal/state	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/testkit	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.339s
+ok  	github.com/calebhabesh/file-sync/model	(cached)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=0a16d84 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+go test ./tests/integration/...
+--- FAIL: TestOrbitContent_HTTPStreamingCancellationConcurrentGC (0.26s)
+    orbit_browse_content_test.go:284: large HTTP download 503 189 <nil>
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	19.592s
+FAIL
+make: *** [Makefile:36: test-integration] Error 1

@@ -1,0 +1,94 @@
+{
+  "packet": "O09",
+  "title": "Recoverable import, create, rename, move and delete",
+  "status": "complete",
+  "date": "2026-10-02T11:10:00Z",
+  "requirements_satisfied": [
+    "U10",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14"
+  ],
+  "invariants_verified": [
+    "I01",
+    "I03",
+    "I04",
+    "I05",
+    "I06",
+    "I07",
+    "I08",
+    "I09",
+    "I10",
+    "I11",
+    "I12",
+    "I13",
+    "I16",
+    "I17",
+    "I19",
+    "I20",
+    "I26"
+  ],
+  "checks": {
+    "make_build": {
+      "command": "make build",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    "targeted_test_suite": {
+      "command": "go test -count=1 -v ./internal/workspace ./internal/repository ./internal/control ./tests/integration -run 'TestOrbitImport|TestOrbitMkdir|TestOrbitMove|TestOrbitDelete|TestOrbitMutation'",
+      "exit_code": 0,
+      "status": "PASS",
+      "packages": [
+        "github.com/calebhabesh/file-sync/internal/workspace",
+        "github.com/calebhabesh/file-sync/internal/repository",
+        "github.com/calebhabesh/file-sync/internal/control",
+        "github.com/calebhabesh/file-sync/tests/integration"
+      ]
+    },
+    "make_test_model": {
+      "command": "make test-model",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    "make_test_faults": {
+      "command": "make test-faults",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    "make_test_race": {
+      "command": "make test-race",
+      "exit_code": 0,
+      "status": "PASS",
+      "data_races": 0
+    },
+    "make_check": {
+      "command": "make check",
+      "exit_code": 0,
+      "status": "PASS"
+    }
+  },
+  "schema_version": 13,
+  "tables_introduced": [
+    "file_mutations",
+    "file_mutation_entries"
+  ],
+  "cli_commands": [
+    "orbit import",
+    "orbit mkdir",
+    "orbit move",
+    "orbit rename",
+    "orbit delete"
+  ],
+  "http_endpoints": [
+    "POST /api/v1/files/import",
+    "POST /api/v1/files/mkdir",
+    "POST /api/v1/files/move",
+    "POST /api/v1/files/delete"
+  ]
+}

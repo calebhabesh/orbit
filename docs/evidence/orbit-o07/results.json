@@ -1,0 +1,56 @@
+{
+  "packet": "O07",
+  "state": "complete",
+  "checks": {
+    "targeted": {
+      "result": "pass",
+      "tests": [
+        "TestOrbitBrowse_CLIStoppedAndLiveParity",
+        "TestOrbitBrowse_HierarchicalDirectoryQueries",
+        "TestOrbitSearch_BoundedWorkspaceSearch",
+        "TestOrbitBrowse_FileDetailsAndHistory",
+        "TestOrbitBrowse_ScalingTenThousandFiles",
+        "TestOrbitBrowse_PendingStructuralAndStrictPaths",
+        "TestOrbitBrowse_CursorValidationAndStableTies",
+        "TestOrbitReadLease_GCStreamingExpiryReleaseAndRestart",
+        "TestOrbitContent_CorruptionCancellationAndIntent",
+        "TestOrbitBrowse_HistoryPaginationAndConditionalDeletedAvailability",
+        "TestOrbitSettings_Control_ReadLeasesAndGCProtection",
+        "TestOrbitBrowse_ContentHTTPAuthorizationAndPreviews",
+        "TestOrbitContent_HTTPStreamingCancellationConcurrentGC"
+      ]
+    },
+    "make check": {
+      "result": "pass",
+      "log": "logs/make-check.log"
+    },
+    "make test-race": {
+      "result": "pass",
+      "log": "logs/test-race.log"
+    },
+    "documentation_links": {
+      "result": "pass",
+      "markdown_files": 95,
+      "local_links": 433,
+      "broken_links": 0
+    }
+  },
+  "measurements": {
+    "root_ms": 109.314526,
+    "directory_ms": 152.750978,
+    "search_ms": 102.655121,
+    "root_page_json_bytes": 8754,
+    "maximum_resident_set_kib": 28944
+  },
+  "unexecuted": [
+    "O08 real browser browse/previews scenarios",
+    "new native packaged O07 workflows",
+    "new power-loss experiments",
+    "P17 owner-use/unaided explanation"
+  ],
+  "initial_failures_retained": [
+    "logs/targeted-initial.log",
+    "logs/make-check-initial.log",
+    "logs/test-race-initial.log"
+  ]
+}

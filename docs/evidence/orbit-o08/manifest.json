@@ -1,0 +1,29 @@
+{
+  "packet": "O08",
+  "recorded_utc": "2026-10-02T10:11:53+00:00",
+  "base_commit": "0a16d84c8e2acf8d5d0f712f42663aa292c42e29",
+  "source_state": "dirty worktree including inherited O00-O07; hashes identify tested source; no clean-checkout claim",
+  "schema": 12,
+  "peer_protocol": 1,
+  "source_sha256": {
+    "web/src/types.ts": "881d345bed3d981b974f3a98ef71cc5966a372c9174e2de84d9371d1fbe2826a",
+    "web/src/api.ts": "f353cca34dbb573770e73c799a46e33165cfff8db303e53d317a58cdda6a8555",
+    "web/src/App.tsx": "ea040ae281a857173d865fd10c22d38342b7bfc326c229314e015e9f170c6b68",
+    "web/src/views/FilesView.tsx": "bab8e96ac9ccb48ea0b8f673763aeccc7992bb77191bc07fd244aa273d83034e",
+    "web/src/views/DeletedFilesView.tsx": "4a1d18eace55e05b5a03256e3bb77f47b426e1ef276ef4df7d5e9f0fcf83c070",
+    "web/src/components/FileDetailsDrawer.tsx": "77fa661fd807a20efb6884df39e159787d0e6efe091165fe26c67299a123f8bd",
+    "web/src/components/OrbitTopbar.tsx": "dd58f63801d19fe40b1bffb83acaa6bd9a3d9d7e86b52d56c6f13399ebb43df5",
+    "internal/history/history.go": "ea300f57f180039b861e5d75c8420d52b0502a30523d3d7dad3df39f170e37e7",
+    "scripts/orbit_ui_test.mjs": "67e0184a06ef2c1d3bab65ebb9b23f76f5a19239a1e6260f03e0559bfabcc5e5"
+  },
+  "screenshots_sha256": {
+    "docs/evidence/orbit-o08/screenshots/screenshot-17-deep-directory-breadcrumbs.png": "d107c473a98de0237061fafa00f5d55ff7dae7fb4a5501876b83b45baeb3f4f7",
+    "docs/evidence/orbit-o08/screenshots/screenshot-18-search-results.png": "d7f778edf52ffc83827ebb4ec183e16833cd54bb72ee6139d50c893a5de243b1",
+    "docs/evidence/orbit-o08/screenshots/screenshot-19-grid-view.png": "545b6f9169fc4b7019f5d1aa086ea0bf4951edf5806ddb9650ec6fd463abd10f",
+    "docs/evidence/orbit-o08/screenshots/screenshot-20-status-distinctions.png": "711ff3a33266db1386c285ca51adad57258848ef12bff9dabf634a82a7a2286f",
+    "docs/evidence/orbit-o08/screenshots/screenshot-21-browse-narrow-window.png": "1fb472388641939d4d218d281aa50fb060e954f1ded1527ab558cfa5cc1d562b",
+    "docs/evidence/orbit-o08/screenshots/screenshot-22-text-preview.png": "59997fd8bddedec62ae06dcfd06a0d71187c16ebd29b0945bff39fe739807cd6",
+    "docs/evidence/orbit-o08/screenshots/screenshot-23-image-preview.png": "4f32b0b1930191b1bac53e37f6d9c1fb757ebe56c531ce6279411139094442f1",
+    "docs/evidence/orbit-o08/screenshots/screenshot-24-history-timeline.png": "06473977b1f0b695a8a4339ca947a08e99e0e24df3f0a5ba450a1ce11a08805e"
+  }
+}

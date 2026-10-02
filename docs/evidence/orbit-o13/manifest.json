@@ -1,0 +1,53 @@
+{
+  "packet": "O13",
+  "version": "1.0.0",
+  "release": "1",
+  "commit": "0a16d84c8e2acf8d5d0f712f42663aa292c42e29",
+  "built": "2026-10-01",
+  "schema_version": 13,
+  "config_format_version": 1,
+  "pure_go_sqlite": true,
+  "node_runtime_required": false,
+  "embedded_assets": {
+    "digest_sha256": "42ca7a842b9dce46c52461444f1bff40cfc8ac0940d438ab834c9db3a39dea92",
+    "total_files": 3
+  },
+  "artifacts": [
+    {
+      "name": "filesync-v1.0.0-linux-amd64.tar.gz",
+      "sha256": "667339aaa2b2e2b523a3f3678df0c325bd99c5d21520ec6e30f90113dcd934a8"
+    },
+    {
+      "name": "orbit-v1.0.0-linux-amd64.tar.gz",
+      "sha256": "667339aaa2b2e2b523a3f3678df0c325bd99c5d21520ec6e30f90113dcd934a8"
+    },
+    {
+      "name": "filesync_1.0.0_amd64.deb",
+      "sha256": "c044e64f7bc51dd271c25d12e6e8bb122c326d251e01ce0c2dbb6f501ddb775d"
+    },
+    {
+      "name": "filesync-1.0.0-1.x86_64.rpm",
+      "sha256": "6e943a7d0cbf4ab0999e09ba0eb156d40f55c53a2231fe691f8da9b16b8630dc"
+    },
+    {
+      "name": "filesync-v1.0.0-linux-arm64.tar.gz",
+      "sha256": "fc2b005b42b8c67be4377383204b5e65c32c5acba301c13bea000763fce6518f"
+    },
+    {
+      "name": "orbit-v1.0.0-linux-arm64.tar.gz",
+      "sha256": "fc2b005b42b8c67be4377383204b5e65c32c5acba301c13bea000763fce6518f"
+    },
+    {
+      "name": "filesync_1.0.0_arm64.deb",
+      "sha256": "2cd630fc87bb685adf383ae5fe8a366d14004a8ed285e009dc8799b9e6416e3a"
+    },
+    {
+      "name": "filesync-1.0.0-1.aarch64.rpm",
+      "sha256": "d1dbc186e9b9cb7fdf93b4868ce540eee3771cdbbe3205ffca70950ed690f639"
+    },
+    {
+      "name": "release-manifest.json",
+      "sha256": "0091c8af9fbee47be66903cf7abaafb618462e430da970f236057ad06a29de5f"
+    }
+  ]
+}

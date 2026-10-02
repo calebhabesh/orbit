@@ -1,0 +1,23 @@
+{
+  "packet": "O09",
+  "recorded_utc": "2026-10-02T11:12:00+00:00",
+  "base_commit": "0a16d84c8e2acf8d5d0f712f42663aa292c42e29",
+  "source_state": "dirty worktree including inherited O00-O08; hashes identify tested source; no clean-checkout claim",
+  "schema": 13,
+  "peer_protocol": 1,
+  "source_sha256": {
+    "internal/repository/repository.go": "6ff9a21f3ba5ea55d6dcb3d20a7de58c687b8b8b869c07d71fae269e5fe9f5bb",
+    "internal/repository/file_mutation.go": "bae22bcf8c02f50511e32039862428cba4133800fc83887c9d994cac1c9914f1",
+    "internal/repository/versions.go": "1d7ed96785302e27432b7c93535e302b46e64f85206bef14924a234126b2e325",
+    "internal/repository/file_mutation_test.go": "844d3c652ad0118e33d77389d84537bdd0f2c70aedd2e32c37086d774a22bc28",
+    "internal/workspace/workspace.go": "a7998e8830b2c4d6a894998b10425d7818261f0018f1abea4ebd9ba7ec640c5c",
+    "internal/workspace/file_mutations.go": "a66d0603edae92ada0b92b2bfe159e56eb129616f9fea0efa383cd909fdaab01",
+    "internal/workspace/file_mutation_test.go": "e7bc4f8fe91ea2516bd75fa5cc6cd0f23abc1bb16419eefdc1afe3846572e659",
+    "internal/control/types.go": "9f8e9a80ed250cb6fdd59481e23b7d1c7a539f13a919e076efd40c2bd802d811",
+    "internal/control/file_actions.go": "af414512e2cf865df8a9dfacee2c7c6598f6dc69a0916dca5b3abf7c74131130",
+    "internal/control/file_actions_http.go": "1c3a432f0ea4ec742b78f431f38eb734f1a6cc6e1aa053647569fe1712cdae3b",
+    "internal/control/file_actions_test.go": "9f2f7360731d710930eeca4a7672de394a3345344ce72e34308fd212209f3d9b",
+    "cmd/filesync/orbit_files.go": "09ddd49734ea7615f2e0711b0d7bbbaa580a59ff3a1b064cc42f31675fea7121",
+    "tests/integration/orbit_mutations_test.go": "834866fb89b4416eb64802cbc31feace0ca74b5ffd0b5a3c753d0a326f17248c"
+  }
+}

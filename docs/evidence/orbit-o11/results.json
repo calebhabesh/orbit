@@ -1,0 +1,40 @@
+{
+  "packet": "O11",
+  "state": "complete",
+  "requirements_satisfied": ["U04", "U09", "U11", "U12", "U13", "U14", "U16", "S14", "S17", "S21"],
+  "invariants_verified": ["I07", "I08", "I10", "I13", "I15", "I16", "I19", "I20", "I26", "I28"],
+  "checks": {
+    "scenario_settings": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario settings",
+      "screenshots": [
+        "screenshot-34-settings-storage-accounting.png",
+        "screenshot-35-retention-preview-modal.png",
+        "screenshot-36-unregister-folder-modal.png"
+      ]
+    },
+    "scenario_recovery": {
+      "result": "pass",
+      "command": "node scripts/orbit_ui_test.mjs --scenario recovery",
+      "screenshots": [
+        "screenshot-37-recovery-root-unavailable.png",
+        "screenshot-38-lost-device-runbook.png"
+      ]
+    },
+    "unit_and_integration_tests": {
+      "result": "pass",
+      "command": "go test -count=1 -v ./internal/control ./internal/repository ./internal/scheduler ./tests/integration -run 'TestOrbitSettings|TestOrbitStorage|TestOrbitPruning|TestOrbitRecovery|TestOrbitRetirement'"
+    },
+    "make_test_race": {
+      "result": "pass",
+      "command": "make test-race"
+    },
+    "make_check": {
+      "result": "pass",
+      "command": "make check"
+    }
+  },
+  "unexecuted": [
+    "P17 owner-use testing and unaided explanation"
+  ]
+}

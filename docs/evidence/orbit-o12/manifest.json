@@ -1,0 +1,31 @@
+{
+  "packet": "O12",
+  "recorded_utc": "2026-10-02T13:18:00+00:00",
+  "base_commit": "0a16d84c8e2acf8d5d0f712f42663aa292c42e29",
+  "source_state": "dirty worktree including inherited O00-O11; hashes identify tested source; no clean-checkout claim",
+  "schema": 13,
+  "peer_protocol": 1,
+  "source_sha256": {
+    "packaging/desktop/orbit.desktop": "1df81a7b0755e48bc9474f89d8ee06f1285bd3d6d63b4f55d9a58c7fff7d5694",
+    "packaging/icons/orbit.svg": "6a3746b029f33480bb524bd556490ecc725fbc46ff83392e5bd087bf41227ea6",
+    "packaging/systemd/orbit.service": "fb07294790d4cf024375ef741783eaf777cd91653a564c8c9b3312218d6baf86",
+    "packaging/systemd/filesync.service": "1c41615ce852b130c5708301bb5ee4035c881cadcb815179129f85427a16e428",
+    "packaging/scripts/install.sh": "5fffbd020ea8c6ea59fd30e816a6d093d810da6edcfe4afd92658f3ea025511a",
+    "packaging/scripts/uninstall.sh": "72701ac24a943aeebe26404950c15387ea56baf872591ae64ff6329f304c2f6c",
+    "packaging/LICENSES.md": "daab32e2b5228f615158b9c3bf38c7a37df3def19752f0c51fb1151fc546b940",
+    "scripts/build_packages.go": "345c4980ad9dce2e56fad07e8235bd783d3ca1ad44fa6cc70382341f987262b7",
+    "scripts/validation/service_lifecycle.py": "11815333077cb126662005bab9b29fa3bf0f0cd31a6aedbf37305eaf03a119ad",
+    "scripts/validation/reproduce_release.py": "cd40340f4b17a30464c3007fa330b7fca349ee81507da98d11f9510a6be0978d",
+    "tests/integration/orbit_package_test.go": "7cf5ae09c14f704378a34595b73738c97efe48aeaead32fed089792cc512b013",
+    "docs/runbooks/install.md": "3ebe0b038ec0d9a7fcf7f1bcea10ff65aed515dad238a8c3afc214c6d8e67076",
+    "docs/runbooks/uninstall.md": "24275266775d2e8594700aa1c63a3bfc37a15a9cfeb46ef086e7b81901ff7c3a",
+    "docs/runbooks/database-recovery.md": "fd574eb594e05b2ef720b1fe4cda3de4b6aad4914df3b082a070f72f63391c8a",
+    "docs/runbooks/rollback.md": "e260e9744fe33b3e0c870c4c527b45287026ec53dbdc60c0f693d86754910f22",
+    "docs/runbooks/upgrade.md": "58f4b1aa03211fd038ec7e7c859c6c1a00c251bf0f6f9079d1e96891ce9a481b",
+    "docs/runbooks/private-network.md": "fd5b2b84b114439f977914038c892f8e35e1b8f05fe3cb29f80b276efb003651",
+    "README.md": "c524e48cd4dd43720394d9d394afe9c4e1ea1a2d2450091f7e0fe058d0aee528",
+    "cmd/filesync/main.go": "80b07c9af607b370580f4678522639096b243a41a95f76cd57852a14e181c9df",
+    "web/embed.go": "82a9a65ed9412fd877fe83fe1e9f63105c1c13420cd430b766769aa58c997758",
+    "internal/control/server.go": "c19810a85d0b3976707b12998955e55ca17d3f70a47a6aaba34601daaa94259b"
+  }
+}

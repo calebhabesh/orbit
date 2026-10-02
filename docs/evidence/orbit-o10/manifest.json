@@ -1,0 +1,35 @@
+{
+  "packet": "O10",
+  "recorded_utc": "2026-10-02T11:42:00+00:00",
+  "base_commit": "0a16d84c8e2acf8d5d0f712f42663aa292c42e29",
+  "source_state": "dirty worktree including inherited O00-O09; hashes identify tested source; no clean-checkout claim",
+  "schema": 13,
+  "peer_protocol": 1,
+  "source_sha256": {
+    "cmd/filesync/main.go": "6b25a24fd8f09473189308e1430e7f3f7abfe9473f95646267f0e823043332b9",
+    "cmd/filesync/orbit_files.go": "1e18b2dadf7cdb65405c39fb83f403edf666f775ae55f4bb60edd8e0b10687d7",
+    "internal/repository/conflicts.go": "4d716c2d80968e7aebd6b4d765004fe8a8a6c9f0b1467f62510ef0fd8a6ab42c",
+    "scripts/orbit_ui_test.mjs": "b77c1fbbeb6ea6159eba23d9ef880e0c7809d8f87455fd3b76c423e51a385824",
+    "web/src/types.ts": "8b90d05f6cee470273e8eebba39c5e07401c81b61a1545d85f403c45d3591a2e",
+    "web/src/api.ts": "b9464d16972ec92b9c3c1f328c913111986d6cc8f71af1cb6920b195ca04651c",
+    "web/src/components/FileActionModals.tsx": "0006af897af3246b1c95bcaf95f792aac09b56b318ec0013e9a341b7cd722994",
+    "web/src/components/FileDetailsDrawer.tsx": "175d7a84f5c85e9615b42c7e036267e430eb05a4ac0914bcc5b0eaf23fe2e6a5",
+    "web/src/components/ConflictResolveModal.tsx": "e55e094e90d5522e15ef8a8c612abd38d623efa0f9712ff4aa239f97c50a6dd6",
+    "web/src/components/RestoreModal.tsx": "c2978cc8fcd9971d1f06499fb119f9ab73d731e0c7b80c0c3921083567867e86",
+    "web/src/views/FilesView.tsx": "3a672ac388a5cad444fbbeaaf55e39318d4c17b11b0288f03fce88b8197903c0",
+    "web/src/views/NeedsAttentionView.tsx": "52663d98ff25789aa5b39e67d5a955a7ddb8df3ff1071540897b79877ebd73ab",
+    "web/src/views/DeletedFilesView.tsx": "7b9332e0cdf5c3378ba61bbcaec42c25f7deb7dc859e0a0464947c8da925cb39",
+    "web/src/App.tsx": "ab9bd6ad67f83cc6034c80e50c93ad484b5f426f0582648a349f052ba4293a3b"
+  },
+  "screenshots_sha256": {
+    "docs/evidence/orbit-o10/screenshots/screenshot-25-create-folder-modal.png": "58cde7c4532629b5fbb927c11b51f46ceea413f46ee1dd741d8158605d95a32a",
+    "docs/evidence/orbit-o10/screenshots/screenshot-26-upload-overwrite-modal.png": "a6cc2edac346cbcd242eb4863260fa73c7078dfe0534898ed042a7960197761d",
+    "docs/evidence/orbit-o10/screenshots/screenshot-27-move-file-modal.png": "ababb2ceb9595abf45802da7f270a3644fdbb677516df66028834a8804b0a632",
+    "docs/evidence/orbit-o10/screenshots/screenshot-28-delete-file-modal.png": "944298ff8a77873b2cda40ff63c27c145d00fd2977363e41025d3b848334e432",
+    "docs/evidence/orbit-o10/screenshots/screenshot-29-stale-view-context-retention.png": "8246d0e8551fea7e3c67acdfbb6a1ce45120779033a907599eca715b98e98f09",
+    "docs/evidence/orbit-o10/screenshots/screenshot-30-file-history-drawer.png": "573373dd409b3c5054d476d71342f65947c7e28a57a85e844320261e60f98948",
+    "docs/evidence/orbit-o10/screenshots/screenshot-31-deleted-files-view.png": "e73a7d6cd238df4097ba2038096f13d45642fb48b8f8d596cf310edaa57bd74e",
+    "docs/evidence/orbit-o10/screenshots/screenshot-32-needs-attention-view.png": "a4671f5c6cf1007d1981757f5e21034727029192eb9240d147f98fff38a6949d",
+    "docs/evidence/orbit-o10/screenshots/screenshot-33-conflict-resolve-modal.png": "7c222cdf9929b9c5aa0e599c33a53acbb6aa695a412a4f922342c77c05de0af3"
+  }
+}
