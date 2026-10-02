@@ -27,6 +27,11 @@ var (
 	ErrIdempotencyConflict  = errors.New("idempotency key was previously used with different parameters")
 	ErrExpiredReplay        = errors.New("idempotency record has expired")
 	ErrInvalidRequest       = errors.New("invalid control request")
+	ErrMembershipFork       = errors.New("membership fork detected: concurrent conflicting revisions")
+	ErrRetiredMemberRevival = errors.New("cannot revive retired member")
+	ErrInvalidSignature     = errors.New("joining signature verification failed")
+	ErrRateLimitExceeded    = errors.New("rate limit exceeded")
+	ErrPayloadTooLarge      = errors.New("request payload exceeds bounded limit")
 )
 
 type ControlError struct {
@@ -73,6 +78,71 @@ func MembershipMismatchError(message string) *ControlError {
 		Retryable: false,
 		Action:    "exchange and approve latest membership revision before syncing",
 		Err:       ErrMembershipMismatch,
+	}
+}
+
+func MembershipForkError(message string) *ControlError {
+	if message == "" {
+		message = "membership fork detected: concurrent conflicting revisions"
+	}
+	return &ControlError{
+		Code:      "MEMBERSHIP_FORK",
+		Message:   message,
+		Retryable: false,
+		Action:    "perform explicit owner reconciliation across forked revisions (Invariant I24)",
+		Err:       ErrMembershipFork,
+	}
+}
+
+func RetiredMemberRevivalError(message string) *ControlError {
+	if message == "" {
+		message = "cannot revive or readmit retired device identity"
+	}
+	return &ControlError{
+		Code:      "RETIRED_MEMBER_REVIVAL",
+		Message:   message,
+		Retryable: false,
+		Action:    "generate a fresh device identity to enroll a replaced or wiped device (Invariant I24)",
+		Err:       ErrRetiredMemberRevival,
+	}
+}
+
+func InvalidSignatureError(message string) *ControlError {
+	if message == "" {
+		message = "joining signature verification failed"
+	}
+	return &ControlError{
+		Code:      "INVALID_SIGNATURE",
+		Message:   message,
+		Retryable: false,
+		Action:    "verify private key possession and signature challenge nonce",
+		Err:       ErrInvalidSignature,
+	}
+}
+
+func RateLimitError(message string) *ControlError {
+	if message == "" {
+		message = "rate limit exceeded for enrollment requests"
+	}
+	return &ControlError{
+		Code:      "RATE_LIMITED",
+		Message:   message,
+		Retryable: true,
+		Action:    "wait before retrying enrollment request",
+		Err:       ErrRateLimitExceeded,
+	}
+}
+
+func PayloadTooLargeError(message string) *ControlError {
+	if message == "" {
+		message = "request payload exceeds bounded limit (16 KiB)"
+	}
+	return &ControlError{
+		Code:      "PAYLOAD_TOO_LARGE",
+		Message:   message,
+		Retryable: false,
+		Action:    "keep request payload within 16 KiB limit (Invariant I23)",
+		Err:       ErrPayloadTooLarge,
 	}
 }
 

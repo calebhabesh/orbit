@@ -17,9 +17,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/web"
+)
+
+var (
+	Version = "1.0.0"
+	Commit  = "release"
+	Date    = "2026-10-01"
 )
 
 type sessionInfo struct {
@@ -34,8 +42,11 @@ type Server struct {
 	cliToken        string
 	bootstrapTokens map[string]time.Time
 	sessions        map[string]sessionInfo
+	rateCounts      map[string]int
+	rateWindow      time.Time
 	mu              sync.Mutex
 	httpServer      *http.Server
+	contentSlots    chan struct{}
 }
 
 func NewServer(ctrl *Controller, stateDir string) (*Server, error) {
@@ -56,6 +67,7 @@ func NewServer(ctrl *Controller, stateDir string) (*Server, error) {
 
 	s := &Server{
 		ctrl:            ctrl,
+		contentSlots:    make(chan struct{}, 8),
 		stateDir:        stateDir,
 		cliToken:        cliToken,
 		bootstrapTokens: make(map[string]time.Time),
@@ -79,6 +91,21 @@ func (s *Server) GenerateBootstrapToken() string {
 	return token
 }
 
+func (s *Server) checkEnrollmentRateLimit(ip string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	now := time.Now()
+	if s.rateCounts == nil || now.Sub(s.rateWindow) > time.Minute {
+		s.rateCounts = make(map[string]int)
+		s.rateWindow = now
+	}
+	if s.rateCounts[ip] >= 5 {
+		return false
+	}
+	s.rateCounts[ip]++
+	return true
+}
+
 func isLoopbackHost(hostPort string) bool {
 	h := hostPort
 	if strings.Contains(h, ":") {
@@ -97,6 +124,7 @@ func isLoopbackHost(hostPort string) bool {
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
+	s.registerBrowse(mux)
 
 	// Web UI Assets (embedded SPA)
 	mux.Handle("/", web.Handler())
@@ -106,10 +134,21 @@ func (s *Server) Handler() http.Handler {
 		writeJSON(w, http.StatusOK, map[string]any{"status": "ok"})
 	})
 	mux.HandleFunc("GET /api/v1/version", func(w http.ResponseWriter, r *http.Request) {
+		assetInfo := web.GetAssetInfo()
 		writeJSON(w, http.StatusOK, map[string]any{
-			"version":          "dev",
-			"protocol_version": 1,
-			"schema_version":   repository.CurrentSchema,
+			"product":               "Orbit",
+			"version":               Version,
+			"commit":                Commit,
+			"built":                 Date,
+			"protocol_version":      1,
+			"schema_version":        repository.CurrentSchema,
+			"config_format_version": config.FormatVersion,
+			"embedded_assets": map[string]any{
+				"total_files":           assetInfo.TotalFiles,
+				"digest_sha256":         assetInfo.DigestSHA256,
+				"pure_go_sqlite":        true,
+				"node_runtime_required": false,
+			},
 		})
 	})
 	mux.HandleFunc("POST /api/v1/auth/bootstrap", s.handleBootstrap)
@@ -321,6 +360,19 @@ func (s *Server) Handler() http.Handler {
 		}
 		writeJSON(w, http.StatusOK, files)
 	})
+	mux.HandleFunc("GET /api/v1/files/deleted", func(w http.ResponseWriter, r *http.Request) {
+		folder, err := parseQueryFolder(r)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		files, err := s.ctrl.DeletedFiles(r.Context(), folder)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, files)
+	})
 	mux.HandleFunc("GET /api/v1/files/history", func(w http.ResponseWriter, r *http.Request) {
 		folder, err := parseQueryFolder(r)
 		if err != nil {
@@ -390,6 +442,58 @@ func (s *Server) Handler() http.Handler {
 		}
 		writeJSON(w, http.StatusOK, res)
 	})
+	mux.HandleFunc("POST /api/v1/storage/retention/preview", func(w http.ResponseWriter, r *http.Request) {
+		var req RetentionPreviewRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.RetentionPreview(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/storage/retention/change", func(w http.ResponseWriter, r *http.Request) {
+		var req RetentionChangeRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.RetentionChange(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/storage/gc/preview", func(w http.ResponseWriter, r *http.Request) {
+		var req GCPreviewRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.GCPreview(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/storage/recovery/reclaim", func(w http.ResponseWriter, r *http.Request) {
+		var req ReclaimRecoveryRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.ReclaimRecoveryCopies(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
 	mux.HandleFunc("POST /api/v1/storage/check", func(w http.ResponseWriter, r *http.Request) {
 		var req StorageCheckRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -410,6 +514,26 @@ func (s *Server) Handler() http.Handler {
 			return
 		}
 		res, err := s.ctrl.StorageRepair(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/storage/prune", func(w http.ResponseWriter, r *http.Request) {
+		var req PruneRecordsRequest
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		res, err := s.ctrl.PruneLifecycleRecords(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/maintenance/prune", func(w http.ResponseWriter, r *http.Request) {
+		var req PruneRecordsRequest
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		res, err := s.ctrl.PruneLifecycleRecords(r.Context(), req)
 		if err != nil {
 			writeError(w, err)
 			return
@@ -558,13 +682,21 @@ func (s *Server) Handler() http.Handler {
 		}
 		writeJSON(w, http.StatusOK, res)
 	})
-	mux.HandleFunc("POST /api/v1/maintenance/reset-identity", func(w http.ResponseWriter, r *http.Request) {
-		res, err := s.ctrl.ResetIdentity(r.Context(), "")
+	mux.HandleFunc("GET /api/v1/recovery/status", func(w http.ResponseWriter, r *http.Request) {
+		res, err := s.ctrl.RecoveryInspection(r.Context())
 		if err != nil {
 			writeError(w, err)
 			return
 		}
 		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/maintenance/reset-identity", func(w http.ResponseWriter, r *http.Request) {
+		writeError(w, &ControlError{
+			Code:      "OPERATION_BLOCKED",
+			Message:   "identity reset requires exclusive stopped state; cannot reset identity on running daemon",
+			Retryable: false,
+			Action:    "stop background service ('systemctl --user stop filesync' or 'filesync stop') and run 'filesync maintenance reset-identity'",
+		})
 	})
 	mux.HandleFunc("GET /api/v1/maintenance/preflight", func(w http.ResponseWriter, r *http.Request) {
 		res, err := s.ctrl.Preflight(r.Context())
@@ -575,18 +707,569 @@ func (s *Server) Handler() http.Handler {
 		writeJSON(w, http.StatusOK, res)
 	})
 	mux.HandleFunc("POST /api/v1/maintenance/restore-backup", func(w http.ResponseWriter, r *http.Request) {
-		var req RestoreBackupRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
-			return
-		}
-		res, err := s.ctrl.RestoreBackup(r.Context(), req.BackupPath)
+		writeError(w, &ControlError{
+			Code:      "OPERATION_BLOCKED",
+			Message:   "backup restore requires exclusive stopped state; cannot restore backup on running daemon",
+			Retryable: false,
+			Action:    "stop background service ('systemctl --user stop filesync' or 'filesync stop') and run 'filesync maintenance restore-backup'",
+		})
+	})
+
+	// Orbit Product Settings
+	mux.HandleFunc("GET /api/v1/settings", func(w http.ResponseWriter, r *http.Request) {
+		res, err := s.ctrl.GetSettings(r.Context())
 		if err != nil {
 			writeError(w, err)
 			return
 		}
 		writeJSON(w, http.StatusOK, res)
 	})
+	mux.HandleFunc("POST /api/v1/settings", func(w http.ResponseWriter, r *http.Request) {
+		var req UpdateSettingsRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.UpdateSettings(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("GET /api/v1/settings/peers", func(w http.ResponseWriter, r *http.Request) {
+		res, err := s.ctrl.ListPeerEndpoints(r.Context())
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/settings/peers", func(w http.ResponseWriter, r *http.Request) {
+		var req SetPeerEndpointRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		if err := s.ctrl.SetPeerEndpoint(r.Context(), req); err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+	})
+	mux.HandleFunc("DELETE /api/v1/settings/peers", func(w http.ResponseWriter, r *http.Request) {
+		var req RemovePeerEndpointRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		if err := s.ctrl.RemovePeerEndpoint(r.Context(), req); err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+	})
+
+	// Orbit Setup
+	mux.HandleFunc("GET /api/v1/setup/inspect", func(w http.ResponseWriter, r *http.Request) {
+		res, err := s.ctrl.InspectSetup(r.Context())
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/setup/preview-root", func(w http.ResponseWriter, r *http.Request) {
+		var req PreviewCreateRootRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.PreviewCreateRoot(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/setup/preview-join-root", func(w http.ResponseWriter, r *http.Request) {
+		var req PreviewJoinRootRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.PreviewJoinRoot(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/setup/start", func(w http.ResponseWriter, r *http.Request) {
+		var req StartSetupRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.StartSetup(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/setup/resume", func(w http.ResponseWriter, r *http.Request) {
+		var req ResumeSetupRequest
+		if r.Body != nil && r.ContentLength > 0 {
+			_ = json.NewDecoder(r.Body).Decode(&req)
+		}
+		res, err := s.ctrl.ResumeSetup(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("GET /api/v1/setup/status", func(w http.ResponseWriter, r *http.Request) {
+		res, err := s.ctrl.GetSetupStatus(r.Context())
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit Directory Picker & Desktop Helper (O03)
+	mux.HandleFunc("GET /api/v1/system/directories", func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Query().Get("path")
+		limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+		offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
+		res, err := s.ctrl.BrowseDirectories(r.Context(), DirectoryPickerRequest{
+			Path:   path,
+			Limit:  limit,
+			Offset: offset,
+		})
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/system/open-folder", func(w http.ResponseWriter, r *http.Request) {
+		var req OpenFolderRequest
+		if r.Body != nil && r.ContentLength > 0 {
+			_ = json.NewDecoder(r.Body).Decode(&req)
+		}
+		res, err := s.ctrl.OpenLocalFolder(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit User Service Lifecycle (O03)
+	mux.HandleFunc("GET /api/v1/system/service/status", func(w http.ResponseWriter, r *http.Request) {
+		res, err := s.ctrl.ServiceStatus(r.Context())
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/system/service/action", func(w http.ResponseWriter, r *http.Request) {
+		var req ServiceActionRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.ServiceAction(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit Invitations (G02)
+	mux.HandleFunc("POST /api/v1/invitations", func(w http.ResponseWriter, r *http.Request) {
+		var req CreateInvitationRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.CreateInvitation(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("GET /api/v1/invitations", func(w http.ResponseWriter, r *http.Request) {
+		folderStr := r.URL.Query().Get("folder")
+		var folder history.ID
+		if folderStr != "" {
+			if err := folder.UnmarshalText([]byte(folderStr)); err != nil {
+				writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: "invalid folder ID hex"})
+				return
+			}
+		}
+		res, err := s.ctrl.ListInvitations(r.Context(), folder)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/invitations/revoke", func(w http.ResponseWriter, r *http.Request) {
+		var req RevokeInvitationRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.RevokeInvitation(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit Enrollment (G02)
+	mux.HandleFunc("POST /api/v1/enrollment/request", func(w http.ResponseWriter, r *http.Request) {
+		clientIP := r.RemoteAddr
+		if host, _, err := net.SplitHostPort(clientIP); err == nil {
+			clientIP = host
+		}
+		if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+			parts := strings.Split(xff, ",")
+			clientIP = strings.TrimSpace(parts[0])
+		}
+
+		if !s.checkEnrollmentRateLimit(clientIP) {
+			writeError(w, RateLimitError("too many enrollment requests; please wait before retrying"))
+			return
+		}
+
+		if r.ContentLength > 16*1024 {
+			writeError(w, PayloadTooLargeError("request payload exceeds bounded 16 KiB limit"))
+			return
+		}
+
+		limitedBody := http.MaxBytesReader(w, r.Body, 16*1024)
+		var req SubmitJoinRequestPayload
+		if err := json.NewDecoder(limitedBody).Decode(&req); err != nil {
+			var maxBytesErr *http.MaxBytesError
+			if errors.As(err, &maxBytesErr) {
+				writeError(w, PayloadTooLargeError("request payload exceeds bounded 16 KiB limit"))
+				return
+			}
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.SubmitEnrollmentRequest(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("GET /api/v1/enrollment/requests", func(w http.ResponseWriter, r *http.Request) {
+		folderStr := r.URL.Query().Get("folder")
+		var folder history.ID
+		if folderStr != "" {
+			if err := folder.UnmarshalText([]byte(folderStr)); err != nil {
+				writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: "invalid folder ID hex"})
+				return
+			}
+		}
+		status := r.URL.Query().Get("status")
+		res, err := s.ctrl.ListEnrollmentRequests(r.Context(), folder, status)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/enrollment/approve", func(w http.ResponseWriter, r *http.Request) {
+		var body struct {
+			RequestID      string `json:"request_id"`
+			Folder         string `json:"folder"`
+			Endpoint       string `json:"endpoint,omitempty"`
+			Certificate    string `json:"certificate,omitempty"`
+			SuggestedLabel string `json:"suggested_label,omitempty"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		var folderID history.ID
+		if body.Folder != "" {
+			if raw, err := hex.DecodeString(body.Folder); err == nil && len(raw) == 32 {
+				copy(folderID[:], raw)
+			}
+		}
+		req := ApproveEnrollmentRequest{
+			RequestID:      body.RequestID,
+			Folder:         folderID,
+			Endpoint:       body.Endpoint,
+			Certificate:    body.Certificate,
+			SuggestedLabel: body.SuggestedLabel,
+		}
+		res, err := s.ctrl.ApproveEnrollmentRequest(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/enrollment/decline", func(w http.ResponseWriter, r *http.Request) {
+		var req DeclineEnrollmentRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		if err := s.ctrl.DeclineEnrollmentRequest(r.Context(), req); err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+	})
+	mux.HandleFunc("GET /api/v1/enrollment/status", func(w http.ResponseWriter, r *http.Request) {
+		reqID := r.URL.Query().Get("request_id")
+		if reqID == "" {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: "request_id is required"})
+			return
+		}
+		res, err := s.ctrl.GetEnrollmentStatus(r.Context(), reqID)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/orbit/setup/join/submit", func(w http.ResponseWriter, r *http.Request) {
+		var req JoinFlowSubmitRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.SubmitJoinFlow(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/orbit/setup/join/complete", func(w http.ResponseWriter, r *http.Request) {
+		var req JoinFlowCompleteRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.CompleteJoinFlow(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("GET /api/v1/orbit/setup/join/status", func(w http.ResponseWriter, r *http.Request) {
+		remote := r.URL.Query().Get("remote_endpoint")
+		reqID := r.URL.Query().Get("request_id")
+		res, err := s.ctrl.CheckJoinStatus(r.Context(), remote, reqID)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/devices/alias", func(w http.ResponseWriter, r *http.Request) {
+		var req RenameDeviceRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.RenameDevice(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/peers/test", func(w http.ResponseWriter, r *http.Request) {
+		var req PeerTestRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.TestPeerReachability(r.Context(), req.URL)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/peers/retire/preview", func(w http.ResponseWriter, r *http.Request) {
+		var req RetireDevicePreviewRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.PreviewDeviceRetirement(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit Membership Controls (G02/O05)
+	mux.HandleFunc("GET /api/v1/membership", func(w http.ResponseWriter, r *http.Request) {
+		folder, err := parseQueryFolder(r)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		res, err := s.ctrl.MembershipExport(r.Context(), folder)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/membership/export", func(w http.ResponseWriter, r *http.Request) {
+		folder, err := parseQueryFolder(r)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		res, err := s.ctrl.MembershipExport(r.Context(), folder)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/membership/preview", func(w http.ResponseWriter, r *http.Request) {
+		var req struct {
+			Folder     history.ID          `json:"folder"`
+			Membership protocol.Membership `json:"membership"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.MembershipPreview(r.Context(), req.Folder, req.Membership)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/membership/import", func(w http.ResponseWriter, r *http.Request) {
+		var req struct {
+			Folder     history.ID                    `json:"folder"`
+			Membership protocol.Membership           `json:"membership"`
+			Snapshots  []protocol.RetirementSnapshot `json:"snapshots,omitempty"`
+			Approve    bool                          `json:"approve"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.MembershipImport(r.Context(), req.Folder, req.Membership, req.Snapshots, req.Approve)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/membership/fork/detect", func(w http.ResponseWriter, r *http.Request) {
+		var req DetectForkRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.DetectMembershipFork(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/membership/reconcile", func(w http.ResponseWriter, r *http.Request) {
+		var req ReconcileMembershipRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.ReconcileMembership(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit Read Leases (G03 - Invariant I25)
+	mux.HandleFunc("POST /api/v1/content/lease", func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 16<<10)
+		var req AcquireReadLeaseRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.AcquireReadLease(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/content/release-lease", func(w http.ResponseWriter, r *http.Request) {
+		var req ReleaseReadLeaseRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		if err := s.ctrl.ReleaseReadLease(r.Context(), req); err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+	})
+
+	// Orbit Operation Progress & Cancellation
+	mux.HandleFunc("GET /api/v1/operations/progress", func(w http.ResponseWriter, r *http.Request) {
+		opID := r.URL.Query().Get("id")
+		if opID == "" {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: "operation id query parameter required"})
+			return
+		}
+		res, err := s.ctrl.GetOperationProgress(r.Context(), opID)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+	mux.HandleFunc("POST /api/v1/operations/cancel", func(w http.ResponseWriter, r *http.Request) {
+		var req CancelOperationRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.CancelOperation(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
+
+	// Orbit File Actions (O09)
+	s.registerFileActions(mux)
 
 	// Wrap in security middleware
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -619,8 +1302,11 @@ func (s *Server) Handler() http.Handler {
 		// 3. Authentication check for non-public paths
 		// Web assets, health, version, bootstrap, and session-check are unauthenticated.
 		// All other /api/ endpoints require valid CLI Bearer or browser session cookie.
-		isPublicAPI := r.URL.Path == "/api/v1/health" || r.URL.Path == "/api/v1/version" || r.URL.Path == "/api/v1/auth/bootstrap" || r.URL.Path == "/api/v1/auth/session"
+		isPublicAPI := r.URL.Path == "/api/v1/health" || r.URL.Path == "/api/v1/version" || r.URL.Path == "/api/v1/auth/bootstrap" || r.URL.Path == "/api/v1/auth/session" || r.URL.Path == "/api/v1/enrollment/request" || r.URL.Path == "/api/v1/enrollment/status"
 		isAPI := strings.HasPrefix(r.URL.Path, "/api/")
+		if isAPI {
+			w.Header().Set("Cache-Control", "no-store")
+		}
 
 		if isAPI && !isPublicAPI {
 			authHeader := r.Header.Get("Authorization")
@@ -808,7 +1494,13 @@ func writeError(w http.ResponseWriter, err error) {
 		switch ce.Code {
 		case "UNAUTHORIZED":
 			status = http.StatusUnauthorized
-		case "STALE_VIEW", "STRUCTURAL_CONFLICT":
+		case "RATE_LIMITED":
+			status = http.StatusTooManyRequests
+		case "PAYLOAD_TOO_LARGE":
+			status = http.StatusRequestEntityTooLarge
+		case "NOT_FOUND":
+			status = http.StatusNotFound
+		case "MEMBERSHIP_FORK", "STALE_VIEW", "STRUCTURAL_CONFLICT", "DESTINATION_EXISTS", "SUBTREE_INVALIDATED", "IDEMPOTENCY_CONFLICT":
 			status = http.StatusConflict
 		case "ROOT_UNAVAILABLE", "CONTENT_PENDING", "CONTENT_UNAVAILABLE":
 			status = http.StatusServiceUnavailable

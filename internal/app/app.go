@@ -80,6 +80,7 @@ type ServeOptions struct {
 	FullScanInterval  time.Duration // default 24h
 	NoWatch           bool
 	ClientFactory     scheduler.ClientFactory
+	AllowInitialize   bool // auto-initialize clean uninitialized state directory
 }
 
 func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) error {
@@ -91,7 +92,13 @@ func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) e
 
 func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) error {
 	if err := state.ValidateDirectory(stateDir); err != nil {
-		return err
+		if opts.AllowInitialize && errors.Is(err, os.ErrNotExist) {
+			if err := state.EnsureDirectory(stateDir); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
 	}
 	lock, err := state.Acquire(stateDir)
 	if err != nil {
@@ -105,6 +112,16 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 
 	cfg, err := config.Load(stateDir)
 	if err != nil {
+		if opts.AllowInitialize && errors.Is(err, os.ErrNotExist) {
+			cfg, err = config.Initialize(stateDir, time.Now, rand.Reader)
+			if err != nil {
+				return fmt.Errorf("auto-initialize state: %w", err)
+			}
+		} else {
+			return err
+		}
+	}
+	if err := control.VerifyRecoveryConsistency(stateDir); err != nil {
 		return err
 	}
 	db, err := repository.Open(ctx, stateDir)

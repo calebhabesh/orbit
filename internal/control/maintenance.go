@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -15,6 +14,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
+	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
@@ -143,36 +143,54 @@ func (c *Controller) RecoveryInspection(ctx context.Context) (*RecoveryInspectio
 		}
 	}
 
-	// 3. Reclaimable recovery copies
+	// 3. Reclaimable recovery copies (read-only inspection, leaves scratch and roots untouched)
 	for _, reg := range registered {
-		reclaim, err := c.ReclaimRecoveryCopies(ctx, ReclaimRecoveryRequest{Folder: reg.Folder})
-		if err == nil && reclaim.ReclaimedCount > 0 {
-			result.ReclaimableRecovery += reclaim.ReclaimedCount
-			result.Details = append(result.Details, fmt.Sprintf("folder %s: %d recovery files (%d bytes) reclaimable", shortID(reg.Folder), reclaim.ReclaimedCount, reclaim.ReclaimedBytes))
+		count, bytes, err := c.ws.InspectRecoveryCopies(ctx, reg.Folder)
+		if err == nil && count > 0 {
+			result.ReclaimableRecovery += count
+			result.Details = append(result.Details, fmt.Sprintf("folder %s: %d recovery files (%d bytes) reclaimable", shortID(reg.Folder), count, bytes))
 		}
+	}
+
+	// 4. Identity recovery consistency check (Invariant I20)
+	report, err := CheckRecoveryConsistency(c.db.StateDir())
+	if err == nil && report != nil {
+		result.Consistent = report.Consistent
+		if !report.Consistent {
+			result.ConsistencyError = report.ErrorReason
+			result.Details = append(result.Details, fmt.Sprintf("recovery inconsistency: %s", report.ErrorReason))
+		}
+	} else {
+		result.Consistent = true
 	}
 
 	return result, nil
 }
 
 // ResetIdentity creates a fresh device identity and keypair, updating configuration
-// without reusing rolled-back author counters.
-func (c *Controller) ResetIdentity(ctx context.Context, targetStateDir string) (*ResetIdentityResult, error) {
-	if targetStateDir == "" {
-		targetStateDir = c.db.StateDir()
+// and database folder authors without reusing rolled-back author counters (Invariant I08, I19).
+// It acquires an exclusive lock on stateDir and requires the background agent to be stopped.
+func ResetIdentity(ctx context.Context, stateDir string) (*ResetIdentityResult, error) {
+	if stateDir == "" {
+		return nil, errors.New("state directory cannot be empty")
 	}
+	if err := state.EnsureDirectory(stateDir); err != nil {
+		return nil, err
+	}
+	lock, err := state.Acquire(stateDir)
+	if err != nil {
+		if errors.Is(err, state.ErrLocked) {
+			return nil, errors.New("cannot reset identity while agent is running; stop service first ('systemctl --user stop filesync.service' or 'filesync stop')")
+		}
+		return nil, fmt.Errorf("acquire agent lock: %w", err)
+	}
+	defer lock.Close()
 
 	// Read existing config to obtain old device ID
-	cfgPath := filepath.Join(targetStateDir, "config.json")
 	var oldID history.ID
-	if raw, err := os.ReadFile(cfgPath); err == nil {
-		var cfg map[string]any
-		if json.Unmarshal(raw, &cfg) == nil {
-			if devStr, ok := cfg["device_id"].(string); ok {
-				if d, err := hex.DecodeString(devStr); err == nil && len(d) == 32 {
-					copy(oldID[:], d)
-				}
-			}
+	if oldCfg, err := config.Load(stateDir); err == nil {
+		if d, err := hex.DecodeString(oldCfg.DeviceID); err == nil && len(d) == 32 {
+			copy(oldID[:], d)
 		}
 	}
 
@@ -182,20 +200,45 @@ func (c *Controller) ResetIdentity(ctx context.Context, targetStateDir string) (
 		return nil, fmt.Errorf("generate new device id: %w", err)
 	}
 
-	// Generate and save fresh TLS identity
-	ident, err := replication.LoadOrCreateIdentity(targetStateDir, newID, time.Now())
+	// Rotate TLS identity (generates fresh ed25519 keypair and key pin)
+	ident, err := replication.RotateIdentity(stateDir, newID, time.Now())
 	if err != nil {
-		return nil, fmt.Errorf("generate new TLS identity: %w", err)
+		return nil, fmt.Errorf("generate fresh TLS identity: %w", err)
 	}
 
-	// Update config.json
-	cfgData := map[string]any{
-		"device_id": hex.EncodeToString(newID[:]),
-		"version":   1,
+	// Atomically write typed configuration with format_version and created_at
+	newCfg := config.Config{
+		FormatVersion: config.FormatVersion,
+		DeviceID:      hex.EncodeToString(newID[:]),
+		CreatedAt:     time.Now().UTC(),
 	}
-	updatedRaw, _ := json.MarshalIndent(cfgData, "", "  ")
-	if err := os.WriteFile(cfgPath, updatedRaw, 0o600); err != nil {
-		return nil, fmt.Errorf("write updated config: %w", err)
+	if err := config.Save(stateDir, newCfg); err != nil {
+		return nil, fmt.Errorf("write updated configuration: %w", err)
+	}
+
+	// Update folder authors in database transactionally if database exists
+	dbPath := filepath.Join(stateDir, "metadata.sqlite")
+	if _, err := os.Stat(dbPath); err == nil {
+		dbDSN := "file:" + dbPath + "?_pragma=busy_timeout(5000)"
+		db, err := sql.Open("sqlite", dbDSN)
+		if err != nil {
+			return nil, fmt.Errorf("open database for identity reset: %w", err)
+		}
+		defer db.Close()
+
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return nil, fmt.Errorf("begin transaction for folder author update: %w", err)
+		}
+		defer tx.Rollback()
+
+		zeroCounter := make([]byte, 8)
+		if _, err := tx.ExecContext(ctx, "UPDATE folders SET local_author=?, next_counter=?", newID[:], zeroCounter); err != nil {
+			return nil, fmt.Errorf("update folder local author and counter: %w", err)
+		}
+		if err := tx.Commit(); err != nil {
+			return nil, fmt.Errorf("commit folder author update: %w", err)
+		}
 	}
 
 	return &ResetIdentityResult{
@@ -205,6 +248,15 @@ func (c *Controller) ResetIdentity(ctx context.Context, targetStateDir string) (
 		Message:     "fresh device identity generated successfully; counters reset",
 		Action:      "re-enroll new device ID in folder memberships on peers",
 	}, nil
+}
+
+// ResetIdentity creates a fresh device identity and keypair, updating configuration
+// without reusing rolled-back author counters.
+func (c *Controller) ResetIdentity(ctx context.Context, targetStateDir string) (*ResetIdentityResult, error) {
+	if targetStateDir == "" {
+		targetStateDir = c.db.StateDir()
+	}
+	return ResetIdentity(ctx, targetStateDir)
 }
 
 // RecordEvent records an operational event log.
@@ -385,7 +437,7 @@ func RestoreBackup(ctx context.Context, stateDir string, backupPath string) (*Re
 	}
 
 	// 1. Verify directory and acquire lock (agent must NOT be running)
-	if err := state.ValidateDirectory(stateDir); err != nil {
+	if err := state.EnsureDirectory(stateDir); err != nil {
 		return nil, err
 	}
 	lock, err := state.Acquire(stateDir)
@@ -454,16 +506,10 @@ func RestoreBackup(ctx context.Context, stateDir string, backupPath string) (*Re
 	}
 
 	// 5. CRITICAL: Reset Identity to preserve Invariant I08 (causal counter monotonicity)
-	cfgPath := filepath.Join(stateDir, "config.json")
 	var oldID history.ID
-	if raw, err := os.ReadFile(cfgPath); err == nil {
-		var cfg map[string]any
-		if json.Unmarshal(raw, &cfg) == nil {
-			if devStr, ok := cfg["device_id"].(string); ok {
-				if d, err := hex.DecodeString(devStr); err == nil && len(d) == 32 {
-					copy(oldID[:], d)
-				}
-			}
+	if oldCfg, err := config.Load(stateDir); err == nil {
+		if d, err := hex.DecodeString(oldCfg.DeviceID); err == nil && len(d) == 32 {
+			copy(oldID[:], d)
 		}
 	}
 
@@ -472,30 +518,41 @@ func RestoreBackup(ctx context.Context, stateDir string, backupPath string) (*Re
 		return nil, fmt.Errorf("generate new device id: %w", err)
 	}
 
-	ident, err := replication.LoadOrCreateIdentity(stateDir, newID, time.Now())
+	ident, err := replication.RotateIdentity(stateDir, newID, time.Now())
 	if err != nil {
 		return nil, fmt.Errorf("generate fresh TLS identity: %w", err)
 	}
 
-	cfgData := map[string]any{
-		"device_id": hex.EncodeToString(newID[:]),
-		"version":   1,
+	newCfg := config.Config{
+		FormatVersion: config.FormatVersion,
+		DeviceID:      hex.EncodeToString(newID[:]),
+		CreatedAt:     time.Now().UTC(),
 	}
-	updatedRaw, _ := json.MarshalIndent(cfgData, "", "  ")
-	if err := os.WriteFile(cfgPath, updatedRaw, 0o600); err != nil {
+	if err := config.Save(stateDir, newCfg); err != nil {
 		return nil, fmt.Errorf("write updated config.json: %w", err)
 	}
 
-	// Update restored database with new identity and reset next_counter to 0
-	restoreDSN := "file:" + targetDB + "?_pragma=busy_timeout(5000)&_pragma=foreign_keys(0)"
+	// Update restored database with new identity and reset next_counter to 0 in checked transaction
+	restoreDSN := "file:" + targetDB + "?_pragma=busy_timeout(5000)"
 	postDB, err := sql.Open("sqlite", restoreDSN)
 	if err != nil {
 		return nil, fmt.Errorf("open restored database for identity update: %w", err)
 	}
 	defer postDB.Close()
 
+	tx, err := postDB.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("begin transaction for folder author update: %w", err)
+	}
+	defer tx.Rollback()
+
 	zeroCounter := make([]byte, 8)
-	_, _ = postDB.ExecContext(ctx, "UPDATE folders SET local_author=?, next_counter=?", newID[:], zeroCounter)
+	if _, err := tx.ExecContext(ctx, "UPDATE folders SET local_author=?, next_counter=?", newID[:], zeroCounter); err != nil {
+		return nil, fmt.Errorf("update folder local author and counter: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commit folder author update: %w", err)
+	}
 
 	return &RestoreBackupResult{
 		Status:      "success",
@@ -506,4 +563,20 @@ func RestoreBackup(ctx context.Context, stateDir string, backupPath string) (*Re
 		Message:     "backup successfully restored and causal identity safely reset",
 		Action:      "re-enroll new device ID in folder memberships with peers (Invariant I08)",
 	}, nil
+}
+
+// PruneLifecycleRecords performs safe, bounded pruning of finished lifecycle records
+// (tasks, expired invitations, expired read leases, terminal enrollment requests, completed operations, expired idempotency keys)
+// preserving pending work, DAG causal metadata, recovery journals, and content pins (Invariant I28).
+func (c *Controller) PruneLifecycleRecords(ctx context.Context, req PruneRecordsRequest) (PruneRecordsResult, error) {
+	cutoffDuration := 24 * time.Hour
+	if req.CutoffSeconds > 0 {
+		cutoffDuration = time.Duration(req.CutoffSeconds) * time.Second
+	}
+	cutoff := time.Now().Add(-cutoffDuration)
+	report, err := c.db.PruneLifecycleRecords(ctx, cutoff)
+	if err != nil {
+		return PruneRecordsResult{}, err
+	}
+	return PruneRecordsResult{Report: report}, nil
 }

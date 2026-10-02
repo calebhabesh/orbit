@@ -663,13 +663,12 @@ func (c *Controller) ResolveKeepCopies(ctx context.Context, req KeepCopiesReques
 
 // Export streams a verified version payload to destination with whole-file verification.
 func (c *Controller) Export(ctx context.Context, folder history.ID, id history.VersionID, destination io.Writer) error {
-	if folder == (history.ID{}) || id == (history.VersionID{}) {
-		return fmt.Errorf("%w: folder and version ID are required", ErrInvalidRequest)
-	}
-	if err := c.verifyContentAvailability(ctx, id); err != nil {
+	read, err := c.OpenContent(ctx, folder, id)
+	if err != nil {
 		return err
 	}
-	_, err := c.db.WriteVersion(ctx, id, destination)
+	defer read.Close()
+	_, err = io.Copy(destination, read)
 	return err
 }
 
@@ -740,6 +739,32 @@ func (c *Controller) Files(ctx context.Context, folder history.ID) ([]FileItem, 
 			Executable:  p.Executable,
 			BlockReason: p.BlockReason,
 		})
+	}
+	return items, nil
+}
+
+// DeletedFiles returns tombstoned file paths from the workspace projections.
+func (c *Controller) DeletedFiles(ctx context.Context, folder history.ID) ([]FileItem, error) {
+	if folder == (history.ID{}) {
+		return nil, fmt.Errorf("%w: folder is required", ErrInvalidRequest)
+	}
+	projections, err := c.db.Projections(ctx, folder)
+	if err != nil {
+		return nil, err
+	}
+	var items []FileItem
+	for _, p := range projections {
+		if p.Kind == history.KindTombstone {
+			items = append(items, FileItem{
+				Path:        p.Path,
+				Kind:        p.Kind,
+				Size:        p.ObservedSize,
+				MtimeNS:     p.ObservedMtimeNS,
+				Inode:       p.ObservedInode,
+				Executable:  p.Executable,
+				BlockReason: p.BlockReason,
+			})
+		}
 	}
 	return items, nil
 }
@@ -1137,12 +1162,17 @@ func (c *Controller) PeerList(ctx context.Context, folder history.ID) (PeerListR
 	if retired == nil {
 		retired = []protocol.RetiredMember{}
 	}
+	aliases, _ := c.db.GetDeviceDisplayNames(ctx)
+	if aliases == nil {
+		aliases = make(map[string]string)
+	}
 	return PeerListResult{
 		Folder:   folder,
 		Revision: rev,
 		Digest:   digest,
 		Active:   active,
 		Retired:  retired,
+		Aliases:  aliases,
 	}, nil
 }
 
