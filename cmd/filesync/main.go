@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/hex"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -22,11 +24,13 @@ import (
 	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/control"
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/launcher"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/internal/state"
 	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/file-sync/web"
 )
 
 var (
@@ -36,6 +40,17 @@ var (
 )
 
 func main() {
+	control.Version = version
+	control.Commit = commit
+	control.Date = date
+
+	if filepath.Base(os.Args[0]) == "orbit" {
+		if err := handleOrbit(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+			fmt.Fprintf(os.Stderr, "orbit: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
 	if err := run(os.Args[1:], os.Stdout, os.Stderr); err != nil {
 		fmt.Fprintf(os.Stderr, "filesync: %v\n", err)
 		os.Exit(1)
@@ -49,6 +64,8 @@ func run(args []string, stdout, stderr io.Writer) error {
 	}
 
 	switch args[0] {
+	case "orbit":
+		return handleOrbit(args[1:], stdout, stderr)
 	case "version":
 		fmt.Fprintf(stdout, "filesync %s (commit=%s, built=%s, %s/%s, go=%s)\n",
 			version, commit, date, runtime.GOOS, runtime.GOARCH, runtime.Version())
@@ -106,6 +123,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 		syncInterval := flags.Duration("sync-interval", 5*time.Minute, "bounded periodic reconciliation scan interval")
 		fullScanInterval := flags.Duration("full-scan-interval", 24*time.Hour, "bounded full-content verification scan interval")
 		noWatch := flags.Bool("no-watch", false, "disable filesystem inotify watcher hints")
+		allowInit := flags.Bool("allow-init", false, "auto-initialize clean uninitialized state directory")
 		if err := flags.Parse(args[1:]); err != nil {
 			return err
 		}
@@ -123,6 +141,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 			SyncInterval:      *syncInterval,
 			FullScanInterval:  *fullScanInterval,
 			NoWatch:           *noWatch,
+			AllowInitialize:   *allowInit,
 		})
 	case "identity":
 		flags := flag.NewFlagSet("identity", flag.ContinueOnError)
@@ -538,53 +557,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 			return fmt.Errorf("unknown enroll subcommand %q", args[1])
 		}
 	case "storage":
-		if len(args) < 2 {
-			return errors.New("storage requires a subcommand: usage, retention, gc, recovery, check, or repair")
-		}
-		switch args[1] {
-		case "usage":
-			return handleStorageUsage(args[2:], stdout, stderr)
-		case "retention":
-			if len(args) < 3 {
-				return errors.New("storage retention requires a subcommand: preview or change")
-			}
-			switch args[2] {
-			case "preview":
-				return handleStorageRetentionPreview(args[3:], stdout, stderr)
-			case "change":
-				return handleStorageRetentionChange(args[3:], stdout, stderr)
-			default:
-				return fmt.Errorf("unknown storage retention subcommand %q", args[2])
-			}
-		case "gc":
-			if len(args) < 3 {
-				return errors.New("storage gc requires a subcommand: preview or run")
-			}
-			switch args[2] {
-			case "preview":
-				return handleStorageGCPreview(args[3:], stdout, stderr)
-			case "run":
-				return handleStorageGCRun(args[3:], stdout, stderr)
-			default:
-				return fmt.Errorf("unknown storage gc subcommand %q", args[2])
-			}
-		case "recovery":
-			if len(args) < 3 {
-				return errors.New("storage recovery requires a subcommand: reclaim")
-			}
-			switch args[2] {
-			case "reclaim":
-				return handleStorageRecoveryReclaim(args[3:], stdout, stderr)
-			default:
-				return fmt.Errorf("unknown storage recovery subcommand %q", args[2])
-			}
-		case "check":
-			return handleStorageCheck(args[2:], stdout, stderr)
-		case "repair":
-			return handleStorageRepair(args[2:], stdout, stderr)
-		default:
-			return fmt.Errorf("unknown storage subcommand %q", args[1])
-		}
+		return handleStorage(args[1:], stdout, stderr)
 	case "check":
 		return handleStorageCheck(args[1:], stdout, stderr)
 	case "repair":
@@ -1180,7 +1153,7 @@ func handleApproveDeletions(args []string, stdout, stderr io.Writer) error {
 
 func handleMaintenance(args []string, stdout, stderr io.Writer) error {
 	if len(args) < 1 {
-		return errors.New("maintenance requires a subcommand: backup, check, preflight, recovery, reset-identity, or restore-backup")
+		return errors.New("maintenance requires a subcommand: backup, check, preflight, recovery, reset-identity, restore-backup, or prune")
 	}
 	switch args[0] {
 	case "backup":
@@ -1195,6 +1168,8 @@ func handleMaintenance(args []string, stdout, stderr io.Writer) error {
 		return handleMaintenanceResetIdentity(args[1:], stdout, stderr)
 	case "restore-backup":
 		return handleMaintenanceRestoreBackup(args[1:], stdout, stderr)
+	case "prune":
+		return handleStoragePrune(args[1:], stdout, stderr)
 	default:
 		return fmt.Errorf("unknown maintenance subcommand %q", args[0])
 	}
@@ -1427,7 +1402,6 @@ func handleMaintenanceResetIdentity(args []string, stdout, stderr io.Writer) err
 	flags.SetOutput(stderr)
 	stateDir := flags.String("state", config.DefaultStateDir(), "agent state directory")
 	stateDirAlt := flags.String("state-dir", "", "agent state directory")
-	deviceID := flags.String("device-id", "", "optional specific 32-byte hex device ID to assign")
 	jsonOutput := flags.Bool("json", false, "write structured JSON")
 	if err := flags.Parse(args); err != nil {
 		return err
@@ -1436,20 +1410,16 @@ func handleMaintenanceResetIdentity(args []string, stdout, stderr io.Writer) err
 	if *stateDirAlt != "" {
 		actualStateDir = *stateDirAlt
 	}
-	return app.WithWorkspace(context.Background(), actualStateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		local, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: local})
-		res, err := ctrl.ResetIdentity(context.Background(), *deviceID)
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(res)
-		}
-		fmt.Fprintf(stdout, "reset identity: old=%x new=%x key_pin=%x (%s)\n", res.OldDeviceID, res.NewDeviceID, res.NewKeyPin, res.Message)
-		fmt.Fprintf(stdout, "note: prior memberships have been cleared; reenrolling folders is required\n")
-		return nil
-	})
+	res, err := control.ResetIdentity(context.Background(), actualStateDir)
+	if err != nil {
+		return err
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(res)
+	}
+	fmt.Fprintf(stdout, "reset identity: old=%x new=%x key_pin=%x (%s)\n", res.OldDeviceID, res.NewDeviceID, res.NewKeyPin, res.Message)
+	fmt.Fprintf(stdout, "note: prior memberships have been cleared; reenrolling folders is required\n")
+	return nil
 }
 
 func handleControl(args []string, stdout, stderr io.Writer) error {
@@ -2329,6 +2299,58 @@ func handleEnrollBootstrap(args []string, stdout, stderr io.Writer) error {
 	})
 }
 
+func handleStorage(args []string, stdout, stderr io.Writer) error {
+	if len(args) < 1 {
+		return errors.New("storage requires a subcommand: usage, retention, gc, recovery, check, repair, or prune")
+	}
+	switch args[0] {
+	case "usage":
+		return handleStorageUsage(args[1:], stdout, stderr)
+	case "retention":
+		if len(args) < 2 {
+			return errors.New("storage retention requires a subcommand: preview or change")
+		}
+		switch args[1] {
+		case "preview":
+			return handleStorageRetentionPreview(args[2:], stdout, stderr)
+		case "change":
+			return handleStorageRetentionChange(args[2:], stdout, stderr)
+		default:
+			return fmt.Errorf("unknown storage retention subcommand %q", args[1])
+		}
+	case "gc":
+		if len(args) < 2 {
+			return errors.New("storage gc requires a subcommand: preview or run")
+		}
+		switch args[1] {
+		case "preview":
+			return handleStorageGCPreview(args[2:], stdout, stderr)
+		case "run":
+			return handleStorageGCRun(args[2:], stdout, stderr)
+		default:
+			return fmt.Errorf("unknown storage gc subcommand %q", args[1])
+		}
+	case "recovery":
+		if len(args) < 2 {
+			return errors.New("storage recovery requires a subcommand: reclaim")
+		}
+		switch args[1] {
+		case "reclaim":
+			return handleStorageRecoveryReclaim(args[2:], stdout, stderr)
+		default:
+			return fmt.Errorf("unknown storage recovery subcommand %q", args[1])
+		}
+	case "check":
+		return handleStorageCheck(args[1:], stdout, stderr)
+	case "repair":
+		return handleStorageRepair(args[1:], stdout, stderr)
+	case "prune":
+		return handleStoragePrune(args[1:], stdout, stderr)
+	default:
+		return fmt.Errorf("unknown storage subcommand %q", args[0])
+	}
+}
+
 func handleStorageUsage(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("storage usage", flag.ContinueOnError)
 	flags.SetOutput(stderr)
@@ -2748,6 +2770,95 @@ func handleStorageRepair(args []string, stdout, stderr io.Writer) error {
 	})
 }
 
+func handleStoragePrune(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("prune", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDir := flags.String("state", config.DefaultStateDir(), "agent state directory")
+	stateDirAlt := flags.String("state-dir", "", "agent state directory")
+	cutoffFlag := flags.Int64("cutoff", 86400, "prune finished records older than this many seconds (default 86400)")
+	jsonOutput := flags.Bool("json", false, "write structured JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+	targetDir := *stateDir
+	if *stateDirAlt != "" {
+		targetDir = *stateDirAlt
+	}
+
+	return app.WithWorkspace(context.Background(), targetDir, func(_ config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		ctrl := control.New(db, ws)
+		res, err := ctrl.PruneLifecycleRecords(context.Background(), control.PruneRecordsRequest{
+			CutoffSeconds: *cutoffFlag,
+		})
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		r := res.Report
+		fmt.Fprintf(stdout, "pruned lifecycle records: tasks=%d invitations=%d enrollment_requests=%d read_leases=%d operations=%d control_operations=%d total=%d\n",
+			r.TasksPruned, r.InvitationsPruned, r.EnrollmentRequestsPruned, r.ReadLeasesPruned, r.OperationsPruned, r.ControlOpsPruned, r.TotalPruned)
+		return nil
+	})
+}
+
+func handleOrbitSettings(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit settings", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDir := flags.String("state", "", "explicit agent state directory")
+	label := flags.String("label", "", "update device label")
+	defaultWorkspace := flags.String("default-workspace", "", "update default workspace ID")
+	theme := flags.String("theme", "", "update UI theme (light, dark, system)")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	targetDir := *stateDir
+	if targetDir == "" {
+		discovered, err := launcher.DiscoverState("")
+		if err == nil {
+			targetDir = discovered
+		} else {
+			targetDir = config.DefaultStateDir()
+		}
+	}
+
+	return app.WithWorkspace(context.Background(), targetDir, func(_ config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		ctrl := control.New(db, ws)
+		if *label != "" || *defaultWorkspace != "" || *theme != "" {
+			req := control.UpdateSettingsRequest{
+				DeviceLabel:      label,
+				DefaultWorkspace: defaultWorkspace,
+				Theme:            theme,
+			}
+			res, err := ctrl.UpdateSettings(context.Background(), req)
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "settings updated: device_label=%s default_workspace=%s theme=%s\n",
+				res.Settings.DeviceLabel, res.Settings.DefaultWorkspace, res.Settings.Theme)
+			return nil
+		}
+
+		res, err := ctrl.GetSettings(context.Background())
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "device_label: %s\n", res.Settings.DeviceLabel)
+		fmt.Fprintf(stdout, "default_workspace: %s\n", res.Settings.DefaultWorkspace)
+		fmt.Fprintf(stdout, "theme: %s\n", res.Settings.Theme)
+		return nil
+	})
+}
+
 func handleWorkScan(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("work scan", flag.ContinueOnError)
 	flags.SetOutput(stderr)
@@ -3088,4 +3199,1429 @@ func handleWorkList(args []string, stdout, stderr io.Writer) error {
 		}
 		return nil
 	})
+}
+
+// --- Orbit CLI Commands (O03) ---
+
+func handleOrbit(args []string, stdout, stderr io.Writer) error {
+	if len(args) == 0 {
+		return handleOrbitLaunch(nil, stdout, stderr)
+	}
+
+	switch args[0] {
+	case "launch":
+		return handleOrbitLaunch(args[1:], stdout, stderr)
+	case "browse", "search", "details":
+		return handleOrbitBrowse(args[0], args[1:], stdout, stderr)
+	case "mkdir", "import", "move", "rename", "delete":
+		return handleOrbitFileAction(args[0], args[1:], stdout, stderr)
+	case "restore":
+		return handleRestore(args[1:], stdout, stderr)
+	case "conflicts":
+		return run(append([]string{"conflicts"}, args[1:]...), stdout, stderr)
+	case "status":
+		return handleOrbitStatus(args[1:], stdout, stderr)
+	case "setup":
+		return handleOrbitSetup(args[1:], stdout, stderr)
+	case "init":
+		return run(args, stdout, stderr)
+	case "join":
+		return handleOrbitJoin(args[1:], stdout, stderr)
+	case "invite":
+		return handleOrbitInvite(args[1:], stdout, stderr)
+	case "requests":
+		return handleOrbitRequests(args[1:], stdout, stderr)
+	case "devices":
+		return handleOrbitDevices(args[1:], stdout, stderr)
+	case "settings":
+		return handleOrbitSettings(args[1:], stdout, stderr)
+	case "folders":
+		return handleFolders(args[1:], stdout, stderr)
+	case "storage":
+		if len(args) > 1 {
+			return handleStorage(args, stdout, stderr)
+		}
+		return handleStorageUsage(nil, stdout, stderr)
+	case "maintenance":
+		return handleMaintenance(args[1:], stdout, stderr)
+	case "service":
+		return handleOrbitService(args[1:], stdout, stderr)
+	case "version", "-v", "--version":
+		return handleOrbitVersion(args[1:], stdout, stderr)
+	case "open":
+		return handleOrbitOpen(args[1:], stdout, stderr)
+	case "picker":
+		return handleOrbitPicker(args[1:], stdout, stderr)
+	case "serve":
+		return run(args, stdout, stderr)
+	case "help", "-h", "--help":
+		printOrbitHelp(stdout)
+		return nil
+	default:
+		return fmt.Errorf("unknown orbit command %q; run 'orbit help' for available commands", args[0])
+	}
+}
+
+func handleOrbitLaunch(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit launch", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDir := flags.String("state", "", "explicit agent state directory")
+	controlListen := flags.String("control-listen", "127.0.0.1:0", "explicit loopback control listener address")
+	noBrowser := flags.Bool("no-browser", false, "print bootstrap URL without opening browser")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	res, err := launcher.Launch(context.Background(), launcher.LaunchOptions{
+		StateDir:       *stateDir,
+		ControlAddress: *controlListen,
+		NoBrowser:      *noBrowser,
+		Stdout:         stdout,
+		Stderr:         stderr,
+	})
+	if err != nil {
+		return err
+	}
+
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(res)
+	}
+
+	if res.BrowserOpened {
+		fmt.Fprintf(stdout, "Orbit browser session opened at %s\n", res.BootstrapURL)
+	} else if !*noBrowser {
+		fmt.Fprintf(stdout, "Orbit control interface ready:\n%s\n", res.BootstrapURL)
+	}
+	return nil
+}
+
+func handleOrbitStatus(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit status", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	testLock, err := state.Acquire(stateDir)
+	running := false
+	if errors.Is(err, state.ErrLocked) {
+		running = true
+	} else if err == nil {
+		_ = testLock.Close()
+	}
+
+	svcStatus, _ := control.CheckServiceStatus(context.Background(), stateDir, nil)
+
+	type OrbitOverallStatus struct {
+		StateDirectory string                       `json:"state_directory"`
+		DaemonRunning  bool                         `json:"daemon_running"`
+		ControlAddress string                       `json:"control_address,omitempty"`
+		Service        *control.ServiceStatusResult `json:"service,omitempty"`
+		Setup          *control.InspectSetupResult  `json:"setup,omitempty"`
+	}
+
+	res := OrbitOverallStatus{
+		StateDirectory: stateDir,
+		DaemonRunning:  running,
+		Service:        svcStatus,
+	}
+
+	if running {
+		if addrBytes, err := os.ReadFile(filepath.Join(stateDir, "control.addr")); err == nil {
+			res.ControlAddress = strings.TrimSpace(string(addrBytes))
+		}
+	}
+
+	_ = app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		localDev, _ := parseID(cfg.DeviceID)
+		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
+		insp, err := ctrl.InspectSetup(context.Background())
+		if err == nil {
+			res.Setup = insp
+		}
+		return nil
+	})
+
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(res)
+	}
+
+	fmt.Fprintf(stdout, "Orbit Status:\n")
+	fmt.Fprintf(stdout, "  State Directory:   %s\n", res.StateDirectory)
+	fmt.Fprintf(stdout, "  Daemon Running:    %v\n", res.DaemonRunning)
+	if res.ControlAddress != "" {
+		fmt.Fprintf(stdout, "  Control Address:   %s\n", res.ControlAddress)
+	}
+	if res.Service != nil {
+		fmt.Fprintf(stdout, "  Service Installed: %v (enabled: %v, active: %v)\n",
+			res.Service.UnitInstalled, res.Service.EnabledOnLogin, res.Service.CurrentlyRunning)
+	}
+	if res.Setup != nil {
+		fmt.Fprintf(stdout, "  Setup Status:      phase=%s, completed=%v, folders=%d\n",
+			res.Setup.CurrentPhase, res.Setup.SetupCompleted, res.Setup.RegisteredCount)
+	}
+	return nil
+}
+
+func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit setup", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	rootPath := flags.String("root", "", "proposed sync root directory path")
+	label := flags.String("label", "", "device display label")
+	name := flags.String("name", "", "workspace display name")
+	previewOnly := flags.Bool("preview", false, "preview proposed root directory without adopting")
+	resume := flags.Bool("resume", false, "resume interrupted setup")
+	join := flags.Bool("join", false, "join an existing workspace via invitation")
+	invitationFlag := flags.String("invitation", "", "workspace invitation token or orbit-invitation: link")
+	remoteFlag := flags.String("remote", "", "inviting device remote control URL")
+	folderFlag := flags.String("folder", "", "target workspace folder ID hex")
+	timeoutFlag := flags.Int("timeout", 60, "seconds to wait for owner approval (0 for non-blocking)")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	if _, err := config.Load(stateDir); errors.Is(err, os.ErrNotExist) {
+		if _, err := app.Initialize(context.Background(), stateDir, app.SystemDependencies()); err != nil {
+			return err
+		}
+	}
+
+	return app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		localDev, _ := parseID(cfg.DeviceID)
+		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
+		ctx := context.Background()
+
+		if *resume {
+			res, err := ctrl.ResumeSetup(ctx, control.ResumeSetupRequest{})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Setup resumed: phase=%s, completed=%v, root=%s\n", res.Phase, res.Completed, res.RootPath)
+			return nil
+		}
+
+		if *join {
+			token := strings.TrimSpace(*invitationFlag)
+			if idx := strings.Index(token, "orbit-invitation:"); idx != -1 {
+				token = strings.TrimSpace(token[idx:])
+			}
+			remote := *remoteFlag
+			folderStr := *folderFlag
+
+			if strings.HasPrefix(token, "orbit-invitation:") {
+				u, err := url.Parse(token)
+				if err == nil {
+					q := u.Query()
+					if t := q.Get("token"); t != "" {
+						token = t
+					}
+					if f := q.Get("folder"); f != "" {
+						folderStr = f
+					}
+					if ep := q.Get("endpoint"); ep != "" {
+						remote = ep
+					}
+				}
+			}
+
+			if token == "" || remote == "" || folderStr == "" {
+				return errors.New("join requires --invitation, --remote, and --folder (or a formatted orbit-invitation: URL)")
+			}
+
+			targetRoot := *rootPath
+			if targetRoot == "" {
+				home, _ := os.UserHomeDir()
+				targetRoot = filepath.Join(home, "Orbit")
+			}
+
+			subRes, err := ctrl.SubmitJoinFlow(ctx, control.JoinFlowSubmitRequest{
+				InvitationToken: token,
+				TargetFolder:    folderStr,
+				RemoteEndpoint:  remote,
+				DeviceLabel:     *label,
+				RootPath:        targetRoot,
+			})
+			if err != nil {
+				return err
+			}
+
+			if *timeoutFlag <= 0 {
+				if *jsonOutput {
+					return json.NewEncoder(stdout).Encode(subRes)
+				}
+				fmt.Fprintf(stdout, "Join request submitted: request_id=%s, key_pin=%s, status=%s\n",
+					subRes.RequestID, subRes.KeyPin, subRes.Status)
+				return nil
+			}
+
+			if !*jsonOutput {
+				fmt.Fprintf(stdout, "Join request submitted (request_id=%s, key_pin=%s).\nWaiting up to %ds for owner approval on %s...\n",
+					subRes.RequestID, subRes.KeyPin, *timeoutFlag, remote)
+			}
+
+			deadline := time.Now().Add(time.Duration(*timeoutFlag) * time.Second)
+			for time.Now().Before(deadline) {
+				time.Sleep(1 * time.Second)
+				compRes, err := ctrl.CompleteJoinFlow(ctx, control.JoinFlowCompleteRequest{
+					RequestID:      subRes.RequestID,
+					RemoteEndpoint: remote,
+					TargetFolder:   folderStr,
+					RootPath:       targetRoot,
+					DeviceLabel:    *label,
+				})
+				if err == nil && compRes.Completed {
+					if *jsonOutput {
+						return json.NewEncoder(stdout).Encode(compRes)
+					}
+					fmt.Fprintf(stdout, "Workspace joined successfully: folder=%s, root=%s, status=%s\n",
+						compRes.FolderID, compRes.RootPath, compRes.Status)
+					return nil
+				}
+				if err != nil {
+					var ctrlErr *control.ControlError
+					if errors.As(err, &ctrlErr) && ctrlErr.Code == "ENROLLMENT_DECLINED" {
+						return fmt.Errorf("join request was declined by the workspace owner")
+					}
+				}
+			}
+
+			return fmt.Errorf("timed out waiting for owner approval; request_id=%s is still pending", subRes.RequestID)
+		}
+
+		if *rootPath != "" {
+			if *previewOnly {
+				prev, err := ctrl.PreviewCreateRoot(ctx, control.PreviewCreateRootRequest{Path: *rootPath})
+				if err != nil {
+					return err
+				}
+				if *jsonOutput {
+					return json.NewEncoder(stdout).Encode(prev)
+				}
+				fmt.Fprintf(stdout, "Preview Root: %s\n  Allowed: %v (preexisting rows: %d, writable: %v)\n",
+					prev.Path, !prev.Disallowed, prev.PreexistingRows, prev.Writable)
+				if prev.Disallowed {
+					fmt.Fprintf(stdout, "  Disallowed Reason: %s\n", prev.Reason)
+				}
+				return nil
+			}
+
+			startRes, err := ctrl.StartSetup(ctx, control.StartSetupRequest{
+				RootPath:      *rootPath,
+				DeviceLabel:   *label,
+				WorkspaceName: *name,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(startRes)
+			}
+			fmt.Fprintf(stdout, "Setup completed: folder=%x, root=%s, phase=%s\n",
+				startRes.FolderID, startRes.RootPath, startRes.Phase)
+			return nil
+		}
+
+		insp, err := ctrl.InspectSetup(ctx)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(insp)
+		}
+		fmt.Fprintf(stdout, "Orbit Setup Status:\n")
+		fmt.Fprintf(stdout, "  Initialized:     %v\n", insp.Initialized)
+		fmt.Fprintf(stdout, "  Device ID:       %s\n", insp.DeviceID)
+		fmt.Fprintf(stdout, "  Suggested Root:  %s\n", insp.SuggestedRoot)
+		fmt.Fprintf(stdout, "  Current Phase:   %s\n", insp.CurrentPhase)
+		fmt.Fprintf(stdout, "  Setup Completed: %v\n", insp.SetupCompleted)
+		fmt.Fprintf(stdout, "  Folders:         %d\n", insp.RegisteredCount)
+		return nil
+	})
+}
+
+func handleOrbitJoin(args []string, stdout, stderr io.Writer) error {
+	newArgs := append([]string{"--join"}, args...)
+	return handleOrbitSetup(newArgs, stdout, stderr)
+}
+
+func isOrbitDaemonRunning(stateDir string) bool {
+	testLock, err := state.Acquire(stateDir)
+	if errors.Is(err, state.ErrLocked) {
+		return true
+	}
+	if err == nil {
+		_ = testLock.Close()
+	}
+	return false
+}
+
+func callOrbitDaemonAPI(stateDir, method, path string, reqBody any, resObj any) error {
+	addrBytes, err := os.ReadFile(filepath.Join(stateDir, "control.addr"))
+	if err != nil {
+		return err
+	}
+	tokenBytes, err := os.ReadFile(filepath.Join(stateDir, "control.token"))
+	if err != nil {
+		return err
+	}
+	addr := strings.TrimSpace(string(addrBytes))
+	if !strings.HasPrefix(addr, "http://") && !strings.HasPrefix(addr, "https://") {
+		addr = "http://" + addr
+	}
+	token := strings.TrimSpace(string(tokenBytes))
+
+	var bodyReader io.Reader
+	if reqBody != nil {
+		data, err := json.Marshal(reqBody)
+		if err != nil {
+			return err
+		}
+		bodyReader = bytes.NewReader(data)
+	}
+
+	req, err := http.NewRequestWithContext(context.Background(), method, addr+path, bodyReader)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	if reqBody != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		var ctrlErr control.ControlError
+		if err := json.NewDecoder(resp.Body).Decode(&ctrlErr); err == nil && ctrlErr.Code != "" {
+			return &ctrlErr
+		}
+		return fmt.Errorf("control API error HTTP %d", resp.StatusCode)
+	}
+
+	if resObj != nil {
+		return json.NewDecoder(resp.Body).Decode(resObj)
+	}
+	return nil
+}
+
+func handleOrbitInvite(args []string, stdout, stderr io.Writer) error {
+	action := "list"
+	var restArgs []string
+	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+		action = args[0]
+		restArgs = args[1:]
+	} else {
+		restArgs = args
+	}
+
+	flags := flag.NewFlagSet("orbit invite "+action, flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	folderFlag := flags.String("folder", "", "target workspace folder ID hex")
+	ttlFlag := flags.Int64("ttl", 86400, "invitation lifetime in seconds (default 86400)")
+	maxUsesFlag := flags.Int("max-uses", 1, "maximum allowed join attempts (default 1)")
+	usesFlag := flags.Int("uses", 0, "alias for -max-uses")
+	endpointFlag := flags.String("endpoint", "", "custom advertised endpoint URL for this device")
+	digestFlag := flags.String("digest", "", "invitation digest in hex (for revoke)")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(restArgs); err != nil {
+		return err
+	}
+	if *usesFlag > 0 {
+		*maxUsesFlag = *usesFlag
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	if isOrbitDaemonRunning(stateDir) {
+		switch action {
+		case "create":
+			fID := *folderFlag
+			if fID == "" {
+				var folders []repository.FolderRecord
+				if err := callOrbitDaemonAPI(stateDir, "GET", "/api/v1/folders", nil, &folders); err == nil && len(folders) > 0 {
+					fID = hex.EncodeToString(folders[0].Folder[:])
+				} else {
+					return errors.New("folder is required (--folder <hex>)")
+				}
+			}
+			var fIDParsed history.ID
+			if err := fIDParsed.UnmarshalText([]byte(fID)); err != nil {
+				return fmt.Errorf("invalid folder ID hex: %w", err)
+			}
+			reqBody := control.CreateInvitationRequest{
+				Folder:   fIDParsed,
+				TTLSecs:  *ttlFlag,
+				MaxUses:  *maxUsesFlag,
+				Endpoint: *endpointFlag,
+			}
+			var res control.CreateInvitationResult
+			if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/invitations", reqBody, &res); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Workspace Invitation Created:\n")
+			fmt.Fprintf(stdout, "  Token:             %s\n", res.Token)
+			fmt.Fprintf(stdout, "  Invitation Digest: %x\n", res.Digest)
+			fmt.Fprintf(stdout, "  Invitation Code:   %s\n", res.InvitationCode)
+			fmt.Fprintf(stdout, "  Folder:            %x\n", res.Folder)
+			fmt.Fprintf(stdout, "  Expires At:        %s\n", res.ExpiresAt)
+			fmt.Fprintf(stdout, "  Max Uses:          %d\n", res.MaxUses)
+			return nil
+
+		case "list":
+			fID := *folderFlag
+			if fID == "" {
+				var folders []repository.FolderRecord
+				if err := callOrbitDaemonAPI(stateDir, "GET", "/api/v1/folders", nil, &folders); err == nil && len(folders) > 0 {
+					fID = hex.EncodeToString(folders[0].Folder[:])
+				}
+			}
+			path := "/api/v1/invitations"
+			if fID != "" {
+				path += fmt.Sprintf("?folder=%s", url.QueryEscape(fID))
+			}
+			var res control.ListInvitationsResult
+			if err := callOrbitDaemonAPI(stateDir, "GET", path, nil, &res); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Workspace Invitations (%d total):\n", len(res.Invitations))
+			for _, inv := range res.Invitations {
+				status := "active"
+				if inv.Revoked {
+					status = "revoked"
+				} else if time.Now().UnixNano() >= inv.ExpiresNS {
+					status = "expired"
+				}
+				fmt.Fprintf(stdout, "  digest=%x uses=%d/%d status=%s expires=%s\n",
+					inv.Digest, inv.UsesCount, inv.MaxUses, status, time.Unix(0, inv.ExpiresNS).UTC().Format(time.RFC3339))
+			}
+			return nil
+
+		case "revoke":
+			if *digestFlag == "" {
+				return errors.New("digest is required (--digest <hex>)")
+			}
+			var dig history.Digest
+			if err := dig.UnmarshalText([]byte(*digestFlag)); err != nil {
+				return fmt.Errorf("invalid digest hex: %w", err)
+			}
+			reqBody := control.RevokeInvitationRequest{Digest: dig}
+			var res control.RevokeInvitationResult
+			if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/invitations/revoke", reqBody, &res); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Invitation revoked: digest=%x\n", res.Digest)
+			return nil
+
+		default:
+			return fmt.Errorf("unknown invite subcommand %q; choose create, list, or revoke", action)
+		}
+	}
+
+	return app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		localDev, _ := parseID(cfg.DeviceID)
+		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
+		ctx := context.Background()
+
+		switch action {
+		case "create":
+			if *folderFlag == "" {
+				folders, fErr := db.Folders(ctx)
+				if fErr == nil && len(folders) > 0 {
+					*folderFlag = hex.EncodeToString(folders[0].Folder[:])
+				} else {
+					return errors.New("folder is required (--folder <hex>)")
+				}
+			}
+			var fID history.ID
+			if err := fID.UnmarshalText([]byte(*folderFlag)); err != nil {
+				return fmt.Errorf("invalid folder ID hex: %w", err)
+			}
+			res, err := ctrl.CreateInvitation(ctx, control.CreateInvitationRequest{
+				Folder:   fID,
+				TTLSecs:  *ttlFlag,
+				MaxUses:  *maxUsesFlag,
+				Endpoint: *endpointFlag,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Workspace Invitation Created:\n")
+			fmt.Fprintf(stdout, "  Token:             %s\n", res.Token)
+			fmt.Fprintf(stdout, "  Invitation Digest: %x\n", res.Digest)
+			fmt.Fprintf(stdout, "  Invitation Code:   %s\n", res.InvitationCode)
+			fmt.Fprintf(stdout, "  Folder:            %x\n", res.Folder)
+			fmt.Fprintf(stdout, "  Expires At:        %s\n", res.ExpiresAt)
+			fmt.Fprintf(stdout, "  Max Uses:          %d\n", res.MaxUses)
+			return nil
+
+		case "list":
+			var fID history.ID
+			if *folderFlag != "" {
+				_ = fID.UnmarshalText([]byte(*folderFlag))
+			} else {
+				folders, _ := db.Folders(ctx)
+				if len(folders) > 0 {
+					fID = folders[0].Folder
+				}
+			}
+			res, err := ctrl.ListInvitations(ctx, fID)
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Workspace Invitations (%d total):\n", len(res.Invitations))
+			for _, inv := range res.Invitations {
+				status := "active"
+				if inv.Revoked {
+					status = "revoked"
+				} else if time.Now().UnixNano() >= inv.ExpiresNS {
+					status = "expired"
+				}
+				fmt.Fprintf(stdout, "  digest=%x uses=%d/%d status=%s expires=%s\n",
+					inv.Digest, inv.UsesCount, inv.MaxUses, status, time.Unix(0, inv.ExpiresNS).UTC().Format(time.RFC3339))
+			}
+			return nil
+
+		case "revoke":
+			if *digestFlag == "" {
+				return errors.New("digest is required (--digest <hex>)")
+			}
+			var dig history.Digest
+			if err := dig.UnmarshalText([]byte(*digestFlag)); err != nil {
+				return fmt.Errorf("invalid digest hex: %w", err)
+			}
+			res, err := ctrl.RevokeInvitation(ctx, control.RevokeInvitationRequest{Digest: dig})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Invitation revoked: digest=%x\n", res.Digest)
+			return nil
+
+		default:
+			return fmt.Errorf("unknown invite subcommand %q; choose create, list, or revoke", action)
+		}
+	})
+}
+
+func handleOrbitRequests(args []string, stdout, stderr io.Writer) error {
+	action := "list"
+	var restArgs []string
+	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+		action = args[0]
+		restArgs = args[1:]
+	} else {
+		restArgs = args
+	}
+
+	flags := flag.NewFlagSet("orbit requests "+action, flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	folderFlag := flags.String("folder", "", "target workspace folder ID hex")
+	statusFlag := flags.String("status", "", "filter by status (pending, approved, declined)")
+	requestFlag := flags.String("request", "", "enrollment request ID")
+	aliasFlag := flags.String("alias", "", "suggested or approved device display name")
+	endpointFlag := flags.String("endpoint", "", "peer endpoint URL (e.g. https://192.168.1.100:8443)")
+	certFlag := flags.String("certificate", "", "peer TLS certificate path")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(restArgs); err != nil {
+		return err
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	if isOrbitDaemonRunning(stateDir) {
+		switch action {
+		case "list":
+			stFilter := *statusFlag
+			if stFilter == "" {
+				stFilter = "pending"
+			}
+			fID := *folderFlag
+			if fID == "" {
+				var folders []repository.FolderRecord
+				if err := callOrbitDaemonAPI(stateDir, "GET", "/api/v1/folders", nil, &folders); err == nil && len(folders) > 0 {
+					fID = hex.EncodeToString(folders[0].Folder[:])
+				}
+			}
+			var res control.ListEnrollmentRequestsResult
+			path := fmt.Sprintf("/api/v1/enrollment/requests?status=%s", url.QueryEscape(stFilter))
+			if fID != "" {
+				path += fmt.Sprintf("&folder=%s", url.QueryEscape(fID))
+			}
+			if err := callOrbitDaemonAPI(stateDir, "GET", path, nil, &res); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Enrollment Requests (%d %s):\n", len(res.Requests), stFilter)
+			for _, r := range res.Requests {
+				fmt.Fprintf(stdout, "  [%s] request_id=%s device_id=%x label=%q key_pin=%x created=%s\n",
+					r.Status, r.RequestID, r.DeviceID, r.SuggestedLabel, r.KeyPin, time.Unix(0, r.CreatedNS).UTC().Format(time.RFC3339))
+			}
+			return nil
+
+		case "approve":
+			if *requestFlag == "" {
+				return errors.New("request ID is required (--request <id>)")
+			}
+			fID := *folderFlag
+			body := map[string]string{
+				"request_id":      *requestFlag,
+				"folder":          fID,
+				"endpoint":        *endpointFlag,
+				"certificate":     *certFlag,
+				"suggested_label": *aliasFlag,
+			}
+			var res control.ApproveEnrollmentResult
+			if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/enrollment/approve", body, &res); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Enrollment request approved:\n  Request ID: %s\n  Revision:   %d\n  Digest:     %x\n  Replay:     %v\n",
+				res.RequestID, res.Revision, res.Digest, res.Replay)
+			return nil
+
+		case "decline":
+			if *requestFlag == "" {
+				return errors.New("request ID is required (--request <id>)")
+			}
+			body := map[string]string{
+				"request_id": *requestFlag,
+			}
+			if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/enrollment/decline", body, nil); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(map[string]string{"status": "declined", "request_id": *requestFlag})
+			}
+			fmt.Fprintf(stdout, "Enrollment request declined: %s\n", *requestFlag)
+			return nil
+
+		default:
+			return fmt.Errorf("unknown requests subcommand %q; choose list, approve, or decline", action)
+		}
+	}
+
+	return app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		localDev, _ := parseID(cfg.DeviceID)
+		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
+		ctx := context.Background()
+
+		switch action {
+		case "list":
+			var fID history.ID
+			if *folderFlag != "" {
+				_ = fID.UnmarshalText([]byte(*folderFlag))
+			} else {
+				folders, _ := db.Folders(ctx)
+				if len(folders) > 0 {
+					fID = folders[0].Folder
+				}
+			}
+			stFilter := *statusFlag
+			if stFilter == "" {
+				stFilter = "pending"
+			}
+			res, err := ctrl.ListEnrollmentRequests(ctx, fID, stFilter)
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Enrollment Requests (%d %s):\n", len(res.Requests), stFilter)
+			for _, r := range res.Requests {
+				fmt.Fprintf(stdout, "  [%s] request_id=%s device_id=%x label=%q key_pin=%x created=%s\n",
+					r.Status, r.RequestID, r.DeviceID, r.SuggestedLabel, r.KeyPin, time.Unix(0, r.CreatedNS).UTC().Format(time.RFC3339))
+			}
+			return nil
+
+		case "approve":
+			if *requestFlag == "" {
+				return errors.New("request ID is required (--request <id>)")
+			}
+			var fID history.ID
+			if *folderFlag != "" {
+				_ = fID.UnmarshalText([]byte(*folderFlag))
+			} else {
+				reqRec, rErr := db.GetEnrollmentRequest(ctx, *requestFlag)
+				if rErr == nil {
+					fID = reqRec.Folder
+				} else {
+					return errors.New("folder is required (--folder <hex>)")
+				}
+			}
+			res, err := ctrl.ApproveEnrollmentRequest(ctx, control.ApproveEnrollmentRequest{
+				RequestID:      *requestFlag,
+				Folder:         fID,
+				Endpoint:       *endpointFlag,
+				Certificate:    *certFlag,
+				SuggestedLabel: *aliasFlag,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Enrollment request approved:\n  Request ID: %s\n  Revision:   %d\n  Digest:     %x\n  Replay:     %v\n",
+				res.RequestID, res.Revision, res.Digest, res.Replay)
+			return nil
+
+		case "decline":
+			if *requestFlag == "" {
+				return errors.New("request ID is required (--request <id>)")
+			}
+			if err := ctrl.DeclineEnrollmentRequest(ctx, control.DeclineEnrollmentRequest{RequestID: *requestFlag}); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(map[string]string{"status": "declined", "request_id": *requestFlag})
+			}
+			fmt.Fprintf(stdout, "Enrollment request declined: %s\n", *requestFlag)
+			return nil
+
+		default:
+			return fmt.Errorf("unknown requests subcommand %q; choose list, approve, or decline", action)
+		}
+	})
+}
+
+func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
+	action := "list"
+	var restArgs []string
+	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+		action = args[0]
+		restArgs = args[1:]
+	} else {
+		restArgs = args
+	}
+
+	flags := flag.NewFlagSet("orbit devices "+action, flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	folderFlag := flags.String("folder", "", "target workspace folder ID hex")
+	deviceFlag := flags.String("device", "", "target device ID hex")
+	aliasFlag := flags.String("alias", "", "new display alias for device")
+	urlFlag := flags.String("url", "", "peer endpoint URL")
+	certFlag := flags.String("certificate", "", "peer certificate path")
+	previewFlag := flags.Bool("preview", false, "preview operation without applying mutations")
+	approveFlag := flags.Bool("approve", false, "confirm destructive/retire operation")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(restArgs); err != nil {
+		return err
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	if isOrbitDaemonRunning(stateDir) {
+		switch action {
+		case "list":
+			fID := *folderFlag
+			if fID == "" {
+				var folders []repository.FolderRecord
+				if err := callOrbitDaemonAPI(stateDir, "GET", "/api/v1/folders", nil, &folders); err == nil && len(folders) > 0 {
+					fID = hex.EncodeToString(folders[0].Folder[:])
+				}
+			}
+			path := "/api/v1/peers"
+			if fID != "" {
+				path += fmt.Sprintf("?folder=%s", url.QueryEscape(fID))
+			}
+			var peers control.PeerListResult
+			if err := callOrbitDaemonAPI(stateDir, "GET", path, nil, &peers); err != nil {
+				return err
+			}
+			endpoints, _ := config.LoadPeerEndpoints(stateDir)
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(peers)
+			}
+			fmt.Fprintf(stdout, "Workspace Replicas (Membership Revision: %d):\n", peers.Revision)
+			for _, a := range peers.Active {
+				alias := peers.Aliases[hex.EncodeToString(a.Device[:])]
+				if alias == "" {
+					alias = "Device " + hex.EncodeToString(a.Device[:8])
+				}
+				epURL := ""
+				for _, ep := range endpoints {
+					if ep.Device == hex.EncodeToString(a.Device[:]) {
+						epURL = ep.URL
+						break
+					}
+				}
+				epDesc := "no endpoint"
+				if epURL != "" {
+					epDesc = epURL
+				}
+				fmt.Fprintf(stdout, "  [active]  %-20s device=%x pin=%x endpoint=%s\n", alias, a.Device, a.KeyPin, epDesc)
+			}
+			for _, r := range peers.Retired {
+				alias := peers.Aliases[hex.EncodeToString(r.Device[:])]
+				if alias == "" {
+					alias = "Device " + hex.EncodeToString(r.Device[:8])
+				}
+				fmt.Fprintf(stdout, "  [retired] %-20s device=%x retired_at=%d\n", alias, r.Device, r.RetiredAt)
+			}
+			return nil
+
+		case "rename":
+			if *deviceFlag == "" || *aliasFlag == "" {
+				return errors.New("rename requires --device <hex> and --alias <name>")
+			}
+			var dID history.ID
+			if err := dID.UnmarshalText([]byte(*deviceFlag)); err != nil {
+				return fmt.Errorf("invalid device ID hex: %w", err)
+			}
+			reqBody := control.RenameDeviceRequest{
+				DeviceID: dID,
+				Alias:    *aliasFlag,
+			}
+			var res control.RenameDeviceResult
+			if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/devices/alias", reqBody, &res); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Device renamed: device=%x alias=%q\n", res.DeviceID, res.Alias)
+			return nil
+
+		case "endpoint":
+			if *deviceFlag == "" || *folderFlag == "" || *urlFlag == "" {
+				return errors.New("endpoint requires --device <hex>, --folder <hex>, and --url <https://...>")
+			}
+			certPath := *certFlag
+			if certPath == "" {
+				certPath = filepath.Join(stateDir, "identity.crt")
+			}
+			err := config.SetPeerEndpoint(stateDir, config.PeerEndpoint{
+				Folder:      *folderFlag,
+				Device:      *deviceFlag,
+				URL:         *urlFlag,
+				Certificate: certPath,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(map[string]string{
+					"status": "configured",
+					"device": *deviceFlag,
+					"folder": *folderFlag,
+					"url":    *urlFlag,
+				})
+			}
+			fmt.Fprintf(stdout, "Endpoint configured: device=%s url=%s\n", *deviceFlag, *urlFlag)
+			return nil
+
+		case "retire":
+			if *deviceFlag == "" || *folderFlag == "" {
+				return errors.New("retire requires --device <hex> and --folder <hex>")
+			}
+			var fID history.ID
+			var dID history.ID
+			if err := fID.UnmarshalText([]byte(*folderFlag)); err != nil {
+				return fmt.Errorf("invalid folder ID hex: %w", err)
+			}
+			if err := dID.UnmarshalText([]byte(*deviceFlag)); err != nil {
+				return fmt.Errorf("invalid device ID hex: %w", err)
+			}
+
+			if *previewFlag || !*approveFlag {
+				reqBody := control.RetireDevicePreviewRequest{
+					Folder:   fID,
+					DeviceID: dID,
+				}
+				var prev control.RetireDevicePreviewResult
+				if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/peers/retire/preview", reqBody, &prev); err != nil {
+					return err
+				}
+				if *jsonOutput {
+					return json.NewEncoder(stdout).Encode(prev)
+				}
+				fmt.Fprintf(stdout, "Retirement Preview for %s (%x):\n", prev.DeviceName, prev.DeviceID)
+				fmt.Fprintf(stdout, "  Current Revision: %d -> Next Revision: %d\n", prev.CurrentRevision, prev.NextRevision)
+				fmt.Fprintf(stdout, "  Remaining Peers:  %d (%v)\n", prev.RemainingCount, prev.SurvivingPeers)
+				fmt.Fprintf(stdout, "  Warning:          %s\n", prev.Warning)
+				fmt.Fprintf(stdout, "  Disclaimer:       %s\n", prev.Disclaimer)
+				fmt.Fprintf(stdout, "\nPass --approve to confirm permanent retirement.\n")
+				return nil
+			}
+
+			reqBody := control.RetireMemberRequest{
+				Folder:       fID,
+				TargetDevice: dID,
+			}
+			var retRes control.RetireMemberResult
+			if err := callOrbitDaemonAPI(stateDir, "POST", "/api/v1/peers/retire", reqBody, &retRes); err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(retRes)
+			}
+			fmt.Fprintf(stdout, "Device retired successfully: revision=%d target=%x\n", retRes.ApprovedRevision, retRes.TargetDevice)
+			return nil
+
+		default:
+			return fmt.Errorf("unknown devices subcommand %q; choose list, rename, endpoint, or retire", action)
+		}
+	}
+
+	return app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		localDev, _ := parseID(cfg.DeviceID)
+		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
+		ctx := context.Background()
+
+		switch action {
+		case "list":
+			var fID history.ID
+			if *folderFlag != "" {
+				_ = fID.UnmarshalText([]byte(*folderFlag))
+			} else {
+				folders, _ := db.Folders(ctx)
+				if len(folders) > 0 {
+					fID = folders[0].Folder
+				}
+			}
+			peers, err := ctrl.PeerList(ctx, fID)
+			if err != nil {
+				return err
+			}
+			endpoints, _ := config.LoadPeerEndpoints(stateDir)
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(peers)
+			}
+			fmt.Fprintf(stdout, "Workspace Replicas (Membership Revision: %d):\n", peers.Revision)
+			for _, a := range peers.Active {
+				alias, _ := db.GetDeviceDisplayName(ctx, a.Device)
+				if alias == "" {
+					alias = "Device " + hex.EncodeToString(a.Device[:8])
+				}
+				epURL := ""
+				for _, ep := range endpoints {
+					if ep.Device == hex.EncodeToString(a.Device[:]) {
+						epURL = ep.URL
+						break
+					}
+				}
+				epDesc := "no endpoint"
+				if epURL != "" {
+					epDesc = epURL
+				}
+				fmt.Fprintf(stdout, "  [active]  %-20s device=%x pin=%x endpoint=%s\n", alias, a.Device, a.KeyPin, epDesc)
+			}
+			for _, r := range peers.Retired {
+				alias, _ := db.GetDeviceDisplayName(ctx, r.Device)
+				if alias == "" {
+					alias = "Device " + hex.EncodeToString(r.Device[:8])
+				}
+				fmt.Fprintf(stdout, "  [retired] %-20s device=%x retired_at=%d\n", alias, r.Device, r.RetiredAt)
+			}
+			return nil
+
+		case "rename":
+			if *deviceFlag == "" || *aliasFlag == "" {
+				return errors.New("rename requires --device <hex> and --alias <name>")
+			}
+			var dID history.ID
+			if err := dID.UnmarshalText([]byte(*deviceFlag)); err != nil {
+				return fmt.Errorf("invalid device ID hex: %w", err)
+			}
+			res, err := ctrl.RenameDevice(ctx, control.RenameDeviceRequest{
+				DeviceID: dID,
+				Alias:    *aliasFlag,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(res)
+			}
+			fmt.Fprintf(stdout, "Device renamed: device=%x alias=%q\n", res.DeviceID, res.Alias)
+			return nil
+
+		case "endpoint":
+			if *deviceFlag == "" || *folderFlag == "" || *urlFlag == "" {
+				return errors.New("endpoint requires --device <hex>, --folder <hex>, and --url <https://...>")
+			}
+			certPath := *certFlag
+			if certPath == "" {
+				certPath = filepath.Join(stateDir, "identity.crt")
+			}
+			err := config.SetPeerEndpoint(stateDir, config.PeerEndpoint{
+				Folder:      *folderFlag,
+				Device:      *deviceFlag,
+				URL:         *urlFlag,
+				Certificate: certPath,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(map[string]string{
+					"status": "configured",
+					"device": *deviceFlag,
+					"folder": *folderFlag,
+					"url":    *urlFlag,
+				})
+			}
+			fmt.Fprintf(stdout, "Endpoint configured: device=%s url=%s\n", *deviceFlag, *urlFlag)
+			return nil
+
+		case "retire":
+			if *deviceFlag == "" || *folderFlag == "" {
+				return errors.New("retire requires --device <hex> and --folder <hex>")
+			}
+			var fID history.ID
+			var dID history.ID
+			if err := fID.UnmarshalText([]byte(*folderFlag)); err != nil {
+				return fmt.Errorf("invalid folder ID hex: %w", err)
+			}
+			if err := dID.UnmarshalText([]byte(*deviceFlag)); err != nil {
+				return fmt.Errorf("invalid device ID hex: %w", err)
+			}
+
+			if *previewFlag || !*approveFlag {
+				prev, err := ctrl.PreviewDeviceRetirement(ctx, control.RetireDevicePreviewRequest{
+					Folder:   fID,
+					DeviceID: dID,
+				})
+				if err != nil {
+					return err
+				}
+				if *jsonOutput {
+					return json.NewEncoder(stdout).Encode(prev)
+				}
+				fmt.Fprintf(stdout, "Retirement Preview for %s (%x):\n", prev.DeviceName, prev.DeviceID)
+				fmt.Fprintf(stdout, "  Current Revision: %d -> Next Revision: %d\n", prev.CurrentRevision, prev.NextRevision)
+				fmt.Fprintf(stdout, "  Remaining Peers:  %d (%v)\n", prev.RemainingCount, prev.SurvivingPeers)
+				fmt.Fprintf(stdout, "  Warning:          %s\n", prev.Warning)
+				fmt.Fprintf(stdout, "  Disclaimer:       %s\n", prev.Disclaimer)
+				fmt.Fprintf(stdout, "\nPass --approve to confirm permanent retirement.\n")
+				return nil
+			}
+
+			retRes, err := ctrl.RetireMemberExecute(ctx, control.RetireMemberRequest{
+				Folder:       fID,
+				TargetDevice: dID,
+			})
+			if err != nil {
+				return err
+			}
+			if *jsonOutput {
+				return json.NewEncoder(stdout).Encode(retRes)
+			}
+			fmt.Fprintf(stdout, "Device retired successfully: revision=%d target=%x\n", retRes.ApprovedRevision, retRes.TargetDevice)
+			return nil
+
+		default:
+			return fmt.Errorf("unknown devices subcommand %q; choose list, rename, endpoint, or retire", action)
+		}
+	})
+}
+
+func handleOrbitService(args []string, stdout, stderr io.Writer) error {
+	action := "status"
+	var restArgs []string
+	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+		action = args[0]
+		restArgs = args[1:]
+	} else {
+		restArgs = args
+	}
+
+	flags := flag.NewFlagSet("orbit service", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(restArgs); err != nil {
+		return err
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	ctx := context.Background()
+	bin, _ := os.Executable()
+
+	switch action {
+	case "status":
+		st, err := control.CheckServiceStatus(ctx, stateDir, nil)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(st)
+		}
+		fmt.Fprintf(stdout, "Service Status:\n")
+		fmt.Fprintf(stdout, "  Systemd Available: %v\n", st.SystemdAvailable)
+		fmt.Fprintf(stdout, "  Unit Installed:    %v\n", st.UnitInstalled)
+		fmt.Fprintf(stdout, "  Enabled on Login:  %v\n", st.EnabledOnLogin)
+		fmt.Fprintf(stdout, "  Currently Running: %v\n", st.CurrentlyRunning)
+		fmt.Fprintf(stdout, "  Root Verified:     %v\n", st.RootVerified)
+		fmt.Fprintf(stdout, "  Capture Successful:%v\n", st.CaptureSuccessful)
+		fmt.Fprintf(stdout, "  Lingering Enabled: %v\n", st.LingeringEnabled)
+		if st.LingeringInstruction != "" {
+			fmt.Fprintf(stdout, "  Lingering Command: %s\n", st.LingeringInstruction)
+		}
+		if st.ManualCommand != "" {
+			fmt.Fprintf(stdout, "  Manual Command:    %s\n", st.ManualCommand)
+		}
+		return nil
+	case "enable":
+		res, err := control.EnableService(ctx, stateDir, bin, nil)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "Service enabled: %s\n", res.Message)
+		return nil
+	case "start":
+		res, err := control.StartService(ctx, stateDir, nil)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "Service started: %s\n", res.Message)
+		return nil
+	case "stop":
+		res, err := control.StopService(ctx, stateDir, nil)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "Service stopped: %s\n", res.Message)
+		return nil
+	case "restart":
+		res, err := control.RestartService(ctx, stateDir, nil)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "Service restarted: %s\n", res.Message)
+		return nil
+	default:
+		return fmt.Errorf("unknown service action %q; valid actions: status, enable, start, stop, restart", action)
+	}
+}
+
+func handleOrbitVersion(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit version", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	assetInfo := web.GetAssetInfo()
+	if *jsonOutput {
+		info := map[string]any{
+			"product":               "Orbit",
+			"version":               version,
+			"commit":                commit,
+			"built":                 date,
+			"goos":                  runtime.GOOS,
+			"goarch":                runtime.GOARCH,
+			"go_version":            runtime.Version(),
+			"schema_version":        repository.CurrentSchema,
+			"config_format_version": config.FormatVersion,
+			"embedded_assets": map[string]any{
+				"total_files":           assetInfo.TotalFiles,
+				"digest_sha256":         assetInfo.DigestSHA256,
+				"pure_go_sqlite":        true,
+				"node_runtime_required": false,
+			},
+		}
+		return json.NewEncoder(stdout).Encode(info)
+	}
+
+	fmt.Fprintf(stdout, "Orbit Personal File Manager v%s (filesync compat v%s)\n", version, version)
+	fmt.Fprintf(stdout, "Commit: %s (built %s)\n", commit, date)
+	fmt.Fprintf(stdout, "Runtime: %s/%s (%s, pure-Go SQLite, zero Node runtime)\n", runtime.GOOS, runtime.GOARCH, runtime.Version())
+	fmt.Fprintf(stdout, "Schema: SQLite user_version %d, Config format %d\n", repository.CurrentSchema, config.FormatVersion)
+	fmt.Fprintf(stdout, "Embedded Assets: %d files (SHA-256: %s)\n", assetInfo.TotalFiles, assetInfo.DigestSHA256)
+	return nil
+}
+
+func handleOrbitOpen(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit open", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	target := ""
+	if flags.NArg() > 0 {
+		target = flags.Arg(0)
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	return app.WithWorkspace(context.Background(), stateDir, func(_ config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		ctrl := control.New(db, ws)
+		req := control.OpenFolderRequest{}
+		if len(target) == 64 {
+			req.Folder = target
+		} else if target != "" {
+			req.Path = target
+		}
+		res, err := ctrl.OpenLocalFolder(context.Background(), req)
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "Opened folder: %s\n", res.Path)
+		return nil
+	})
+}
+
+func handleOrbitPicker(args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit picker", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	path := flags.String("path", "", "starting directory path")
+	limit := flags.Int("limit", 50, "maximum directory entries to return")
+	offset := flags.Int("offset", 0, "pagination offset")
+	jsonOutput := flags.Bool("json", false, "output JSON")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+
+	return app.WithWorkspace(context.Background(), stateDir, func(_ config.Config, db *repository.DB, ws *workspace.Workspace) error {
+		ctrl := control.New(db, ws)
+		res, err := ctrl.BrowseDirectories(context.Background(), control.DirectoryPickerRequest{
+			Path:   *path,
+			Limit:  *limit,
+			Offset: *offset,
+		})
+		if err != nil {
+			return err
+		}
+		if *jsonOutput {
+			return json.NewEncoder(stdout).Encode(res)
+		}
+		fmt.Fprintf(stdout, "Current Directory: %s (parent: %s, total entries: %d, has_more: %v)\n",
+			res.CurrentPath, res.ParentPath, res.TotalEntries, res.HasMore)
+		for _, e := range res.Entries {
+			status := "ok"
+			if !e.Accessible {
+				status = "denied: " + e.DeniedReason
+			}
+			fmt.Fprintf(stdout, "  [dir] %-25s (%s)\n", e.Name, status)
+		}
+		return nil
+	})
+}
+
+func printOrbitHelp(stdout io.Writer) {
+	fmt.Fprintf(stdout, `Orbit - Local file synchronization and workspace manager
+
+Usage:
+  orbit [command] [options]
+  filesync orbit [command] [options]
+
+Commands:
+  launch              Launch Orbit, reuse/start daemon, and open browser UI (default)
+  status              Display daemon, service, and setup status
+  browse              List immediate workspace children as paginated JSON
+  search              Search locally known workspace paths as paginated JSON
+  details             Inspect captured heads and observed working-copy state
+  mkdir               Create a directory in workspace root
+  import              Import a file into workspace with durable versioning
+  move / rename       Move or rename a file or directory within workspace
+  delete              Delete a file or directory recursively
+  setup               Configure workspace root, device label, and setup progress (--join to pair)
+  join                Join existing workspace via invitation token and remote endpoint
+  invite              Manage workspace invitations (create, list, revoke)
+  requests            Manage enrollment requests (list, approve, decline)
+  devices             Manage workspace devices (list, rename, endpoint, retire)
+  settings            Inspect and update device label, default workspace, and theme
+  folders             Manage registered workspace roots (list, add, pause, resume, unregister, revalidate)
+  storage             Storage accounting, retention preview/change, GC, reclaim, check, repair, prune
+  maintenance         Backup, schema check, recovery inspection, stopped reset-identity/restore, prune
+  service             Manage systemd user service (status, enable, start, stop, restart)
+  version             Display product version, schema, and build metadata
+  open <folder|path>  Open local workspace folder in desktop file manager
+  picker              Browse local filesystem directories for root selection
+  help                Display this help message
+
+Options:
+  --state <path>      Specify explicit agent state directory
+  --no-browser        Output authenticated bootstrap URL without opening browser
+  --json              Format output as structured JSON
+`)
 }
