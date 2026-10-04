@@ -120,11 +120,47 @@ func (syncer *Syncer) common() (string, string, string, string) {
 
 func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 	var result SyncResult
-	device, folder, revision, digest := syncer.common()
-	hello, err := syncer.client.Hello(ctx, HelloRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, Folders: []FolderHandshake{syncer.handshake()}, Limits: Limits{MetadataBytes: strconv.FormatInt(MaxMetadataBytes, 10), InventoryPage: strconv.Itoa(MaxInventoryPage)}})
+	// Only an exact-membership rejection permits fetching configuration. Failed
+	// transport/authentication never bypasses data authorization.
+	var hello HelloResponse
+	var err error
+	for step := 0; step < 64; step++ {
+		device, folder, revision, digest := syncer.common()
+		hello, err = syncer.client.Hello(ctx, HelloRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, Folders: []FolderHandshake{syncer.handshake()}, Limits: Limits{MetadataBytes: strconv.FormatInt(MaxMetadataBytes, 10), InventoryPage: strconv.Itoa(MaxInventoryPage)}})
+		if err == nil {
+			break
+		}
+		var wire *WireError
+		if !errors.As(err, &wire) || wire.Body.Code != "MEMBERSHIP_MISMATCH" {
+			return result, err
+		}
+		next, getErr := syncer.client.MembershipGet(ctx, MembershipGetRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, FolderID: folder, FromRevision: revision, ExpectedDigest: digest})
+		if getErr != nil {
+			return result, getErr
+		}
+		m := next.Membership
+		if next.ProtocolVersion != ProtocolVersion || next.FolderID != folder || m.Folder != syncer.folder || m.Revision != syncer.membership.Revision+1 || m.PriorDigest != syncer.membership.Digest {
+			return result, repository.ErrMembershipMismatch
+		}
+		// Automatic rollout is additive enrollment only. Retirement remains the
+		// explicit survivor maintenance procedure, including snapshot review.
+		current, _, getErr := syncer.repo.GetMembership(ctx, syncer.folder)
+		if getErr != nil {
+			return result, getErr
+		}
+		if !additiveMembership(current, m) {
+			return result, repository.ErrMembershipMismatch
+		}
+		approved, approveErr := syncer.repo.ApproveMembership(ctx, m)
+		if approveErr != nil {
+			return result, approveErr
+		}
+		syncer.membership = approved
+	}
 	if err != nil {
 		return result, err
 	}
+	device, folder, revision, digest := syncer.common()
 	if hello.DeviceID != hex.EncodeToString(syncer.peer[:]) {
 		return result, errors.New("authenticated peer returned a different device identity")
 	}
@@ -633,4 +669,34 @@ func uniqueChunks(chunks []history.Chunk) []history.Chunk {
 		result = append(result, chunk)
 	}
 	return result
+}
+
+// Enrollment rollout cannot remove/rekey a participant or change retirement.
+func additiveMembership(current, next protocol.Membership) bool {
+	if len(current.Retired) != len(next.Retired) || len(next.Active) < len(current.Active) {
+		return false
+	}
+	for _, retired := range current.Retired {
+		found := false
+		for _, candidate := range next.Retired {
+			if candidate == retired {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	for _, member := range current.Active {
+		found := false
+		for _, candidate := range next.Active {
+			if candidate == member {
+				found = true
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }

@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "conflict",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [
+    {
+      "id": "7777777777777777777777777777777777777777777777777777777777777777",
+      "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+      "path": "notes.txt",
+      "code": "CONFLICT",
+      "action": "Review exact competing versions.",
+      "operation_id": ""
+    }
+  ],
+  "effects": [],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "versions": []
+}

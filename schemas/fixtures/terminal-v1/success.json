@@ -1,0 +1,47 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "success",
+  "items": [],
+  "requests": [],
+  "observations": [
+    {
+      "device": "2222222222222222222222222222222222222222222222222222222222222222",
+      "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+      "version": {
+        "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+        "author": "2222222222222222222222222222222222222222222222222222222222222222",
+        "counter": "9007199254740993"
+      },
+      "saved": true,
+      "stored": true,
+      "applied": true,
+      "direct": true,
+      "observed_at": "2026-10-03T12:00:00Z",
+      "last_contact": "2026-10-03T12:00:00Z",
+      "availability": "available",
+      "online": true
+    }
+  ],
+  "attention": [],
+  "effects": [],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "service": {
+    "running": true,
+    "enabled": true,
+    "mode": "login",
+    "unattended_verified": false,
+    "root_healthy": true,
+    "capture_healthy": true
+  },
+  "versions": []
+}

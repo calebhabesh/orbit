@@ -21,6 +21,16 @@ func DefaultStorageLimits() StorageLimits {
 }
 
 func LoadStorageLimits(stateDir string) (StorageLimits, error) {
+	// Runtime desired settings atomically supersede the legacy budget file.
+	if _, err := os.Lstat(filepath.Join(stateDir, "runtime.json")); err == nil {
+		s, err := LoadRuntimeSettings(stateDir)
+		if err != nil {
+			return StorageLimits{}, err
+		}
+		return StorageLimits{FormatVersion: 1, DataBudgetBytes: uint64(s.DataBudget), MetadataBudgetBytes: uint64(s.MetadataBudget), FreeSpaceReserveBytes: uint64(s.ReserveBytes)}, nil
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return StorageLimits{}, err
+	}
 	path := filepath.Join(stateDir, "limits.json")
 	info, err := os.Lstat(path)
 	if errors.Is(err, os.ErrNotExist) {

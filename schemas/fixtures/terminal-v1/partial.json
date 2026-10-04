@@ -1,0 +1,50 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "partial",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [],
+  "effects": [
+    {
+      "path": "recovered.txt",
+      "version": {
+        "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+        "author": "2222222222222222222222222222222222222222222222222222222222222222",
+        "counter": "9007199254740993"
+      },
+      "state": "captured"
+    }
+  ],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "operation": {
+    "id": "4444444444444444444444444444444444444444444444444444444444444444",
+    "fingerprint": "5555555555555555555555555555555555555555555555555555555555555555",
+    "kind": "content",
+    "state": "partial",
+    "phase": "copies_installed",
+    "committed_effects": [
+      {
+        "path": "recovered.txt",
+        "version": {
+          "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+          "author": "2222222222222222222222222222222222222222222222222222222222222222",
+          "counter": "9007199254740993"
+        },
+        "state": "captured"
+      }
+    ],
+    "cancel_requested": true
+  },
+  "versions": []
+}

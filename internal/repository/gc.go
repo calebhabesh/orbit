@@ -677,6 +677,11 @@ func (db *DB) RunGC(ctx context.Context, folder history.ID, policy *RetentionPol
 	if _, err := db.pruneExpiredReadLeases(ctx, now); err != nil {
 		return nil, err
 	}
+	// Session expiry releases only editor pins. Active exact-read response pins
+	// retain their independent lifetime through this cleanup pass.
+	if _, err := db.db.ExecContext(ctx, `DELETE FROM content_pins WHERE owner_kind='editor' AND owner_key IN (SELECT substr(key,length('terminal/v1/session/')+1) FROM installation_metadata WHERE key LIKE 'terminal/v1/session/%' AND ((json_extract(value,'$.session.state')!='active' AND COALESCE(json_extract(value,'$.building'),0)!=1) OR julianday(json_extract(value,'$.session.expires_at'))<=julianday(?)))`, now.UTC().Format(time.RFC3339Nano)); err != nil {
+		return nil, err
+	}
 
 	protected, err := db.ComputeProtectedChunks(ctx, folder, &activePolicy, now)
 	if err != nil {

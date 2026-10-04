@@ -14,6 +14,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
 )
 
@@ -397,6 +398,7 @@ type PeerProgressSummary struct {
 	PeerID         string `json:"peer_id"`
 	PeerName       string `json:"peer_name,omitempty"`
 	Receipt        bool   `json:"receipt"`
+	Direct         bool   `json:"direct"`
 	RemoteStatus   string `json:"remote_status,omitempty"`
 	LastContactNS  int64  `json:"last_contact_ns"`
 }
@@ -539,7 +541,7 @@ func (db *DB) FileDetails(ctx context.Context, folder history.ID, path string) (
 	if len(heads) > 0 {
 		primaryHead := headIDs[0]
 		pRows, pErr := db.db.QueryContext(ctx, `
-			SELECT peer_id, receipt, COALESCE(remote_status, ''), COALESCE(last_contact_ns, 0), COALESCE(d.display_name,'')
+			SELECT peer_id, receipt, COALESCE(remote_status, ''), COALESCE(last_contact_ns, 0), COALESCE(d.display_name,''), COALESCE(direct, 1)
 			FROM peer_progress LEFT JOIN devices d ON d.device_id=peer_progress.peer_id
 			WHERE folder_id=? AND version_author=? AND version_counter=?
 		`, folder[:], primaryHead.Author[:], encodeUint(primaryHead.Counter))
@@ -547,10 +549,10 @@ func (db *DB) FileDetails(ctx context.Context, folder history.ID, path string) (
 			defer pRows.Close()
 			for pRows.Next() {
 				var peerIDRaw []byte
-				var receiptInt int
+				var receiptInt, directInt int
 				var remoteStatus, pName string
 				var lastContact int64
-				if err := pRows.Scan(&peerIDRaw, &receiptInt, &remoteStatus, &lastContact, &pName); err == nil {
+				if err := pRows.Scan(&peerIDRaw, &receiptInt, &remoteStatus, &lastContact, &pName, &directInt); err == nil {
 					var peerID history.ID
 					copy(peerID[:], peerIDRaw)
 					peers = append(peers, PeerProgressSummary{
@@ -559,6 +561,7 @@ func (db *DB) FileDetails(ctx context.Context, folder history.ID, path string) (
 						PeerID:         hex.EncodeToString(peerIDRaw),
 						PeerName:       pName,
 						Receipt:        receiptInt == 1,
+						Direct:         directInt == 1,
 						RemoteStatus:   remoteStatus,
 						LastContactNS:  lastContact,
 					})
@@ -644,13 +647,15 @@ func (db *DB) checkManifestCASAvailable(manifest *history.Manifest) bool {
 
 // DeletedFileItem represents a tombstoned file and restore availability.
 type DeletedFileItem struct {
-	Path           string `json:"path"`
-	Name           string `json:"name"`
-	DeletedAt      string `json:"deleted_at"`
-	DeletedBy      string `json:"deleted_by"`
-	DeletedCounter uint64 `json:"deleted_counter"`
-	LastActiveSize uint64 `json:"last_active_size"`
-	CASAvailable   bool   `json:"cas_available"` // prior content bytes present in local CAS
+	Source         *history.VersionID `json:"source,omitempty"`
+	ContentState   string             `json:"content_state"`
+	Path           string             `json:"path"`
+	Name           string             `json:"name"`
+	DeletedAt      string             `json:"deleted_at"`
+	DeletedBy      string             `json:"deleted_by"`
+	DeletedCounter uint64             `json:"deleted_counter"`
+	LastActiveSize uint64             `json:"last_active_size"`
+	CASAvailable   bool               `json:"cas_available"` // prior content bytes present in local CAS
 }
 
 // DeletedFilesResult contains paginated deleted files.
@@ -729,6 +734,8 @@ func (db *DB) BrowseDeletedFiles(ctx context.Context, folder history.ID, cursor 
 		if err != nil {
 			return nil, err
 		}
+		items[i].Source = &env.ID
+		items[i].ContentState = state
 		items[i].CASAvailable = state == "ready" && db.checkManifestCASAvailable(env.Manifest)
 	}
 	next := ""
@@ -894,4 +901,142 @@ func (db *DB) GetVersionManifest(ctx context.Context, id history.VersionID) (*hi
 		return nil, env, fmt.Errorf("version manifest is missing")
 	}
 	return env.Manifest, env, nil
+}
+
+// NamedFolders returns all registered folders formatted as terminal NamedItems.
+func (db *DB) NamedFolders(ctx context.Context) ([]tc.NamedItem, error) {
+	regs, err := db.RegisteredFolders(ctx)
+	if err != nil {
+		return nil, err
+	}
+	items := make([]tc.NamedItem, 0, len(regs))
+	for _, reg := range regs {
+		name, _ := db.GetFolderDisplayName(ctx, reg.Folder)
+		if name == "" {
+			name = filepath.Base(reg.Path)
+			if name == "" || name == "." || name == "/" {
+				name = hex.EncodeToString(reg.Folder[:])
+			}
+		}
+		items = append(items, tc.NamedItem{
+			ID:   hex.EncodeToString(reg.Folder[:]),
+			Name: name,
+			Root: reg.Path,
+		})
+	}
+	return items, nil
+}
+
+// NamedDevices returns all known devices formatted as terminal NamedItems.
+func (db *DB) NamedDevices(ctx context.Context) ([]tc.NamedItem, error) {
+	rows, err := db.db.QueryContext(ctx, `SELECT device_id, COALESCE(key_pin, X''), COALESCE(display_name, ''), is_local FROM devices ORDER BY is_local DESC, rowid ASC`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []tc.NamedItem
+	for rows.Next() {
+		var devID, keyPin []byte
+		var name string
+		var isLocal int
+		if err := rows.Scan(&devID, &keyPin, &name, &isLocal); err != nil {
+			return nil, err
+		}
+		if name == "" {
+			if isLocal == 1 {
+				name = "This device"
+			} else if len(devID) >= 4 {
+				name = "device-" + hex.EncodeToString(devID[:4])
+			}
+		}
+		pinHex := ""
+		if len(keyPin) == 32 {
+			pinHex = hex.EncodeToString(keyPin)
+		}
+		items = append(items, tc.NamedItem{
+			ID:     hex.EncodeToString(devID),
+			Name:   name,
+			KeyPin: pinHex,
+		})
+	}
+	return items, rows.Err()
+}
+
+type BlockedPathInfo struct {
+	Path   string
+	Reason string
+}
+
+func (db *DB) BlockedPaths(ctx context.Context, folder history.ID) ([]BlockedPathInfo, error) {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	rows, err := db.db.QueryContext(ctx, `SELECT path, block_reason FROM path_projections WHERE folder_id=? AND block_reason IS NOT NULL AND block_reason!='' ORDER BY path`, folder[:])
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var result []BlockedPathInfo
+	for rows.Next() {
+		var item BlockedPathInfo
+		if err := rows.Scan(&item.Path, &item.Reason); err != nil {
+			return nil, err
+		}
+		result = append(result, item)
+	}
+	return result, rows.Err()
+}
+
+// BrowseConflictPaths materializes only a bounded SQL page. Structural pairs
+// remain path-based attention; resolving one path never silently resolves another.
+func (db *DB) BrowseConflictPaths(ctx context.Context, folder history.ID, cursor string, limit int) ([]tc.Attention, string, error) {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	gen, err := db.browseGeneration(ctx, folder)
+	if err != nil {
+		return nil, "", err
+	}
+	limit = pageLimit(limit)
+	offset := 0
+	binding := hex.EncodeToString(folder[:]) + ":conflicts"
+	if cursor != "" {
+		cur, e := decodeCursor(cursor)
+		if e != nil {
+			return nil, "", e
+		}
+		if cur.Gen != gen {
+			return nil, "", ErrStaleCursor
+		}
+		if cur.DirPath != binding || cur.Offset < 0 || cur.Offset > 1000000 || cur.Limit < 1 || cur.Limit > 200 {
+			return nil, "", ErrInvalidCursor
+		}
+		offset = cur.Offset
+		limit = cur.Limit
+	}
+	const conflictSQL = `WITH heads AS (SELECT v.path,v.kind FROM versions v WHERE v.folder_id=? AND NOT EXISTS(SELECT 1 FROM version_parents p WHERE p.folder_id=v.folder_id AND p.parent_author=v.author_id AND p.parent_counter=v.counter)), conflicts AS (SELECT path,'CONFLICT' code,'' related FROM heads GROUP BY path HAVING count(*)>1 UNION SELECT a.path,'STRUCTURAL_CONFLICT',b.path FROM heads a JOIN heads b ON substr(b.path,1,length(a.path)+1)=a.path||'/' WHERE a.kind IN (1,3) AND b.kind!=3) SELECT path,code,related FROM conflicts ORDER BY path,code,related LIMIT ? OFFSET ?`
+	rows, err := db.db.QueryContext(ctx, conflictSQL, folder[:], limit+1, offset)
+	if err != nil {
+		return nil, "", err
+	}
+	defer rows.Close()
+	out := []tc.Attention{}
+	for rows.Next() {
+		var p, code, related string
+		if err = rows.Scan(&p, &code, &related); err != nil {
+			return nil, "", err
+		}
+		action := "review exact competing versions with orbit conflicts show"
+		if related != "" {
+			action = "review structural descendant " + related + " before resolving this path"
+		}
+		out = append(out, tc.Attention{ID: p + ":" + code + ":" + related, Folder: hex.EncodeToString(folder[:]), Path: p, Code: code, Action: action})
+	}
+	if err = rows.Err(); err != nil {
+		return nil, "", err
+	}
+	next := ""
+	if len(out) > limit {
+		out = out[:limit]
+		next = encodeCursor(gen, binding, offset+limit, "name", "asc", limit)
+	}
+	return out, next, nil
 }

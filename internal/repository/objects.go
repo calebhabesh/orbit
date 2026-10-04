@@ -34,6 +34,21 @@ func (db *DB) objectPath(digest history.Digest) string {
 func (db *DB) InstallChunk(ctx context.Context, digest history.Digest, length uint64, source io.Reader) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
+	return db.installChunkUnlocked(ctx, digest, length, source)
+}
+
+// InstallPinnedChunk installs the object and its session protection under the
+// same mutation boundary used by GC, avoiding an install-to-pin race.
+func (db *DB) InstallPinnedChunk(ctx context.Context, digest history.Digest, length uint64, source io.Reader, kind, key string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	if err := db.installChunkUnlocked(ctx, digest, length, source); err != nil {
+		return err
+	}
+	_, err := db.db.ExecContext(ctx, `INSERT INTO content_pins(digest,owner_kind,owner_key,created_ns) VALUES(?,?,?,?) ON CONFLICT DO NOTHING`, digest[:], kind, key, time.Now().UnixNano())
+	return err
+}
+func (db *DB) installChunkUnlocked(ctx context.Context, digest history.Digest, length uint64, source io.Reader) error {
 	if length > history.ChunkSize {
 		return fmt.Errorf("%w: chunk too large", ErrContentMismatch)
 	}

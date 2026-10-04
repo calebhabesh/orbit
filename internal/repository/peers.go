@@ -33,10 +33,6 @@ type ApprovedMembership struct {
 // ApproveMembership durably installs an exact owner-reviewed membership
 // revision. Existing revisions are immutable and replay-idempotent.
 func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Membership, snapshots ...protocol.RetirementSnapshot) (ApprovedMembership, error) {
-	digest, err := protocol.MembershipDigest(membership)
-	if err != nil {
-		return ApprovedMembership{}, err
-	}
 	db.mu.Lock()
 	defer db.mu.Unlock()
 	tx, err := db.db.BeginTx(ctx, nil)
@@ -44,6 +40,19 @@ func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Members
 		return ApprovedMembership{}, err
 	}
 	defer tx.Rollback()
+	approved, err := approveMembershipTx(ctx, tx, membership, snapshots...)
+	if err != nil {
+		return approved, err
+	}
+	return approved, tx.Commit()
+}
+
+// approveMembershipTx preserves the membership rules for atomic enrollment approval.
+func approveMembershipTx(ctx context.Context, tx *sql.Tx, membership protocol.Membership, snapshots ...protocol.RetirementSnapshot) (ApprovedMembership, error) {
+	digest, err := protocol.MembershipDigest(membership)
+	if err != nil {
+		return ApprovedMembership{}, err
+	}
 	var currentRevisionRaw, currentDigestRaw []byte
 	if err := tx.QueryRowContext(ctx, `SELECT membership_revision,membership_digest FROM folders WHERE folder_id=?`, membership.Folder[:]).Scan(&currentRevisionRaw, &currentDigestRaw); errors.Is(err, sql.ErrNoRows) {
 		return ApprovedMembership{}, ErrFolderUnknown
@@ -146,9 +155,6 @@ func (db *DB) ApproveMembership(ctx context.Context, membership protocol.Members
 		}
 	}
 	if _, err := tx.ExecContext(ctx, `UPDATE folders SET membership_revision=?,membership_digest=? WHERE folder_id=?`, encodeUint(membership.Revision), digest[:], membership.Folder[:]); err != nil {
-		return ApprovedMembership{}, err
-	}
-	if err := tx.Commit(); err != nil {
 		return ApprovedMembership{}, err
 	}
 	return ApprovedMembership{Revision: membership.Revision, Digest: digest}, nil
@@ -577,4 +583,31 @@ func (db *DB) ReadAuthorizedChunk(ctx context.Context, id history.VersionID, ind
 		return nil, history.Chunk{}, fmt.Errorf("%w: chunk length changed", ErrContentMismatch)
 	}
 	return data, chunk, nil
+}
+
+// HasMembershipFork checks if there are concurrent competing membership revisions recorded for a folder,
+// or if the folder was paused specifically due to a membership fork.
+func (db *DB) HasMembershipFork(ctx context.Context, folder history.ID) (bool, error) {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	var count int
+	err := db.db.QueryRowContext(ctx, `
+		SELECT count(*) FROM (
+			SELECT prior_digest FROM membership_revisions
+			WHERE folder_id=? AND prior_digest IS NOT NULL
+			GROUP BY prior_digest HAVING count(*) > 1
+		)`, folder[:]).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	if count > 0 {
+		return true, nil
+	}
+	var paused int
+	var pauseReason string
+	err = db.db.QueryRowContext(ctx, `SELECT COALESCE(paused, 0), COALESCE(pause_reason, '') FROM folders WHERE folder_id=?`, folder[:]).Scan(&paused, &pauseReason)
+	if err == nil && paused == 1 && pauseReason == "MEMBERSHIP_FORK" {
+		return true, nil
+	}
+	return false, nil
 }

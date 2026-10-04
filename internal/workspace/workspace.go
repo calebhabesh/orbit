@@ -17,6 +17,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -90,6 +91,8 @@ type Options struct {
 }
 
 type Workspace struct {
+	ioGate         sync.RWMutex
+	relocationMu   sync.Mutex
 	repo           *repository.DB
 	random         io.Reader
 	now            func() time.Time
@@ -125,6 +128,16 @@ func (workspace *Workspace) callHook(name string) error {
 }
 
 func (workspace *Workspace) Register(ctx context.Context, folder history.ID, path string) (repository.RootRegistration, error) {
+	return workspace.registerReviewed(ctx, folder, path, 0, 0)
+}
+
+func (workspace *Workspace) RegisterReviewed(ctx context.Context, folder history.ID, path string, device, inode uint64) (repository.RootRegistration, error) {
+	return workspace.registerReviewed(ctx, folder, path, device, inode)
+}
+
+func (workspace *Workspace) registerReviewed(ctx context.Context, folder history.ID, path string, device, inode uint64) (repository.RootRegistration, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if _, err := workspace.repo.Root(ctx, folder); err == nil {
 		return repository.RootRegistration{}, errors.New("folder already has a registered root")
 	} else if !errors.Is(err, repository.ErrRootNotRegistered) {
@@ -154,6 +167,9 @@ func (workspace *Workspace) Register(ctx context.Context, folder history.ID, pat
 		return repository.RootRegistration{}, fmt.Errorf("open root without following symlinks: %w", err)
 	}
 	defer unix.Close(rootFD)
+	if inode != 0 && (uint64(stat.Dev) != device || stat.Ino != inode) {
+		return repository.RootRegistration{}, ErrRootUnavailable
+	}
 	var registrationID [32]byte
 	if _, err := io.ReadFull(workspace.random, registrationID[:]); err != nil {
 		return repository.RootRegistration{}, fmt.Errorf("create root registration identity: %w", err)
@@ -255,10 +271,21 @@ func (root *openedRoot) close() {
 }
 
 func (workspace *Workspace) openRoot(ctx context.Context, folder history.ID) (*openedRoot, error) {
+	if err := workspace.recoverRelocation(ctx, folder); err != nil {
+		return nil, err
+	}
+	return workspace.openRootRegistered(ctx, folder)
+}
+
+func (workspace *Workspace) openRootRegistered(ctx context.Context, folder history.ID) (*openedRoot, error) {
 	registration, err := workspace.repo.Root(ctx, folder)
 	if err != nil {
 		return nil, err
 	}
+	return workspace.openRegistration(registration)
+}
+
+func (workspace *Workspace) openRegistration(registration repository.RootRegistration) (*openedRoot, error) {
 	fd, stat, err := openAbsoluteDirectory(registration.Path)
 	if err != nil || uint64(stat.Dev) != registration.Device || stat.Ino != registration.Inode {
 		if fd >= 0 {
@@ -334,10 +361,14 @@ type ScanResult struct {
 }
 
 func (workspace *Workspace) Scan(ctx context.Context, folder history.ID) (ScanResult, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	return workspace.ScanWithOptions(ctx, folder, ScanOptions{FullContent: true})
 }
 
 func (workspace *Workspace) ScanWithOptions(ctx context.Context, folder history.ID, opts ScanOptions) (ScanResult, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := workspace.Recover(ctx, folder); err != nil {
 		return ScanResult{}, err
 	}
@@ -398,7 +429,7 @@ func (workspace *Workspace) ScanWithOptions(ctx context.Context, folder history.
 			if err != nil {
 				return result, err
 			}
-			envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: folder, Path: path, Basis: projection.Basis, Kind: history.KindTombstone, AuthoredRevision: 1, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
+			envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: folder, Path: path, Basis: projection.Basis, Kind: history.KindTombstone, AuthoredRevision: 0, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
 			if err != nil {
 				return result, err
 			}
@@ -480,6 +511,7 @@ func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, director
 			if !scaffolds[path] {
 				envelope, changed, err := workspace.captureDirectory(ctx, root.registration.Folder, path)
 				if err != nil {
+					failed[path] = true
 					result.Issues = append(result.Issues, ScanIssue{path, "CAPTURE_FAILED", err})
 				} else if changed {
 					result.Captured = append(result.Captured, envelope)
@@ -514,6 +546,7 @@ func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, director
 			}
 			envelope, changed, err := workspace.captureFile(ctx, root, path)
 			if err != nil {
+				failed[path] = true
 				code := "CAPTURE_FAILED"
 				if errors.Is(err, ErrUnstableFile) {
 					code = "UNSTABLE_FILE"
@@ -542,7 +575,7 @@ func (workspace *Workspace) captureDirectory(ctx context.Context, folder history
 	} else if !errors.Is(err, sql.ErrNoRows) {
 		return history.Envelope{}, false, err
 	}
-	envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: folder, Path: path, Basis: basis, Kind: history.KindDirectory, AuthoredRevision: 1, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
+	envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: folder, Path: path, Basis: basis, Kind: history.KindDirectory, AuthoredRevision: 0, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
 	return envelope, err == nil, err
 }
 
@@ -601,7 +634,7 @@ func (workspace *Workspace) captureFileOnce(ctx context.Context, root *openedRoo
 	} else if !errors.Is(projectionErr, sql.ErrNoRows) {
 		return history.Envelope{}, false, projectionErr
 	}
-	envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: root.registration.Folder, Path: path, Basis: basis, Kind: history.KindFile, Manifest: manifest, AuthoredRevision: 1, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
+	envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: root.registration.Folder, Path: path, Basis: basis, Kind: history.KindFile, Manifest: manifest, AuthoredRevision: 0, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
 	if err == nil {
 		_ = workspace.repo.UpdateObservedStat(ctx, root.registration.Folder, path, uint64(named.Size), named.Mtim.Nano(), named.Ctim.Nano(), uint64(named.Ino))
 	}
@@ -621,6 +654,8 @@ func (workspace *Workspace) randomToken() (string, error) {
 }
 
 func (workspace *Workspace) ApproveDeletions(ctx context.Context, folder history.ID, token string) ([]history.Envelope, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	_, paths, err := workspace.repo.DeletionProposal(ctx, folder, token)
 	if err != nil {
 		return nil, err
@@ -647,7 +682,7 @@ func (workspace *Workspace) ApproveDeletions(ctx context.Context, folder history
 		if projection.Kind == history.KindTombstone {
 			continue
 		}
-		envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: folder, Path: path, Basis: projection.Basis, Kind: history.KindTombstone, AuthoredRevision: 1, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
+		envelope, err := workspace.repo.CreateLocalVersion(ctx, repository.LocalVersionRequest{Folder: folder, Path: path, Basis: projection.Basis, Kind: history.KindTombstone, AuthoredRevision: 0, DisplayTime: workspace.now().UTC().Format(time.RFC3339Nano)})
 		if err != nil {
 			return result, err
 		}
@@ -660,10 +695,14 @@ func (workspace *Workspace) ApproveDeletions(ctx context.Context, folder history
 }
 
 func (workspace *Workspace) Apply(ctx context.Context, id history.VersionID) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	return workspace.ApplyWithOperationID(ctx, id, "")
 }
 
 func (workspace *Workspace) ApplyWithOperationID(ctx context.Context, id history.VersionID, opID string) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := workspace.Recover(ctx, id.Folder); err != nil {
 		return err
 	}
@@ -727,6 +766,8 @@ func (workspace *Workspace) ApplyWithOperationID(ctx context.Context, id history
 // PathExists reports whether path currently exists on disk beneath the workspace root.
 // If no workspace root is registered for this folder, it returns false, nil.
 func (workspace *Workspace) PathExists(ctx context.Context, folder history.ID, path string) (bool, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	root, err := workspace.openRoot(ctx, folder)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -1155,6 +1196,8 @@ func parentDir(p string) string {
 }
 
 func (workspace *Workspace) Recover(ctx context.Context, folder history.ID) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := workspace.RecoverFileMutations(ctx, folder); err != nil {
 		return err
 	}
@@ -1430,6 +1473,8 @@ func fileMatches(file *os.File, manifest *history.Manifest) (bool, error) {
 // InspectRecoveryCopies safely scans the workspace scratch directory for unreferenced
 // or committed recovery files without unlinking them or modifying reservations/publications.
 func (workspace *Workspace) InspectRecoveryCopies(ctx context.Context, folder history.ID) (int, uint64, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	root, err := workspace.openRoot(ctx, folder)
 	if err != nil {
 		return 0, 0, err
@@ -1483,6 +1528,8 @@ func (workspace *Workspace) InspectRecoveryCopies(ctx context.Context, folder hi
 // ReclaimRecoveryCopies safely scans the workspace scratch directory for unreferenced
 // or committed recovery files, releases their storage reservations, and unlinks them.
 func (workspace *Workspace) ReclaimRecoveryCopies(ctx context.Context, folder history.ID) (int, uint64, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	root, err := workspace.openRoot(ctx, folder)
 	if err != nil {
 		return 0, 0, err
@@ -1544,18 +1591,26 @@ func (workspace *Workspace) ReclaimRecoveryCopies(ctx context.Context, folder hi
 }
 
 func (workspace *Workspace) Unregister(ctx context.Context, folder history.ID) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	return workspace.repo.UnregisterFolder(ctx, folder)
 }
 
 func (workspace *Workspace) Pause(ctx context.Context, folder history.ID, reason string) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	return workspace.repo.PauseFolder(ctx, folder, reason)
 }
 
 func (workspace *Workspace) Resume(ctx context.Context, folder history.ID) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	return workspace.repo.ResumeFolder(ctx, folder)
 }
 
 func (workspace *Workspace) Revalidate(ctx context.Context, folder history.ID) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	opened, err := workspace.openRoot(ctx, folder)
 	if err != nil {
 		_ = workspace.repo.PauseFolder(ctx, folder, "ROOT_UNAVAILABLE")

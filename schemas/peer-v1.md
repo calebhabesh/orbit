@@ -27,3 +27,15 @@ Errors use `ErrorResponse`: `protocol_version`, stable `code`, human `message`,
 boolean `retryable`, and `action`. V1 handler codes are `UNAUTHORIZED`,
 `MEMBERSHIP_MISMATCH`, `INCOMPATIBLE_VERSION`, `INVALID_REQUEST`,
 `SNAPSHOT_EXPIRED`, `CONTENT_UNAVAILABLE`, `RETRY_EXHAUSTED`, and `IO_ERROR`.
+
+T05 membership inspection/rollout uses `POST /peer/v1/membership/get` with
+`MembershipGetRequest`/`MembershipGetResponse`. It authenticates the claimed
+member key and denies retired/nonmember clients. Optional `from_revision` is a
+positive canonical decimal string; when present, `expected_digest` must match
+that exact predecessor. Return one successor (or the same current revision);
+`MEMBERSHIP_FORK` (409, nonretryable) identifies disagreement, while a requester
+ahead of the server receives `MEMBERSHIP_MISMATCH`. Without these optional fields,
+legacy latest-membership inspection remains. Older closed decoders reject the
+new fields safely; automatic rollout needs a T05-capable peer, while exact-agreement
+legacy data exchange remains compatible. Membership's existing canonical encoding
+and exact-revision data authorization are unchanged.

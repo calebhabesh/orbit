@@ -1,0 +1,37 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "storage_blocked",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [
+    {
+      "id": "6666666666666666666666666666666666666666666666666666666666666666",
+      "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+      "path": "",
+      "code": "DISK_BUDGET",
+      "action": "Free space or review budgets.",
+      "operation_id": ""
+    }
+  ],
+  "effects": [],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "error": {
+    "code": "DISK_BUDGET",
+    "message": "storage blocked",
+    "retryable": false,
+    "action": "Free space or review budgets.",
+    "retry_after_seconds": "0"
+  },
+  "versions": []
+}

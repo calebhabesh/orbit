@@ -451,7 +451,7 @@ func (server *Server) handleMembershipGet(writer http.ResponseWriter, request *h
 		writeWireError(writer, http.StatusUpgradeRequired, "INCOMPATIBLE_VERSION", "protocol version is not supported", false, "use protocol version 1")
 		return
 	}
-	device, _, err := server.requestIdentity(request, body.DeviceID)
+	device, pin, err := server.requestIdentity(request, body.DeviceID)
 	if err != nil {
 		writeWireError(writer, http.StatusUnauthorized, "UNAUTHORIZED", "unauthorized client identity", false, "pair client certificate")
 		return
@@ -469,9 +469,19 @@ func (server *Server) handleMembershipGet(writer http.ResponseWriter, request *h
 		return
 	}
 
+	knownPin, pinErr := server.repo.DeviceKeyPin(request.Context(), device)
+	if pinErr != nil || knownPin != pin {
+		writeWireError(writer, http.StatusForbidden, "UNAUTHORIZED", "member key mismatch", false, "use approved device identity")
+		return
+	}
+
 	// Retired device check: retired devices cannot fetch membership updates (Invariant I24)
 	retired, err := server.repo.IsDeviceRetired(request.Context(), folder, device)
-	if err == nil && retired {
+	if err != nil {
+		writeWireError(writer, http.StatusInternalServerError, "IO_ERROR", "cannot verify retirement", true, "retry later")
+		return
+	}
+	if retired {
 		writeWireError(writer, http.StatusForbidden, "RETIRED_MEMBER", "retired device cannot fetch membership updates (Invariant I24)", false, "enroll under fresh cryptographic identity")
 		return
 	}
@@ -480,6 +490,28 @@ func (server *Server) handleMembershipGet(writer http.ResponseWriter, request *h
 	if err != nil {
 		writeWireError(writer, http.StatusInternalServerError, "IO_ERROR", "cannot read local membership", true, "retry later")
 		return
+	}
+
+	// Return one successor at a time. The requester must name the exact
+	// predecessor it has durably approved; data routes keep their exact gate.
+	if body.FromRevision != "" {
+		from, parseErr := parseDecimal(body.FromRevision, false)
+		if parseErr != nil || from > membership.Revision {
+			server.writeAuthorizationError(writer, repository.ErrMembershipMismatch)
+			return
+		}
+		_, prior, priorErr := server.repo.GetMembership(request.Context(), folder, from)
+		if priorErr != nil || body.ExpectedDigest != hex.EncodeToString(prior.Digest[:]) {
+			writeWireError(writer, http.StatusConflict, "MEMBERSHIP_FORK", "reviewed predecessor differs", false, "pause exchange and review membership recovery")
+			return
+		}
+		if from < membership.Revision {
+			membership, _, err = server.repo.GetMembership(request.Context(), folder, from+1)
+			if err != nil {
+				server.writeAuthorizationError(writer, err)
+				return
+			}
+		}
 	}
 
 	snaps, _ := server.repo.ListRetirementSnapshots(request.Context(), folder, membership.Revision)

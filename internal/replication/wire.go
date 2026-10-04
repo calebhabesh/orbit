@@ -150,6 +150,7 @@ type MembershipGetRequest struct {
 	DeviceID        string `json:"device_id"`
 	FolderID        string `json:"folder_id"`
 	FromRevision    string `json:"from_revision,omitempty"`
+	ExpectedDigest  string `json:"expected_digest,omitempty"`
 }
 
 type MembershipGetResponse struct {

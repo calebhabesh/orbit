@@ -1,0 +1,37 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "root_unavailable",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [
+    {
+      "id": "6666666666666666666666666666666666666666666666666666666666666666",
+      "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+      "path": "",
+      "code": "ROOT_UNAVAILABLE",
+      "action": "Restore access to the root.",
+      "operation_id": ""
+    }
+  ],
+  "effects": [],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "error": {
+    "code": "ROOT_UNAVAILABLE",
+    "message": "root unavailable",
+    "retryable": true,
+    "action": "Restore access to the root.",
+    "retry_after_seconds": "0"
+  },
+  "versions": []
+}

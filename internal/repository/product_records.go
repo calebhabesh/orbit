@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/hex"
@@ -187,19 +188,20 @@ func (db *DB) RevokeInvitation(ctx context.Context, digest history.Digest) error
 
 // ConsumeInvitation validates that an invitation is active, unexpired, and has remaining uses,
 // and increments its usage count atomically.
-func (db *DB) ConsumeInvitation(ctx context.Context, digest history.Digest, now time.Time) error {
+func (db *DB) ConsumeInvitation(ctx context.Context, digest history.Digest, now time.Time, scope ...history.ID) error {
 	tx, err := db.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 	defer tx.Rollback()
 
+	var folderRaw []byte
 	var expiresNS int64
 	var maxUses, usesCount, revokedInt int
 	err = tx.QueryRowContext(ctx,
-		`SELECT expires_ns, max_uses, uses_count, revoked FROM invitations WHERE digest=?`,
+		`SELECT folder_id, expires_ns, max_uses, uses_count, revoked FROM invitations WHERE digest=?`,
 		digest[:],
-	).Scan(&expiresNS, &maxUses, &usesCount, &revokedInt)
+	).Scan(&folderRaw, &expiresNS, &maxUses, &usesCount, &revokedInt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrInvitationNotFound
@@ -207,6 +209,9 @@ func (db *DB) ConsumeInvitation(ctx context.Context, digest history.Digest, now 
 		return err
 	}
 
+	if len(scope) > 0 && !bytes.Equal(folderRaw, scope[0][:]) {
+		return ErrUnauthorized
+	}
 	if revokedInt == 1 {
 		return ErrInvitationRevoked
 	}

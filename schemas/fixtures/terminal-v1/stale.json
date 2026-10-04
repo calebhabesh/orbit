@@ -1,0 +1,37 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "stale",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [
+    {
+      "id": "6666666666666666666666666666666666666666666666666666666666666666",
+      "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+      "path": "",
+      "code": "STALE_VIEW",
+      "action": "Review the changed heads.",
+      "operation_id": ""
+    }
+  ],
+  "effects": [],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "error": {
+    "code": "STALE_VIEW",
+    "message": "stale",
+    "retryable": false,
+    "action": "Review the changed heads.",
+    "retry_after_seconds": "0"
+  },
+  "versions": []
+}

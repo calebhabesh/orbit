@@ -10,6 +10,8 @@ import (
 	"os"
 	"time"
 
+	"encoding/hex"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
 )
 
@@ -48,6 +50,8 @@ type CopyStepResult struct {
 }
 
 type ResolutionVersionRequest struct {
+	TerminalOperation *TerminalRecord
+	TerminalSource    *tc.VersionID
 	Folder            history.ID
 	Path              string
 	Reviewed          []history.VersionID
@@ -156,6 +160,10 @@ func (db *DB) CreateResolutionVersion(ctx context.Context, request ResolutionVer
 		return history.Envelope{}, err
 	}
 
+	if err := saveTerminalVersion(ctx, tx, request.TerminalOperation, request.TerminalSource, envelope); err != nil {
+		return history.Envelope{}, err
+	}
+
 	if err := db.callHook(HookBeforeVersionCommit); err != nil {
 		return history.Envelope{}, err
 	}
@@ -170,12 +178,14 @@ func (db *DB) CreateResolutionVersion(ctx context.Context, request ResolutionVer
 }
 
 type CopyVersionRequest struct {
-	Folder           history.ID
-	Path             string
-	Kind             history.Kind
-	Manifest         *history.Manifest
-	AuthoredRevision uint64
-	DisplayTime      string
+	TerminalOperation *TerminalRecord
+	TerminalSource    *tc.VersionID
+	Folder            history.ID
+	Path              string
+	Kind              history.Kind
+	Manifest          *history.Manifest
+	AuthoredRevision  uint64
+	DisplayTime       string
 }
 
 // CreateCopyVersion creates a new file or directory version at a new path without prior ancestry,
@@ -225,6 +235,10 @@ func (db *DB) CreateCopyVersion(ctx context.Context, request CopyVersionRequest)
 		return history.Envelope{}, err
 	}
 
+	if request.TerminalOperation != nil && len(h.Heads(request.Folder, request.Path)) != 0 {
+		return history.Envelope{}, history.ErrStaleView
+	}
+
 	envelope := history.Envelope{
 		ID:               history.VersionID{Folder: request.Folder, Author: author, Counter: counter},
 		Path:             request.Path,
@@ -262,6 +276,10 @@ func (db *DB) CreateCopyVersion(ctx context.Context, request CopyVersionRequest)
 	}
 
 	if err := addObjectReferences(ctx, tx, envelope); err != nil {
+		return history.Envelope{}, err
+	}
+
+	if err := saveTerminalVersion(ctx, tx, request.TerminalOperation, request.TerminalSource, envelope); err != nil {
 		return history.Envelope{}, err
 	}
 
@@ -488,4 +506,23 @@ func (db *DB) Heads(ctx context.Context, folder history.ID, path string) ([]hist
 		return nil, err
 	}
 	return h.Heads(folder, path), nil
+}
+
+// saveTerminalVersion puts causal identity and replay effects in the same commit.
+func saveTerminalVersion(ctx context.Context, tx *sql.Tx, record *TerminalRecord, source *tc.VersionID, env history.Envelope) error {
+	if record == nil {
+		return nil
+	}
+	v := tc.VersionID{Folder: hex.EncodeToString(env.ID.Folder[:]), Author: hex.EncodeToString(env.ID.Author[:]), Counter: tc.Uint(env.ID.Counter)}
+	record.Result.Effects = append(record.Result.Effects, tc.Effect{Path: env.Path, Version: &v, Source: source, State: "captured"})
+	record.Result.Operation.CommittedEffects = record.Result.Effects
+	b, err := json.Marshal(record)
+	if err != nil {
+		return err
+	}
+	if len(b) > tc.MaxMetadata {
+		return ErrMetadataBudgetExceeded
+	}
+	_, err = tx.ExecContext(ctx, `INSERT INTO installation_metadata(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value`, "terminal/v1/operation/"+record.Mutation.OperationID, b)
+	return err
 }

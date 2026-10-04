@@ -18,6 +18,7 @@ type ClientFactory func(folder, peer history.ID) (replication.PeerClient, error)
 type PeerTarget struct{ Folder, Peer history.ID }
 
 type SchedulerOptions struct {
+	PeerTargets   func() ([]PeerTarget, error)
 	Profile       ResourceProfile
 	Limiter       *BandwidthLimiter
 	NoWatch       bool
@@ -42,11 +43,13 @@ type Scheduler struct {
 	clientFactory ClientFactory
 	localDevice   history.ID
 	peers         []PeerTarget
+	peerTargets   func() ([]PeerTarget, error)
 	folderWork    map[history.ID]chan struct{}
 	profile       ResourceProfile
 	limiter       *BandwidthLimiter
 	noWatch       bool
 	watcher       *Watcher
+	watchedRoots  map[history.ID]string
 	queue         *Queue
 	classifier    RetryClassifier
 	hashSem       chan struct{}
@@ -87,11 +90,13 @@ func NewScheduler(db *repository.DB, ws *workspace.Workspace, opts SchedulerOpti
 		clientFactory:      opts.ClientFactory,
 		localDevice:        opts.LocalDevice,
 		peers:              append([]PeerTarget(nil), opts.Peers...),
+		peerTargets:        opts.PeerTargets,
 		folderWork:         map[history.ID]chan struct{}{},
 		profile:            opts.Profile,
 		limiter:            opts.Limiter,
 		noWatch:            opts.NoWatch,
 		watcher:            watcher,
+		watchedRoots:       map[history.ID]string{},
 		queue:              queue,
 		hashSem:            make(chan struct{}, opts.Profile.HashWorkers),
 		transferSem:        make(chan struct{}, opts.Profile.TransferWorkers),
@@ -138,6 +143,7 @@ func (s *Scheduler) Start(parentCtx context.Context) error {
 				continue
 			}
 		}
+		s.watchedRoots[reg.Folder] = reg.Path
 		// Enqueue initial quick reconciliation scan
 		_, _ = s.queue.Enqueue(s.ctx, repository.DurableTask{
 			Folder: reg.Folder,
@@ -165,7 +171,13 @@ func (s *Scheduler) Start(parentCtx context.Context) error {
 }
 
 func (s *Scheduler) enqueuePeerSyncs() {
-	for _, target := range s.peers {
+	targets := s.peers
+	if s.peerTargets != nil {
+		if current, err := s.peerTargets(); err == nil {
+			targets = current
+		}
+	}
+	for _, target := range targets {
 		peer := target.Peer
 		_, _ = s.queue.Enqueue(s.ctx, repository.DurableTask{Folder: target.Folder, Peer: &peer, Kind: "sync"})
 	}
@@ -273,6 +285,7 @@ func (s *Scheduler) dispatchLoop() {
 		case <-time.After(500 * time.Millisecond):
 		}
 
+		s.refreshRootWatches()
 		for {
 			select {
 			case <-s.ctx.Done():
@@ -362,6 +375,11 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 			execErr = errors.New("client factory or peer not configured")
 		} else {
 			client, err := s.clientFactory(task.Folder, *task.Peer)
+			if err == nil {
+				if closer, ok := client.(interface{ CloseIdleConnections() }); ok {
+					defer closer.CloseIdleConnections()
+				}
+			}
 			if err != nil {
 				execErr = err
 			} else {
@@ -384,8 +402,13 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 					if s.limiter != nil {
 						options.Limiter = s.limiter
 					}
-					syncer := replication.NewSyncer(s.db, s.ws, client, local, *task.Peer, task.Folder, membership, options)
-					_, execErr = syncer.Sync(taskCtx)
+					reg, rootErr := s.db.Root(taskCtx, task.Folder)
+					if rootErr != nil || !reg.BootstrapComplete {
+						execErr = workspace.ErrRootUnavailable
+					} else {
+						syncer := replication.NewSyncer(s.db, s.ws, client, local, *task.Peer, task.Folder, membership, options)
+						_, execErr = syncer.Sync(taskCtx)
+					}
 				}
 			}
 		}
@@ -546,4 +569,34 @@ func (s *Scheduler) Stop() error {
 	// Ensure any tasks left running in DB are safely reset to queued
 	_, _ = s.db.RecoverInFlightDurableTasks(context.Background())
 	return nil
+}
+
+// A location change preserves relative paths but inotify must watch the new tree.
+// Only the dispatch loop owns watchedRoots after Start.
+func (s *Scheduler) refreshRootWatches() {
+	if s.watcher == nil {
+		return
+	}
+	regs, err := s.db.RegisteredFolders(s.ctx)
+	if err != nil {
+		return
+	}
+	active := map[history.ID]bool{}
+	for _, reg := range regs {
+		active[reg.Folder] = true
+		if s.watchedRoots[reg.Folder] == reg.Path {
+			continue
+		}
+		_ = s.watcher.UnwatchFolder(reg.Folder)
+		if err := s.watcher.WatchFolder(reg.Folder, reg.Path); err == nil {
+			s.watchedRoots[reg.Folder] = reg.Path
+			_, _ = s.queue.Enqueue(s.ctx, repository.DurableTask{Folder: reg.Folder, Kind: "scan"})
+		}
+	}
+	for folder := range s.watchedRoots {
+		if !active[folder] {
+			_ = s.watcher.UnwatchFolder(folder)
+			delete(s.watchedRoots, folder)
+		}
+	}
 }

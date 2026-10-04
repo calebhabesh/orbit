@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/replication"
+	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/internal/workspace"
 )
 
@@ -27,6 +29,13 @@ func (rc RetryClassifier) IsTransient(err error) bool {
 	}
 	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 		return false
+	}
+	var wire *replication.WireError
+	if errors.As(err, &wire) {
+		return wire.Body.Retryable || wire.Body.Code == "MEMBERSHIP_MISMATCH"
+	}
+	if errors.Is(err, repository.ErrMembershipMismatch) {
+		return true
 	}
 	if errors.Is(err, workspace.ErrRootUnavailable) {
 		return false
@@ -61,6 +70,16 @@ func (rc RetryClassifier) IsTransient(err error) bool {
 func (rc RetryClassifier) ErrorCode(err error) string {
 	if err == nil {
 		return ""
+	}
+	var wire *replication.WireError
+	if errors.As(err, &wire) {
+		return wire.Body.Code
+	}
+	if errors.Is(err, repository.ErrMembershipFork) {
+		return "MEMBERSHIP_FORK"
+	}
+	if errors.Is(err, repository.ErrMembershipMismatch) {
+		return "MEMBERSHIP_MISMATCH"
 	}
 	if errors.Is(err, workspace.ErrRootUnavailable) {
 		return "ROOT_UNAVAILABLE"

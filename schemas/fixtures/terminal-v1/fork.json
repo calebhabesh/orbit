@@ -1,0 +1,37 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "fork",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [
+    {
+      "id": "6666666666666666666666666666666666666666666666666666666666666666",
+      "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+      "path": "",
+      "code": "MEMBERSHIP_FORK",
+      "action": "Review competing membership revisions.",
+      "operation_id": ""
+    }
+  ],
+  "effects": [],
+  "cursor": "",
+  "context": {
+    "folder": "1111111111111111111111111111111111111111111111111111111111111111",
+    "folder_name": "Notes",
+    "root": "/tmp/disposable/notes",
+    "path": "",
+    "generation": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "error": {
+    "code": "MEMBERSHIP_FORK",
+    "message": "fork",
+    "retryable": false,
+    "action": "Review competing membership revisions.",
+    "retry_after_seconds": "0"
+  },
+  "versions": []
+}

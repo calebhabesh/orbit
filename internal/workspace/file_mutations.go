@@ -150,6 +150,8 @@ func genOpID() string {
 
 // ImportFile streams and installs a new or overwritten file into the workspace.
 func (workspace *Workspace) ImportFile(ctx context.Context, req ImportRequest) (*ImportResult, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := history.ValidatePath(req.Path); err != nil {
 		return nil, err
 	}
@@ -300,6 +302,8 @@ func (workspace *Workspace) ImportFile(ctx context.Context, req ImportRequest) (
 
 // CreateDirectory creates a directory with durable versioning and scaffold tracking.
 func (workspace *Workspace) CreateDirectory(ctx context.Context, req CreateDirRequest) (*CreateDirResult, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := history.ValidatePath(req.Path); err != nil {
 		return nil, err
 	}
@@ -393,6 +397,8 @@ func (workspace *Workspace) CreateDirectory(ctx context.Context, req CreateDirRe
 
 // Move renames or relocates a file or directory within the workspace root.
 func (workspace *Workspace) Move(ctx context.Context, req MoveRequest) (*MoveResult, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := history.ValidatePath(req.SourcePath); err != nil {
 		return nil, err
 	}
@@ -898,6 +904,8 @@ func (workspace *Workspace) moveDirectory(ctx context.Context, root *openedRoot,
 
 // Delete removes a file or directory recursively with safe tombstone publication.
 func (workspace *Workspace) Delete(ctx context.Context, req DeleteRequest) (*DeleteResult, error) {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	if err := history.ValidatePath(req.Path); err != nil {
 		return nil, err
 	}
@@ -1058,6 +1066,8 @@ func (workspace *Workspace) Delete(ctx context.Context, req DeleteRequest) (*Del
 
 // RecoverFileMutations cleans up or completes interrupted mutations.
 func (workspace *Workspace) RecoverFileMutations(ctx context.Context, folder history.ID) error {
+	ctx, release := workspace.enterIO(ctx)
+	defer release()
 	mutations, err := workspace.repo.ListIncompleteFileMutations(ctx, folder)
 	if err != nil {
 		return err

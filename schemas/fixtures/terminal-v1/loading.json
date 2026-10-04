@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "capabilities": [
+    "terminal_control_v1"
+  ],
+  "state": "loading",
+  "items": [],
+  "requests": [],
+  "observations": [],
+  "attention": [],
+  "effects": [],
+  "cursor": "",
+  "versions": []
+}
