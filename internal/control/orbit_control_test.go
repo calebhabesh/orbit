@@ -27,6 +27,9 @@ import (
 func setupTestController(t *testing.T) (*control.Controller, *repository.DB, string, func()) {
 	t.Helper()
 	stateDir := testkit.NewDisposable(t)
+	if err := os.Chmod(stateDir, 0700); err != nil {
+		t.Fatal(err)
+	}
 	ctx := context.Background()
 
 	rawID := make([]byte, 32)
@@ -40,6 +43,9 @@ func setupTestController(t *testing.T) (*control.Controller, *repository.DB, str
 		t.Fatal(err)
 	}
 
+	if err := config.InitializeStorageLimits(stateDir); err != nil {
+		t.Fatal(err)
+	}
 	db, err := repository.Open(ctx, stateDir)
 	if err != nil {
 		t.Fatal(err)

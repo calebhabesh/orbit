@@ -10,6 +10,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/config"
@@ -70,7 +71,7 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 		out, runErr := cmd.CombinedOutput()
 		outStr := strings.TrimSpace(string(out))
 
-		if runErr != nil && (strings.Contains(outStr, "Failed to connect to bus") || strings.Contains(outStr, "bus connection refused") || strings.Contains(outStr, "No such file or directory")) {
+		if runErr != nil && (busCtx.Err() != nil || strings.Contains(outStr, "Failed to connect to bus") || strings.Contains(outStr, "bus connection refused") || strings.Contains(outStr, "No such file or directory")) {
 			res.SystemdAvailable = false
 			res.StatusDetail = "systemd user session bus unavailable"
 		} else {
@@ -110,6 +111,13 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 		}
 	}
 
+	if res.UnitInstalled {
+		if err := validateSelectedService(stateDir); err != nil {
+			res.EnabledOnLogin = false
+			res.UnitInstalled = false
+			res.StatusDetail = "service belongs to another or unverified state"
+		}
+	}
 	// 4. Currently running
 	if db != nil {
 		res.CurrentlyRunning = true
@@ -121,15 +129,7 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 		} else if err == nil {
 			_ = testLock.Close()
 		}
-		if !res.CurrentlyRunning && res.SystemdAvailable {
-			activeCtx, activeCancel := context.WithTimeout(ctx, 1500*time.Millisecond)
-			defer activeCancel()
-			cmd := exec.CommandContext(activeCtx, systemctlPath, "--user", "is-active", "filesync.service")
-			out, _ := cmd.CombinedOutput()
-			if strings.TrimSpace(string(out)) == "active" {
-				res.CurrentlyRunning = true
-			}
-		}
+
 	}
 
 	// 5. Root verified
@@ -138,8 +138,13 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 		if err == nil && len(registered) > 0 {
 			allValid := true
 			for _, reg := range registered {
-				info, statErr := os.Stat(reg.Path)
-				if statErr != nil || !info.IsDir() {
+				info, statErr := os.Lstat(reg.Path)
+				if statErr != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+					allValid = false
+					break
+				}
+				stat, ok := info.Sys().(*syscall.Stat_t)
+				if !ok || uint64(stat.Dev) != reg.Device || stat.Ino != reg.Inode {
 					allValid = false
 					break
 				}
@@ -204,13 +209,22 @@ func EnableService(ctx context.Context, stateDir, binPath string, db *repository
 	// Ensure unit file is installed
 	if !st.UnitInstalled {
 		if err := InstallUserUnit(stateDir, binPath); err != nil {
+			if errors.Is(err, os.ErrExist) {
+				return nil, &ControlError{Code: "SERVICE_SELECTION_REQUIRED", Message: "existing unit is preserved", Action: "inspect the existing service selection"}
+			}
 			return nil, fmt.Errorf("install user unit: %w", err)
 		}
 	}
 
+	if err := validateSelectedService(stateDir); err != nil {
+		return nil, err
+	}
+
 	systemctlPath, _ := exec.LookPath("systemctl")
 	// Daemon-reload
-	_ = exec.CommandContext(ctx, systemctlPath, "--user", "daemon-reload").Run()
+	if out, err := exec.CommandContext(ctx, systemctlPath, "--user", "daemon-reload").CombinedOutput(); err != nil {
+		return nil, fmt.Errorf("systemctl daemon-reload: %w (%s)", err, out)
+	}
 
 	// Enable unit
 	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "enable", "filesync.service")
@@ -220,10 +234,13 @@ func EnableService(ctx context.Context, stateDir, binPath string, db *repository
 		return nil, fmt.Errorf("systemctl --user enable: %w (%s)", err, stderr.String())
 	}
 
-	updatedStatus, _ := CheckServiceStatus(ctx, stateDir, db)
+	updatedStatus, statusErr := CheckServiceStatus(ctx, stateDir, db)
+	if statusErr != nil {
+		return nil, statusErr
+	}
 	return &ServiceActionResult{
 		Action:  "enable",
-		Success: true,
+		Success: updatedStatus.EnabledOnLogin,
 		Status:  *updatedStatus,
 		Message: "filesync user service enabled successfully",
 	}, nil
@@ -249,6 +266,10 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB) (*Ser
 		}
 	}
 
+	if err := validateSelectedService(stateDir); err != nil {
+		return nil, err
+	}
+
 	systemctlPath, _ := exec.LookPath("systemctl")
 	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "start", "filesync.service")
 	var stderr bytes.Buffer
@@ -259,10 +280,13 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB) (*Ser
 
 	time.Sleep(300 * time.Millisecond)
 
-	updatedStatus, _ := CheckServiceStatus(ctx, stateDir, db)
+	updatedStatus, statusErr := CheckServiceStatus(ctx, stateDir, db)
+	if statusErr != nil {
+		return nil, statusErr
+	}
 	return &ServiceActionResult{
 		Action:  "start",
-		Success: true,
+		Success: updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
 		Message: "filesync user service started successfully",
 	}, nil
@@ -288,6 +312,10 @@ func StopService(ctx context.Context, stateDir string, db *repository.DB) (*Serv
 		}
 	}
 
+	if err := validateSelectedService(stateDir); err != nil {
+		return nil, err
+	}
+
 	systemctlPath, _ := exec.LookPath("systemctl")
 	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "stop", "filesync.service")
 	var stderr bytes.Buffer
@@ -296,10 +324,13 @@ func StopService(ctx context.Context, stateDir string, db *repository.DB) (*Serv
 		return nil, fmt.Errorf("systemctl --user stop: %w (%s)", err, stderr.String())
 	}
 
-	updatedStatus, _ := CheckServiceStatus(ctx, stateDir, db)
+	updatedStatus, statusErr := CheckServiceStatus(ctx, stateDir, db)
+	if statusErr != nil {
+		return nil, statusErr
+	}
 	return &ServiceActionResult{
 		Action:  "stop",
-		Success: true,
+		Success: !updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
 		Message: "filesync user service stopped successfully",
 	}, nil
@@ -325,6 +356,10 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB) (*S
 		}
 	}
 
+	if err := validateSelectedService(stateDir); err != nil {
+		return nil, err
+	}
+
 	systemctlPath, _ := exec.LookPath("systemctl")
 	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "restart", "filesync.service")
 	var stderr bytes.Buffer
@@ -333,10 +368,13 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB) (*S
 		return nil, fmt.Errorf("systemctl --user restart: %w (%s)", err, stderr.String())
 	}
 
-	updatedStatus, _ := CheckServiceStatus(ctx, stateDir, db)
+	updatedStatus, statusErr := CheckServiceStatus(ctx, stateDir, db)
+	if statusErr != nil {
+		return nil, statusErr
+	}
 	return &ServiceActionResult{
 		Action:  "restart",
-		Success: true,
+		Success: updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
 		Message: "filesync user service restarted successfully",
 	}, nil
@@ -391,5 +429,64 @@ WantedBy=default.target
 `, binPath, stateDir, binPath, stateDir)
 
 	targetFile := filepath.Join(userDir, "filesync.service")
-	return os.WriteFile(targetFile, []byte(content), 0o644)
+	if strings.ContainsAny(stateDir+binPath, "\r\n\x00%\"\\") || strings.ContainsAny(stateDir+binPath, " \t") {
+		return errors.New("service paths require plain absolute paths without whitespace or systemd specifiers")
+	}
+	f, err := os.OpenFile(targetFile, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.WriteString(content)
+	return err
+}
+
+// DisableService removes login enablement without stopping the selected daemon.
+func DisableService(ctx context.Context, stateDir string, db *repository.DB) (*ServiceActionResult, error) {
+	st, err := CheckServiceStatus(ctx, stateDir, db)
+	if err != nil {
+		return nil, err
+	}
+	if !st.SystemdAvailable {
+		return nil, &ControlError{Code: "SYSTEMD_UNAVAILABLE", Message: "systemd user session unavailable", Action: "inspect login startup on the host"}
+	}
+	if err := validateSelectedService(stateDir); err != nil {
+		return nil, err
+	}
+
+	path, err := exec.LookPath("systemctl")
+	if err != nil {
+		return nil, err
+	}
+	if out, err := exec.CommandContext(ctx, path, "--user", "disable", "filesync.service").CombinedOutput(); err != nil {
+		return nil, fmt.Errorf("disable service: %w (%s)", err, out)
+	}
+	updated, err := CheckServiceStatus(ctx, stateDir, db)
+	if err != nil {
+		return nil, err
+	}
+	return &ServiceActionResult{Action: "disable", Success: !updated.EnabledOnLogin, Status: *updated, Message: "login startup disabled"}, nil
+}
+
+// Refuse actions on a unit that belongs to another selected state. Existing
+// personal units are never overwritten or stopped to configure another state.
+func validateSelectedService(stateDir string) error {
+	if stateDir == "" {
+		stateDir = config.DefaultStateDir()
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	data, err := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "filesync.service"))
+	if err != nil {
+		return &ControlError{Code: "SERVICE_SELECTION_REQUIRED", Message: "selected state has no verified user unit", Action: "install a user unit for the selected state"}
+	}
+	expected := "--state=" + stateDir + " "
+	for _, line := range strings.Split(string(data), "\n") {
+		if strings.HasPrefix(line, "ExecStart=") && strings.Contains(line, expected) {
+			return nil
+		}
+	}
+	return &ControlError{Code: "SERVICE_SELECTION_REQUIRED", Message: "existing service targets a different state", Action: "preserve the existing service and configure a separate selected unit"}
 }

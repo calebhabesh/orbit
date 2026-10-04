@@ -183,6 +183,12 @@ export const api = {
     });
   },
 
+  async relocateFolder(folder: string, expected_path: string, path: string): Promise<{ path: string; source_retained: boolean; source_path: string }> {
+    return request('/api/v1/folders/relocate', {
+      method: 'POST', body: JSON.stringify({ folder, expected_path, path }),
+    });
+  },
+
   async revalidateFolder(folder: string): Promise<{ status: string }> {
     return request('/api/v1/folders/revalidate', {
       method: 'POST',

@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
@@ -26,6 +27,7 @@ import (
 type FaultHook func(name string) error
 
 type Options struct {
+	StoppedAdapter bool
 	FaultHook      FaultHook
 	Now            func() time.Time
 	IdempotencyTTL time.Duration
@@ -34,9 +36,11 @@ type Options struct {
 }
 
 type Controller struct {
-	db      *repository.DB
-	ws      *workspace.Workspace
-	options Options
+	contentMu  sync.Mutex
+	terminalMu sync.Mutex
+	db         *repository.DB
+	ws         *workspace.Workspace
+	options    Options
 }
 
 func New(db *repository.DB, ws *workspace.Workspace, opts ...Options) *Controller {
@@ -285,6 +289,10 @@ func (c *Controller) ResolveManualMerge(ctx context.Context, req ResolveMergeReq
 	manifest, err := c.installContent(ctx, reader, req.Executable)
 	if err != nil {
 		return nil, err
+	}
+
+	if req.ContentDigest != nil && manifest.Digest != *req.ContentDigest {
+		return nil, readError(repository.ErrContentMismatch)
 	}
 
 	resReq := repository.ResolutionVersionRequest{
@@ -796,6 +804,9 @@ func (c *Controller) installContent(ctx context.Context, reader io.Reader, execu
 		}
 		if n == 0 {
 			break
+		}
+		if totalSize > history.MaxFileSize-uint64(n) {
+			return nil, PayloadTooLargeError("merge exceeds maximum file size")
 		}
 		totalSize += uint64(n)
 		part := buf[:n]

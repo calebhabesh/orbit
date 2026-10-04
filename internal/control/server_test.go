@@ -20,6 +20,9 @@ import (
 func setupTestServer(t *testing.T) (*Server, string, *Controller) {
 	ctx := context.Background()
 	stateDir := t.TempDir()
+	if err := os.Chmod(stateDir, 0700); err != nil {
+		t.Fatal(err)
+	}
 
 	db, err := repository.Open(ctx, stateDir)
 	if err != nil {

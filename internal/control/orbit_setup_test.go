@@ -352,6 +352,9 @@ func TestOrbitSetup_DirectoryPicker(t *testing.T) {
 }
 
 func TestOrbitSetup_OpenLocalFolder(t *testing.T) {
+	// Never launch the developer's real desktop against a disposable test root.
+	t.Setenv("DISPLAY", "")
+	t.Setenv("WAYLAND_DISPLAY", "")
 	ctrl, _, stateDir, cleanup := setupTestController(t)
 	defer cleanup()
 	ctx := context.Background()
@@ -373,15 +376,11 @@ func TestOrbitSetup_OpenLocalFolder(t *testing.T) {
 		t.Fatal("expected error opening unregistered path")
 	}
 
-	// Case 2: Request opening valid registered folder
-	// In headless or test environment (without GUI / xdg-open), must return DESKTOP_HELPER_UNAVAILABLE cleanly without crash
+	// A registered folder in an explicitly headless test must fail cleanly.
 	_, err = ctrl.OpenLocalFolder(ctx, control.OpenFolderRequest{Folder: hex.EncodeToString(fID[:])})
-	if err != nil {
-		if ctrlErr, ok := err.(*control.ControlError); ok {
-			if ctrlErr.Code != "DESKTOP_HELPER_UNAVAILABLE" && ctrlErr.Code != "DESKTOP_HELPER_FAILED" {
-				t.Fatalf("expected desktop helper code, got: %s (%v)", ctrlErr.Code, err)
-			}
-		}
+	ctrlErr, ok := err.(*control.ControlError)
+	if !ok || ctrlErr.Code != "DESKTOP_HELPER_UNAVAILABLE" {
+		t.Fatalf("expected headless desktop helper refusal, got %v", err)
 	}
 }
 

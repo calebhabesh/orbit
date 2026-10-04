@@ -2,13 +2,20 @@ package control
 
 import (
 	"context"
+	"crypto/x509"
 	"encoding/hex"
+	"encoding/pem"
 	"errors"
 	"fmt"
+	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/config"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"golang.org/x/sys/unix"
@@ -53,13 +60,16 @@ const (
 func (c *Controller) Doctor(ctx context.Context) (*DoctorReport, error) {
 	var checks []DoctorCheck
 
-	// 1. Identity & permissions
+	// 1. Daemon & local control lifecycle
+	checks = append(checks, c.checkDaemonLocalControl()...)
+
+	// 2. Identity & permissions (including TLS cert)
 	checks = append(checks, c.checkIdentityPermissions()...)
 
-	// 2. State directory & database permissions
+	// 3. State directory & database permissions
 	checks = append(checks, c.checkStatePermissions()...)
 
-	// 3. Root availability for registered folders
+	// 4. Root availability for registered folders & blocked paths
 	rootChecks, err := c.checkRootAvailability(ctx)
 	if err != nil {
 		checks = append(checks, DoctorCheck{
@@ -73,10 +83,16 @@ func (c *Controller) Doctor(ctx context.Context) (*DoctorReport, error) {
 		checks = append(checks, rootChecks...)
 	}
 
-	// 4. Free space & storage limits
-	checks = append(checks, c.checkStorageCapacity()...)
+	// 5. Free space & storage limits
+	checks = append(checks, c.checkStorageCapacity(ctx)...)
 
-	// 5. Membership status & limits
+	// 6. Network reachability & tooling
+	checks = append(checks, c.checkNetworkReachability(ctx)...)
+
+	// 7. Folder approvals & membership revisions/forks
+	checks = append(checks, c.checkFolderApprovalAndRevisions(ctx)...)
+
+	// 8. Membership status & limits
 	memChecks, err := c.checkMembershipStatus(ctx)
 	if err != nil {
 		checks = append(checks, DoctorCheck{
@@ -90,10 +106,13 @@ func (c *Controller) Doctor(ctx context.Context) (*DoctorReport, error) {
 		checks = append(checks, memChecks...)
 	}
 
-	// 6. Protocol & schema compatibility
+	// 9. Service & systemd tooling
+	checks = append(checks, c.checkServiceTooling(ctx)...)
+
+	// 10. Protocol & schema compatibility
 	checks = append(checks, c.checkProtocolCompatibility(ctx)...)
 
-	// 7. Pending recovery items
+	// 11. Pending recovery items
 	recChecks, err := c.checkPendingRecovery(ctx)
 	if err != nil {
 		checks = append(checks, DoctorCheck{
@@ -124,10 +143,78 @@ func (c *Controller) Doctor(ctx context.Context) (*DoctorReport, error) {
 	}, nil
 }
 
+func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
+	var checks []DoctorCheck
+	stateDir := c.db.StateDir()
+	addrPath := filepath.Join(stateDir, "control.addr")
+	tokenPath := filepath.Join(stateDir, "control.token")
+
+	if c.options.StoppedAdapter {
+		checks = append(checks, DoctorCheck{
+			Name:        "daemon_lifecycle",
+			Category:    "daemon",
+			Status:      StatusOk,
+			Message:     "running in stopped-state adapter (daemon inactive; launch with 'orbit launch' if background sync desired)",
+			Remediation: "run 'orbit launch' or 'orbit service start' to start the background daemon",
+		})
+		return checks
+	}
+
+	addrBytes, err := os.ReadFile(addrPath)
+	if err != nil {
+		checks = append(checks, DoctorCheck{
+			Name:        "daemon_lifecycle",
+			Category:    "daemon",
+			Status:      StatusOk,
+			Message:     "background daemon inactive (launch with 'orbit launch' if background sync desired)",
+			Remediation: "run 'orbit launch' or 'orbit service start' to start the background daemon",
+		})
+		return checks
+	}
+
+	checks = append(checks, DoctorCheck{
+		Name:     "daemon_control_addr",
+		Category: "daemon",
+		Status:   StatusOk,
+		Message:  fmt.Sprintf("daemon is active on %s", strings.TrimSpace(string(addrBytes))),
+	})
+
+	tokenInfo, err := os.Stat(tokenPath)
+	if err != nil {
+		checks = append(checks, DoctorCheck{
+			Name:        "daemon_control_token",
+			Category:    "daemon",
+			Status:      StatusWarn,
+			Message:     "control credential token not found while control address is active",
+			Remediation: "restart the background daemon with 'orbit launch'",
+		})
+	} else {
+		perm := tokenInfo.Mode().Perm()
+		if perm != 0o600 && perm != 0o400 {
+			checks = append(checks, DoctorCheck{
+				Name:        "daemon_control_token",
+				Category:    "daemon",
+				Status:      StatusFail,
+				Message:     fmt.Sprintf("control token has insecure permissions (%04o, expected 0600)", perm),
+				Remediation: fmt.Sprintf("chmod 0600 %s", tokenPath),
+			})
+		} else {
+			checks = append(checks, DoctorCheck{
+				Name:     "daemon_control_token",
+				Category: "daemon",
+				Status:   StatusOk,
+				Message:  "control credential token permissions are secure (0600)",
+			})
+		}
+	}
+	return checks
+}
+
 func (c *Controller) checkIdentityPermissions() []DoctorCheck {
 	var checks []DoctorCheck
 	stateDir := c.db.StateDir()
 	keyPath := filepath.Join(stateDir, "identity", "peer-identity.pem")
+	certPath := filepath.Join(stateDir, "identity", "peer-certificate.pem")
 	info, err := os.Stat(keyPath)
 	if errors.Is(err, os.ErrNotExist) {
 		checks = append(checks, DoctorCheck{
@@ -135,7 +222,7 @@ func (c *Controller) checkIdentityPermissions() []DoctorCheck {
 			Category:    "permissions",
 			Status:      StatusWarn,
 			Message:     "identity key file not found",
-			Remediation: "run filesync init to generate device identity and keypair",
+			Remediation: "run filesync init or orbit setup to generate device identity and keypair",
 		})
 	} else if err != nil {
 		checks = append(checks, DoctorCheck{
@@ -164,6 +251,50 @@ func (c *Controller) checkIdentityPermissions() []DoctorCheck {
 			})
 		}
 	}
+
+	certBytes, err := os.ReadFile(certPath)
+	if err == nil {
+		block, _ := pem.Decode(certBytes)
+		if block != nil && block.Type == "CERTIFICATE" {
+			cert, parseErr := x509.ParseCertificate(block.Bytes)
+			if parseErr != nil {
+				checks = append(checks, DoctorCheck{
+					Name:        "identity_cert",
+					Category:    "permissions",
+					Status:      StatusFail,
+					Message:     fmt.Sprintf("corrupt TLS identity certificate: %v", parseErr),
+					Remediation: "re-enroll device or regenerate identity",
+				})
+			} else {
+				now := time.Now()
+				if now.After(cert.NotAfter) {
+					checks = append(checks, DoctorCheck{
+						Name:        "identity_cert",
+						Category:    "permissions",
+						Status:      StatusFail,
+						Message:     fmt.Sprintf("TLS certificate expired at %s", cert.NotAfter.Format(time.RFC3339)),
+						Remediation: "generate fresh certificate with 'filesync init' or re-enroll",
+					})
+				} else if now.Add(7 * 24 * time.Hour).After(cert.NotAfter) {
+					checks = append(checks, DoctorCheck{
+						Name:        "identity_cert",
+						Category:    "permissions",
+						Status:      StatusWarn,
+						Message:     fmt.Sprintf("TLS certificate expires soon (%s)", cert.NotAfter.Format(time.RFC3339)),
+						Remediation: "renew identity before expiry",
+					})
+				} else {
+					checks = append(checks, DoctorCheck{
+						Name:     "identity_cert",
+						Category: "permissions",
+						Status:   StatusOk,
+						Message:  fmt.Sprintf("TLS identity certificate is valid (expires %s)", cert.NotAfter.Format(time.RFC3339)),
+					})
+				}
+			}
+		}
+	}
+
 	return checks
 }
 
@@ -250,7 +381,18 @@ func (c *Controller) checkRootAvailability(ctx context.Context) ([]DoctorCheck, 
 				Category:    "roots",
 				Status:      StatusWarn,
 				Message:     fmt.Sprintf("folder %s is paused (%s)", shortID(reg.Folder), reg.PauseReason),
-				Remediation: fmt.Sprintf("run filesync folders resume --folder %s", fullID(reg.Folder)),
+				Remediation: fmt.Sprintf("run orbit folders resume %s", fullID(reg.Folder)),
+			})
+			continue
+		}
+
+		if _, statErr := os.Stat(reg.Path); errors.Is(statErr, os.ErrNotExist) {
+			checks = append(checks, DoctorCheck{
+				Name:        name,
+				Category:    "roots",
+				Status:      StatusFail,
+				Message:     fmt.Sprintf("workspace root %q does not exist", reg.Path),
+				Remediation: fmt.Sprintf("mount workspace filesystem or run orbit folders relocate %s", fullID(reg.Folder)),
 			})
 			continue
 		}
@@ -262,7 +404,7 @@ func (c *Controller) checkRootAvailability(ctx context.Context) ([]DoctorCheck, 
 				Category:    "roots",
 				Status:      StatusFail,
 				Message:     fmt.Sprintf("workspace root %q failed validation: %v", reg.Path, err),
-				Remediation: fmt.Sprintf("remount workspace filesystem or run filesync safety root-revalidate --folder %s", fullID(reg.Folder)),
+				Remediation: fmt.Sprintf("remount workspace filesystem or run orbit folders relocate %s", fullID(reg.Folder)),
 			})
 		} else {
 			checks = append(checks, DoctorCheck{
@@ -272,12 +414,24 @@ func (c *Controller) checkRootAvailability(ctx context.Context) ([]DoctorCheck, 
 				Message:  fmt.Sprintf("workspace root %q is mounted and valid", reg.Path),
 			})
 		}
+
+		// Check blocked paths
+		blocked, bErr := c.db.BlockedPaths(ctx, reg.Folder)
+		if bErr == nil && len(blocked) > 0 {
+			checks = append(checks, DoctorCheck{
+				Name:        fmt.Sprintf("blocked_paths_%s", shortID(reg.Folder)),
+				Category:    "roots",
+				Status:      StatusWarn,
+				Message:     fmt.Sprintf("folder %s has %d blocked paths (unsupported object or permission error)", shortID(reg.Folder), len(blocked)),
+				Remediation: "remove unsupported filesystem objects (fifos, sockets) or adjust file permissions",
+			})
+		}
 	}
 
 	return checks, nil
 }
 
-func (c *Controller) checkStorageCapacity() []DoctorCheck {
+func (c *Controller) checkStorageCapacity(ctx context.Context) []DoctorCheck {
 	var checks []DoctorCheck
 	stateDir := c.db.StateDir()
 
@@ -290,7 +444,7 @@ func (c *Controller) checkStorageCapacity() []DoctorCheck {
 				Category:    "storage",
 				Status:      StatusFail,
 				Message:     fmt.Sprintf("state partition has only %d MiB free space (reserve target is %d MiB)", availBytes/(1024*1024), FreeSpaceReserveTargetBytes/(1024*1024)),
-				Remediation: "free disk space on the state partition or run filesync storage gc run",
+				Remediation: "free disk space on the state partition or run orbit storage gc run",
 			})
 		} else {
 			checks = append(checks, DoctorCheck{
@@ -311,7 +465,7 @@ func (c *Controller) checkStorageCapacity() []DoctorCheck {
 				Category:    "storage",
 				Status:      StatusWarn,
 				Message:     fmt.Sprintf("SQLite WAL file size is %d MiB (soft cap is %d MiB)", walSize/(1024*1024), MetadataWALSoftCapBytes/(1024*1024)),
-				Remediation: "run filesync maintenance backup to checkpoint WAL into main database",
+				Remediation: "checkpoint WAL or run filesync maintenance backup",
 			})
 		} else {
 			checks = append(checks, DoctorCheck{
@@ -321,6 +475,230 @@ func (c *Controller) checkStorageCapacity() []DoctorCheck {
 				Message:  fmt.Sprintf("SQLite WAL file is within soft cap (%d MiB)", walSize/(1024*1024)),
 			})
 		}
+	}
+
+	// Check data and metadata budgets
+	if usage, err := c.db.DetailedStorageUsage(ctx); err == nil {
+		if usage.DataBudgetBytes > 0 && usage.ObjectBytes > usage.DataBudgetBytes {
+			checks = append(checks, DoctorCheck{
+				Name:        "data_budget",
+				Category:    "storage",
+				Status:      StatusFail,
+				Message:     fmt.Sprintf("stored objects (%d MiB) exceed configured data budget (%d MiB)", usage.ObjectBytes/(1024*1024), usage.DataBudgetBytes/(1024*1024)),
+				Remediation: "run orbit storage gc run or increase data budget in settings",
+			})
+		} else if usage.DataBudgetBytes > 0 {
+			checks = append(checks, DoctorCheck{
+				Name:     "data_budget",
+				Category: "storage",
+				Status:   StatusOk,
+				Message:  fmt.Sprintf("stored objects (%d MiB) within data budget (%d MiB)", usage.ObjectBytes/(1024*1024), usage.DataBudgetBytes/(1024*1024)),
+			})
+		}
+
+		if usage.MetadataBudgetBytes > 0 && usage.MetadataBytes > usage.MetadataBudgetBytes {
+			checks = append(checks, DoctorCheck{
+				Name:        "metadata_budget",
+				Category:    "storage",
+				Status:      StatusWarn,
+				Message:     fmt.Sprintf("metadata storage (%d MiB) exceeds configured metadata budget (%d MiB)", usage.MetadataBytes/(1024*1024), usage.MetadataBudgetBytes/(1024*1024)),
+				Remediation: "run checkpoint or increase metadata budget in settings",
+			})
+		}
+	}
+
+	return checks
+}
+
+func (c *Controller) checkNetworkReachability(ctx context.Context) []DoctorCheck {
+	var checks []DoctorCheck
+	settings, err := config.LoadRuntimeSettings(c.db.StateDir())
+	if err != nil {
+		settings = tc.Settings{}
+	}
+
+	// 1. Advertised peer address check
+	if settings.AdvertisedPeer != "" {
+		host, _, sErr := net.SplitHostPort(settings.AdvertisedPeer)
+		if sErr != nil {
+			host = settings.AdvertisedPeer
+		}
+		ip := net.ParseIP(host)
+		if ip != nil && ip.IsLoopback() {
+			folders, _ := c.db.Folders(ctx)
+			hasRemotePeers := false
+			for _, f := range folders {
+				pl, err := c.PeerList(ctx, f.Folder)
+				if err == nil && len(pl.Active) > 1 {
+					hasRemotePeers = true
+					break
+				}
+			}
+			if hasRemotePeers {
+				checks = append(checks, DoctorCheck{
+					Name:        "advertised_peer_loopback",
+					Category:    "network",
+					Status:      StatusWarn,
+					Message:     fmt.Sprintf("advertised peer address %q is loopback while remote peers exist; peers cannot connect", settings.AdvertisedPeer),
+					Remediation: "configure LAN or Tailscale IP in runtime settings with 'orbit config'",
+				})
+			}
+		}
+	}
+
+	// 2. Peer contact freshness
+	folders, _ := c.db.Folders(ctx)
+	for _, f := range folders {
+		progress, err := c.db.PeerProgress(ctx, f.Folder)
+		if err == nil {
+			for _, p := range progress {
+				if !p.LastContact.IsZero() && time.Since(p.LastContact) > 24*time.Hour {
+					checks = append(checks, DoctorCheck{
+						Name:        fmt.Sprintf("peer_contact_%s", shortID(p.Peer)),
+						Category:    "network",
+						Status:      StatusWarn,
+						Message:     fmt.Sprintf("peer %s has not contacted this device since %s (>24h ago)", shortID(p.Peer), p.LastContact.Format(time.RFC3339)),
+						Remediation: "verify peer device is online and network connectivity is active",
+					})
+				}
+			}
+		}
+	}
+
+	// 3. Network tooling availability: check tailscale if configured
+	if strings.Contains(strings.ToLower(settings.AdvertisedPeer), "tailscale") || strings.Contains(strings.ToLower(settings.PeerListen), "100.") {
+		if _, err := exec.LookPath("tailscale"); err != nil {
+			checks = append(checks, DoctorCheck{
+				Name:        "tailscale_tooling",
+				Category:    "network",
+				Status:      StatusWarn,
+				Message:     "tailscale binary not found in PATH but Tailscale network address is configured",
+				Remediation: "install Tailscale package or configure LAN addresses",
+			})
+		}
+	}
+
+	if len(checks) == 0 {
+		checks = append(checks, DoctorCheck{
+			Name:     "network_configuration",
+			Category: "network",
+			Status:   StatusOk,
+			Message:  "network configuration is healthy",
+		})
+	}
+
+	return checks
+}
+
+func (c *Controller) checkFolderApprovalAndRevisions(ctx context.Context) []DoctorCheck {
+	var checks []DoctorCheck
+
+	// Check pending enrollment requests
+	pendingCount := 0
+	reqResult, err := c.terminalRequests(ctx, tc.Query{Version: tc.Version, Kind: "requests", Limit: tc.MaxPage})
+	if err == nil {
+		for _, req := range reqResult.Requests {
+			if req.State == "pending" || req.State == "pending_approval" {
+				pendingCount++
+			}
+		}
+	}
+	folders, _ := c.db.Folders(ctx)
+	for _, f := range folders {
+		reqs, _ := c.db.ListEnrollmentRequests(ctx, f.Folder, "pending")
+		pendingCount += len(reqs)
+	}
+	if pendingCount > 0 {
+		checks = append(checks, DoctorCheck{
+			Name:        "pending_enrollment_requests",
+			Category:    "membership",
+			Status:      StatusWarn,
+			Message:     fmt.Sprintf("%d pending enrollment request(s) awaiting approval", pendingCount),
+			Remediation: "run 'orbit devices requests' to review and approve pending requests",
+		})
+	}
+
+	// Check membership forks
+	hasAnyFork := false
+	for _, f := range folders {
+		if hasFork, _ := c.db.HasMembershipFork(ctx, f.Folder); hasFork {
+			hasAnyFork = true
+			checks = append(checks, DoctorCheck{
+				Name:        fmt.Sprintf("membership_fork_%s", shortID(f.Folder)),
+				Category:    "membership",
+				Status:      StatusFail,
+				Message:     fmt.Sprintf("folder %s has a membership fork with competing revisions", shortID(f.Folder)),
+				Remediation: fmt.Sprintf("review competing membership revisions for folder %s", fullID(f.Folder)),
+			})
+		}
+	}
+	if !hasAnyFork && len(checks) == 0 {
+		checks = append(checks, DoctorCheck{
+			Name:     "membership_revisions",
+			Category: "membership",
+			Status:   StatusOk,
+			Message:  "membership revisions and approvals are consistent",
+		})
+	}
+
+	return checks
+}
+
+func (c *Controller) checkServiceTooling(ctx context.Context) []DoctorCheck {
+	var checks []DoctorCheck
+	st, err := CheckServiceStatus(ctx, c.db.StateDir(), c.db)
+	if err != nil {
+		checks = append(checks, DoctorCheck{
+			Name:        "service_status",
+			Category:    "service",
+			Status:      StatusWarn,
+			Message:     fmt.Sprintf("unable to inspect service status: %v", err),
+			Remediation: "inspect systemd user session or file permissions",
+		})
+		return checks
+	}
+
+	settings, err := config.LoadRuntimeSettings(c.db.StateDir())
+	if err != nil {
+		settings = tc.Settings{}
+	}
+
+	if settings.Startup == "unattended" {
+		if !st.LingeringEnabled {
+			checks = append(checks, DoctorCheck{
+				Name:        "unattended_linger",
+				Category:    "service",
+				Status:      StatusWarn,
+				Message:     "unattended startup configured but systemd user lingering is not enabled (service will stop on logout)",
+				Remediation: "run 'loginctl enable-linger' as root or user to permit background sync after logout",
+			})
+		} else {
+			checks = append(checks, DoctorCheck{
+				Name:     "unattended_linger",
+				Category: "service",
+				Status:   StatusOk,
+				Message:  "user lingering is verified for unattended startup",
+			})
+		}
+	}
+
+	if (settings.Startup == "login" || settings.Startup == "unattended") && !st.SystemdAvailable {
+		checks = append(checks, DoctorCheck{
+			Name:        "systemd_tooling",
+			Category:    "service",
+			Status:      StatusWarn,
+			Message:     "systemctl not found in PATH; systemd user services are unavailable on this host",
+			Remediation: "install systemd or switch to manual startup with 'orbit service'",
+		})
+	}
+
+	if len(checks) == 0 {
+		checks = append(checks, DoctorCheck{
+			Name:     "service_configuration",
+			Category: "service",
+			Status:   StatusOk,
+			Message:  "service configuration is normal",
+		})
 	}
 
 	return checks

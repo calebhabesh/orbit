@@ -10,6 +10,7 @@ import {
 import { api, formatBytes, APIError } from '../api';
 import { DoctorModal } from '../components/DoctorModal';
 import { RetentionModal } from '../components/RetentionModal';
+import { RelocateFolderForm } from '../components/RelocateFolderForm';
 import { UnregisterModal } from '../components/UnregisterModal';
 
 interface SettingsViewProps {
@@ -355,6 +356,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <div className="code-font" style={{ fontSize: '0.875rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>
                     {root}
                   </div>
+
+                  <RelocateFolderForm folderId={fid} rootPath={root} onSuccess={onRefresh} />
 
                   {/* Folder Actions */}
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>

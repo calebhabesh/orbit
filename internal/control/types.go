@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/calebhabesh/file-sync/internal/config"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
@@ -738,11 +739,13 @@ type ListEnrollmentRequestsResult struct {
 }
 
 type ApproveEnrollmentRequest struct {
-	RequestID      string     `json:"request_id"`
-	Folder         history.ID `json:"folder"`
-	Endpoint       string     `json:"endpoint,omitempty"`
-	Certificate    string     `json:"certificate,omitempty"`
-	SuggestedLabel string     `json:"suggested_label,omitempty"`
+	Reviewed       *tc.ApprovalIntent `json:"reviewed,omitempty"`
+	OperationID    string             `json:"operation_id,omitempty"`
+	RequestID      string             `json:"request_id"`
+	Folder         history.ID         `json:"folder"`
+	Endpoint       string             `json:"endpoint,omitempty"`
+	Certificate    string             `json:"certificate,omitempty"`
+	SuggestedLabel string             `json:"suggested_label,omitempty"`
 }
 
 type ApproveEnrollmentResult struct {
@@ -755,7 +758,9 @@ type ApproveEnrollmentResult struct {
 }
 
 type DeclineEnrollmentRequest struct {
-	RequestID string `json:"request_id"`
+	Reviewed    *tc.ApprovalIntent `json:"reviewed,omitempty"`
+	OperationID string             `json:"operation_id,omitempty"`
+	RequestID   string             `json:"request_id"`
 }
 
 type EnrollmentStatusResult struct {
@@ -770,11 +775,12 @@ type EnrollmentStatusResult struct {
 }
 
 type JoinFlowSubmitRequest struct {
-	InvitationToken string `json:"invitation_token"`
-	TargetFolder    string `json:"target_folder"`
-	RemoteEndpoint  string `json:"remote_endpoint"`
-	DeviceLabel     string `json:"device_label"`
-	RootPath        string `json:"root_path"`
+	Invitation      *tc.Invitation `json:"invitation,omitempty"`
+	InvitationToken string         `json:"invitation_token"`
+	TargetFolder    string         `json:"target_folder"`
+	RemoteEndpoint  string         `json:"remote_endpoint"`
+	DeviceLabel     string         `json:"device_label"`
+	RootPath        string         `json:"root_path"`
 }
 
 type JoinFlowSubmitResult struct {

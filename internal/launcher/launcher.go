@@ -2,8 +2,6 @@ package launcher
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -15,8 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/file-sync/internal/controlclient"
 )
 
 // DaemonStarter encapsulates starting the background daemon process or runner.
@@ -54,92 +51,20 @@ func Launch(ctx context.Context, opts LaunchOptions) (*LaunchResult, error) {
 		return nil, err
 	}
 
-	// 2. Validate state directory integrity
-	if err := ValidateExistingState(stateDir); err != nil {
+	ready, err := EnsureDaemon(ctx, opts)
+	if err != nil {
 		return nil, err
 	}
-
-	// 3. Detect if daemon is already running via exclusive lock check
-	daemonRunning := false
-	if _, statErr := os.Stat(stateDir); statErr == nil {
-		testLock, err := state.Acquire(stateDir)
-		if errors.Is(err, state.ErrLocked) {
-			daemonRunning = true
-		} else if err == nil {
-			_ = testLock.Close()
-		} else {
-			return nil, fmt.Errorf("check state lock in %s: %w", stateDir, err)
-		}
-	}
-
-	// 4. Start daemon if not running
-	ctrlAddr := opts.ControlAddress
-	if ctrlAddr == "" {
-		ctrlAddr = "127.0.0.1:0"
-	}
-
-	if !daemonRunning {
-		starter := opts.DaemonStarter
-		if starter == nil {
-			starter = defaultDaemonStarter
-		}
-		if err := starter(ctx, stateDir, ctrlAddr); err != nil {
-			return nil, fmt.Errorf("start daemon: %w", err)
-		}
-
-		// Wait for daemon to become responsive
-		if err := waitForDaemonReady(ctx, stateDir, 5*time.Second); err != nil {
-			return nil, fmt.Errorf("daemon failed to become ready: %w", err)
-		}
-		daemonRunning = true
-	}
-
-	// 5. Read control address and control token
-	addrFile := filepath.Join(stateDir, "control.addr")
-	addrBytes, err := os.ReadFile(addrFile)
-	if err != nil {
-		return nil, fmt.Errorf("read control.addr: %w", err)
-	}
-	serverAddr := strings.TrimSpace(string(addrBytes))
-	httpAddr := serverAddr
-	if !strings.HasPrefix(httpAddr, "http://") && !strings.HasPrefix(httpAddr, "https://") {
-		httpAddr = "http://" + httpAddr
-	}
-
-	tokenFile := filepath.Join(stateDir, "control.token")
-	tokenBytes, err := os.ReadFile(tokenFile)
-	if err != nil {
-		return nil, fmt.Errorf("read control.token: %w", err)
-	}
-	cliToken := strings.TrimSpace(string(tokenBytes))
-
+	daemonRunning := true
+	serverAddr := ready.ControlAddress
+	httpAddr := "http://" + serverAddr
 	// 6. Request single-use bootstrap token from daemon
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, httpAddr+"/api/v1/auth/bootstrap-token", nil)
-	if err != nil {
-		return nil, fmt.Errorf("prepare bootstrap request: %w", err)
-	}
-	req.Header.Set("Authorization", "Bearer "+cliToken)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("connect to control server at %s: %w", httpAddr, err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		var ctrlErr control.ControlError
-		if err := json.NewDecoder(resp.Body).Decode(&ctrlErr); err == nil && ctrlErr.Code != "" {
-			return nil, fmt.Errorf("control server error: %s - %s", ctrlErr.Code, ctrlErr.Message)
-		}
-		return nil, fmt.Errorf("control server returned HTTP %d", resp.StatusCode)
-	}
-
 	var bootstrapRes struct {
 		BootstrapToken string `json:"bootstrap_token"`
 		ExpiresInSecs  int    `json:"expires_in_secs"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&bootstrapRes); err != nil {
-		return nil, fmt.Errorf("decode bootstrap token response: %w", err)
+	if err := (&controlclient.Client{StateDir: stateDir}).Call(ctx, http.MethodPost, "/api/v1/auth/bootstrap-token", nil, &bootstrapRes); err != nil {
+		return nil, err
 	}
 
 	bootstrapURL := fmt.Sprintf("%s/#bootstrap=%s", httpAddr, bootstrapRes.BootstrapToken)
@@ -199,39 +124,32 @@ func Launch(ctx context.Context, opts LaunchOptions) (*LaunchResult, error) {
 func defaultDaemonStarter(_ context.Context, stateDir, ctrlAddr string) error {
 	bin, err := os.Executable()
 	if err != nil {
-		bin = "filesync"
+		return err
 	}
 	cmd := exec.Command(bin, "serve", "--state="+stateDir, "--control-listen="+ctrlAddr, "--allow-init")
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-	return cmd.Start()
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+	go func() { _ = cmd.Wait() }()
+	return nil
 }
 
 func waitForDaemonReady(ctx context.Context, stateDir string, timeout time.Duration) error {
-	deadline := time.Now().Add(timeout)
-	addrFile := filepath.Join(stateDir, "control.addr")
-	client := &http.Client{Timeout: 500 * time.Millisecond}
-
-	for time.Now().Before(deadline) {
+	ctx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+	ticker := time.NewTicker(50 * time.Millisecond)
+	defer ticker.Stop()
+	for {
+		var result map[string]any
+		err := (&controlclient.Client{StateDir: stateDir}).Call(ctx, http.MethodGet, "/api/v1/settings", nil, &result)
+		if err == nil {
+			return nil
+		}
 		select {
 		case <-ctx.Done():
-			return ctx.Err()
-		default:
+			return fmt.Errorf("daemon readiness: %w", ctx.Err())
+		case <-ticker.C:
 		}
-
-		if data, err := os.ReadFile(addrFile); err == nil && len(strings.TrimSpace(string(data))) > 0 {
-			addr := strings.TrimSpace(string(data))
-			if !strings.HasPrefix(addr, "http://") && !strings.HasPrefix(addr, "https://") {
-				addr = "http://" + addr
-			}
-			resp, err := client.Get(addr + "/api/v1/health")
-			if err == nil {
-				resp.Body.Close()
-				if resp.StatusCode == http.StatusOK {
-					return nil
-				}
-			}
-		}
-		time.Sleep(50 * time.Millisecond)
 	}
-	return errors.New("timeout waiting for control listener readiness")
 }

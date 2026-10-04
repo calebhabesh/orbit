@@ -7,10 +7,12 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/tls"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"net/http"
 	"net/url"
 	"os"
@@ -114,6 +116,25 @@ func (c *Controller) ListPeerEndpoints(ctx context.Context) (*PeerEndpointsListR
 
 // SetPeerEndpoint adds or updates a peer endpoint in peers.json.
 func (c *Controller) SetPeerEndpoint(ctx context.Context, req SetPeerEndpointRequest) error {
+	c.terminalMu.Lock()
+	defer c.terminalMu.Unlock()
+	// An address-only refresh reuses the exact already configured trust anchor.
+	if req.Certificate == "" {
+		peers, err := config.LoadPeerEndpoints(c.db.StateDir())
+		if err != nil {
+			return err
+		}
+		for _, peer := range peers {
+			if peer.Folder == req.Folder && peer.Device == req.Device {
+				req.Certificate = peer.Certificate
+				break
+			}
+		}
+		if req.Certificate == "" {
+			return terminalError("IDENTITY_REVIEW_REQUIRED")
+		}
+	}
+
 	endpoint := config.PeerEndpoint{
 		Folder:      req.Folder,
 		Device:      req.Device,
@@ -163,8 +184,8 @@ func (c *Controller) InspectSetup(ctx context.Context) (*InspectSetupResult, err
 		currentPhase = setupState.Phase
 		setupCompleted = setupState.Completed
 	}
-	if len(registered) > 0 {
-		setupCompleted = true
+	if setupState == nil && len(registered) > 0 {
+		setupCompleted = false
 	}
 
 	deviceID := ""
@@ -185,6 +206,9 @@ func (c *Controller) InspectSetup(ctx context.Context) (*InspectSetupResult, err
 
 // PreviewCreateRoot validates a proposed root directory.
 func (c *Controller) PreviewCreateRoot(ctx context.Context, req PreviewCreateRootRequest) (*PreviewCreateRootResult, error) {
+	return c.previewRoot(ctx, req, false)
+}
+func (c *Controller) previewRoot(ctx context.Context, req PreviewCreateRootRequest, validateOnly bool) (*PreviewCreateRootResult, error) {
 	if req.Path == "" {
 		return nil, &ControlError{
 			Code:      "INVALID_PATH",
@@ -246,6 +270,9 @@ func (c *Controller) PreviewCreateRoot(ctx context.Context, req PreviewCreateRoo
 		}
 	}
 
+	if validateOnly {
+		return &PreviewCreateRootResult{Path: absPath}, nil
+	}
 	info, err := os.Stat(absPath)
 	res := &PreviewCreateRootResult{
 		Path: absPath,
@@ -331,131 +358,7 @@ func (c *Controller) PreviewJoinRoot(ctx context.Context, req PreviewJoinRootReq
 
 // StartSetup initializes workspace creation or registration during onboarding.
 func (c *Controller) StartSetup(ctx context.Context, req StartSetupRequest) (*StartSetupResult, error) {
-	preview, err := c.PreviewCreateRoot(ctx, PreviewCreateRootRequest{Path: req.RootPath})
-	if err != nil {
-		return nil, err
-	}
-	if preview.Disallowed {
-		return nil, &ControlError{
-			Code:      "DISALLOWED_ROOT",
-			Message:   preview.Reason,
-			Retryable: false,
-			Action:    "select an accessible personal directory",
-		}
-	}
-
-	if err := os.MkdirAll(preview.Path, 0o755); err != nil {
-		return nil, fmt.Errorf("create root directory: %w", err)
-	}
-
-	// Generate deterministic or random folder ID
-	var folderID history.ID
-	if _, err := rand.Read(folderID[:]); err != nil {
-		return nil, err
-	}
-
-	cfg, _ := config.Load(c.db.StateDir())
-	deviceID := cfg.DeviceID
-
-	opID := "setup-" + hex.EncodeToString(folderID[:4])
-	_ = c.db.RecordOperationProgress(ctx, repository.OperationProgressRecord{
-		OperationID:         opID,
-		Kind:                "setup",
-		Phase:               "registering_folder",
-		ProgressNumerator:   25,
-		ProgressDenominator: 100,
-		Details:             "Registering root folder",
-	})
-
-	// 1. Register folder in repository & workspace
-	if _, err := c.RegisterFolder(ctx, folderID, preview.Path); err != nil {
-		_ = c.db.RecordOperationProgress(ctx, repository.OperationProgressRecord{
-			OperationID: opID,
-			Kind:        "setup",
-			Phase:       "failed",
-			Details:     "Failed to register folder: " + err.Error(),
-			Retryable:   true,
-		})
-		return nil, fmt.Errorf("register folder: %w", err)
-	}
-
-	// Initialize Revision 1 membership for local author
-	if c.options.LocalDevice != (history.ID{}) {
-		ident, idErr := replication.LoadOrCreateIdentity(c.db.StateDir(), c.options.LocalDevice, c.options.Now())
-		if idErr == nil {
-			_, _ = c.db.ApproveMembership(ctx, protocol.Membership{
-				Folder:      folderID,
-				Revision:    1,
-				PriorDigest: history.Digest{},
-				Active: []protocol.ActiveMember{
-					{Device: c.options.LocalDevice, KeyPin: ident.KeyPin},
-				},
-			})
-		}
-	}
-
-	// 2. Set display name if provided
-	if req.WorkspaceName != "" {
-		_ = c.db.SetFolderDisplayName(ctx, folderID, req.WorkspaceName)
-	}
-
-	// 3. Record settings
-	folderHex := hex.EncodeToString(folderID[:])
-	_, _ = c.UpdateSettings(ctx, UpdateSettingsRequest{
-		DeviceLabel:      &req.DeviceLabel,
-		DefaultWorkspace: ptr(folderHex),
-		WorkspaceNames:   map[string]string{folderHex: req.WorkspaceName},
-	})
-
-	_ = c.db.RecordOperationProgress(ctx, repository.OperationProgressRecord{
-		OperationID:         opID,
-		Kind:                "setup",
-		Phase:               "scanning_initial_content",
-		ProgressNumerator:   60,
-		ProgressDenominator: 100,
-		Details:             "Capturing initial directory contents",
-	})
-
-	// 4. Initial capture scan (Invariant I22: preexisting contents survive and are captured)
-	if _, err := c.ws.Scan(ctx, folderID); err != nil {
-		_ = c.db.RecordOperationProgress(ctx, repository.OperationProgressRecord{
-			OperationID: opID,
-			Kind:        "setup",
-			Phase:       "failed",
-			Details:     "Initial scan failed: " + err.Error(),
-			Retryable:   true,
-		})
-		return nil, fmt.Errorf("initial scan failed: %w", err)
-	}
-
-	// 5. Update setup state in DB
-	_ = c.db.SaveSetupState(ctx, repository.SetupStateRecord{
-		Phase:           "completed",
-		RootPath:        preview.Path,
-		DefaultFolderID: &folderID,
-		Completed:       true,
-		UpdatedNS:       time.Now().UnixNano(),
-	})
-
-	_ = c.db.RecordOperationProgress(ctx, repository.OperationProgressRecord{
-		OperationID:         opID,
-		Kind:                "setup",
-		Phase:               "completed",
-		ProgressNumerator:   100,
-		ProgressDenominator: 100,
-		Details:             "Setup completed successfully",
-		Retryable:           false,
-		Canceled:            false,
-	})
-
-	return &StartSetupResult{
-		OperationID: opID,
-		DeviceID:    deviceID,
-		FolderID:    folderID,
-		RootPath:    preview.Path,
-		Phase:       "completed",
-		Message:     "workspace setup completed successfully",
-	}, nil
+	return c.startReviewedCompatibilitySetup(ctx, req)
 }
 
 // ResumeSetup resumes an in-progress or interrupted workspace setup.
@@ -475,6 +378,27 @@ func (c *Controller) ResumeSetup(ctx context.Context, req ResumeSetupRequest) (*
 	cfg, _ := config.Load(c.db.StateDir())
 	deviceID := cfg.DeviceID
 
+	// Terminal jobs are authoritative even when the old singleton setup row
+	// names the same root. Never complete their phases with a blind local scan.
+	records, err := c.db.TerminalOperations(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, record := range records {
+		if record.Result.Join == nil || record.Result.Join.Root != st.RootPath {
+			continue
+		}
+		c.terminalMu.Lock()
+		r := record.Result
+		if r.State != "completed" {
+			r, err = c.advanceSetup(ctx, record)
+		}
+		c.terminalMu.Unlock()
+		if err != nil {
+			return nil, err
+		}
+		return &ResumeSetupResult{OperationID: r.Operation.ID, DeviceID: deviceID, FolderID: terminalID(r.Join.Folder), RootPath: r.Join.Root, Phase: compatibilitySetupPhase(r.Operation.Phase), Completed: r.State == "completed", Message: "durable setup phase resumed"}, nil
+	}
 	if st.Completed {
 		var fID history.ID
 		if st.DefaultFolderID != nil {
@@ -491,6 +415,9 @@ func (c *Controller) ResumeSetup(ctx context.Context, req ResumeSetupRequest) (*
 		}, nil
 	}
 
+	if st.Phase == "joining" || st.Phase == "awaiting_approval" || st.Phase == "request_prepared" {
+		return nil, terminalError("ENROLLMENT_PENDING")
+	}
 	// If rootPath is set, ensure folder registration and initial scan are complete
 	if st.RootPath != "" && st.DefaultFolderID != nil {
 		folderID := *st.DefaultFolderID
@@ -507,8 +434,10 @@ func (c *Controller) ResumeSetup(ctx context.Context, req ResumeSetupRequest) (*
 				return nil, fmt.Errorf("resume: register folder: %w", err)
 			}
 		}
-		if _, err := c.ws.Scan(ctx, folderID); err != nil {
+		if scan, err := c.ws.Scan(ctx, folderID); err != nil {
 			return nil, fmt.Errorf("resume: scan folder: %w", err)
+		} else if len(scan.Issues) > 0 || scan.Deletion != nil {
+			return nil, terminalError("SCAN_INCOMPLETE")
 		}
 		st.Phase = "completed"
 		st.Completed = true
@@ -791,6 +720,42 @@ func (c *Controller) OpenLocalFolder(ctx context.Context, req OpenFolderRequest)
 
 // CreateInvitation generates an expiring single-use invitation capability for a workspace.
 func (c *Controller) CreateInvitation(ctx context.Context, req CreateInvitationRequest) (*CreateInvitationResult, error) {
+	settings, e := config.LoadRuntimeSettings(c.db.StateDir())
+	if e != nil {
+		return nil, e
+	}
+	if settings.AdvertisedEnrollment != "" {
+		if req.MaxUses > 1 {
+			return nil, terminalError("INVALID_REQUEST")
+		}
+		_, membership, e := c.db.GetMembership(ctx, req.Folder)
+		if e != nil {
+			return nil, e
+		}
+		ttl := 24 * time.Hour
+		if req.TTLSecs > 0 {
+			if req.TTLSecs > 86400 {
+				return nil, terminalError("INVALID_REQUEST")
+			}
+			ttl = time.Duration(req.TTLSecs) * time.Second
+		}
+		var op [32]byte
+		if _, e := rand.Read(op[:]); e != nil {
+			return nil, e
+		}
+		r, e := c.TerminalMutate(ctx, tc.Mutation{Version: "1", Kind: "invite", OperationID: hex.EncodeToString(op[:]), Invite: &tc.InviteIntent{Folder: hex.EncodeToString(req.Folder[:]), ExpectedMembership: hex.EncodeToString(membership.Digest[:]), ExpiresAt: c.options.Now().Add(ttl).UTC().Format(time.RFC3339Nano)}})
+		if e != nil {
+			return nil, e
+		}
+		b, e := json.Marshal(r.Invitation)
+		if e != nil {
+			return nil, e
+		}
+		raw, _ := hex.DecodeString(r.Invitation.Capability)
+		digest := sha256.Sum256(raw)
+		return &CreateInvitationResult{Token: r.Invitation.Capability, Digest: digest, Folder: req.Folder, ExpiresAt: r.Invitation.ExpiresAt, MaxUses: 1, InvitationCode: "orbit-invitation:v2:" + base64.RawURLEncoding.EncodeToString(b)}, nil
+	}
+
 	rawToken := make([]byte, 32)
 	if _, err := rand.Read(rawToken); err != nil {
 		return nil, fmt.Errorf("generate invitation secret: %w", err)
@@ -849,6 +814,27 @@ func (c *Controller) CreateInvitation(ctx context.Context, req CreateInvitationR
 
 // RevokeInvitation invalidates an invitation token digest.
 func (c *Controller) RevokeInvitation(ctx context.Context, req RevokeInvitationRequest) (*RevokeInvitationResult, error) {
+	handled := false
+	err := c.db.EnrollmentTransaction(ctx, func(t *repository.EnrollmentTx) error {
+		var inv replication.EnrollmentInvitation
+		err := t.Get("invite/"+hex.EncodeToString(req.Digest[:]), &inv)
+		if errors.Is(err, repository.ErrOperationNotFound) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		handled = true
+		inv.Revoked = true
+		return t.Put("invite/"+hex.EncodeToString(req.Digest[:]), inv)
+	})
+	if err != nil {
+		return nil, err
+	}
+	if handled {
+		return &RevokeInvitationResult{Digest: req.Digest, Revoked: true}, nil
+	}
+
 	if err := c.db.RevokeInvitation(ctx, req.Digest); err != nil {
 		return nil, err
 	}
@@ -861,6 +847,30 @@ func (c *Controller) RevokeInvitation(ctx context.Context, req RevokeInvitationR
 // ListInvitations lists invitations for a workspace.
 func (c *Controller) ListInvitations(ctx context.Context, folder history.ID) (*ListInvitationsResult, error) {
 	invs, err := c.db.ListInvitations(ctx, folder)
+	if err != nil {
+		return nil, err
+	}
+	err = c.db.EnrollmentTransaction(ctx, func(t *repository.EnrollmentTx) error {
+		rs, err := t.Records("invite/")
+		if err != nil {
+			return err
+		}
+		for _, b := range rs {
+			var v replication.EnrollmentInvitation
+			if err := protocol.DecodeStrict(b, &v); err != nil {
+				return err
+			}
+			if v.Invitation.Folder != hex.EncodeToString(folder[:]) {
+				continue
+			}
+			e, err := time.Parse(time.RFC3339Nano, v.Invitation.ExpiresAt)
+			if err != nil {
+				return err
+			}
+			invs = append(invs, repository.InvitationRecord{Digest: history.Digest(terminalID(v.Digest)), Folder: folder, ExpiresNS: e.UnixNano(), MaxUses: 1, UsesCount: v.Uses, Revoked: v.Revoked})
+		}
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -918,7 +928,7 @@ func (c *Controller) SubmitEnrollmentRequest(ctx context.Context, req SubmitJoin
 	}
 
 	tokenDigest := sha256.Sum256([]byte(req.Token))
-	if err := c.db.ConsumeInvitation(ctx, tokenDigest, time.Now()); err != nil {
+	if err := c.db.ConsumeInvitation(ctx, tokenDigest, time.Now(), req.TargetFolder); err != nil {
 		if errors.Is(err, repository.ErrInvitationNotFound) {
 			return nil, &ControlError{Code: "UNAUTHORIZED", Message: "invitation token not found or invalid", Action: "check invitation token"}
 		}
@@ -962,11 +972,31 @@ func (c *Controller) ListEnrollmentRequests(ctx context.Context, folder history.
 	if err != nil {
 		return nil, err
 	}
+	observations, err := c.terminalRequests(ctx, tc.Query{Version: "1", Kind: "requests", Folder: hex.EncodeToString(folder[:])})
+	if err != nil {
+		return nil, err
+	}
+	for _, r := range observations.Requests {
+		recordStatus := r.State
+		if recordStatus == "pending_approval" {
+			recordStatus = "pending"
+		}
+		if status != "" && status != recordStatus {
+			continue
+		}
+		reqs = append(reqs, repository.EnrollmentRequestRecord{RequestID: r.ID, Folder: terminalID(r.Folder), DeviceID: terminalID(r.Requester), KeyPin: history.Digest(terminalID(r.KeyPin)), SuggestedLabel: r.Label, Status: recordStatus})
+	}
 	return &ListEnrollmentRequestsResult{Requests: reqs}, nil
 }
 
 // ApproveEnrollmentRequest marks an enrollment request as approved by the owner, minting Revision N+1.
 func (c *Controller) ApproveEnrollmentRequest(ctx context.Context, req ApproveEnrollmentRequest) (*ApproveEnrollmentResult, error) {
+	if record, found, err := c.enrollmentV2Record(ctx, req.RequestID); err != nil {
+		return nil, err
+	} else if found {
+		return c.approveEnrollmentV2Compatibility(ctx, req, record)
+	}
+
 	enrReq, err := c.db.GetEnrollmentRequest(ctx, req.RequestID)
 	if err != nil {
 		return nil, &ControlError{Code: "REQUEST_NOT_FOUND", Message: "enrollment request not found: " + err.Error(), Action: "check request ID"}
@@ -1099,6 +1129,16 @@ func (c *Controller) ApproveEnrollmentRequest(ctx context.Context, req ApproveEn
 
 // DeclineEnrollmentRequest marks an enrollment request as declined.
 func (c *Controller) DeclineEnrollmentRequest(ctx context.Context, req DeclineEnrollmentRequest) error {
+	if _, found, err := c.enrollmentV2Record(ctx, req.RequestID); err != nil {
+		return err
+	} else if found {
+		if req.Reviewed == nil || req.Reviewed.Request != req.RequestID || req.Reviewed.Decision != "decline" {
+			return terminalError("STALE_VIEW")
+		}
+		_, err := c.TerminalMutate(ctx, tc.Mutation{Version: "1", Kind: "approval", OperationID: req.OperationID, Approval: req.Reviewed})
+		return err
+	}
+
 	return c.db.UpdateEnrollmentRequestStatus(ctx, req.RequestID, "declined")
 }
 
@@ -1301,6 +1341,12 @@ func (c *Controller) CancelOperation(ctx context.Context, req CancelOperationReq
 
 // GetEnrollmentStatus queries the status of a specific enrollment request.
 func (c *Controller) GetEnrollmentStatus(ctx context.Context, requestID string) (*EnrollmentStatusResult, error) {
+	if record, found, err := c.enrollmentV2Record(ctx, requestID); err != nil {
+		return nil, err
+	} else if found {
+		return compatibilityStatus(record)
+	}
+
 	if requestID == "" {
 		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "request_id is required"}
 	}
@@ -1331,311 +1377,41 @@ func (c *Controller) GetEnrollmentStatus(ctx context.Context, requestID string) 
 
 // SubmitJoinFlow initiates enrollment from the joining device by proving key possession to the remote endpoint.
 func (c *Controller) SubmitJoinFlow(ctx context.Context, req JoinFlowSubmitRequest) (*JoinFlowSubmitResult, error) {
-	if req.InvitationToken == "" {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "invitation token is required", Action: "provide invitation token"}
-	}
-	if req.RemoteEndpoint == "" {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "remote endpoint URL is required", Action: "provide reachable remote URL"}
-	}
-	if req.TargetFolder == "" {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "target folder ID is required", Action: "provide 64-hex folder ID"}
-	}
-	var folderID history.ID
-	if err := folderID.UnmarshalText([]byte(req.TargetFolder)); err != nil {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "invalid target folder ID hex format"}
-	}
-
-	rootPath := req.RootPath
-	if rootPath == "" {
-		home, _ := os.UserHomeDir()
-		rootPath = filepath.Join(home, "Orbit")
-	}
-
-	// Validate root path using existing preview validation
-	prev, err := c.PreviewJoinRoot(ctx, PreviewJoinRootRequest{Path: rootPath, FolderID: folderID})
-	if err != nil {
-		return nil, err
-	}
-	if prev.Disallowed {
-		return nil, &ControlError{Code: "INVALID_ROOT", Message: prev.Reason, Action: "choose a standard directory"}
-	}
-
-	// Load local identity key
-	ident, err := replication.LoadOrCreateIdentity(c.db.StateDir(), c.options.LocalDevice, c.options.Now())
-	if err != nil {
-		return nil, fmt.Errorf("load local identity: %w", err)
-	}
-
-	// Generate challenge nonce and sign with local private key
-	challengeBytes := make([]byte, 32)
-	if _, err := rand.Read(challengeBytes); err != nil {
-		return nil, fmt.Errorf("generate challenge nonce: %w", err)
-	}
-
-	privKey, ok := ident.Certificate.PrivateKey.(ed25519.PrivateKey)
-	if !ok {
-		return nil, errors.New("local identity private key is not an ed25519 key")
-	}
-	pubKey := privKey.Public().(ed25519.PublicKey)
-	sig := ed25519.Sign(privKey, challengeBytes)
-
-	label := req.DeviceLabel
-	if label == "" {
-		label = "Orbit Device"
-	}
-
-	// Assemble payload
-	joinPayload := SubmitJoinRequestPayload{
-		Token:          req.InvitationToken,
-		JoiningDevice:  c.options.LocalDevice,
-		PublicKey:      hex.EncodeToString(pubKey),
-		Signature:      hex.EncodeToString(sig),
-		Challenge:      hex.EncodeToString(challengeBytes),
-		SuggestedLabel: label,
-		TargetFolder:   folderID,
-	}
-
-	// Submit HTTP POST to remoteEndpoint + "/api/v1/enrollment/request"
-	remoteURL := strings.TrimRight(req.RemoteEndpoint, "/") + "/api/v1/enrollment/request"
-	bodyBytes, err := json.Marshal(joinPayload)
-	if err != nil {
-		return nil, err
-	}
-
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, remoteURL, bytes.NewReader(bodyBytes))
-	if err != nil {
-		return nil, fmt.Errorf("create request to remote: %w", err)
-	}
-	httpReq.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-	}
-	resp, err := client.Do(httpReq)
-	if err != nil {
-		return nil, &ControlError{
-			Code:      "REMOTE_UNREACHABLE",
-			Message:   fmt.Sprintf("cannot reach remote endpoint %s: %v", req.RemoteEndpoint, err),
-			Action:    "ensure the inviting device is running and reachable on this network",
-			Retryable: true,
-		}
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		var errResp ControlError
-		if err := json.NewDecoder(resp.Body).Decode(&errResp); err == nil && errResp.Message != "" {
-			return nil, &ControlError{
-				Code:      errResp.Code,
-				Message:   errResp.Message,
-				Action:    errResp.Action,
-				Retryable: errResp.Retryable,
-			}
-		}
-		return nil, &ControlError{
-			Code:      "REMOTE_ERROR",
-			Message:   fmt.Sprintf("remote endpoint returned HTTP %d", resp.StatusCode),
-			Retryable: resp.StatusCode >= 500,
-		}
-	}
-
-	var submitRes SubmitJoinRequestResult
-	if err := json.NewDecoder(resp.Body).Decode(&submitRes); err != nil {
-		return nil, fmt.Errorf("decode remote response: %w", err)
-	}
-
-	// Store pending setup state
-	_ = c.db.SaveSetupState(ctx, repository.SetupStateRecord{
-		Phase:           "joining",
-		RootPath:        rootPath,
-		DefaultFolderID: &folderID,
-		Completed:       false,
-	})
-
-	return &JoinFlowSubmitResult{
-		RequestID:      submitRes.RequestID,
-		Status:         submitRes.Status,
-		TargetFolder:   req.TargetFolder,
-		RemoteEndpoint: req.RemoteEndpoint,
-		RootPath:       rootPath,
-		DeviceID:       hex.EncodeToString(c.options.LocalDevice[:]),
-		KeyPin:         hex.EncodeToString(ident.KeyPin[:]),
-		Message:        submitRes.Message,
-	}, nil
+	return c.submitPinnedJoin(ctx, req)
 }
 
 // CompleteJoinFlow finalizes enrollment on the joining device once approved.
 func (c *Controller) CompleteJoinFlow(ctx context.Context, req JoinFlowCompleteRequest) (*JoinFlowCompleteResult, error) {
-	if req.RequestID == "" {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "request_id is required"}
+	var saved pinnedJoin
+	if err := c.db.TerminalRecord(ctx, "joinflow/"+req.RequestID, &saved); err != nil {
+		return nil, err
 	}
-	if req.RemoteEndpoint == "" {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "remote_endpoint is required"}
+	if saved.Operation == "" {
+		return nil, terminalError("SETUP_REVIEW_REQUIRED")
 	}
-	var folderID history.ID
-	if err := folderID.UnmarshalText([]byte(req.TargetFolder)); err != nil {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "invalid target folder ID"}
+	if req.RemoteEndpoint != saved.Invitation.EnrollmentEndpoint || req.TargetFolder != saved.Wire.Folder || req.RootPath != saved.Root {
+		return nil, terminalError("STALE_VIEW")
 	}
-
-	// Query remote status
-	statusURL := fmt.Sprintf("%s/api/v1/enrollment/status?request_id=%s", strings.TrimRight(req.RemoteEndpoint, "/"), url.QueryEscape(req.RequestID))
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
+	c.terminalMu.Lock()
+	defer c.terminalMu.Unlock()
+	var record repository.TerminalRecord
+	if err := c.db.TerminalRecord(ctx, "operation/"+saved.Operation, &record); err != nil {
+		return nil, err
 	}
-	resp, err := client.Get(statusURL)
-	if err != nil {
-		return nil, &ControlError{
-			Code:      "REMOTE_UNREACHABLE",
-			Message:   fmt.Sprintf("cannot reach remote endpoint to verify approval: %v", err),
-			Retryable: true,
+	r := record.Result
+	var err error
+	if r.State != "completed" {
+		r, err = c.advanceSetup(ctx, record)
+		if err != nil {
+			return nil, err
 		}
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, &ControlError{
-			Code:    "REMOTE_ERROR",
-			Message: fmt.Sprintf("status check returned HTTP %d", resp.StatusCode),
-		}
-	}
-
-	var statusRes EnrollmentStatusResult
-	if err := json.NewDecoder(resp.Body).Decode(&statusRes); err != nil {
-		return nil, fmt.Errorf("decode remote status: %w", err)
-	}
-
-	if statusRes.Status == "declined" {
-		return nil, &ControlError{
-			Code:    "ENROLLMENT_DECLINED",
-			Message: "workspace owner declined the join request",
-			Action:  "request a new invitation or check workspace settings",
-		}
-	}
-	if statusRes.Status != "approved" {
-		return nil, &ControlError{
-			Code:      "ENROLLMENT_PENDING",
-			Message:   "join request is still pending owner approval",
-			Retryable: true,
-		}
-	}
-
-	// Setup local workspace and directory
-	rootPath := req.RootPath
-	if rootPath == "" {
-		home, _ := os.UserHomeDir()
-		rootPath = filepath.Join(home, "Orbit")
-	}
-
-	if err := os.MkdirAll(rootPath, 0o755); err != nil {
-		return nil, fmt.Errorf("create root directory: %w", err)
-	}
-
-	// Register folder locally
-	if _, err := c.RegisterFolder(ctx, folderID, rootPath); err != nil {
-		// If already registered, ignore
-		if !strings.Contains(err.Error(), "already registered") {
-			return nil, fmt.Errorf("register folder: %w", err)
-		}
-	}
-	// Apply membership
-	if statusRes.Membership != nil {
-		if _, err := c.db.ApproveMembership(ctx, *statusRes.Membership); err != nil {
-			return nil, fmt.Errorf("apply approved membership: %w", err)
-		}
-	}
-
-	// Set local device display name if provided
-	if req.DeviceLabel != "" {
-		_ = c.db.SetDeviceDisplayName(ctx, c.options.LocalDevice, req.DeviceLabel)
-		// Update settings.json
-		if st, err := config.LoadSettings(c.db.StateDir()); err == nil {
-			st.DeviceLabel = req.DeviceLabel
-			_ = config.SaveSettings(c.db.StateDir(), st)
-		}
-	}
-
-	// Install remote peer endpoint in peers.json
-	remotePeerDevHex := ""
-	if statusRes.Membership != nil {
-		for _, m := range statusRes.Membership.Active {
-			if m.Device != c.options.LocalDevice {
-				remotePeerDevHex = hex.EncodeToString(m.Device[:])
-				break
-			}
-		}
-	}
-	if remotePeerDevHex != "" {
-		_ = config.SetPeerEndpoint(c.db.StateDir(), config.PeerEndpoint{
-			Folder:      hex.EncodeToString(folderID[:]),
-			Device:      remotePeerDevHex,
-			URL:         req.RemoteEndpoint,
-			Certificate: filepath.Join(c.db.StateDir(), "identity.crt"),
-		})
-	}
-
-	// Adopt preexisting files via scan (Invariant I22)
-	_, _ = c.ws.Scan(ctx, folderID)
-
-	// Mark setup complete
-	_ = c.db.SaveSetupState(ctx, repository.SetupStateRecord{
-		Phase:           "completed",
-		RootPath:        rootPath,
-		DefaultFolderID: &folderID,
-		Completed:       true,
-	})
-
-	return &JoinFlowCompleteResult{
-		Completed: true,
-		FolderID:  hex.EncodeToString(folderID[:]),
-		RootPath:  rootPath,
-		Status:    "ready",
-		Message:   "workspace joined and initialized successfully",
-	}, nil
+	return &JoinFlowCompleteResult{Completed: r.State == "completed", FolderID: r.Join.Folder, RootPath: r.Join.Root, Status: r.Operation.Phase, Message: "readiness reflects local capture, content and publication observations"}, nil
 }
 
 // CheckJoinStatus queries the enrollment status from the remote inviting device.
 func (c *Controller) CheckJoinStatus(ctx context.Context, remoteEndpoint, requestID string) (*EnrollmentStatusResult, error) {
-	if remoteEndpoint == "" || requestID == "" {
-		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "remote_endpoint and request_id are required"}
-	}
-	u := fmt.Sprintf("%s/api/v1/enrollment/status?request_id=%s", strings.TrimRight(remoteEndpoint, "/"), url.QueryEscape(requestID))
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return nil, err
-	}
-	client := &http.Client{
-		Timeout: 5 * time.Second,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, &ControlError{
-			Code:      "REMOTE_UNREACHABLE",
-			Message:   fmt.Sprintf("cannot reach remote endpoint %s: %v", remoteEndpoint, err),
-			Retryable: true,
-		}
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, &ControlError{
-			Code:      "REMOTE_ERROR",
-			Message:   fmt.Sprintf("remote endpoint returned HTTP %d", resp.StatusCode),
-			Retryable: true,
-		}
-	}
-	var res EnrollmentStatusResult
-	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-		return nil, fmt.Errorf("decode remote status response: %w", err)
-	}
-	return &res, nil
+	return c.pinnedJoinStatus(ctx, remoteEndpoint, requestID)
 }
 
 // TestPeerReachability tests network connectivity to a peer endpoint.

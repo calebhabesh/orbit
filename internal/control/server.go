@@ -11,16 +11,17 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/config"
+	"github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/file-sync/internal/state"
 	"github.com/calebhabesh/file-sync/web"
 )
 
@@ -37,6 +38,7 @@ type sessionInfo struct {
 }
 
 type Server struct {
+	deviceID        string
 	ctrl            *Controller
 	stateDir        string
 	cliToken        string
@@ -50,22 +52,32 @@ type Server struct {
 }
 
 func NewServer(ctrl *Controller, stateDir string) (*Server, error) {
-	tokenFile := filepath.Join(stateDir, "control.token")
 	var cliToken string
-	if data, err := os.ReadFile(tokenFile); err == nil && len(strings.TrimSpace(string(data))) >= 32 {
+	data, err := state.ReadPrivate(stateDir, "control.token", 4096)
+	if err == nil {
+		if len(strings.TrimSpace(string(data))) < 32 {
+			return nil, errors.New("invalid control credential; review credential recovery")
+		}
+
 		cliToken = strings.TrimSpace(string(data))
-	} else {
+	} else if errors.Is(err, os.ErrNotExist) {
 		tokenBytes := make([]byte, 32)
 		if _, err := rand.Read(tokenBytes); err != nil {
 			return nil, fmt.Errorf("generate control token: %w", err)
 		}
 		cliToken = hex.EncodeToString(tokenBytes)
-		if err := os.WriteFile(tokenFile, []byte(cliToken+"\n"), 0o600); err != nil {
+		if err := config.WritePrivate(stateDir, "control.token", []byte(cliToken+"\n")); err != nil {
 			return nil, fmt.Errorf("write control token: %w", err)
 		}
+	} else {
+		return nil, err
 	}
-
+	deviceID := hex.EncodeToString(ctrl.options.LocalDevice[:])
+	if cfg, err := config.Load(stateDir); err == nil {
+		deviceID = cfg.DeviceID
+	}
 	s := &Server{
+		deviceID:        deviceID,
 		ctrl:            ctrl,
 		contentSlots:    make(chan struct{}, 8),
 		stateDir:        stateDir,
@@ -73,6 +85,8 @@ func NewServer(ctrl *Controller, stateDir string) (*Server, error) {
 		bootstrapTokens: make(map[string]time.Time),
 		sessions:        make(map[string]sessionInfo),
 	}
+	// Publish immutable server ownership before Serve and Shutdown can run.
+	s.httpServer = &http.Server{Handler: s.Handler(), ReadTimeout: 15 * time.Second, WriteTimeout: 30 * time.Second}
 	return s, nil
 }
 
@@ -125,6 +139,7 @@ func isLoopbackHost(hostPort string) bool {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	s.registerBrowse(mux)
+	s.registerTerminal(mux)
 
 	// Web UI Assets (embedded SPA)
 	mux.Handle("/", web.Handler())
@@ -225,6 +240,19 @@ func (s *Server) Handler() http.Handler {
 			return
 		}
 		writeJSON(w, http.StatusOK, map[string]any{"status": "removed", "message": "registration removed preserving working files"})
+	})
+	mux.HandleFunc("POST /api/v1/folders/relocate", func(w http.ResponseWriter, r *http.Request) {
+		var req RelocateFolderRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, err)
+			return
+		}
+		result, err := s.ctrl.RelocateFolder(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, result)
 	})
 	mux.HandleFunc("POST /api/v1/folders/revalidate", func(w http.ResponseWriter, r *http.Request) {
 		var req FolderRevalidateRequest
@@ -993,11 +1021,13 @@ func (s *Server) Handler() http.Handler {
 	})
 	mux.HandleFunc("POST /api/v1/enrollment/approve", func(w http.ResponseWriter, r *http.Request) {
 		var body struct {
-			RequestID      string `json:"request_id"`
-			Folder         string `json:"folder"`
-			Endpoint       string `json:"endpoint,omitempty"`
-			Certificate    string `json:"certificate,omitempty"`
-			SuggestedLabel string `json:"suggested_label,omitempty"`
+			Reviewed       *terminalcontract.ApprovalIntent `json:"reviewed,omitempty"`
+			OperationID    string                           `json:"operation_id,omitempty"`
+			RequestID      string                           `json:"request_id"`
+			Folder         string                           `json:"folder"`
+			Endpoint       string                           `json:"endpoint,omitempty"`
+			Certificate    string                           `json:"certificate,omitempty"`
+			SuggestedLabel string                           `json:"suggested_label,omitempty"`
 		}
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
@@ -1009,7 +1039,7 @@ func (s *Server) Handler() http.Handler {
 				copy(folderID[:], raw)
 			}
 		}
-		req := ApproveEnrollmentRequest{
+		req := ApproveEnrollmentRequest{Reviewed: body.Reviewed, OperationID: body.OperationID,
 			RequestID:      body.RequestID,
 			Folder:         folderID,
 			Endpoint:       body.Endpoint,
@@ -1302,8 +1332,8 @@ func (s *Server) Handler() http.Handler {
 		// 3. Authentication check for non-public paths
 		// Web assets, health, version, bootstrap, and session-check are unauthenticated.
 		// All other /api/ endpoints require valid CLI Bearer or browser session cookie.
-		isPublicAPI := r.URL.Path == "/api/v1/health" || r.URL.Path == "/api/v1/version" || r.URL.Path == "/api/v1/auth/bootstrap" || r.URL.Path == "/api/v1/auth/session" || r.URL.Path == "/api/v1/enrollment/request" || r.URL.Path == "/api/v1/enrollment/status"
-		isAPI := strings.HasPrefix(r.URL.Path, "/api/")
+		isPublicAPI := r.URL.Path == "/api/v1/health" || r.URL.Path == "/api/v1/version" || r.URL.Path == "/api/v1/auth/bootstrap" || r.URL.Path == "/api/v1/auth/session"
+		isAPI := strings.HasPrefix(r.URL.Path, "/api/") || strings.HasPrefix(r.URL.Path, "/control/terminal/")
 		if isAPI {
 			w.Header().Set("Cache-Control", "no-store")
 		}
@@ -1349,6 +1379,7 @@ func (s *Server) Handler() http.Handler {
 			}
 		}
 
+		w.Header().Set("X-Orbit-Device", s.deviceID)
 		mux.ServeHTTP(w, r)
 	})
 }
@@ -1452,11 +1483,6 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) Serve(l net.Listener) error {
-	s.httpServer = &http.Server{
-		Handler:      s.Handler(),
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 30 * time.Second,
-	}
 	return s.httpServer.Serve(l)
 }
 
