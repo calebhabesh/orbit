@@ -2,6 +2,27 @@
 
 Status: implementation contract; D1/D4/D5 outcomes are in [design gates](design-gates.md). Release evidence is tracked separately. This document owns durability and cleanup rules.
 
+## Terminal onboarding and reviewed-content persistence
+
+The [terminal plan](orbit-terminal-implementation-plan.md) adds TG2/TG4 and
+T04/T08 acceptance. Preserve existing identity, causal history, roots, scratch
+and recovery semantics; the interface change is not an identity reset.
+
+Setup/adoption records retain the operation/fingerprint, exact folder/root and
+review generation, authenticated inviter/request/endpoint and phase needed after
+process restart. Private persisted material and bounded retention follow existing
+security/replay limits. An incomplete or changed root preview is not approval to
+infer deletion or apply remote replacement. Existing contents are captured/reviewed
+before destructive projection; scan errors prevent Ready claims.
+
+Reviewed editor sessions retain exact source versions/head-set tokens and explicit
+result paths. Export and merge stream within admission budgets and existing GC
+pins. New heads invalidate the review; cancellation/restart reports committed
+effects and preserves ambiguous candidates. In-place restore uses existing reviewed
+ancestry/publication protection. Separate-copy recovery plans its destination and
+collisions explicitly; it cannot manufacture bytes unavailable in retained content.
+T01 freezes durable record/lease lifecycle; T04/T08 supply production evidence.
+
 ## Orbit extension: file mutation journals, read leases & crash-consistent recovery
 
 Status: frozen by gate outcomes [G03 and G04](orbit-design-gates.md). Implemented by packets O01/O02/O03/O09.
@@ -346,3 +367,205 @@ workspace initialization:
   (`source_retained = 1`) and completes without deleting source (Invariant I26).
 - `SOURCE_VERIFIED`: Verification passed before interruption; ensures tombstone
   publication and marks `COMPLETED`.
+
+## Local root relocation
+
+The owning workspace operation gates local IO while moving a registered root.
+A same-filesystem move uses descriptor-relative `RENAME_NOREPLACE` and flushes
+both parents. A cross-filesystem move first copies ordinary files/directories,
+including private scratch, into an exclusively created sibling staging root.
+Source-before/source-after/destination inventories compare paths, kinds,
+permissions, sizes and SHA-256 bytes. Links, special files and nested mounts are
+refused. The original remains as a safety copy for editor writes after verification;
+this is not a cross-file snapshot or automatic source-deletion guarantee.
+
+Before installation, an owner-only `relocation-<folder-id>.json` in private state
+records old/new path, device/inode, registration identity and original pause
+state. Write/flush/rename/directory-flush precede the filesystem transition.
+Root opens recover interrupted intents: a verified destination completes the
+registration switch; otherwise a verified original restores registration and
+pause state. If neither matches, the operation remains explicitly blocked.
+The SQLite transaction changes local root and setup location only. Histories,
+working basis, counters, membership, registration identity and bootstrap state
+survive. Once committed, the intent is removed and private state is flushed.
+Orphan staging directories remain for explicit inspection/cleanup.
+
+## T01 durable terminal records
+
+The [TG2/TG4 decisions](terminal-design-gates.md) and
+[operation schema](../schemas/terminal-control-v1.md#operation-identity-replay-and-cancellation)
+freeze phase ordering, root review/expiry/readiness, retained operation
+fingerprints and expired replay guards, private pending-join records, session
+TTL/renewal and recovery candidates. Completed payloads may expire after 24h;
+identity/fingerprint tombstones cannot be pruned into silent reexecution.
+Pending work, journals, causal metadata and active stream pins outrank cleanup;
+metadata pressure pauses new admission. Session expiry never expires a live
+response pin or deletes an ambiguous edited result. New terminal tables are
+additive migrations implemented by their owning packets, not T01. Current
+schema remains 13; serialized models are not fsync/crash evidence.
+
+## T02 lifecycle/settings records
+
+Lifecycle/settings operations and reviews are additive typed BLOB records in
+schema 13's existing `installation_metadata` namespace `terminal/v1/`; no
+causal table, counter, identity or schema version changes. An operation stores
+owner identity, exact mutation, normalized fingerprint, phase, result/effects,
+acceptance/completion times and the prior daemon instance where applicable.
+SQLite FULL/WAL commit precedes the settings/service effect. New records obey
+metadata admission; recovery updates remain possible under pressure. No records
+are pruned yet. Replay of completed/failed results after 24 hours returns
+`EXPIRED_REPLAY` while retaining the identity/fingerprint guard.
+
+Settings replace a flushed owner-only `runtime.json` by rename plus directory
+fsync. An interrupted accepted settings operation repeats that idempotent write
+before ordinary scans/networking; repository reopening loads its budgets.
+External service commands execute after stopped-state database ownership is
+released. Before execution, an authenticated internal claim advances `accepted`
+to `external_dispatched` in the original operation. Only the first claimant
+receives dispatch authority; a repeated running request cannot dispatch again. Stop/restart may lose the HTTP response when the daemon exits. Recovery
+observes the requested service state, including a changed random daemon instance
+for restart, and records the observed effect. Ambiguous effects become blocked
+`SERVICE_REVIEW_REQUIRED`; recovery does not reissue external commands. Accepted
+work survives client waiting cancellation. Explicit operation cancellation and
+setup-job extension remain later packet work.
+
+Schema compatibility is not full binary rollback safety: an older binary does
+not understand these ledger records or `runtime.json` budgets. Before adopting
+an older binary, reconcile pending terminal operations and explicitly migrate
+reviewed budgets to its supported format. Do not roll back databases/counters
+under the existing identity. Native adoption/rollback is still T12 evidence.
+
+## T03 enrollment records
+
+Schema 13's existing private `installation_metadata` namespace contains
+`enrollment/v2/{invite,challenge,status,request,operation}/...` records.
+Inviter records never contain raw capabilities. Signed request records clear
+`token` after verification and retain its digest, exact transcript fields,
+requester certificate/key, approval expiry and immutable canonical approval
+artifact. Invitation use, request admission and challenge deletion share one
+SQLite transaction. Membership installation uses the existing membership
+transaction implementation so its checks and the reviewed approval result commit
+together. A rolled-back admission consumes nothing. Retained expired operation
+and request identities cannot become fresh work after retry or cleanup.
+
+The legacy join adapter now stores `terminal/v1/joinflow/<request>` privately,
+including the transferred trust anchor and signed preparation before transmission.
+It clears the receiving capability after acknowledged admission and retrieves
+status through fresh requester signatures. It persists the actual inviter
+certificate for peer configuration instead of substituting a local identity file.
+This is the transport compatibility handoff, **not** T04's completed root-review,
+resumption or readiness journal. Its existing scan/readiness limitations remain
+assigned to T04. Older binaries must not administer new enrollment records or
+resume these preparations; use deliberate compatibility review before rollback.
+
+## T04 reviewed onboarding implementation
+
+Terminal `root_preview` accepts an optional `root_plan` (device/folder names,
+absolute root and finite/network/startup settings), with `name=setup|adopt|join`.
+A private random cursor resumes descriptor-relative enumeration and hashing.
+Each slice visits at most 10,000 entries, hashes at most 32 MiB, runs for at most
+5s between bounded reads, and emits at most 200 issues. Totals are measured;
+unvisited entries and partly hashed files contribute no invented denominator.
+The controller persists its directory offsets and SHA-256 stream continuation
+under `terminal/v1/rootreview/`. Depth above 256 is an explicit blocking issue.
+The root may be absent only when its direct parent exists and is verified.
+
+Review binds operation family, names/settings, path, dev/inode/mode and a tree
+generation of path/type/stat/stable-read content observations. Enumeration is
+not a filesystem snapshot: directory offsets can change under external edits.
+Commit repeats the complete walk and rejects any generation/identity change;
+normal capture retains its stable-read checks. Symlinks, hard links, nested
+mounts, unsupported/unreadable regions, state overlap and registered root overlap
+block adoption. The exact reviewed descriptor identity is rechecked before root
+registration. Continuations expire after 300s idle; refresh is explicit.
+
+`SaveOnboarding` commits the private job and safe operation record together in
+SQLite. Admission consumes its root review in that same transaction. Job records
+retain the signed request before submission, operation/fingerprint, root review,
+folder, authenticated inviter/certificate/endpoints and phase. Capability material
+is scrubbed from operation/job records after successful submission. An original
+private CLI request file remains an explicit owner-held replay artifact; it is
+never a diagnostic input. Status `JoinRecord` omits the capability and signature.
+
+The daemon resumes unfinished jobs with bounded work contexts and persisted
+network backoff (25s between two-request status proofs; 60s after throttling).
+The same signed request is replayed after a lost response. If its preparation
+nonce expired, requester possession status first distinguishes a previously
+accepted request from an unsent expired transcript; accepted work is recovered,
+while the latter requires an explicitly new attempt. No transcript is regenerated. Accepted admission outlives client waiting.
+First-device setup follows reviewed/registration/capture/content phases; join adds
+request preparation, awaiting approval and membership receipt. Approved membership
+is installed before local capture so versions use the correct authored revision;
+remote file history and publication follow successful bootstrap capture. This
+membership write does not import remote file history. Capture failures now also
+prevent the workspace bootstrap-complete flag, alongside traversal failures.
+
+Capacity admission conservatively charges two copies of measured bytes and 4 KiB
+per enumerated entry plus 64 KiB metadata, existing managed usage/reservations,
+and the configured reserve. State and root filesystems are checked separately;
+on a shared filesystem their growth is combined. No unverified deduplication is
+credited. Unknown capacity and insufficient finite budgets block growth. These
+estimates and observations do not reserve capacity against external writers;
+actual storage/publication still uses the existing admission/reservation checks.
+
+Ready is an observation: approved/current membership, verified root, successful
+complete scan, no scan issues/deletion proposal/path blocks, verified head content,
+no pending single-head publication or uncommitted journal, and no causal/structural
+conflict/storage block. It is neither a global sync percentage nor a guarantee
+of future availability. Completed operation replay retains that dated observation;
+T07 owns current qualified status. Legacy create/join adapters now use these jobs;
+legacy resume consults the authoritative job and cannot turn pending approval or
+content into a blind local-scan completion. Old T03-only join records without a
+reviewed job explicitly require setup review rather than being silently renewed.
+
+## T05 sharing and endpoint persistence
+
+Additional-folder invitations retain `target_device` and `target_pin` under the
+existing private enrollment namespace. Share mutation fingerprints/results use
+the same atomic invitation/operation ledger and 24-hour replay guard policy.
+Receiving root/job/proof/capture records use T04 unchanged; neither a retained
+request nor an alias can authorize another folder or silently replace a key.
+No schema increment, counter rewrite or record pruning was introduced.
+
+Each rolled-out additive membership commits as a separate existing repository
+membership transaction. Interrupted chains resume from the last committed digest;
+there is no transient permission to exchange data across revisions. Desired peer
+addresses remain flushed atomic `peers.json` replacements. Address-only refresh
+reuses the selected folder/device's saved certificate rather than a local identity
+certificate. The controller serializes endpoint writes with local terminal
+mutations; scheduler discovery/client construction reloads endpoints at each work
+cycle. Failed connections leave identities, membership and captured history intact.
+
+## T08 reviewed content operations and editor spools
+
+T08 adds no schema migration. Reviews/sessions/uploads/operations use the existing
+terminal metadata namespace; exact content stays in CAS or private `operations`
+spools. Reviewed causal creation and operation effects are saved in the same
+transaction as the local counter and envelope. A copy effect commits before the
+next copy/original resolution. Replaying publication applies those exact existing
+versions only while they remain the sole current head. Completed replay returns
+the recorded result and never reapplies old bytes after a later capture. Newer or
+competing heads block pending publication with `STALE_VIEW`, retaining the committed
+effects for inspection. Interrupted copy operations retain their destination IDs and source
+provenance; no cross-path atomicity is implied.
+
+Working review hashes are descriptor-rooted observations without hidden capture.
+They bind root registration/membership, exact heads and named inode/stat/content.
+Unchanged background scans do not invalidate a review. Supported later writer
+races still use the existing publication guard/exchange/recovery protections;
+reviewing a file does not lock arbitrary external editors.
+
+Sessions admit exports, editable result and one immutable upload conservatively
+against configured storage limits. Exports reopen one exact verified source at a
+time and pin its chunks before closing the response. Staging uses a 64 KiB copy
+buffer; CAS installation uses one 1 MiB chunk buffer and installs each upload
+chunk plus its editor pin under the same mutex as GC. Declared upload size/digest
+must match before admission becomes ready or a resolution can commit. Interrupted
+spools remain nonauthoritative, budgeted and inspectable after restart.
+
+In-progress export records protect their source pins until session expiry.
+GC releases expired/closed editor pins separately from active response pins;
+status reads never perform that cleanup. Cancellation preserves result candidates.
+Only explicit `session discard`, bound to a fresh review, unlinks known private
+paths and releases reservations after successful cleanup. Unknown auxiliary files
+leave an incomplete recovery state. Session/replay metadata IDs are not recycled.

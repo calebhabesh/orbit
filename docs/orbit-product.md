@@ -1,5 +1,13 @@
 # Orbit product brief
 
+Current direction, approved 2026-10-03: a background sync daemon, small TUI,
+and independent CLI, with ordinary file browsing/editing in the owner's tools.
+The [terminal UX](orbit-terminal-ux.md) owns current journeys; the
+[terminal plan](orbit-terminal-implementation-plan.md) and
+[tracker](implementation/terminal-status.md) start at T00. The browser-first
+brief below is historical context. Existing relocation, retention, authorization
+and recovery behavior stays governed by the owning engine specifications.
+
 Planning baseline: 2026-10-01. Product requirements U01–U16 live in
 [scope](portfolio-scope.md#orbit-product-direction--2026-10-01).
 This is the vision and user-experience contract for the revamp; the
@@ -211,3 +219,13 @@ Release includes the existing three-host distributed scenarios, the new
 enrollment/mutation failure scenarios, a keyboard walkthrough and actual owner
 use. Recorded timings describe observations; no cloud-scale or universal
 performance claim is introduced.
+
+### Changing an existing local location
+
+Settings offers **Change location** on each workspace. The owner supplies a
+new unused folder path inside an existing directory. Orbit coordinates the
+move locally, preserving workspace identity, history and shared devices.
+Across drives, Orbit verifies a copy and reports the original safety copy for
+manual review/removal. The form retains errors and inputs, shows progress, and
+reports completion only after the registered location changes. Close editors
+before moving; interrupted copy staging remains available for inspection.

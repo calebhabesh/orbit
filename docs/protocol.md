@@ -10,6 +10,28 @@ P09 completed three-peer forwarding, membership distribution, canonical retireme
 snapshots, and access termination. P10–P15 implement storage policy and operator interfaces. Release validation remains tracked in [status](implementation/status.md).
 Protocol name is provisional. No Syncthing wire compatibility is claimed.
 
+## Terminal enrollment acceptance
+
+The [terminal plan](orbit-terminal-implementation-plan.md) revalidates current
+network enrollment through TG1 and T03/T05. Earlier completion notes below are
+scoped history; source findings in the [UX handoff](orbit-terminal-ux.md) require
+executed production-interface evidence before ordinary linking is accepted.
+
+An invitation binds the exact folder, inviting device identity/key, reachable
+endpoint and expiring request capability. Verify that inviter before token
+disclosure. Key-possession proof binds the frozen enrollment transcript to scope,
+attempt and replay protection; a signature over an unrelated nonce is insufficient.
+Owner approval binds the exact requesting key/folder and prior membership digest.
+Capability consumption checks the invitation's recorded folder. Request identities
+distinguish separate folder/attempt workflows for the same persistent device key.
+
+Additional sharing requires separate folder authorization and receiving-root
+review; neither device labels nor authorization for another folder grants access.
+Persist authenticated endpoint information and validate each required transfer
+direction. Existing sequential membership, fork, retirement and per-request data
+gates remain in force. TG1 fixes exact transport/schema details with experiments;
+the T03/T05 production checks close implementation acceptance.
+
 ## Orbit extension: network enrollment, sequential rollout & capability negotiation
 
 Status: frozen by gate outcomes [G02 and G05](orbit-design-gates.md). Implemented by packets O01/O02/O05.
@@ -276,3 +298,95 @@ wait when another worker observes backpressure. This prevents fast workers
 from consuming every refilled server token while another exhausts its retries.
 Cancellation interrupts cooldown waits. Persistent pressure still produces a
 visible exhausted state for the scheduler's bounded later work cycle.
+
+## T01 enrollment v2 freeze
+
+The [TG1 decision](terminal-design-gates.md#tg1--enrollment-transport-and-identity)
+and [typed canonical/wire definitions](../internal/protocol/terminal_enrollment.go)
+freeze the isolated enrollment TLS listener, exact certificate/SPKI trust before
+capability disclosure, scoped attempts, domain-separated request/status proofs,
+atomic scope/use admission and explicit reviewed approval. Capability digest is
+SHA-256 of the decoded 32-byte secret. Device IDs remain existing persistent
+identities; do not re-derive or rotate them from a key hash. Enrollment v2 requires
+explicit capability negotiation and cannot accept an unpinned legacy invitation.
+These terminal rules supersede the older Orbit extension's nonce-only proof and
+key-derived DeviceID description for new terminal enrollment. Existing v1 causal/
+membership encodings and per-request data authorization remain unchanged.
+The prototype TLS/model tests resolve design only; T03/T05 production proof
+remains open.
+
+## T03 production enrollment transport — 2026-10-04
+
+Terminal enrollment uses the isolated `/enrollment/v2` TLS listener selected in
+[TG1](terminal-design-gates.md#tg1--enrollment-transport-and-identity). Its three
+routes implement the frozen challenge, signed request and signed status exchange.
+The ordinary owner-control listener now authenticates the legacy enrollment
+request/status routes too. Legacy raw-token join helpers refuse an invitation
+without an exact transferred inviter certificate, before making any HTTP request.
+A connectivity-only health probe still does not establish authenticated identity.
+
+Invitation creation and exact reviewed approval are terminal mutations with
+atomic durable replay records. To reproduce explicit invitation transfer after a
+lost response without storing a plaintext capability on the inviter, capability
+bytes are HMAC-SHA256 keyed by the persistent Ed25519 private-key seed over
+`orbit-invitation-capability-v2` + NUL + the random operation ID + its canonical
+fingerprint. Both latter fields have fixed 64-character encodings. This PRF does
+not replace random operation identities, TLS verification, the Ed25519 transcript
+signature or owner approval. Only the decoded capability's SHA-256 verifier is
+stored; safe operation inspection omits capability bytes. Replaying the same
+invite mutation explicitly reconstructs the transferred capability. Changed
+fingerprints conflict, and replay guards are retained after their 24-hour result
+window. New invitations are single use and expire within 24 hours.
+
+SQLite commits request admission, capability use and nonce consumption together.
+Approval rechecks the exact reviewed requester/key/folder/transcript/prior digest,
+expiry, revocation and the local enrolled inviter, and commits the existing linear
+membership revision, approval artifact and operation result together. Existing
+membership pin, fork and retirement checks remain in the repository's shared
+membership implementation. Canonical membership decoding rejects truncation,
+trailing bytes, out-of-order entries and counts beyond existing protocol limits.
+A receiving client checks the artifact's folder, inviter pin and its own key;
+joining must still perform the T04 local-root/capture/readiness work.
+
+Nonce admission is bounded to 128 **combined** request/status challenges, and
+pending requests to 128. The process-wide limiter permits 64 requests/minute
+with burst 16, each source IP 5/minute with burst 5, and at most 1024 accounting
+entries. Only the socket source address counts; proxy headers do not grant a
+new allowance. Eight concurrent handlers, 16 KiB bodies/responses, header bounds
+and deadlines apply before expensive request work. Expired nonces are reclaimed;
+request/operation guards remain durable. Approved status retrieval requires a
+fresh requester possession proof even after the original invitation expires;
+preparing a new enrollment request never renews an expired invitation.
+
+## T05 scoped sharing and membership rollout
+
+`share` creates a folder invitation restricted in the inviter's private record to
+an already recorded persistent DeviceID and its exact key pin. Challenge admission
+checks that ID; signed request admission checks both ID and pin before consuming
+the invitation. A name cannot replace either binding. The receiving device still
+chooses/previews its own root, submits a fresh scoped attempt, and obtains a
+separate exact owner approval. Existing first-folder request/replay records remain.
+New folders have independent membership and no implicit device authorization.
+
+The existing mTLS `/peer/v1/membership/get` now verifies the claimed member's
+recorded key pin, historical participation and nonretirement. Optional
+`from_revision` plus `expected_digest` request **one successor** of the exact
+local predecessor; a competing predecessor returns `MEMBERSHIP_FORK`. A server
+behind the requester returns `MEMBERSHIP_MISMATCH`. Omitting both fields retains
+the legacy latest-artifact inspection response; this does not install that artifact.
+
+After an exact-membership hello rejection, reconciliation can fetch/install
+successors from its already pinned, locally enrolled peer, committing each through
+the existing immutable revision/predecessor/key/fork checks. Automatic rollout
+admits only additive enrollment: all existing active IDs/pins and retirement
+records must remain. Removal/rekey/retirement requires the existing explicitly
+reviewed survivor maintenance and snapshots. Work is bounded to 64 hello/step
+iterations per session, then retried by the durable queue. No inventory, version,
+chunk or receipt exchange occurs until exact agreement succeeds. Offline members
+remain members. This reuses the single-owner trusted-member authority; it does
+not add consensus, an owner signing key or an unsigned global trust grant.
+
+A persistent fork never chooses a winning branch or overwrites earlier revisions.
+The [reviewed recovery procedure](runbooks/membership-fork.md) preserves the old
+paused groups/history and adopts selected recovered bytes into a separate group.
+Recreating selected working content is not a merge of immutable causal histories.

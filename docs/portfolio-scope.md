@@ -1,38 +1,43 @@
 # Approved portfolio scope
 
-Approved through the planning interview on 2026-09-20. Supersedes the 2026-09-12 two-peer-only release scope. These are requirements, not implementation claims. The repository owns File Sync's detailed scope; the parent portfolio blueprint summarizes it.
+Approved through the planning interview on 2026-09-20, with Orbit amendments
+on 2026-10-01 and the terminal redesign on 2026-10-03. Supersedes the
+2026-09-12 two-peer-only release scope. These are requirements, not implementation
+claims. The repository owns File Sync's detailed scope; the parent portfolio
+blueprint summarizes it.
 
 ## Orbit product direction — 2026-10-01
 
-The owner selected **Orbit** and authorized a usability/function revamp followed
-by a comprehensive implementation handoff. The agreed direction preserves
-S01–S22 and the exclusions below, while replacing the three-view operator
-presentation in S18 with a file-manager experience. New requirements and
-planning defaults are distinguished below. Defaults are concrete choices for
-the requested plan, not claims of implemented behavior or newly proven guarantees.
-The [product brief](orbit-product.md) owns journeys and presentation;
-the [Orbit plan](orbit-implementation-plan.md) sequences implementation.
+The owner selected **Orbit** and then approved terminal UX recommendations
+Q1–Q14 on 2026-10-03. The current direction is a background sync daemon with
+a small TUI and independent CLI; ordinary file management uses existing tools.
+The table reflects that approved amendment. Engine guarantees S01–S22 and
+exclusions remain, with S18's presentation updated to terminal-first use.
+The [terminal UX](orbit-terminal-ux.md) owns current journeys;
+the [terminal plan](orbit-terminal-implementation-plan.md) sequences T00–T13.
+The [earlier product brief](orbit-product.md) retains browser-era context.
+Approval defines the target, not completed behavior or a proven guarantee.
 
 | ID | Requirement / planning default | Maturity |
 | --- | --- | --- |
 | U01 | User-facing product name Orbit; existing identity/history remain intact through rebranding | Approved name; compatibility baseline |
 | U02 | One owner, owner-operated storage, Linux only, complete local copies of joined folders | Approved |
 | U03 | Equal writable replicas; an always-on Pi/NAS/VPS is optional and has no conflict authority | Approved |
-| U04 | One default root at `~/Orbit` with Change location; additional shared folders in advanced setup; preview preexisting content | Approved |
+| U04 | Suggest `~/Orbit`; existing local folders and additional named synced folders are normal options; review preexisting contents and preserve Change location | Approved terminal UX |
 | U05 | Short-lived invitations from an enrolled device, explicit owner approval, persistent per-device authentication; defer Google/account login | Approved |
-| U06 | Existing LAN/private-network reachability; understandable endpoint checks; no discovery/NAT/relay infrastructure | Approved |
-| U07 | Familiar file-manager browsing and plain-language status instead of protocol identifiers in normal screens | Approved |
-| U08 | Embedded local browser interface and desktop launcher; headless administration through existing OS/SSH access | Planning default preserving the local-control trust model |
-| U09 | Human device/workspace names distinct from cryptographic identities; per-device settings and copy status remain explicit | Planning default |
-| U10 | Browse/search/sort, bounded previews, upload/download, create folders, within-workspace rename/move/delete, history/restore | Planning default for the requested functional revamp |
-| U11 | Needs attention, history, and Deleted files views retain reviewed conflicts and conditional historical restore; no fixed trash window | Planning default preserving existing guarantees |
-| U12 | Startup at OS login on desktops; documented optional unattended user-service configuration on storage hosts | Planning default |
+| U06 | Existing reachable LAN/private network; document Tailscale as the initial cross-network path with understandable checks; no Orbit discovery/NAT/relay infrastructure | Approved terminal UX |
+| U07 | Sync-manager journeys with names, paths and qualified plain-language status; ordinary browsing/editing stays in existing file tools | Approved terminal UX |
+| U08 | Small Go TUI as interactive front door and independent CLI over the same local control operations; OS/SSH administration remains | Approved terminal UX |
+| U09 | Human device/folder names distinct from cryptographic identities; directory-aware file commands and explicit ambiguity handling | Approved terminal UX |
+| U10 | Setup, invitation/approval, explicit folder sharing, status, history, reviewed external-tool conflict workflows and restore; existing file mutation operations remain compatible | Approved terminal UX |
+| U11 | Persistent attention, history and Deleted files retain reviewed conflicts and conditional restore, with replacement preview and separate-copy recovery; no fixed trash window | Approved terminal UX |
+| U12 | Offer startup at OS login and documented explicit unattended user-service configuration; client exit leaves the daemon syncing | Approved terminal UX |
 | U13 | Preserve existing state paths, roots, reserved scratch names, wire identities and legacy CLI/service compatibility during migration | Planning default |
 | U14 | Recovery through a surviving trusted device with retained OS/SSH access; replacement gets fresh identity; no remote account-recovery promise | Planning default preserving existing guarantees |
-| U15 | Restrained monochrome desktop design, keyboard access, clear feedback, no status conveyed by color alone | Planning default informed by the owner's TODO |
-| U16 | Common desktop create/join workflows use the launcher/UI; equivalent headless CLI/control operations remain available | Approved onboarding goal; concrete workflow baseline |
+| U15 | Light Vim navigation plus arrows/Tab, visible focus/context actions, narrow/colorless fallback and clear feedback; no status conveyed by color alone | Approved terminal UX |
+| U16 | Guided terminal create/join/approval with reviewed existing files, editable finite settings and restartable progress; independent scriptable CLI/control operations | Approved terminal UX |
 
-Implement approved choices and planning defaults through the packets. Refine
+Implement approved choices and planning defaults through the terminal packets. Refine
 reversible implementation details with evidence. Changes to single-owner trust,
 supported platforms, retention/availability guarantees or excluded capabilities
 still require owner input. Network enrollment and automatic distribution of
@@ -66,7 +71,7 @@ No timeline is imposed. Completion is bounded by these guarantees, not by option
 | S15 | Verify managed content on use; integrity-check command; quarantine and peer-assisted repair; explicit unrecoverable-content state. |
 | S16 | Per-device saved/stored/applied/conflicted progress and last contact. Historical receipt is not perpetual availability. Peer offline is not global synchronization success. |
 | S17 | Per-path error isolation where safe; bounded retries, fair scheduling, configurable bandwidth/concurrency/storage. |
-| S18 | Filesystem notifications plus periodic scans; continuous agent operation; CLI then embedded React/TypeScript/Vite UI with three focused views. |
+| S18 | Filesystem notifications plus periodic scans; continuous agent operation; independent CLI and small TUI over shared controls. A future GUI can reuse those controls. |
 | S19 | Trusted plaintext replicas. Authenticate peers, restrict folder access, validate even authenticated input, and protect the loopback control interface. |
 | S20 | Versioned protocol and database; clear incompatibility errors; deliberate migrations and recovery procedures; Linux binaries for tested device architectures. |
 | S21 | systemd user service, structured diagnostics, sensitive-data-conscious support export, upgrade and uninstall preserving user data. |
@@ -91,4 +96,9 @@ A trusted participant can intentionally author bad changes; Byzantine consistenc
 
 ## Completion
 
-All release packets in [status](implementation/status.md) meet their acceptance criteria. Real edits, three-way offline conflicts, forwarding through the VPS, restore, restart recovery, finite-storage behavior, and safe retirement are demonstrated. Another developer can reproduce the local demo and failure experiments without cloud credentials. No numeric resume claims are published before measurement.
+Complete the active packets in [terminal status](implementation/terminal-status.md)
+and remaining owner evidence in [engine status](implementation/status.md).
+Demonstrate ordinary terminal onboarding, real edits, three-way offline conflicts,
+forwarding through the VPS, restore, restart recovery, finite storage and safe
+retirement. Another developer can reproduce the local demo and failure experiments
+without cloud credentials. No numeric resume claims are published before measurement.

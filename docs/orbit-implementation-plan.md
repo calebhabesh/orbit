@@ -1,5 +1,11 @@
 # Orbit implementation plan
 
+Current work: the owner selected the terminal redesign on 2026-10-03. Start
+with the [terminal plan](orbit-terminal-implementation-plan.md) and
+[terminal tracker](implementation/terminal-status.md), initially T00. This
+document retains the earlier browser-era plan and O14 relocation scope/evidence;
+its browser milestones and O00 kickoff are historical for the current task.
+
 Created 2026-10-01 for the owner's requested usability/UI/UX/function revamp.
 This handoff defines work for the 6.1 Sol medium and 3.8 Flash development team.
 It is a planning artifact; production behavior is unchanged and implementation
@@ -241,3 +247,26 @@ legacy guarantees are preserved, the owner can perform normal desktop workflows
 without terminal steps, and the actual pilot/explanation requirements are met.
 Current planning is complete; implementation starts at O00. Existing P17
 owner-use/explanation evidence remains outstanding until actually fulfilled.
+
+
+## Owner-selected follow-up: O14 local location changes
+
+Selected 2026-10-03; prerequisites O03, O09, O11, O12. Implements the owner's
+request to relocate an existing workspace locally, extending U04 beyond setup.
+Owning contracts: persistence's Local root relocation section and operations'
+Change local folder location section. No peer protocol or membership change.
+
+Acceptance criteria:
+
+- Settings and stopped/live CLI use the same authenticated relocation control.
+- Same-filesystem moves preserve files, scratch, history, working basis,
+  workspace identity and prior pause state; new-location scans fabricate no edits.
+- Cross-filesystem copies verify contents and retain/report the original safety
+  copy; unsupported objects or detected editor changes refuse the switch.
+- Occupied, overlapping, stale and symlink-parent destinations are refused.
+- Durable intent recovers interruptions before rename, after rename and after
+  registration commit; local scanning/publication/mutations wait during relocation.
+- New-root notifications capture subsequent edits; UI retains errors/inputs,
+  provides keyboard focus and reports actual completion.
+- Record executed validation and unexecuted failure models in the tracker;
+  retain outstanding P17 owner evidence.

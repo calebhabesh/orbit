@@ -1,5 +1,14 @@
 # Orbit: Personal File Manager & Decentralized Synchronization
 
+**Current redesign:** Orbit is moving to a background sync daemon with a small
+TUI and independent CLI. The [agreed terminal UX](docs/orbit-terminal-ux.md),
+[implementation plan](docs/orbit-terminal-implementation-plan.md), and
+[tracker](docs/implementation/terminal-status.md) define T00–T13 for implementation
+by either 6.1 Sol Medium or 3.8 Flash High under the master architect/designer's
+plan. Runtime implementation of that redesign is pending.
+The browser-era overview and commands below describe the prior implementation;
+terminal target syntax belongs to the new plan. Existing relocation work remains.
+
 Orbit is a personal file manager and peer-to-peer synchronization engine over trusted Linux replicas. A single static Go binary watches configured workspace roots, retains historical versions in an immutable content-addressed store, and synchronizes files over authenticated mutual TLS. SQLite stores causal DAG history, working-copy state, transfer progress, and durable recovery journals.
 
 Independent offline edits remain distinct heads until you explicitly review and resolve them. Replicas hold readable files on disk. Pure-Go SQLite (`modernc.org/sqlite`) and an embedded React/TypeScript web management console require **zero external C compiler, libc coupling, or Node.js runtime**.
@@ -162,3 +171,19 @@ Detailed runbooks for system administration, disaster recovery, and networking:
 - [Lost Device Replacement & Decommissioning](docs/runbooks/lost-device-replacement.md)
 - [Binary Rollback & Downgrade Safety](docs/runbooks/rollback.md)
 - [Storage Accounting & Full Disk Remediation](docs/runbooks/full-disk.md)
+
+Change an existing workspace's local folder under **Settings → Change location**,
+or use `orbit folders relocate --folder ID --from CURRENT_PATH --to NEW_PATH`.
+Choose an unused folder name with an existing parent. Same-drive changes move
+the directory; cross-drive changes verify a copy and keep the original as a
+safety copy for manual review. Workspace identity and history stay intact.
+
+Reviewed terminal onboarding now uses the selected live daemon. In a terminal,
+`orbit setup --root /local/notes` reviews existing contents, names, finite storage,
+network and startup settings. `orbit join --invitation-file /private/invitation.json`
+uses the same review and resumes owner approval in the background. For scripts,
+first use `--preview --review-file /private/request.json`, then apply that exact
+file with `--request-file`; reuse it after interruption. See the
+[setup commands](docs/operations.md#t04-terminal-createadoptjoin) and
+[terminal packet status](docs/implementation/terminal-status.md). Existing P/O
+release evidence and outstanding P17 owner use remain separately tracked.

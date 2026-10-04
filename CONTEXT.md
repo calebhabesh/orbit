@@ -15,14 +15,16 @@ _Avoid_: Primary, leader, cloud authority
 
 **Shared folder**: A named replication group with a stable identity, explicit membership, and a local root on each member.
 
-**Workspace**: The user-facing name for a shared folder. It is the same replication group, rather than an additional level of membership.
+**Synced folder**: The terminal interface's name for a shared folder. Its local root may have a different path on each participating device.
+
+**Workspace**: The earlier interface's name for a shared folder. It is the same replication group, rather than an additional level of membership.
 _Avoid_: Ring, account drive, global filesystem
 
 **Root**: The local directory registered as the working location for a shared folder.
 
-**Invitation**: A temporary invitation to request enrollment in a particular workspace. Possession of an invitation alone does not grant file access.
+**Invitation**: A temporary invitation to request enrollment in a particular synced folder. Possession of an invitation alone does not grant file access.
 
-**Enrollment**: Owner-approved admission of a device identity to a workspace, including review of its initial local contents.
+**Enrollment**: Owner-approved admission of a device identity to a shared folder, including review of its initial local contents.
 
 **Version**: An immutable recorded state of one relative path, including its causal ancestry and either file contents, directory existence, or deletion.
 _Avoid_: Timestamp winner, content hash as identity

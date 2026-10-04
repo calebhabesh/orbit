@@ -1,5 +1,12 @@
 # Orbit revamp architecture
 
+Current presentation/adapter work follows the
+[terminal architecture](orbit-terminal-architecture.md) and
+[terminal plan](orbit-terminal-implementation-plan.md), selected 2026-10-03.
+This document preserves the earlier browser architecture and module contracts;
+browser presentation defaults below are historical. Owning engine contracts
+remain authoritative and terminal gates revalidate identified integration gaps.
+
 Status: proposed implementation baseline, 2026-10-01. Existing authoritative
 contracts remain [protocol](protocol.md), [persistence](persistence.md),
 [operations](operations.md) and [verification](verification.md).

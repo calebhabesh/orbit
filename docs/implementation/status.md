@@ -1,5 +1,10 @@
 # Implementation status
 
+Active interface work is the owner-approved terminal redesign. Follow the
+[terminal plan](../orbit-terminal-implementation-plan.md) and
+[terminal tracker](terminal-status.md), starting at T00. P/O evidence below
+remains historical; remaining P17 actual owner use/explanation is preserved.
+
 Updated: 2026-10-01. P00–P16 have implementation and scoped validation evidence.
 Packaged laptop/Pi/VPS demonstrations now pass. P17 remains `in_progress` while
 actual owner use/explanation are recorded. Current measurements passed 45/45.

@@ -2,10 +2,13 @@
 
 This repository has a working implementation with release validation in progress. Start at [the implementation plan](docs/implementation-plan.md) and [packet status](docs/implementation/status.md). Work on the first eligible packet unless the user selects another task.
 
-For the selected **Orbit revamp**, read [vision](docs/orbit-product.md),
-[architecture](docs/orbit-architecture.md), [plan](docs/orbit-implementation-plan.md)
-and [Orbit status](docs/implementation/orbit-status.md). Start with its first
-eligible packet (initially O00); retain outstanding P17 pilot/explanation work.
+For the selected **Orbit terminal redesign**, read
+[UX](docs/orbit-terminal-ux.md), [architecture](docs/orbit-terminal-architecture.md),
+[plan](docs/orbit-terminal-implementation-plan.md) and
+[terminal status](docs/implementation/terminal-status.md). Start with its first
+eligible packet (initially T00). Either 6.1 Sol Medium or 3.8 Flash High can
+implement any assigned eligible packet under the master architect/designer's
+plan; retain historical P/O evidence and outstanding P17 pilot/explanation work.
 
 - Read [scope](docs/portfolio-scope.md) and [glossary](CONTEXT.md) before changing behavior.
 - For causal state, messages, membership, or acknowledgements, read [protocol](docs/protocol.md).

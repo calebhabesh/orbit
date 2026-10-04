@@ -1,6 +1,11 @@
 # Orbit implementation status
 
-Updated: 2026-10-02. O00–O13 are recorded complete with scoped evidence. Earlier engine
+Active work moved to the [terminal tracker](terminal-status.md) on 2026-10-03.
+Start at T00 using the [terminal plan](../orbit-terminal-implementation-plan.md).
+The O entries below retain their dated scoped evidence, including O14 relocation;
+their completion labels do not establish the newly required terminal journeys.
+
+Updated: 2026-10-03. O00–O13 and owner-selected O14 are recorded complete with scoped evidence. Earlier engine
 evidence and remaining P17 owner-use/explanation work are in [legacy status](status.md).
 
 Plan: [Orbit implementation plan](../orbit-implementation-plan.md).
@@ -25,10 +30,11 @@ Contracts/gates: [architecture](../orbit-architecture.md).
 | O11 Settings/sustained operation | complete | O02, O03, O06, O09, O10 | [O11 evidence](../evidence/orbit-o11/summary.md); storage accounting, retention preview/GC, Invariant I20 unregister, Invariant I28 bounded pruning, lost device guide, screenshots 34–38, make check/race pass |
 | O12 Packages/migration | complete | O04, O06, O08, O10, O11 | [O12 evidence](../evidence/orbit-o12/summary.md); 8 packages, desktop/icon, service adoption, schema 5->13 adoption, rollback refusal, stopped restore, install/uninstall lifecycle, make check/race/demo pass |
 | O13 Final validation/pilot | complete | O00–O12 | [O13 evidence](../evidence/orbit-o13/summary.md); 10 minimum product scenarios pass, scaling 10k files (0.59 MB heap), 38 UI screenshots, make check/race/demo pass |
+| O14 Local location changes | complete | O03, O09, O11, O12 | [Relocation evidence](../evidence/orbit-relocation/summary.md); same/cross-filesystem moves, recovery, CLI parity and Chromium flow pass |
 
 ## Next action
 
-Orbit revamp complete across O00–O13. P17 personal owner pilot and unaided explanation ready for Caleb's execution.
+Orbit revamp and local relocation complete across O00–O14. P17 personal owner pilot and unaided explanation ready for Caleb's execution.
 
 
 ## Planning record
@@ -825,3 +831,38 @@ Limitations/unexecuted:
 Next work: Orbit revamp complete. Personal owner pilot and unaided distributed system explanation ready for Caleb.
 
 
+
+
+### O14 — Owner-selected local folder relocation
+
+Packet/state: O14 / `complete` (2026-10-03).
+Prerequisites: O03/O09/O11/O12; read product, architecture, plan/status,
+scope/glossary, persistence, protocol, operations and verification. Scope is
+local relocation; peer identity/membership/history are unchanged.
+
+Changed files: workspace relocation/gating and tests; repository transactional
+root/setup update; shared control endpoint; stopped/live CLI adapter/test;
+Settings form/API and rebuilt embedded assets; watcher refresh; Chromium runner;
+README, product/plan, persistence/operations and relocation evidence.
+
+Requirements/invariants: U04/U16; I07/I11/I17/I19/I20/I27. Actual commands/results:
+`npm ci` and `npm run build` passed; `go test -count=1 -v ./internal/workspace -run
+TestRelocation` passed five test families including all journal boundaries on
+same/cross filesystems; `go test -count=1 ./cmd/filesync -run TestRelocation`
+passed stopped/live API parity; `go test -race -count=1 ./internal/workspace
+./internal/scheduler ./internal/control ./cmd/filesync` passed; `make check`
+passed; `node scripts/orbit_ui_test.mjs --scenario relocation` passed keyboard
+focus, retained errors, relocation success and new-location edit capture.
+Detailed results/limits: [evidence](../evidence/orbit-relocation/summary.md).
+
+Limitations: cross-drive originals and interrupted staging copies are retained
+for manual review/cleanup. All roots' workspace IO is gated temporarily. Fault
+hooks plus persisted-state reopening exercised recovery; actual SIGKILL,
+physical reset and cross-drive ENOSPC remain unexecuted. P17 owner-use and
+unaided explanation remain outstanding. Next action: owner pilot/explanation.
+
+Additional validation fix: `TestOrbitSetup_OpenLocalFolder` now clears DISPLAY
+and WAYLAND_DISPLAY and asserts a headless refusal. A disposable `xdg-open` spy
+reproduced the unintended helper launch before the fix and verified no launch
+afterward. This prevents the owner's KDE missing-temporary-folder dialogs from
+this test while preserving production Open in File Manager behavior.

@@ -35,6 +35,27 @@ The production CLI build includes these direct and transitive modules:
 
 All licenses are permissive and compatible with static distribution without runtime CGO or libc dependencies.
 
+## T09 terminal dependency decision — 2026-10-04
+
+The selected stable v2 family is [Bubble Tea v2.0.10](https://github.com/charmbracelet/bubbletea/releases/tag/v2.0.10),
+[Bubbles v2.2.1](https://github.com/charmbracelet/bubbles/releases/tag/v2.2.1) and
+[Lip Gloss v2.0.6](https://github.com/charmbracelet/lipgloss/releases/tag/v2.0.6).
+Their downloaded module sources declare MIT licenses; exact texts/copyrights
+are included in `NOTICE`, with the compiled terminal graph listed in
+`packaging/LICENSES.md`. Go module sums pin both sources and dependencies.
+Bubbles requires Bubble Tea >=2.0.8 and Lip Gloss >=2.0.5; the resolved pins
+meet those requirements. Bubble Tea's Go 1.26 requirement fits the project's
+pinned Go 1.27.1 toolchain. The stack remains CGO-free.
+
+The [official v2 API](https://pkg.go.dev/charm.land/bubbletea/v2) and downloaded
+`tea.go`, `options.go`, `key.go` and `exec.go` establish the actual `View`,
+`KeyPressMsg`, window/paste events, color-profile options and `ExecProcess`
+interfaces used by the adapter. Bubbles textinput supplies input admission/focus;
+Lip Gloss and ANSI helpers supply semantic styling and grapheme-width layout.
+Terminal restoration and daemon independence are application PTY assertions,
+not inferred from framework documentation. T09 evidence records actual builds
+and process checks; arm64 compilation is not native Raspberry Pi execution.
+
 The alternative [`github.com/mattn/go-sqlite3`](https://github.com/mattn/go-sqlite3)
 is maintained and mature, but it
 requires CGO and a C compiler. Cross-building it for the Pi therefore requires a

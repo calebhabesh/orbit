@@ -4,12 +4,15 @@ Planning baseline: 2026-09-20. Implementation exists through P17; current releas
 
 ## Active product work: Orbit
 
-The owner selected an Orbit usability/UI/UX/function revamp on 2026-10-01.
-Use the [Orbit implementation plan](orbit-implementation-plan.md) and
-[Orbit status](implementation/orbit-status.md) for this work; O00 is first.
-The product brief and architecture are linked there. This document remains
-the original sync-engine plan. P17's actual owner use/explanation remains
-outstanding; the revamp does not retrospectively complete that evidence.
+The owner selected the Orbit terminal redesign on 2026-10-03. Use the
+[terminal implementation plan](orbit-terminal-implementation-plan.md) and
+[terminal status](implementation/terminal-status.md); T00 is first. The plan
+links the agreed UX and architecture. Either 6.1 Sol Medium or 3.8 Flash High
+can implement eligible packets as an implementation worker.
+The [earlier Orbit plan](orbit-implementation-plan.md) and
+[O status](implementation/orbit-status.md) retain browser-era and relocation
+history. This document remains the original sync-engine plan. P17's actual
+owner use/explanation remains outstanding; a new interface does not complete it.
 
 ## Read in this order
 
