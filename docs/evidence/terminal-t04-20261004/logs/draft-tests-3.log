@@ -1,0 +1,47 @@
+=== RUN   TestTerminalT04RecursiveReviewedAdoption
+--- PASS: TestTerminalT04RecursiveReviewedAdoption (0.02s)
+=== RUN   TestTerminalT04StaleRootAndPlan
+=== RUN   TestTerminalT04StaleRootAndPlan/bytes
+=== RUN   TestTerminalT04StaleRootAndPlan/swap
+=== RUN   TestTerminalT04StaleRootAndPlan/symlink
+=== RUN   TestTerminalT04StaleRootAndPlan/name
+=== RUN   TestTerminalT04StaleRootAndPlan/settings
+--- PASS: TestTerminalT04StaleRootAndPlan (0.05s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/bytes (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/swap (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/symlink (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/name (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/settings (0.01s)
+=== RUN   TestTerminalT04UnsupportedAndOverlap
+--- PASS: TestTerminalT04UnsupportedAndOverlap (0.01s)
+=== RUN   TestTerminalT04BoundedPreviewContinuation
+--- PASS: TestTerminalT04BoundedPreviewContinuation (0.16s)
+=== RUN   TestTerminalT04CapacityAndExpiredReview
+--- PASS: TestTerminalT04CapacityAndExpiredReview (0.01s)
+=== RUN   TestTerminalT04ResumeAtDurablePhases
+=== RUN   TestTerminalT04ResumeAtDurablePhases/reviewed
+=== RUN   TestTerminalT04ResumeAtDurablePhases/bootstrap_capture
+=== RUN   TestTerminalT04ResumeAtDurablePhases/content_pending
+=== RUN   TestTerminalT04ResumeAtDurablePhases/ready
+--- PASS: TestTerminalT04ResumeAtDurablePhases (0.05s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/reviewed (0.01s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/bootstrap_capture (0.01s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/content_pending (0.01s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/ready (0.01s)
+=== RUN   TestTerminalT04InitialCaptureFailureBlocksBootstrap
+--- PASS: TestTerminalT04InitialCaptureFailureBlocksBootstrap (0.01s)
+=== RUN   TestTerminalT04FatalScanFailurePreservesCapture
+--- PASS: TestTerminalT04FatalScanFailurePreservesCapture (0.01s)
+=== RUN   TestTerminalT04NoBootstrapTombstone
+--- PASS: TestTerminalT04NoBootstrapTombstone (0.01s)
+=== RUN   TestTerminalT04DelayedJoinRestartAndTransfer
+    setup_test.go:352: approved join: <nil> &{Code:SETUP_BLOCKED Message:RATE_LIMITED Retryable:true Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0}
+--- FAIL: TestTerminalT04DelayedJoinRestartAndTransfer (0.03s)
+=== RUN   TestTerminalT04DivergentBootstrapRemainsConflict
+    setup_test.go:393: false conflict readiness: <nil> &{Code:SETUP_BLOCKED Message:RATE_LIMITED Retryable:true Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0}
+--- FAIL: TestTerminalT04DivergentBootstrapRemainsConflict (0.03s)
+=== RUN   TestTerminalT04ExpiredAttemptDoesNotRenew
+--- PASS: TestTerminalT04ExpiredAttemptDoesNotRenew (0.02s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.410s
+FAIL

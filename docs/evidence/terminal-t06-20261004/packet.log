@@ -1,0 +1,58 @@
+=== RUN   TestTerminalT06ContextResolutionCwdAndName
+=== PAUSE TestTerminalT06ContextResolutionCwdAndName
+=== RUN   TestTerminalT06AmbiguousAndOutsideRootContext
+=== PAUSE TestTerminalT06AmbiguousAndOutsideRootContext
+=== RUN   TestTerminalT06StaleAndUnavailableRoot
+=== PAUSE TestTerminalT06StaleAndUnavailableRoot
+=== RUN   TestTerminalT06PathSafetyAndLiteralPaths
+=== PAUSE TestTerminalT06PathSafetyAndLiteralPaths
+=== RUN   TestTerminalT06OutputEscapingAndControlCharacters
+=== PAUSE TestTerminalT06OutputEscapingAndControlCharacters
+=== RUN   TestTerminalT06LiveAndStoppedAdapterParity
+=== PAUSE TestTerminalT06LiveAndStoppedAdapterParity
+=== RUN   TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== PAUSE TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06ContextResolutionCwdAndName
+=== CONT  TestTerminalT06OutputEscapingAndControlCharacters
+=== CONT  TestTerminalT06PathSafetyAndLiteralPaths
+=== CONT  TestTerminalT06AmbiguousAndOutsideRootContext
+=== CONT  TestTerminalT06LiveAndStoppedAdapterParity
+=== CONT  TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06StaleAndUnavailableRoot
+--- PASS: TestTerminalT06ShellCompletionsAndHelpWalkthrough (0.49s)
+--- PASS: TestTerminalT06OutputEscapingAndControlCharacters (0.50s)
+--- PASS: TestTerminalT06StaleAndUnavailableRoot (0.51s)
+--- PASS: TestTerminalT06AmbiguousAndOutsideRootContext (0.52s)
+--- PASS: TestTerminalT06ContextResolutionCwdAndName (0.53s)
+--- PASS: TestTerminalT06PathSafetyAndLiteralPaths (0.53s)
+--- PASS: TestTerminalT06LiveAndStoppedAdapterParity (0.57s)
+=== RUN   TestTerminalT06ContextResolutionCwdAndName
+=== PAUSE TestTerminalT06ContextResolutionCwdAndName
+=== RUN   TestTerminalT06AmbiguousAndOutsideRootContext
+=== PAUSE TestTerminalT06AmbiguousAndOutsideRootContext
+=== RUN   TestTerminalT06StaleAndUnavailableRoot
+=== PAUSE TestTerminalT06StaleAndUnavailableRoot
+=== RUN   TestTerminalT06PathSafetyAndLiteralPaths
+=== PAUSE TestTerminalT06PathSafetyAndLiteralPaths
+=== RUN   TestTerminalT06OutputEscapingAndControlCharacters
+=== PAUSE TestTerminalT06OutputEscapingAndControlCharacters
+=== RUN   TestTerminalT06LiveAndStoppedAdapterParity
+=== PAUSE TestTerminalT06LiveAndStoppedAdapterParity
+=== RUN   TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== PAUSE TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06ContextResolutionCwdAndName
+=== CONT  TestTerminalT06OutputEscapingAndControlCharacters
+=== CONT  TestTerminalT06StaleAndUnavailableRoot
+=== CONT  TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06PathSafetyAndLiteralPaths
+=== CONT  TestTerminalT06LiveAndStoppedAdapterParity
+=== CONT  TestTerminalT06AmbiguousAndOutsideRootContext
+--- PASS: TestTerminalT06ShellCompletionsAndHelpWalkthrough (0.49s)
+--- PASS: TestTerminalT06ContextResolutionCwdAndName (0.51s)
+--- PASS: TestTerminalT06PathSafetyAndLiteralPaths (0.51s)
+--- PASS: TestTerminalT06AmbiguousAndOutsideRootContext (0.51s)
+--- PASS: TestTerminalT06OutputEscapingAndControlCharacters (0.51s)
+--- PASS: TestTerminalT06StaleAndUnavailableRoot (0.52s)
+--- PASS: TestTerminalT06LiveAndStoppedAdapterParity (0.59s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1.159s

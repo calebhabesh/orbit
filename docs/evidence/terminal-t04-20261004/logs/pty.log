@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT04InteractiveReviewRetainsInputs
+--- PASS: TestTerminalT04InteractiveReviewRetainsInputs (0.47s)
+=== RUN   TestTerminalT04InteractiveReviewRetainsInputs
+--- PASS: TestTerminalT04InteractiveReviewRetainsInputs (0.47s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.937s

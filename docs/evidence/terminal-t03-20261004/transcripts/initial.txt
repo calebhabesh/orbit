@@ -1,0 +1,51 @@
+=== RUN   TestTerminalT03NetworkEnrollmentApprovalAndReplay
+--- PASS: TestTerminalT03NetworkEnrollmentApprovalAndReplay (0.02s)
+=== RUN   TestTerminalT03InviterPinBeforeDisclosure
+2026/10/04 07:00:13 http: TLS handshake error from 127.0.0.1:41590: remote error: tls: bad certificate
+--- PASS: TestTerminalT03InviterPinBeforeDisclosure (0.02s)
+=== RUN   TestTerminalT03ScopeAndProofRejections
+=== RUN   TestTerminalT03ScopeAndProofRejections/scope
+=== RUN   TestTerminalT03ScopeAndProofRejections/signature
+=== RUN   TestTerminalT03ScopeAndProofRejections/certificate
+=== RUN   TestTerminalT03ScopeAndProofRejections/inviter
+=== RUN   TestTerminalT03ScopeAndProofRejections/endpoint
+=== RUN   TestTerminalT03ScopeAndProofRejections/expired_nonce
+=== RUN   TestTerminalT03ScopeAndProofRejections/altered_label
+--- PASS: TestTerminalT03ScopeAndProofRejections (0.14s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/scope (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/signature (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/certificate (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/inviter (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/endpoint (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/expired_nonce (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/altered_label (0.02s)
+=== RUN   TestTerminalT03WrongScopeChallengeAndRevocation
+--- PASS: TestTerminalT03WrongScopeChallengeAndRevocation (0.02s)
+=== RUN   TestTerminalT03ConcurrentSingleUse
+--- PASS: TestTerminalT03ConcurrentSingleUse (0.02s)
+=== RUN   TestTerminalT03StatusRequiresPossession
+=== RUN   TestTerminalT03StatusRequiresPossession/wrong_key
+=== RUN   TestTerminalT03StatusRequiresPossession/replay
+=== RUN   TestTerminalT03StatusRequiresPossession/arbitrary_id
+--- PASS: TestTerminalT03StatusRequiresPossession (0.07s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/wrong_key (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/replay (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/arbitrary_id (0.02s)
+=== RUN   TestTerminalT03IsolationAndDataAuthorization
+2026/10/04 07:00:14 http: TLS handshake error from 192.168.88.171:48166: tls: client didn't provide a certificate
+--- PASS: TestTerminalT03IsolationAndDataAuthorization (0.02s)
+=== RUN   TestTerminalT03BoundsAndThrottle
+--- PASS: TestTerminalT03BoundsAndThrottle (0.56s)
+=== RUN   TestTerminalT03ReviewedApprovalStaleAndReplay
+--- PASS: TestTerminalT03ReviewedApprovalStaleAndReplay (0.02s)
+=== RUN   TestTerminalT03DaemonProcess
+    enrollment_test.go:494: subprocess helper
+--- SKIP: TestTerminalT03DaemonProcess (0.00s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+    enrollment_test.go:592: no such file or directory
+    enrollment_test.go:521: test daemon failed
+    enrollment_test.go:521: test daemon failed
+--- FAIL: TestTerminalT03TwoProcessEnrollment (0.02s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.919s
+FAIL

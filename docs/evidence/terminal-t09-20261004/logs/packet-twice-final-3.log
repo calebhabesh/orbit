@@ -1,0 +1,166 @@
+=== RUN   TestTerminalT09FocusedInputAndKeyboard
+--- PASS: TestTerminalT09FocusedInputAndKeyboard (0.00s)
+=== RUN   TestTerminalT09CorrelatedCancellationAndBoundedPolling
+--- PASS: TestTerminalT09CorrelatedCancellationAndBoundedPolling (0.00s)
+=== RUN   TestTerminalT09RefreshPreservesSelectionAndDraft
+--- PASS: TestTerminalT09RefreshPreservesSelectionAndDraft (0.00s)
+=== RUN   TestTerminalT09UnicodeEscapingAndLayout
+--- PASS: TestTerminalT09UnicodeEscapingAndLayout (0.00s)
+=== RUN   TestTerminalT09ToolAdapterAndNonTTY
+--- PASS: TestTerminalT09ToolAdapterAndNonTTY (0.00s)
+=== RUN   TestTerminalT09FocusedInputAndKeyboard
+--- PASS: TestTerminalT09FocusedInputAndKeyboard (0.00s)
+=== RUN   TestTerminalT09CorrelatedCancellationAndBoundedPolling
+--- PASS: TestTerminalT09CorrelatedCancellationAndBoundedPolling (0.00s)
+=== RUN   TestTerminalT09RefreshPreservesSelectionAndDraft
+--- PASS: TestTerminalT09RefreshPreservesSelectionAndDraft (0.00s)
+=== RUN   TestTerminalT09UnicodeEscapingAndLayout
+--- PASS: TestTerminalT09UnicodeEscapingAndLayout (0.00s)
+=== RUN   TestTerminalT09ToolAdapterAndNonTTY
+--- PASS: TestTerminalT09ToolAdapterAndNonTTY (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.022s
+=== RUN   TestTerminalT09NamedPages
+--- PASS: TestTerminalT09NamedPages (0.20s)
+=== RUN   TestTerminalT09RealPTYLifetime
+    tui_test.go:88: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT09RealPTYLifetime (10.67s)
+=== RUN   TestTerminalT09NamedPages
+--- PASS: TestTerminalT09NamedPages (0.17s)
+=== RUN   TestTerminalT09RealPTYLifetime
+    tui_test.go:88: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT09RealPTYLifetime (10.61s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	21.659s

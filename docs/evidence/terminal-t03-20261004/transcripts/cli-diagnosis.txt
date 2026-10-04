@@ -1,0 +1,7 @@
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+    orbit_pairing_test.go:783: expected pending request for Headless-Server, got: Enrollment Requests (0 pending):
+        ; join result: orbit: state directory "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity683443850/001/" must not be accessible by group or other users (mode 0700)
+--- FAIL: TestOrbitPairing_CLI_RunningDaemon_Parity (0.37s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	0.374s
+FAIL

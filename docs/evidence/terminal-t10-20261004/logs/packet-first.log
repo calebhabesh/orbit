@@ -1,0 +1,33 @@
+=== RUN   TestTerminalT10FormKeyboardReviewAndErrors
+--- PASS: TestTerminalT10FormKeyboardReviewAndErrors (0.00s)
+=== RUN   TestTerminalT10ExactApprovalAndScopedSharing
+--- PASS: TestTerminalT10ExactApprovalAndScopedSharing (0.00s)
+=== RUN   TestTerminalT10LateRepliesAndResumeReadiness
+--- PASS: TestTerminalT10LateRepliesAndResumeReadiness (0.00s)
+=== RUN   TestTerminalT10PrivateNarrowViewsAndErrorActions
+--- PASS: TestTerminalT10PrivateNarrowViewsAndErrorActions (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.016s
+=== RUN   TestTerminalT10BlockedSetupPagesAndFolderManagement
+--- PASS: TestTerminalT10BlockedSetupPagesAndFolderManagement (0.01s)
+=== RUN   TestTerminalT10RealPTYOnboarding
+    tui_onboarding_test.go:77: PTY onboarding: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 273, in <module>
+            if __name__=="__main__":main()
+                                    ~~~~^^
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 271, in main
+            args=parser.parse_args();run(Path(args.binary).resolve(strict=True),args.output)
+                                     ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 212, in run
+            ub.wait("Locally ready",timeout=40)
+            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 99, in wait
+            raise AssertionError(f"{self.name}: visible {text!r} absent; frame={self.screen.text()!r}")
+        AssertionError: resume-after-daemon-restart: visible 'Locally ready' absent; frame='Orbit | Setup progress                  \nState: completed | Local readiness      \nobserved=false membership current=false \nroot ava=true membership current=true   \nUncaptured=0 dotrue scan complete=true  \npublication pending=0 conflicts=0       \nstorage blocked=false                   \nLocal readiness incomplete. Work remains\npendily ready (observed). Other offline \ndevices may remain pending.             \n893ee6144249a77d0b8f3b6f7dad0f4679242dc2\n060f0b798f849ea964c2152d                \nRoot: /tmp/orbit-t10-pty-               \ntdo7nhmk/Notes界                        \nr refresh  J new reviewed join  Esc     \noverview  q quit                        '
+--- FAIL: TestTerminalT10RealPTYOnboarding (68.91s)
+=== RUN   TestTerminalT10FolderForkLagAndConservativePreview
+--- PASS: TestTerminalT10FolderForkLagAndConservativePreview (0.04s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	68.957s
+FAIL

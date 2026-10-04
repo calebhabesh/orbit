@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== PAUSE TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== CONT  TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+--- PASS: TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits (30.18s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	30.188s

@@ -1,0 +1,28 @@
+go vet ./...
+go test ./internal/... ./model/...
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/control	0.507s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	(cached)
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	(cached)
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/replication	32.816s
+ok  	github.com/calebhabesh/file-sync/internal/repository	1.760s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	7.485s
+ok  	github.com/calebhabesh/file-sync/internal/state	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/testkit	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.616s
+ok  	github.com/calebhabesh/file-sync/model	(cached)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=86ae552 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+go test ./tests/integration/...
+--- FAIL: TestOrbitVersionAndManifestMetadata (0.01s)
+    orbit_package_test.go:225: new server: state directory "/tmp/TestOrbitVersionAndManifestMetadata2280629064/001" must not be accessible by group or other users (mode 0700)
+--- FAIL: TestOrbitService_ActionAndFallback_HTTP (0.03s)
+    orbit_service_test.go:157: expected SYSTEMD_UNAVAILABLE code on systemd failure, got map[action:inspect error logs and retry operation code:INTERNAL_ERROR message:install user unit: open /home/owner/.config/systemd/user/filesync.service: file exists retryable:false]
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	23.564s
+FAIL
+make: *** [Makefile:36: test-integration] Error 1

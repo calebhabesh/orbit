@@ -1,0 +1,36 @@
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.002s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/control	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.004s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	0.002s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/replication	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.004s
+ok  	github.com/calebhabesh/file-sync/internal/state	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.002s
+ok  	github.com/calebhabesh/file-sync/model	0.002s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.003s
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.002s
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.002s
+TestTerminalT02LiveStoppedSettingsReplay
+TestTerminalT02NoFallbackAfterLiveFailure
+TestTerminalT02EndpointAndBounds
+TestTerminalT02IdentityCancellationAndAuth
+TestTerminalT02FiniteInitializerAndPartialRestart
+TestTerminalT02LegacyLimitsReview
+TestTerminalT02LostResponseRecoveryAndExpiredReplay
+TestTerminalT02StaleReviewNetworkSettings
+TestTerminalT02DaemonProcess
+TestTerminalT02ConcurrentProcessLaunchAndLifetime
+TestTerminalT02MissingSystemdAndExplicitErrors
+TestTerminalT02ServiceProcessActionsAndSelection
+TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork
+TestTerminalT02ConcurrentMutationReplay
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s
+?   	github.com/calebhabesh/file-sync/web	[no test files]

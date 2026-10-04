@@ -1,0 +1,22 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+    content_recovery_test.go:142: want CONTENT_EXPIRED, got <nil>
+--- FAIL: TestTerminalT08ExactReadsLiveStoppedAndGC (0.60s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.46s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.51s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (1.19s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.61s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.91s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.51s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.45s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.40s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	5.644s
+FAIL

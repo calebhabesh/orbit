@@ -1,0 +1,18 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.02s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.64s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.52s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.05s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1.318s

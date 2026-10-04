@@ -1,0 +1,197 @@
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.003s [no tests to run]
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/config	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	0.004s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.004s [no tests to run]
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/history	0.003s [no tests to run]
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+=== RUN   TestTerminalT03MembershipDecoder
+--- PASS: TestTerminalT03MembershipDecoder (0.00s)
+=== RUN   TestTerminalT03MembershipDecoder
+--- PASS: TestTerminalT03MembershipDecoder (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.003s
+=== RUN   TestTerminalT03AdmissionLimiterBounds
+--- PASS: TestTerminalT03AdmissionLimiterBounds (0.00s)
+=== RUN   TestTerminalT03AdmissionLimiterBounds
+--- PASS: TestTerminalT03AdmissionLimiterBounds (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	0.011s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/state	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.002s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/model	0.003s [no tests to run]
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.001s [no tests to run]
+=== RUN   TestTerminalT03NetworkEnrollmentApprovalAndReplay
+--- PASS: TestTerminalT03NetworkEnrollmentApprovalAndReplay (0.03s)
+=== RUN   TestTerminalT03InviterPinBeforeDisclosure
+2026/10/04 07:25:13 http: TLS handshake error from 127.0.0.1:38702: remote error: tls: bad certificate
+--- PASS: TestTerminalT03InviterPinBeforeDisclosure (0.02s)
+=== RUN   TestTerminalT03ScopeAndProofRejections
+=== RUN   TestTerminalT03ScopeAndProofRejections/scope
+=== RUN   TestTerminalT03ScopeAndProofRejections/signature
+=== RUN   TestTerminalT03ScopeAndProofRejections/certificate
+=== RUN   TestTerminalT03ScopeAndProofRejections/inviter
+=== RUN   TestTerminalT03ScopeAndProofRejections/endpoint
+=== RUN   TestTerminalT03ScopeAndProofRejections/expired_nonce
+=== RUN   TestTerminalT03ScopeAndProofRejections/altered_label
+--- PASS: TestTerminalT03ScopeAndProofRejections (0.14s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/scope (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/signature (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/certificate (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/inviter (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/endpoint (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/expired_nonce (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/altered_label (0.02s)
+=== RUN   TestTerminalT03WrongScopeChallengeAndRevocation
+--- PASS: TestTerminalT03WrongScopeChallengeAndRevocation (0.02s)
+=== RUN   TestTerminalT03ConcurrentSingleUse
+--- PASS: TestTerminalT03ConcurrentSingleUse (0.02s)
+=== RUN   TestTerminalT03StatusRequiresPossession
+=== RUN   TestTerminalT03StatusRequiresPossession/wrong_key
+=== RUN   TestTerminalT03StatusRequiresPossession/replay
+=== RUN   TestTerminalT03StatusRequiresPossession/arbitrary_id
+--- PASS: TestTerminalT03StatusRequiresPossession (0.06s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/wrong_key (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/replay (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/arbitrary_id (0.02s)
+=== RUN   TestTerminalT03IsolationAndDataAuthorization
+2026/10/04 07:25:13 http: TLS handshake error from 192.168.88.171:57624: tls: client didn't provide a certificate
+--- PASS: TestTerminalT03IsolationAndDataAuthorization (0.02s)
+=== RUN   TestTerminalT03BoundsAndThrottle
+--- PASS: TestTerminalT03BoundsAndThrottle (0.55s)
+=== RUN   TestTerminalT03ReviewedApprovalStaleAndReplay
+--- PASS: TestTerminalT03ReviewedApprovalStaleAndReplay (0.02s)
+=== RUN   TestTerminalT03DaemonProcess
+    enrollment_test.go:505: subprocess helper
+--- SKIP: TestTerminalT03DaemonProcess (0.00s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.21s)
+=== RUN   TestTerminalT03ExpiredAndRevokedPending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_invite
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/revoked_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/changed_membership
+--- PASS: TestTerminalT03ExpiredAndRevokedPending (0.08s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_invite (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/revoked_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/changed_membership (0.02s)
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/nonces
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/pending
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry
+--- PASS: TestTerminalT03AdmissionCapsAndChangedReplay (0.06s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/nonces (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/pending (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry (0.02s)
+=== RUN   TestTerminalT03LegacyBoundaries
+--- PASS: TestTerminalT03LegacyBoundaries (0.02s)
+=== RUN   TestTerminalT03NetworkEnrollmentApprovalAndReplay
+--- PASS: TestTerminalT03NetworkEnrollmentApprovalAndReplay (0.02s)
+=== RUN   TestTerminalT03InviterPinBeforeDisclosure
+2026/10/04 07:25:14 http: TLS handshake error from 127.0.0.1:48746: remote error: tls: bad certificate
+--- PASS: TestTerminalT03InviterPinBeforeDisclosure (0.02s)
+=== RUN   TestTerminalT03ScopeAndProofRejections
+=== RUN   TestTerminalT03ScopeAndProofRejections/scope
+=== RUN   TestTerminalT03ScopeAndProofRejections/signature
+=== RUN   TestTerminalT03ScopeAndProofRejections/certificate
+=== RUN   TestTerminalT03ScopeAndProofRejections/inviter
+=== RUN   TestTerminalT03ScopeAndProofRejections/endpoint
+=== RUN   TestTerminalT03ScopeAndProofRejections/expired_nonce
+=== RUN   TestTerminalT03ScopeAndProofRejections/altered_label
+--- PASS: TestTerminalT03ScopeAndProofRejections (0.14s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/scope (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/signature (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/certificate (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/inviter (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/endpoint (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/expired_nonce (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/altered_label (0.02s)
+=== RUN   TestTerminalT03WrongScopeChallengeAndRevocation
+--- PASS: TestTerminalT03WrongScopeChallengeAndRevocation (0.02s)
+=== RUN   TestTerminalT03ConcurrentSingleUse
+--- PASS: TestTerminalT03ConcurrentSingleUse (0.02s)
+=== RUN   TestTerminalT03StatusRequiresPossession
+=== RUN   TestTerminalT03StatusRequiresPossession/wrong_key
+=== RUN   TestTerminalT03StatusRequiresPossession/replay
+=== RUN   TestTerminalT03StatusRequiresPossession/arbitrary_id
+--- PASS: TestTerminalT03StatusRequiresPossession (0.06s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/wrong_key (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/replay (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/arbitrary_id (0.02s)
+=== RUN   TestTerminalT03IsolationAndDataAuthorization
+2026/10/04 07:25:14 http: TLS handshake error from 192.168.88.171:53330: tls: client didn't provide a certificate
+--- PASS: TestTerminalT03IsolationAndDataAuthorization (0.02s)
+=== RUN   TestTerminalT03BoundsAndThrottle
+--- PASS: TestTerminalT03BoundsAndThrottle (0.58s)
+=== RUN   TestTerminalT03ReviewedApprovalStaleAndReplay
+--- PASS: TestTerminalT03ReviewedApprovalStaleAndReplay (0.02s)
+=== RUN   TestTerminalT03DaemonProcess
+    enrollment_test.go:505: subprocess helper
+--- SKIP: TestTerminalT03DaemonProcess (0.00s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.21s)
+=== RUN   TestTerminalT03ExpiredAndRevokedPending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_invite
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/revoked_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/changed_membership
+--- PASS: TestTerminalT03ExpiredAndRevokedPending (0.08s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_invite (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/revoked_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/changed_membership (0.02s)
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/nonces
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/pending
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry
+--- PASS: TestTerminalT03AdmissionCapsAndChangedReplay (0.06s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/nonces (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/pending (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry (0.02s)
+=== RUN   TestTerminalT03LegacyBoundaries
+--- PASS: TestTerminalT03LegacyBoundaries (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	2.509s
+?   	github.com/calebhabesh/file-sync/web	[no test files]

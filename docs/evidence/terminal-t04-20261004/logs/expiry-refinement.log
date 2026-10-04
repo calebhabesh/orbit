@@ -1,0 +1,14 @@
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/false
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/true
+--- PASS: TestTerminalT04ExpiredPreparedRequestRecovery (0.05s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/false (0.02s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/true (0.02s)
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/false
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/true
+--- PASS: TestTerminalT04ExpiredPreparedRequestRecovery (0.04s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/false (0.02s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/true (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.095s

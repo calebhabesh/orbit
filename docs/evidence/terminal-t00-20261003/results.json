@@ -1,0 +1,87 @@
+{
+  "packet": "T00",
+  "state": "complete",
+  "meaning": "inventory and candidate dispositions complete; no production repair accepted",
+  "discovered_top_level_tests": 10,
+  "leaf_cases": [
+    "TestTerminalT00CLI/DeletedCommand",
+    "TestTerminalT00CLI/FiniteInitialization",
+    "TestTerminalT00CLI/LiveAdapters",
+    "TestTerminalT00CLI/Status",
+    "TestTerminalT00DetailObservation",
+    "TestTerminalT00InvitationEndpoint",
+    "TestTerminalT00InviterVerification",
+    "TestTerminalT00JoinPersistence",
+    "TestTerminalT00JoinReadiness",
+    "TestTerminalT00PeerEnrollmentRoute",
+    "TestTerminalT00RootPreview",
+    "TestTerminalT00SameKeySecondFolder",
+    "TestTerminalT00WrongFolderCapability"
+  ],
+  "final_baseline": {
+    "command": "ORBIT_TERMINAL_BASELINE=1 go test -count=2 -v ./tests/terminal -run '^TestTerminalT00'",
+    "exit": 1,
+    "repetitions": 2,
+    "deliberate_leaf_failures": 26,
+    "unexpected_fixture_failures": 0
+  },
+  "baseline_race": {
+    "exit": 1,
+    "deliberate_leaf_failures": 13,
+    "data_race_reports": 0
+  },
+  "checks": [
+    {
+      "command": "make check",
+      "exit": 0
+    },
+    {
+      "command": "make test-race (initial overlapping run)",
+      "exit": 2,
+      "limitation": "shared dist writes; tar EOF/checksum failures; no race report"
+    },
+    {
+      "command": "make test-race (serial)",
+      "exit": 0
+    },
+    {
+      "command": "go vet ./tests/terminal",
+      "exit": 0
+    },
+    {
+      "command": "go test ./cmd/filesync/...",
+      "exit": 0
+    },
+    {
+      "command": "go test -count=1 -v ./tests/terminal",
+      "exit": 0,
+      "skipped_baseline_top_level_cases": 10
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "unexecuted": [
+    "T01-T13 acceptance",
+    "fatal initial-scan error suppression",
+    "large-file merge RSS/admission",
+    "editor/PTY/TUI journeys",
+    "root-swap execution",
+    "LAN/Tailscale enrollment/transfer",
+    "native terminal packages",
+    "systemd logout/boot",
+    "power loss/VM reset",
+    "P17 actual owner use and unaided explanation"
+  ],
+  "native_ssh_architectures": {
+    "laptop": "x86_64",
+    "rpi": "aarch64",
+    "vps": "aarch64"
+  },
+  "tailscale": {
+    "local_command_v_exit": 1,
+    "remote_status_exit": 127,
+    "usable_path_verified": false
+  }
+}

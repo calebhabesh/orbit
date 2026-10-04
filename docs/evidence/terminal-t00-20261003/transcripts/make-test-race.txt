@@ -1,0 +1,29 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=86ae552 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+go test -race ./...
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	2.434s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	1.026s
+ok  	github.com/calebhabesh/file-sync/internal/control	20.775s
+ok  	github.com/calebhabesh/file-sync/internal/history	1.012s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.013s
+ok  	github.com/calebhabesh/file-sync/internal/replication	75.620s
+ok  	github.com/calebhabesh/file-sync/internal/repository	72.445s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	13.840s
+ok  	github.com/calebhabesh/file-sync/internal/state	1.027s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	1.015s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	23.056s
+ok  	github.com/calebhabesh/file-sync/model	2.842s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/designgates	1.585s
+ok  	github.com/calebhabesh/file-sync/tests/faults	38.029s
+--- FAIL: TestOrbitTarballContentsAndSymlinks (1.15s)
+    orbit_package_test.go:129: tar next: unexpected EOF
+--- FAIL: TestP15PackagingOutputsAndChecksums (3.62s)
+    p15_packaging_lifecycle_test.go:489: SHA256SUMS missing expected entry: 415124e5898cb17615b289ae6600f6c72afe0f74bd382945beb1e04fef9521cc  filesync-v1.0.0-linux-arm64.tar.gz
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	64.726s
+?   	github.com/calebhabesh/file-sync/web	[no test files]
+FAIL
+make: *** [Makefile:33: test-race] Error 1

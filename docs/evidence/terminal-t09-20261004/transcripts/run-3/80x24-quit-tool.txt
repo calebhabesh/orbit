@@ -1,0 +1,52 @@
+Orbit
+Daemon: running   Startup: manual (not enabled)
+[Overview]  Folders  Attention  Devices
+Search page:
+Devices: device-877a7b7d | d: inspect
+Needs attention, then synced folders (first pages)
+> Notes界  <disposable>/Notes界
+j/k select  Enter inspect  / search  ? help  q quitKeyboard help
+q / Ctrl-C: close interface
+Sync and committed work continue.
+j/k or arrows: select
+left/right or o/f/n/d: section
+Tab or /: search this page
+Enter: inspect   Esc: back
+r: refresh   ]: next page   [: first page
+e: configured external tool
+Daemon stop: orbit service stop
+Create/join/share: orbit helpDevices: device-877a7b7d | d: inspect
+Needs attention, then synced folders (first pages)
+> Notes界  <disposable>/Notes界> Search page: jkq?界 
+
+
+No items on this page.
+Create or join a folder: orbit setup / orbit join
+Type to filter this page; Enter/Esc returns to navigationSearch page: jkq?界j/k select  Enter inspect  / search  ? help  q quit\x1bMSearch page:
+
+
+> Notes界  <disposable>/Notes界unknown   Startup: unknown
+Overview  [Folders]
+
+> Notes界  <disposable>/Notes界\x1bM> Search page: folder, path or device
+> Notes界  <disposable>/Notes界
+Type to filter this page; Enter/Esc returns to navigationSearch page:
+Inspect
+Next action: orbit status / orbit doctor
+Notes界
+<disposable>/Notes界
+j/k select  Enter inspect  / search  ? help  q quit> Notes界  <disposable>/Notes界Orbit
+Daemon: unknown   Startup: unknown
+Folders | f n d o
+Search page:
+> Notes界  <disposable>/…
+j/k Enter / ? q\x1bM> Notes界  <disposable>/…TOOL_READY
+ordinary editor input
+TOOL_DONE
+Orbit
+Daemon: unknown   Startup: unknown
+Folders | f n d o
+Search page:
+Tool returned; terminal resumed.
+> Notes界  <disposable>/…
+j/k Enter / ? q\x1bM> Notes界  <disposable>/…

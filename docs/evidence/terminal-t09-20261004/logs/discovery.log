@@ -1,0 +1,9 @@
+TestTerminalT09FocusedInputAndKeyboard
+TestTerminalT09CorrelatedCancellationAndBoundedPolling
+TestTerminalT09RefreshPreservesSelectionAndDraft
+TestTerminalT09UnicodeEscapingAndLayout
+TestTerminalT09ToolAdapterAndNonTTY
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.015s
+TestTerminalT09NamedPages
+TestTerminalT09RealPTYLifetime
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s

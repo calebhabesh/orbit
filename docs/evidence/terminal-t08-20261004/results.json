@@ -1,0 +1,121 @@
+{
+  "packet": "T08",
+  "state": "complete",
+  "discovered_tests": [
+    "TestTerminalT08ExactReadsLiveStoppedAndGC",
+    "TestTerminalT08ReviewedSelectReplayAndStale",
+    "TestTerminalT08RestoreProvenanceCopyAndCollision",
+    "TestTerminalT08SessionStreamedMergeAndStaleArrival",
+    "TestTerminalT08AtomicReplayAfterCommitAndCopyPartial",
+    "TestTerminalT08CLIHistoryReviewRestoreExportAndTools",
+    "TestTerminalT08UnavailableRestoreDeletedAndStructuralPages",
+    "TestTerminalT08InterruptedUploadSessionRestartAndToolLimit",
+    "TestTerminalT08RenewExpiryAndReviewedDiscard"
+  ],
+  "ordinary_passes": 18,
+  "ordinary_repetitions": 2,
+  "ordinary_skips": 0,
+  "uncached_race_passes": 9,
+  "race_warnings": 0,
+  "checks": [
+    {
+      "command": [
+        "go",
+        "test",
+        "-list",
+        "^TestTerminalT08",
+        "./tests/terminal"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.529,
+      "log": "discovery.log"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=2",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT08"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 5.933,
+      "log": "packet.log"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT08"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 15.195,
+      "log": "packet-race.log"
+    },
+    {
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./cmd/filesync/...",
+        "./internal/control/...",
+        "./internal/controlclient/...",
+        "./internal/workspace/...",
+        "./internal/repository/...",
+        "./model/..."
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.165,
+      "log": "targeted.log"
+    },
+    {
+      "command": [
+        "make",
+        "check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 76.951,
+      "log": "make-check.log"
+    },
+    {
+      "command": [
+        "make",
+        "test-race"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 192.508,
+      "log": "make-test-race.log"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.013,
+      "log": "diff-check.log"
+    }
+  ],
+  "large_merge_bytes": 6000000,
+  "buffer_bounds": {
+    "copy_buffer_bytes": 65536,
+    "CAS_chunk_buffer_bytes": 1048576,
+    "exact_read_chunk_length_check_extra_byte": 1
+  },
+  "process_measurements": "Linux child ru_maxrss appears in packet logs; includes fork/exec high-water effects, not isolated steady-state or scaling evidence.",
+  "unexecuted": [
+    "interactive PTY editor suspend/resume (T11/T13)",
+    "physical LAN/Tailscale (T12/T13)",
+    "native boot/logout/login/unattended (T12/T13)",
+    "power loss/reset campaign for new T08 boundaries (T13)",
+    "P17 actual owner use and unaided explanation"
+  ]
+}

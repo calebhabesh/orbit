@@ -1,0 +1,14 @@
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (96.88s)
+=== RUN   TestTerminalT05ScopedKnownDeviceSharing
+--- PASS: TestTerminalT05ScopedKnownDeviceSharing (14.84s)
+=== RUN   TestTerminalT05MembershipPinAndSequentialGate
+--- PASS: TestTerminalT05MembershipPinAndSequentialGate (2.92s)
+=== RUN   TestTerminalT05ForkRecoveryPreservesOriginalGroup
+--- PASS: TestTerminalT05ForkRecoveryPreservesOriginalGroup (0.72s)
+=== RUN   TestTerminalT05CompetingReviewedApprovals
+--- PASS: TestTerminalT05CompetingReviewedApprovals (1.76s)
+=== RUN   TestTerminalT05TargetedShareRejectsRekey
+--- PASS: TestTerminalT05TargetedShareRejectsRekey (1.67s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	119.791s

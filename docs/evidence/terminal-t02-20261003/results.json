@@ -1,0 +1,87 @@
+{
+  "packet": "T02",
+  "state": "complete",
+  "revision": "86ae55280b22a5839258d3cca40210c6e2613025",
+  "dirty_tree": true,
+  "schema": 13,
+  "peer_protocol": 1,
+  "test_definitions": 16,
+  "ordinary_tests": 15,
+  "parent_helper_skips_per_run": 1,
+  "targeted_repetitions": 2,
+  "ordinary_top_level_passes": 30,
+  "checks": {
+    "discovery": {
+      "exit": 0,
+      "log": "discovery-complete.txt"
+    },
+    "targeted": {
+      "exit": 0,
+      "log": "acceptance-targeted.txt"
+    },
+    "race_regression_before": {
+      "exit": 1,
+      "log": "race-minimal-before.txt"
+    },
+    "race_regression_after": {
+      "exit": 0,
+      "log": "race-minimal-after.txt"
+    },
+    "focused_race_resumed": {
+      "exit": 0,
+      "log": "race-targeted-resumed.txt"
+    },
+    "initial_broad_check": {
+      "exit": 2,
+      "log": "make-check.txt"
+    },
+    "final_check": {
+      "exit": 0,
+      "log": "acceptance-check.txt"
+    },
+    "final_race": {
+      "exit": 0,
+      "log": "acceptance-race.txt"
+    },
+    "diff_check": {
+      "exit": 0
+    },
+    "docs": {
+      "exit": 0,
+      "documents": 7,
+      "local_link_paths": 59,
+      "log": "docs-validation.txt"
+    },
+    "cleanup_fixture": {
+      "exit": 0,
+      "log": "cleanup-regression.txt",
+      "scope": "final harness-only change after broad runtime gates"
+    }
+  },
+  "interrupted_checks": [
+    "race-targeted-final.txt"
+  ],
+  "unexecuted": [
+    "native boot/logout",
+    "native Pi/VPS",
+    "LAN/Tailscale enrollment",
+    "SIGKILL/fsync",
+    "VM reset",
+    "TUI/PTY",
+    "full family parity",
+    "exact streams/upload",
+    "explicit operation cancel",
+    "native adoption/rollback",
+    "P17 owner use/explanation"
+  ],
+  "additional_failure": {
+    "exit": 1,
+    "log": "targeted-dispatch-final.txt",
+    "reason": "Concurrent stopped-state/startup ownership temporarily lacks a live endpoint; replay the original ID after readiness and verify one external dispatch."
+  },
+  "cleanup": {
+    "processes": 7,
+    "log": "process-cleanup.json",
+    "remaining_session_test_daemons": 0
+  }
+}

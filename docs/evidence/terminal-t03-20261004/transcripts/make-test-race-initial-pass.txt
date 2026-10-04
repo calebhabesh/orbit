@@ -1,0 +1,25 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=86ae552 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+go test -race ./...
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	2.620s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/control	20.808s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.031s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	(cached)
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.013s
+ok  	github.com/calebhabesh/file-sync/internal/replication	66.428s
+ok  	github.com/calebhabesh/file-sync/internal/repository	59.016s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	12.687s
+ok  	github.com/calebhabesh/file-sync/internal/state	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/testkit	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/workspace	16.560s
+ok  	github.com/calebhabesh/file-sync/model	(cached)
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/designgates	1.663s
+ok  	github.com/calebhabesh/file-sync/tests/faults	29.539s
+ok  	github.com/calebhabesh/file-sync/tests/integration	53.343s
+ok  	github.com/calebhabesh/file-sync/tests/terminal	31.025s
+?   	github.com/calebhabesh/file-sync/web	[no test files]

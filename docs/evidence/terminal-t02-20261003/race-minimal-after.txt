@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT02ConcurrentProcessLaunchAndLifetime
+--- PASS: TestTerminalT02ConcurrentProcessLaunchAndLifetime (2.64s)
+=== RUN   TestTerminalT02ControlServeShutdown
+--- PASS: TestTerminalT02ControlServeShutdown (0.34s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	3.979s

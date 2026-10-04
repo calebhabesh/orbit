@@ -1,0 +1,38 @@
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.002s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.001s
+ok  	github.com/calebhabesh/file-sync/internal/control	0.003s
+TestTerminalT01IntegersAndStrictCodec
+TestTerminalT01MutationContracts
+TestTerminalT01Fixtures
+TestTerminalT01QueriesAndExits
+TestTerminalT01FingerprintBindsReview
+TestTerminalT01JoinInvitation
+TestTerminalT01UploadFingerprint
+TestTerminalT01StateExitCategories
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/history	0.002s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+TestTerminalT01EnrollmentWire
+TestTerminalT01StatusProofDomain
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/replication	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/state	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.003s
+ok  	github.com/calebhabesh/file-sync/model	0.003s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+TestTerminalT01TG1Transcript
+TestTerminalT01TG1TLSIsolation
+TestTerminalT01TG1AtomicAdmission
+TestTerminalT01TG2RestartAndReadiness
+TestTerminalT01TG3AdaptersAndReplay
+TestTerminalT01TG4ReviewedSession
+TestTerminalT01TG5Lifecycle
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.002s
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.002s
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.002s
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s
+?   	github.com/calebhabesh/file-sync/web	[no test files]

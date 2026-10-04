@@ -1,0 +1,12 @@
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.22s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.21s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.430s

@@ -1,0 +1,6 @@
+{
+  "go_env": "linux\namd64\ngo1.27.1-X:nodwarf5\nauto",
+  "python": "Python 3.14.7",
+  "prlimit": "prlimit from util-linux 2.42.4",
+  "uname": "Linux owner-desktop 7.2.8-arch1-2 #1 SMP PREEMPT_DYNAMIC Thu, 01 Oct 2026 17:24:20 +0000 x86_64 GNU/Linux"
+}

@@ -1,0 +1,169 @@
+$ bin/orbit version --json
+exit=0
+{"built":"2026-10-01","commit":"86ae552","config_format_version":1,"embedded_assets":{"digest_sha256":"ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e","node_runtime_required":false,"pure_go_sqlite":true,"total_files":3},"go_version":"go1.27.1-X:nodwarf5","goarch":"amd64","goos":"linux","product":"Orbit","schema_version":13,"version":"1.0.0"}
+
+$ bin/orbit help
+exit=0
+Orbit - Local file synchronization and workspace manager
+
+Usage:
+  orbit [command] [options]
+  filesync orbit [command] [options]
+
+Commands:
+  launch              Launch Orbit, reuse/start daemon, and open browser UI (default)
+  status              Display daemon, service, and setup status
+  browse              List immediate workspace children as paginated JSON
+  search              Search locally known workspace paths as paginated JSON
+  details             Inspect captured heads and observed working-copy state
+  mkdir               Create a directory in workspace root
+  import              Import a file into workspace with durable versioning
+  move / rename       Move or rename a file or directory within workspace
+  delete              Delete a file or directory recursively
+  setup               Configure workspace root, device label, and setup progress (--join to pair)
+  join                Join existing workspace via invitation token and remote endpoint
+  invite              Manage workspace invitations (create, list, revoke)
+  requests            Manage enrollment requests (list, approve, decline)
+  devices             Manage workspace devices (list, rename, endpoint, retire)
+  settings            Inspect and update device label, default workspace, and theme
+  folders             Manage registered workspace roots (list, add, pause, resume, unregister, relocate, revalidate)
+  storage             Storage accounting, retention preview/change, GC, reclaim, check, repair, prune
+  maintenance         Backup, schema check, recovery inspection, stopped reset-identity/restore, prune
+  service             Manage systemd user service (status, enable, start, stop, restart)
+  version             Display product version, schema, and build metadata
+  open <folder|path>  Open local workspace folder in desktop file manager
+  picker              Browse local filesystem directories for root selection
+  help                Display this help message
+
+Options:
+  --state <path>      Specify explicit agent state directory
+  --no-browser        Output authenticated bootstrap URL without opening browser
+  --json              Format output as structured JSON
+
+$ bin/filesync help
+exit=0
+usage: filesync <init|serve|stop|config|identity|pair-approve|register|scan|sync|status|peers|membership|enroll|conflicts|resolve|restore|export|history|storage|check|repair|work|inspect|approve-deletions|apply|doctor|support-export|logs|metrics|folders|safety|maintenance|control|version> [options]
+
+$ bin/orbit serve --help
+exit=1
+Usage of serve:
+  -allow-init
+    	auto-initialize clean uninitialized state directory
+  -bandwidth-limit int
+    	token-bucket bandwidth limit in bytes/sec (0 = unlimited)
+  -control-listen string
+    	explicit loopback control listener address, for example 127.0.0.1:8080
+  -full-scan-interval duration
+    	bounded full-content verification scan interval (default 24h0m0s)
+  -no-watch
+    	disable filesystem inotify watcher hints
+  -peer-listen string
+    	explicit peer listener address, for example 127.0.0.1:8443
+  -profile string
+    	hardware resource profile: laptop or pi (default "laptop")
+  -state string
+    	agent state directory (default "/home/owner/.local/state/filesync")
+  -sync-interval duration
+    	bounded periodic reconciliation scan interval (default 5m0s)
+orbit: flag: help requested
+
+$ bin/orbit setup --help
+exit=1
+Usage of orbit setup:
+  -folder string
+    	target workspace folder ID hex
+  -invitation string
+    	workspace invitation token or orbit-invitation: link
+  -join
+    	join an existing workspace via invitation
+  -json
+    	output JSON
+  -label string
+    	device display label
+  -name string
+    	workspace display name
+  -preview
+    	preview proposed root directory without adopting
+  -remote string
+    	inviting device remote control URL
+  -resume
+    	resume interrupted setup
+  -root string
+    	proposed sync root directory path
+  -state string
+    	explicit agent state directory
+  -timeout int
+    	seconds to wait for owner approval (0 for non-blocking) (default 60)
+orbit: flag: help requested
+
+$ bin/orbit join --help
+exit=1
+Usage of orbit setup:
+  -folder string
+    	target workspace folder ID hex
+  -invitation string
+    	workspace invitation token or orbit-invitation: link
+  -join
+    	join an existing workspace via invitation
+  -json
+    	output JSON
+  -label string
+    	device display label
+  -name string
+    	workspace display name
+  -preview
+    	preview proposed root directory without adopting
+  -remote string
+    	inviting device remote control URL
+  -resume
+    	resume interrupted setup
+  -root string
+    	proposed sync root directory path
+  -state string
+    	explicit agent state directory
+  -timeout int
+    	seconds to wait for owner approval (0 for non-blocking) (default 60)
+orbit: flag: help requested
+
+$ bin/orbit service --help
+exit=1
+Usage of orbit service:
+  -json
+    	output JSON
+  -state string
+    	explicit agent state directory
+orbit: flag: help requested
+
+$ bin/orbit status --help
+exit=1
+Usage of orbit status:
+  -json
+    	output JSON
+  -state string
+    	explicit agent state directory
+orbit: flag: help requested
+
+$ bin/orbit conflicts merge --help
+exit=1
+Usage of merge:
+  -content string
+    	direct merged content string
+  -executable
+    	mark merged file as executable
+  -file string
+    	path to file containing merged content
+  -folder string
+    	32-byte folder ID in hex
+  -head-token string
+    	expected head token in 64-char hex
+  -idempotency-key string
+    	optional idempotency key
+  -json
+    	write structured JSON
+  -path string
+    	workspace relative path
+  -reviewed string
+    	comma-separated reviewed version IDs (author:counter)
+  -state string
+    	agent state directory (default "/home/owner/.local/state/filesync")
+orbit: flag: help requested

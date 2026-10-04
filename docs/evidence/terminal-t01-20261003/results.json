@@ -1,0 +1,55 @@
+{
+  "packet": "T01",
+  "state": "complete (design/contracts only)",
+  "checks": {
+    "discovered_T01_tests": 17,
+    "targeted_count_2": {
+      "exit_code": 0,
+      "passes": 34
+    },
+    "targeted_race": {
+      "exit_code": 0,
+      "passes": 17
+    },
+    "make_check": {
+      "exit_code": 0
+    },
+    "make_test_race": {
+      "exit_code": 0
+    },
+    "documentation": {
+      "exit_code": 0,
+      "documents": 11,
+      "local_links": 74
+    },
+    "git_diff_check": {
+      "exit_code": 0
+    }
+  },
+  "production_gate_evidence": {
+    "TG1": "open T03/T05",
+    "TG2": "open T04",
+    "TG3": "open T02/T06",
+    "TG4": "open T08/T11",
+    "TG5": "open T09/T12"
+  },
+  "unexecuted": [
+    "production terminal endpoints and adapters",
+    "schema and join crash durability",
+    "real recursive traversal/root swap",
+    "requester status/approval production routes",
+    "real editor and GC races",
+    "real PTY/lifetime",
+    "native login/logout and packages",
+    "LAN/Tailscale enrollment",
+    "owner pilot/unaided explanation"
+  ],
+  "historical_evidence": "P/O retained; P17 outstanding; T00 unchanged opt-in failures",
+  "design_gates": {
+    "TG1": "resolved, production open",
+    "TG2": "resolved, production open",
+    "TG3": "resolved, production open",
+    "TG4": "resolved, production open",
+    "TG5": "resolved, production open"
+  }
+}

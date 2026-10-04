@@ -1,0 +1,2 @@
+bin/filesync:             ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=7VvBXtvPS_SuKZ554GWU/RT2jXrvXDkPFJVaFAEOL/-N-r7-WijDU42mfIs_nn/FWoJjSBtE8tlq29kjKlH, BuildID[sha1]=ec1f663d1e434ceb5c1b0588279f2cfb291b1ae6, with debug_info, not stripped
+bin/filesync-linux-arm64: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=AO8xz8St7t9borHVkLUt/ykkgEMhY9Zr343aAUG5N/6z4Lmb4UKIQpPWhb6vD2/LH1ekcSiG4XlIYs9ddtB, BuildID[sha1]=8ffadd14d935c8e61e56abd3858ed14b69def8ee, with debug_info, not stripped

@@ -1,0 +1,84 @@
+{
+  "packet": "T05",
+  "state": "complete",
+  "date": "2026-10-04",
+  "ordinary_tests": {
+    "discovered": 6,
+    "passes_per_run": 6,
+    "runs": 2,
+    "skips": 0,
+    "exit_code": 0,
+    "seconds": 197.981,
+    "log": "packet-final.log"
+  },
+  "make_check": {
+    "exit_code": 0,
+    "log": "make-check-final.log"
+  },
+  "make_test_race": {
+    "exit_code": 0,
+    "log": "make-test-race.log"
+  },
+  "uncached_packet_child_race": {
+    "exit_code": 0,
+    "passes": 6,
+    "seconds": 119.791,
+    "command": "GOFLAGS=-race go test -race -count=1 -v ./tests/terminal -run '^TestTerminalT05'",
+    "log": "packet-child-race.log"
+  },
+  "enrollment_regressions": {
+    "exit_code": 0,
+    "top_level": 4,
+    "leaves": 9,
+    "log": "enrollment-regressions.log"
+  },
+  "membership_retirement_regressions": {
+    "exit_code": 0,
+    "model_tests": 4,
+    "repository_tests": 3,
+    "log": "membership-regressions.log"
+  },
+  "intermediate_failures": [
+    "draft test compile fields/method/type and HTTP export method",
+    "second same-IP enrollment exceeded real rate quota",
+    "initial make check endpoint missing-certificate assertion"
+  ],
+  "acceptance_evidence": {
+    "known_device_scoped_share_retry": [
+      "TestTerminalT05ScopedKnownDeviceSharing",
+      "TestTerminalT05TargetedShareRejectsRekey",
+      "TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh"
+    ],
+    "receiver_root_review_and_private_folder": [
+      "TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh"
+    ],
+    "runtime_endpoint_and_both_pull_directions_forwarding": [
+      "TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh"
+    ],
+    "sequential_offline_predecessor_and_fork_recovery": [
+      "TestTerminalT05MembershipPinAndSequentialGate",
+      "TestTerminalT05CompetingReviewedApprovals",
+      "TestTerminalT05ForkRecoveryPreservesOriginalGroup",
+      "TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh"
+    ],
+    "retirement_history_fresh_identity": [
+      "membership-regressions.log",
+      "make-check-final.log",
+      "TestTerminalT05ForkRecoveryPreservesOriginalGroup",
+      "TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh"
+    ]
+  },
+  "unexecuted": [
+    "physical cross-host LAN/Tailscale",
+    "native boot/logout/login/unattended",
+    "physical reset/power loss",
+    "P17 actual owner pilot and unaided explanation"
+  ],
+  "limits": [
+    "5 requests/minute/IP burst 5; fixture restarts inviter between journeys",
+    "automatic rollout additive only and requires T05-capable peer",
+    "fork recovery preserves old DAGs and creates a reviewed new group",
+    "T06 named CLI/adapter parity, T07 attention and T10 TUI remain"
+  ],
+  "next_packet": "T06"
+}

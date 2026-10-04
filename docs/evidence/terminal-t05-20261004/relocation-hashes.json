@@ -1,0 +1,9 @@
+{
+  "cmd/filesync/relocation.go": "d1caf6b85637fafdba44d7205194477f32e90dfeda5e876d80d581bcf1c6a847",
+  "cmd/filesync/relocation_test.go": "8402b0f4870ffddee24dcbbacf2eee07ab9d6b03a3bed11c1cedce199500b038",
+  "internal/control/relocation.go": "cf4d690c520d055e91003a28d75fb2a66819ed7035fa088897582c2aa68c8066",
+  "internal/repository/relocation.go": "f4058e10987ff97f309f5dfd3349cdd0829ed072b0eff24cad28f6c66966d6b9",
+  "internal/workspace/relocation.go": "89098b9d935b74803e98e08758389a6f4750b3cd1163d7c0299f918318fa6ec7",
+  "internal/workspace/relocation_test.go": "e4aea6b0ead4c4da1f9b8d5909c7c3b574ccc8d4f494a11754e0f5a30830c298",
+  "web/src/components/RelocateFolderForm.tsx": "77b19270e18887fae8c6a5be16fc0841af4932b50890bb7ceeabedd268ed6808"
+}

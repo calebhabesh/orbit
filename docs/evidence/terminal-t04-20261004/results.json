@@ -1,0 +1,44 @@
+{
+  "state": "complete",
+  "packet": "T04",
+  "milestone": "M1",
+  "ordinary_tests": 19,
+  "repetitions": 2,
+  "top_level_passes": 38,
+  "skipped_helpers": 0,
+  "final_check": {
+    "command": "make check",
+    "exit_code": 0,
+    "log": "logs/make-check.log"
+  },
+  "final_race": {
+    "command": "make test-race",
+    "exit_code": 0,
+    "log": "logs/make-test-race.log",
+    "serial_after_check": true
+  },
+  "ordinary": {
+    "command": "go test -count=2 -v ./tests/terminal -run '^TestTerminalT04'",
+    "exit_code": 0,
+    "log": "logs/ordinary-final.log"
+  },
+  "docs": {
+    "documents": 11,
+    "local_links": 101,
+    "exit_code": 0,
+    "log": "logs/docs-validation.log"
+  },
+  "diff_check": {
+    "command": "git diff --check",
+    "exit_code": 0
+  },
+  "next": "T05",
+  "limitations": [
+    "physical cross-host LAN/Tailscale",
+    "native laptop/Pi/VPS and boot/logout/login/unattended",
+    "abrupt reset/power loss and SIGKILL at every phase",
+    "TUI and later full-family parity",
+    "additional-folder/offline/third-peer rollout (T05)",
+    "P17 actual owner use/unaided explanation"
+  ]
+}

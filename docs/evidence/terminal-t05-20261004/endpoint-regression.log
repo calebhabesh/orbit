@@ -1,0 +1,4 @@
+=== RUN   TestOrbitEndpoints_PersistenceAndValidation
+--- PASS: TestOrbitEndpoints_PersistenceAndValidation (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.014s

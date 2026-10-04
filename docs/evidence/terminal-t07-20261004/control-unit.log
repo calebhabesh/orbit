@@ -1,0 +1,112 @@
+=== RUN   TestResolveSelect
+--- PASS: TestResolveSelect (0.01s)
+=== RUN   TestResolveSelectResponseLossAndReplay
+--- PASS: TestResolveSelectResponseLossAndReplay (0.01s)
+=== RUN   TestResolveSelectReusedKeyWithChangedArguments
+--- PASS: TestResolveSelectReusedKeyWithChangedArguments (0.01s)
+=== RUN   TestResolveSelectStaleViewPreCommit
+--- PASS: TestResolveSelectStaleViewPreCommit (0.01s)
+=== RUN   TestResolveSelectUnseenVersionRemainsConcurrent
+--- PASS: TestResolveSelectUnseenVersionRemainsConcurrent (0.01s)
+=== RUN   TestResolveManualMerge
+--- PASS: TestResolveManualMerge (0.01s)
+=== RUN   TestRestoreHistoricalVersion
+--- PASS: TestRestoreHistoricalVersion (0.01s)
+=== RUN   TestRestoreExecutableStatusFollowsSelectedVersion
+--- PASS: TestRestoreExecutableStatusFollowsSelectedVersion (0.01s)
+=== RUN   TestRestoreExpiredPayloadReturnsContentExpired
+--- PASS: TestRestoreExpiredPayloadReturnsContentExpired (0.01s)
+=== RUN   TestKeepCopiesDestinationCollisionPreservesFiles
+--- PASS: TestKeepCopiesDestinationCollisionPreservesFiles (0.01s)
+=== RUN   TestKeepCopiesPartialResumptionNoDuplicateCopies
+--- PASS: TestKeepCopiesPartialResumptionNoDuplicateCopies (0.01s)
+=== RUN   TestExport
+--- PASS: TestExport (0.01s)
+=== RUN   TestHistoryAvailability
+--- PASS: TestHistoryAvailability (0.01s)
+=== RUN   TestMembershipExportImportPreview
+--- PASS: TestMembershipExportImportPreview (0.01s)
+=== RUN   TestRetireMemberPreviewAndExecute
+--- PASS: TestRetireMemberPreviewAndExecute (0.01s)
+=== RUN   TestEnrollPreviewAndBootstrap
+--- PASS: TestEnrollPreviewAndBootstrap (0.01s)
+=== RUN   TestStorageControlOperations
+--- PASS: TestStorageControlOperations (0.01s)
+=== RUN   TestStorageCheckAndRepairControlOperations
+--- PASS: TestStorageCheckAndRepairControlOperations (0.01s)
+=== RUN   TestDoctorDiagnostics
+--- PASS: TestDoctorDiagnostics (0.02s)
+=== RUN   TestAllFifteenStableErrorCategories
+--- PASS: TestAllFifteenStableErrorCategories (0.00s)
+=== RUN   TestOrbitMutationControl
+--- PASS: TestOrbitMutationControl (0.01s)
+=== RUN   TestFolderManagementAndUnregisterEmitsZeroDeletes
+--- PASS: TestFolderManagementAndUnregisterEmitsZeroDeletes (0.01s)
+=== RUN   TestMaintenanceOperations
+--- PASS: TestMaintenanceOperations (0.02s)
+=== RUN   TestServerSecurityAndBootstrapFlow
+--- PASS: TestServerSecurityAndBootstrapFlow (0.02s)
+=== RUN   TestSupportExport
+--- PASS: TestSupportExport (0.02s)
+=== RUN   TestWorkControlOperations
+--- PASS: TestWorkControlOperations (0.01s)
+=== RUN   TestOrbitSettings_Control_SettingsOperations
+--- PASS: TestOrbitSettings_Control_SettingsOperations (0.01s)
+=== RUN   TestOrbitSettings_Control_PeerEndpointsOperations
+--- PASS: TestOrbitSettings_Control_PeerEndpointsOperations (0.01s)
+=== RUN   TestOrbitSettings_Control_SetupOperations
+--- PASS: TestOrbitSettings_Control_SetupOperations (0.01s)
+=== RUN   TestOrbitSettings_Control_InvitationsAndEnrollment
+--- PASS: TestOrbitSettings_Control_InvitationsAndEnrollment (0.01s)
+=== RUN   TestOrbitSettings_Control_ReadLeasesAndGCProtection
+--- PASS: TestOrbitSettings_Control_ReadLeasesAndGCProtection (0.01s)
+=== RUN   TestOrbitSettings_Control_HTTP_EndpointsAndRecoverySafety
+--- PASS: TestOrbitSettings_Control_HTTP_EndpointsAndRecoverySafety (0.01s)
+=== RUN   TestOrbitShell_DeletedFiles_HTTP
+--- PASS: TestOrbitShell_DeletedFiles_HTTP (0.01s)
+=== RUN   TestOrbitEndpoints_ControlUnit
+--- PASS: TestOrbitEndpoints_ControlUnit (0.01s)
+=== RUN   TestOrbitSetup_InspectSetup
+--- PASS: TestOrbitSetup_InspectSetup (0.01s)
+=== RUN   TestOrbitSetup_PreviewCreateAndJoinRoot
+--- PASS: TestOrbitSetup_PreviewCreateAndJoinRoot (0.01s)
+=== RUN   TestOrbitSetup_StartAndResumeSetup_PreservesPreexistingFiles
+--- PASS: TestOrbitSetup_StartAndResumeSetup_PreservesPreexistingFiles (0.01s)
+=== RUN   TestOrbitSetup_DirectoryPicker
+--- PASS: TestOrbitSetup_DirectoryPicker (0.01s)
+=== RUN   TestOrbitSetup_OpenLocalFolder
+--- PASS: TestOrbitSetup_OpenLocalFolder (0.01s)
+=== RUN   TestOrbitSetup_InterruptedSetupResume
+--- PASS: TestOrbitSetup_InterruptedSetupResume (0.01s)
+=== RUN   TestTerminalContext_NoFolders
+--- PASS: TestTerminalContext_NoFolders (0.01s)
+=== RUN   TestTerminalContext_ExplicitFolderAndName
+--- PASS: TestTerminalContext_ExplicitFolderAndName (0.01s)
+=== RUN   TestTerminalContext_DuplicateNames
+--- PASS: TestTerminalContext_DuplicateNames (0.01s)
+=== RUN   TestTerminalContext_CwdInference
+--- PASS: TestTerminalContext_CwdInference (0.01s)
+=== RUN   TestTerminalContext_PathValidationAndSymlink
+--- PASS: TestTerminalContext_PathValidationAndSymlink (0.01s)
+=== RUN   TestTerminalFoldersAndDevices
+--- PASS: TestTerminalFoldersAndDevices (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	0.450s
+=== RUN   TestTerminalT01IntegersAndStrictCodec
+--- PASS: TestTerminalT01IntegersAndStrictCodec (0.00s)
+=== RUN   TestTerminalT01MutationContracts
+--- PASS: TestTerminalT01MutationContracts (0.00s)
+=== RUN   TestTerminalT01Fixtures
+--- PASS: TestTerminalT01Fixtures (0.00s)
+=== RUN   TestTerminalT01QueriesAndExits
+--- PASS: TestTerminalT01QueriesAndExits (0.00s)
+=== RUN   TestTerminalT01FingerprintBindsReview
+--- PASS: TestTerminalT01FingerprintBindsReview (0.00s)
+=== RUN   TestTerminalT01JoinInvitation
+--- PASS: TestTerminalT01JoinInvitation (0.00s)
+=== RUN   TestTerminalT01UploadFingerprint
+--- PASS: TestTerminalT01UploadFingerprint (0.00s)
+=== RUN   TestTerminalT01StateExitCategories
+--- PASS: TestTerminalT01StateExitCategories (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.003s

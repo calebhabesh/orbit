@@ -1,0 +1,114 @@
+ M AGENTS.md
+ M CONTEXT.md
+ M README.md
+ M cmd/filesync/main.go
+ M docs/implementation-plan.md
+ M docs/implementation/orbit-status.md
+ M docs/implementation/status.md
+ M docs/operations.md
+ M docs/orbit-architecture.md
+ M docs/orbit-implementation-plan.md
+ M docs/orbit-product.md
+ M docs/persistence.md
+ M docs/portfolio-scope.md
+ M docs/protocol.md
+ M docs/verification.md
+ M internal/app/app.go
+ M internal/config/storage.go
+ M internal/control/control.go
+ M internal/control/doctor.go
+ M internal/control/orbit_control.go
+ M internal/control/orbit_control_test.go
+ M internal/control/orbit_setup_test.go
+ M internal/control/server.go
+ M internal/control/server_test.go
+ M internal/control/service.go
+ M internal/control/types.go
+ M internal/launcher/launcher.go
+ M internal/replication/server.go
+ M internal/replication/transfer.go
+ M internal/replication/wire.go
+ M internal/repository/browse.go
+ M internal/repository/peers.go
+ M internal/repository/product_records.go
+ M internal/scheduler/retry.go
+ M internal/scheduler/scheduler.go
+ M internal/workspace/file_mutations.go
+ M internal/workspace/workspace.go
+ M schemas/peer-v1.md
+ M scripts/orbit_ui_test.mjs
+ M tests/integration/orbit_endpoints_test.go
+ M tests/integration/orbit_enrollment_test.go
+ M tests/integration/orbit_package_test.go
+ M tests/integration/orbit_pairing_test.go
+ M tests/integration/orbit_service_test.go
+ D web/dist/assets/index-DYl1kZ4C.js
+ M web/dist/index.html
+ M web/src/api.ts
+ M web/src/views/SettingsView.tsx
+?? cmd/filesync/relocation.go
+?? cmd/filesync/relocation_test.go
+?? cmd/filesync/terminal_commands.go
+?? cmd/filesync/terminal_completion.go
+?? cmd/filesync/terminal_context.go
+?? cmd/filesync/terminal_enrollment.go
+?? cmd/filesync/terminal_help.go
+?? cmd/filesync/terminal_lifecycle.go
+?? cmd/filesync/terminal_lifecycle_test.go
+?? cmd/filesync/terminal_output.go
+?? cmd/filesync/terminal_setup.go
+?? docs/evidence/orbit-relocation/
+?? docs/evidence/terminal-t00-20261003/
+?? docs/evidence/terminal-t01-20261003/
+?? docs/evidence/terminal-t02-20261003/
+?? docs/evidence/terminal-t03-20261004/
+?? docs/evidence/terminal-t04-20261004/
+?? docs/evidence/terminal-t05-20261004/
+?? docs/evidence/terminal-t06-20261004/
+?? docs/evidence/terminal-t07-20261004/
+?? docs/implementation/terminal-cli-tui.md
+?? docs/implementation/terminal-foundations.md
+?? docs/implementation/terminal-release.md
+?? docs/implementation/terminal-source-ownership.md
+?? docs/implementation/terminal-status.md
+?? docs/orbit-terminal-architecture.md
+?? docs/orbit-terminal-implementation-plan.md
+?? docs/orbit-terminal-ux.md
+?? docs/runbooks/membership-fork.md
+?? docs/terminal-design-gates.md
+?? filesync
+?? internal/config/runtime.go
+?? internal/control/enrollment_compatibility.go
+?? internal/control/relocation.go
+?? internal/control/terminal_context.go
+?? internal/control/terminal_context_test.go
+?? internal/control/terminal_enrollment.go
+?? internal/control/terminal_lifecycle.go
+?? internal/control/terminal_setup.go
+?? internal/control/terminal_setup_compatibility.go
+?? internal/control/terminal_status.go
+?? internal/control/terminalcontract/
+?? internal/controlclient/
+?? internal/launcher/daemon.go
+?? internal/protocol/membership_decode.go
+?? internal/protocol/membership_decode_test.go
+?? internal/protocol/terminal_enrollment.go
+?? internal/protocol/terminal_enrollment_test.go
+?? internal/protocol/terminal_enrollment_wire.go
+?? internal/replication/enrollment.go
+?? internal/replication/enrollment_limits_test.go
+?? internal/repository/enrollment.go
+?? internal/repository/onboarding.go
+?? internal/repository/relocation.go
+?? internal/repository/terminal_operations.go
+?? internal/state/private.go
+?? internal/workspace/adoption.go
+?? internal/workspace/relocation.go
+?? internal/workspace/relocation_test.go
+?? schemas/fixtures/terminal-v1/
+?? schemas/terminal-control-v1.md
+?? tests/designgates/terminal_t01_test.go
+?? tests/designgates/testdata/terminal-enrollment-v2.hex
+?? tests/terminal/
+?? web/dist/assets/index-DAEE1fRl.js
+?? web/src/components/RelocateFolderForm.tsx

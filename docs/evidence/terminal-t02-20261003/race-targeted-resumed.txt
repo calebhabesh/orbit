@@ -1,0 +1,41 @@
+=== RUN   TestTerminalT02LiveStoppedSettingsReplay
+--- PASS: TestTerminalT02LiveStoppedSettingsReplay (0.34s)
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/stale_endpoint
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/bad_credential
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/public_credential
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/symlink_credential
+--- PASS: TestTerminalT02NoFallbackAfterLiveFailure (0.29s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/stale_endpoint (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/bad_credential (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/public_credential (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/symlink_credential (0.00s)
+=== RUN   TestTerminalT02EndpointAndBounds
+--- PASS: TestTerminalT02EndpointAndBounds (0.31s)
+=== RUN   TestTerminalT02IdentityCancellationAndAuth
+--- PASS: TestTerminalT02IdentityCancellationAndAuth (0.60s)
+=== RUN   TestTerminalT02FiniteInitializerAndPartialRestart
+--- PASS: TestTerminalT02FiniteInitializerAndPartialRestart (0.30s)
+=== RUN   TestTerminalT02LegacyLimitsReview
+--- PASS: TestTerminalT02LegacyLimitsReview (0.33s)
+=== RUN   TestTerminalT02LostResponseRecoveryAndExpiredReplay
+--- PASS: TestTerminalT02LostResponseRecoveryAndExpiredReplay (0.33s)
+=== RUN   TestTerminalT02StaleReviewNetworkSettings
+--- PASS: TestTerminalT02StaleReviewNetworkSettings (0.30s)
+=== RUN   TestTerminalT02DaemonProcess
+    lifecycle_test.go:287: subprocess entry only
+--- SKIP: TestTerminalT02DaemonProcess (0.00s)
+=== RUN   TestTerminalT02ConcurrentProcessLaunchAndLifetime
+--- PASS: TestTerminalT02ConcurrentProcessLaunchAndLifetime (2.63s)
+=== RUN   TestTerminalT02MissingSystemdAndExplicitErrors
+--- PASS: TestTerminalT02MissingSystemdAndExplicitErrors (0.32s)
+=== RUN   TestTerminalT02ServiceProcessActionsAndSelection
+--- PASS: TestTerminalT02ServiceProcessActionsAndSelection (5.23s)
+=== RUN   TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork
+--- PASS: TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork (0.37s)
+=== RUN   TestTerminalT02ConcurrentMutationReplay
+--- PASS: TestTerminalT02ConcurrentMutationReplay (0.39s)
+=== RUN   TestTerminalT02ControlServeShutdown
+--- PASS: TestTerminalT02ControlServeShutdown (0.35s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	13.096s

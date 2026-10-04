@@ -1,0 +1,67 @@
+{
+  "packet": "T07",
+  "state": "complete",
+  "date": "2026-10-04",
+  "ordinary_tests": {
+    "discovered": 5,
+    "passes_per_run": 5,
+    "runs": 2,
+    "skips": 0,
+    "exit_code": 0,
+    "seconds": 0.935,
+    "log": "packet.log"
+  },
+  "packet_race": {
+    "exit_code": 0,
+    "passes": 5,
+    "seconds": 2.294,
+    "command": "go test -race -count=1 -v ./tests/terminal -run '^TestTerminalT07'",
+    "log": "packet-race.log"
+  },
+  "cmd_filesync_tests": {
+    "exit_code": 0,
+    "passes": 3,
+    "log": "cmd-filesync.log"
+  },
+  "control_unit_tests": {
+    "exit_code": 0,
+    "passes": 6,
+    "log": "control-unit.log"
+  },
+  "make_check": {
+    "exit_code": 0,
+    "log": "make-check.log"
+  },
+  "make_test_race": {
+    "exit_code": 0,
+    "log": "make-test-race.log"
+  },
+  "scoped_vet": {
+    "exit_code": 0,
+    "log": "scoped-vet.log"
+  },
+  "intermediate_failures": [
+    "handleOrbitStatus flag parser captured state directory argument as positional folder when passed as --state <dir>",
+    "AWAITING_APPROVAL attention query initially missed SQL enrollment_requests table records",
+    "doctor daemon lifecycle check initially reported WARN for stopped daemon when control.addr was absent, causing TestP13CLIDiagnosticsAndDoctor regression"
+  ],
+  "acceptance_evidence": {
+    "mixed_state_observations": [
+      "TestTerminalT07_Status_Observations_MixedState",
+      "TestTerminalT00DetailObservation"
+    ],
+    "attention_persistence_across_restart": [
+      "TestTerminalT07_Status_Attention_PersistenceAcrossRestart"
+    ],
+    "bounded_pagination_and_cancellation": [
+      "TestTerminalT07_Status_BoundedPaginationAndCancellation"
+    ],
+    "doctor_diagnostics_and_remediations": [
+      "TestTerminalT07_Doctor_DiagnosticsAndRemediations"
+    ],
+    "cli_status_and_doctor_parity": [
+      "TestTerminalT07_CLI_StatusAndDoctor_Parity"
+    ]
+  },
+  "next_packet": "T08"
+}

@@ -1,0 +1,31 @@
+=== RUN   TestTerminalT10FormKeyboardReviewAndErrors
+--- PASS: TestTerminalT10FormKeyboardReviewAndErrors (0.00s)
+=== RUN   TestTerminalT10ExactApprovalAndScopedSharing
+--- PASS: TestTerminalT10ExactApprovalAndScopedSharing (0.00s)
+=== RUN   TestTerminalT10LateRepliesAndResumeReadiness
+--- PASS: TestTerminalT10LateRepliesAndResumeReadiness (0.00s)
+=== RUN   TestTerminalT10PrivateNarrowViewsAndErrorActions
+--- PASS: TestTerminalT10PrivateNarrowViewsAndErrorActions (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.014s
+=== RUN   TestTerminalT10BlockedSetupPagesAndFolderManagement
+--- PASS: TestTerminalT10BlockedSetupPagesAndFolderManagement (0.01s)
+=== RUN   TestTerminalT10RealPTYOnboarding
+    tui_onboarding_test.go:77: PTY onboarding: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 273, in <module>
+            if __name__=="__main__":main()
+                                    ~~~~^^
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 271, in main
+            args=parser.parse_args();run(Path(args.binary).resolve(strict=True),args.output)
+                                     ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_onboarding_pty_test.py", line 234, in run
+            inv2=json.loads(transfer.read_text());assert inv2["folder"]==second["id"] and inv2["folder"]!=folder
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        AssertionError
+--- FAIL: TestTerminalT10RealPTYOnboarding (32.88s)
+=== RUN   TestTerminalT10FolderForkLagAndConservativePreview
+--- PASS: TestTerminalT10FolderForkLagAndConservativePreview (0.04s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	32.930s
+FAIL

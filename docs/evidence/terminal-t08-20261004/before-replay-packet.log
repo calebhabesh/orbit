@@ -1,0 +1,66 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.07s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.64s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:405: CLI history peak_rss_kib=64488
+    content_recovery_test.go:412: CLI restore peak_rss_kib=64488
+    content_recovery_test.go:413: CLI restore peak_rss_kib=64488
+    content_recovery_test.go:419: CLI export peak_rss_kib=64488
+    content_recovery_test.go:426: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:430: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:436: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:440: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:440: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:452: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:460: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:465: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:470: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:483: CLI conflicts peak_rss_kib=64488
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.74s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.04s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.02s)
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.07s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.64s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:405: CLI history peak_rss_kib=64488
+    content_recovery_test.go:412: CLI restore peak_rss_kib=64488
+    content_recovery_test.go:413: CLI restore peak_rss_kib=64488
+    content_recovery_test.go:419: CLI export peak_rss_kib=64488
+    content_recovery_test.go:426: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:430: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:436: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:440: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:440: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:452: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:460: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:465: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:470: CLI conflicts peak_rss_kib=64488
+    content_recovery_test.go:483: CLI conflicts peak_rss_kib=64488
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.57s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.04s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	3.020s

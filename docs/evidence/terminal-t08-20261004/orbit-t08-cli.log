@@ -1,0 +1,39 @@
+# github.com/calebhabesh/file-sync/cmd/filesync [github.com/calebhabesh/file-sync/cmd/filesync.test]
+cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+FAIL	github.com/calebhabesh/file-sync/cmd/filesync [build failed]
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+--- FAIL: TestTerminalT06AmbiguousAndOutsideRootContext (0.13s)
+    commands_context_test.go:199: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT06StaleAndUnavailableRoot (0.14s)
+    commands_context_test.go:310: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT06ContextResolutionCwdAndName (0.14s)
+    commands_context_test.go:49: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT07_CLI_StatusAndDoctor_Parity (0.14s)
+    status_diagnostics_test.go:632: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT06LiveAndStoppedAdapterParity (0.15s)
+    commands_context_test.go:527: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT06PathSafetyAndLiteralPaths (0.15s)
+    commands_context_test.go:365: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT06OutputEscapingAndControlCharacters (0.15s)
+    commands_context_test.go:461: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+--- FAIL: TestTerminalT06ShellCompletionsAndHelpWalkthrough (0.15s)
+    commands_context_test.go:653: build orbit binary: exit status 1
+        # github.com/calebhabesh/file-sync/cmd/filesync
+        cmd/filesync/terminal_commands.go:12:2: "net/url" imported and not used
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.167s
+FAIL

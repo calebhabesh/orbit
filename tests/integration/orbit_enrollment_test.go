@@ -242,6 +242,7 @@ func TestOrbitEnrollment_RequestBoundingAndRateLimits(t *testing.T) {
 	oversizedBody := bytes.Repeat([]byte("X"), 17*1024)
 	reqOversized, _ := http.NewRequest(http.MethodPost, ts.URL+"/api/v1/enrollment/request", bytes.NewReader(oversizedBody))
 	reqOversized.Header.Set("Content-Type", "application/json")
+	reqOversized.Header.Set("Authorization", "Bearer "+srv.CLIToken())
 	respOversized, err := client.Do(reqOversized)
 	if err != nil {
 		t.Fatal(err)
@@ -260,6 +261,7 @@ func TestOrbitEnrollment_RequestBoundingAndRateLimits(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		req, _ := http.NewRequest(http.MethodPost, ts.URL+"/api/v1/enrollment/request", bytes.NewReader(dummyBody))
 		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", "Bearer "+srv.CLIToken())
 		resp, err := client.Do(req)
 		if err != nil {
 			t.Fatal(err)
@@ -270,6 +272,7 @@ func TestOrbitEnrollment_RequestBoundingAndRateLimits(t *testing.T) {
 	// 6th request from same client must receive HTTP 429 Too Many Requests
 	reqRate, _ := http.NewRequest(http.MethodPost, ts.URL+"/api/v1/enrollment/request", bytes.NewReader(dummyBody))
 	reqRate.Header.Set("Content-Type", "application/json")
+	reqRate.Header.Set("Authorization", "Bearer "+srv.CLIToken())
 	respRate, err := client.Do(reqRate)
 	if err != nil {
 		t.Fatal(err)

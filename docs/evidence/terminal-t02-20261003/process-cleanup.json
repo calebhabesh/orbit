@@ -1,0 +1,44 @@
+[
+  {
+    "pid": 157095,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity684958707/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  },
+  {
+    "pid": 165424,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity390831664/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  },
+  {
+    "pid": 175759,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity3863841899/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  },
+  {
+    "pid": 183979,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity1033018356/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  },
+  {
+    "pid": 198693,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity4131279706/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  },
+  {
+    "pid": 211868,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity2819493734/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  },
+  {
+    "pid": 219744,
+    "action": "SIGTERM via verified pidfd",
+    "state": "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity2921746807/001/state-a",
+    "scope": "known disposable integration-test daemon; fixture marker was removed prematurely by the former cleanup bug"
+  }
+]

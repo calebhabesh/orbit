@@ -1,0 +1,41 @@
+ M AGENTS.md
+ M CONTEXT.md
+ M README.md
+ M cmd/filesync/main.go
+ M docs/implementation-plan.md
+ M docs/implementation/orbit-status.md
+ M docs/implementation/status.md
+ M docs/operations.md
+ M docs/orbit-architecture.md
+ M docs/orbit-implementation-plan.md
+ M docs/orbit-product.md
+ M docs/persistence.md
+ M docs/portfolio-scope.md
+ M docs/protocol.md
+ M docs/verification.md
+ M internal/control/orbit_setup_test.go
+ M internal/control/server.go
+ M internal/scheduler/scheduler.go
+ M internal/workspace/file_mutations.go
+ M internal/workspace/workspace.go
+ M scripts/orbit_ui_test.mjs
+ D web/dist/assets/index-DYl1kZ4C.js
+ M web/dist/index.html
+ M web/src/api.ts
+ M web/src/views/SettingsView.tsx
+?? cmd/filesync/relocation.go
+?? cmd/filesync/relocation_test.go
+?? docs/evidence/orbit-relocation/
+?? docs/implementation/terminal-cli-tui.md
+?? docs/implementation/terminal-foundations.md
+?? docs/implementation/terminal-release.md
+?? docs/implementation/terminal-status.md
+?? docs/orbit-terminal-architecture.md
+?? docs/orbit-terminal-implementation-plan.md
+?? docs/orbit-terminal-ux.md
+?? internal/control/relocation.go
+?? internal/repository/relocation.go
+?? internal/workspace/relocation.go
+?? internal/workspace/relocation_test.go
+?? web/dist/assets/index-DAEE1fRl.js
+?? web/src/components/RelocateFolderForm.tsx

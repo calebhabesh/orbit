@@ -1,0 +1,42 @@
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.07s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.671s

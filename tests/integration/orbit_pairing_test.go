@@ -6,8 +6,11 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"net"
 	"net/http/httptest"
 	"os"
 	"os/exec"
@@ -16,8 +19,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/app"
 	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/control"
+	"github.com/calebhabesh/file-sync/internal/controlclient"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
@@ -27,7 +32,7 @@ import (
 )
 
 // setupNode creates an initialized Orbit test node in a disposable directory.
-func setupNode(t *testing.T, label string) (*control.Controller, *control.Server, *httptest.Server, *repository.DB, string, history.ID, func()) {
+func setupNode(t *testing.T, label string, withEnrollment ...bool) (*control.Controller, *control.Server, *httptest.Server, *repository.DB, string, history.ID, func()) {
 	t.Helper()
 	ctx := context.Background()
 	disposable := testkit.NewDisposable(t)
@@ -78,8 +83,62 @@ func setupNode(t *testing.T, label string) (*control.Controller, *control.Server
 	}
 
 	httpSrv := httptest.NewTLSServer(srv.Handler())
+	var networkCancel context.CancelFunc
+	var networkDone chan error
+	if len(withEnrollment) > 0 && withEnrollment[0] {
+		addresses, err := net.InterfaceAddrs()
+		if err != nil {
+			t.Fatal(err)
+		}
+		ip := ""
+		for _, a := range addresses {
+			candidate, _, err := net.ParseCIDR(a.String())
+			if err == nil && candidate.To4() != nil && !candidate.IsLoopback() {
+				ip = candidate.String()
+				break
+			}
+		}
+		if ip == "" {
+			t.Fatal("enrollment fixture requires nonloopback IPv4")
+		}
+		enrollment, err := net.Listen("tcp", net.JoinHostPort(ip, "0"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		peer, err := net.Listen("tcp", net.JoinHostPort(ip, "0"))
+		if err != nil {
+			enrollment.Close()
+			t.Fatal(err)
+		}
+		identity, err := replication.LoadOrCreateIdentity(stateDir, localDevice, time.Now())
+		if err != nil {
+			t.Fatal(err)
+		}
+		settings := config.DefaultRuntimeSettings()
+		settings.EnrollmentListen = enrollment.Addr().String()
+		settings.AdvertisedEnrollment = settings.EnrollmentListen
+		settings.PeerListen = peer.Addr().String()
+		settings.AdvertisedPeer = settings.PeerListen
+		if err := config.SaveRuntimeSettings(stateDir, settings); err != nil {
+			t.Fatal(err)
+		}
+		networkCtx, cancelNetwork := context.WithCancel(ctx)
+		networkCancel = cancelNetwork
+		networkDone = make(chan error, 2)
+		go func() { networkDone <- replication.NewEnrollmentServer(db, identity).Serve(networkCtx, enrollment) }()
+		go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, peer) }()
+
+	}
 
 	cleanup := func() {
+		if networkCancel != nil {
+			networkCancel()
+			for i := 0; i < 2; i++ {
+				if err := <-networkDone; err != nil {
+					t.Error(err)
+				}
+			}
+		}
 		httpSrv.Close()
 		db.Close()
 	}
@@ -91,7 +150,7 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	ctx := context.Background()
 
 	// 1. Setup Node A (Owner)
-	ctrlA, _, httpSrvA, dbA, stateDirA, devA, cleanupA := setupNode(t, "Owner-PC")
+	ctrlA, _, httpSrvA, dbA, stateDirA, devA, cleanupA := setupNode(t, "Owner-PC", true)
 	defer cleanupA()
 
 	var folderID history.ID
@@ -100,7 +159,11 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	pinA := sha256.Sum256(devA[:])
+	identityA, e := replication.LoadOrCreateIdentity(dbA.StateDir(), devA, time.Now())
+	if e != nil {
+		t.Fatal(e)
+	}
+	pinA := identityA.KeyPin
 	if _, err := dbA.ApproveMembership(ctx, protocol.Membership{
 		Folder:      folderID,
 		Revision:    1,
@@ -111,7 +174,7 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	}
 
 	// 2. Setup Node B (Joining Device)
-	ctrlB, _, httpSrvB, dbB, stateDirB, devB, cleanupB := setupNode(t, "Joining-Laptop")
+	ctrlB, _, _, dbB, stateDirB, devB, cleanupB := setupNode(t, "Joining-Laptop", true)
 	defer cleanupB()
 	_ = dbB
 
@@ -139,7 +202,7 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	if invRes.Token == "" {
 		t.Fatal("expected non-empty invitation token")
 	}
-	if !strings.HasPrefix(invRes.InvitationCode, "orbit-invitation:v1?") {
+	if !strings.HasPrefix(invRes.InvitationCode, "orbit-invitation:v2:") {
 		t.Fatalf("expected formatted invitation code, got: %s", invRes.InvitationCode)
 	}
 
@@ -169,11 +232,13 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 		t.Fatalf("expected preexisting rows to be detected, got %d", previewRes.PreexistingRows)
 	}
 
+	invitation := decodePairingInvitation(t, invRes.InvitationCode)
 	// 5. Node B submits join request to Node A
 	submitRes, err := ctrlB.SubmitJoinFlow(ctx, control.JoinFlowSubmitRequest{
+		Invitation:      &invitation,
 		InvitationToken: invRes.Token,
 		TargetFolder:    hex.EncodeToString(folderID[:]),
-		RemoteEndpoint:  httpSrvA.URL,
+		RemoteEndpoint:  invitation.EnrollmentEndpoint,
 		DeviceLabel:     "Laptop-B",
 		RootPath:        rootB,
 	})
@@ -214,11 +279,17 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	}
 
 	// 8. Node A approves enrollment request with custom alias and endpoint
+	reviewed := pairingReview(t, ctrlA, submitRes.RequestID, "approve")
+	joiningSettings, e := config.LoadRuntimeSettings(stateDirB)
+	if e != nil {
+		t.Fatal(e)
+	}
 	approveRes, err := ctrlA.ApproveEnrollmentRequest(ctx, control.ApproveEnrollmentRequest{
+		Reviewed: &reviewed, OperationID: pairingOperation(t),
 		RequestID:      submitRes.RequestID,
 		Folder:         folderID,
 		SuggestedLabel: "Custom Laptop B",
-		Endpoint:       httpSrvB.URL,
+		Endpoint:       "https://" + joiningSettings.AdvertisedPeer,
 	})
 	if err != nil {
 		t.Fatalf("ApproveEnrollmentRequest failed: %v", err)
@@ -237,9 +308,10 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	}
 
 	// 10. Node B completes join flow
+	time.Sleep(25 * time.Second)
 	completeRes, err := ctrlB.CompleteJoinFlow(ctx, control.JoinFlowCompleteRequest{
 		RequestID:      submitRes.RequestID,
-		RemoteEndpoint: httpSrvA.URL,
+		RemoteEndpoint: invitation.EnrollmentEndpoint,
 		TargetFolder:   hex.EncodeToString(folderID[:]),
 		RootPath:       rootB,
 		DeviceLabel:    "Custom Laptop B",
@@ -279,7 +351,7 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	}
 	var foundOwnerEndpoint bool
 	for _, ep := range endpointsB {
-		if ep.Device == hex.EncodeToString(devA[:]) && ep.URL == httpSrvA.URL {
+		if ep.Device == hex.EncodeToString(devA[:]) && ep.URL == invitation.PeerEndpoint {
 			foundOwnerEndpoint = true
 			break
 		}
@@ -295,7 +367,7 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	}
 	var foundJoiningEndpoint bool
 	for _, ep := range endpointsA {
-		if ep.Device == hex.EncodeToString(devB[:]) && ep.URL == httpSrvB.URL {
+		if ep.Device == hex.EncodeToString(devB[:]) && ep.URL == "https://"+joiningSettings.AdvertisedPeer {
 			foundJoiningEndpoint = true
 			break
 		}
@@ -318,13 +390,17 @@ func TestOrbitPairing_DeclineJoinFlow(t *testing.T) {
 	ctx := context.Background()
 
 	// 1. Setup Node A and Node B
-	ctrlA, _, httpSrvA, dbA, _, devA, cleanupA := setupNode(t, "Owner-PC")
+	ctrlA, _, httpSrvA, dbA, _, devA, cleanupA := setupNode(t, "Owner-PC", true)
 	defer cleanupA()
 
 	var folderID history.ID
 	rand.Read(folderID[:])
 	_ = dbA.EnsureFolder(ctx, folderID, devA, 1)
-	pinA := sha256.Sum256(devA[:])
+	identityA, e := replication.LoadOrCreateIdentity(dbA.StateDir(), devA, time.Now())
+	if e != nil {
+		t.Fatal(e)
+	}
+	pinA := identityA.KeyPin
 	_, _ = dbA.ApproveMembership(ctx, protocol.Membership{
 		Folder:      folderID,
 		Revision:    1,
@@ -332,7 +408,7 @@ func TestOrbitPairing_DeclineJoinFlow(t *testing.T) {
 		Active:      []protocol.ActiveMember{{Device: devA, KeyPin: pinA}},
 	})
 
-	ctrlB, _, _, _, _, _, cleanupB := setupNode(t, "Joining-Laptop")
+	ctrlB, _, _, _, _, _, cleanupB := setupNode(t, "Joining-Laptop", true)
 	defer cleanupB()
 
 	rootB := filepath.Join(testkit.NewDisposable(t), "sync-b")
@@ -349,11 +425,13 @@ func TestOrbitPairing_DeclineJoinFlow(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	invitation := decodePairingInvitation(t, invRes.InvitationCode)
 	// 3. Node B submits join request
 	submitRes, err := ctrlB.SubmitJoinFlow(ctx, control.JoinFlowSubmitRequest{
+		Invitation:      &invitation,
 		InvitationToken: invRes.Token,
 		TargetFolder:    hex.EncodeToString(folderID[:]),
-		RemoteEndpoint:  httpSrvA.URL,
+		RemoteEndpoint:  invitation.EnrollmentEndpoint,
 		DeviceLabel:     "Laptop-B",
 		RootPath:        rootB,
 	})
@@ -362,7 +440,9 @@ func TestOrbitPairing_DeclineJoinFlow(t *testing.T) {
 	}
 
 	// 4. Node A declines join request
+	reviewed := pairingReview(t, ctrlA, submitRes.RequestID, "decline")
 	err = ctrlA.DeclineEnrollmentRequest(ctx, control.DeclineEnrollmentRequest{
+		Reviewed: &reviewed, OperationID: pairingOperation(t),
 		RequestID: submitRes.RequestID,
 	})
 	if err != nil {
@@ -456,6 +536,34 @@ func TestOrbitPairing_DeviceDetailAndRename(t *testing.T) {
 	}
 }
 
+func reviewedCLISetup(t *testing.T, command func(...string) *exec.Cmd, disposable string, args ...string) *exec.Cmd {
+	t.Helper()
+	request := filepath.Join(disposable, "setup-request-"+strings.ReplaceAll(filepath.Base(args[1]), "/", "-")+".json")
+	previewArgs := append([]string{"setup", "--preview", "--review-file", request}, args...)
+	if out, err := command(previewArgs...).CombinedOutput(); err != nil {
+		t.Fatalf("review setup: %v %s", err, out)
+	}
+	stateDir := ""
+	for i, a := range args {
+		if a == "--state" && i+1 < len(args) {
+			stateDir = args[i+1]
+		}
+	}
+	t.Cleanup(func() {
+		if err := testkit.ValidateDestructiveTarget(disposable, stateDir); err != nil {
+			t.Error(err)
+			return
+		}
+		if _, err := os.Stat(filepath.Join(stateDir, ".agent.pid")); os.IsNotExist(err) {
+			return
+		}
+		if err := app.StopAgent(stateDir, 5*time.Second); err != nil {
+			t.Error(err)
+		}
+	})
+	return command("setup", "--state", stateDir, "--request-file", request)
+}
+
 func TestOrbitPairing_CLI_Parity(t *testing.T) {
 	disposable := testkit.NewDisposable(t)
 	stateDir := filepath.Join(disposable, "state-cli")
@@ -479,7 +587,10 @@ func TestOrbitPairing_CLI_Parity(t *testing.T) {
 	}
 
 	// 1. orbit setup
-	cmd := orbitCmd("setup", "--state", stateDir, "--root", rootPath, "--label", "CLI-Node", "--name", "TestCLI")
+	if err := os.Chmod(disposable, 0700); err != nil {
+		t.Fatal(err)
+	}
+	cmd := reviewedCLISetup(t, orbitCmd, disposable, "--state", stateDir, "--root", rootPath, "--label", "CLI-Node", "--name", "TestCLI")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("orbit setup failed: %v\nOutput: %s", err, string(out))
@@ -542,6 +653,9 @@ func TestOrbitPairing_CLI_Parity(t *testing.T) {
 
 func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	disposable := testkit.NewDisposable(t)
+	if err := os.Chmod(disposable, 0700); err != nil {
+		t.Fatal(err)
+	}
 	stateA := filepath.Join(disposable, "state-a")
 	rootA := filepath.Join(disposable, "root-a")
 	stateB := filepath.Join(disposable, "state-b")
@@ -568,12 +682,50 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	}
 
 	// 1. orbit setup on node A
-	cmd := orbitCmd("setup", "--state", stateA, "--root", rootA, "--label", "Desktop-Workstation", "--name", "Lab-Workspace")
+	cmd := reviewedCLISetup(t, orbitCmd, disposable, "--state", stateA, "--root", rootA, "--label", "Desktop-Workstation", "--name", "Lab-Workspace")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("setup A failed: %v: %s", err, string(out))
 	}
 
+	if err := app.StopAgent(stateA, 5*time.Second); err != nil {
+		t.Fatal(err)
+	}
+	// Configure reviewed nonloopback peer/enrollment addresses before launch.
+	interfaces, e := net.InterfaceAddrs()
+	if e != nil {
+		t.Fatal(e)
+	}
+	ip := ""
+	for _, a := range interfaces {
+		candidate, _, e := net.ParseCIDR(a.String())
+		if e == nil && candidate.To4() != nil && !candidate.IsLoopback() {
+			ip = candidate.String()
+			break
+		}
+	}
+	if ip == "" {
+		t.Fatal("test requires nonloopback IPv4")
+	}
+	peer, e := net.Listen("tcp", net.JoinHostPort(ip, "0"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	enrollment, e := net.Listen("tcp", net.JoinHostPort(ip, "0"))
+	if e != nil {
+		peer.Close()
+		t.Fatal(e)
+	}
+	settings := config.DefaultRuntimeSettings()
+	settings.PeerListen = peer.Addr().String()
+	settings.EnrollmentListen = enrollment.Addr().String()
+	settings.AdvertisedPeer = settings.PeerListen
+	settings.AdvertisedEnrollment = settings.EnrollmentListen
+	if e := config.SaveRuntimeSettings(stateA, settings); e != nil {
+		t.Fatal(e)
+	}
+	peer.Close()
+	enrollment.Close()
 	// 2. orbit launch daemon on node A (loopback dynamic port)
 	cmd = orbitCmd("launch", "--state", stateA, "--control-listen", "127.0.0.1:0", "--no-browser", "--json")
 	out, err = cmd.CombinedOutput()
@@ -581,8 +733,13 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 		t.Fatalf("launch A failed: %v: %s", err, string(out))
 	}
 	t.Cleanup(func() {
-		stopCmd := exec.Command(binPath, "stop", "--state", stateA)
-		_ = stopCmd.Run()
+		if err := testkit.ValidateDestructiveTarget(disposable, stateA); err != nil {
+			t.Error(err)
+			return
+		}
+		if err := app.StopAgent(stateA, 5*time.Second); err != nil {
+			t.Errorf("stop disposable launch daemon: %v", err)
+		}
 	})
 
 	var launchRes struct {
@@ -608,12 +765,12 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 		t.Fatalf("invite create while daemon running failed: %v: %s", err, string(out))
 	}
 	outStr := string(out)
-	if !strings.Contains(outStr, "orbit-invitation:v1?") {
+	if !strings.Contains(outStr, "orbit-invitation:v2:") {
 		t.Fatalf("expected invitation link, got: %s", outStr)
 	}
 	var inviteLink string
 	for _, line := range strings.Split(outStr, "\n") {
-		if idx := strings.Index(line, "orbit-invitation:v1?"); idx != -1 {
+		if idx := strings.Index(line, "orbit-invitation:v2:"); idx != -1 {
 			inviteLink = strings.TrimSpace(line[idx:])
 			break
 		}
@@ -640,15 +797,52 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	}
 
 	// 6. orbit join from node B
-	joinCmd := orbitCmd("join", "--state", stateB, "--root", rootB, "--label", "Headless-Server", "--invitation", inviteLink, "--timeout", "10")
+	invitationPath := filepath.Join(disposable, "invitation.txt")
+	if e := os.WriteFile(invitationPath, []byte(inviteLink), 0600); e != nil {
+		t.Fatal(e)
+	}
+	joinReview := filepath.Join(disposable, "join-reviewed.json")
+	if out, e := orbitCmd("join", "--state", stateB, "--root", rootB, "--label", "Headless-Server", "--invitation-file", invitationPath, "--preview", "--review-file", joinReview).CombinedOutput(); e != nil {
+		t.Fatalf("join review: %v %s", e, out)
+	}
+	t.Cleanup(func() {
+		if err := testkit.ValidateDestructiveTarget(disposable, stateB); err != nil {
+			t.Error(err)
+			return
+		}
+		if err := app.StopAgent(stateB, 5*time.Second); err != nil {
+			t.Error(err)
+		}
+	})
+	joinCmd := orbitCmd("join", "--state", stateB, "--request-file", joinReview, "--timeout", "45")
 	var joinOut bytes.Buffer
 	joinCmd.Stdout = &joinOut
 	joinCmd.Stderr = &joinOut
 	if err := joinCmd.Start(); err != nil {
 		t.Fatalf("join start failed: %v", err)
 	}
+	joinWaited := false
+	t.Cleanup(func() {
+		if joinWaited {
+			return
+		}
+		if err := testkit.ValidateDestructiveTarget(disposable, stateB); err != nil {
+			t.Error(err)
+			return
+		}
+		_ = joinCmd.Process.Signal(os.Interrupt)
+		_ = joinCmd.Wait()
+	})
 
-	time.Sleep(1 * time.Second)
+	queryClient := &controlclient.Client{StateDir: stateA}
+	until := time.Now().Add(5 * time.Second)
+	for time.Now().Before(until) {
+		r, e := queryClient.Query(context.Background(), tc.Query{Version: "1", Kind: "requests"})
+		if e == nil && len(r.Requests) > 0 {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
 
 	// 7. orbit requests list on node A while daemon is running
 	cmd = orbitCmd("requests", "list", "--state", stateA, "--status", "pending")
@@ -673,7 +867,26 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	}
 
 	// 8. orbit requests approve on node A while daemon is running
-	cmd = orbitCmd("requests", "approve", "--state", stateA, "--request", reqID, "--alias", "Compute Server")
+	client := &controlclient.Client{StateDir: stateA}
+	requests, e := client.Query(context.Background(), tc.Query{Version: "1", Kind: "requests"})
+	if e != nil {
+		t.Fatal(e)
+	}
+	var reviewed tc.ApprovalIntent
+	for _, r := range requests.Requests {
+		if r.ID == reqID {
+			reviewed = tc.ApprovalIntent{Request: r.ID, Folder: r.Folder, Requester: r.Requester, KeyPin: r.KeyPin, TranscriptDigest: r.TranscriptDigest, ExpectedMembership: r.ExpectedMembership, Decision: "approve"}
+		}
+	}
+	reviewPath := filepath.Join(disposable, "approval.json")
+	reviewBytes, e := json.Marshal(reviewed)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e := os.WriteFile(reviewPath, reviewBytes, 0600); e != nil {
+		t.Fatal(e)
+	}
+	cmd = orbitCmd("requests", "approve", "--state", stateA, "--request", reqID, "--alias", "Compute Server", "--review-file", reviewPath, "--operation", pairingOperation(t))
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("requests approve while daemon running failed: %v: %s", err, string(out))
@@ -683,7 +896,9 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	}
 
 	// 9. wait for node B join to complete
-	if err := joinCmd.Wait(); err != nil {
+	joinErr := joinCmd.Wait()
+	joinWaited = true
+	if err := joinErr; err != nil {
 		t.Fatalf("join failed: %v: %s", err, joinOut.String())
 	}
 	if !strings.Contains(joinOut.String(), "Workspace joined successfully") {
@@ -699,4 +914,39 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	if !strings.Contains(string(out), "Compute Server") {
 		t.Fatalf("expected Compute Server in devices list, got: %s", string(out))
 	}
+}
+
+func decodePairingInvitation(t *testing.T, code string) tc.Invitation {
+	t.Helper()
+	var inv tc.Invitation
+	b, err := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(code, "orbit-invitation:v2:"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := tc.Decode(b, &inv); err != nil {
+		t.Fatal(err)
+	}
+	return inv
+}
+func pairingOperation(t *testing.T) string {
+	t.Helper()
+	var b [32]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		t.Fatal(err)
+	}
+	return hex.EncodeToString(b[:])
+}
+func pairingReview(t *testing.T, c *control.Controller, request, decision string) tc.ApprovalIntent {
+	t.Helper()
+	r, err := c.TerminalQuery(context.Background(), tc.Query{Version: "1", Kind: "requests"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range r.Requests {
+		if p.ID == request {
+			return tc.ApprovalIntent{Request: p.ID, Folder: p.Folder, Requester: p.Requester, KeyPin: p.KeyPin, TranscriptDigest: p.TranscriptDigest, ExpectedMembership: p.ExpectedMembership, Decision: decision}
+		}
+	}
+	t.Fatal("missing scoped requester review")
+	return tc.ApprovalIntent{}
 }

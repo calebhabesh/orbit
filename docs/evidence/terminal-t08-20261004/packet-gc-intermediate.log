@@ -1,0 +1,29 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+    content_recovery_test.go:142: want CONTENT_EXPIRED, got <nil>
+--- FAIL: TestTerminalT08ExactReadsLiveStoppedAndGC (0.09s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.64s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:389: CLI history peak_rss_kib=62660
+    content_recovery_test.go:396: CLI restore peak_rss_kib=62660
+    content_recovery_test.go:397: CLI restore peak_rss_kib=62660
+    content_recovery_test.go:403: CLI export peak_rss_kib=62660
+    content_recovery_test.go:410: CLI conflicts peak_rss_kib=62660
+    content_recovery_test.go:415: CLI conflicts peak_rss_kib=62660
+    content_recovery_test.go:420: CLI conflicts peak_rss_kib=62660
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.46s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.04s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.02s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1.343s
+FAIL

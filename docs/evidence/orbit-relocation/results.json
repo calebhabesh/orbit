@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-03",
+  "base_commit": "86ae552",
+  "source": "modified working tree",
+  "engine_relocation": "passed",
+  "cli_stopped_live_parity": "passed",
+  "race_four_packages": "passed",
+  "make_check": "passed",
+  "chromium_relocation": "passed",
+  "desktop_spy_before": "helper invoked",
+  "desktop_spy_after": "no helper invoked",
+  "cross_filesystems": [
+    "host filesystem",
+    "/dev/shm"
+  ],
+  "unexecuted": [
+    "relocation SIGKILL",
+    "physical reset",
+    "cross-drive ENOSPC",
+    "P17 owner pilot/explanation"
+  ]
+}

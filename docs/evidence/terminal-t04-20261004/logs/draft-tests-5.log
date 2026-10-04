@@ -1,0 +1,12 @@
+=== RUN   TestTerminalT04InitialCaptureFailureBlocksBootstrap
+--- PASS: TestTerminalT04InitialCaptureFailureBlocksBootstrap (0.02s)
+=== RUN   TestTerminalT04FatalScanFailurePreservesCapture
+--- PASS: TestTerminalT04FatalScanFailurePreservesCapture (0.01s)
+=== RUN   TestTerminalT04DelayedJoinRestartAndTransfer
+=== PAUSE TestTerminalT04DelayedJoinRestartAndTransfer
+=== CONT  TestTerminalT04DelayedJoinRestartAndTransfer
+    setup_test.go:354: approved join: <nil> &{Code:READINESS_PENDING Message:READINESS_PENDING: READINESS_PENDING (action: inspect state and obtain a fresh review) Retryable:true Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0} readiness=&{Approved:true MembershipCurrent:true RootAvailable:true ScanComplete:true Unsupported:0 Unreadable:0 Uncaptured:0 MissingContent:0 PendingPublication:1 Conflicts:0 StorageBlocked:false}
+--- FAIL: TestTerminalT04DelayedJoinRestartAndTransfer (25.05s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	25.085s
+FAIL

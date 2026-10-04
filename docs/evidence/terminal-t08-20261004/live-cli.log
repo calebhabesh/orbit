@@ -1,0 +1,18 @@
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:402: CLI history peak_rss_kib=46012
+    content_recovery_test.go:409: CLI restore peak_rss_kib=46012
+    content_recovery_test.go:410: CLI restore peak_rss_kib=46012
+    content_recovery_test.go:416: CLI export peak_rss_kib=46012
+    content_recovery_test.go:423: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:427: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:433: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:437: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:437: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:449: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:457: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:462: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:467: CLI conflicts peak_rss_kib=46012
+    content_recovery_test.go:480: CLI conflicts peak_rss_kib=46012
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.82s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.826s

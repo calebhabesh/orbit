@@ -1,0 +1,159 @@
+cmd/filesync/main.go:1535
+1535: 	var mergeBytes []byte
+1536: 	if *file != "" {
+1537: 		data, err := os.ReadFile(*file)
+1538: 		if err != nil {
+1539: 			return fmt.Errorf("reading merge file: %w", err)
+1540: 		}
+1541: 		mergeBytes = data
+1542: 	} else {
+1543: 		mergeBytes = []byte(*content)
+1544: 	}
+1545: 
+1546: 	return app.WithWorkspace(context.Background(), *stateDir, func(_ config.Config, db *repository.DB, work *workspace.Workspace) error {
+1547: 		var reviewed []history.VersionID
+
+cmd/filesync/main.go:3212
+3212: 
+3213: 	switch args[0] {
+3214: 	case "launch":
+3215: 		return handleOrbitLaunch(args[1:], stdout, stderr)
+3216: 	case "browse", "search", "details":
+3217: 		return handleOrbitBrowse(args[0], args[1:], stdout, stderr)
+3218: 	case "mkdir", "import", "move", "rename", "delete":
+3219: 		return handleOrbitFileAction(args[0], args[1:], stdout, stderr)
+3220: 	case "restore":
+3221: 		return handleRestore(args[1:], stdout, stderr)
+3222: 	case "conflicts":
+3223: 		return run(append([]string{"conflicts"}, args[1:]...), stdout, stderr)
+3224: 	case "status":
+3225: 		return handleOrbitStatus(args[1:], stdout, stderr)
+3226: 	case "setup":
+3227: 		return handleOrbitSetup(args[1:], stdout, stderr)
+3228: 	case "init":
+3229: 		return run(args, stdout, stderr)
+3230: 	case "join":
+3231: 		return handleOrbitJoin(args[1:], stdout, stderr)
+3232: 	case "invite":
+3233: 		return handleOrbitInvite(args[1:], stdout, stderr)
+3234: 	case "requests":
+3235: 		return handleOrbitRequests(args[1:], stdout, stderr)
+3236: 	case "devices":
+3237: 		return handleOrbitDevices(args[1:], stdout, stderr)
+3238: 	case "settings":
+3239: 		return handleOrbitSettings(args[1:], stdout, stderr)
+3240: 	case "folders":
+3241: 		return handleFolders(args[1:], stdout, stderr)
+3242: 	case "storage":
+3243: 		if len(args) > 1 {
+3244: 			return handleStorage(args, stdout, stderr)
+3245: 		}
+3246: 		return handleStorageUsage(nil, stdout, stderr)
+3247: 	case "maintenance":
+3248: 		return handleMaintenance(args[1:], stdout, stderr)
+3249: 	case "service":
+3250: 		return handleOrbitService(args[1:], stdout, stderr)
+3251: 	case "version", "-v", "--version":
+3252: 		return handleOrbitVersion(args[1:], stdout, stderr)
+3253: 	case "open":
+3254: 		return handleOrbitOpen(args[1:], stdout, stderr)
+3255: 	case "picker":
+3256: 		return handleOrbitPicker(args[1:], stdout, stderr)
+3257: 	case "serve":
+3258: 		return run(args, stdout, stderr)
+3259: 	case "help", "-h", "--help":
+3260: 		printOrbitHelp(stdout)
+3261: 		return nil
+3262: 	default:
+3263: 		return fmt.Errorf("unknown orbit command %q; run 'orbit help' for available commands", args[0])
+3264: 	}
+3265: }
+
+internal/control/orbit_control.go:1580
+1580: 	}
+1581: 
+1582: 	// Adopt preexisting files via scan (Invariant I22)
+1583: 	_, _ = c.ws.Scan(ctx, folderID)
+1584: 
+1585: 	// Mark setup complete
+1586: 	_ = c.db.SaveSetupState(ctx, repository.SetupStateRecord{
+1587: 		Phase:           "completed",
+1588: 		RootPath:        rootPath,
+1589: 		DefaultFolderID: &folderID,
+1590: 		Completed:       true,
+1591: 	})
+1592: 
+1593: 	return &JoinFlowCompleteResult{
+1594: 		Completed: true,
+1595: 		FolderID:  hex.EncodeToString(folderID[:]),
+1596: 		RootPath:  rootPath,
+1597: 		Status:    "ready",
+1598: 		Message:   "workspace joined and initialized successfully",
+1599: 	}, nil
+1600: }
+1601: 
+1602: // CheckJoinStatus queries the enrollment status from the remote inviting device.
+1603: func (c *Controller) CheckJoinStatus(ctx context.Context, remoteEndpoint, requestID string) (*EnrollmentStatusResult, error) {
+1604: 	if remoteEndpoint == "" || requestID == "" {
+1605: 		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "remote_endpoint and request_id are required"}
+
+internal/repository/product_records.go:384
+384: type SetupStateRecord struct {
+385: 	Phase           string
+386: 	RootPath        string
+387: 	DefaultFolderID *history.ID
+388: 	Completed       bool
+389: 	UpdatedNS       int64
+390: }
+391: 
+392: // GetSetupState returns the current setup progress.
+393: func (db *DB) GetSetupState(ctx context.Context) (*SetupStateRecord, error) {
+394: 	var phase, rootPath sql.NullString
+395: 	var rawFolder []byte
+396: 	var completedInt int
+397: 	var updatedNS int64
+398: 
+399: 	err := db.db.QueryRowContext(ctx,
+400: 		`SELECT phase, root_path, default_folder_id, completed, updated_ns FROM setup_state WHERE id=1`,
+401: 	).Scan(&phase, &rootPath, &rawFolder, &completedInt, &updatedNS)
+402: 	if err != nil {
+403: 		if errors.Is(err, sql.ErrNoRows) {
+404: 			return nil, nil
+405: 		}
+406: 		return nil, err
+407: 	}
+408: 
+409: 	rec := &SetupStateRecord{
+410: 		Completed: completedInt == 1,
+411: 		UpdatedNS: updatedNS,
+412: 	}
+413: 	if phase.Valid {
+414: 		rec.Phase = phase.String
+
+internal/launcher/launcher.go:199
+199: func defaultDaemonStarter(_ context.Context, stateDir, ctrlAddr string) error {
+200: 	bin, err := os.Executable()
+201: 	if err != nil {
+202: 		bin = "filesync"
+203: 	}
+204: 	cmd := exec.Command(bin, "serve", "--state="+stateDir, "--control-listen="+ctrlAddr, "--allow-init")
+205: 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+206: 	return cmd.Start()
+207: }
+
+packaging/systemd/orbit.service:1
+1: [Unit]
+2: Description=Orbit File Synchronization Engine
+3: Documentation=https://github.com/calebhabesh/file-sync
+4: After=network.target
+5: 
+6: [Service]
+7: Type=simple
+8: ExecStart=/usr/bin/orbit serve --state=%h/.local/state/filesync --control-listen=127.0.0.1:8080
+9: ExecStop=/usr/bin/orbit stop --state=%h/.local/state/filesync
+10: Restart=on-failure
+11: RestartSec=5s
+12: TimeoutStopSec=30s
+13: 
+14: # Environment & resource bounds (Operations baseline)
+15: LimitNOFILE=65536

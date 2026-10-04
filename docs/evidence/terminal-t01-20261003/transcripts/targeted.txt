@@ -1,0 +1,122 @@
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.004s [no tests to run]
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/config	0.004s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	0.004s [no tests to run]
+=== RUN   TestTerminalT01IntegersAndStrictCodec
+--- PASS: TestTerminalT01IntegersAndStrictCodec (0.00s)
+=== RUN   TestTerminalT01MutationContracts
+--- PASS: TestTerminalT01MutationContracts (0.00s)
+=== RUN   TestTerminalT01Fixtures
+--- PASS: TestTerminalT01Fixtures (0.00s)
+=== RUN   TestTerminalT01QueriesAndExits
+--- PASS: TestTerminalT01QueriesAndExits (0.00s)
+=== RUN   TestTerminalT01FingerprintBindsReview
+--- PASS: TestTerminalT01FingerprintBindsReview (0.00s)
+=== RUN   TestTerminalT01JoinInvitation
+--- PASS: TestTerminalT01JoinInvitation (0.00s)
+=== RUN   TestTerminalT01UploadFingerprint
+--- PASS: TestTerminalT01UploadFingerprint (0.00s)
+=== RUN   TestTerminalT01StateExitCategories
+--- PASS: TestTerminalT01StateExitCategories (0.00s)
+=== RUN   TestTerminalT01IntegersAndStrictCodec
+--- PASS: TestTerminalT01IntegersAndStrictCodec (0.00s)
+=== RUN   TestTerminalT01MutationContracts
+--- PASS: TestTerminalT01MutationContracts (0.00s)
+=== RUN   TestTerminalT01Fixtures
+--- PASS: TestTerminalT01Fixtures (0.00s)
+=== RUN   TestTerminalT01QueriesAndExits
+--- PASS: TestTerminalT01QueriesAndExits (0.00s)
+=== RUN   TestTerminalT01FingerprintBindsReview
+--- PASS: TestTerminalT01FingerprintBindsReview (0.00s)
+=== RUN   TestTerminalT01JoinInvitation
+--- PASS: TestTerminalT01JoinInvitation (0.00s)
+=== RUN   TestTerminalT01UploadFingerprint
+--- PASS: TestTerminalT01UploadFingerprint (0.00s)
+=== RUN   TestTerminalT01StateExitCategories
+--- PASS: TestTerminalT01StateExitCategories (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.007s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/history	0.004s [no tests to run]
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+=== RUN   TestTerminalT01EnrollmentWire
+--- PASS: TestTerminalT01EnrollmentWire (0.00s)
+=== RUN   TestTerminalT01StatusProofDomain
+--- PASS: TestTerminalT01StatusProofDomain (0.00s)
+=== RUN   TestTerminalT01EnrollmentWire
+--- PASS: TestTerminalT01EnrollmentWire (0.00s)
+=== RUN   TestTerminalT01StatusProofDomain
+--- PASS: TestTerminalT01StatusProofDomain (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.004s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.004s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.004s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/state	0.004s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.004s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.003s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/model	0.002s [no tests to run]
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+=== RUN   TestTerminalT01TG1Transcript
+--- PASS: TestTerminalT01TG1Transcript (0.00s)
+=== RUN   TestTerminalT01TG1TLSIsolation
+2026/10/03 15:33:27 http: TLS handshake error from 127.0.0.1:54234: remote error: tls: bad certificate
+--- PASS: TestTerminalT01TG1TLSIsolation (0.00s)
+=== RUN   TestTerminalT01TG1AtomicAdmission
+--- PASS: TestTerminalT01TG1AtomicAdmission (0.00s)
+=== RUN   TestTerminalT01TG2RestartAndReadiness
+--- PASS: TestTerminalT01TG2RestartAndReadiness (0.00s)
+=== RUN   TestTerminalT01TG3AdaptersAndReplay
+--- PASS: TestTerminalT01TG3AdaptersAndReplay (0.00s)
+=== RUN   TestTerminalT01TG4ReviewedSession
+--- PASS: TestTerminalT01TG4ReviewedSession (0.01s)
+=== RUN   TestTerminalT01TG5Lifecycle
+--- PASS: TestTerminalT01TG5Lifecycle (0.00s)
+=== RUN   TestTerminalT01TG1Transcript
+--- PASS: TestTerminalT01TG1Transcript (0.00s)
+=== RUN   TestTerminalT01TG1TLSIsolation
+2026/10/03 15:33:27 http: TLS handshake error from 127.0.0.1:56906: remote error: tls: bad certificate
+--- PASS: TestTerminalT01TG1TLSIsolation (0.00s)
+=== RUN   TestTerminalT01TG1AtomicAdmission
+--- PASS: TestTerminalT01TG1AtomicAdmission (0.00s)
+=== RUN   TestTerminalT01TG2RestartAndReadiness
+--- PASS: TestTerminalT01TG2RestartAndReadiness (0.00s)
+=== RUN   TestTerminalT01TG3AdaptersAndReplay
+--- PASS: TestTerminalT01TG3AdaptersAndReplay (0.00s)
+=== RUN   TestTerminalT01TG4ReviewedSession
+--- PASS: TestTerminalT01TG4ReviewedSession (0.01s)
+=== RUN   TestTerminalT01TG5Lifecycle
+--- PASS: TestTerminalT01TG5Lifecycle (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.036s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.002s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.002s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s [no tests to run]
+?   	github.com/calebhabesh/file-sync/web	[no test files]

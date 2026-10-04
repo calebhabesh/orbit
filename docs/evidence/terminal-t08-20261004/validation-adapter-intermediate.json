@@ -1,0 +1,28 @@
+[
+  {
+    "command": [
+      "go",
+      "test",
+      "-list",
+      "^TestTerminalT08",
+      "./tests/terminal"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.182,
+    "log": "discovery.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-count=2",
+      "-v",
+      "./tests/terminal",
+      "-run",
+      "^TestTerminalT08"
+    ],
+    "exit_code": 1,
+    "elapsed_seconds": 3.242,
+    "log": "packet.log"
+  }
+]

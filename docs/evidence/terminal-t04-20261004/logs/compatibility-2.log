@@ -1,0 +1,6 @@
+# github.com/calebhabesh/file-sync/internal/scheduler
+internal/scheduler/scheduler.go:393:14: too many return values
+	have (error)
+	want ()
+FAIL	github.com/calebhabesh/file-sync/tests/integration [build failed]
+FAIL

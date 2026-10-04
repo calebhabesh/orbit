@@ -1,0 +1,34 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.07s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.63s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:402: CLI history peak_rss_kib=62452
+    content_recovery_test.go:409: CLI restore peak_rss_kib=62452
+    content_recovery_test.go:410: CLI restore peak_rss_kib=62452
+    content_recovery_test.go:416: CLI export peak_rss_kib=62452
+    content_recovery_test.go:423: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:427: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:433: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:437: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:437: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:449: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:457: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:462: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:467: CLI conflicts peak_rss_kib=62452
+    content_recovery_test.go:480: CLI conflicts peak_rss_kib=62452
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.72s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.04s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1.569s

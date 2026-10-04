@@ -1,0 +1,58 @@
+{
+  "packet": "T06",
+  "date": "2026-10-04",
+  "revision": "86ae55280b22a5839258d3cca40210c6e2613025",
+  "cwd": "<repo>",
+  "toolchain": "go version go1.27.1-X:nodwarf5 linux/amd64",
+  "system": "Linux 7.2.8-arch1-2 x86_64 GNU/Linux",
+  "schema": 13,
+  "peer_protocol": 1,
+  "delegation": false,
+  "provenance": "Preexisting dirty T00\u2013T05, planning and relocation tree retained. Shared task paths also include earlier packet edits; these are final whole-file hashes, not a claim that the entire HEAD diff belongs to T06. Starting status was read before implementation; during/final porcelain records are included.",
+  "task_files_sha256": {
+    "cmd/filesync/main.go": "61b97b4d400558d6599fcdd632336637014ef63c6a5592eaf594021fc646a9ce",
+    "cmd/filesync/terminal_commands.go": "f185462bf7ada47351a1578e6afc9c98d9377f6acc94b0869d4654f7b725e2be",
+    "cmd/filesync/terminal_completion.go": "a495b2e94f7f00b885f8ccbc2a7f7a9b83024fe050551c71f1c6bf38b12531c2",
+    "cmd/filesync/terminal_context.go": "2f99d81397ccfee60584ae4ebb46d9f44346610b036b00e443225ca7c2930f2d",
+    "cmd/filesync/terminal_help.go": "f14e4b51d015ffbea9f075a0e14ce179d38bf20344781aed30c5478d0a78b79e",
+    "cmd/filesync/terminal_output.go": "7f8326e39ca3755b44d452515ab7ddb81a8d6060fcafc98eb47a584e989a68a8",
+    "internal/control/terminal_context.go": "eea2584242e38465548a6860026c842c8933f239b7e28603a8cf3d99b5babd11",
+    "internal/control/terminal_context_test.go": "5b382da8c9bfca6e8283d0885047fa4acec0aad6a3e23115462c413b95495d0c",
+    "internal/control/terminalcontract/validate.go": "2262236f698793bc03080b45683311a92819e50163adb94d2faa11a6c2b6b985",
+    "internal/repository/browse.go": "ea2a5799535082274068c8b7580e4acac2ada9ebc73c9e6427cf081b52136c22",
+    "tests/terminal/commands_context_test.go": "4287aaa34adb0fa841dd2cf61e3381dffc610d20f0002a117cda84139dabe436",
+    "docs/terminal-design-gates.md": "4dde1438c0c5e0b03dbed58cee77cc4238a15724e9ca5bee712ab8aea863df8f",
+    "docs/implementation/terminal-status.md": "cff3a94f06d698c829d06670248b8511e8a5591bdefe1b2196876e0ae2e55974"
+  },
+  "evidence_sha256": {
+    "docs/evidence/terminal-t06-20261004/cmd-filesync.log": "bc8dcc3b5947aebb12cd1d88b0d76cce6557b199a52794d86b995ed7eb5c7e12",
+    "docs/evidence/terminal-t06-20261004/commands.md": "c5201106c70017f4496832fc78d0509349285093a091f3426febc1f9c24f145e",
+    "docs/evidence/terminal-t06-20261004/control-unit.log": "3d5377781c1e2e134bb3af9d63275e8708e22660b6fa323e9e437389b1c4db5c",
+    "docs/evidence/terminal-t06-20261004/discovery.log": "fc8ba9393b66f0bfd9e041e41744dd8e45a59bbe55c73c65e6debaea1daafe73",
+    "docs/evidence/terminal-t06-20261004/make-check.log": "9a75ea73aa7ca8dc2ff0ec1223a1e2fc67ed265858f5a642afce916c446034fa",
+    "docs/evidence/terminal-t06-20261004/make-test-race.log": "f8c32c1f73a6d7faa5e8985881128b2613a2dcbd38590e316ffd3438348c91f1",
+    "docs/evidence/terminal-t06-20261004/packet.log": "c24424d45b098d892ba019492a3793baea2c42e25947a0b4933989f7fd0394cf",
+    "docs/evidence/terminal-t06-20261004/packet-race.log": "af556b1a270fbf21d4c2dd952d136467c41f73122b88c117cf19764953f4c932",
+    "docs/evidence/terminal-t06-20261004/results.json": "e4a07261b0ed9f7ce8ccd05d202c9af357f47daac328a357941b40f2a8e8c050",
+    "docs/evidence/terminal-t06-20261004/scoped-vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/evidence/terminal-t06-20261004/summary.md": "6a65462f8c4de6b6c3cf9c65b4316669bd69f67889f4ababbb898e7cbe1428bf",
+    "docs/evidence/terminal-t06-20261004/validate_docs.py": "d6fe9408038ac045e3794252c84d3a7b9f2f6faacc6e8bc5eacbadc3512574be",
+    "docs/evidence/terminal-t06-20261004/worktree-final.txt": "dc148ac7c53667bea96f78a4250b2cd2d26404f37555a4fc74ff9f8b59005e73",
+    "docs/evidence/terminal-t06-20261004/documentation-validation.log": "db658f42a7e8fadcf0e4a7661f8a18b49ed85deae08812dbd1a2cf9fecc2fc38"
+  },
+  "preserved_relocation_sha256": {
+    "cmd/filesync/relocation.go": "d1caf6b85637fafdba44d7205194477f32e90dfeda5e876d80d581bcf1c6a847",
+    "cmd/filesync/relocation_test.go": "8402b0f4870ffddee24dcbbacf2eee07ab9d6b03a3bed11c1cedce199500b038",
+    "internal/control/relocation.go": "cf4d690c520d055e91003a28d75fb2a66819ed7035fa088897582c2aa68c8066",
+    "internal/repository/relocation.go": "f4058e10987ff97f309f5dfd3349cdd0829ed072b0eff24cad28f6c66966d6b9",
+    "internal/workspace/relocation.go": "89098b9d935b74803e98e08758389a6f4750b3cd1163d7c0299f918318fa6ec7",
+    "internal/workspace/relocation_test.go": "e4aea6b0ead4c4da1f9b8d5909c7c3b574ccc8d4f494a11754e0f5a30830c298",
+    "web/src/components/RelocateFolderForm.tsx": "77b19270e18887fae8c6a5be16fc0841af4932b50890bb7ceeabedd268ed6808"
+  },
+  "validation": "Seven ordinary cases passed twice. Serial broad check/race and uncached packet race passed. All documentation links validated; git diff --check passed. See commands/results for retained failures and precise scope.",
+  "unexecuted": [
+    "physical cross-host LAN/Tailscale",
+    "native boot/logout/login",
+    "P17 actual owner use and unaided explanation"
+  ]
+}

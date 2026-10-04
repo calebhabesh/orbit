@@ -1,0 +1,23 @@
+=== RUN   TestTerminalT10RealPTYOnboarding
+    tui_onboarding_test.go:88: [
+          {
+            "scenario": "two-process-onboarding",
+            "result": "passed",
+            "assertions": [
+              "nonempty measured review; validation/back/edit",
+              "private expired and wrong-pin refusal",
+              "exact transcript code and approval",
+              "pending client exit/reopen/daemon restart",
+              "actual verified bidirectional file bytes",
+              "local pause/resume, actual relocation and unregister preview",
+              "second folder distinct consent and attempt; device identities retained",
+              "actual startup failure under missing-system-tool fixture",
+              "terminal restoration"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT10RealPTYOnboarding (70.47s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	71.474s
+env GOFLAGS=-race go test -race -count=1 -v ./tests/terminal -run   12.89s user 0.71s system 18% cpu 1:12.02 total

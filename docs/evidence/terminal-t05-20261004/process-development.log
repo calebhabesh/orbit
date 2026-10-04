@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+    sharing_process_test.go:204: request missing
+--- FAIL: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (26.72s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	26.723s
+FAIL

@@ -1,0 +1,36 @@
+=== RUN   TestTerminalT02ControlServeShutdown
+==================
+WARNING: DATA RACE
+Write at 0x00c0002348f0 by goroutine 32:
+  github.com/calebhabesh/file-sync/internal/control.(*Server).Serve()
+      <repo>/internal/control/server.go:1481 +0x136
+  github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT02ControlServeShutdown.func1()
+      <repo>/tests/terminal/lifecycle_test.go:662 +0x4f
+
+Previous read at 0x00c0002348f0 by goroutine 33:
+  github.com/calebhabesh/file-sync/internal/control.(*Server).Shutdown()
+      <repo>/internal/control/server.go:1490 +0x7b
+  github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT02ControlServeShutdown.func2()
+      <repo>/tests/terminal/lifecycle_test.go:666 +0x8c
+
+Goroutine 32 (running) created at:
+  github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT02ControlServeShutdown()
+      <repo>/tests/terminal/lifecycle_test.go:662 +0x34f
+  testing.tRunner()
+      /usr/lib/go/src/testing/testing.go:2193 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/go/src/testing/testing.go:2258 +0x38
+
+Goroutine 33 (finished) created at:
+  github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT02ControlServeShutdown()
+      <repo>/tests/terminal/lifecycle_test.go:663 +0x3f9
+  testing.tRunner()
+      /usr/lib/go/src/testing/testing.go:2193 +0x21c
+  testing.(*T).Run.gowrap1()
+      /usr/lib/go/src/testing/testing.go:2258 +0x38
+==================
+    testing.go:1865: race detected during execution of test
+--- FAIL: TestTerminalT02ControlServeShutdown (0.32s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.330s
+FAIL

@@ -1,0 +1,30 @@
+=== RUN   TestTerminalT06ContextResolutionCwdAndName
+=== PAUSE TestTerminalT06ContextResolutionCwdAndName
+=== RUN   TestTerminalT06AmbiguousAndOutsideRootContext
+=== PAUSE TestTerminalT06AmbiguousAndOutsideRootContext
+=== RUN   TestTerminalT06StaleAndUnavailableRoot
+=== PAUSE TestTerminalT06StaleAndUnavailableRoot
+=== RUN   TestTerminalT06PathSafetyAndLiteralPaths
+=== PAUSE TestTerminalT06PathSafetyAndLiteralPaths
+=== RUN   TestTerminalT06OutputEscapingAndControlCharacters
+=== PAUSE TestTerminalT06OutputEscapingAndControlCharacters
+=== RUN   TestTerminalT06LiveAndStoppedAdapterParity
+=== PAUSE TestTerminalT06LiveAndStoppedAdapterParity
+=== RUN   TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== PAUSE TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06PathSafetyAndLiteralPaths
+=== CONT  TestTerminalT06LiveAndStoppedAdapterParity
+=== CONT  TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06OutputEscapingAndControlCharacters
+=== CONT  TestTerminalT06AmbiguousAndOutsideRootContext
+=== CONT  TestTerminalT06StaleAndUnavailableRoot
+=== CONT  TestTerminalT06ContextResolutionCwdAndName
+--- PASS: TestTerminalT06StaleAndUnavailableRoot (1.93s)
+--- PASS: TestTerminalT06AmbiguousAndOutsideRootContext (2.01s)
+--- PASS: TestTerminalT06OutputEscapingAndControlCharacters (3.97s)
+--- PASS: TestTerminalT06PathSafetyAndLiteralPaths (4.04s)
+--- PASS: TestTerminalT06ContextResolutionCwdAndName (8.12s)
+--- PASS: TestTerminalT06LiveAndStoppedAdapterParity (9.17s)
+--- PASS: TestTerminalT06ShellCompletionsAndHelpWalkthrough (20.25s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	21.252s

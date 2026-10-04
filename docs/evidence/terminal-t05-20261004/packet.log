@@ -1,0 +1,26 @@
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (83.62s)
+=== RUN   TestTerminalT05ScopedKnownDeviceSharing
+--- PASS: TestTerminalT05ScopedKnownDeviceSharing (13.04s)
+=== RUN   TestTerminalT05MembershipPinAndSequentialGate
+--- PASS: TestTerminalT05MembershipPinAndSequentialGate (0.05s)
+=== RUN   TestTerminalT05ForkRecoveryPreservesOriginalGroup
+--- PASS: TestTerminalT05ForkRecoveryPreservesOriginalGroup (0.02s)
+=== RUN   TestTerminalT05CompetingReviewedApprovals
+--- PASS: TestTerminalT05CompetingReviewedApprovals (0.04s)
+=== RUN   TestTerminalT05TargetedShareRejectsRekey
+--- PASS: TestTerminalT05TargetedShareRejectsRekey (0.03s)
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (83.60s)
+=== RUN   TestTerminalT05ScopedKnownDeviceSharing
+--- PASS: TestTerminalT05ScopedKnownDeviceSharing (13.05s)
+=== RUN   TestTerminalT05MembershipPinAndSequentialGate
+--- PASS: TestTerminalT05MembershipPinAndSequentialGate (0.06s)
+=== RUN   TestTerminalT05ForkRecoveryPreservesOriginalGroup
+--- PASS: TestTerminalT05ForkRecoveryPreservesOriginalGroup (0.01s)
+=== RUN   TestTerminalT05CompetingReviewedApprovals
+--- PASS: TestTerminalT05CompetingReviewedApprovals (0.03s)
+=== RUN   TestTerminalT05TargetedShareRejectsRekey
+--- PASS: TestTerminalT05TargetedShareRejectsRekey (0.03s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	193.594s

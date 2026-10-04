@@ -1,0 +1,7 @@
+=== RUN   TestTerminalT03TwoProcessEnrollment
+    enrollment_test.go:590: test daemon not ready
+    enrollment_test.go:521: test daemon failed
+--- FAIL: TestTerminalT03TwoProcessEnrollment (10.05s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	10.050s
+FAIL

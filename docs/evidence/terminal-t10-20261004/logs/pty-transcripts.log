@@ -1,0 +1,18 @@
+[
+  {
+    "scenario": "two-process-onboarding",
+    "result": "passed",
+    "assertions": [
+      "nonempty measured review; validation/back/edit",
+      "private expired and wrong-pin refusal",
+      "exact transcript code and approval",
+      "pending client exit/reopen/daemon restart",
+      "actual verified bidirectional file bytes",
+      "local pause/resume, actual relocation and unregister preview",
+      "second folder distinct consent and attempt; device identities retained",
+      "actual startup failure under missing-system-tool fixture",
+      "terminal restoration"
+    ]
+  }
+]
+python3 scripts/terminal_onboarding_pty_test.py --binary bin/filesync --outpu  1.51s user 0.32s system 2% cpu 1:03.04 total

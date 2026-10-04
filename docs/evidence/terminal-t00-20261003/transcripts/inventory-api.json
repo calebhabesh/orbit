@@ -1,0 +1,507 @@
+[
+  {
+    "route": "/",
+    "source": "internal/control/server.go",
+    "line": 130
+  },
+  {
+    "route": "DELETE /api/v1/settings/peers",
+    "source": "internal/control/server.go",
+    "line": 773
+  },
+  {
+    "route": "GET /api/v1/auth/session",
+    "source": "internal/control/server.go",
+    "line": 158
+  },
+  {
+    "route": "GET /api/v1/browse",
+    "source": "internal/control/browse_http.go",
+    "line": 42
+  },
+  {
+    "route": "GET /api/v1/browse/deleted",
+    "source": "internal/control/browse_http.go",
+    "line": 109
+  },
+  {
+    "route": "GET /api/v1/browse/details",
+    "source": "internal/control/browse_http.go",
+    "line": 78
+  },
+  {
+    "route": "GET /api/v1/browse/history",
+    "source": "internal/control/browse_http.go",
+    "line": 91
+  },
+  {
+    "route": "GET /api/v1/conflicts",
+    "source": "internal/control/server.go",
+    "line": 284
+  },
+  {
+    "route": "GET /api/v1/content",
+    "source": "internal/control/browse_http.go",
+    "line": 127
+  },
+  {
+    "route": "GET /api/v1/doctor",
+    "source": "internal/control/server.go",
+    "line": 162
+  },
+  {
+    "route": "GET /api/v1/enrollment/requests",
+    "source": "internal/control/server.go",
+    "line": 990
+  },
+  {
+    "route": "GET /api/v1/enrollment/status",
+    "source": "internal/control/server.go",
+    "line": 1051
+  },
+  {
+    "route": "GET /api/v1/files",
+    "source": "internal/control/server.go",
+    "line": 363
+  },
+  {
+    "route": "GET /api/v1/files/deleted",
+    "source": "internal/control/server.go",
+    "line": 376
+  },
+  {
+    "route": "GET /api/v1/files/history",
+    "source": "internal/control/server.go",
+    "line": 389
+  },
+  {
+    "route": "GET /api/v1/folders",
+    "source": "internal/control/server.go",
+    "line": 172
+  },
+  {
+    "route": "GET /api/v1/health",
+    "source": "internal/control/server.go",
+    "line": 133
+  },
+  {
+    "route": "GET /api/v1/invitations",
+    "source": "internal/control/server.go",
+    "line": 921
+  },
+  {
+    "route": "GET /api/v1/logs",
+    "source": "internal/control/server.go",
+    "line": 651
+  },
+  {
+    "route": "GET /api/v1/maintenance/check",
+    "source": "internal/control/server.go",
+    "line": 682
+  },
+  {
+    "route": "GET /api/v1/maintenance/preflight",
+    "source": "internal/control/server.go",
+    "line": 714
+  },
+  {
+    "route": "GET /api/v1/maintenance/recovery",
+    "source": "internal/control/server.go",
+    "line": 690
+  },
+  {
+    "route": "GET /api/v1/membership",
+    "source": "internal/control/server.go",
+    "line": 1141
+  },
+  {
+    "route": "GET /api/v1/metrics",
+    "source": "internal/control/server.go",
+    "line": 660
+  },
+  {
+    "route": "GET /api/v1/operations/progress",
+    "source": "internal/control/server.go",
+    "line": 1257
+  },
+  {
+    "route": "GET /api/v1/orbit/setup/join/status",
+    "source": "internal/control/server.go",
+    "line": 1090
+  },
+  {
+    "route": "GET /api/v1/peers",
+    "source": "internal/control/server.go",
+    "line": 256
+  },
+  {
+    "route": "GET /api/v1/recovery/status",
+    "source": "internal/control/server.go",
+    "line": 698
+  },
+  {
+    "route": "GET /api/v1/search",
+    "source": "internal/control/browse_http.go",
+    "line": 60
+  },
+  {
+    "route": "GET /api/v1/settings",
+    "source": "internal/control/server.go",
+    "line": 732
+  },
+  {
+    "route": "GET /api/v1/settings/peers",
+    "source": "internal/control/server.go",
+    "line": 753
+  },
+  {
+    "route": "GET /api/v1/setup/inspect",
+    "source": "internal/control/server.go",
+    "line": 787
+  },
+  {
+    "route": "GET /api/v1/setup/status",
+    "source": "internal/control/server.go",
+    "line": 846
+  },
+  {
+    "route": "GET /api/v1/storage/usage",
+    "source": "internal/control/server.go",
+    "line": 437
+  },
+  {
+    "route": "GET /api/v1/support/preview",
+    "source": "internal/control/server.go",
+    "line": 623
+  },
+  {
+    "route": "GET /api/v1/system/directories",
+    "source": "internal/control/server.go",
+    "line": 856
+  },
+  {
+    "route": "GET /api/v1/system/service/status",
+    "source": "internal/control/server.go",
+    "line": 885
+  },
+  {
+    "route": "GET /api/v1/version",
+    "source": "internal/control/server.go",
+    "line": 136
+  },
+  {
+    "route": "GET /api/v1/work/list",
+    "source": "internal/control/server.go",
+    "line": 571
+  },
+  {
+    "route": "GET /api/v1/work/status",
+    "source": "internal/control/server.go",
+    "line": 558
+  },
+  {
+    "route": "POST /api/v1/auth/bootstrap",
+    "source": "internal/control/server.go",
+    "line": 154
+  },
+  {
+    "route": "POST /api/v1/auth/bootstrap-token",
+    "source": "internal/control/server.go",
+    "line": 155
+  },
+  {
+    "route": "POST /api/v1/auth/logout",
+    "source": "internal/control/server.go",
+    "line": 159
+  },
+  {
+    "route": "POST /api/v1/conflicts/keep-copies",
+    "source": "internal/control/server.go",
+    "line": 319
+  },
+  {
+    "route": "POST /api/v1/conflicts/merge",
+    "source": "internal/control/server.go",
+    "line": 332
+  },
+  {
+    "route": "POST /api/v1/conflicts/select",
+    "source": "internal/control/server.go",
+    "line": 306
+  },
+  {
+    "route": "POST /api/v1/content/lease",
+    "source": "internal/control/server.go",
+    "line": 1229
+  },
+  {
+    "route": "POST /api/v1/content/release-lease",
+    "source": "internal/control/server.go",
+    "line": 1243
+  },
+  {
+    "route": "POST /api/v1/devices/alias",
+    "source": "internal/control/server.go",
+    "line": 1100
+  },
+  {
+    "route": "POST /api/v1/enrollment/approve",
+    "source": "internal/control/server.go",
+    "line": 1007
+  },
+  {
+    "route": "POST /api/v1/enrollment/decline",
+    "source": "internal/control/server.go",
+    "line": 1039
+  },
+  {
+    "route": "POST /api/v1/enrollment/request",
+    "source": "internal/control/server.go",
+    "line": 952
+  },
+  {
+    "route": "POST /api/v1/files/delete",
+    "source": "internal/control/file_actions_http.go",
+    "line": 128
+  },
+  {
+    "route": "POST /api/v1/files/import",
+    "source": "internal/control/file_actions_http.go",
+    "line": 15
+  },
+  {
+    "route": "POST /api/v1/files/mkdir",
+    "source": "internal/control/file_actions_http.go",
+    "line": 98
+  },
+  {
+    "route": "POST /api/v1/files/move",
+    "source": "internal/control/file_actions_http.go",
+    "line": 113
+  },
+  {
+    "route": "POST /api/v1/folders",
+    "source": "internal/control/server.go",
+    "line": 180
+  },
+  {
+    "route": "POST /api/v1/folders/pause",
+    "source": "internal/control/server.go",
+    "line": 193
+  },
+  {
+    "route": "POST /api/v1/folders/relocate",
+    "source": "internal/control/server.go",
+    "line": 229
+  },
+  {
+    "route": "POST /api/v1/folders/remove",
+    "source": "internal/control/server.go",
+    "line": 217
+  },
+  {
+    "route": "POST /api/v1/folders/resume",
+    "source": "internal/control/server.go",
+    "line": 205
+  },
+  {
+    "route": "POST /api/v1/folders/revalidate",
+    "source": "internal/control/server.go",
+    "line": 242
+  },
+  {
+    "route": "POST /api/v1/invitations",
+    "source": "internal/control/server.go",
+    "line": 908
+  },
+  {
+    "route": "POST /api/v1/invitations/revoke",
+    "source": "internal/control/server.go",
+    "line": 937
+  },
+  {
+    "route": "POST /api/v1/maintenance/backup",
+    "source": "internal/control/server.go",
+    "line": 670
+  },
+  {
+    "route": "POST /api/v1/maintenance/prune",
+    "source": "internal/control/server.go",
+    "line": 546
+  },
+  {
+    "route": "POST /api/v1/maintenance/reset-identity",
+    "source": "internal/control/server.go",
+    "line": 706
+  },
+  {
+    "route": "POST /api/v1/maintenance/restore-backup",
+    "source": "internal/control/server.go",
+    "line": 722
+  },
+  {
+    "route": "POST /api/v1/membership/export",
+    "source": "internal/control/server.go",
+    "line": 1154
+  },
+  {
+    "route": "POST /api/v1/membership/fork/detect",
+    "source": "internal/control/server.go",
+    "line": 1201
+  },
+  {
+    "route": "POST /api/v1/membership/import",
+    "source": "internal/control/server.go",
+    "line": 1183
+  },
+  {
+    "route": "POST /api/v1/membership/preview",
+    "source": "internal/control/server.go",
+    "line": 1167
+  },
+  {
+    "route": "POST /api/v1/membership/reconcile",
+    "source": "internal/control/server.go",
+    "line": 1214
+  },
+  {
+    "route": "POST /api/v1/operations/cancel",
+    "source": "internal/control/server.go",
+    "line": 1270
+  },
+  {
+    "route": "POST /api/v1/orbit/setup/join/complete",
+    "source": "internal/control/server.go",
+    "line": 1077
+  },
+  {
+    "route": "POST /api/v1/orbit/setup/join/submit",
+    "source": "internal/control/server.go",
+    "line": 1064
+  },
+  {
+    "route": "POST /api/v1/peers/retire",
+    "source": "internal/control/server.go",
+    "line": 269
+  },
+  {
+    "route": "POST /api/v1/peers/retire/preview",
+    "source": "internal/control/server.go",
+    "line": 1126
+  },
+  {
+    "route": "POST /api/v1/peers/test",
+    "source": "internal/control/server.go",
+    "line": 1113
+  },
+  {
+    "route": "POST /api/v1/restore",
+    "source": "internal/control/server.go",
+    "line": 422
+  },
+  {
+    "route": "POST /api/v1/restore/preview",
+    "source": "internal/control/server.go",
+    "line": 409
+  },
+  {
+    "route": "POST /api/v1/settings",
+    "source": "internal/control/server.go",
+    "line": 740
+  },
+  {
+    "route": "POST /api/v1/settings/peers",
+    "source": "internal/control/server.go",
+    "line": 761
+  },
+  {
+    "route": "POST /api/v1/setup/preview-join-root",
+    "source": "internal/control/server.go",
+    "line": 808
+  },
+  {
+    "route": "POST /api/v1/setup/preview-root",
+    "source": "internal/control/server.go",
+    "line": 795
+  },
+  {
+    "route": "POST /api/v1/setup/resume",
+    "source": "internal/control/server.go",
+    "line": 834
+  },
+  {
+    "route": "POST /api/v1/setup/start",
+    "source": "internal/control/server.go",
+    "line": 821
+  },
+  {
+    "route": "POST /api/v1/storage/check",
+    "source": "internal/control/server.go",
+    "line": 510
+  },
+  {
+    "route": "POST /api/v1/storage/gc/preview",
+    "source": "internal/control/server.go",
+    "line": 484
+  },
+  {
+    "route": "POST /api/v1/storage/gc/run",
+    "source": "internal/control/server.go",
+    "line": 445
+  },
+  {
+    "route": "POST /api/v1/storage/prune",
+    "source": "internal/control/server.go",
+    "line": 536
+  },
+  {
+    "route": "POST /api/v1/storage/recovery/reclaim",
+    "source": "internal/control/server.go",
+    "line": 497
+  },
+  {
+    "route": "POST /api/v1/storage/repair",
+    "source": "internal/control/server.go",
+    "line": 523
+  },
+  {
+    "route": "POST /api/v1/storage/retention/change",
+    "source": "internal/control/server.go",
+    "line": 471
+  },
+  {
+    "route": "POST /api/v1/storage/retention/preview",
+    "source": "internal/control/server.go",
+    "line": 458
+  },
+  {
+    "route": "POST /api/v1/support/export",
+    "source": "internal/control/server.go",
+    "line": 632
+  },
+  {
+    "route": "POST /api/v1/system/open-folder",
+    "source": "internal/control/server.go",
+    "line": 871
+  },
+  {
+    "route": "POST /api/v1/system/service/action",
+    "source": "internal/control/server.go",
+    "line": 893
+  },
+  {
+    "route": "POST /api/v1/work/cancel",
+    "source": "internal/control/server.go",
+    "line": 608
+  },
+  {
+    "route": "POST /api/v1/work/retry",
+    "source": "internal/control/server.go",
+    "line": 595
+  },
+  {
+    "route": "POST /api/v1/work/scan",
+    "source": "internal/control/server.go",
+    "line": 582
+  }
+]

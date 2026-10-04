@@ -1,0 +1,12 @@
+=== RUN   TestOrbitPairing_FullJoinFlowLifecycle
+--- PASS: TestOrbitPairing_FullJoinFlowLifecycle (0.03s)
+=== RUN   TestOrbitPairing_DeclineJoinFlow
+--- PASS: TestOrbitPairing_DeclineJoinFlow (0.02s)
+=== RUN   TestOrbitPairing_DeviceDetailAndRename
+--- PASS: TestOrbitPairing_DeviceDetailAndRename (0.01s)
+=== RUN   TestOrbitPairing_CLI_Parity
+--- PASS: TestOrbitPairing_CLI_Parity (0.02s)
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+--- PASS: TestOrbitPairing_CLI_RunningDaemon_Parity (1.19s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	1.261s

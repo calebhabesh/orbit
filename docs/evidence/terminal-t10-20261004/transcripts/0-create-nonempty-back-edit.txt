@@ -1,0 +1,841 @@
+                              
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:52:38Z   
+FOLDER_PAUSED: Resume folder with 'orbit folders resume                         
+4100c4c8bb68dcb714e94b5e159570411f55176f038f986d70b130b1f5a4740e'               
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Confirm local resume                                                    
+Local folder action completed: pause                                            
+This action changes local synchronization for the selected folder.              
+It does not erase remote files or change remote device membership.              
+Enter confirm  Esc back  q quit                                                 
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Inspect folder and devices                                              
+Local folder action completed: resume                                           
+Root: <disposable>/Notes界                                       
+Local pause=false; membership revision=2                                        
+Shares with: Device a48cb007                                                    
+Shares with: Laptop                                                             
+Last contact: 2026-10-04T18:52:37Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:52:38Z   
+Last contact: 2026-10-04T18:52:37Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:52:38Z   
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Unregister preview                                                      
+Local folder action completed: resume                                           
+Scope: remove this device's local root registration only.                       
+Working files are preserved; remote copies and membership are unchanged.        
+This does not erase a remote device or revoke its keys.                         
+Use the existing conservative procedure: filesync folders remove --folder       
+4100c4c8bb68dcb714e94b5e159570411f55176f038f986d70b130b1f5a4740e                
+arrows scroll  Esc back  q quit                                                 
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Unregister preview                                                      
+Local folder action completed: resume                                           
+Scope: remove this device's local root registration only.                       
+Working files are preserved; remote copies and membership are unchanged.        
+This does not erase a remote device or revoke its keys.                         
+Use the existing conservative procedure: filesync folders remove --folder       
+4100c4c8bb68dcb714e94b5e159570411f55176f038f986d70b130b1f5a4740e                
+arrows scroll  Esc back  q quit                                                 
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit                                                                           
+Daemon: unknown   Startup: unknown                                              
+Overview  [Folders]  Attention  Devices                                         
+Search page:                                                                    
+> Notes  <disposable>/Notes界                                    
+j/k Enter / ? q | c create J join a add s share w requests u setup              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Review setup inputs                                                     
+Supported existing contents will become shared.                                 
+LAN / existing Tailscale: advertise reachable numeric IP:port.                  
+Startup: login needs user systemd; unattended also needs lingering.             
+> Device name: owner-desktop                                                          
+  Folder name: Orbit                                                            
+  Local root: /home/owner/Orbit                                             
+  Startup (manual/login/unattended): manual                                     
+  Data budget (bytes): 4000000000                                               
+  Peer listen (IP:port): 192.168.88.171:56511                                   
+  Enrollment listen (IP:port): 192.168.88.171:34363                             
+  Advertised peer (IP:port): 192.168.88.171:56511                               
+  Advertised enrollment (IP:port): 192.168.88.171:34363                         
+Finite metadata=268435456 reserve=16777216; retention uses per-folder controls. 
+Tab next  Shift-Tab back  Enter preview  Ctrl-A advanced  Esc back              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Confirm adoption                                                        
+Device: Laptop                                                                  
+Folder: Notes                                                                   
+Root: <disposable>/second                                        
+Existing supported local contents become shared; nothing is erased.             
+Measured files=1 directories=0 bytes=19; complete=true                          
+Unsupported=0 unreadable=0 capacity known=true available=27203776512 bytes      
+Startup=manual; data=4000000000 metadata=268435456 reserve=16777216 bytes;      
+concurrency=4 bandwidth=0                                                       
+Peer listen: 192.168.88.171:56511; advertise: 192.168.88.171:56511              
+Enrollment listen: 192.168.88.171:34363; advertise: 192.168.88.171:34363        
+Enter confirm exact review  Esc edit  arrows scroll  q quit                     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Setup progress                                                          
+State: completed | Local readiness observed                                     
+Approved=true membership current=true root available=true scan complete=true    
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage       
+blocked=false                                                                   
+Locally ready (observed). Other offline devices may remain pending.             
+Operation: a72b23d54f19a86420972fafc843c673688b1a549345301e167a677ac062bf00     
+Root: <disposable>/second                                        
+r refresh  J new reviewed join  Esc overview  q quit                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit                                                                           
+Daemon: unknown   Startup: unknown                                              
+Overview  [Folders]  Attention  Devices                                         
+Search page:                                                                    
+> Notes  <disposable>/Notes界                                    
+  Notes  <disposable>/second                                     
+j/k Enter / ? q | c create J join a add s share w requests u setup              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Inspect folder and devices                                              
+Root: <disposable>/second                                        
+Local pause=false; membership revision=1                                        
+Shares with: Laptop                                                             
+Last contact/copy observation: unknown.                                         
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Inspect folder and devices                                              
+Root: <disposable>/second                                        
+Local pause=false; membership revision=1                                        
+Shares with: Laptop                                                             
+Last contact/copy observation: unknown.                                         
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Select device                                                           
+> device-a48cb007                                                               
+  Laptop                                                                        
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Select device                                                           
+> device-a48cb007                                                               
+  Laptop                                                                        
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Add device / share folder                                               
+Selected folder:                                                                
+454376879553276c6880aa4d416d26f9b2240567eb7fd56cf17ef3a92a802e7c                
+Known device: a48cb007683e2e4c23a5b8dd48da5b9876ad6193b9bba54d32df4810cfeb8f07  
+Reuse its existing identity; separate local-root consent and approval required. 
+Reviewed membership revision: 1                                                 
+Invitation expires in one hour; it grants no file access before approval.       
+Enter create scoped invitation  Esc back  q quit                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Add device / share folder                                               
+Selected folder:                                                                
+454376879553276c6880aa4d416d26f9b2240567eb7fd56cf17ef3a92a802e7c                
+Known device: a48cb007683e2e4c23a5b8dd48da5b9876ad6193b9bba54d32df4810cfeb8f07  
+Reuse its existing identity; separate local-root consent and approval required. 
+Reviewed membership revision: 1                                                 
+Invitation expires in one hour; it grants no file access before approval.       
+Enter create scoped invitation  Esc back  q quit                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Private invitation                                                      
+Invitation created for selected folder only.                                    
+Paste on receiver, review its root, then approve the exact request here.        
+Expires: 2026-10-04T19:52:40.078428375Z                                         
+s: save to private transfer file  v: reveal/hide invitation                     
+Capability hidden. Reveal only for deliberate transfer.                         
+s save private file  v reveal  arrows scroll  Esc back  q quit                  
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | save_invitation                                                         
+> Private output file (absolute):                                               
+Enter continue  Esc back  Ctrl-C close                                          
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Private invitation                                                      
+Private invitation saved. Transfer deliberately to the receiving device.        
+Invitation created for selected folder only.                                    
+Paste on receiver, review its root, then approve the exact request here.        
+Expires: 2026-10-04T19:52:40.078428375Z                                         
+s: save to private transfer file  v: reveal/hide invitation                     
+Capability hidden. Reveal only for deliberate transfer.                         
+s save private file  v reveal  arrows scroll  Esc back  q quit                  
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit                                                                           
+Daemon: unknown   Startup: unknown                                              
+Overview  [Folders]  Attention  Devices                                         
+Search page:                                                                    
+  Notes  <disposable>/Notes界                                    
+> Notes  <disposable>/second                                     
+j/k Enter / ? q | c create J join a add s share w requests u setup              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Enrollment requests                                                     
+> Pi | pending_approval | code 34d30-6279d-981db-743f3                          
+  Pi | approved | code 0d558-47d2f-e8f8f-48681                                  
+j/k select  Enter exact review  r refresh  ] next  [ first  Esc back            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Enrollment requests                                                     
+> Pi | pending_approval | code 34d30-6279d-981db-743f3                          
+  Pi | approved | code 0d558-47d2f-e8f8f-48681                                  
+j/k select  Enter exact review  r refresh  ] next  [ first  Esc back            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Exact request approval                                                  
+Device: Pi                                                                      
+Folder: 454376879553276c6880aa4d416d26f9b2240567eb7fd56cf17ef3a92a802e7c        
+Request: 0eaeb065eed3227e46b48fbab4711df95844ae9111861dc6948ca1d594eb811c       
+Requester: a48cb007683e2e4c23a5b8dd48da5b9876ad6193b9bba54d32df4810cfeb8f07     
+Key pin: 5254cf90d6c9eea052e8607e7f500f0dbbfd0dcb2b2e373b52e969d7c1996271       
+Verification code: 34d30-6279d-981db-743f3                                      
+State: pending_approval                                                         
+Compare with the joining device. Approval grants this folder only.              
+Offline devices may still need membership updates.                              
+a approve exact request  x decline  Esc back  q quit                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Request decision                                                        
+Exact request approve completed. Other devices may still need membership        
+updates.                                                                        
+Decision durably recorded; receiver still observes its own readiness.           
+Esc back  q quit (daemon continues)                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit                                                                           
+Daemon: unknown   Startup: unknown                                              
+Overview  [Folders]  Attention  Devices                                         
+Search page:                                                                    
+  Notes  <disposable>/Notes界                                    
+> Notes  <disposable>/second                                     
+j/k Enter / ? q | c create J join a add s share w requests u setup              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Inspect folder and devices                                              
+Root: <disposable>/Notes界                                       
+Local pause=false; membership revision=2                                        
+Shares with: Device a48cb007                                                    
+Shares with: Laptop                                                             
+Last contact: 2026-10-04T18:53:07Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:53:08Z   
+Last contact: 2026-10-04T18:53:07Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:53:08Z   
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Inspect folder and devices                                              
+Root: <disposable>/Notes界                                       
+Local pause=false; membership revision=2                                        
+Shares with: Device a48cb007                                                    
+Shares with: Laptop                                                             
+Last contact: 2026-10-04T18:53:07Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:53:08Z   
+Last contact: 2026-10-04T18:53:07Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:53:08Z   
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | relocate_form                                                           
+> Destination (absolute):                                                       
+Enter continue  Esc back  Ctrl-C close                                          
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Confirm relocation                                                      
+Current: <disposable>/Notes界                                    
+Destination: <disposable>/relocated-notes                        
+Uses the existing resumable relocation journal. Keep original/staging folders   
+until recovery finishes.                                                        
+Enter relocate  Esc edit  q quit                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Inspect folder and devices                                              
+Local folder action completed: relocate                                         
+Root: <disposable>/relocated-notes                               
+Local pause=false; membership revision=2                                        
+Shares with: Device a48cb007                                                    
+Shares with: Laptop                                                             
+Last contact: 2026-10-04T18:53:07Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:53:08Z   
+Last contact: 2026-10-04T18:53:07Z | available                                  
+Reported stored=true applied=false direct=true; observed=2026-10-04T18:53:08Z   
+p pause/resume  l relocate  a add  s share  x unregister preview  t retire      
+preview                                                                         
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit                                                                           
+Daemon: unknown   Startup: unknown                                              
+Overview  [Folders]  Attention  Devices                                         
+Search page:                                                                    
+> Notes  <disposable>/relocated-notes                            
+  Notes  <disposable>/second                                     
+j/k Enter / ? q | c create J join a add s share w requests u setup              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Review setup inputs                                                     
+Supported existing contents will become shared.                                 
+LAN / existing Tailscale: advertise reachable numeric IP:port.                  
+Startup: login needs user systemd; unattended also needs lingering.             
+> Device name: owner-desktop                                                          
+  Folder name: Orbit                                                            
+  Local root: /home/owner/Orbit                                             
+  Startup (manual/login/unattended): manual                                     
+  Data budget (bytes): 4000000000                                               
+  Peer listen (IP:port): 192.168.88.171:56511                                   
+  Enrollment listen (IP:port): 192.168.88.171:34363                             
+  Advertised peer (IP:port): 192.168.88.171:56511                               
+  Advertised enrollment (IP:port): 192.168.88.171:34363                         
+Finite metadata=268435456 reserve=16777216; retention uses per-folder controls. 
+Tab next  Shift-Tab back  Enter preview  Ctrl-A advanced  Esc back              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Confirm adoption                                                        
+Device: Laptop                                                                  
+Folder: Notes                                                                   
+Root: <disposable>/startup-block                                 
+Existing supported local contents become shared; nothing is erased.             
+Measured files=0 directories=0 bytes=0; complete=true                           
+Unsupported=0 unreadable=0 capacity known=true available=27194417152 bytes      
+Startup=login; data=4000000000 metadata=268435456 reserve=16777216 bytes;       
+concurrency=4 bandwidth=0                                                       
+Peer listen: 192.168.88.171:56511; advertise: 192.168.88.171:56511              
+Enrollment listen: 192.168.88.171:34363; advertise: 192.168.88.171:34363        
+Enter confirm exact review  Esc edit  arrows scroll  q quit                     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Setup progress                                                          
+Error: SYSTEMD_UNAVAILABLE: Inspect startup prerequisites with orbit doctor;    
+manual startup remains available.                                               
+State: blocked | reviewed                                                       
+Approved=false membership current=false root available=false scan complete=false
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage       
+blocked=false                                                                   
+Local readiness incomplete. Work remains pending.                               
+Operation: f2f346d00b4558825e6c0c18ea5ae97a78bc2fa41a76320569e5ca2a55c0e354     
+Root: <disposable>/startup-block                                 
+SYSTEMD_UNAVAILABLE: Inspect startup prerequisites with orbit doctor; manual    
+startup remains available.                                                      
+r refresh  J new reviewed join  Esc overview  q quit                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

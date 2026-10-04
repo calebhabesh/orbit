@@ -1,0 +1,14 @@
+=== RUN   TestTerminalContext_NoFolders
+--- PASS: TestTerminalContext_NoFolders (0.01s)
+=== RUN   TestTerminalContext_ExplicitFolderAndName
+--- PASS: TestTerminalContext_ExplicitFolderAndName (0.01s)
+=== RUN   TestTerminalContext_DuplicateNames
+--- PASS: TestTerminalContext_DuplicateNames (0.01s)
+=== RUN   TestTerminalContext_CwdInference
+--- PASS: TestTerminalContext_CwdInference (0.01s)
+=== RUN   TestTerminalContext_PathValidationAndSymlink
+--- PASS: TestTerminalContext_PathValidationAndSymlink (0.01s)
+=== RUN   TestTerminalFoldersAndDevices
+--- PASS: TestTerminalFoldersAndDevices (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	(cached)

@@ -1,0 +1,21 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+    content_recovery_test.go:115: CONTENT_EXPIRED: version {[209 52 65 24 129 78 1 94 37 169 67 88 38 88 204 143 153 254 109 3 119 50 112 27 188 124 236 6 159 242 179 156] [120 66 53 54 31 213 100 87 94 230 200 157 207 232 76 110 81 153 200 206 162 37 192 68 113 189 1 162 210 76 17 109] 1} content has expired under retention policy (action: historical payload cannot be restored; inspect other retained versions)
+--- FAIL: TestTerminalT08ExactReadsLiveStoppedAndGC (0.02s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+    content_recovery_test.go:128: peer is not authorized for this folder
+--- FAIL: TestTerminalT08ReviewedSelectReplayAndStale (0.01s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+    content_recovery_test.go:219: peer is not authorized for this folder
+--- FAIL: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.01s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+    content_recovery_test.go:268: peer is not authorized for this folder
+--- FAIL: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.01s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:333: CLI [history doc --folder cli --state /tmp/TestTerminalT08CLIHistoryReviewRestoreExportAndTools2864494169/001/state --json --limit 1]: exit status 1
+        orbit: unknown orbit command "orbit"; run 'orbit help' for available commands
+--- FAIL: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.30s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.379s
+FAIL

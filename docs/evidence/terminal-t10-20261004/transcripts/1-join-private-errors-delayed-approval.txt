@@ -1,0 +1,174 @@
+Orbit | Create or join                                                          
+Create your Orbit [c / Enter]                                                   
+Join an existing Orbit [j]                                                      
+Existing folder contents are reviewed before adoption.                          
+Closing this interface leaves background sync running.                          
+Esc back  q quit (daemon continues)                                             
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Join invitation                                                         
+Paste a private v2 invitation or enter an absolute private file path.           
+The invitation is hidden and never included in status/logs.                     
+> Private invitation:                                                           
+Enter verify  Esc back  Ctrl-C close                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Join invitation                                                         
+Error: INVITATION_EXPIRED: Ask the inviter for a new invitation; explicitly     
+review a new join attempt.                                                      
+Paste a private v2 invitation or enter an absolute private file path.           
+The invitation is hidden and never included in status/logs.                     
+> Private invitation: ************************************************          
+Enter verify  Esc back  Ctrl-C close                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Join invitation                                                         
+Error: IDENTITY_MISMATCH: Stop and verify the inviter identity; request a new   
+invitation from the intended device.                                            
+Paste a private v2 invitation or enter an absolute private file path.           
+The invitation is hidden and never included in status/logs.                     
+> Private invitation: ************************************************          
+Enter verify  Esc back  Ctrl-C close                                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Review setup inputs                                                     
+Supported existing contents will become shared.                                 
+LAN / existing Tailscale: advertise reachable numeric IP:port.                  
+Startup: login needs user systemd; unattended also needs lingering.             
+> Device name: owner-desktop                                                          
+  Folder name: Orbit                                                            
+  Local root: /home/owner/Orbit                                             
+  Startup (manual/login/unattended): manual                                     
+  Data budget (bytes): 4000000000                                               
+  Peer listen (IP:port): 192.168.88.171:50413                                   
+  Enrollment listen (IP:port): 192.168.88.171:33709                             
+  Advertised peer (IP:port): 192.168.88.171:50413                               
+  Advertised enrollment (IP:port): 192.168.88.171:33709                         
+Finite metadata=268435456 reserve=16777216; retention uses per-folder controls. 
+Tab next  Shift-Tab back  Enter preview  Ctrl-A advanced  Esc back              
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Confirm adoption                                                        
+Device: Pi                                                                      
+Folder: Notes                                                                   
+Root: <disposable>/Notes界                                       
+Existing supported local contents become shared; nothing is erased.             
+Inviter: d270b1d5251f0abfc561690e5afcf6fc8af133f339199f02b2ec1a6cb098a5e9       
+Key pin: fc1b5fc2a96faa6b0d1505bb53d692c8c3bbd90e1c46533b9be568c7c695eb8c       
+Enrollment: https://192.168.88.171:34363                                        
+Invitation folder:                                                              
+4100c4c8bb68dcb714e94b5e159570411f55176f038f986d70b130b1f5a4740e                
+Measured files=1 directories=0 bytes=25; complete=true                          
+Unsupported=0 unreadable=0 capacity known=true available=27105366016 bytes      
+Startup=manual; data=4000000000 metadata=268435456 reserve=16777216 bytes;      
+concurrency=4 bandwidth=0                                                       
+Peer listen: 192.168.88.171:50413; advertise: 192.168.88.171:50413              
+Enrollment listen: 192.168.88.171:33709; advertise: 192.168.88.171:33709        
+Enter confirm exact review  Esc edit  arrows scroll  q quit                     
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+--- frame ---
+Orbit | Setup progress                                                          
+State: running | Waiting for approval                                           
+Approved=false membership current=false root available=false scan complete=false
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage       
+blocked=false                                                                   
+Local readiness incomplete. Work remains pending.                               
+Operation: 89031ff4591040b0f2005f31080d0303c083444cd91a60a8e1049799155075ff     
+Root: <disposable>/Notes界                                       
+Request: fe757d741157e5db6f4ab8b4e2da18f76a2cfc3b2421b5a9529a2ac63a1acdf2       
+Inviter: d270b1d5251f0abfc561690e5afcf6fc8af133f339199f02b2ec1a6cb098a5e9       
+Key pin: fc1b5fc2a96faa6b0d1505bb53d692c8c3bbd90e1c46533b9be568c7c695eb8c       
+Compare verification code on inviter: 0d558-47d2f-e8f8f-48681                   
+r refresh  J new reviewed join  Esc overview  q quit                            
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                

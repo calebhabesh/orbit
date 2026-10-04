@@ -1,0 +1,32 @@
+=== RUN   TestTerminalT00WrongFolderCapability
+    baseline_test.go:184: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00WrongFolderCapability (0.00s)
+=== RUN   TestTerminalT00SameKeySecondFolder
+    baseline_test.go:200: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00SameKeySecondFolder (0.00s)
+=== RUN   TestTerminalT00InviterVerification
+    baseline_test.go:224: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00InviterVerification (0.00s)
+=== RUN   TestTerminalT00JoinPersistence
+    baseline_test.go:253: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00JoinPersistence (0.00s)
+=== RUN   TestTerminalT00RootPreview
+    baseline_test.go:295: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00RootPreview (0.00s)
+=== RUN   TestTerminalT00JoinReadiness
+    baseline_test.go:322: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00JoinReadiness (0.00s)
+=== RUN   TestTerminalT00PeerEnrollmentRoute
+    baseline_test.go:356: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00PeerEnrollmentRoute (0.00s)
+=== RUN   TestTerminalT00InvitationEndpoint
+    baseline_test.go:385: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00InvitationEndpoint (0.00s)
+=== RUN   TestTerminalT00DetailObservation
+    baseline_test.go:405: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00DetailObservation (0.00s)
+=== RUN   TestTerminalT00CLI
+    baseline_test.go:440: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00CLI (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s

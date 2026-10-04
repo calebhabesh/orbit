@@ -1,0 +1,65 @@
+[
+  {
+    "command": [
+      "go",
+      "test",
+      "-count=2",
+      "-v",
+      "./tests/terminal",
+      "-run",
+      "^TestTerminalT08"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.048,
+    "log": "packet.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-count=1",
+      "-v",
+      "./tests/terminal",
+      "-run",
+      "^TestTerminalT08"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 7.375,
+    "log": "packet-race.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "./cmd/filesync/...",
+      "./internal/control/...",
+      "./internal/controlclient/...",
+      "./internal/workspace/...",
+      "./internal/repository/...",
+      "./model/..."
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.222,
+    "log": "targeted.log"
+  },
+  {
+    "command": [
+      "make",
+      "check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 111.855,
+    "log": "make-check.log"
+  },
+  {
+    "command": [
+      "make",
+      "test-race"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 185.775,
+    "log": "make-test-race.log"
+  }
+]

@@ -1,0 +1,89 @@
+{
+  "packet": "T06",
+  "state": "complete",
+  "date": "2026-10-04",
+  "ordinary_tests": {
+    "discovered": 7,
+    "passes_per_run": 7,
+    "runs": 2,
+    "skips": 0,
+    "exit_code": 0,
+    "seconds": 1.159,
+    "log": "packet.log"
+  },
+  "packet_race": {
+    "exit_code": 0,
+    "passes": 7,
+    "seconds": 21.252,
+    "command": "go test -race -count=1 -v ./tests/terminal -run '^TestTerminalT06'",
+    "log": "packet-race.log"
+  },
+  "cmd_filesync_tests": {
+    "exit_code": 0,
+    "passes": 3,
+    "log": "cmd-filesync.log"
+  },
+  "control_unit_tests": {
+    "exit_code": 0,
+    "passes": 6,
+    "log": "control-unit.log"
+  },
+  "make_check": {
+    "exit_code": 0,
+    "log": "make-check.log"
+  },
+  "make_test_race": {
+    "exit_code": 0,
+    "log": "make-test-race.log"
+  },
+  "scoped_vet": {
+    "exit_code": 0,
+    "log": "scoped-vet.log"
+  },
+  "intermediate_failures": [
+    "TestTerminalContextUnmatchedFolder initially returned empty Items slice without candidate suggestions",
+    "initial help header missed 'Orbit - Local file synchronization' prefix causing launch test regression",
+    "handleFoldersPause/Resume directly called WithWorkspace while daemon was running resulting in SQLite lock collision; solved via client.WithController"
+  ],
+  "acceptance_evidence": {
+    "context_resolution_cwd_and_name": [
+      "TestTerminalT06ContextResolutionCwdAndName",
+      "TestTerminalContextCwdInsideRoot",
+      "TestTerminalContextSubdirectoryRelative",
+      "TestTerminalContextNameDisambiguation"
+    ],
+    "ambiguous_outside_root_and_duplicate_names": [
+      "TestTerminalT06AmbiguousAndOutsideRootContext",
+      "TestTerminalContextDuplicateDisplayName"
+    ],
+    "stale_and_unavailable_roots": [
+      "TestTerminalT06StaleAndUnavailableRoot",
+      "TestTerminalContextStaleRoot",
+      "TestTerminalContextRootUnavailable"
+    ],
+    "path_safety_traversal_and_literal_paths": [
+      "TestTerminalT06PathSafetyAndLiteralPaths"
+    ],
+    "terminal_output_escaping_and_json": [
+      "TestTerminalT06OutputEscapingAndControlCharacters"
+    ],
+    "live_and_stopped_adapter_parity": [
+      "TestTerminalT06LiveAndStoppedAdapterParity"
+    ],
+    "shell_completions_and_help_walkthrough": [
+      "TestTerminalT06ShellCompletionsAndHelpWalkthrough"
+    ]
+  },
+  "unexecuted": [
+    "physical cross-host LAN/Tailscale",
+    "native boot/logout/login/unattended",
+    "physical reset/power loss",
+    "P17 actual owner pilot and unaided explanation"
+  ],
+  "limits": [
+    "relative context resolution requires registered root descriptor; outside-root invocations require explicit --folder or interactive disambiguation",
+    "terminal escaping replaces ANSI escapes and control codes with unicode replacements; raw terminal control is disabled",
+    "history/conflict/restore deeper operations are bounded adapters in T06 and finalized in T08"
+  ],
+  "next_packet": "T07"
+}

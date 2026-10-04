@@ -1,0 +1,24 @@
+=== RUN   TestTerminalT03WrongScopeChallengeAndRevocation
+--- PASS: TestTerminalT03WrongScopeChallengeAndRevocation (0.02s)
+=== RUN   TestTerminalT03ReviewedApprovalStaleAndReplay
+--- PASS: TestTerminalT03ReviewedApprovalStaleAndReplay (0.02s)
+=== RUN   TestTerminalT03ExpiredAndRevokedPending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_invite
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/revoked_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/changed_membership
+--- PASS: TestTerminalT03ExpiredAndRevokedPending (0.09s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_invite (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_pending (0.03s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/revoked_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/changed_membership (0.02s)
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/nonces
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/pending
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry
+--- PASS: TestTerminalT03AdmissionCapsAndChangedReplay (0.07s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/nonces (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/pending (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.209s

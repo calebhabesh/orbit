@@ -1,0 +1,18 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.02s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+    content_recovery_test.go:264: merge={Upload:<nil> Versions:[] ContentReview:<nil> Version: Capabilities:[] State: Context:<nil> Operation:<nil> Preview:<nil> Join:<nil> Invitation:<nil> Session:<nil> Settings:<nil> Service:<nil> Readiness:<nil> Items:[] Requests:[] Observations:[] Attention:[] Effects:[] Review:<nil> Cursor: Error:<nil>} INTERNAL_ERROR: constraint failed: FOREIGN KEY constraint failed (787) (action: inspect error logs and retry operation)
+--- FAIL: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.52s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:352: CLI [history doc --folder cli --state /tmp/TestTerminalT08CLIHistoryReviewRestoreExportAndTools1520629510/001/state --json --limit 1]: exit status 2
+        {"versions":null,"version":"1","capabilities":null,"state":"failed","items":null,"requests":null,"observations":null,"attention":null,"effects":null,"cursor":"","error":{"code":"INVALID_PATH","message":"path \"doc\" escapes synced folder root \"/tmp/TestTerminalT08CLIHistoryReviewRestoreExportAndTools1520629510/001/cli\"","retryable":false,"action":"specify a path within the synced folder","retry_after_seconds":"0"}}
+--- FAIL: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.31s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.908s
+FAIL

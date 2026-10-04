@@ -1,0 +1,8 @@
+ok  	github.com/calebhabesh/file-sync/internal/control	0.151s
+ok  	github.com/calebhabesh/file-sync/internal/repository	1.123s
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.037s
+--- FAIL: TestOrbitPairing_CLI_RunningDaemon_Parity (0.37s)
+    orbit_pairing_test.go:783: expected pending request for Headless-Server, got: Enrollment Requests (0 pending):
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	5.479s
+FAIL

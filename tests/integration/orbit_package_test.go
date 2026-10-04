@@ -213,6 +213,9 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 
 	// 3. API endpoint GET /api/v1/version
 	stateDir := testkit.NewDisposable(t)
+	if err := os.Chmod(stateDir, 0700); err != nil {
+		t.Fatal(err)
+	}
 	db, err := repository.Open(context.Background(), stateDir)
 	if err != nil {
 		t.Fatalf("open db: %v", err)

@@ -85,15 +85,25 @@ func TestOrbitEndpoints_PersistenceAndValidation(t *testing.T) {
 		}
 	}
 
-	// Reject missing certificate
+	// Reject a missing certificate when no saved folder/device anchor exists.
 	err = ctrl.SetPeerEndpoint(ctx, control.SetPeerEndpointRequest{
 		Folder:      folderHex,
-		Device:      peerHex,
+		Device:      strings.Repeat("c", 64),
 		URL:         "https://peer.example.com:8443",
 		Certificate: "",
 	})
 	if err == nil {
 		t.Fatal("expected error for empty certificate path")
+	}
+
+	// T05 address-only refresh must preserve the exact configured anchor.
+	err = ctrl.SetPeerEndpoint(ctx, control.SetPeerEndpointRequest{Folder: folderHex, Device: peerHex, URL: "https://moved.example.com:8443"})
+	if err != nil {
+		t.Fatalf("saved-anchor refresh failed: %v", err)
+	}
+	refreshed, err := ctrl.ListPeerEndpoints(ctx)
+	if err != nil || len(refreshed.Peers) != 1 || refreshed.Peers[0].Certificate != certPath || refreshed.Peers[0].URL != "https://moved.example.com:8443" {
+		t.Fatal("refresh changed certificate or lost endpoint")
 	}
 
 	// 3. Remove endpoint

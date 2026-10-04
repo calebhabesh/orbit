@@ -1,0 +1,57 @@
+=== RUN   TestTerminalT00WrongFolderCapability
+    baseline_test.go:195: scope gap: folder A capability accepted and consumed for folder B; request remains pending (no data-access claim)
+--- FAIL: TestTerminalT00WrongFolderCapability (0.34s)
+=== RUN   TestTerminalT00SameKeySecondFolder
+    baseline_test.go:219: request identity gap: same persistent key's second-folder request returns HTTP 500, global request_id UNIQUE collision; second token already consumed
+--- FAIL: TestTerminalT00SameKeySecondFolder (0.36s)
+=== RUN   TestTerminalT00InviterVerification
+    baseline_test.go:243: identity gap: invitation secret disclosed to unrelated self-signed HTTPS server; submit HTTP 200
+--- FAIL: TestTerminalT00InviterVerification (0.31s)
+=== RUN   TestTerminalT00JoinPersistence
+    baseline_test.go:281: reopened joining workflow: resume HTTP 200, completed=true
+    baseline_test.go:290: durable onboarding gap: reopened pending join resumes as completed without querying exact request/endpoint; inviter still pending
+--- FAIL: TestTerminalT00JoinPersistence (0.67s)
+=== RUN   TestTerminalT00RootPreview
+    baseline_test.go:311: preview immediate rows=2; synthetic tree has 1 regular file, 4096 bytes and 1 unsupported symlink
+    baseline_test.go:316: root review gap: no total_bytes observation
+    baseline_test.go:316: root review gap: no unsupported_items observation
+    baseline_test.go:316: root review gap: no incomplete observation
+    baseline_test.go:316: root review gap: no review_generation observation
+    baseline_test.go:316: root review gap: no available_capacity observation
+--- FAIL: TestTerminalT00RootPreview (0.30s)
+=== RUN   TestTerminalT00JoinReadiness
+    baseline_test.go:351: readiness gap: join reports ready/completed despite UNSUPPORTED_OBJECT scan issue; existing link preserved
+--- FAIL: TestTerminalT00JoinReadiness (0.67s)
+=== RUN   TestTerminalT00PeerEnrollmentRoute
+    baseline_test.go:380: transport gap: actual peer handler returns HTTP 404 for enrollment even with pinned mutual TLS; unknown requesters also require client certificates
+--- FAIL: TestTerminalT00PeerEnrollmentRoute (0.33s)
+=== RUN   TestTerminalT00InvitationEndpoint
+    baseline_test.go:397: transport gap: invitation defaults to loopback owner-control address (not reachable from another host)
+    baseline_test.go:400: identity gap: current invitation carries no inviting key/certificate binding
+--- FAIL: TestTerminalT00InvitationEndpoint (0.38s)
+=== RUN   TestTerminalT00DetailObservation
+    baseline_test.go:435: status gap: detail API drops persisted direct=false observation while retaining receipt and last_contact_ns
+--- FAIL: TestTerminalT00DetailObservation (0.39s)
+=== RUN   TestTerminalT00CLI
+=== RUN   TestTerminalT00CLI/FiniteInitialization
+    baseline_test.go:502: initialization gap: default launcher serve --allow-init creates no limits.json; all loaded budgets/reserve are zero
+=== RUN   TestTerminalT00CLI/LiveAdapters
+    baseline_test.go:517: adapter gap: live-daemon orbit setup enters stopped-state lock and fails
+    baseline_test.go:517: adapter gap: live-daemon orbit join enters stopped-state lock and fails
+    baseline_test.go:517: adapter gap: live-daemon orbit conflicts enters stopped-state lock and fails
+    baseline_test.go:517: adapter gap: live-daemon orbit restore enters stopped-state lock and fails
+    baseline_test.go:517: adapter gap: live-daemon orbit conflicts enters stopped-state lock and fails
+=== RUN   TestTerminalT00CLI/Status
+    baseline_test.go:542: status gap: running-daemon JSON omits setup despite live HTTP setup succeeding
+    baseline_test.go:542: status gap: running-daemon JSON omits folders despite live HTTP setup succeeding
+    baseline_test.go:542: status gap: running-daemon JSON omits attention despite live HTTP setup succeeding
+=== RUN   TestTerminalT00CLI/DeletedCommand
+    baseline_test.go:549: command gap: orbit deleted is unavailable
+--- FAIL: TestTerminalT00CLI (0.49s)
+    --- FAIL: TestTerminalT00CLI/FiniteInitialization (0.00s)
+    --- FAIL: TestTerminalT00CLI/LiveAdapters (0.01s)
+    --- FAIL: TestTerminalT00CLI/Status (0.01s)
+    --- FAIL: TestTerminalT00CLI/DeletedCommand (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	4.238s
+FAIL

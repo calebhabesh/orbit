@@ -1,0 +1,41 @@
+=== RUN   TestTerminalT01IntegersAndStrictCodec
+--- PASS: TestTerminalT01IntegersAndStrictCodec (0.00s)
+=== RUN   TestTerminalT01MutationContracts
+--- PASS: TestTerminalT01MutationContracts (0.00s)
+=== RUN   TestTerminalT01Fixtures
+--- PASS: TestTerminalT01Fixtures (0.00s)
+=== RUN   TestTerminalT01QueriesAndExits
+--- PASS: TestTerminalT01QueriesAndExits (0.00s)
+=== RUN   TestTerminalT01FingerprintBindsReview
+--- PASS: TestTerminalT01FingerprintBindsReview (0.00s)
+=== RUN   TestTerminalT01JoinInvitation
+--- PASS: TestTerminalT01JoinInvitation (0.00s)
+=== RUN   TestTerminalT01UploadFingerprint
+--- PASS: TestTerminalT01UploadFingerprint (0.00s)
+=== RUN   TestTerminalT01StateExitCategories
+--- PASS: TestTerminalT01StateExitCategories (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.018s
+=== RUN   TestTerminalT01EnrollmentWire
+--- PASS: TestTerminalT01EnrollmentWire (0.00s)
+=== RUN   TestTerminalT01StatusProofDomain
+--- PASS: TestTerminalT01StatusProofDomain (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.005s
+=== RUN   TestTerminalT01TG1Transcript
+--- PASS: TestTerminalT01TG1Transcript (0.00s)
+=== RUN   TestTerminalT01TG1TLSIsolation
+2026/10/03 15:33:28 http: TLS handshake error from 127.0.0.1:48172: remote error: tls: bad certificate
+--- PASS: TestTerminalT01TG1TLSIsolation (0.01s)
+=== RUN   TestTerminalT01TG1AtomicAdmission
+--- PASS: TestTerminalT01TG1AtomicAdmission (0.01s)
+=== RUN   TestTerminalT01TG2RestartAndReadiness
+--- PASS: TestTerminalT01TG2RestartAndReadiness (0.00s)
+=== RUN   TestTerminalT01TG3AdaptersAndReplay
+--- PASS: TestTerminalT01TG3AdaptersAndReplay (0.00s)
+=== RUN   TestTerminalT01TG4ReviewedSession
+--- PASS: TestTerminalT01TG4ReviewedSession (0.04s)
+=== RUN   TestTerminalT01TG5Lifecycle
+--- PASS: TestTerminalT01TG5Lifecycle (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/designgates	1.072s

@@ -1,0 +1,17 @@
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.02s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.53s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:361: CLI [restore doc --folder cli --state /tmp/TestTerminalT08CLIHistoryReviewRestoreExportAndTools1484122581/001/state --version b836d58cffd5bcffd42f69b3f63f6bbe387c4a0d9675185a0844f6983e8aee24:1 --review-file /tmp/TestTerminalT08CLIHistoryReviewRestoreExportAndTools1484122581/001/review.json --json]: exit status 1
+        {"versions":null,"version":"1","capabilities":null,"state":"failed","items":null,"requests":null,"observations":null,"attention":null,"effects":null,"cursor":"","error":{"code":"INTERNAL_ERROR","message":"state directory \"/tmp/TestTerminalT08CLIHistoryReviewRestoreExportAndTools1484122581/001\" must not be accessible by group or other users (mode 0700)","retryable":false,"action":"inspect error logs and retry operation","retry_after_seconds":"0"}}
+--- FAIL: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.50s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1.116s
+FAIL

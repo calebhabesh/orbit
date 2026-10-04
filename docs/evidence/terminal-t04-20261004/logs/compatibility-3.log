@@ -1,0 +1,7 @@
+--- FAIL: TestOrbitPairing_CLI_RunningDaemon_Parity (26.63s)
+    orbit_pairing_test.go:902: expected join success, got: Setup: completed; phase=ready; operation=40ca9807a692679e116d084d37470b3d4def7463a93402aea2c23188523b92a9
+        Folder: e65e6dd0fb324b9f3197fc4e5e947286e368caff5b6f273e8abe61b9dbf9d3bc; root: "/tmp/TestOrbitPairing_CLI_RunningDaemon_Parity2206936842/001/root-b"; request: 9b3d6ddcbeb5e9342a736fb88eda8911e36ec0ebef46fa70567da3c3388f8519
+    orbit_pairing_test.go:558: agent is not running
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	51.878s
+FAIL

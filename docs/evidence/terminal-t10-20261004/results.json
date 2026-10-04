@@ -1,0 +1,120 @@
+{
+  "packet": "T10",
+  "state": "complete",
+  "checks": [
+    {
+      "check": "packet_discovery",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/discovery.log",
+      "test_executions": 9
+    },
+    {
+      "check": "packet_count2",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/packet-final.log",
+      "test_executions": 18,
+      "wall_seconds": 127.75
+    },
+    {
+      "check": "packet_race",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/packet-race-final.log",
+      "test_executions": 9,
+      "wall_seconds": 74.94
+    },
+    {
+      "check": "final_pty_race_confirmation",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/pty-race-confirmation.log",
+      "test_executions": 1,
+      "wall_seconds": 72.02
+    },
+    {
+      "check": "relevant_regressions",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/regressions.log",
+      "wall_seconds": 42.413
+    },
+    {
+      "check": "explicit_cli",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/cli-final.log"
+    },
+    {
+      "check": "vt_oracle",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/vt-final.log",
+      "test_executions": 5
+    },
+    {
+      "check": "make_check",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/make-check-final.log",
+      "wall_seconds": 89.0
+    },
+    {
+      "check": "full_make_test_race",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/make-test-race.log",
+      "wall_seconds": 284.66
+    },
+    {
+      "check": "sanitized_pty_transcripts",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/pty-transcripts.log",
+      "wall_seconds": 63.04
+    }
+  ],
+  "actual_assertions": [
+    "same persistent device IDs across client/restart/second folder",
+    "distinct request/attempt on second folder",
+    "matching canonical transcript verification codes across two actual daemons",
+    "verified bidirectional first-folder bytes, second-folder bytes and captured SHA-256 after every client exit",
+    "nonempty root review with validation/back/edit",
+    "private/wrapped invitation, expired and wrong-pin refusal",
+    "exact scoped approval and retained request after daemon restart",
+    "actual pause/resume and relocation; conservative unregister/retire preview",
+    "startup failure under empty daemon PATH with no host service changes",
+    "termios/alternate-screen/paste restoration",
+    "bounded blocked setup pages and persistent fork/readiness refusal"
+  ],
+  "intermediate_failures": [
+    {
+      "log": "logs/packet-first.log",
+      "disposition": "readiness ordering and VT semantics corrected"
+    },
+    {
+      "log": "logs/packet-second.log",
+      "disposition": "harness honors actual preserved selection"
+    },
+    {
+      "log": "logs/packet-race.log",
+      "disposition": "harness waits for loaded query state before keys; final instrumented confirmation passes"
+    }
+  ],
+  "unexecuted": [
+    "native laptop/Pi/VPS",
+    "physical LAN/Tailscale",
+    "packaged bare entry/adoption",
+    "boot/login/logout/unattended host validation",
+    "VM reset/power loss",
+    "P17 actual owner use and unaided explanation"
+  ],
+  "next_packet": "T11",
+  "evidence": {
+    "commands": "commands.md",
+    "source_manifest": "manifest.json",
+    "summary": "summary.md",
+    "sanitized_transcripts": "transcripts/results.json"
+  }
+}

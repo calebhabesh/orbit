@@ -1,0 +1,31 @@
+{
+  "init_exit": 0,
+  "schema_version": 13,
+  "journal_mode": "wal",
+  "setup_state_columns": [
+    "id",
+    "phase",
+    "root_path",
+    "default_folder_id",
+    "completed",
+    "updated_ns"
+  ],
+  "enrollment_request_columns": [
+    "request_id",
+    "folder_id",
+    "device_id",
+    "public_key",
+    "key_pin",
+    "suggested_label",
+    "status",
+    "created_ns",
+    "updated_ns"
+  ],
+  "enrollment_schema": "CREATE TABLE enrollment_requests (\n\trequest_id TEXT PRIMARY KEY,\n\tfolder_id BLOB NOT NULL CHECK(length(folder_id)=32),\n\tdevice_id BLOB NOT NULL CHECK(length(device_id)=32),\n\tpublic_key BLOB NOT NULL CHECK(length(public_key)=32),\n\tkey_pin BLOB NOT NULL CHECK(length(key_pin)=32),\n\tsuggested_label TEXT NOT NULL,\n\tstatus TEXT NOT NULL CHECK(status IN ('pending','approved','declined')),\n\tcreated_ns INTEGER NOT NULL,\n\tupdated_ns INTEGER NOT NULL,\n\tFOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE CASCADE\n) STRICT",
+  "init_limits": {
+    "format_version": 1,
+    "data_budget_bytes": 10737418240,
+    "metadata_budget_bytes": 268435456,
+    "free_space_reserve_bytes": 536870912
+  }
+}

@@ -111,6 +111,8 @@ func TestOrbitService_StatusReporting(t *testing.T) {
 // TestOrbitService_ActionAndFallback_HTTP tests the service action endpoint
 // and validates graceful handling when systemd user session is unavailable.
 func TestOrbitService_ActionAndFallback_HTTP(t *testing.T) {
+	t.Setenv("HOME", testkit.NewDisposable(t))
+	t.Setenv("PATH", t.TempDir())
 	disposable := testkit.NewDisposable(t)
 	stateDir := filepath.Join(disposable, "action-state")
 
@@ -148,14 +150,14 @@ func TestOrbitService_ActionAndFallback_HTTP(t *testing.T) {
 	}
 	defer actResp.Body.Close()
 
-	// If systemd is unavailable, must return structured error
-	if actResp.StatusCode != http.StatusOK {
-		var errRes map[string]interface{}
-		_ = json.NewDecoder(actResp.Body).Decode(&errRes)
-		errObj, ok := errRes["error"].(map[string]interface{})
-		if !ok || (errObj["code"] != "SYSTEMD_UNAVAILABLE" && actResp.StatusCode != http.StatusInternalServerError) {
-			t.Errorf("expected SYSTEMD_UNAVAILABLE code on systemd failure, got %v", errRes)
-		}
+	// The child inherits a disposable home and no systemctl; this negative
+	// check cannot install/enable a personal service on a developer workstation.
+	var errRes control.ControlError
+	if err := json.NewDecoder(actResp.Body).Decode(&errRes); err != nil {
+		t.Fatal(err)
+	}
+	if actResp.StatusCode == http.StatusOK || errRes.Code != "SYSTEMD_UNAVAILABLE" {
+		t.Fatalf("missing systemd was not reported: HTTP %d code=%s", actResp.StatusCode, errRes.Code)
 	}
 }
 

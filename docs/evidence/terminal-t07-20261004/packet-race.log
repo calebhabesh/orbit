@@ -1,0 +1,32 @@
+=== RUN   TestTerminalT07_Status_Observations_MixedState
+=== PAUSE TestTerminalT07_Status_Observations_MixedState
+=== RUN   TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== PAUSE TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== RUN   TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== PAUSE TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== PAUSE TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== RUN   TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== PAUSE TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== CONT  TestTerminalT07_Status_Observations_MixedState
+=== CONT  TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== CONT  TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== CONT  TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== CONT  TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/StoppedAdapter
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/LiveCleanState
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/InsecureToken
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/MissingRoot
+--- PASS: TestTerminalT07_Status_Observations_MixedState (0.63s)
+--- PASS: TestTerminalT07_Status_Attention_PersistenceAcrossRestart (0.63s)
+--- PASS: TestTerminalT07_Status_BoundedPaginationAndCancellation (0.76s)
+--- PASS: TestTerminalT07_CLI_StatusAndDoctor_Parity (0.85s)
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/ExhaustedTask
+--- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations (1.29s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/StoppedAdapter (0.01s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/LiveCleanState (0.01s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/InsecureToken (0.01s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/MissingRoot (0.39s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/ExhaustedTask (0.34s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	2.294s

@@ -1,0 +1,5 @@
+# github.com/calebhabesh/file-sync/internal/control
+internal/control/terminal_setup.go:441:9: undefined: err
+internal/control/terminal_setup.go:442:17: undefined: err
+FAIL	github.com/calebhabesh/file-sync/tests/terminal [build failed]
+FAIL

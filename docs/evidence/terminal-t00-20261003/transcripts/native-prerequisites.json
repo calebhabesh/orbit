@@ -1,0 +1,20 @@
+[
+  {
+    "host_alias": "laptop",
+    "command": "ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=5 laptop tailscale status --json",
+    "exit": 127,
+    "status": "no parseable Tailscale status; raw hostname/address output omitted"
+  },
+  {
+    "host_alias": "rpi",
+    "command": "ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=5 rpi tailscale status --json",
+    "exit": 127,
+    "status": "no parseable Tailscale status; raw hostname/address output omitted"
+  },
+  {
+    "host_alias": "vps",
+    "command": "ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=5 vps tailscale status --json",
+    "exit": 127,
+    "status": "no parseable Tailscale status; raw hostname/address output omitted"
+  }
+]

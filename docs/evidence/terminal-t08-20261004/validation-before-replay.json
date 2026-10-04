@@ -1,0 +1,87 @@
+[
+  {
+    "command": [
+      "go",
+      "test",
+      "-list",
+      "^TestTerminalT08",
+      "./tests/terminal"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.174,
+    "log": "discovery.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-count=2",
+      "-v",
+      "./tests/terminal",
+      "-run",
+      "^TestTerminalT08"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.227,
+    "log": "packet.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-count=1",
+      "-v",
+      "./tests/terminal",
+      "-run",
+      "^TestTerminalT08"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 9.695,
+    "log": "packet-race.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "./cmd/filesync/...",
+      "./internal/control/...",
+      "./internal/controlclient/...",
+      "./internal/workspace/...",
+      "./internal/repository/...",
+      "./model/..."
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 7.559,
+    "log": "targeted.log"
+  },
+  {
+    "command": [
+      "make",
+      "check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 84.918,
+    "log": "make-check.log"
+  },
+  {
+    "command": [
+      "make",
+      "test-race"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 183.852,
+    "log": "make-test-race.log"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.012,
+    "log": "diff-check.log"
+  }
+]

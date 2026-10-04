@@ -1,0 +1,42 @@
+{
+  "packet": "T03",
+  "state": "complete",
+  "test_definitions": 16,
+  "ordinary_tests": 15,
+  "ordinary_executions": 30,
+  "subprocess_helper_parent_skip": true,
+  "final_checks": {
+    "go test -count=2 -v ./... -run ^TestTerminalT03": 0,
+    "make check": 0,
+    "make test-race": 0,
+    "git diff --check": 0
+  },
+  "focused_race": "passed before final SQL pagination/count and exact certificate-wire replay changes; final full race passed after them",
+  "real_network": "fresh nonloopback TLS listeners on development host; two actual daemon processes; requester child signs/sends; canonical membership imported; exact-revision peer hello; graceful owner restart/replay",
+  "cap_fixture_limitations": "128 seeded records plus actual HTTP refusal; not 128 real device enrollments",
+  "unexecuted": [
+    "physical two-host LAN",
+    "Tailscale",
+    "native laptop/Pi/VPS enrollment",
+    "native boot/logout/login",
+    "SIGKILL or power-loss",
+    "TUI/PTY",
+    "T04 reviewed-root generations and durable joining/readiness",
+    "T05 additional-folder/offline/third-peer rollout",
+    "P17 actual owner use and unaided explanation"
+  ],
+  "failure_transcripts": [
+    "initial.txt",
+    "process-retry.txt",
+    "cli-diagnosis.txt",
+    "regression-initial.txt",
+    "regression-final.txt"
+  ],
+  "next_packet": "T04",
+  "markdown_validation": {
+    "documents": 10,
+    "local_links": 75,
+    "result": "passed"
+  },
+  "process_cleanup_audit": "ps/rg found no selected disposable daemon/test-helper process; rg exit 1 means no matches"
+}
