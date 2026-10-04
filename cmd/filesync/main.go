@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -23,6 +23,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/app"
 	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/control"
+	"github.com/calebhabesh/file-sync/internal/controlclient"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/launcher"
 	"github.com/calebhabesh/file-sync/internal/protocol"
@@ -46,12 +47,26 @@ func main() {
 
 	if filepath.Base(os.Args[0]) == "orbit" {
 		if err := handleOrbit(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+			var ce *CLIExitError
+			if errors.As(err, &ce) {
+				if ce.Err != nil {
+					fmt.Fprintf(os.Stderr, "orbit: %v\n", ce.Err)
+				}
+				os.Exit(ce.Code)
+			}
 			fmt.Fprintf(os.Stderr, "orbit: %v\n", err)
 			os.Exit(1)
 		}
 		return
 	}
 	if err := run(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+		var ce *CLIExitError
+		if errors.As(err, &ce) {
+			if ce.Err != nil {
+				fmt.Fprintf(os.Stderr, "filesync: %v\n", ce.Err)
+			}
+			os.Exit(ce.Code)
+		}
 		fmt.Fprintf(os.Stderr, "filesync: %v\n", err)
 		os.Exit(1)
 	}
@@ -660,6 +675,9 @@ func handleSelect(args []string, stdout, stderr io.Writer) error {
 	if *folderText == "" || *path == "" || *selectedText == "" {
 		return errors.New("select requires --folder, --path, and --selected")
 	}
+	if *reviewedText == "" || *headTokenText == "" {
+		return errors.New("INVALID_REQUEST: mutation requires explicit --reviewed and --head-token")
+	}
 	folder, err := parseID(*folderText)
 	if err != nil {
 		return err
@@ -739,7 +757,7 @@ func handleDoctor(args []string, stdout, stderr io.Writer) error {
 	}
 	return app.WithWorkspace(context.Background(), actualStateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
 		local, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: local})
+		ctrl := control.New(db, ws, control.Options{LocalDevice: local, StoppedAdapter: true})
 		report, err := ctrl.Doctor(context.Background())
 		if err != nil {
 			return err
@@ -861,7 +879,7 @@ func handleMetrics(args []string, stdout, stderr io.Writer) error {
 
 func handleFolders(args []string, stdout, stderr io.Writer) error {
 	if len(args) < 1 {
-		return errors.New("folders requires a subcommand: list, add, pause, resume, remove, or revalidate")
+		return errors.New("folders requires a subcommand: list, add, pause, resume, remove, relocate, or revalidate")
 	}
 	switch args[0] {
 	case "list":
@@ -874,6 +892,10 @@ func handleFolders(args []string, stdout, stderr io.Writer) error {
 		return handleFoldersResume(args[1:], stdout, stderr)
 	case "remove":
 		return handleFoldersRemove(args[1:], stdout, stderr)
+	case "relocate":
+		return handleFoldersRelocate(args[1:], stdout, stderr)
+	case "share":
+		return shareFolderCLI(args[1:], stdout, stderr)
 	case "revalidate":
 		return handleFoldersRevalidate(args[1:], stdout, stderr)
 	default:
@@ -975,18 +997,24 @@ func handleFoldersPause(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return app.WithWorkspace(context.Background(), actualStateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		local, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: local})
-		if err := ctrl.PauseFolder(context.Background(), folder, *reason); err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(map[string]any{"status": "paused", "folder": folder})
-		}
-		fmt.Fprintf(stdout, "paused folder %x (reason: %s)\n", folder, *reason)
-		return nil
-	})
+	client := &controlclient.Client{StateDir: actualStateDir}
+	ctx := context.Background()
+	var pauseRes map[string]any
+	if err := client.WithController(ctx, func() error {
+		return client.Call(ctx, http.MethodPost, "/api/v1/folders/pause", control.FolderPauseRequest{
+			Folder: folder,
+			Reason: *reason,
+		}, &pauseRes)
+	}, func(ctrl *control.Controller) error {
+		return ctrl.PauseFolder(ctx, folder, *reason)
+	}); err != nil {
+		return err
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(map[string]any{"status": "paused", "folder": folder})
+	}
+	fmt.Fprintf(stdout, "paused folder %x (reason: %s)\n", folder, *reason)
+	return nil
 }
 
 func handleFoldersResume(args []string, stdout, stderr io.Writer) error {
@@ -1010,18 +1038,23 @@ func handleFoldersResume(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return app.WithWorkspace(context.Background(), actualStateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		local, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: local})
-		if err := ctrl.ResumeFolder(context.Background(), folder); err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(map[string]any{"status": "resumed", "folder": folder})
-		}
-		fmt.Fprintf(stdout, "resumed folder %x\n", folder)
-		return nil
-	})
+	client := &controlclient.Client{StateDir: actualStateDir}
+	ctx := context.Background()
+	var resumeRes map[string]any
+	if err := client.WithController(ctx, func() error {
+		return client.Call(ctx, http.MethodPost, "/api/v1/folders/resume", control.FolderResumeRequest{
+			Folder: folder,
+		}, &resumeRes)
+	}, func(ctrl *control.Controller) error {
+		return ctrl.ResumeFolder(ctx, folder)
+	}); err != nil {
+		return err
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(map[string]any{"status": "resumed", "folder": folder})
+	}
+	fmt.Fprintf(stdout, "resumed folder %x\n", folder)
+	return nil
 }
 
 func handleFoldersRemove(args []string, stdout, stderr io.Writer) error {
@@ -1045,22 +1078,27 @@ func handleFoldersRemove(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return app.WithWorkspace(context.Background(), actualStateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		local, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: local})
-		if err := ctrl.UnregisterFolder(context.Background(), folder); err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(map[string]any{
-				"status":  "removed",
-				"folder":  folder,
-				"message": "registration removed preserving working files",
-			})
-		}
-		fmt.Fprintf(stdout, "removed registration for folder %x (working files preserved on disk, zero tombstones emitted)\n", folder)
-		return nil
-	})
+	client := &controlclient.Client{StateDir: actualStateDir}
+	ctx := context.Background()
+	var remRes map[string]any
+	if err := client.WithController(ctx, func() error {
+		return client.Call(ctx, http.MethodPost, "/api/v1/folders/remove", control.FolderRemoveRequest{
+			Folder: folder,
+		}, &remRes)
+	}, func(ctrl *control.Controller) error {
+		return ctrl.UnregisterFolder(ctx, folder)
+	}); err != nil {
+		return err
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(map[string]any{
+			"status":  "removed",
+			"folder":  folder,
+			"message": "registration removed preserving working files",
+		})
+	}
+	fmt.Fprintf(stdout, "removed registration for folder %x (working files preserved on disk, zero tombstones emitted)\n", folder)
+	return nil
 }
 
 func handleFoldersRevalidate(args []string, stdout, stderr io.Writer) error {
@@ -1084,18 +1122,23 @@ func handleFoldersRevalidate(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return app.WithWorkspace(context.Background(), actualStateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		local, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: local})
-		if err := ctrl.RevalidateRoot(context.Background(), folder); err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(map[string]any{"status": "valid", "folder": folder})
-		}
-		fmt.Fprintf(stdout, "revalidated root for folder %x: valid\n", folder)
-		return nil
-	})
+	client := &controlclient.Client{StateDir: actualStateDir}
+	ctx := context.Background()
+	var revRes map[string]any
+	if err := client.WithController(ctx, func() error {
+		return client.Call(ctx, http.MethodPost, "/api/v1/folders/revalidate", control.FolderRevalidateRequest{
+			Folder: folder,
+		}, &revRes)
+	}, func(ctrl *control.Controller) error {
+		return ctrl.RevalidateRoot(ctx, folder)
+	}); err != nil {
+		return err
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(map[string]any{"status": "valid", "folder": folder})
+	}
+	fmt.Fprintf(stdout, "revalidated root for folder %x: valid\n", folder)
+	return nil
 }
 
 func handleSafety(args []string, stdout, stderr io.Writer) error {
@@ -1525,20 +1568,34 @@ func handleMerge(args []string, stdout, stderr io.Writer) error {
 	if *file == "" && *content == "" {
 		return errors.New("merge requires --file or --content")
 	}
+	if *reviewedText == "" || *headTokenText == "" {
+		return errors.New("INVALID_REQUEST: mutation requires explicit --reviewed and --head-token")
+	}
 	folder, err := parseID(*folderText)
 	if err != nil {
 		return err
 	}
 
-	var mergeBytes []byte
+	var mergeReader io.Reader
+	var contentDigest history.Digest
 	if *file != "" {
-		data, err := os.ReadFile(*file)
+		f, err := os.Open(*file)
 		if err != nil {
-			return fmt.Errorf("reading merge file: %w", err)
+			return err
 		}
-		mergeBytes = data
+		defer f.Close()
+		hash := sha256.New()
+		if _, err = io.CopyBuffer(hash, f, make([]byte, 64<<10)); err != nil {
+			return err
+		}
+		copy(contentDigest[:], hash.Sum(nil))
+		if _, err = f.Seek(0, io.SeekStart); err != nil {
+			return err
+		}
+		mergeReader = f
 	} else {
-		mergeBytes = []byte(*content)
+		mergeReader = strings.NewReader(*content)
+		contentDigest = sha256.Sum256([]byte(*content))
 	}
 
 	return app.WithWorkspace(context.Background(), *stateDir, func(_ config.Config, db *repository.DB, work *workspace.Workspace) error {
@@ -1577,7 +1634,8 @@ func handleMerge(args []string, stdout, stderr io.Writer) error {
 			Reviewed:          reviewed,
 			ExpectedHeadToken: headToken,
 			Executable:        *executable,
-			Content:           mergeBytes,
+			ContentReader:     mergeReader,
+			ContentDigest:     &contentDigest,
 			IdempotencyKey:    *idempotencyKey,
 		})
 		if err != nil {
@@ -1614,6 +1672,9 @@ func handleKeepCopies(args []string, stdout, stderr io.Writer) error {
 	}
 	if *folderText == "" || *path == "" {
 		return errors.New("keep-copies requires --folder and --path")
+	}
+	if *reviewedText == "" || *headTokenText == "" {
+		return errors.New("INVALID_REQUEST: mutation requires explicit --reviewed and --head-token")
 	}
 	folder, err := parseID(*folderText)
 	if err != nil {
@@ -1715,6 +1776,9 @@ func handleRestore(args []string, stdout, stderr io.Writer) error {
 	}
 	if *folderText == "" || *path == "" || *sourceText == "" {
 		return errors.New("restore requires --folder, --path, and --source")
+	}
+	if !*preview && (*reviewedText == "" || *headTokenText == "") {
+		return errors.New("INVALID_REQUEST: mutation requires explicit --reviewed and --head-token")
 	}
 	folder, err := parseID(*folderText)
 	if err != nil {
@@ -2804,6 +2868,9 @@ func handleStoragePrune(args []string, stdout, stderr io.Writer) error {
 }
 
 func handleOrbitSettings(args []string, stdout, stderr io.Writer) error {
+	if len(args) > 0 && args[0] == "runtime" {
+		return handleTerminalRuntime(args[1:], stdout, stderr)
+	}
 	flags := flag.NewFlagSet("orbit settings", flag.ContinueOnError)
 	flags.SetOutput(stderr)
 	stateDir := flags.String("state", "", "explicit agent state directory")
@@ -3211,14 +3278,24 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 	switch args[0] {
 	case "launch":
 		return handleOrbitLaunch(args[1:], stdout, stderr)
+	case "tui":
+		return handleOrbitTUI(args[1:], stdout, stderr)
 	case "browse", "search", "details":
 		return handleOrbitBrowse(args[0], args[1:], stdout, stderr)
 	case "mkdir", "import", "move", "rename", "delete":
 		return handleOrbitFileAction(args[0], args[1:], stdout, stderr)
+	case "export":
+		return handleTerminalContent("export", args[1:], stdout, stderr)
 	case "restore":
-		return handleRestore(args[1:], stdout, stderr)
+		return handleOrbitRestore(args[1:], stdout, stderr)
 	case "conflicts":
-		return run(append([]string{"conflicts"}, args[1:]...), stdout, stderr)
+		return handleOrbitConflicts(args[1:], stdout, stderr)
+	case "history":
+		return handleOrbitHistory(args[1:], stdout, stderr)
+	case "deleted":
+		return handleOrbitDeleted(args[1:], stdout, stderr)
+	case "context":
+		return handleOrbitContext(args[1:], stdout, stderr)
 	case "status":
 		return handleOrbitStatus(args[1:], stdout, stderr)
 	case "setup":
@@ -3236,7 +3313,7 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 	case "settings":
 		return handleOrbitSettings(args[1:], stdout, stderr)
 	case "folders":
-		return handleFolders(args[1:], stdout, stderr)
+		return handleOrbitFolders(args[1:], stdout, stderr)
 	case "storage":
 		if len(args) > 1 {
 			return handleStorage(args, stdout, stderr)
@@ -3246,6 +3323,10 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleMaintenance(args[1:], stdout, stderr)
 	case "service":
 		return handleOrbitService(args[1:], stdout, stderr)
+	case "doctor":
+		return handleOrbitDoctor(args[1:], stdout, stderr)
+	case "completion":
+		return handleOrbitCompletion(args[1:], stdout, stderr)
 	case "version", "-v", "--version":
 		return handleOrbitVersion(args[1:], stdout, stderr)
 	case "open":
@@ -3255,8 +3336,7 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 	case "serve":
 		return run(args, stdout, stderr)
 	case "help", "-h", "--help":
-		printOrbitHelp(stdout)
-		return nil
+		return handleOrbitHelp(args[1:], stdout, stderr)
 	default:
 		return fmt.Errorf("unknown orbit command %q; run 'orbit help' for available commands", args[0])
 	}
@@ -3296,267 +3376,6 @@ func handleOrbitLaunch(args []string, stdout, stderr io.Writer) error {
 	return nil
 }
 
-func handleOrbitStatus(args []string, stdout, stderr io.Writer) error {
-	flags := flag.NewFlagSet("orbit status", flag.ContinueOnError)
-	flags.SetOutput(stderr)
-	stateDirFlag := flags.String("state", "", "explicit agent state directory")
-	jsonOutput := flags.Bool("json", false, "output JSON")
-	if err := flags.Parse(args); err != nil {
-		return err
-	}
-
-	stateDir, err := launcher.DiscoverState(*stateDirFlag)
-	if err != nil {
-		return err
-	}
-
-	testLock, err := state.Acquire(stateDir)
-	running := false
-	if errors.Is(err, state.ErrLocked) {
-		running = true
-	} else if err == nil {
-		_ = testLock.Close()
-	}
-
-	svcStatus, _ := control.CheckServiceStatus(context.Background(), stateDir, nil)
-
-	type OrbitOverallStatus struct {
-		StateDirectory string                       `json:"state_directory"`
-		DaemonRunning  bool                         `json:"daemon_running"`
-		ControlAddress string                       `json:"control_address,omitempty"`
-		Service        *control.ServiceStatusResult `json:"service,omitempty"`
-		Setup          *control.InspectSetupResult  `json:"setup,omitempty"`
-	}
-
-	res := OrbitOverallStatus{
-		StateDirectory: stateDir,
-		DaemonRunning:  running,
-		Service:        svcStatus,
-	}
-
-	if running {
-		if addrBytes, err := os.ReadFile(filepath.Join(stateDir, "control.addr")); err == nil {
-			res.ControlAddress = strings.TrimSpace(string(addrBytes))
-		}
-	}
-
-	_ = app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		localDev, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
-		insp, err := ctrl.InspectSetup(context.Background())
-		if err == nil {
-			res.Setup = insp
-		}
-		return nil
-	})
-
-	if *jsonOutput {
-		return json.NewEncoder(stdout).Encode(res)
-	}
-
-	fmt.Fprintf(stdout, "Orbit Status:\n")
-	fmt.Fprintf(stdout, "  State Directory:   %s\n", res.StateDirectory)
-	fmt.Fprintf(stdout, "  Daemon Running:    %v\n", res.DaemonRunning)
-	if res.ControlAddress != "" {
-		fmt.Fprintf(stdout, "  Control Address:   %s\n", res.ControlAddress)
-	}
-	if res.Service != nil {
-		fmt.Fprintf(stdout, "  Service Installed: %v (enabled: %v, active: %v)\n",
-			res.Service.UnitInstalled, res.Service.EnabledOnLogin, res.Service.CurrentlyRunning)
-	}
-	if res.Setup != nil {
-		fmt.Fprintf(stdout, "  Setup Status:      phase=%s, completed=%v, folders=%d\n",
-			res.Setup.CurrentPhase, res.Setup.SetupCompleted, res.Setup.RegisteredCount)
-	}
-	return nil
-}
-
-func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
-	flags := flag.NewFlagSet("orbit setup", flag.ContinueOnError)
-	flags.SetOutput(stderr)
-	stateDirFlag := flags.String("state", "", "explicit agent state directory")
-	rootPath := flags.String("root", "", "proposed sync root directory path")
-	label := flags.String("label", "", "device display label")
-	name := flags.String("name", "", "workspace display name")
-	previewOnly := flags.Bool("preview", false, "preview proposed root directory without adopting")
-	resume := flags.Bool("resume", false, "resume interrupted setup")
-	join := flags.Bool("join", false, "join an existing workspace via invitation")
-	invitationFlag := flags.String("invitation", "", "workspace invitation token or orbit-invitation: link")
-	remoteFlag := flags.String("remote", "", "inviting device remote control URL")
-	folderFlag := flags.String("folder", "", "target workspace folder ID hex")
-	timeoutFlag := flags.Int("timeout", 60, "seconds to wait for owner approval (0 for non-blocking)")
-	jsonOutput := flags.Bool("json", false, "output JSON")
-	if err := flags.Parse(args); err != nil {
-		return err
-	}
-
-	stateDir, err := launcher.DiscoverState(*stateDirFlag)
-	if err != nil {
-		return err
-	}
-
-	if _, err := config.Load(stateDir); errors.Is(err, os.ErrNotExist) {
-		if _, err := app.Initialize(context.Background(), stateDir, app.SystemDependencies()); err != nil {
-			return err
-		}
-	}
-
-	return app.WithWorkspace(context.Background(), stateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		localDev, _ := parseID(cfg.DeviceID)
-		ctrl := control.New(db, ws, control.Options{LocalDevice: localDev})
-		ctx := context.Background()
-
-		if *resume {
-			res, err := ctrl.ResumeSetup(ctx, control.ResumeSetupRequest{})
-			if err != nil {
-				return err
-			}
-			if *jsonOutput {
-				return json.NewEncoder(stdout).Encode(res)
-			}
-			fmt.Fprintf(stdout, "Setup resumed: phase=%s, completed=%v, root=%s\n", res.Phase, res.Completed, res.RootPath)
-			return nil
-		}
-
-		if *join {
-			token := strings.TrimSpace(*invitationFlag)
-			if idx := strings.Index(token, "orbit-invitation:"); idx != -1 {
-				token = strings.TrimSpace(token[idx:])
-			}
-			remote := *remoteFlag
-			folderStr := *folderFlag
-
-			if strings.HasPrefix(token, "orbit-invitation:") {
-				u, err := url.Parse(token)
-				if err == nil {
-					q := u.Query()
-					if t := q.Get("token"); t != "" {
-						token = t
-					}
-					if f := q.Get("folder"); f != "" {
-						folderStr = f
-					}
-					if ep := q.Get("endpoint"); ep != "" {
-						remote = ep
-					}
-				}
-			}
-
-			if token == "" || remote == "" || folderStr == "" {
-				return errors.New("join requires --invitation, --remote, and --folder (or a formatted orbit-invitation: URL)")
-			}
-
-			targetRoot := *rootPath
-			if targetRoot == "" {
-				home, _ := os.UserHomeDir()
-				targetRoot = filepath.Join(home, "Orbit")
-			}
-
-			subRes, err := ctrl.SubmitJoinFlow(ctx, control.JoinFlowSubmitRequest{
-				InvitationToken: token,
-				TargetFolder:    folderStr,
-				RemoteEndpoint:  remote,
-				DeviceLabel:     *label,
-				RootPath:        targetRoot,
-			})
-			if err != nil {
-				return err
-			}
-
-			if *timeoutFlag <= 0 {
-				if *jsonOutput {
-					return json.NewEncoder(stdout).Encode(subRes)
-				}
-				fmt.Fprintf(stdout, "Join request submitted: request_id=%s, key_pin=%s, status=%s\n",
-					subRes.RequestID, subRes.KeyPin, subRes.Status)
-				return nil
-			}
-
-			if !*jsonOutput {
-				fmt.Fprintf(stdout, "Join request submitted (request_id=%s, key_pin=%s).\nWaiting up to %ds for owner approval on %s...\n",
-					subRes.RequestID, subRes.KeyPin, *timeoutFlag, remote)
-			}
-
-			deadline := time.Now().Add(time.Duration(*timeoutFlag) * time.Second)
-			for time.Now().Before(deadline) {
-				time.Sleep(1 * time.Second)
-				compRes, err := ctrl.CompleteJoinFlow(ctx, control.JoinFlowCompleteRequest{
-					RequestID:      subRes.RequestID,
-					RemoteEndpoint: remote,
-					TargetFolder:   folderStr,
-					RootPath:       targetRoot,
-					DeviceLabel:    *label,
-				})
-				if err == nil && compRes.Completed {
-					if *jsonOutput {
-						return json.NewEncoder(stdout).Encode(compRes)
-					}
-					fmt.Fprintf(stdout, "Workspace joined successfully: folder=%s, root=%s, status=%s\n",
-						compRes.FolderID, compRes.RootPath, compRes.Status)
-					return nil
-				}
-				if err != nil {
-					var ctrlErr *control.ControlError
-					if errors.As(err, &ctrlErr) && ctrlErr.Code == "ENROLLMENT_DECLINED" {
-						return fmt.Errorf("join request was declined by the workspace owner")
-					}
-				}
-			}
-
-			return fmt.Errorf("timed out waiting for owner approval; request_id=%s is still pending", subRes.RequestID)
-		}
-
-		if *rootPath != "" {
-			if *previewOnly {
-				prev, err := ctrl.PreviewCreateRoot(ctx, control.PreviewCreateRootRequest{Path: *rootPath})
-				if err != nil {
-					return err
-				}
-				if *jsonOutput {
-					return json.NewEncoder(stdout).Encode(prev)
-				}
-				fmt.Fprintf(stdout, "Preview Root: %s\n  Allowed: %v (preexisting rows: %d, writable: %v)\n",
-					prev.Path, !prev.Disallowed, prev.PreexistingRows, prev.Writable)
-				if prev.Disallowed {
-					fmt.Fprintf(stdout, "  Disallowed Reason: %s\n", prev.Reason)
-				}
-				return nil
-			}
-
-			startRes, err := ctrl.StartSetup(ctx, control.StartSetupRequest{
-				RootPath:      *rootPath,
-				DeviceLabel:   *label,
-				WorkspaceName: *name,
-			})
-			if err != nil {
-				return err
-			}
-			if *jsonOutput {
-				return json.NewEncoder(stdout).Encode(startRes)
-			}
-			fmt.Fprintf(stdout, "Setup completed: folder=%x, root=%s, phase=%s\n",
-				startRes.FolderID, startRes.RootPath, startRes.Phase)
-			return nil
-		}
-
-		insp, err := ctrl.InspectSetup(ctx)
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(insp)
-		}
-		fmt.Fprintf(stdout, "Orbit Setup Status:\n")
-		fmt.Fprintf(stdout, "  Initialized:     %v\n", insp.Initialized)
-		fmt.Fprintf(stdout, "  Device ID:       %s\n", insp.DeviceID)
-		fmt.Fprintf(stdout, "  Suggested Root:  %s\n", insp.SuggestedRoot)
-		fmt.Fprintf(stdout, "  Current Phase:   %s\n", insp.CurrentPhase)
-		fmt.Fprintf(stdout, "  Setup Completed: %v\n", insp.SetupCompleted)
-		fmt.Fprintf(stdout, "  Folders:         %d\n", insp.RegisteredCount)
-		return nil
-	})
-}
-
 func handleOrbitJoin(args []string, stdout, stderr io.Writer) error {
 	newArgs := append([]string{"--join"}, args...)
 	return handleOrbitSetup(newArgs, stdout, stderr)
@@ -3574,56 +3393,7 @@ func isOrbitDaemonRunning(stateDir string) bool {
 }
 
 func callOrbitDaemonAPI(stateDir, method, path string, reqBody any, resObj any) error {
-	addrBytes, err := os.ReadFile(filepath.Join(stateDir, "control.addr"))
-	if err != nil {
-		return err
-	}
-	tokenBytes, err := os.ReadFile(filepath.Join(stateDir, "control.token"))
-	if err != nil {
-		return err
-	}
-	addr := strings.TrimSpace(string(addrBytes))
-	if !strings.HasPrefix(addr, "http://") && !strings.HasPrefix(addr, "https://") {
-		addr = "http://" + addr
-	}
-	token := strings.TrimSpace(string(tokenBytes))
-
-	var bodyReader io.Reader
-	if reqBody != nil {
-		data, err := json.Marshal(reqBody)
-		if err != nil {
-			return err
-		}
-		bodyReader = bytes.NewReader(data)
-	}
-
-	req, err := http.NewRequestWithContext(context.Background(), method, addr+path, bodyReader)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-	if reqBody != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		var ctrlErr control.ControlError
-		if err := json.NewDecoder(resp.Body).Decode(&ctrlErr); err == nil && ctrlErr.Code != "" {
-			return &ctrlErr
-		}
-		return fmt.Errorf("control API error HTTP %d", resp.StatusCode)
-	}
-
-	if resObj != nil {
-		return json.NewDecoder(resp.Body).Decode(resObj)
-	}
-	return nil
+	return (&controlclient.Client{StateDir: stateDir}).Call(context.Background(), method, path, reqBody, resObj)
 }
 
 func handleOrbitInvite(args []string, stdout, stderr io.Writer) error {
@@ -3857,6 +3627,8 @@ func handleOrbitRequests(args []string, stdout, stderr io.Writer) error {
 	}
 
 	flags := flag.NewFlagSet("orbit requests "+action, flag.ContinueOnError)
+	reviewFile := flags.String("review-file", "", "private exact approval review JSON")
+	operationFlag := flags.String("operation", "", "durable random 32-byte operation ID")
 	flags.SetOutput(stderr)
 	stateDirFlag := flags.String("state", "", "explicit agent state directory")
 	folderFlag := flags.String("folder", "", "target workspace folder ID hex")
@@ -3873,6 +3645,10 @@ func handleOrbitRequests(args []string, stdout, stderr io.Writer) error {
 	stateDir, err := launcher.DiscoverState(*stateDirFlag)
 	if err != nil {
 		return err
+	}
+
+	if *reviewFile != "" && (action == "approve" || action == "decline") {
+		return reviewedEnrollmentCLI(stateDir, action, *requestFlag, *aliasFlag, *reviewFile, *operationFlag, *jsonOutput, stdout)
 	}
 
 	if isOrbitDaemonRunning(stateDir) {
@@ -4046,6 +3822,13 @@ func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
 		restArgs = args
 	}
 
+	if action == "add" {
+		return handleOrbitInvite(restArgs, stdout, stderr)
+	}
+	if action == "requests" {
+		return handleOrbitRequests(restArgs, stdout, stderr)
+	}
+
 	flags := flag.NewFlagSet("orbit devices "+action, flag.ContinueOnError)
 	flags.SetOutput(stderr)
 	stateDirFlag := flags.String("state", "", "explicit agent state directory")
@@ -4064,6 +3847,10 @@ func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
 	stateDir, err := launcher.DiscoverState(*stateDirFlag)
 	if err != nil {
 		return err
+	}
+
+	if action == "endpoint" {
+		return refreshPeerEndpointCLI(stateDir, *folderFlag, *deviceFlag, *urlFlag, *certFlag, *jsonOutput, stdout)
 	}
 
 	if isOrbitDaemonRunning(stateDir) {
@@ -4136,34 +3923,6 @@ func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
 				return json.NewEncoder(stdout).Encode(res)
 			}
 			fmt.Fprintf(stdout, "Device renamed: device=%x alias=%q\n", res.DeviceID, res.Alias)
-			return nil
-
-		case "endpoint":
-			if *deviceFlag == "" || *folderFlag == "" || *urlFlag == "" {
-				return errors.New("endpoint requires --device <hex>, --folder <hex>, and --url <https://...>")
-			}
-			certPath := *certFlag
-			if certPath == "" {
-				certPath = filepath.Join(stateDir, "identity.crt")
-			}
-			err := config.SetPeerEndpoint(stateDir, config.PeerEndpoint{
-				Folder:      *folderFlag,
-				Device:      *deviceFlag,
-				URL:         *urlFlag,
-				Certificate: certPath,
-			})
-			if err != nil {
-				return err
-			}
-			if *jsonOutput {
-				return json.NewEncoder(stdout).Encode(map[string]string{
-					"status": "configured",
-					"device": *deviceFlag,
-					"folder": *folderFlag,
-					"url":    *urlFlag,
-				})
-			}
-			fmt.Fprintf(stdout, "Endpoint configured: device=%s url=%s\n", *deviceFlag, *urlFlag)
 			return nil
 
 		case "retire":
@@ -4292,34 +4051,6 @@ func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
 			fmt.Fprintf(stdout, "Device renamed: device=%x alias=%q\n", res.DeviceID, res.Alias)
 			return nil
 
-		case "endpoint":
-			if *deviceFlag == "" || *folderFlag == "" || *urlFlag == "" {
-				return errors.New("endpoint requires --device <hex>, --folder <hex>, and --url <https://...>")
-			}
-			certPath := *certFlag
-			if certPath == "" {
-				certPath = filepath.Join(stateDir, "identity.crt")
-			}
-			err := config.SetPeerEndpoint(stateDir, config.PeerEndpoint{
-				Folder:      *folderFlag,
-				Device:      *deviceFlag,
-				URL:         *urlFlag,
-				Certificate: certPath,
-			})
-			if err != nil {
-				return err
-			}
-			if *jsonOutput {
-				return json.NewEncoder(stdout).Encode(map[string]string{
-					"status": "configured",
-					"device": *deviceFlag,
-					"folder": *folderFlag,
-					"url":    *urlFlag,
-				})
-			}
-			fmt.Fprintf(stdout, "Endpoint configured: device=%s url=%s\n", *deviceFlag, *urlFlag)
-			return nil
-
 		case "retire":
 			if *deviceFlag == "" || *folderFlag == "" {
 				return errors.New("retire requires --device <hex> and --folder <hex>")
@@ -4386,6 +4117,8 @@ func handleOrbitService(args []string, stdout, stderr io.Writer) error {
 	flags.SetOutput(stderr)
 	stateDirFlag := flags.String("state", "", "explicit agent state directory")
 	jsonOutput := flags.Bool("json", false, "output JSON")
+	mode := flags.String("mode", "login", "startup mode: manual, login, unattended")
+	requestFile := flags.String("request-file", "", "private complete reviewed mutation for safe replay")
 	if err := flags.Parse(restArgs); err != nil {
 		return err
 	}
@@ -4396,11 +4129,17 @@ func handleOrbitService(args []string, stdout, stderr io.Writer) error {
 	}
 
 	ctx := context.Background()
-	bin, _ := os.Executable()
 
 	switch action {
 	case "status":
-		st, err := control.CheckServiceStatus(ctx, stateDir, nil)
+		var st *control.ServiceStatusResult
+		var err error
+		if isOrbitDaemonRunning(stateDir) {
+			st = new(control.ServiceStatusResult)
+			err = (&controlclient.Client{StateDir: stateDir}).Call(ctx, http.MethodGet, "/api/v1/system/service/status", nil, st)
+		} else {
+			st, err = control.CheckServiceStatus(ctx, stateDir, nil)
+		}
 		if err != nil {
 			return err
 		}
@@ -4422,48 +4161,10 @@ func handleOrbitService(args []string, stdout, stderr io.Writer) error {
 			fmt.Fprintf(stdout, "  Manual Command:    %s\n", st.ManualCommand)
 		}
 		return nil
-	case "enable":
-		res, err := control.EnableService(ctx, stateDir, bin, nil)
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(res)
-		}
-		fmt.Fprintf(stdout, "Service enabled: %s\n", res.Message)
-		return nil
-	case "start":
-		res, err := control.StartService(ctx, stateDir, nil)
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(res)
-		}
-		fmt.Fprintf(stdout, "Service started: %s\n", res.Message)
-		return nil
-	case "stop":
-		res, err := control.StopService(ctx, stateDir, nil)
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(res)
-		}
-		fmt.Fprintf(stdout, "Service stopped: %s\n", res.Message)
-		return nil
-	case "restart":
-		res, err := control.RestartService(ctx, stateDir, nil)
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(res)
-		}
-		fmt.Fprintf(stdout, "Service restarted: %s\n", res.Message)
-		return nil
+	case "enable", "disable", "start", "stop", "restart", "review", "apply":
+		return terminalServiceAction(ctx, stateDir, action, *mode, *requestFile, *jsonOutput, stdout)
 	default:
-		return fmt.Errorf("unknown service action %q; valid actions: status, enable, start, stop, restart", action)
+		return fmt.Errorf("unknown service action %q; valid actions: status, review, apply, enable, disable, start, stop, restart", action)
 	}
 }
 
@@ -4585,43 +4286,4 @@ func handleOrbitPicker(args []string, stdout, stderr io.Writer) error {
 		}
 		return nil
 	})
-}
-
-func printOrbitHelp(stdout io.Writer) {
-	fmt.Fprintf(stdout, `Orbit - Local file synchronization and workspace manager
-
-Usage:
-  orbit [command] [options]
-  filesync orbit [command] [options]
-
-Commands:
-  launch              Launch Orbit, reuse/start daemon, and open browser UI (default)
-  status              Display daemon, service, and setup status
-  browse              List immediate workspace children as paginated JSON
-  search              Search locally known workspace paths as paginated JSON
-  details             Inspect captured heads and observed working-copy state
-  mkdir               Create a directory in workspace root
-  import              Import a file into workspace with durable versioning
-  move / rename       Move or rename a file or directory within workspace
-  delete              Delete a file or directory recursively
-  setup               Configure workspace root, device label, and setup progress (--join to pair)
-  join                Join existing workspace via invitation token and remote endpoint
-  invite              Manage workspace invitations (create, list, revoke)
-  requests            Manage enrollment requests (list, approve, decline)
-  devices             Manage workspace devices (list, rename, endpoint, retire)
-  settings            Inspect and update device label, default workspace, and theme
-  folders             Manage registered workspace roots (list, add, pause, resume, unregister, revalidate)
-  storage             Storage accounting, retention preview/change, GC, reclaim, check, repair, prune
-  maintenance         Backup, schema check, recovery inspection, stopped reset-identity/restore, prune
-  service             Manage systemd user service (status, enable, start, stop, restart)
-  version             Display product version, schema, and build metadata
-  open <folder|path>  Open local workspace folder in desktop file manager
-  picker              Browse local filesystem directories for root selection
-  help                Display this help message
-
-Options:
-  --state <path>      Specify explicit agent state directory
-  --no-browser        Output authenticated bootstrap URL without opening browser
-  --json              Format output as structured JSON
-`)
 }

@@ -30,3 +30,28 @@ The single binary embeds pre-compiled Web UI assets. **Zero Node.js runtime or n
 | --- | --- | --- | --- |
 | `react` | `19.3.0` | MIT | Component UI library |
 | `react-dom` | `19.3.0` | MIT | DOM rendering engine |
+
+## T09 Terminal Dependencies
+
+Exact license texts and copyright notices are retained in `NOTICE` and included in every archive/package.
+
+| Module | Version | License |
+| --- | --- | --- |
+| `charm.land/bubbles/v2` | `v2.2.1` | MIT |
+| `charm.land/bubbletea/v2` | `v2.0.10` | MIT |
+| `charm.land/lipgloss/v2` | `v2.0.6` | MIT |
+| `github.com/atotto/clipboard` | `v0.1.4` | BSD-3-Clause |
+| `github.com/charmbracelet/colorprofile` | `v0.4.3` | MIT |
+| `github.com/charmbracelet/ultraviolet` | `v0.0.0-20260811164956-006e29f97886` | MIT |
+| `github.com/charmbracelet/x/ansi` | `v0.11.8` | MIT |
+| `github.com/charmbracelet/x/term` | `v0.2.2` | MIT |
+| `github.com/charmbracelet/x/termios` | `v0.1.1` | MIT |
+| `github.com/charmbracelet/x/windows` | `v0.2.2` | MIT |
+| `github.com/clipperhouse/displaywidth` | `v0.11.0` | MIT |
+| `github.com/clipperhouse/uax29/v2` | `v2.7.0` | MIT |
+| `github.com/lucasb-eyer/go-colorful` | `v1.4.1` | MIT |
+| `github.com/mattn/go-runewidth` | `v0.0.27` | MIT |
+| `github.com/muesli/cancelreader` | `v0.2.2` | MIT |
+| `github.com/rivo/uniseg` | `v0.4.7` | MIT |
+| `github.com/xo/terminfo` | `v0.0.0-20220910002029-abceb7e1c41e` | MIT |
+| `golang.org/x/sync` | `v0.22.0` | BSD-3-Clause |

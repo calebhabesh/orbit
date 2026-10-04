@@ -5,7 +5,7 @@ DATE ?= 2026-10-01
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
 GOFLAGS ?=
 
-.PHONY: build build-arm64 check fmt-check test test-race test-integration test-model test-faults test-harness vet clean package demo
+.PHONY: build build-arm64 check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty vet clean package demo
 
 build:
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync ./cmd/filesync
@@ -43,6 +43,12 @@ test-faults:
 
 test-harness:
 	python3 -m unittest discover -s scripts/validation -p 'test_*.py'
+
+test-terminal-pty: build
+	python3 scripts/terminal_pty_test.py --binary bin/filesync
+
+test-terminal-onboarding-pty: build
+	python3 scripts/terminal_onboarding_pty_test.py --binary bin/filesync
 
 check: fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package
 

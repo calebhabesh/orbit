@@ -441,12 +441,12 @@ async function runSetupScenario() {
 }
 
 // Helper: Start an Orbit daemon on a random loopback port
-async function startDaemon(dir, allowInit = false) {
+async function startDaemon(dir, allowInit = false, watch = false) {
   const proc = spawn(binary, [
     'serve',
     '--state', dir,
     '--control-listen', '127.0.0.1:0',
-    '--no-watch',
+    ...(watch ? [] : ['--no-watch']),
     ...(allowInit ? ['--allow-init'] : []),
   ], {
     stdio: ['ignore', 'pipe', 'inherit'],
@@ -2044,6 +2044,60 @@ conn.close()
   }
 }
 
+async function runRelocationScenario() {
+  const temp = fs.mkdtempSync('/tmp/orbit-relocation-ui-');
+  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  const stateDir = path.join(temp, 'state');
+  const source = path.join(temp, 'root');
+  const destination = path.join(temp, 'new-location');
+  fs.mkdirSync(stateDir, { mode: 0o700 }); fs.mkdirSync(source);
+  fs.writeFileSync(path.join(source, 'notes.txt'), 'original notes');
+  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', source, '--label', 'Relocation-Test', '--name', 'Notes']);
+  const daemon = await startDaemon(stateDir, false, true);
+  const browser = await puppeteer.launch({ executablePath: chromiumPath, headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'] });
+  try {
+    const page = await browser.newPage();
+    page.on('response', resp => { if (resp.status() >= 400) resp.text().then(text => console.log('[HTTP]', resp.status(), text)); });
+    await page.goto(`${daemon.controlURL}/#bootstrap=${daemon.bootstrapToken}`, { waitUntil: 'networkidle0' });
+    await page.waitForSelector('.nav-item');
+    await page.evaluate(() => Array.from(document.querySelectorAll('.nav-item')).find(b => b.textContent.includes('Settings')).click());
+    await page.waitForSelector('button[id^="btn-change-location-"]');
+    await page.click('button[id^="btn-change-location-"]');
+    await page.waitForSelector('input[id$="-path"]');
+    const focused = await page.evaluate(() => document.activeElement?.id.endsWith('-path'));
+    if (!focused) throw new Error('Location input did not receive keyboard focus');
+    // Existing destination must retain input and display a usable error.
+    await page.type('input[id$="-path"]', stateDir);
+    await page.evaluate(() => document.querySelector('form[id^="relocation-"]').requestSubmit());
+    await page.waitForSelector('p[role="alert"][id$="-error"]');
+    if (await page.$eval('input[id$="-path"]', el => el.value) !== stateDir) throw new Error('Error discarded location input');
+    await page.click('input[id$="-path"]');
+    await page.keyboard.down('Control'); await page.keyboard.press('A'); await page.keyboard.up('Control');
+    await page.keyboard.press('Backspace');
+    await page.type('input[id$="-path"]', destination);
+    await page.evaluate(() => document.querySelector('form[id^="relocation-"]').requestSubmit());
+    await page.waitForFunction(dest => document.body.textContent.includes(`Location changed to ${dest}.`), { timeout: 8000 }, destination).catch(async err => { console.log(await page.evaluate(() => document.body.textContent)); throw err; });
+    if (fs.existsSync(source) || fs.readFileSync(path.join(destination, 'notes.txt'), 'utf8') !== 'original notes') throw new Error('Filesystem move failed');
+    // Let the relocation reconciliation scan finish before testing notifications.
+    await sleep(1200);
+    // Edit after relocation: inotify must capture through the new location.
+    fs.writeFileSync(path.join(destination, 'notes.txt'), 'edited after relocation');
+    const deadline = Date.now() + 8000;
+    let captured = false;
+    while (Date.now() < deadline) {
+      const count = execFileSync('python3', ['-c', "import sqlite3,sys; print(sqlite3.connect(sys.argv[1]).execute(\"SELECT count(*) FROM versions WHERE path='notes.txt'\").fetchone()[0])", path.join(stateDir, 'metadata.sqlite')], { encoding: 'utf8' });
+      if (Number(count.trim()) >= 2) { captured = true; break; }
+      await sleep(100);
+    }
+    if (!captured) throw new Error('New location edit was not captured by inotify');
+    console.log('  ✓ Settings relocation: focus, retained errors, move, success feedback and new-location capture');
+  } finally {
+    await browser.close(); daemon.proc.kill('SIGTERM');
+    if (!keepTemp) fs.rmSync(temp, { recursive: true, force: true });
+  }
+}
+
 async function runSettingsScenario() {
   console.log('\n[SCENARIO: SETTINGS] Starting Settings, Storage & Maintenance test (Packet O11)...');
   const temp = fs.mkdtempSync('/tmp/orbit-o11-settings-');
@@ -2324,6 +2378,9 @@ async function main() {
     } else if (scenario === 'attention') {
       await runAttentionScenario();
       process.exit(0);
+    } else if (scenario === 'relocation') {
+      await runRelocationScenario();
+      process.exit(0);
     } else if (scenario === 'settings') {
       await runSettingsScenario();
       process.exit(0);
@@ -2340,6 +2397,7 @@ async function main() {
       await runHistoryScenario();
       await runAttentionScenario();
       await runSettingsScenario();
+      await runRelocationScenario();
       await runRecoveryScenario();
       process.exit(0);
     } else {

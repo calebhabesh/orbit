@@ -1,0 +1,285 @@
+package terminal
+
+import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	tea "charm.land/bubbletea/v2"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/charmbracelet/x/ansi"
+)
+
+func (m *model) workflowView() tea.View {
+	f := m.flow
+	title := "Orbit | " + f.screen
+	footer := "Esc back  q quit (daemon continues)"
+	lines := []string{}
+	focusLine := -1
+	if f.err != "" {
+		lines = append(lines, "Error: "+f.err)
+	}
+	if f.notice != "" {
+		lines = append(lines, f.notice)
+	}
+	switch f.screen {
+	case "welcome":
+		title = "Orbit | Create or join"
+		lines = append(lines, "Create your Orbit [c / Enter]", "Join an existing Orbit [j]", "Existing folder contents are reviewed before adoption.", "Closing this interface leaves background sync running.")
+	case "load_settings":
+		title = "Orbit | Setup"
+		lines = append(lines, "Loading actual finite/network/startup settings…")
+	case "invitation":
+		title = "Orbit | Join invitation"
+		lines = append(lines, "Paste a private v2 invitation or enter an absolute private file path.", "The invitation is hidden and never included in status/logs.")
+		focusLine = len(lines)
+		lines = append(lines, "> Private invitation: "+f.fields[f.focus].input.View())
+		footer = "Enter verify  Esc back  Ctrl-C close"
+	case "form":
+		title = "Orbit | Review setup inputs"
+		lines = append(lines, "Supported existing contents will become shared.", "LAN / existing Tailscale: advertise reachable numeric IP:port.", "Startup: login needs user systemd; unattended also needs lingering.")
+		n := 9
+		if f.advanced {
+			n = 13
+		}
+		for i := 0; i < n; i++ {
+			prefix := "  "
+			value := safe(f.fields[i].input.Value())
+			if i == f.focus {
+				prefix = "> "
+				value = f.fields[i].input.View()
+				focusLine = len(lines)
+			}
+			lines = append(lines, prefix+f.fields[i].label+": "+value)
+		}
+		lines = append(lines, fmt.Sprintf("Finite metadata=%d reserve=%d; retention uses per-folder controls.", f.settings.MetadataBudget, f.settings.ReserveBytes))
+		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-A advanced  Esc back"
+	case "preview":
+		title = "Orbit | Measuring root"
+		lines = append(lines, "Bounded enumeration continues; adoption has not been confirmed.")
+		if f.result.Preview != nil {
+			lines = append(lines, previewLines(f.result.Preview)...)
+		}
+	case "review":
+		title = "Orbit | Confirm adoption"
+		p := f.plan
+		s := p.Settings
+		lines = append(lines, "Device: "+safe(p.DeviceName), "Folder: "+safe(p.FolderName), "Root: "+safe(p.Root), "Existing supported local contents become shared; nothing is erased.")
+		if f.kind == "join" {
+			lines = append(lines, "Inviter: "+safe(f.invitation.Inviter), "Key pin: "+safe(f.invitation.KeyPin), "Enrollment: "+safe(f.invitation.EnrollmentEndpoint), "Invitation folder: "+safe(f.invitation.Folder))
+		}
+		lines = append(lines, previewLines(f.result.Preview)...)
+		lines = append(lines, fmt.Sprintf("Startup=%s; data=%d metadata=%d reserve=%d bytes; concurrency=%d bandwidth=%d", safe(s.Startup), s.DataBudget, s.MetadataBudget, s.ReserveBytes, s.Concurrency, s.BandwidthBytesPerSecond), "Peer listen: "+safe(s.PeerListen)+"; advertise: "+safe(s.AdvertisedPeer), "Enrollment listen: "+safe(s.EnrollmentListen)+"; advertise: "+safe(s.AdvertisedEnrollment))
+		footer = "Enter confirm exact review  Esc edit  arrows scroll  q quit"
+	case "progress":
+		title = "Orbit | Setup progress"
+		r := f.result
+		if r.Operation == nil {
+			lines = append(lines, "Loading durable operation…")
+		} else {
+			lines = append(lines, "State: "+safe(r.Operation.State)+" | "+phaseLabel(r.Operation.Phase))
+
+			if r.Readiness != nil {
+				rd := r.Readiness
+				lines = append(lines, fmt.Sprintf("Approved=%t membership current=%t root available=%t scan complete=%t", rd.Approved, rd.MembershipCurrent, rd.RootAvailable, rd.ScanComplete), fmt.Sprintf("Uncaptured=%d download pending=%d publication pending=%d conflicts=%d storage blocked=%t", rd.Uncaptured, rd.MissingContent, rd.PendingPublication, rd.Conflicts, rd.StorageBlocked))
+				if rd.Ready() && r.Operation.State == "completed" {
+					lines = append(lines, "Locally ready (observed). Other offline devices may remain pending.")
+				} else {
+					lines = append(lines, "Local readiness incomplete. Work remains pending.")
+				}
+			}
+			lines = append(lines, "Operation: "+safe(r.Operation.ID))
+			if r.Join != nil {
+				lines = append(lines, "Root: "+safe(r.Join.Root))
+				if r.Join.Request != "" {
+					lines = append(lines, "Request: "+safe(r.Join.Request))
+				}
+				if r.Join.Inviter != "" {
+					lines = append(lines, "Inviter: "+safe(r.Join.Inviter), "Key pin: "+safe(r.Join.KeyPin), "Compare verification code on inviter: "+joinVerification(r))
+				}
+			}
+			if r.Error != nil {
+				lines = append(lines, workflowError(r, nil))
+			}
+		}
+		footer = "r refresh  J new reviewed join  Esc overview  q quit"
+	case "pick_folder", "pick_device", "setups":
+		title = "Orbit | Select " + strings.TrimPrefix(f.screen, "pick_")
+		if f.device != "" {
+			lines = append(lines, "Selected device: "+safe(f.device), "Select a folder to inspect its sharing/contact state.")
+		}
+		for i, it := range f.items {
+			prefix := "  "
+			if i == f.selected {
+				prefix = "> "
+				focusLine = len(lines)
+			}
+			lines = append(lines, prefix+safe(it.Name)+"  "+safe(it.Root))
+		}
+		if len(f.items) == 0 {
+			lines = append(lines, "No items. Create a folder [Esc, c] or check existing device approval.")
+		}
+		footer = "j/k select  Enter choose  ] next  [ first  Esc back  q quit"
+	case "requests":
+		title = "Orbit | Enrollment requests"
+		for i, p := range f.result.Requests {
+			prefix := "  "
+			if i == f.selected {
+				prefix = "> "
+				focusLine = len(lines)
+			}
+			lines = append(lines, prefix+safe(p.Label)+" | "+safe(p.State)+" | code "+safe(p.VerificationCode))
+		}
+		if len(f.result.Requests) == 0 {
+			lines = append(lines, "No enrollment requests on this page.")
+		}
+		footer = "j/k select  Enter exact review  r refresh  ] next  [ first  Esc back"
+	case "approval":
+		title = "Orbit | Exact request approval"
+		p := f.request
+		lines = append(lines, "Device: "+safe(p.Label), "Folder: "+safe(p.Folder), "Request: "+safe(p.ID), "Requester: "+safe(p.Requester), "Key pin: "+safe(p.KeyPin), "Verification code: "+safe(p.VerificationCode), "State: "+safe(p.State), "Compare with the joining device. Approval grants this folder only.", "Offline devices may still need membership updates.")
+		footer = "a approve exact request  x decline  Esc back  q quit"
+	case "approval_done":
+		title = "Orbit | Request decision"
+		lines = append(lines, "Decision durably recorded; receiver still observes its own readiness.")
+	case "invite_review":
+		title = "Orbit | Add device / share folder"
+		lines = append(lines, "Selected folder: "+safe(f.folder))
+		if f.device != "" {
+			lines = append(lines, "Known device: "+safe(f.device), "Reuse its existing identity; separate local-root consent and approval required.")
+		}
+		if info := f.result.FolderManagement; info != nil {
+			lines = append(lines, fmt.Sprintf("Reviewed membership revision: %d", info.Revision))
+		}
+		lines = append(lines, "Invitation expires in one hour; it grants no file access before approval.")
+		footer = "Enter create scoped invitation  Esc back  q quit"
+	case "invitation_out":
+		title = "Orbit | Private invitation"
+		lines = append(lines, "Invitation created for selected folder only.", "Paste on receiver, review its root, then approve the exact request here.", "Expires: "+safe(f.invitation.ExpiresAt), "s: save to private transfer file  v: reveal/hide invitation")
+		if f.reveal {
+			b, _ := json.Marshal(f.invitation)
+			lines = append(lines, "orbit-invitation:v2:"+base64.RawURLEncoding.EncodeToString(b))
+		} else {
+			lines = append(lines, "Capability hidden. Reveal only for deliberate transfer.")
+		}
+		footer = "s save private file  v reveal  arrows scroll  Esc back  q quit"
+	case "save_invitation", "relocate_form":
+		title = "Orbit | " + f.screen
+		focusLine = len(lines)
+		lines = append(lines, "> "+f.fields[0].label+": "+f.fields[0].input.View())
+		footer = "Enter continue  Esc back  Ctrl-C close"
+	case "folder", "retire":
+		title = "Orbit | Inspect folder and devices"
+		info := f.result.FolderManagement
+		if info == nil {
+			lines = append(lines, "Loading folder state…")
+		} else {
+			lines = append(lines, "Root: "+safe(info.Root), fmt.Sprintf("Local pause=%t; membership revision=%d", info.Paused, info.Revision))
+			for _, member := range info.Members {
+				lines = append(lines, "Shares with: "+safe(member.Name))
+			}
+			found := false
+			for _, obs := range f.result.Observations {
+				if f.device == "" || f.device == obs.Device {
+					found = true
+					lines = append(lines, "Last contact: "+safe(obs.LastContact)+" | "+safe(obs.Availability), fmt.Sprintf("Reported stored=%t applied=%t direct=%t; observed=%s", obs.Stored, obs.Applied, obs.Direct, safe(obs.ObservedAt)))
+				}
+			}
+			if !found {
+				lines = append(lines, "Last contact/copy observation: unknown.")
+			}
+			for _, a := range f.result.Attention {
+				lines = append(lines, safe(a.Code)+": "+safe(a.Action))
+			}
+		}
+		footer = "p pause/resume  l relocate  a add  s share  x unregister preview  t retire preview"
+	case "folder_action":
+		title = "Orbit | Confirm local " + f.task
+		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
+		footer = "Enter confirm  Esc back  q quit"
+	case "relocate_review":
+		title = "Orbit | Confirm relocation"
+		if info := f.result.FolderManagement; info != nil {
+			lines = append(lines, "Current: "+safe(info.Root), "Destination: "+safe(f.fields[0].input.Value()), "Uses the existing resumable relocation journal. Keep original/staging folders until recovery finishes.")
+		}
+		footer = "Enter relocate  Esc edit  q quit"
+	case "unregister_preview":
+		title = "Orbit | Unregister preview"
+		lines = append(lines, "Scope: remove this device's local root registration only.", "Working files are preserved; remote copies and membership are unchanged.", "This does not erase a remote device or revoke its keys.", "Use the existing conservative procedure: filesync folders remove --folder "+safe(f.folder))
+		footer = "arrows scroll  Esc back  q quit"
+	case "retirement_preview":
+		title = "Orbit | Retirement preview"
+		for _, it := range f.result.Items {
+			lines = append(lines, safe(it.Name), safe(it.Root))
+		}
+		lines = append(lines, "Preview only. Follow the conservative reviewed retirement procedure.", "filesync peers retire --help; docs/runbooks/membership-fork.md")
+		footer = "arrows scroll  Esc back  q quit"
+	}
+	if f.busy {
+		lines = append(lines, "Submitting exact operation; closing the client does not cancel admitted work.")
+	}
+	// Scroll content, retain the focused field and reserve stable title/footer.
+	var body []string
+	focusWrapped := -1
+	for i, line := range lines {
+		if i == focusLine {
+			focusWrapped = len(body)
+		}
+		body = append(body, strings.Split(ansi.Wrap(line, max(1, m.width), ""), "\n")...)
+	}
+	heading := strings.Split(ansi.Wrap(title, max(1, m.width), ""), "\n")
+	tail := strings.Split(ansi.Wrap(footer, max(1, m.width), ""), "\n")
+	available := max(1, m.height-len(heading)-len(tail))
+	start := min(f.scroll, max(0, len(body)-available))
+	if focusWrapped >= 0 {
+		start = max(start, focusWrapped-available+2)
+		start = min(start, focusWrapped)
+	}
+	start = max(0, min(start, max(0, len(body)-available)))
+	output := append(heading, body[start:min(len(body), start+available)]...)
+	output = append(output, tail...)
+	if len(output) > m.height {
+		output = output[:m.height]
+	}
+	v := tea.NewView(strings.Join(output, "\n"))
+	v.AltScreen = true
+	return v
+}
+func previewLines(p *tc.RootPreview) []string {
+	if p == nil {
+		return nil
+	}
+	lines := []string{fmt.Sprintf("Measured files=%d directories=%d bytes=%d; complete=%t", p.Files, p.Directories, p.Bytes, p.Complete), fmt.Sprintf("Unsupported=%d unreadable=%d capacity known=%t available=%d bytes", p.Unsupported, p.Unreadable, p.CapacityKnown, p.AvailableBytes)}
+	for _, issue := range p.Issues {
+		lines = append(lines, safe(issue.Code)+": "+safe(issue.Path))
+	}
+	return lines
+}
+func phaseLabel(phase string) string {
+	switch phase {
+	case "awaiting_approval":
+		return "Waiting for approval"
+	case "membership_received":
+		return "Approved; updating devices"
+	case "bootstrap_capture":
+		return "Scanning local files"
+	case "content_pending":
+		return "Downloading / publishing files"
+	case "ready":
+		return "Local readiness observed"
+	default:
+		return safe(phase)
+	}
+}
+
+func joinVerification(r tc.Result) string {
+	if r.Join != nil {
+		for _, p := range r.Requests {
+			if p.ID == r.Join.Request {
+				return safe(p.VerificationCode)
+			}
+		}
+	}
+	return "unavailable (waiting for inviter observation)"
+}
