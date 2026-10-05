@@ -86,7 +86,7 @@ func (m *model) View() tea.View {
 		lines = append(lines, m.notice)
 	}
 	if m.help {
-		lines = append(lines, "Keyboard help", "q / Ctrl-C: close interface", "Sync and committed work continue.", "j/k or arrows: select", "left/right or o/f/n/d: section", "Tab or /: search this page", "Enter: inspect   Esc: back", "r: refresh   ]: next page   [: first page", "e: configured external tool", "Daemon stop: orbit service stop", "c: create/adopt  J: join  a: add device", "s: share folder  w: requests  u: unfinished setup")
+		lines = append(lines, "Keyboard help", "q / Ctrl-C: close interface", "Sync and committed work continue.", "j/k or arrows: select", "left/right or o/f/n/d: section", "Tab or /: search this page", "Enter: inspect   Esc: back", "r: refresh   ]: next page   [: first page", "e: configured external tool", "b: storage; folder v status h history D deleted C conflicts", "Daemon stop: orbit service stop", "c: create/adopt  J: join  a: add device", "s: share folder  w: requests  u: unfinished setup")
 	} else if m.detail {
 		lines = append(lines, "Inspect", "Next action: "+m.detailRow.action, m.detailRow.name, m.detailRow.subtitle)
 		for _, a := range m.result.Attention {

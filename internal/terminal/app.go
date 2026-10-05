@@ -26,6 +26,7 @@ type queryReply struct {
 }
 type refreshMsg struct{}
 type toolReply struct {
+	session    bool
 	generation uint64
 	err        error
 }
@@ -210,6 +211,16 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Batch(m.startQuery(), m.tick())
 	case toolReply:
 		m.toolRunning = false
+		if msg.session && msg.generation == m.generation && m.flow != nil && m.flow.daily != nil {
+			if msg.err != nil {
+				m.flow.err = "Tool failed; private result retained. Retry e, inspect with d, or r for recovery review."
+				m.flow.notice = ""
+			} else {
+				m.flow.err = ""
+				m.flow.notice = "Tool returned; result retained. Press u to stage, then review before commit."
+			}
+			return m, nil
+		}
 		if msg.generation == m.generation {
 			m.notice = "Tool returned; terminal resumed."
 			if msg.err != nil {
@@ -222,7 +233,7 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.PasteMsg:
 		if m.flow != nil {
 			f := m.flow
-			if !f.busy && (f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form") {
+			if !f.busy && (f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" || (f.daily != nil && len(f.fields) > 0 && f.fields[f.focus].input.Focused())) {
 				text := msg.Content
 				limit := 4096
 				if f.screen == "invitation" {
@@ -285,7 +296,7 @@ func (m *model) launchTool() tea.Cmd {
 		m.dirty = true
 	}
 	generation := m.generation
-	return tea.ExecProcess(cmd, func(err error) tea.Msg { return toolReply{generation, err} })
+	return tea.ExecProcess(cmd, func(err error) tea.Msg { return toolReply{generation: generation, err: err} })
 }
 
 func (m *model) quit() tea.Cmd {
@@ -338,6 +349,15 @@ func (m *model) inspect() tea.Cmd {
 		if strings.HasPrefix(r.key, "a:") {
 			for _, a := range m.result.Attention {
 				if "a:"+a.ID == r.key {
+					if a.Code == "CONFLICT" || a.Code == "STRUCTURAL_CONFLICT" {
+						return m.everyday(a.Folder, "load_review", a.Path)
+					}
+					if a.Code == "EDITOR_RECOVERY" {
+						return m.openFlow(&workflow{screen: "day_load_session", operation: a.ID, folder: a.Folder, daily: &dailyState{path: a.Path, limit: 1 << 20}})
+					}
+					if a.OperationID != "" && a.Code != "INCOMPLETE_SETUP" {
+						return m.openFlow(&workflow{screen: "day_operation", operation: a.OperationID, folder: a.Folder, daily: &dailyState{}})
+					}
 					if a.Code == "INCOMPLETE_SETUP" {
 						return m.openFlow(&workflow{screen: "progress", operation: a.OperationID})
 					}

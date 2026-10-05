@@ -28,7 +28,12 @@ func handleOrbitCompletion(args []string, stdout, stderr io.Writer) error {
 
 const bashCompletionScript = `_orbit_completion() {
     local cur prev words cword
-    _init_completion || return
+    if declare -F _init_completion >/dev/null; then
+        _init_completion || return
+    else
+        words=("${COMP_WORDS[@]}"); cword=${COMP_CWORD}
+        cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
+    fi
 
     local commands="tui status context folders devices conflicts history deleted restore setup join service storage doctor completion version help"
     local common_flags="--state --folder --json --help"
@@ -85,7 +90,7 @@ const zshCompletionScript = `#compdef orbit
 _orbit() {
     local -a commands
     commands=(
-        'tui:Development keyboard interface'
+        'tui:Keyboard interface'
         'status:Display concise folder and daemon synchronization status'
         'context:Inspect folder identity and path resolution'
         'folders:Manage synced folders and local roots'
@@ -164,13 +169,14 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i status context folders devices conflicts history deleted restore setup join service storage doctor completion version help
+        if contains -- $i tui status context folders devices conflicts history deleted restore setup join service storage doctor completion version help
             return 1
         end
     end
     return 0
 end
 
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'tui' -d 'Keyboard interface'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'status' -d 'Display concise status'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'context' -d 'Inspect folder identity and path resolution'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'folders' -d 'Manage synced folders'

@@ -38,6 +38,8 @@ func (m *model) pickerKey(k string) tea.Cmd {
 		case "pick_folder":
 			f.folder = it.ID
 			switch f.kind {
+			case "storage":
+				return m.everyday(f.folder, "storage", "")
 			case "invite":
 				f.screen = "invite_review"
 			case "share":
@@ -89,6 +91,16 @@ func (m *model) folderKey(k string) tea.Cmd {
 		return nil
 	}
 	switch k {
+	case "v":
+		return m.everyday(f.folder, "status", "")
+	case "h":
+		return m.everyday(f.folder, "paths", "")
+	case "D":
+		return m.everyday(f.folder, "deleted", "")
+	case "C":
+		return m.everyday(f.folder, "conflicts", "")
+	case "b":
+		return m.everyday(f.folder, "storage", "")
 	case "p":
 		if info.Paused {
 			for _, a := range f.result.Attention {

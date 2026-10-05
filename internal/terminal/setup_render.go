@@ -23,6 +23,14 @@ func (m *model) workflowView() tea.View {
 	if f.notice != "" {
 		lines = append(lines, f.notice)
 	}
+	if f.daily != nil {
+		var body []string
+		title, body, footer, focusLine = m.dailyLines()
+		if focusLine >= 0 {
+			focusLine += len(lines)
+		}
+		lines = append(lines, body...)
+	}
 	switch f.screen {
 	case "welcome":
 		title = "Orbit | Create or join"
@@ -193,7 +201,8 @@ func (m *model) workflowView() tea.View {
 				lines = append(lines, safe(a.Code)+": "+safe(a.Action))
 			}
 		}
-		footer = "p pause/resume  l relocate  a add  s share  x unregister preview  t retire preview"
+		lines = append(lines, "v copy status | h path history | D deleted | C conflicts | b storage")
+		footer = "v h D C b | p pause l relocate a add s share x unregister t retire ?"
 	case "folder_action":
 		title = "Orbit | Confirm local " + f.task
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")

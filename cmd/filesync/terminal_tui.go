@@ -12,18 +12,19 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/controlclient"
 	"github.com/calebhabesh/file-sync/internal/terminal"
 )
 
-// The explicit development entry remains separate from bare Orbit until T12.
+// Bare Orbit and the explicit TUI entry share terminal and daemon ownership.
 func handleOrbitTUI(args []string, stdout, stderr io.Writer) error {
 	flags := flag.NewFlagSet("orbit tui", flag.ContinueOnError)
 	flags.SetOutput(stderr)
-	stateDir := flags.String("state", config.DefaultStateDir(), "agent state directory")
+	stateDir := flags.String("state", "", "agent state directory")
 	plain := flags.Bool("no-color", false, "use text focus and status without color")
 	jsonOutput := flags.Bool("json", false, "structured status output without an interactive screen")
+	editor := flags.String("editor", os.Getenv("EDITOR"), "trusted editor argv for reviewed sessions")
+	diff := flags.String("diff", os.Getenv("ORBIT_DIFF"), "trusted diff argv for reviewed versions")
 	tool := flags.String("tool", "", "explicit trusted external tool command for development")
 	toolFile := flags.String("tool-file", "", "scratch file passed as a separate argument to the tool")
 	toolLimit := flags.Uint64("tool-limit", 1<<20, "maximum tool result size in bytes")
@@ -48,7 +49,7 @@ func handleOrbitTUI(args []string, stdout, stderr io.Writer) error {
 	}
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
-	opts := terminal.Options{Input: os.Stdin, Output: stdout, Colorless: *plain || os.Getenv("NO_COLOR") != "" || os.Getenv("TERM") == "dumb"}
+	opts := terminal.Options{Editor: *editor, Diff: *diff, Input: os.Stdin, Output: stdout, Colorless: *plain || os.Getenv("NO_COLOR") != "" || os.Getenv("TERM") == "dumb"}
 	if *tool != "" {
 		opts.Tool = &terminal.Tool{Command: *tool, MaxBytes: *toolLimit}
 		if *toolFile != "" {

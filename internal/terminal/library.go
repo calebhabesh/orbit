@@ -30,6 +30,8 @@ type Tool struct {
 }
 
 type Options struct {
+	Editor    string
+	Diff      string
 	Input     *os.File
 	Output    io.Writer
 	Tool      *Tool

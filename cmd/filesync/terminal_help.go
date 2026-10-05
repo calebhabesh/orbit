@@ -10,11 +10,12 @@ func printOrbitHelp(stdout io.Writer) {
 	fmt.Fprintln(stdout, `Orbit - Local file synchronization and everyday workspace management
 
 Usage:
+  orbit                    Keyboard interface in a TTY; concise status in pipes
   orbit [command] [options]
   orbit [command] --help
 
 Everyday Commands:
-  tui                      Development keyboard interface (TTY); concise status in pipes
+  tui                      Keyboard interface (TTY); concise status in pipes
   status                   Concise folder/copy progress, attention, daemon and startup facts
   context [path]           Inspect folder identity, registered root, and current path context
   folders                  List synced folders and registered roots
@@ -29,7 +30,7 @@ Setup & Sharing:
   setup                    Create or resume first-device setup
   join                     Join an existing Orbit using a private invitation
   folders add <root>       Preview and register an additional synced folder
-  folders share <name>     Share a synced folder with an enrolled device
+  folders share            Submit a private reviewed folder/device share request
   devices add              Create an invitation to enroll a new device
   devices requests         Review, approve, or decline enrollment requests
 
@@ -40,6 +41,7 @@ Management & Diagnostics:
   service                  Manage background service (status, enable, start, stop, restart)
   storage                  Inspect storage usage, retention, and maintenance
   doctor                   Actionable diagnostics and safe recovery advice
+  legacy-browser           Explicit frozen browser compatibility launcher
   completion [shell]       Generate shell completions (bash, zsh, fish)
   version                  Display product version, schema, and build metadata
 
@@ -61,16 +63,18 @@ func handleOrbitHelp(args []string, stdout, stderr io.Writer) error {
 	cmd := strings.ToLower(args[0])
 	switch cmd {
 	case "tui":
-		fmt.Fprintln(stdout, `orbit tui - Development keyboard interface
+		fmt.Fprintln(stdout, `orbit tui - Keyboard interface
 
 Usage: orbit tui [--state <path>] [--no-color]
 
 j/k or arrows select; Tab and / focus page search; Enter inspects;
 Esc returns; ? shows help; q and Ctrl-C close the interface.
 Closing the interface leaves the daemon and committed work running.
-Pipes print concise status. Bare Orbit entry changes in T12.
+Bare orbit uses the same entry. Pipes print concise status; --json prints JSON.
 An explicitly configured --tool and --tool-file exercise external tool
-handoff on scratch files; reviewed conflict/session screens arrive in T11.`)
+handoff on scratch files. --editor and --diff configure reviewed conflict tools.`)
+	case "launch", "legacy-browser":
+		fmt.Fprintln(stdout, "orbit legacy-browser [--state <path>] [--no-browser]\nExplicit browser compatibility entry; launch is its retained alias.\nKeep bootstrap URLs private. Ordinary Orbit entry uses the terminal.")
 	case "status":
 		fmt.Fprintln(stdout, `orbit status - Display concise folder and daemon synchronization status
 
@@ -110,7 +114,7 @@ Usage:
   orbit folders [options]
   orbit folders list [options]
   orbit folders add <path> [options]
-  orbit folders share <name> --device <name> [options]
+  orbit folders share --request-file <private-share.json> [options]
   orbit folders pause <name> [options]
   orbit folders resume <name> [options]
   orbit folders relocate <name> [options]
@@ -121,6 +125,9 @@ Options:
 
 Description:
   Lists registered synced folders or manages folder configuration.
+  Sharing requires a private typed share mutation with exact folder, device,
+  key pin, membership revision and controller review. The TUI s workflow
+  obtains that review interactively; transfer output stays private.
   'orbit folders' with no subcommand defaults to listing all folders.`)
 
 	case "devices":

@@ -3272,11 +3272,15 @@ func handleWorkList(args []string, stdout, stderr io.Writer) error {
 
 func handleOrbit(args []string, stdout, stderr io.Writer) error {
 	if len(args) == 0 {
-		return handleOrbitLaunch(nil, stdout, stderr)
+		return handleOrbitTUI(nil, stdout, stderr)
+	}
+
+	if strings.HasPrefix(args[0], "--") && args[0] != "--help" && args[0] != "--version" {
+		return handleOrbitTUI(args, stdout, stderr)
 	}
 
 	switch args[0] {
-	case "launch":
+	case "launch", "legacy-browser":
 		return handleOrbitLaunch(args[1:], stdout, stderr)
 	case "tui":
 		return handleOrbitTUI(args[1:], stdout, stderr)

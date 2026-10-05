@@ -34,6 +34,7 @@ type field struct {
 	input textinput.Model
 }
 type workflow struct {
+	daily                                           *dailyState
 	screen, kind, folder, device, operation, cursor string
 	fields                                          []field
 	focus, selected, scroll                         int
@@ -101,6 +102,9 @@ func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, err
 		f.work = nil
 		return task, func() (tc.Result, error) { return work(ctx) }
 	}
+	if f.daily != nil {
+		return m.dailyCommand(ctx)
+	}
 	q := tc.Query{Version: tc.Version, Limit: pageSize, Cursor: f.cursor}
 	switch f.screen {
 	case "load_settings":
@@ -153,6 +157,9 @@ var errExpiredInvitation = errors.New("INVITATION_EXPIRED")
 
 func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 	f := m.flow
+	if f.daily != nil {
+		return m.acceptDaily(task, r, err)
+	}
 	f.busy = false
 	if err != nil || r.Error != nil {
 		f.err = workflowError(r, err)
@@ -446,6 +453,9 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 	return cmd
 }
 func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
+	if m.flow.daily != nil {
+		return m.dailyKey(msg)
+	}
 	f := m.flow
 	k := msg.String()
 	if k == "ctrl+c" {
@@ -553,7 +563,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 // matched to request+generation even when Esc abandons a submitted operation.
 func (m *model) startFlowQuery() tea.Cmd {
 	f := m.flow
-	if m.pending != 0 || m.quitting {
+	if m.pending != 0 || m.quitting || m.toolRunning {
 		return nil
 	}
 	ctx, cancel := context.WithTimeout(m.ctx, 30*time.Second)
@@ -575,6 +585,11 @@ func (m *model) startFlowQuery() tea.Cmd {
 	return func() tea.Msg {
 		defer cancel()
 		r, err := run()
+		versionLimit := pageSize
+		if task == "day_load_review" || task == "day_load_session" || task == "day_create_session" {
+			versionLimit = 64
+		}
+		r.Versions = r.Versions[:min(len(r.Versions), versionLimit)]
 		r.Items = r.Items[:min(len(r.Items), pageSize)]
 		r.Requests = r.Requests[:min(len(r.Requests), pageSize)]
 		r.Attention = r.Attention[:min(len(r.Attention), pageSize)]
