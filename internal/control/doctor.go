@@ -154,8 +154,8 @@ func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
 			Name:        "daemon_lifecycle",
 			Category:    "daemon",
 			Status:      StatusOk,
-			Message:     "running in stopped-state adapter (daemon inactive; launch with 'orbit launch' if background sync desired)",
-			Remediation: "run 'orbit launch' or 'orbit service start' to start the background daemon",
+			Message:     "running in stopped-state adapter (daemon inactive; start with 'orbit service start' or 'filesync serve' if background sync desired)",
+			Remediation: "run 'orbit service start' (managed) or 'filesync serve' (manual) to start the background daemon",
 		})
 		return checks
 	}
@@ -166,8 +166,8 @@ func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
 			Name:        "daemon_lifecycle",
 			Category:    "daemon",
 			Status:      StatusOk,
-			Message:     "background daemon inactive (launch with 'orbit launch' if background sync desired)",
-			Remediation: "run 'orbit launch' or 'orbit service start' to start the background daemon",
+			Message:     "background daemon inactive (start with 'orbit service start' or 'filesync serve' if background sync desired)",
+			Remediation: "run 'orbit service start' (managed) or 'filesync serve' (manual) to start the background daemon",
 		})
 		return checks
 	}
@@ -186,7 +186,7 @@ func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
 			Category:    "daemon",
 			Status:      StatusWarn,
 			Message:     "control credential token not found while control address is active",
-			Remediation: "restart the background daemon with 'orbit launch'",
+			Remediation: "restart the background daemon with 'orbit service restart' or supervised 'filesync serve'",
 		})
 	} else {
 		perm := tokenInfo.Mode().Perm()

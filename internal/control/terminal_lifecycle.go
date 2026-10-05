@@ -21,7 +21,7 @@ import (
 )
 
 func terminalResult() tc.Result {
-	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, "lifecycle_settings_v1", "enrollment_v2", "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
+	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, "lifecycle_settings_v1", "enrollment_v2", "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
 }
 func terminalError(code string) error {
 	return &ControlError{Code: code, Message: code, Action: "inspect state and obtain a fresh review"}
@@ -79,6 +79,8 @@ func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (tc.Result, 
 	}
 	r := terminalResult()
 	switch q.Kind {
+	case "paths", "storage", "maintenance":
+		return c.terminalEveryday(ctx, q)
 	case "setups":
 		return c.terminalSetups(ctx, q)
 	case "folder_management":
@@ -108,7 +110,14 @@ func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (tc.Result, 
 				return r, err
 			}
 		}
-		return c.replayTerminal(record, "")
+		result, err := c.replayTerminal(record, "")
+		if err != nil || result.Error != nil {
+			return result, err
+		}
+		if record.Mutation.Kind == "content" && result.Operation.State == "pending" && result.Operation.Phase == "publication" {
+			return c.observeContentPublication(ctx, &record)
+		}
+		return result, nil
 	case "settings", "service":
 		r, g, err := c.terminalSnapshot(ctx, q.Kind)
 		if err != nil {

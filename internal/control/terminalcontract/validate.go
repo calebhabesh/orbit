@@ -183,6 +183,11 @@ func (q Query) Validate() error {
 		if q.Folder != "" || q.Name != "" || q.ID != "" || q.Path != "" || q.Cwd != "" || q.RootPlan != nil || (q.Cursor != "" && !validID(q.Cursor)) {
 			return fmt.Errorf("INVALID_REQUEST: unfiltered setup page")
 		}
+	case "storage":
+	case "paths", "maintenance":
+		if !validID(q.Folder) || len(q.Name) > 256 {
+			return fmt.Errorf("INVALID_REQUEST: folder/search")
+		}
 	case "folder_management":
 		if !validID(q.Folder) {
 			return fmt.Errorf("INVALID_REQUEST: folder required")

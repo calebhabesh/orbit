@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
 	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/repository"
@@ -66,7 +65,7 @@ func (c *Controller) FolderReadiness(ctx context.Context, folder history.ID) (tc
 
 	// 2. Root availability
 	reg, err := c.db.Root(ctx, folder)
-	if err == nil && !reg.Paused {
+	if err == nil && (!reg.Paused || reg.PauseReason == "ROOT_UNAVAILABLE") {
 		if info, statErr := os.Stat(reg.Path); statErr == nil && info.IsDir() {
 			if revalErr := c.ws.Revalidate(ctx, folder); revalErr == nil {
 				r.RootAvailable = true
@@ -147,19 +146,24 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 		// A. Root availability and paused state
 		reg, regErr := c.db.Root(ctx, folder)
 		if regErr == nil {
-			if reg.Paused {
-				allAttention = append(allAttention, tc.Attention{
-					ID:     attentionID("folder_paused", folderHex),
-					Folder: folderHex,
-					Code:   "FOLDER_PAUSED",
-					Action: fmt.Sprintf("Resume folder with 'orbit folders resume %s'", folderHex),
-				})
-			} else if _, statErr := os.Stat(reg.Path); errors.Is(statErr, os.ErrNotExist) {
+			unavailable := reg.Paused && reg.PauseReason == "ROOT_UNAVAILABLE"
+			if !reg.Paused {
+				_, statErr := os.Stat(reg.Path)
+				unavailable = errors.Is(statErr, os.ErrNotExist)
+			}
+			if unavailable {
 				allAttention = append(allAttention, tc.Attention{
 					ID:     attentionID("root_unavailable", folderHex),
 					Folder: folderHex,
 					Code:   "ROOT_UNAVAILABLE",
 					Action: "Restore access to the root or relocate with 'orbit folders relocate'",
+				})
+			} else if reg.Paused {
+				allAttention = append(allAttention, tc.Attention{
+					ID:     attentionID("folder_paused", folderHex),
+					Folder: folderHex,
+					Code:   "FOLDER_PAUSED",
+					Action: fmt.Sprintf("Resume folder with 'orbit folders resume %s'", folderHex),
 				})
 			} else if revalErr := c.ws.Revalidate(ctx, folder); revalErr != nil {
 				allAttention = append(allAttention, tc.Attention{
@@ -353,6 +357,9 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 
 	// 3. Deterministic sort
 	sort.Slice(allAttention, func(i, j int) bool {
+		if attentionPriority(allAttention[i].Code) != attentionPriority(allAttention[j].Code) {
+			return attentionPriority(allAttention[i].Code) < attentionPriority(allAttention[j].Code)
+		}
 		if allAttention[i].Folder != allAttention[j].Folder {
 			return allAttention[i].Folder < allAttention[j].Folder
 		}
@@ -481,6 +488,10 @@ func (c *Controller) terminalStatus(ctx context.Context, q tc.Query) (tc.Result,
 	r.Attention = attRes.Attention
 	r.Cursor = attRes.Cursor
 
+	if err := ctx.Err(); err != nil {
+		return r, err
+	}
+
 	// 2. Folders / Items
 	foldersRes, err := c.terminalFolders(ctx, q)
 	if err != nil {
@@ -488,26 +499,24 @@ func (c *Controller) terminalStatus(ctx context.Context, q tc.Query) (tc.Result,
 	}
 	r.Items = foldersRes.Items
 
-	// 3. Service status
-	running := !c.options.StoppedAdapter
-	svcStatus, _ := CheckServiceStatus(ctx, c.db.StateDir(), c.db)
-	mode := "manual"
-	enabled := false
-	unattendedVerified := false
-	if svcStatus != nil {
-		enabled = svcStatus.EnabledOnLogin || svcStatus.CurrentlyRunning
-		unattendedVerified = svcStatus.LingeringEnabled
-	}
-	if s, sErr := config.LoadRuntimeSettings(c.db.StateDir()); sErr == nil && s.Startup != "" {
-		mode = s.Startup
+	// Use the same observed startup/lifetime contract as orbit service.
+	// Desired settings and a running daemon do not establish enabled startup.
+	service, _, err := c.terminalSnapshot(ctx, "service")
+	if err != nil {
+		return r, err
 	}
 
 	allRootsHealthy := true
 	allCaptureHealthy := true
+	readiness := make(map[history.ID]tc.Readiness, len(r.Items))
 	for _, it := range r.Items {
 		fID, pErr := parseFolderHex(it.ID)
 		if pErr == nil {
 			rd, rdErr := c.FolderReadiness(ctx, fID)
+			if rdErr != nil {
+				return r, rdErr
+			}
+			readiness[fID] = rd
 			if rdErr != nil || !rd.RootAvailable {
 				allRootsHealthy = false
 			}
@@ -516,23 +525,23 @@ func (c *Controller) terminalStatus(ctx context.Context, q tc.Query) (tc.Result,
 			}
 		}
 	}
-	r.Service = &tc.Service{
-		Running:            running,
-		Enabled:            enabled,
-		Mode:               mode,
-		UnattendedVerified: unattendedVerified,
-		RootHealthy:        allRootsHealthy,
-		CaptureHealthy:     allCaptureHealthy,
-	}
+	r.Service = service.Service
+	r.Service.RootHealthy = allRootsHealthy
+	r.Service.CaptureHealthy = allCaptureHealthy
 
 	// 4. Readiness
 	if q.Folder != "" {
 		fID, pErr := parseFolderHex(q.Folder)
 		if pErr == nil {
-			folderRd, rdErr := c.FolderReadiness(ctx, fID)
-			if rdErr == nil {
-				r.Readiness = &folderRd
+			folderRd, ok := readiness[fID]
+			if !ok {
+				var err error
+				folderRd, err = c.FolderReadiness(ctx, fID)
+				if err != nil {
+					return r, err
+				}
 			}
+			r.Readiness = &folderRd
 		}
 	} else if len(r.Items) > 0 {
 		var aggRd tc.Readiness
@@ -543,8 +552,8 @@ func (c *Controller) terminalStatus(ctx context.Context, q tc.Query) (tc.Result,
 		for _, it := range r.Items {
 			fID, pErr := parseFolderHex(it.ID)
 			if pErr == nil {
-				folderRd, rdErr := c.FolderReadiness(ctx, fID)
-				if rdErr == nil {
+				folderRd, ok := readiness[fID]
+				if ok {
 					if !folderRd.Approved {
 						aggRd.Approved = false
 					}
@@ -607,7 +616,11 @@ func (c *Controller) terminalStatus(ctx context.Context, q tc.Query) (tc.Result,
 					isOnline = true
 				}
 			}
-			obs := tc.Observation{
+			name, err := c.db.GetDeviceDisplayName(ctx, p.Peer)
+			if err != nil {
+				return r, err
+			}
+			obs := tc.Observation{DeviceName: name,
 				Device: hex.EncodeToString(p.Peer[:]),
 				Folder: it.ID,
 				Version: tc.VersionID{
@@ -682,4 +695,17 @@ func (c *Controller) terminalDoctor(ctx context.Context, q tc.Query) (tc.Result,
 	}
 
 	return r, nil
+}
+
+// Prioritize actionable recovery over repeated background retry failures. The
+// remaining keys retain deterministic pagination within each urgency class.
+func attentionPriority(code string) int {
+	switch code {
+	case "CONFLICT", "STRUCTURAL_CONFLICT", "EDITOR_RECOVERY", "ROOT_UNAVAILABLE", "STALE_ROOT", "DISK_BUDGET", "METADATA_BUDGET", "MEMBERSHIP_FORK":
+		return 0
+	case "OFFLINE", "EXHAUSTED_WORK":
+		return 2
+	default:
+		return 1
+	}
 }

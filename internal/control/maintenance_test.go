@@ -2,14 +2,48 @@ package control
 
 import (
 	"context"
+	"encoding/hex"
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
+	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/internal/workspace"
 )
+
+func TestRecoveryInspectionUsesOwnedDatabaseAndReportsMismatch(t *testing.T) {
+	ctx := context.Background()
+	dir := t.TempDir()
+	db, err := repository.Open(ctx, dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	var author, folder history.ID
+	author[0], folder[0] = 1, 2
+	if err := config.Save(dir, config.Config{FormatVersion: config.FormatVersion, DeviceID: hex.EncodeToString(author[:]), CreatedAt: time.Now().UTC()}); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.EnsureFolder(ctx, folder, author, 1); err != nil {
+		t.Fatal(err)
+	}
+	ctrl := New(db, workspace.New(db, workspace.Options{}))
+	result, err := ctrl.RecoveryInspection(ctx)
+	if err != nil || !result.Consistent {
+		t.Fatalf("owned identity inspection: result=%+v err=%v", result, err)
+	}
+	author[0] = 3
+	if err := config.Save(dir, config.Config{FormatVersion: config.FormatVersion, DeviceID: hex.EncodeToString(author[:]), CreatedAt: time.Now().UTC()}); err != nil {
+		t.Fatal(err)
+	}
+	result, err = ctrl.RecoveryInspection(ctx)
+	if err != nil || result.Consistent || result.ConsistencyError == "" {
+		t.Fatalf("identity mismatch reported healthy: result=%+v err=%v", result, err)
+	}
+}
 
 func TestFolderManagementAndUnregisterEmitsZeroDeletes(t *testing.T) {
 	ctx := context.Background()
@@ -160,6 +194,9 @@ func TestMaintenanceOperations(t *testing.T) {
 	// Verify backup can be opened as SQLite database
 	backupDB, err := repository.Open(ctx, filepath.Dir(backupPath))
 	_ = backupDB // Can open if placed in state dir structure, or checked by size
+	if err == nil {
+		defer backupDB.Close()
+	}
 	if _, err := os.Stat(backupPath); err != nil {
 		t.Fatalf("backup file missing: %v", err)
 	}
@@ -183,6 +220,9 @@ func TestMaintenanceOperations(t *testing.T) {
 	}
 
 	// 5. ResetIdentity
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
 	resetRes, err := ctrl.ResetIdentity(ctx, stateDir)
 	if err != nil {
 		t.Fatalf("reset identity: %v", err)

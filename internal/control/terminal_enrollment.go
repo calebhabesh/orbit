@@ -164,6 +164,11 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 				return terminalError("UNAUTHORIZED")
 			}
 			if p.Decision == "approve" {
+				for _, retired := range membership.Retired {
+					if retired.Device == terminalID(p.Requester) {
+						return RetiredMemberRevivalError("")
+					}
+				}
 				membership.PriorDigest = digest
 				membership.Revision++
 				membership.Active = append(membership.Active, protocol.ActiveMember{Device: terminalID(p.Requester), KeyPin: history.Digest(terminalID(p.KeyPin))})

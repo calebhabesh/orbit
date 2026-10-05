@@ -443,6 +443,17 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 			return *r, err
 		}
 	}
+	var retirementSnapshots []protocol.RetirementSnapshot
+	if job.Membership != nil && len(job.Membership.Retired) > 0 {
+		if m.Join == nil {
+			return block(terminalError("INVALID_REQUEST"))
+		}
+		var err error
+		retirementSnapshots, err = c.onboardingRetirementSnapshots(ctx, *job.Membership, m.Join.Invitation)
+		if err != nil {
+			return block(err)
+		}
+	}
 	if !job.Registered {
 		// Recovery after registration commit but before journal acknowledgement uses
 		// the full registration verifier rather than a string-matched error.
@@ -468,7 +479,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 				return block(err)
 			}
 			if job.Membership != nil {
-				if _, err = c.db.ApproveMembership(ctx, *job.Membership); err != nil {
+				if _, err = c.db.ApproveMembership(ctx, *job.Membership, retirementSnapshots...); err != nil {
 					return block(err)
 				}
 			}
@@ -494,7 +505,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 	// Membership alone imports no remote file history. Capture uses the approved
 	// authored revision before any remote projection.
 	if job.Membership != nil {
-		if _, err := c.db.ApproveMembership(ctx, *job.Membership); err != nil {
+		if _, err := c.db.ApproveMembership(ctx, *job.Membership, retirementSnapshots...); err != nil {
 			return block(err)
 		}
 	}
@@ -526,7 +537,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		}
 		job.Membership = &protocol.Membership{Folder: folder, Revision: 1, Active: []protocol.ActiveMember{{Device: c.options.LocalDevice, KeyPin: id.KeyPin}}}
 	}
-	if _, err := c.db.ApproveMembership(ctx, *job.Membership); err != nil {
+	if _, err := c.db.ApproveMembership(ctx, *job.Membership, retirementSnapshots...); err != nil {
 		return block(err)
 	}
 	r.Readiness.Approved = true
@@ -596,6 +607,80 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		return *r, err
 	}
 	return *r, nil
+}
+
+// Enrollment's approved membership hashes name the exact retirement artifacts.
+// Fetch them through the already-pinned peer interface before importing history.
+// Naming the predecessor requests the exact admitted revision even if the
+// inviter has since approved another additive enrollment.
+func (c *Controller) onboardingRetirementSnapshots(ctx context.Context, membership protocol.Membership, invitation tc.Invitation) ([]protocol.RetirementSnapshot, error) {
+	existing, err := c.db.ListRetirementSnapshots(ctx, membership.Folder, membership.Revision)
+	if err != nil {
+		return nil, err
+	}
+	validate := func(snapshots []protocol.RetirementSnapshot) error {
+		if len(snapshots) != len(membership.Retired) {
+			return repository.ErrMembershipMismatch
+		}
+		for _, member := range membership.Retired {
+			matches := 0
+			for _, snapshot := range snapshots {
+				if snapshot.Folder != membership.Folder || snapshot.RetiredDevice != member.Device {
+					continue
+				}
+				digest, err := protocol.RetirementSnapshotDigest(snapshot)
+				if err != nil || digest != member.SnapshotDigest || snapshot.ConfigurationRev != member.RetiredAt-1 {
+					return repository.ErrMembershipMismatch
+				}
+				matches++
+			}
+			if matches != 1 {
+				return repository.ErrMembershipMismatch
+			}
+		}
+		return nil
+	}
+	if validate(existing) == nil {
+		return existing, nil
+	}
+	if membership.Revision < 2 {
+		return nil, repository.ErrMembershipMismatch
+	}
+	der, err := base64.StdEncoding.DecodeString(invitation.CertificateDER)
+	if err != nil {
+		return nil, err
+	}
+	certificate, err := replication.ParsePeerCertificate(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der}))
+	if err != nil {
+		return nil, err
+	}
+	identity, err := replication.LoadOrCreateIdentity(c.db.StateDir(), c.options.LocalDevice, c.options.Now())
+	if err != nil {
+		return nil, err
+	}
+	client, err := replication.NewClient(invitation.PeerEndpoint, identity, certificate, replication.PublicKeyPin(certificate))
+	if err != nil {
+		return nil, err
+	}
+	defer client.CloseIdleConnections()
+	response, err := client.MembershipGet(ctx, replication.MembershipGetRequest{ProtocolVersion: replication.ProtocolVersion,
+		DeviceID: hex.EncodeToString(c.options.LocalDevice[:]), FolderID: hex.EncodeToString(membership.Folder[:]),
+		FromRevision: strconv.FormatUint(membership.Revision-1, 10), ExpectedDigest: hex.EncodeToString(membership.PriorDigest[:])})
+	if err != nil {
+		return nil, err
+	}
+	expected, err := protocol.MembershipDigest(membership)
+	if err != nil {
+		return nil, err
+	}
+	actual, err := protocol.MembershipDigest(response.Membership)
+	if err != nil || response.ProtocolVersion != replication.ProtocolVersion || response.FolderID != hex.EncodeToString(membership.Folder[:]) || actual != expected {
+		return nil, repository.ErrMembershipMismatch
+	}
+	if err = validate(response.Snapshots); err != nil {
+		return nil, err
+	}
+	return response.Snapshots, nil
 }
 
 // ResumeSetupJobs is owned by the daemon; client cancellation only stops waiting.

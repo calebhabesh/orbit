@@ -153,7 +153,7 @@ func (c *Controller) RecoveryInspection(ctx context.Context) (*RecoveryInspectio
 	}
 
 	// 4. Identity recovery consistency check (Invariant I20)
-	report, err := CheckRecoveryConsistency(c.db.StateDir())
+	report, err := checkRecoveryConsistency(ctx, c.db.StateDir(), c.db)
 	if err == nil && report != nil {
 		result.Consistent = report.Consistent
 		if !report.Consistent {
@@ -161,7 +161,9 @@ func (c *Controller) RecoveryInspection(ctx context.Context) (*RecoveryInspectio
 			result.Details = append(result.Details, fmt.Sprintf("recovery inconsistency: %s", report.ErrorReason))
 		}
 	} else {
-		result.Consistent = true
+		result.Consistent = false
+		result.ConsistencyError = "identity consistency inspection unavailable"
+		result.Details = append(result.Details, result.ConsistencyError)
 	}
 
 	return result, nil

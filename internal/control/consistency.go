@@ -1,6 +1,7 @@
 package control
 
 import (
+	"context"
 	"crypto/x509"
 	"database/sql"
 	"encoding/hex"
@@ -12,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/calebhabesh/file-sync/internal/config"
+	"github.com/calebhabesh/file-sync/internal/repository"
 	_ "modernc.org/sqlite"
 )
 
@@ -45,6 +47,10 @@ func VerifyRecoveryConsistency(stateDir string) error {
 
 // CheckRecoveryConsistency performs a read-only inspection of identity consistency.
 func CheckRecoveryConsistency(stateDir string) (*ConsistencyReport, error) {
+	return checkRecoveryConsistency(context.Background(), stateDir, nil)
+}
+
+func checkRecoveryConsistency(ctx context.Context, stateDir string, owner *repository.DB) (*ConsistencyReport, error) {
 	cfg, err := config.Load(stateDir)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -100,6 +106,19 @@ func CheckRecoveryConsistency(stateDir string) (*ConsistencyReport, error) {
 	}
 
 	// 2. Check metadata.sqlite folders.local_author
+	if owner != nil {
+		folders, err := owner.Folders(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("read owned folder identities: %w", err)
+		}
+		for _, folder := range folders {
+			checkLocalAuthor(report, folder.LocalAuthor[:], cfg.DeviceID)
+			if !report.Consistent {
+				break
+			}
+		}
+		return report, nil
+	}
 	dbPath := filepath.Join(stateDir, "metadata.sqlite")
 	if _, err := os.Stat(dbPath); err == nil {
 		dbDSN := "file:" + dbPath + "?mode=ro&_pragma=busy_timeout(5000)"
@@ -109,23 +128,38 @@ func CheckRecoveryConsistency(stateDir string) (*ConsistencyReport, error) {
 		}
 		defer db.Close()
 
-		rows, err := db.Query("SELECT local_author FROM folders")
-		if err == nil {
-			defer rows.Close()
-			for rows.Next() {
-				var rawAuthor []byte
-				if err := rows.Scan(&rawAuthor); err == nil && len(rawAuthor) == 32 {
-					authorHex := hex.EncodeToString(rawAuthor)
-					report.DBLocalAuthor = authorHex
-					if authorHex != cfg.DeviceID {
-						report.Consistent = false
-						report.ErrorReason = fmt.Sprintf("database local_author (%s) does not match config device (%s)", authorHex, cfg.DeviceID)
-						return report, nil
-					}
-				}
+		rows, err := db.QueryContext(ctx, "SELECT local_author FROM folders")
+		if err != nil {
+			// An empty pre-migration database has no identity rows yet.
+			if strings.Contains(err.Error(), "no such table: folders") {
+				return report, nil
 			}
+			return nil, fmt.Errorf("read folder identities: %w", err)
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var rawAuthor []byte
+			if err := rows.Scan(&rawAuthor); err != nil {
+				return nil, err
+			}
+			checkLocalAuthor(report, rawAuthor, cfg.DeviceID)
+			if !report.Consistent {
+				return report, nil
+			}
+		}
+		if err := rows.Err(); err != nil {
+			return nil, err
 		}
 	}
 
 	return report, nil
+}
+
+func checkLocalAuthor(report *ConsistencyReport, rawAuthor []byte, device string) {
+	authorHex := hex.EncodeToString(rawAuthor)
+	report.DBLocalAuthor = authorHex
+	if len(rawAuthor) != 32 || authorHex != device {
+		report.Consistent = false
+		report.ErrorReason = fmt.Sprintf("database local_author (%s) does not match config device (%s)", authorHex, device)
+	}
 }

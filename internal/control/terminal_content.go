@@ -238,6 +238,16 @@ func (c *Controller) terminalContentQuery(ctx context.Context, q tc.Query) (tc.R
 			r.Versions = append(r.Versions, summary(env, string(state)))
 		}
 	}
+	for i := range r.Versions {
+		name, e := c.db.GetDeviceDisplayName(ctx, mustContentID(r.Versions[i].Version.Author))
+		if e != nil {
+			return r, e
+		}
+		if name == "" {
+			name = "Device " + r.Versions[i].Version.Author[:8]
+		}
+		r.Versions[i].DeviceName = name
+	}
 	if len(r.Items) == 0 && len(r.Versions) == 0 && len(r.Attention) == 0 && r.ContentReview == nil {
 		r.State = "empty"
 	}
@@ -312,6 +322,41 @@ func (c *Controller) ExactRead(ctx context.Context, intent tc.ReadIntent) (io.Re
 type exactRange struct {
 	io.Reader
 	io.Closer
+}
+
+// observeContentPublication refreshes durable effects from the actual working
+// projection. Polls never publish bytes or author another version.
+func (c *Controller) observeContentPublication(ctx context.Context, record *repository.TerminalRecord) (tc.Result, error) {
+	r := record.Result
+	all := len(r.Effects) > 0
+	for i, effect := range r.Effects {
+		if effect.Version == nil || effect.State == "applied" {
+			continue
+		}
+		id, err := contentVersion(*effect.Version)
+		if err != nil {
+			return r, err
+		}
+		applied, err := c.db.WorkingApplied(ctx, id)
+		if err != nil {
+			return r, err
+		}
+		if applied {
+			r.Effects[i].State = "applied"
+		} else {
+			all = false
+		}
+	}
+	r.Operation.CommittedEffects = r.Effects
+	if all {
+		r.State, r.Operation.State, r.Operation.Phase = "completed", "completed", "applied"
+		record.CompletedAt = c.options.Now().UTC().Format(time.RFC3339Nano)
+		record.Result = r
+		if err := c.db.SaveTerminalRecord(ctx, "operation/"+record.Mutation.OperationID, *record, false); err != nil {
+			return r, err
+		}
+	}
+	return r, nil
 }
 
 // resumeContentPublication never authors another version on replay.

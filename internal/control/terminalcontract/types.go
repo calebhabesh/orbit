@@ -283,6 +283,7 @@ type JoinRecord struct {
 	Readiness          Readiness `json:"readiness"`
 }
 type Observation struct {
+	DeviceName   string    `json:"device_name,omitempty"`
 	Device       string    `json:"device"`
 	Folder       string    `json:"folder"`
 	Version      VersionID `json:"version"`
@@ -339,7 +340,20 @@ type FolderManagement struct {
 	Members          []NamedItem `json:"members"`
 }
 
+type Storage struct {
+	Objects        Uint `json:"objects"`
+	Metadata       Uint `json:"metadata"`
+	Staging        Uint `json:"staging"`
+	Recovery       Uint `json:"recovery"`
+	Quarantine     Uint `json:"quarantine"`
+	DataBudget     Uint `json:"data_budget"`
+	MetadataBudget Uint `json:"metadata_budget"`
+	Reserve        Uint `json:"reserve"`
+}
+
 type Result struct {
+	CopyPlans        []CopyPlan          `json:"copy_plans,omitempty"`
+	Storage          *Storage            `json:"storage,omitempty"`
 	FolderManagement *FolderManagement   `json:"folder_management,omitempty"`
 	Upload           *UploadResult       `json:"upload,omitempty"`
 	Versions         []VersionSummary    `json:"versions"`
