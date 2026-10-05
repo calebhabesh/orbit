@@ -276,6 +276,13 @@ func (db *DB) RetryAllExhaustedTasks(ctx context.Context, folder *history.ID) (i
 	return int(affected), err
 }
 
+func (db *DB) ResolveExhaustedSyncTasks(ctx context.Context, folder, peer history.ID) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	_, err := db.db.ExecContext(ctx, `UPDATE durable_work_tasks SET state='completed', updated_ns=? WHERE folder_id=? AND peer_id=? AND task_kind='sync' AND state='exhausted'`, time.Now().UnixNano(), folder[:], peer[:])
+	return err
+}
+
 func (db *DB) CancelDurableTask(ctx context.Context, taskID string) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()

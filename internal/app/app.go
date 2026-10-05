@@ -229,6 +229,20 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 			if err != nil {
 				return nil, err
 			}
+			mem, _, err := db.GetMembership(ctx, folder)
+			if err != nil {
+				continue
+			}
+			active := false
+			for _, m := range mem.Active {
+				if m.Device == peer {
+					active = true
+					break
+				}
+			}
+			if !active {
+				continue
+			}
 			targets = append(targets, scheduler.PeerTarget{Folder: folder, Peer: peer})
 		}
 		return targets, nil

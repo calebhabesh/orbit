@@ -418,6 +418,9 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 
 	if execErr == nil {
 		_ = s.queue.UpdateState(context.Background(), task.ID, "completed", task.Attempts, "", "", 0)
+		if task.Kind == "sync" && task.Peer != nil {
+			_ = s.db.ResolveExhaustedSyncTasks(context.Background(), task.Folder, *task.Peer)
+		}
 		return
 	}
 
@@ -574,9 +577,6 @@ func (s *Scheduler) Stop() error {
 // A location change preserves relative paths but inotify must watch the new tree.
 // Only the dispatch loop owns watchedRoots after Start.
 func (s *Scheduler) refreshRootWatches() {
-	if s.watcher == nil {
-		return
-	}
 	regs, err := s.db.RegisteredFolders(s.ctx)
 	if err != nil {
 		return
@@ -584,19 +584,42 @@ func (s *Scheduler) refreshRootWatches() {
 	active := map[history.ID]bool{}
 	for _, reg := range regs {
 		active[reg.Folder] = true
-		if s.watchedRoots[reg.Folder] == reg.Path {
+
+		s.mu.Lock()
+		pausedReason := s.pausedFolders[reg.Folder]
+		s.mu.Unlock()
+
+		if pausedReason == "ROOT_UNAVAILABLE" {
+			if s.ws != nil && s.ws.Revalidate(s.ctx, reg.Folder) == nil {
+				s.mu.Lock()
+				delete(s.pausedFolders, reg.Folder)
+				s.mu.Unlock()
+				pausedReason = ""
+			}
+		}
+
+		if reg.Paused || pausedReason != "" {
 			continue
 		}
-		_ = s.watcher.UnwatchFolder(reg.Folder)
-		if err := s.watcher.WatchFolder(reg.Folder, reg.Path); err == nil {
-			s.watchedRoots[reg.Folder] = reg.Path
-			_, _ = s.queue.Enqueue(s.ctx, repository.DurableTask{Folder: reg.Folder, Kind: "scan"})
+
+		if s.watcher != nil {
+			if s.watchedRoots[reg.Folder] == reg.Path && s.watcher.IsWatching(reg.Folder) {
+				continue
+			}
+			_ = s.watcher.UnwatchFolder(reg.Folder)
+			if err := s.watcher.WatchFolder(reg.Folder, reg.Path); err == nil {
+				s.watchedRoots[reg.Folder] = reg.Path
+				_, _ = s.queue.Enqueue(s.ctx, repository.DurableTask{Folder: reg.Folder, Kind: "scan"})
+			}
 		}
 	}
-	for folder := range s.watchedRoots {
-		if !active[folder] {
-			_ = s.watcher.UnwatchFolder(folder)
-			delete(s.watchedRoots, folder)
+
+	if s.watcher != nil {
+		for folder := range s.watchedRoots {
+			if !active[folder] {
+				_ = s.watcher.UnwatchFolder(folder)
+				delete(s.watchedRoots, folder)
+			}
 		}
 	}
 }

@@ -476,6 +476,56 @@ type queryer interface {
 	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
 }
 
+const (
+	envelopeLookupSQL  = `SELECT path,kind,authored_revision,display_time,file_size,file_digest,executable,content_state FROM versions WHERE folder_id=? AND author_id=? AND counter=?`
+	envelopeParentsSQL = `SELECT parent_author,parent_counter FROM version_parents WHERE folder_id=? AND author_id=? AND counter=? ORDER BY position`
+	envelopeVectorsSQL = `SELECT vector_author,vector_counter FROM version_vectors WHERE folder_id=? AND author_id=? AND counter=? ORDER BY position`
+	envelopeChunksSQL  = `SELECT digest,length FROM manifest_chunks WHERE folder_id=? AND author_id=? AND counter=? ORDER BY position`
+)
+
+// A history read reuses four statement plans for its immutable envelopes.
+// Scope plans to this read/transaction; never cache observations across queries.
+type preparedHistoryQueries struct {
+	queryer
+	statements map[string]*sql.Stmt
+}
+
+func (p preparedHistoryQueries) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
+	if stmt := p.statements[query]; stmt != nil {
+		return stmt.QueryRowContext(ctx, args...)
+	}
+	return p.queryer.QueryRowContext(ctx, query, args...)
+}
+func (p preparedHistoryQueries) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
+	if stmt := p.statements[query]; stmt != nil {
+		return stmt.QueryContext(ctx, args...)
+	}
+	return p.queryer.QueryContext(ctx, query, args...)
+}
+func prepareHistoryQueries(ctx context.Context, q queryer) (queryer, func(), error) {
+	preparer, ok := q.(interface {
+		PrepareContext(context.Context, string) (*sql.Stmt, error)
+	})
+	if !ok {
+		return q, func() {}, nil
+	}
+	p := preparedHistoryQueries{queryer: q, statements: make(map[string]*sql.Stmt, 4)}
+	close := func() {
+		for _, stmt := range p.statements {
+			_ = stmt.Close()
+		}
+	}
+	for _, query := range []string{envelopeLookupSQL, envelopeParentsSQL, envelopeVectorsSQL, envelopeChunksSQL} {
+		stmt, err := preparer.PrepareContext(ctx, query)
+		if err != nil {
+			close()
+			return nil, nil, err
+		}
+		p.statements[query] = stmt
+	}
+	return p, close, nil
+}
+
 func (db *DB) envelopeAndState(ctx context.Context, q queryer, id history.VersionID) (history.Envelope, string, error) {
 	var e history.Envelope
 	e.ID = id
@@ -483,7 +533,7 @@ func (db *DB) envelopeAndState(ctx context.Context, q queryer, id history.Versio
 	var revision, size, digest []byte
 	var display, state string
 	var executable sql.NullInt64
-	err := q.QueryRowContext(ctx, `SELECT path,kind,authored_revision,display_time,file_size,file_digest,executable,content_state FROM versions WHERE folder_id=? AND author_id=? AND counter=?`, id.Folder[:], id.Author[:], encodeUint(id.Counter)).Scan(&e.Path, &kind, &revision, &display, &size, &digest, &executable, &state)
+	err := q.QueryRowContext(ctx, envelopeLookupSQL, id.Folder[:], id.Author[:], encodeUint(id.Counter)).Scan(&e.Path, &kind, &revision, &display, &size, &digest, &executable, &state)
 	if err != nil {
 		return e, "", err
 	}
@@ -495,7 +545,7 @@ func (db *DB) envelopeAndState(ctx context.Context, q queryer, id history.Versio
 		e.Manifest.Size, _ = decodeUint(size)
 		copy(e.Manifest.Digest[:], digest)
 	}
-	parents, err := q.QueryContext(ctx, `SELECT parent_author,parent_counter FROM version_parents WHERE folder_id=? AND author_id=? AND counter=? ORDER BY position`, id.Folder[:], id.Author[:], encodeUint(id.Counter))
+	parents, err := q.QueryContext(ctx, envelopeParentsSQL, id.Folder[:], id.Author[:], encodeUint(id.Counter))
 	if err != nil {
 		return e, "", err
 	}
@@ -511,7 +561,7 @@ func (db *DB) envelopeAndState(ctx context.Context, q queryer, id history.Versio
 		e.Parents = append(e.Parents, history.VersionID{Folder: id.Folder, Author: author, Counter: counter})
 	}
 	parents.Close()
-	vectors, err := q.QueryContext(ctx, `SELECT vector_author,vector_counter FROM version_vectors WHERE folder_id=? AND author_id=? AND counter=? ORDER BY position`, id.Folder[:], id.Author[:], encodeUint(id.Counter))
+	vectors, err := q.QueryContext(ctx, envelopeVectorsSQL, id.Folder[:], id.Author[:], encodeUint(id.Counter))
 	if err != nil {
 		return e, "", err
 	}
@@ -528,7 +578,7 @@ func (db *DB) envelopeAndState(ctx context.Context, q queryer, id history.Versio
 	}
 	vectors.Close()
 	if e.Manifest != nil {
-		chunks, err := q.QueryContext(ctx, `SELECT digest,length FROM manifest_chunks WHERE folder_id=? AND author_id=? AND counter=? ORDER BY position`, id.Folder[:], id.Author[:], encodeUint(id.Counter))
+		chunks, err := q.QueryContext(ctx, envelopeChunksSQL, id.Folder[:], id.Author[:], encodeUint(id.Counter))
 		if err != nil {
 			return e, "", err
 		}
@@ -606,9 +656,18 @@ func loadHistoryQuery(ctx context.Context, q queryer, folder history.ID, paths .
 	if err := rows.Close(); err != nil {
 		return nil, err
 	}
+	prepared := q
+	if len(ids) > 1 {
+		var close func()
+		prepared, close, err = prepareHistoryQueries(ctx, q)
+		if err != nil {
+			return nil, err
+		}
+		defer close()
+	}
 	h := history.New()
 	for _, id := range ids {
-		e, _, err := (&DB{}).envelopeAndState(ctx, q, id)
+		e, _, err := (&DB{}).envelopeAndState(ctx, prepared, id)
 		if err != nil {
 			return nil, err
 		}

@@ -22,6 +22,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/app"
 	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/control"
+	"github.com/calebhabesh/file-sync/internal/controlclient"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/launcher"
 	"github.com/calebhabesh/file-sync/internal/protocol"
@@ -29,7 +30,6 @@ import (
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/internal/state"
 	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
 	"github.com/calebhabesh/file-sync/web"
 )
 
@@ -53,7 +53,7 @@ func TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot(t 
 
 	// 2. Discover uninitialized state and verify safe initialization via ServeWithOptions
 	addr, stopDaemon := startTestDaemon(t, stateDir)
-	defer stopDaemon()
+	defer func() { stopDaemon() }()
 
 	// Verify daemon is listening
 	resp, err := http.Get(fmt.Sprintf("%s/api/v1/version", addr))
@@ -77,23 +77,11 @@ func TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot(t 
 		t.Fatalf("expected state.ErrLocked on running daemon, got: %v", err)
 	}
 
-	db, err := repository.Open(ctx, stateDir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer db.Close()
-
-	ws := workspace.New(db, workspace.Options{})
-	cfg, err := config.Load(stateDir)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var devID history.ID
-	_ = devID.UnmarshalText([]byte(cfg.DeviceID))
-	ctrl := control.New(db, ws, control.Options{LocalDevice: devID})
+	client := &controlclient.Client{StateDir: stateDir}
 
 	// 4. Preview root with preexisting files (Invariant I22)
-	prevRes, err := ctrl.PreviewCreateRoot(ctx, control.PreviewCreateRootRequest{Path: syncRoot})
+	var prevRes control.PreviewCreateRootResult
+	err = client.Call(ctx, http.MethodPost, "/api/v1/setup/preview-root", control.PreviewCreateRootRequest{Path: syncRoot}, &prevRes)
 	if err != nil {
 		t.Fatalf("PreviewCreateRoot failed: %v", err)
 	}
@@ -102,28 +90,30 @@ func TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot(t 
 	}
 
 	// 5. Test disallowed system root validation (/etc)
-	disRes, err := ctrl.PreviewCreateRoot(ctx, control.PreviewCreateRootRequest{Path: "/etc"})
+	var disRes control.PreviewCreateRootResult
+	err = client.Call(ctx, http.MethodPost, "/api/v1/setup/preview-root", control.PreviewCreateRootRequest{Path: "/etc"}, &disRes)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !disRes.Disallowed {
 		t.Fatal("expected /etc root to be flagged as disallowed")
 	}
-	_, err = ctrl.StartSetup(ctx, control.StartSetupRequest{
+	err = client.Call(ctx, http.MethodPost, "/api/v1/setup/start", control.StartSetupRequest{
 		DeviceLabel:   "linux-laptop-primary",
 		WorkspaceName: "Disallowed Orbit",
 		RootPath:      "/etc",
-	})
+	}, nil)
 	if err == nil {
 		t.Fatal("expected error starting setup with disallowed /etc root, got nil")
 	}
 
 	// 6. Complete setup with adoption of preexisting files
-	setupRes, err := ctrl.StartSetup(ctx, control.StartSetupRequest{
+	var setupRes control.StartSetupResult
+	err = client.Call(ctx, http.MethodPost, "/api/v1/setup/start", control.StartSetupRequest{
 		DeviceLabel:   "linux-laptop-primary",
 		WorkspaceName: "Primary Orbit",
 		RootPath:      syncRoot,
-	})
+	}, &setupRes)
 	if err != nil {
 		t.Fatalf("StartSetup failed: %v", err)
 	}
@@ -136,13 +126,9 @@ func TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot(t 
 	if err != nil || !bytes.Equal(data, noteContent) {
 		t.Fatalf("preexisting file damaged: %s", string(data))
 	}
-	hasCaptured, err := db.HasAnyCapturedVersions(ctx)
-	if err != nil || !hasCaptured {
-		t.Fatalf("expected captured versions in DB: %v", err)
-	}
-
 	// 7. Product settings separation: device label and workspace display name
-	setRes, err := ctrl.GetSettings(ctx)
+	var setRes control.GetSettingsResult
+	err = client.Call(ctx, http.MethodGet, "/api/v1/settings", nil, &setRes)
 	if err != nil {
 		t.Fatalf("GetSettings failed: %v", err)
 	}
@@ -154,6 +140,18 @@ func TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot(t 
 	coreCfg, err := config.Load(stateDir)
 	if err != nil || coreCfg.FormatVersion != 1 {
 		t.Fatalf("core config format_version invalid: %v", err)
+	}
+	// Inspect persisted capture only after stopping the actual owner.
+	stopDaemon()
+	stopDaemon = func() {}
+	db, err := repository.Open(ctx, stateDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	hasCaptured, err := db.HasAnyCapturedVersions(ctx)
+	if err != nil || !hasCaptured {
+		t.Fatalf("expected captured versions in DB: %v", err)
 	}
 }
 

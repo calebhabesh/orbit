@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -127,6 +128,9 @@ func (w *Watcher) WatchFolder(folder history.ID, rootPath string) error {
 	if err != nil {
 		return err
 	}
+	if info, err := os.Stat(absRoot); err != nil || !info.IsDir() {
+		return fmt.Errorf("root directory unavailable: %w", err)
+	}
 
 	w.folderRoots[folder] = absRoot
 
@@ -182,6 +186,17 @@ func (w *Watcher) UnwatchFolder(folder history.ID) error {
 		}
 	}
 	return nil
+}
+
+func (w *Watcher) IsWatching(folder history.ID) bool {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	root, ok := w.folderRoots[folder]
+	if !ok {
+		return false
+	}
+	_, watching := w.pathToWd[root]
+	return watching
 }
 
 func (w *Watcher) readLoop() {

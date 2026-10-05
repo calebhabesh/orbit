@@ -158,7 +158,9 @@ func TestRemoteMetadataRemainsPendingUntilWholeFileReady(t *testing.T) {
 	if !known || ready || receipt {
 		t.Fatalf("known=%v ready=%v receipt=%v", known, ready, receipt)
 	}
-	if _, err := db.db.ExecContext(ctx, `PRAGMA busy_timeout=1`); err != nil {
+	// Temporarily release the owner to reproduce a conflicting external writer
+	// at reopen. A running exclusive owner correctly prevents that writer.
+	if err := db.db.Close(); err != nil {
 		t.Fatal(err)
 	}
 	locker, err := sql.Open("sqlite", filepath.Join(db.stateDir, "metadata.sqlite"))
@@ -172,17 +174,23 @@ func TestRemoteMetadataRemainsPendingUntilWholeFileReady(t *testing.T) {
 	if _, err := lockTx.ExecContext(ctx, `INSERT INTO installation_metadata(key,value) VALUES('busy-lock',x'01')`); err != nil {
 		t.Fatal(err)
 	}
+	db.db, err = sql.Open("sqlite", filepath.Join(db.stateDir, "metadata.sqlite")+"?_pragma=busy_timeout(1)&_pragma=locking_mode(EXCLUSIVE)")
+	if err != nil {
+		t.Fatal(err)
+	}
+	db.db.SetMaxOpenConns(1)
+	db.db.SetMaxIdleConns(1)
 	if err := db.MarkContentReady(ctx, envelope.ID); err == nil {
 		t.Fatal("SQLite busy condition marked content ready")
-	}
-	if ready, _ := db.ContentReady(ctx, envelope.ID); ready {
-		t.Fatal("SQLite busy condition left false readiness")
 	}
 	if err := lockTx.Rollback(); err != nil {
 		t.Fatal(err)
 	}
 	if err := locker.Close(); err != nil {
 		t.Fatal(err)
+	}
+	if ready, err := db.ContentReady(ctx, envelope.ID); err != nil || ready {
+		t.Fatalf("SQLite busy condition left false readiness: ready=%v err=%v", ready, err)
 	}
 	db.hook = func(name string) error {
 		if name == HookBeforeCheckpoint {

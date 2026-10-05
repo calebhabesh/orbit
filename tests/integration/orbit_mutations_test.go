@@ -21,6 +21,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/file-sync/internal/state"
 	"github.com/calebhabesh/file-sync/internal/testkit"
 	"github.com/calebhabesh/file-sync/internal/workspace"
 )
@@ -599,7 +600,7 @@ func TestOrbitMutation(t *testing.T) {
 
 	t.Run("CLIPartityStoppedAndLiveDaemon", func(t *testing.T) {
 		// Test CLI subcommands (mkdir, import, move, delete) under stopped CLI and live daemon (Invariant I19)
-		ctrl, _, db, stateDir, syncRoot, folderID, cleanup := setupMutationNode(t, "node-cli")
+		_, _, db, stateDir, syncRoot, folderID, cleanup := setupMutationNode(t, "node-cli")
 		defer cleanup()
 
 		folderHex := hex.EncodeToString(folderID[:])
@@ -613,6 +614,9 @@ func TestOrbitMutation(t *testing.T) {
 		mustWriteFile(t, localTmp, "Sample CLI import payload")
 
 		// --- Part A: Stopped CLI ---
+		if err := db.Close(); err != nil {
+			t.Fatal(err)
+		}
 		// 1. orbit mkdir
 		cmdMkdir := exec.Command(binPath, "mkdir", "--state", stateDir, "--folder", folderHex, "--path", "cli_test_dir")
 		out, err := cmdMkdir.CombinedOutput()
@@ -662,6 +666,12 @@ func TestOrbitMutation(t *testing.T) {
 
 		// --- Part B: Live Daemon CLI ---
 		// Start control server and write daemon lock
+		db, err = repository.Open(context.Background(), stateDir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer db.Close()
+		ctrl := control.New(db, workspace.New(db, workspace.Options{}))
 		srv, err := control.NewServer(ctrl, stateDir)
 		if err != nil {
 			t.Fatal(err)
@@ -669,17 +679,14 @@ func TestOrbitMutation(t *testing.T) {
 		httpSrv := httptest.NewServer(srv.Handler())
 		defer httpSrv.Close()
 
-		lockPath := filepath.Join(stateDir, ".agent.lock")
-		lockData := map[string]any{
-			"pid":         os.Getpid(),
-			"control_url": httpSrv.URL,
-			"api_token":   srv.CLIToken(),
-		}
-		lockBytes, _ := json.Marshal(lockData)
-		if err := os.WriteFile(lockPath, lockBytes, 0o600); err != nil {
+		ownership, err := state.Acquire(stateDir)
+		if err != nil {
 			t.Fatal(err)
 		}
-		defer os.Remove(lockPath)
+		defer ownership.Close()
+		if err := config.WritePrivate(stateDir, "control.addr", []byte(strings.TrimPrefix(httpSrv.URL, "http://"))); err != nil {
+			t.Fatal(err)
+		}
 
 		// 1. Live orbit mkdir
 		cmdLiveMkdir := exec.Command(binPath, "mkdir", "--state", stateDir, "--folder", folderHex, "--path", "live_dir")

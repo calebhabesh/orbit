@@ -97,7 +97,7 @@ func setupEnrollmentTestEnv(t *testing.T) (*control.Controller, *control.Server,
 // TestOrbitEnrollment_InvitationLifecycleAndExclusions tests invitation creation, verifier storage,
 // single/multi-use limits, revocation, expiration, and Invariant I23 (no content/inventory access).
 func TestOrbitEnrollment_InvitationLifecycleAndExclusions(t *testing.T) {
-	ctrl, srv, _, stateDir, _, folderID, cleanup := setupEnrollmentTestEnv(t)
+	ctrl, srv, owner, _, _, folderID, cleanup := setupEnrollmentTestEnv(t)
 	defer cleanup()
 	ctx := context.Background()
 
@@ -116,7 +116,11 @@ func TestOrbitEnrollment_InvitationLifecycleAndExclusions(t *testing.T) {
 
 	// Invariant I23: Raw token must NEVER be stored in the database.
 	// Verify database only stores the SHA-256 digest of the token.
-	rawDB, err := sql.Open("sqlite", filepath.Join(stateDir, "metadata.sqlite"))
+	backup := filepath.Join(t.TempDir(), "invitation-inspection.sqlite")
+	if err := owner.Backup(ctx, backup); err != nil {
+		t.Fatal(err)
+	}
+	rawDB, err := sql.Open("sqlite", backup)
 	if err != nil {
 		t.Fatalf("failed to open raw sqlite: %v", err)
 	}
@@ -134,7 +138,9 @@ func TestOrbitEnrollment_InvitationLifecycleAndExclusions(t *testing.T) {
 
 	// Verify raw token is NOT in any sqlite tables or text columns
 	var rawMatchCount int
-	_ = rawDB.QueryRowContext(ctx, "SELECT count(*) FROM invitations WHERE digest=?", []byte(inv1.Token)).Scan(&rawMatchCount)
+	if err := rawDB.QueryRowContext(ctx, "SELECT count(*) FROM invitations WHERE digest=?", []byte(inv1.Token)).Scan(&rawMatchCount); err != nil {
+		t.Fatal(err)
+	}
 	if rawMatchCount > 0 {
 		t.Fatal("raw token unexpectedly matched digest column")
 	}
@@ -225,7 +231,6 @@ func TestOrbitEnrollment_InvitationLifecycleAndExclusions(t *testing.T) {
 		t.Fatal("expected error submitting with revoked invitation token")
 	}
 
-	_ = stateDir
 }
 
 // TestOrbitEnrollment_RequestBoundingAndRateLimits tests 16 KiB max payload bounding

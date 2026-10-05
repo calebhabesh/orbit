@@ -65,6 +65,14 @@ func approveMembershipTx(ctx context.Context, tx *sql.Tx, membership protocol.Me
 	}
 	if len(currentDigestRaw) != 0 {
 		if membership.Revision == currentRevision && bytes.Equal(currentDigestRaw, digest[:]) {
+			// A joining/recovering replica may already have the approved revision
+			// while still needing its hash-bound retirement artifacts. Hydration
+			// stays in the same transaction and never changes approved membership.
+			for _, member := range membership.Retired {
+				if _, err := installRetirementSnapshotTx(ctx, tx, membership, member, snapshots); err != nil {
+					return ApprovedMembership{}, err
+				}
+			}
 			return ApprovedMembership{Revision: membership.Revision, Digest: digest}, nil
 		}
 		if membership.Revision == currentRevision && !bytes.Equal(currentDigestRaw, digest[:]) {
@@ -114,33 +122,9 @@ func approveMembershipTx(ctx context.Context, tx *sql.Tx, membership protocol.Me
 		if _, err := tx.ExecContext(ctx, `INSERT INTO membership_entries(folder_id,revision,device_id,key_pin,state,retired_at,retirement_snapshot) VALUES(?,?,?,?, 'retired',?,?)`, membership.Folder[:], encodeUint(membership.Revision), member.Device[:], make([]byte, 32), encodeUint(member.RetiredAt), member.SnapshotDigest[:]); err != nil {
 			return ApprovedMembership{}, err
 		}
-		var storedSnapshot bool
-		for _, snapshot := range snapshots {
-			if snapshot.Folder == membership.Folder && snapshot.RetiredDevice == member.Device {
-				snapDigest, err := protocol.RetirementSnapshotDigest(snapshot)
-				if err != nil {
-					return ApprovedMembership{}, err
-				}
-				if snapDigest != member.SnapshotDigest {
-					return ApprovedMembership{}, fmt.Errorf("retirement snapshot digest mismatch for device %x", member.Device)
-				}
-				raw, err := protocol.EncodeRetirementSnapshot(snapshot)
-				if err != nil {
-					return ApprovedMembership{}, err
-				}
-				if _, err := tx.ExecContext(ctx, `INSERT INTO retirement_snapshots(folder_id,revision,retired_device,snapshot_digest,canonical_snapshot) VALUES(?,?,?,?,?) ON CONFLICT(folder_id,revision,retired_device) DO UPDATE SET canonical_snapshot=excluded.canonical_snapshot`,
-					membership.Folder[:], encodeUint(membership.Revision), member.Device[:], snapDigest[:], raw); err != nil {
-					return ApprovedMembership{}, err
-				}
-				for _, v := range snapshot.AcceptedByRetiree {
-					if _, err := tx.ExecContext(ctx, `INSERT INTO retirement_snapshot_entries(folder_id,revision,retired_device,counter,envelope_digest) VALUES(?,?,?,?,?) ON CONFLICT(folder_id,revision,retired_device,counter) DO UPDATE SET envelope_digest=excluded.envelope_digest`,
-						membership.Folder[:], encodeUint(membership.Revision), member.Device[:], encodeUint(v.Counter), v.EnvelopeDigest[:]); err != nil {
-						return ApprovedMembership{}, err
-					}
-				}
-				storedSnapshot = true
-				break
-			}
+		storedSnapshot, err := installRetirementSnapshotTx(ctx, tx, membership, member, snapshots)
+		if err != nil {
+			return ApprovedMembership{}, err
 		}
 		if !storedSnapshot && currentRevision > 0 {
 			// Copy forward snapshot entries from prior revision if available.
@@ -158,6 +142,37 @@ func approveMembershipTx(ctx context.Context, tx *sql.Tx, membership protocol.Me
 		return ApprovedMembership{}, err
 	}
 	return ApprovedMembership{Revision: membership.Revision, Digest: digest}, nil
+}
+
+func installRetirementSnapshotTx(ctx context.Context, tx *sql.Tx, membership protocol.Membership, member protocol.RetiredMember, snapshots []protocol.RetirementSnapshot) (bool, error) {
+	for _, snapshot := range snapshots {
+		if snapshot.Folder != membership.Folder || snapshot.RetiredDevice != member.Device {
+			continue
+		}
+		digest, err := protocol.RetirementSnapshotDigest(snapshot)
+		if err != nil {
+			return false, err
+		}
+		if digest != member.SnapshotDigest {
+			return false, fmt.Errorf("retirement snapshot digest mismatch for device %x", member.Device)
+		}
+		raw, err := protocol.EncodeRetirementSnapshot(snapshot)
+		if err != nil {
+			return false, err
+		}
+		if _, err := tx.ExecContext(ctx, `INSERT INTO retirement_snapshots(folder_id,revision,retired_device,snapshot_digest,canonical_snapshot) VALUES(?,?,?,?,?) ON CONFLICT(folder_id,revision,retired_device) DO UPDATE SET canonical_snapshot=excluded.canonical_snapshot`,
+			membership.Folder[:], encodeUint(membership.Revision), member.Device[:], digest[:], raw); err != nil {
+			return false, err
+		}
+		for _, version := range snapshot.AcceptedByRetiree {
+			if _, err := tx.ExecContext(ctx, `INSERT INTO retirement_snapshot_entries(folder_id,revision,retired_device,counter,envelope_digest) VALUES(?,?,?,?,?) ON CONFLICT(folder_id,revision,retired_device,counter) DO UPDATE SET envelope_digest=excluded.envelope_digest`,
+				membership.Folder[:], encodeUint(membership.Revision), member.Device[:], encodeUint(version.Counter), version.EnvelopeDigest[:]); err != nil {
+				return false, err
+			}
+		}
+		return true, nil
+	}
+	return false, nil
 }
 
 // GetMembership reconstructs the approved membership for a folder.

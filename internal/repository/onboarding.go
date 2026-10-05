@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -100,17 +101,53 @@ func (db *DB) OnboardingReadiness(ctx context.Context, folder history.ID, r *tc.
 	if err != nil {
 		return err
 	}
+	// Only readiness dimensions are needed here. Load durable availability,
+	// quarantine and applied observations together rather than rereading every
+	// already loaded envelope through ContentAvailability/WorkingApplied.
+	type observation struct{ ready, applied bool }
+	observations := make(map[history.VersionID]observation)
+	rows, err = db.db.QueryContext(ctx, `SELECT v.author_id,v.counter,v.kind,v.content_state,p.applied_author,p.applied_counter,
+        EXISTS(SELECT 1 FROM manifest_chunks mc JOIN quarantined_chunks qc ON qc.digest=mc.digest AND qc.repaired=0
+            WHERE mc.folder_id=v.folder_id AND mc.author_id=v.author_id AND mc.counter=v.counter)
+        FROM versions v LEFT JOIN path_projections p ON p.folder_id=v.folder_id AND p.path=v.path WHERE v.folder_id=?`, folder[:])
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var author, counter, appliedAuthor, appliedCounter []byte
+		var kind, quarantined int
+		var state string
+		if err = rows.Scan(&author, &counter, &kind, &state, &appliedAuthor, &appliedCounter, &quarantined); err != nil {
+			rows.Close()
+			return err
+		}
+		var id history.VersionID
+		id.Folder = folder
+		copy(id.Author[:], author)
+		id.Counter, err = decodeUint(counter)
+		if err != nil {
+			rows.Close()
+			return err
+		}
+		observations[id] = observation{ready: history.Kind(kind) != history.KindFile || (state == "ready" && quarantined == 0),
+			applied: bytes.Equal(author, appliedAuthor) && bytes.Equal(counter, appliedCounter)}
+	}
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
+		return err
+	}
 	for _, p := range paths {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		heads := h.Heads(folder, p)
 		if len(heads) > 1 {
 			r.Conflicts++
 		}
 		for _, head := range heads {
-			available, err := db.ContentAvailability(ctx, head.ID)
-			if err != nil {
-				return err
-			}
-			if available != ContentReady {
+			observed := observations[head.ID]
+			if !observed.ready {
 				r.MissingContent++
 				continue
 			}
@@ -120,11 +157,7 @@ func (db *DB) OnboardingReadiness(ctx context.Context, folder history.ID, r *tc.
 					continue
 				}
 			}
-			applied, err := db.WorkingApplied(ctx, head.ID)
-			if err != nil {
-				return err
-			}
-			if !applied && len(heads) == 1 {
+			if !observed.applied && len(heads) == 1 {
 				r.PendingPublication++
 			}
 		}

@@ -32,7 +32,7 @@ func (rc RetryClassifier) IsTransient(err error) bool {
 	}
 	var wire *replication.WireError
 	if errors.As(err, &wire) {
-		return wire.Body.Retryable || wire.Body.Code == "MEMBERSHIP_MISMATCH"
+		return wire.Body.Retryable || wire.Body.Code == "MEMBERSHIP_MISMATCH" || wire.Body.Code == "UNAUTHORIZED"
 	}
 	if errors.Is(err, repository.ErrMembershipMismatch) {
 		return true

@@ -111,6 +111,9 @@ func TestP06TransferKillRestartBoundaries(t *testing.T) {
 			}
 
 			// Resume transfer without fault hook; must complete safely and reuse verified chunks
+			if err := db.Close(); err != nil {
+				t.Fatal(err)
+			}
 			resumeReceiver(t, receiverDir, serverURL, serverCertPath)
 		})
 	}

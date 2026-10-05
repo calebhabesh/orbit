@@ -113,15 +113,25 @@ func OpenWithOptions(ctx context.Context, stateDir string, options Options) (*DB
 		return nil, fmt.Errorf("close metadata database file: %w", err)
 	}
 
-	dsn := (&url.URL{Scheme: "file", Path: path}).String() + "?_pragma=busy_timeout(5000)&_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=synchronous(FULL)"
+	// The driver sorts _pragma values alphabetically. Setting journal_mode in
+	// the DSN would therefore access WAL before locking_mode on reopened state.
+	dsn := (&url.URL{Scheme: "file", Path: path}).String() + "?_pragma=busy_timeout(5000)&_pragma=foreign_keys(1)&_pragma=locking_mode(EXCLUSIVE)&_pragma=synchronous(FULL)"
 	sqlDB, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("open metadata database: %w", err)
 	}
+	// Set EXCLUSIVE before the first WAL access: the existing single owner and
+	// serialized connection can keep the volatile WAL index in heap memory.
+	// This avoids mmap-backed -shm allocation faults when storage is exhausted.
+	// Live readers use authenticated control; raw SQLite inspection requires stop.
 	// The serialized connection is the mutation/reference boundary and ensures
 	// every connection in use has the required DSN PRAGMAs.
 	sqlDB.SetMaxOpenConns(1)
 	sqlDB.SetMaxIdleConns(1)
+	if _, err := sqlDB.ExecContext(ctx, "PRAGMA journal_mode=WAL"); err != nil {
+		sqlDB.Close()
+		return nil, fmt.Errorf("enable metadata WAL: %w", err)
+	}
 	metadataBudget := options.MetadataBudgetBytes
 	if metadataBudget == 0 {
 		metadataBudget = 256 * 1024 * 1024
@@ -178,7 +188,7 @@ func (db *DB) callHook(name string) error {
 }
 
 func (db *DB) verifyPragmas(ctx context.Context) error {
-	for pragma, want := range map[string]string{"foreign_keys": "1", "journal_mode": "wal", "synchronous": "2"} {
+	for pragma, want := range map[string]string{"foreign_keys": "1", "locking_mode": "exclusive", "journal_mode": "wal", "synchronous": "2"} {
 		var got string
 		if err := db.db.QueryRowContext(ctx, "PRAGMA "+pragma).Scan(&got); err != nil {
 			return fmt.Errorf("read SQLite %s: %w", pragma, err)

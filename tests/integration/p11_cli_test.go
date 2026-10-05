@@ -284,6 +284,9 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 
 	// Node B runs storage check with auto-quarantine
+	if err := dbB.Close(); err != nil {
+		t.Fatal(err)
+	}
 	checkOut, err := exec.Command(binary, "storage", "check", "--state", stateB, "--folder", folder, "--quarantine", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("check on B: %v\n%s", err, checkOut)
@@ -295,12 +298,19 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 
 	// Acceptance check: Node B cannot issue receipt while corrupt
+	dbB, err = repository.Open(ctx, stateB)
+	if err != nil {
+		t.Fatal(err)
+	}
 	canReceiptBefore, _ := dbB.CanIssueDurableReceipt(ctx, vTarget)
 	if canReceiptBefore {
 		t.Fatal("expected CanIssueDurableReceipt=false for corrupt chunk on B")
 	}
 
 	// Acceptance check: Node B repairs it correctly via authorized chunk transfer from Node A
+	if err := dbB.Close(); err != nil {
+		t.Fatal(err)
+	}
 	versionArg := fmt.Sprintf("%x:%d", vTarget.Author, vTarget.Counter)
 	repairKey := "repair-p11-test-key-1"
 	repairOut, err := exec.Command(binary, "storage", "repair",
@@ -331,6 +341,11 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 
 	// Shared chunk repair restored BOTH doc1.txt and doc2.txt to ready
+	dbB, err = repository.Open(ctx, stateB)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer dbB.Close()
 	headsDoc2, _ := dbB.Heads(ctx, folderID, "doc2.txt")
 	if len(headsDoc2) == 1 {
 		availDoc2, _ := dbB.ContentAvailability(ctx, headsDoc2[0].ID)
@@ -352,6 +367,9 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 
 	// Idempotent replay
+	if err := dbB.Close(); err != nil {
+		t.Fatal(err)
+	}
 	replayOut, err := exec.Command(binary, "storage", "repair",
 		"--state", stateB,
 		"--folder", folder,

@@ -207,13 +207,19 @@ func TestOrbitPairing_FullJoinFlowLifecycle(t *testing.T) {
 	}
 
 	// Invariant I23: Token must not be stored in SQLite in plaintext
-	rawDB, err := sql.Open("sqlite", filepath.Join(stateDirA, "metadata.sqlite"))
+	backup := filepath.Join(t.TempDir(), "invitation-inspection.sqlite")
+	if err := dbA.Backup(ctx, backup); err != nil {
+		t.Fatal(err)
+	}
+	rawDB, err := sql.Open("sqlite", backup)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer rawDB.Close()
 	var rawMatchCount int
-	_ = rawDB.QueryRowContext(ctx, "SELECT count(*) FROM invitations WHERE digest=?", []byte(invRes.Token)).Scan(&rawMatchCount)
+	if err := rawDB.QueryRowContext(ctx, "SELECT count(*) FROM invitations WHERE digest=?", []byte(invRes.Token)).Scan(&rawMatchCount); err != nil {
+		t.Fatal(err)
+	}
 	if rawMatchCount > 0 {
 		t.Fatal("Invariant I23 violation: plain text token found in invitations table")
 	}
