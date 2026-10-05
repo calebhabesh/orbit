@@ -1,8 +1,8 @@
 # Keyboard onboarding and device management
 
-T10 implements these journeys through `orbit tui --state /absolute/private/state`.
+Run these journeys through `orbit` or `orbit tui --state /absolute/private/state`.
 The CLI ensures the selected daemon is available before handing the terminal to
-its client. Bare entry and packaged/native startup remain T12/T13 work. Closing
+its client. Native startup acceptance remains T13 work. Closing
 the interface leaves admitted daemon work running.
 
 First use offers **c / Enter: Create** and **j: Join**. An unfinished setup opens

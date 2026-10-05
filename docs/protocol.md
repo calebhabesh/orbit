@@ -1,5 +1,17 @@
 # Protocol and causal-state specification
 
+## Native WAN extension — 2026-10-05
+
+The owner selected automatic WAN connectivity. [WAN network protocol](orbit-wan-protocol.md)
+owns the new authenticated rendezvous/candidate/relay messages and routed
+enrollment v3; [W status](implementation/wan-status.md) records implementation
+and evidence, currently unstarted. This amends the direct-network prerequisite,
+not causal history, membership, chunk encoding or durability boundaries below.
+Existing v2 endpoint-bound transcripts remain unchanged. New logical routing needs
+explicit v3 negotiation and verified inviter trust before capability disclosure.
+Peer authentication and per-request folder authorization apply on every route;
+directory/relay/STUN presence never grants membership or a durable receipt.
+
 Status: P01/P02 froze membership and causal fixtures; P05 implemented
 authenticated v1 peer wrappers, bounded parsing, snapshot inventory, envelope
 fetch and manifest-scoped chunk serving; P06 completed resumable two-peer
@@ -268,6 +280,15 @@ silently admitted on the strength of an old revision. Previously unseen
 successor histories that depend on rejected ancestors are also blocked.
 Retired components remain in vectors; do not renumber identities or truncate
 causal ancestry.
+
+A fresh replacement must obtain the canonical snapshots referenced by its
+approved membership before importing retired-author history. Terminal onboarding
+uses the existing pinned mTLS membership endpoint to request the exact admitted
+revision by its predecessor revision/digest; later additive approvals cannot
+substitute a different revision. The response's membership digest must match
+the enrollment approval, and every retirement artifact must match its frozen
+reference. Missing or mismatched artifacts block bootstrap; neither invitation
+possession nor a fresh device identity authorizes arbitrary retired histories.
 
 The owner preview explicitly states that uncaptured/unexchanged changes on the retired device are not imported by retirement. Recover its filesystem contents by enrolling under a new identity with a preview. The D3 fixtures and model freeze these artifacts and admission outcomes for P09. The chosen conservatism is intentional: no automatic, partition-tolerant membership changes in v1.
 

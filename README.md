@@ -1,189 +1,81 @@
-# Orbit: Personal File Manager & Decentralized Synchronization
+# Orbit
 
-**Current redesign:** Orbit is moving to a background sync daemon with a small
-TUI and independent CLI. The [agreed terminal UX](docs/orbit-terminal-ux.md),
-[implementation plan](docs/orbit-terminal-implementation-plan.md), and
-[tracker](docs/implementation/terminal-status.md) define T00–T13 for implementation
-by either 6.1 Sol Medium or 3.8 Flash High under the master architect/designer's
-plan. Runtime implementation of that redesign is pending.
-The browser-era overview and commands below describe the prior implementation;
-terminal target syntax belongs to the new plan. Existing relocation work remains.
+The next owner-selected expansion is [native WAN connectivity and simpler setup](docs/orbit-wan-implementation-plan.md),
+with preconfigured Orbit services and optional self-hosting. Its [W tracker](docs/implementation/wan-status.md)
+records planned work; the networking capabilities in that plan are not implemented.
+The existing product and validation evidence below retain their stated scope.
 
-Orbit is a personal file manager and peer-to-peer synchronization engine over trusted Linux replicas. A single static Go binary watches configured workspace roots, retains historical versions in an immutable content-addressed store, and synchronizes files over authenticated mutual TLS. SQLite stores causal DAG history, working-copy state, transfer progress, and durable recovery journals.
+Orbit is a background Linux file sync daemon with a keyboard interface and
+independent CLI commands. Ordinary files stay in local folders. SQLite records
+causal history and recovery journals; verified content is retained in a private
+content store and transferred over pinned mutual TLS. Concurrent edits require
+an explicit review. Stored receipts describe dated observations, not a promise
+that an offline device currently has your latest working bytes.
 
-Independent offline edits remain distinct heads until you explicitly review and resolve them. Replicas hold readable files on disk. Pure-Go SQLite (`modernc.org/sqlite`) and an embedded React/TypeScript web management console require **zero external C compiler, libc coupling, or Node.js runtime**.
-
-For legacy installations, full compatibility with the existing `filesync` engine commands, service units, and state layouts is strictly preserved (Gate G05).
-
----
-
-## Key Guarantees and Architecture
-
-- **Causal Consistency (Invariants I01–I06)**: File versions form a directed acyclic graph (DAG) stamped with monotonic author counters. Independent concurrent edits never silently overwrite each other.
-- **Durable File Mutations & Recovery Preservation (Gate G03, Invariant I26)**: File creation, import, move, and recursive deletion record phase transitions in SQLite journals. Destination overwrites displace previous contents into `.filesync-internal/recovery/` rather than unlinking bytes. Concurrent source modifications preserve both copies.
-- **One-Use Bootstrap Security (Gate G01, Invariant I21)**: Launching Orbit issues a short-lived (60s TTL), high-entropy bootstrap token via URL fragment. Loopback Host and Origin validation prevent DNS-rebinding attacks. Browser logout terminates control sessions without interrupting background daemon sync.
-- **Explicit Membership & Fork Detection (Gate G02, Invariant I24)**: Pairing requires mutual Ed25519 key possession proof and explicit owner review. Linear membership rollout (`Revision N+1`) detects competing partitioned approvals and prevents untrusted device admission.
-- **Stopped Metadata Restore & Counter Monotonicity (Gate G04, Invariant I08)**: Restoring older metadata backups enforces an exclusive stopped daemon lock, safely re-keying the node identity to guarantee author counters never roll backward.
-- **Storage Accounting & Bounded Pruning (Invariants I10, I28)**: Reports byte usage distinctly across 5 categories (working-root, managed CAS chunks, staging, recovery, database). Retention inspection reads never trigger deletion; garbage collection remains an explicit mutation. Completed lifecycle records are safely pruned without growing SQLite indefinitely.
-
----
-
-## Build and Package
-
-Orbit builds with the Go toolchain (1.27.1), Make, and Linux. Embedded web assets are pre-built in `web/dist`.
+Run `orbit` in a terminal to create or join a folder and manage everyday sync.
+Closing it leaves the daemon running. In a pipe, `orbit` prints concise status;
+`orbit --json` returns structured status without prompts or terminal escapes.
+No browser, GUI runtime, Node or C compiler is required for ordinary operation.
+Trusted external editors/diff tools are optional; their bounded invocation uses
+util-linux `prlimit`.
 
 ```sh
-# Build native and cross-architecture binaries (bin/filesync and bin/orbit symlink)
 make build build-arm64
-
-# Inspect build metadata, schema version, and embedded asset digest
-./bin/orbit version
-./bin/orbit version --json
-
-# Run local demo with loopback peers
-make demo
-
-# Run complete test verification (unit, integration, model, fault boundaries)
+./bin/orbit
+./bin/orbit status --json
 make check
 make test-race
-
-# Build release packages (.tar.gz, .deb, .rpm) and cryptographic SHA256SUMS
+make demo
 make package
+make test-terminal-packages
 ```
 
-Release packages generated in `dist/` include:
-- `orbit-v1.0.0-linux-amd64.tar.gz` / `filesync-v1.0.0-linux-amd64.tar.gz`
-- `orbit-v1.0.0-linux-arm64.tar.gz` / `filesync-v1.0.0-linux-arm64.tar.gz`
-- `filesync_1.0.0_amd64.deb` / `filesync_1.0.0_arm64.deb`
-- `filesync-1.0.0-1.x86_64.rpm` / `filesync-1.0.0-1.aarch64.rpm`
-- `release-manifest.json` and `SHA256SUMS`
+Archives, Debian and RPM packages for amd64/arm64 are written to `dist/`, with
+`SHA256SUMS`, dependency notices, service aliases, a terminal desktop entry,
+Bash/Zsh/Fish completions and operator runbooks. Cross builds are not native
+Pi execution. [Install and upgrade](docs/runbooks/install.md) explains startup
+modes and preserved legacy state/services. `filesync` engine commands retain
+their vocabulary, identities, wire format and `.filesync-internal` scratch names.
+`orbit legacy-browser` (retained alias `orbit launch`) explicitly opens the
+frozen browser compatibility interface; keep its bootstrap URL private.
 
----
-
-## Getting Started
-
-### 1. Launching Orbit on Desktop
-
-Launch the daemon and open the web management interface in your default browser:
-
-```sh
-orbit launch
-```
-*(Or simply execute `orbit` without arguments, or launch "Orbit" from your desktop application menu).*
-
-The launcher automatically detects existing running daemons via exclusive lock, generates a secure one-use bootstrap handoff URL (`http://127.0.0.1:<port>/#bootstrap=<token>`), and opens your browser.
-
-### 2. Headless and Server Setup
-
-On headless servers, Raspberry Pis, or cloud VPS instances:
+Use the TUI's Create/Join forms to review existing contents, finite budgets and
+reachable LAN or existing Tailscale addresses. On the inviter, Add device creates
+a private invitation; the receiver submits a request, and the owner compares the
+exact verification code before approval. Sharing a second folder requires its
+own consent and reuses the device key. Keep invitations in private input/files,
+never shell arguments or shared transcripts.
 
 ```sh
-# Check operational status
 orbit status
-
-# Configure workspace root and initial setup
-orbit setup --root /srv/orbit/notes --label "Backup VPS"
-
-# Enable user session lingering (CRITICAL: keeps background sync active across logout)
-loginctl enable-linger $USER
-
-# Enable and start the background sync user service
-orbit service enable
-orbit service start
+orbit folders
+orbit devices
+orbit conflicts
+orbit history notes.txt
+orbit deleted
+orbit doctor
 ```
 
-### 3. Pairing Devices
+File commands infer the registered folder from the current directory; use
+`--folder <name|id>` when needed and `--state <absolute-path>` for multiple
+installations. Conflicts and restores require exact current reviews; unavailable
+historical bytes cannot be restored. The interface exposes session recovery and
+separate-copy restore without silently choosing a conflict winner.
 
-```sh
-# On primary workstation (Host): create pairing invitation
-orbit invite create --ttl 86400 --uses 1 --endpoint https://192.168.1.50:8443
+- [Terminal operator guide](docs/runbooks/terminal-operator.md)
+- [Keyboard onboarding and sharing](docs/runbooks/terminal-onboarding.md)
+- [Conflicts, editor recovery and restore](docs/runbooks/terminal-recovery.md)
+- [LAN/Tailscale prerequisites](docs/runbooks/private-network.md)
+- [Backup and identity recovery](docs/runbooks/database-recovery.md)
+- [Binary rollback](docs/runbooks/rollback.md)
+- [Uninstall preserving files/state](docs/runbooks/uninstall.md)
 
-# On joining machine (Remote): submit join request
-orbit join --invitation "orbit-invitation:v1?token=...&folder=...&endpoint=https%3A%2F%2F192.168.1.50%3A8443" \
-  --root ~/Notes --label "Travel Laptop"
-
-# On primary workstation: review and approve
-orbit requests list --status pending
-orbit requests approve --request req-xxxx --alias "Travel Laptop"
-```
-
----
-
-## Daily Operations & CLI Parity
-
-All GUI file management, conflict triage, and storage actions have full command-line parity:
-
-```sh
-# Browse workspace contents and search paths
-orbit browse --folder <id> --path /docs --limit 50
-orbit search --folder <id> --query "quarterly"
-
-# Durable file mutations (journaled and crash-consistent)
-orbit mkdir --folder <id> --path /docs/archive
-orbit import --folder <id> --src report.pdf --dest /docs/archive/report.pdf
-orbit move --folder <id> --src /docs/old.md --dest /docs/new.md
-orbit delete --folder <id> --path /docs/temp --recursive
-
-# Conflicts and Historical Restore
-orbit conflicts --folder <id> --json
-orbit restore --folder <id> --path note.txt --source <version-id> --preview
-
-# Storage, GC, and Bounded Pruning
-orbit storage --folder <id>
-orbit storage gc --folder <id>
-orbit maintenance prune --max-age 24h
-```
-
-*(Legacy syntax `filesync <command>` continues to operate identically).*
-
----
-
-## Reproduce Release Experiments
-
-Automated validation suites require Python 3 and Go:
-
-```sh
-# Run validation test suites
-python3 -m unittest discover -s scripts/validation -p 'test_*.py'
-
-# Multi-host pilot harness
-python3 scripts/validation/three_host.py --laptop laptop --pi rpi --vps vps
-
-# Systemd user service lifecycle validation
-python3 scripts/validation/service_lifecycle.py --hosts laptop rpi vps \
-  --output /tmp/orbit-service-lifecycle
-
-# Benchmark suite (10,000 files & 1 GiB payload)
-go run scripts/benchmark_suite.go --small-files 10000 --large-mib 1024 --repetitions 1
-```
-
----
-
-## Operator Runbooks
-
-Detailed runbooks for system administration, disaster recovery, and networking:
-
-- [Linux Installation and Lifecycle Setup](docs/runbooks/install.md)
-- [Safe Uninstallation & Data Preservation](docs/runbooks/uninstall.md)
-- [Headless Device Pairing & Administration](docs/runbooks/headless-pairing.md)
-- [Private Network Configuration & Reachability](docs/runbooks/private-network.md)
-- [Database Recovery & Identity Reset](docs/runbooks/database-recovery.md)
-- [Lost Device Replacement & Decommissioning](docs/runbooks/lost-device-replacement.md)
-- [Binary Rollback & Downgrade Safety](docs/runbooks/rollback.md)
-- [Storage Accounting & Full Disk Remediation](docs/runbooks/full-disk.md)
-
-Change an existing workspace's local folder under **Settings → Change location**,
-or use `orbit folders relocate --folder ID --from CURRENT_PATH --to NEW_PATH`.
-Choose an unused folder name with an existing parent. Same-drive changes move
-the directory; cross-drive changes verify a copy and keep the original as a
-safety copy for manual review. Workspace identity and history stay intact.
-
-Reviewed terminal onboarding now uses the selected live daemon. In a terminal,
-`orbit setup --root /local/notes` reviews existing contents, names, finite storage,
-network and startup settings. `orbit join --invitation-file /private/invitation.json`
-uses the same review and resumes owner approval in the background. For scripts,
-first use `--preview --review-file /private/request.json`, then apply that exact
-file with `--request-file`; reuse it after interruption. See the
-[setup commands](docs/operations.md#t04-terminal-createadoptjoin) and
-[terminal packet status](docs/implementation/terminal-status.md). Existing P/O
-release evidence and outstanding P17 owner use remain separately tracked.
+The [terminal release report](docs/evidence/terminal-t13-20261004/summary.md)
+records native journeys, resource measurements, failures and remaining checks.
+The [case study](docs/case-study.md) explains the design and measured tradeoffs;
+[portfolio bullets](docs/portfolio-bullets.md) link concrete supporting evidence.
+Historical P/O evidence remains dated. Personal use and comprehensive owner
+review are deferred until after delivery. The [scope](docs/portfolio-scope.md),
+[protocol](docs/protocol.md), [persistence](docs/persistence.md),
+[operations](docs/operations.md) and [verification](docs/verification.md)
+own the guarantees and failure model.

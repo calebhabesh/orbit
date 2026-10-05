@@ -1,5 +1,10 @@
 # Orbit terminal architecture
 
+Native WAN amendment, 2026-10-05: [WAN architecture](orbit-wan-architecture.md)
+adds the connection manager and default services under existing replication and
+control operations. Use that contract for new route/enrollment integration; this
+document retains terminal baseline ownership and historical transport evidence.
+
 Status: T01 contract/design baseline frozen, 2026-10-03. T02–T05 now serve
 scoped lifecycle/settings, authenticated enrollment, reviewed onboarding,
 scoped sharing and sequential additive rollout.

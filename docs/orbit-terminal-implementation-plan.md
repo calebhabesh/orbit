@@ -1,5 +1,21 @@
 # Orbit terminal redesign implementation plan
 
+Network/setup direction was amended on 2026-10-05 by the owner-selected
+[native WAN plan](orbit-wan-implementation-plan.md). Use its W packets for automatic
+connections and simpler onboarding. This T plan remains the implementation baseline
+and retains its unfinished technical release checks and historical evidence.
+
+## Owner-directed delivery amendment — 2026-10-04
+
+The owner deferred personal-use observations and the unaided learning/explanation
+review until after project delivery. They are follow-up activities, not engineering
+completion gates. Finish automated validation, product polish, measured resource
+behavior and evidence-backed portfolio artifacts now. Retain historical P17 pilot
+records and data; do not claim automated campaigns establish personal adoption or
+owner understanding. Required technical checks and declared engine guarantees
+remain in force; report unavailable network/host conditions explicitly.
+
+
 Planning baseline: 2026-10-03. The owner approved the terminal direction and
 requested this implementation handoff for workers using either **6.1 Sol Medium**
 or **3.8 Flash High**. Either worker can implement any eligible packet; model
@@ -62,7 +78,7 @@ compatibility; retain outstanding P17 owner use and unaided explanation.
 | T10 | TUI create/join, device and folder setup | T04, T05, T07, T09 | Assigned worker | [CLI/TUI](implementation/terminal-cli-tui.md#t10--tui-onboarding-and-device-management) |
 | T11 | TUI everyday status, attention, conflict and recovery | T07, T08, T09 | Assigned worker | [CLI/TUI](implementation/terminal-cli-tui.md#t11--tui-everyday-management) |
 | T12 | Entry, packages, compatibility and operator docs | T10, T11 | Assigned worker | [release](implementation/terminal-release.md#t12--packaging-and-compatible-entry) |
-| T13 | Integrated release campaign and owner evidence | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | Assigned worker + owner evidence | [release](implementation/terminal-release.md#t13--release-campaign-and-owner-use) |
+| T13 | Integrated release campaign and owner evidence | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | Assigned worker + owner evidence | [release](implementation/terminal-release.md#t13--release-campaign-and-portfolio-delivery) |
 
 ```mermaid
 flowchart LR
@@ -94,7 +110,7 @@ pins, library/tool integration and actual PTY evidence before T10/T11 screens.
 | M1 CLI personal sync | T02–T04: create and pair two ordinary installs, approve identity, capture and transfer verified files; resume an interrupted join |
 | M2 Practical CLI | T05–T08: another folder shares to the same device; status/attention and reviewed conflict/restore work against a live daemon |
 | M3 Terminal daily use | T09–T11: keyboard-only onboarding and management; interface exits without stopping sync |
-| M4 Release | T12–T13: packaged native workflows, legacy adoption, failure evidence, actual owner use and explanation |
+| M4 Release | T12–T13: packaged native workflows, legacy adoption, failure evidence and portfolio delivery; owner review follows delivery |
 
 M1 is tested before investing in full TUI screens. A returned request ID or
 rendered success screen does not establish enrollment or data transfer.
@@ -136,7 +152,7 @@ evidence; it does not require a new per-packet approval ritual.
 > perform this task. Implement and integrate the packet under the documented
 > architecture. Report material design contradictions with evidence and a proposed
 > correction; keep routine engineering choices within the authorized scope.
-> Keep P17 owner evidence outstanding until it is actually recorded. End with
+> Preserve P17 pilot evidence; owner review follows delivery. End with
 > the precise next eligible work and remaining limitations.
 
 ### Worker assignment template
@@ -221,8 +237,7 @@ The owner can install, create/adopt a folder, add a device, share another folder
 edit offline and reconnect, understand copy state, review conflicts and restore
 available history through the terminal, without certificate/membership-file or
 cryptographic-ID juggling. Real packages, restart/logout modes, and native hosts
-demonstrate the supported path. Actual owner use and explanation complete the
-remaining manual evidence; describe any unexecuted hardware/failure conditions.
+demonstrate the supported path. Owner use and explanation are deferred follow-up evidence; describe any unexecuted hardware/failure conditions.
 
-Maintain a resumable status even when owner evidence is pending. Technical gates
+Maintain a resumable status for remaining technical checks. Technical gates
 are resolved through experiments and owning-spec updates, not approval rituals.

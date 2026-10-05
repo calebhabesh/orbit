@@ -54,3 +54,14 @@ _Avoid_: Timestamp winner, content hash as identity
 **Retirement**: Explicit removal of a device from a shared folder's active membership. Rejoining requires enrollment under a new identity.
 
 **Structural conflict**: Incompatible requirements on the filesystem namespace, such as a file at a path that must also contain a child.
+
+**Connection mode**: The owner's selected policy for how Orbit locates and connects trusted devices, independently of their folder membership.
+
+**Service profile**: An identified Orbit operator's connection services and trust information, selected for automatic networking or self-hosted use.
+
+**Connection candidate**: A possible route to a device whose identity and folder authority must still be verified.
+
+**Rendezvous**: An Orbit connection service that helps devices locate and coordinate routes without storing their synchronized folder contents.
+
+**Relay**: An intermediary that forwards encrypted device traffic without being a folder replica or granting file access.
+_Avoid_: Replica, backup server

@@ -1,6 +1,6 @@
-# File Sync: causal history and release evidence
+# Orbit: conflict-aware Linux file synchronization
 
-File Sync lets one owner edit selected folders on trusted Linux devices,
+Orbit lets one owner edit selected folders on trusted Linux devices,
 including a Raspberry Pi and an always-on VPS. It records immutable versions
 and keeps independently captured edits until the owner reviews a resolution.
 The VPS stores and forwards versions; it cannot choose a conflict winner.
@@ -12,7 +12,8 @@ Replicas hold plaintext, and pinned mutual TLS authenticates transfers.
 flowchart LR
   Editors[Editors and working folders] --> Workspace[Workspace: scan and publication]
   CLI[CLI] --> Control[Shared control operations]
-  UI[Embedded React UI] --> Control
+  UI[Keyboard TUI] --> Control
+  Legacy[Retained browser compatibility] --> Control
   Control --> Workspace
   Control --> Repository[Repository: SQLite and immutable objects]
   Workspace --> Repository
@@ -40,13 +41,13 @@ A stale token is rejected; choosing again requires reviewing the new heads.
 Restore uses historical bytes with the current reviewed heads as parents,
 creating a new version rather than rolling back history or counters.
 
-The [packaged actual-host results](evidence/release-20261001/laptop-release-packaged-final/three-host.json)
+The [packaged actual-host results](evidence/terminal-t13-20261004/native-engine-final-candidate/three-host.json)
 record three-head agreement, late-arrival conflict preservation, stale-request
 rejection, forwarding with the author listener stopped, and historical restore.
 These are scripted checks on the actual laptop, Pi and Oracle VPS using
 binaries extracted from verified packages. The receiving process was actually
 stopped mid-file; restart reused durable chunks and verified the whole hash.
-Owner personal use remains a separate release gate.
+Owner personal use is deferred until after delivery by the 2026-10-04 scope amendment.
 
 ## Recovery evidence
 
@@ -54,7 +55,7 @@ Process-fault tests stop real helper processes before/after named durable
 boundaries and reopen the repository. They establish the tested process
 recovery outcomes, while kernel caches remain alive.
 
-The [clean-snapshot VM campaign](evidence/release-20261001/release-candidate/reset/abrupt-reset.json) instead
+The [clean-snapshot VM campaign](evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reset/abrupt-reset.json) instead
 stops a dedicated QEMU/KVM instance at production hooks and boots a fresh guest
 on its disposable ext4 disk. An unflushed overwrite is lost in the negative
 control; protected content remains hash-valid and publication recovery
@@ -66,12 +67,34 @@ are outside this experiment.
 The same checkout passed four actual disk-exhaustion cases (incoming writes,
 SQLite growth, checkpoint allocation and publication staging) plus a separately
 labeled fsync/fdatasync error injected into a VM child with seccomp. See the
-[storage-failure results](evidence/release-20261001/release-candidate/disk-full/abrupt-reset.json).
+[storage-failure results](evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/disk-full/abrupt-reset.json).
 
 The earlier file-readback/orderly-reopen test has been renamed
 `TestP16StorageBarrierSmoke`. It supports ordinary IO assertions, not resets.
 
 ## Storage tradeoffs
+
+The terminal release campaign found a database failure under actual storage
+exhaustion: SQLite's mapped WAL index crashed with SIGBUS before Orbit could
+return a storage error. The repository already had one owner and one serialized
+connection. Configuring SQLite's private WAL index mode, before any WAL access
+including reopen, let the same VM regression return an error and retain protected
+content. The driver reordered startup PRAGMAs, so simply adding a locking-mode
+setting was insufficient. The [release record](evidence/terminal-t13-20261004/summary.md)
+retains that failed experiment and the passing storage/reopen checks.
+
+A 1,024-file terminal fixture also exposed repeated history query preparation and
+duplicate readiness calculations. Scoped prepared statements and batched
+availability observations reduced a diagnostic readiness sample from 4.121 s to
+0.437 s under race instrumentation. This was one sample before/after on a specific
+fixture. Resource runs separately sample real CLI processes and verify whole-file
+hashes after streamed 8/32-MiB editor merges.
+
+Native keyboard use caught a status bug that local tests had missed: publication
+could finish while its durable operation screen stayed pending. Queries now
+observe actual working projections; explicit retry keeps the same operation and
+version IDs. A second regression keeps an automatically paused missing root's
+cause visible. Neither UI fix changes conflict winners or protocol history.
 
 Accepted causal metadata remains available even when policy makes superseded
 payloads eligible for expiry. Current heads, unresolved conflicts, pending
@@ -169,9 +192,9 @@ explain why exchange preserves the displaced inode but cannot bound a writer
 that retains its old descriptor. File Sync implements its own sync engine and
 does not claim Syncthing compatibility or inherit another project's correctness.
 
-The owner selected the approved scope and architecture and must still perform
-and explain the real personal-use pilot. AI-assisted implementation/testing is
-not evidence of owner understanding or adoption. Evidence-backed portfolio
-claims can describe the causal model, verified chunk resume, scoped process/VM
-recovery and measured workloads; they cannot yet say all release requirements
-are complete.
+The owner selected the scope and architecture. Implementation and validation
+were AI-assisted; automated campaigns establish their recorded technical
+outcomes. Personal use and the owner's comprehensive review follow delivery.
+The [terminal release record](evidence/terminal-t13-20261004/summary.md) tracks
+current native, performance and recovery evidence, including unavailable
+network/service scenarios.

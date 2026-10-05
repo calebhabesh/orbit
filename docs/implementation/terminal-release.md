@@ -1,5 +1,16 @@
 # Terminal packets T12–T13: delivery and release evidence
 
+## Owner-directed delivery amendment — 2026-10-04
+
+The owner deferred personal-use observations and the unaided learning/explanation
+review until after project delivery. They are follow-up activities, not engineering
+completion gates. Finish automated validation, product polish, measured resource
+behavior and evidence-backed portfolio artifacts now. Retain historical P17 pilot
+records and data; do not claim automated campaigns establish personal adoption or
+owner understanding. Required technical checks and declared engine guarantees
+remain in force; report unavailable network/host conditions explicitly.
+
+
 Use the [plan](../orbit-terminal-implementation-plan.md),
 [architecture](../orbit-terminal-architecture.md),
 [UX](../orbit-terminal-ux.md), and [tracker](terminal-status.md).
@@ -50,10 +61,10 @@ Native laptop/Pi/VPS systemd/logout/boot tests belong to T13 if not run here;
 keep them explicitly unexecuted. Explain binary rollback versus old metadata
 restore and how the latter changes identity rather than resetting counters.
 
-## T13 — Release campaign and owner use
+## T13 — Release campaign and portfolio delivery
 
 Dependencies: all T00–T12 complete. Owner: assigned worker for campaign/evidence/integration;
-the owner performs actual personal use and unaided explanation. Read:
+personal use and unaided explanation follow delivery under the amendment above. Read:
 verification's full invariant/scenario matrix, persistence fault model,
 terminal acceptance and existing safety-validated release harnesses.
 Change: production-interface terminal/native campaign, sanitized evidence,
@@ -87,11 +98,11 @@ Required outcomes:
   and large-file fixtures, plus continued large-file progress under small edits.
   Report measured costs and sample counts; no speedup target or unlimited-scale
   claim substitutes for results.
-- Record actual owner use on an intentionally selected personal sync root:
+- Deferred follow-up: record actual owner use on an intentionally selected personal sync root:
   ordinary edits, offline/reconnect, restart, conflict/restore and observed
   usability with actual times/results. Preserve existing P17 pilot data and
   distinguish new terminal use from historical scripted or browser sessions.
-- Record the owner's unaided explanation of causal conflicts, durable capture,
+- Deferred follow-up: record the owner's unaided explanation of causal conflicts, durable capture,
   membership/retirement, conditional restore, recovery and evidence limits.
   Finalize the resumable release report and case study with supported claims.
 
@@ -101,9 +112,9 @@ and targeted campaign commands. Reuse safety validation before each destructive
 worker. Existing three-host scripts can check engine invariants, but adapt or
 add ordinary terminal onboarding rather than claiming their manual setup proves it.
 
-Completion requires all automatic criteria and actual owner evidence. If owner
-use/explanation or a required native scenario is unavailable, keep T13 in
-progress with the remaining named step and recorded limitation. Finish every
+Completion requires all automatic criteria. Owner use/explanation is deferred
+under the dated amendment above. If a required native scenario is unavailable,
+keep T13 in progress with the remaining named step and recorded limitation. Finish every
 independent authorized check; do not call the entire redesign complete because
 the automatic suite passes. P17 closes only when its remaining criteria have
 their own genuine evidence, linked from both trackers.

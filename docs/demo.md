@@ -30,5 +30,7 @@ campaign is separate from [real personal use](evidence/release-20261001/personal
 Evidence-backed portfolio descriptions can describe the Go/SQLite sync engine,
 independent causal model, verified resume, and scoped process/VM recovery.
 Measured byte savings must name their workload, sample count and TLS/TCP
-measurement boundary. Do not claim full release completion while personal use
-and owner explanation remain pending.
+measurement boundary. Full release claims must follow the recorded technical
+evidence. Personal use and comprehensive owner review are deferred until after
+delivery under the 2026-10-04 scope amendment. Current terminal/native validation is tracked in
+[the T13 report](evidence/terminal-t13-20261004/summary.md).

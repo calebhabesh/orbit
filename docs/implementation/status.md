@@ -1,13 +1,33 @@
 # Implementation status
 
-Active interface work is the owner-approved terminal redesign. Follow the
-[terminal plan](../orbit-terminal-implementation-plan.md) and
-[terminal tracker](terminal-status.md), starting at T00. P/O evidence below
-remains historical; remaining P17 actual owner use/explanation is preserved.
+Active expansion: the owner-selected [native WAN plan](../orbit-wan-implementation-plan.md)
+and [W tracker](wan-status.md), 2026-10-05. W00 is first eligible; all W implementation
+and runtime acceptance are unstarted. Existing entries below retain their dated
+P/O/T evidence and limitations, including deferred P17 owner observations.
 
-Updated: 2026-10-01. P00–P16 have implementation and scoped validation evidence.
-Packaged laptop/Pi/VPS demonstrations now pass. P17 remains `in_progress` while
-actual owner use/explanation are recorded. Current measurements passed 45/45.
+## Owner-directed delivery amendment — 2026-10-04
+
+The owner deferred personal-use observations and the unaided learning/explanation
+review until after project delivery. They are follow-up activities, not engineering
+completion gates. Finish automated validation, product polish, measured resource
+behavior and evidence-backed portfolio artifacts now. Retain historical P17 pilot
+records and data; do not claim automated campaigns establish personal adoption or
+owner understanding. Required technical checks and declared engine guarantees
+remain in force; report unavailable network/host conditions explicitly.
+
+
+The interface baseline is the owner-approved terminal redesign. Retain the
+[terminal plan](../orbit-terminal-implementation-plan.md) and
+[terminal tracker](terminal-status.md), including incomplete T13 technical checks.
+The W plan above owns the active expansion. P/O evidence below remains historical;
+P17 personal use/explanation is deferred until after delivery.
+
+Updated: 2026-10-04. P00–P16 have implementation and scoped validation evidence.
+Packaged laptop/Pi/VPS demonstrations pass; current measurements passed 45/45.
+P17's technical release record is reconciled with T13 and complete under the
+owner's delivery amendment. Terminal-specific native release conditions remain
+in T13. Personal use and
+explanation are deferred follow-up evidence, under the owner-directed amendment.
 Earlier blanket completion and estimated benchmark claims are withdrawn.
 Earlier packet entries retain the limitations of their original dated checks;
 the release report records subsequent validation.
@@ -36,7 +56,7 @@ All 10 minimum product scenarios, UI flows, and resource bounds are verified.
 | P14 Web interface | complete | P13 | [evidence](../evidence/p14-20260923/summary.md) |
 | P15 Packaging/lifecycle | complete | P14 | [evidence](../evidence/p15-20260923/summary.md) |
 | P16 Fault campaign | complete | P15 | [clean reproduction](../evidence/release-20261001/release-candidate/reproduction.json); [invariant/scenario map](../evidence/release-20261001/invariant-map.md) |
-| P17 Pilot/release evidence | in_progress | P16 | [current evidence](../evidence/release-20261001/summary.md); [corrected historical report](../evidence/p17-20260924/summary.md) |
+| P17 Pilot/release evidence | complete | P16 | [2026-10-04 reconciliation](#p17-delivery-reconciliation--2026-10-04); [historical release](../evidence/release-20261001/summary.md); owner review deferred |
 
 Packet definitions: [foundations](01-foundations.md), [replication](02-replication.md), [operations](03-operations.md), [delivery](04-delivery.md).
 
@@ -53,16 +73,48 @@ listed production implementation and fault-evidence obligations.
 Orbit personal file manager revamp is complete across packets O00 through O13.
 See [Orbit status](orbit-status.md) and [O13 evidence](../evidence/orbit-o13/summary.md).
 
-## Remaining P17 owner-use evidence
+## Deferred P17 owner-use evidence
 
-Collect actual owner use of
+Deferred until after delivery under the owner-directed 2026-10-04 amendment.
+Preserve the prepared pilot and historical records. Future personal use of
 `/home/caleb2002/FileSyncPilot-20261001/data`: normal edits, offline/reconnect
 and ordinary restart, with actual start/end times and observed results.
 The native campaign now uses `ssh laptop`; hardware access is resolved.
-Owner explanation without agent assistance is still required. The
+The owner's comprehensive explanation/review follows delivery. The
 [pilot handoff](../evidence/release-20261001/personal-pilot/handoff.md) records
 the persistent services and workstation gateway dependency. Continue from the
 [current release report](../evidence/release-20261001/summary.md).
+
+## P17 delivery reconciliation — 2026-10-04
+
+State: **complete under the owner's delivery amendment**. This closes engineering
+delivery, not personal adoption or owner understanding. The original dated P17
+entry below remains historical, including its then-in-progress state and withdrawn
+estimated measurements. Personal use and comprehensive review are deferred.
+
+All three actual hosts participate in the
+[current packaged engine campaign](../evidence/terminal-t13-20261004/native-engine-final-candidate/three-host.json):
+normal sync, independent offline edits, late-arrival reviewed resolution, stale
+refusal, original-author forwarding with no A/B overlap, durable interrupted
+transfer reuse, historical restore and restart integrity passed. This uses
+manual membership fixtures and SSH relays; ordinary two-installation LAN
+onboarding has [separate evidence](../evidence/terminal-t13-20261004/lan-final-candidate/terminal-native.json).
+Neither is personal-use evidence. Existing pilot folders/services were preserved.
+
+The [historical 45-run benchmark matrix](../evidence/release-20261001/measured-results.md)
+retains raw fair-baseline positive and negative results. Current terminal resource
+measurements add 32 CLI observations over repeated 1,024-file and 8/32-MiB merge
+fixtures. The [clean reproduction](../evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reproduction.json)
+passed check, uncached full race, demo, 16 VM reset cases, five storage cases,
+checksums and byte-identical repeated packages. Source provenance is an isolated
+snapshot of the development tree, not a clean original branch. Current README,
+demo, architecture/case study and resume drafts link their supporting evidence.
+
+T13 remains in progress for its additional existing-Tailscale, ordinary native
+three-host onboarding and native login/logout/boot acceptance conditions. They do
+not reopen P17's separately evidenced engine, measurement and portfolio work.
+The [T13 report](../evidence/terminal-t13-20261004/summary.md) names those remaining
+technical conditions and the resumable next steps.
 
 ## P00 — Reproducible project skeleton
 

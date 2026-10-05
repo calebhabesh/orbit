@@ -1,13 +1,43 @@
 # Security, resource limits and operator interface
 
+## Native WAN operations amendment — 2026-10-05
+
+Status: approved direction; implementation unstarted in [W status](implementation/wan-status.md).
+[WAN UX](orbit-wan-ux.md), [architecture](orbit-wan-architecture.md) and
+[network protocol](orbit-wan-protocol.md) own automatic routes, profiles,
+infrastructure admission and finite engineering limits. Earlier sections below
+retain their direct/manual-network baseline and dated evidence.
+
+Fresh setup reviews Automatic mode and service metadata visibility before global
+announcements. Existing installations retain reviewed manual settings until opt-in.
+The default profile must identify an actual operated rendezvous/relay/STUN deployment;
+W13/WG6 supplies origins, certificate/profile authority, finite admission/egress
+budgets, monitoring, privacy/retention and lifecycle procedures. The relay is an
+opaque intermediary, separate from the optional trusted full replica.
+
+Public HTTPS/WSS origins use normal TLS/DNS verification from an approved profile;
+device sessions keep existing pins/mTLS and request authorization. Profile selection
+does not change local control endpoint rules. Peer/enrollment route handlers remain
+separate and never expose loopback owner control. Router/firewall/VPN policy and
+privileged host settings remain operator-managed. Opening unprivileged optional
+direct listeners follows the reviewed mode; failures may use relay without claiming
+direct reachability. Network doctor uses explicit bounded probes and typed reasons.
+
+Local-only disables internet announcements/STUN/relay; manual/private mode preserves
+Tailscale/WireGuard paths; self-hosted mode reviews a private profile/trust using the
+same guarantees. Changing mode/profile neither retires peers nor rekeys/deletes
+data. Redact network session/invitation secrets and sensitive endpoint/file details
+in diagnostics. Support claims name tested topologies: raw port 443/WSS availability
+does not guarantee passage through every school/corporate proxy or firewall.
+
 Status: implemented baseline. The limits below are configuration/admission bounds; release evidence describes the workloads actually exercised.
 
 ## Active terminal interface contract
 
 The owner selected the [terminal UX](orbit-terminal-ux.md) and
 [T00–T13 plan](orbit-terminal-implementation-plan.md) on 2026-10-03.
-Terminal implementation is pending; earlier browser/P/O implementation notes
-below retain their dated scope. The following is the current target:
+T00–T12 provide terminal controls and entry/packages; the terminal tracker records
+actual evidence. Earlier browser/P/O notes retain their dated scope. The contract is:
 
 - Bare `orbit` opens a small TUI in a TTY, with concise status for non-TTY use.
   Independent named CLI commands invoke the same authenticated local controls.
@@ -29,7 +59,7 @@ below retain their dated scope. The following is the current target:
   Keep legacy commands/state/services compatible through documented entry changes.
 
 T01 freezes exact CLI/JSON/script contracts. T02–T12 provide production evidence;
-this section does not assert those behaviors currently pass.
+native release and owner-use evidence remain T13.
 
 ## Orbit extension: local launch, bootstrap security & product settings
 
@@ -55,16 +85,19 @@ Status: frozen by gate outcomes [G01 and G05](orbit-design-gates.md). Implemente
 
 ## Trust and authentication
 
-The development `orbit tui` entry uses the same owner-authenticated shared query
-adapter as the CLI and requires both input/output TTYs. Pipes and `--json` use
-ordinary status. The shell does not initialize/start/stop a daemon or cancel a
-committed operation. q/Ctrl-C cancels client queries and restores the terminal;
-SIGTERM also cancels its active direct-argv tool. Recovery workflows keep their
-controller-owned session/review rules. The optional development scratch-tool
-handoff uses `prlimit` and never commits a merge automatically. Keyboard/help,
-page-local search, limits and the marked-root actual-binary PTY command are in
-[the shell runbook](runbooks/terminal-shell.md). Native startup/package acceptance
-and reviewed-editor screens remain the later terminal packets.
+Bare `orbit` and `orbit tui` require both input/output TTYs for the keyboard
+interface, discover legacy/default state without bypassing ambiguity, and reuse
+or start the selected daemon. Pipes and --json use ordinary status without
+starting a daemon. q/Ctrl-C/SIGTERM cancel client queries/tools and restore the
+terminal; committed work keeps its independent lifetime. Reviewed content sessions
+remain controller-owned. Trusted external tools use direct argv and prlimit.
+The terminal desktop entry has Terminal=true. `orbit legacy-browser` (alias
+`orbit launch`) freezes explicit browser compatibility; embedded assets remain.
+Ordinary builds/packages add no browser or GUI dependency. Packages distribute
+completions, runbooks, licenses and the filesync/orbit service alias. Standalone
+upgrade preserves customized service units. See [operator guide](runbooks/terminal-operator.md)
+and [install/adoption](runbooks/install.md). Native logout/boot/LAN/Tailscale
+and actual owner use remain release evidence obligations.
 
 One owner; all enrolled replicas may read authorized folder contents in plaintext. Use established TLS with explicitly pinned identities and mutual authentication. Pairing exchanges identity fingerprints out of band and requires explicit local approval. Initial v1 needs no unauthenticated public pairing endpoint. Protect private keys/configuration with owner-only permissions and redact them from logs/support bundles.
 
@@ -386,6 +419,13 @@ Revocation also accepts a v2 verifier on authenticated
 transport when the reachable runtime settings exist; unconfigured legacy
 invitations are local administrative capabilities and cannot bootstrap the
 pinned remote join helper.
+
+An enrollment-v2 request from a retired identity may remain pending: request
+possession grants no data access. Approval rejects that identity with
+`RETIRED_MEMBER_REVIVAL` and a fresh-identity recovery action before attempting
+membership construction. Rejected retries leave membership and request state
+unchanged; the owner can still decline the pending request. Replacement joins
+under a fresh identity through the ordinary reviewed onboarding workflow.
 
 The compatibility CLI accepts `orbit join --invitation-file <private-file>` with
 invitation JSON or an `orbit-invitation:v2:` code. The file and directory must be

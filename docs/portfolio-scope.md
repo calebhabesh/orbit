@@ -1,7 +1,37 @@
 # Approved portfolio scope
 
+## Owner-directed native WAN amendment — 2026-10-05
+
+The owner selected a comprehensive native-networking build and simple Syncthing-like
+TUI/CLI setup, then confirmed preconfigured Orbit connection services with optional
+self-hosting. [WAN UX](orbit-wan-ux.md), [architecture](orbit-wan-architecture.md),
+[network protocol](orbit-wan-protocol.md), [plan](orbit-wan-implementation-plan.md)
+and [W status](implementation/wan-status.md) own this expansion. This supersedes
+the earlier exclusion of Orbit discovery/traversal/relay infrastructure and the
+mandatory existing-network prerequisite for ordinary cross-network setup.
+
+Approved direction is not an implementation or availability claim. The first
+release targets authenticated discovery/rendezvous, encrypted relay fallback,
+direct TCP/IPv6 and QUIC with ICE/STUN, without requiring Tailscale or manual
+addresses in normal onboarding. Supporting services remain necessary on networks
+where direct routes fail; their operator, profile, budgets and readiness are
+required delivery evidence. Preserve single-owner trusted replicas, Linux support,
+all causal/durability guarantees and explicit folder approval. P/O/T evidence and
+unfinished technical acceptance remain; personal use/explanation stay deferred.
+
+## Owner-directed delivery amendment — 2026-10-04
+
+The owner deferred personal-use observations and the unaided learning/explanation
+review until after project delivery. They are follow-up activities, not engineering
+completion gates. Finish automated validation, product polish, measured resource
+behavior and evidence-backed portfolio artifacts now. Retain historical P17 pilot
+records and data; do not claim automated campaigns establish personal adoption or
+owner understanding. Required technical checks and declared engine guarantees
+remain in force; report unavailable network/host conditions explicitly.
+
+
 Approved through the planning interview on 2026-09-20, with Orbit amendments
-on 2026-10-01 and the terminal redesign on 2026-10-03. Supersedes the
+on 2026-10-01, the terminal redesign on 2026-10-03 and native WAN on 2026-10-05. Supersedes the
 2026-09-12 two-peer-only release scope. These are requirements, not implementation
 claims. The repository owns File Sync's detailed scope; the parent portfolio
 blueprint summarizes it.
@@ -11,10 +41,12 @@ blueprint summarizes it.
 The owner selected **Orbit** and then approved terminal UX recommendations
 Q1–Q14 on 2026-10-03. The current direction is a background sync daemon with
 a small TUI and independent CLI; ordinary file management uses existing tools.
-The table reflects that approved amendment. Engine guarantees S01–S22 and
-exclusions remain, with S18's presentation updated to terminal-first use.
-The [terminal UX](orbit-terminal-ux.md) owns current journeys;
-the [terminal plan](orbit-terminal-implementation-plan.md) sequences T00–T13.
+The table reflects the terminal and native WAN amendments. Engine guarantees
+S01–S22 remain with S18's terminal presentation; S23–S28 and the revised exclusions
+define the new networking target. [WAN UX](orbit-wan-ux.md) owns amended setup/
+network journeys; [terminal UX](orbit-terminal-ux.md) owns the remaining baseline.
+The [WAN plan](orbit-wan-implementation-plan.md) sequences W00–W17 and retains
+the [terminal plan](orbit-terminal-implementation-plan.md)'s T13 technical checks.
 The [earlier product brief](orbit-product.md) retains browser-era context.
 Approval defines the target, not completed behavior or a proven guarantee.
 
@@ -25,7 +57,7 @@ Approval defines the target, not completed behavior or a proven guarantee.
 | U03 | Equal writable replicas; an always-on Pi/NAS/VPS is optional and has no conflict authority | Approved |
 | U04 | Suggest `~/Orbit`; existing local folders and additional named synced folders are normal options; review preexisting contents and preserve Change location | Approved terminal UX |
 | U05 | Short-lived invitations from an enrolled device, explicit owner approval, persistent per-device authentication; defer Google/account login | Approved |
-| U06 | Existing reachable LAN/private network; document Tailscale as the initial cross-network path with understandable checks; no Orbit discovery/NAT/relay infrastructure | Approved terminal UX |
+| U06 | Automatic LAN/WAN connectivity through Orbit discovery/rendezvous, direct paths and encrypted relay fallback; existing manual/private networks remain supported | Approved WAN target; unimplemented |
 | U07 | Sync-manager journeys with names, paths and qualified plain-language status; ordinary browsing/editing stays in existing file tools | Approved terminal UX |
 | U08 | Small Go TUI as interactive front door and independent CLI over the same local control operations; OS/SSH administration remains | Approved terminal UX |
 | U09 | Human device/folder names distinct from cryptographic identities; directory-aware file commands and explicit ambiguity handling | Approved terminal UX |
@@ -36,6 +68,8 @@ Approval defines the target, not completed behavior or a proven guarantee.
 | U14 | Recovery through a surviving trusted device with retained OS/SSH access; replacement gets fresh identity; no remote account-recovery promise | Planning default preserving existing guarantees |
 | U15 | Light Vim navigation plus arrows/Tab, visible focus/context actions, narrow/colorless fallback and clear feedback; no status conveyed by color alone | Approved terminal UX |
 | U16 | Guided terminal create/join/approval with reviewed existing files, editable finite settings and restartable progress; independent scriptable CLI/control operations | Approved terminal UX |
+| U17 | Preconfigured Orbit connection services with optional self-hosted profile, visible metadata/privacy choices and local-only/manual modes | Approved WAN target; unimplemented |
+| U18 | Ordinary create/invite/join/approve requires no separate service account, Tailscale setup, IP/port entry or prior shared LAN; technical settings remain under Advanced | Approved WAN target; unimplemented |
 
 Implement approved choices and planning defaults through the terminal packets. Refine
 reversible implementation details with evidence. Changes to single-owner trust,
@@ -48,7 +82,7 @@ and their owning specifications must be updated before dependent implementation.
 
 Build a useful Linux folder-sync product demonstrating causal reconciliation, distributed failure handling, durable local storage, and engineering ownership. One owner uses ordinary editors and file managers across independent writable replicas. The primary resume story is preservation of captured work and predictable recovery, supported by measurements rather than technology count.
 
-No timeline is imposed. Completion is bounded by these guarantees, not by optional feature growth. The owner must be able to explain the invariants, failure traces, and tests despite AI-assisted implementation.
+No timeline is imposed. Completion is bounded by these guarantees, not by optional feature growth. The owner plans a comprehensive review of the invariants, failure traces, and tests after delivery.
 
 ## Release requirements
 
@@ -56,7 +90,7 @@ No timeline is imposed. Completion is bounded by these guarantees, not by option
 | --- | --- |
 | S01 | Go background agent and CLI; SQLite metadata; managed immutable content; versioned authenticated HTTPS. |
 | S02 | Linux first. Two-peer initial slice; three-host release validation using laptop, Pi, and Oracle VPS. Optional fourth workstation. No unlimited-scale claim. |
-| S03 | Equal replicas with third-party version forwarding. An always-on VPS is supported without conflict authority. LAN or existing private network, explicit addresses and pairing. |
+| S03 | Equal replicas with third-party version forwarding. An always-on VPS is supported without conflict authority. Explicit pairing over automatic LAN/WAN or configured manual/private paths. |
 | S04 | Folder-level membership and authorization; full current folder replication, including unresolved conflicts, plus retained history under policy. No selective placeholders. |
 | S05 | Explicit owner-approved enrollment and retirement. Preview existing content on enrollment; missing bootstrap paths are not deletions. Reinstalled devices use new identities. |
 | S06 | Ordinary files, empty directories, and executable status. Initial rename is delete plus create. Unsupported objects and path structures receive explicit diagnostics. |
@@ -75,7 +109,13 @@ No timeline is imposed. Completion is bounded by these guarantees, not by option
 | S19 | Trusted plaintext replicas. Authenticate peers, restrict folder access, validate even authenticated input, and protect the loopback control interface. |
 | S20 | Versioned protocol and database; clear incompatibility errors; deliberate migrations and recovery procedures; Linux binaries for tested device architectures. |
 | S21 | systemd user service, structured diagnostics, sensitive-data-conscious support export, upgrade and uninstall preserving user data. |
-| S22 | Independent reference model, reproducible failure harness, local disposable demo, actual three-host demo, personal pilot, and honest benchmark/case-study artifacts. |
+| S22 | Independent reference model, reproducible failure harness, local disposable demo, actual three-host demo, and honest benchmark/case-study artifacts; personal pilot/review deferred until after delivery. |
+| S23 | Authenticated local/global candidate discovery and rendezvous with finite leases, pinned identities and bounded candidate/coordination state. |
+| S24 | Opaque encrypted relay fallback with endpoint authentication, no relay folder authority/storage receipts, and strict separation from local owner control. |
+| S25 | Direct reachable TCP/IPv6 and QUIC/ICE/STUN paths, bounded direct/relay selection and network-change recovery; no universal NAT/firewall reachability guarantee. |
+| S26 | Actual operated default service profile, optional self-hosting, documented metadata/retention/bandwidth limits and reviewed local-only/manual privacy modes. |
+| S27 | Simple first-time WAN CLI/TUI onboarding without Tailscale/manual addresses/prior LAN, retaining exact device/folder approval, root review and restartable operations. |
+| S28 | Bounded secure network implementation, truthful route diagnostics, compatible migration and reproducible simulated plus real WAN failure/resource evidence. |
 
 ## User workflow
 
@@ -90,14 +130,15 @@ The pilot uses a dedicated folder of notes/documents/images and static archives.
 
 ## Exclusions
 
-No custom consensus, replicated database product, distributed transactions, Kafka, Kubernetes, S3 compatibility, erasure coding, global discovery, custom NAT traversal, automatic semantic merge, multi-user sharing, untrusted-server encryption, mobile app, Windows/macOS support, or live application-data synchronization. No replication of ownership, ACLs, extended attributes, symlinks, hard-link relationships, or special files. Live databases, VM disks, active game saves, and cross-file application-consistent snapshots are outside guarantees.
+No custom consensus, replicated database product, distributed transactions, Kafka, Kubernetes, S3 compatibility, erasure coding, custom cryptographic/transport primitives, automatic semantic merge, multi-user folder sharing, encrypted storage on untrusted replicas, mobile app, Windows/macOS support, or live application-data synchronization. The first WAN release excludes Syncthing interoperability/parity, TURN/WebRTC, router port-mapping protocols, arbitrary proxy support and public relay federation. No replication of ownership, ACLs, extended attributes, symlinks, hard-link relationships, or special files. Live databases, VM disks, active game saves, and cross-file application-consistent snapshots are outside guarantees.
 
 A trusted participant can intentionally author bad changes; Byzantine consistency and remote erasure after revocation are excluded. Disk loss, broken hardware durability promises, and arbitrary writes through long-lived descriptors are not covered by an unconditional no-loss claim. Evidence must name the supported failure model.
 
 ## Completion
 
-Complete the active packets in [terminal status](implementation/terminal-status.md)
-and remaining owner evidence in [engine status](implementation/status.md).
+Complete the active packets in [WAN status](implementation/wan-status.md),
+remaining technical acceptance in [terminal status](implementation/terminal-status.md)
+and retained obligations in [engine status](implementation/status.md).
 Demonstrate ordinary terminal onboarding, real edits, three-way offline conflicts,
 forwarding through the VPS, restore, restart recovery, finite storage and safe
 retirement. Another developer can reproduce the local demo and failure experiments

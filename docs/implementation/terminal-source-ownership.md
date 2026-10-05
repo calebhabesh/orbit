@@ -91,3 +91,18 @@ operation pages, VT oracle/tests and Makefile. The shared setup adapter owns exa
 private retry and listener-restart records; causal/membership/root/relocation
 semantics remain in their original owners. No new dependency, schema migration,
 agent delegation or personal-root/service action was introduced.
+
+## T12 production ownership
+
+T12 changes entry/TTY selection, help/completions and daemon advice in
+cmd/filesync and internal/control/doctor.go. scripts/build_packages.go and
+packaging own all-format terminal assets, aliases, compatible lifecycle scripts
+and data-preserving installation/removal. The shared runtime controller and
+existing repository/workspace recovery mechanisms are reused, with scoped
+legacy replay/counter and compatibility oracles in tests/terminal/packages_test.go.
+The package runner uses fresh marked roots, fake user-service commands for
+standalone installs, new labelled --rm containers for real distro transactions,
+and a label-validated new QEMU container. No personal root, existing user service,
+Docker workload, host privilege/firewall/VPN policy, schema or peer format changes.
+Makefile owns ordinary CLI/terminal/extracted-package checks and explicit optional
+container/QEMU validation. README/runbooks and T12 evidence own operator handoff.

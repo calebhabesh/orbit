@@ -1,12 +1,83 @@
 # Operator Runbook: Private Network Configuration and Reachability
 
+The owner selected [automatic native WAN networking](../orbit-wan-implementation-plan.md)
+on 2026-10-05. It is planned and unimplemented; this runbook remains the current
+manual/private-network path and will stay available as an Advanced alternative.
+Its existing deployment instructions do not establish future direct/relay WAN evidence.
+
 This runbook guides operators through configuring private network connectivity, verifying peer reachability, and configuring firewall rules for Orbit replication (Requirement U06, Operations Contract).
+
+## Recommended personal deployment
+
+For laptop/Pi/VPS use, install Tailscale directly on each participating host and
+authenticate all three to the same personal tailnet. The first account sign-up
+creates the tailnet; there is no Orbit account or central Orbit coordinator.
+Follow the official [quickstart](https://tailscale.com/docs/how-to/quickstart)
+and [Linux installation instructions](https://tailscale.com/docs/install/linux).
+After installation, `sudo tailscale up` provides a browser sign-in URL.
+Use `tailscale ip -4` and `tailscale status` to inspect the assigned addresses
+and authenticated devices. Keep credentials and authentication links private.
+
+Use a simple device mesh initially. Orbit needs neither an exit node nor an
+advertised home subnet. A separate WireGuard gateway can continue providing
+home-network access; verify coexistence using Tailscale's
+[other-VPN guidance](https://tailscale.com/docs/reference/faq/other-vpns).
+On hosts with existing DNS policy, explicitly review whether Tailscale should
+manage DNS; numeric Orbit addresses do not require MagicDNS. Installing and
+authenticating the VPN are deliberate operator steps, outside Orbit setup.
+
+In Orbit Setup Advanced, select each host's numeric Tailscale address for peer
+and enrollment listeners and advertisements, using distinct TCP ports such as
+8443 and 8444. Permit those ports between the participating devices under your
+tailnet and host firewall policies. Keep owner control bound to loopback.
+Create/adopt the laptop's folder, invite and approve the Pi, then invite and
+approve the VPS through a participating device. Joining the tailnet establishes
+network reachability; Orbit's separately reviewed folder membership grants data
+access. Device names do not substitute for key verification or folder consent.
+
+The laptop is an ordinary writable replica with login startup. The Pi and VPS
+are ordinary writable replicas with deliberately configured unattended startup;
+they can retain and forward captured histories while the laptop is offline.
+Neither decides conflict winners. A VPS is optional for ordinary two-device use.
+Tailscale does not implement Orbit's capture, causal history, chunk verification,
+membership, receipts, conflict resolution or durable recovery. See
+[startup modes](install.md#startup-modes) for Orbit's separate service policy.
+
+### Understanding a tailnet alongside a home WireGuard gateway
+
+A tailnet is a persistent private device network with stable virtual addresses;
+individual devices can go offline without removing their enrollment. Tailscale
+uses WireGuard for encrypted transport and adds peer coordination, NAT traversal
+and access policy. The operator's existing Pi WireGuard setup, described as a
+WAN entry to the home LAN, serves a different routing role: a remote client sends
+home-subnet traffic through the Pi gateway. Plain WireGuard can also support
+other topologies; gateway versus mesh describes these deployments rather than a
+limitation of the protocol. See [WireGuard in Tailscale](https://tailscale.com/docs/concepts/wireguard).
+
+Both provide routed IP connectivity. A remote client does not join the home's
+Ethernet/Wi-Fi broadcast domain merely by using either VPN; LAN broadcast and
+multicast discovery do not automatically extend across the mesh. Orbit uses
+explicit peer IP:ports and needs no LAN discovery. See
+[Tailscale's network-layer explanation](https://tailscale.com/docs/concepts/tailscale-osi).
+
+Connecting the Pi to the tailnet exposes the Pi under its own private address;
+it does not automatically expose every home LAN device. A Tailscale
+[subnet router](https://tailscale.com/docs/features/subnet-routers) can deliberately
+provide that gateway role for devices without a client. Retain the existing Pi
+WireGuard service initially for home-subnet access and an independent access
+path. Reassess retirement only after the replacement covers those uses. Orbit's
+device mesh does not require changing the existing gateway, enabling subnet
+routing or selecting an exit node.
 
 ---
 
 ## 1. Network Topology and Core Architecture
 
-Orbit synchronizes files directly between trusted devices over private network paths without third-party discovery relays, cloud intermediaries, or centralized metadata servers:
+Orbit synchronizes files between trusted devices over operator-provided private
+network paths. Orbit supplies no discovery, NAT traversal or application relay
+infrastructure and has no centralized metadata server. The underlying VPN can
+carry encrypted packets directly or through a transport relay; see Tailscale's
+[connection types](https://tailscale.com/docs/reference/connection-types).
 
 - **Direct Mutual TLS Replication**: Nodes exchange causal version DAGs and content-addressed chunks over mutual TLS 1.3 using dedicated Ed25519 cryptographic keypins (Invariant I01, I07).
 - **Private Network Reachability as a Prerequisite (U06)**: Participating devices must be reachable via routable IP addresses across:
@@ -18,12 +89,19 @@ Orbit synchronizes files directly between trusted devices over private network p
 
 ## 2. Port and Listener Specifications
 
-Orbit utilizes two distinct network interfaces with strict security isolation:
+Orbit separates owner control, peer replication and enrollment interfaces with strict security isolation:
 
 | Listener | Default Binding | Protocol | Security Boundary |
 | --- | --- | --- | --- |
 | **Control / Web UI** | `127.0.0.1:8080` | HTTP / Loopback | Strictly loopback only. Protected by DNS-rebinding checks, one-use bootstrap tokens, and session cookies. **Never expose to external interfaces.** |
-| **Peer Replication** | `0.0.0.0:8443` | HTTPS / mTLS | Mutual TLS with pinned Ed25519 certificates. Enforces strict body limits (16 KiB enrollment requests, bounded chunk streaming). |
+| **Peer Replication** | Explicit numeric listener (example private IP:8443) | HTTPS / mTLS | Mutual TLS with pinned Ed25519 certificates. Enforces strict body limits (16 KiB enrollment requests, bounded chunk streaming). |
+
+| **Enrollment** | Explicit numeric listener (example private IP:8444) | HTTPS / possession proof | Invitation binds certificate, folder and reachable endpoint; authenticate inviter before capability disclosure. |
+
+Peer/enrollment listeners are disabled until configured. Setup Advanced or reviewed
+runtime settings persist listeners and numeric nonloopback advertised IP:ports.
+Use existing LAN routes or Tailscale addresses/ACLs; permit both chosen TCP ports.
+The owner control port remains loopback and must not be used as an invitation endpoint.
 
 ---
 

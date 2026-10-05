@@ -1,11 +1,10 @@
-# Development terminal shell
+# Terminal shell
 
-Build with `make build`, then run `bin/orbit tui --state /absolute/state`.
-This explicit development command provides shell navigation; T10/T11 add
-onboarding and everyday management screens. Bare `orbit` retains its existing
-entry until T12. The shell uses authenticated shared control queries. It never
-starts or stops a daemon. With a stopped daemon, supported queries use the
-exclusive stopped adapter; failed live control never bypasses that owner.
+Run `orbit` or `orbit tui --state /absolute/state`. Both use the same shell and
+authenticated controls, reusing/starting the selected daemon before terminal
+ownership. Pipes and --json use status without starting a daemon. Closing the
+interface leaves synchronization running. Setup and everyday screens are documented
+in [onboarding](terminal-onboarding.md) and [recovery](terminal-recovery.md).
 
 Use j/k or arrows to select, left/right or o/f/n/d to change section, Tab or /
 to focus search, Enter to inspect, Esc to return, and ? for help. Text entry

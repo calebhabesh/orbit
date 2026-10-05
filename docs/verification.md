@@ -61,7 +61,8 @@ packaged flows and actual owner use. Existing pilot data is never a fault target
 The owner approved terminal-first use on 2026-10-03. Follow the
 [T00–T13 plan](orbit-terminal-implementation-plan.md) and
 [terminal tracker](implementation/terminal-status.md). These are planned
-acceptance scenarios; current terminal runtime checks are unexecuted. I01–I28
+acceptance scenarios; T00–T12 runtime evidence is recorded in the tracker and
+T13 adds native and release campaigns. I01–I28
 remain authoritative. TG1–TG5 design and production evidence are separate from
 historical browser G01–G05 outcomes.
 
@@ -80,7 +81,7 @@ historical browser G01–G05 outcomes.
 | Restore/copy with available/expired/missing/corrupt history | Exact verified bytes and reviewed destination; disabled unavailable actions; no invented retention window | T08, T11 / I06–I07, I10, I16, I18, I25 |
 | TUI keys/resize/paste/editor return/quit and pipe | Visible focus, bounded work, terminal restored, no escapes in JSON, daemon keeps capturing | T09–T11 / I13, I19, I21, I27 |
 | Package adoption/login/unattended/relocation/recovery | Native package execution, one daemon, preserved history/keys/roots, explicit lifecycle and safe rollback | T12–T13 / I07–I08, I17, I20–I22 |
-| LAN/Tailscale, three hosts, faults and personal use | Recorded network/fault assumptions, head/hash oracles, actual owner observations and unaided explanation | T13 / I01–I28, S22 |
+| LAN/Tailscale, three hosts and faults | Recorded network/fault assumptions, head/hash oracles; owner review deferred until after delivery on 2026-10-04 | T13 / I01–I28, S22 |
 
 Use production CLI/control/network interfaces and real PTYs for integration.
 Mocks/snapshots can test renderers but cannot establish syncing, authorization,
@@ -89,6 +90,65 @@ nonzero matches. Capture sanitized transcripts together with actual repository/
 file/service assertions and dirty-tree/package provenance. Mark unavailable
 hardware, required owner actions and unsupported failure models explicitly.
 Existing validated disposable-root/process checks remain required for faults.
+
+## Native WAN verification
+
+Status: planned, 2026-10-05; no W checks executed. [WAN plan](orbit-wan-implementation-plan.md)
+and [W tracker](implementation/wan-status.md) own packet ordering/evidence. I01–I28
+remain required on changed paths; network routing adds these observable invariants.
+
+| ID | Observable requirement | Primary test surface |
+| --- | --- | --- |
+| N01 | Every usable route authenticates the expected persistent device/pin; route/profile changes never approve membership or change identity | Direct/relay/QUIC TLS and existing authorization handlers |
+| N02 | Discovery/candidate/coordination input is authenticated, scoped, expiring and bounded; stale or substituted addresses cannot become identity authority | Strict fixtures, independent admission/connection model, adversarial service |
+| N03 | Relays forward opaque endpoint-encrypted traffic with isolated enrollment/data; owner control and folder authority remain inaccessible | Broker stream inspection, wrong-pin/purpose tests, real handlers |
+| N04 | First-time routed enrollment verifies inviter before secret disclosure, requires exact owner approval and preserves expiry/replay/folder/retirement gates | Admission model, production enrollment, CLI/PTY process |
+| N05 | Network failure/restart/switch preserves captured versions, stable operation IDs and truthful receipts; resume never renews authorization implicitly | Network/process faults plus head/hash/identity/receipt oracles |
+| N06 | Dialing, buffers, leases, sessions, resolver work, retry and service admission have finite bounds with fair work progress | Slow receiver, overload, shared NAT, race/resource campaign |
+| N07 | UDP/QUIC/ICE composition preserves datagrams, TLS/request semantics and socket ownership; failures cannot bypass verification or leak resources | Packet adapter, full ICE/HTTP3 integration, malformed/loss/close fixtures |
+| N08 | UI/CLI report observed route/freshness separately from capture/stored/applied/conflict/membership and provide finite diagnostics | Typed controls, real binaries/PTys, passive-status network capture |
+| N09 | Reviewed mode/profile/privacy choices control service traffic without changing keys/folders/history; signed profile expiry/rotation preserves trust | Packet capture, profile/migration/replay fixtures, packaged config |
+| N10 | Packaged default setup works on declared real WAN networks without manual addresses/Tailscale or harness tunnels; self-host/manual compatibility remains | Native first-time CLI/TUI, actual direct and relay paths, package provenance |
+
+| Required scenario | Oracle and evidence | Packets |
+| --- | --- | --- |
+| Preserved direct/manual baseline | Same IDs, accepted heads, protected hashes and per-request authority | W00–W02 |
+| Directory ID/pin impersonation, stale lease, replay and candidate SSRF | Safe rejection; no overwrite of known routing identity; bounded allocations | W01, W03, W15 |
+| Both devices behind NAT, no prior LAN, first enrollment through relay | Inviter pin before secret, exact approval, actual two-way captured transfer | W04–W07, W16 |
+| Unknown requester/relay partner, unshared folder and control URL | No metadata/chunks/owner control; purpose isolation | W01, W04–W05, W15 |
+| Relay inspected/tampered/restarted or attachment expired | No readable content/secrets; pin failure; safe chunk/operation retry | W04, W11, W15 |
+| Existing contents, delayed/revoked/expired approval, second folder, retired identity | Existing root/proof/membership oracles preserved; exact durable resume | W05–W07, W15–W16 |
+| LAN discovery, public TCP/IPv6 and unsupported interface/occupied optional listener | Verified direct candidate or qualified relay; no false reachability | W08, W15–W16 |
+| ICE mapping/filter combinations, double NAT and blocked UDP | Direct where supported; encrypted relay otherwise; topology/rules recorded | W09–W11, W15–W16 |
+| UDP packet truncation, MTU/loss/reorder, roles and wrong pins | Datagram and HTTP/TLS invariants; bounded failure/cleanup | W09–W11, W15 |
+| Direct↔relay, TCP↔QUIC, interface changes, flapping and lost receipt | Preserved hashes/heads/operation IDs, no premature receipt; measured recovery | W11, W15–W16 |
+| Large/small concurrent work, slow reader and shared-NAT admission floods | Declared CPU/memory/FD/goroutine/session/egress bounds and fair progress | W04, W10–W11, W13, W15 |
+| Service down, quota, wrong pin, offline peer, conflict and membership fork | Distinct qualified CLI/TUI status; diagnosis timeout/cancel; no hidden probe | W06–W07, W12, W15–W16 |
+| Local-only/manual/self-host profiles, expiration and rotation | Packet-captured privacy, normal TLS/pins, explicit incompatibility | W03, W12–W14, W15 |
+| Legacy state/v2/manual peers and interrupted upgrade | Stable keys/counters/history, no proof downgrade, compatible refusal/rollback | W14–W15 |
+| Fresh packaged hosted-default WAN setup | Actual profile/operator, no endpoint editing or forwarding fallback, real direct+relay evidence | W13–W17 |
+
+Gate spikes/model fixtures close design only. Production tests complete packets;
+native packaged first-time setup completes the real-network requirement. Discover
+nonzero matching tests and record exact paths/commands. Network harness commands
+are delivered in W15 and use existing explicit disposable markers plus canonical
+root/process/namespace ownership validation. Save minimized failures and label
+privilege/unavailable checks. Never inject faults into personal roots or an existing
+VPS workload. Native administration via SSH is separate from measured sync traffic;
+SSH forwarding and existing private VPNs cannot establish no-Tailscale WAN evidence.
+
+Measure connection/reconnection timing, selected route, throughput, verified chunk
+reuse, idle/active CPU, peak memory, FDs/goroutines, relay ingress/egress and admission
+backpressure with reproducible small/mixed/large fixtures. State hosts, seeds,
+sample counts, dependency/profile provenance and topology. No fabricated throughput,
+universal NAT success percentage or guarantee for an inaccessible school network.
+Existing abrupt-reset/publication/storage checks retain their fault models.
+
+WAN release requires at least two physical networks, real direct and relay cases,
+ordinary bundled-profile CLI/TUI enrollment, and actual laptop/Pi/VPS engine
+workflows. If a required direct/native/operator condition is unavailable, keep
+that item unexecuted and the relevant packet incomplete. Prior three-host SSH/
+manual evidence remains valid for its scope, independently of WAN acceptance.
 
 ## Independent causal model
 

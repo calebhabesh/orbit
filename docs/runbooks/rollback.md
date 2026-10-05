@@ -1,12 +1,23 @@
 # Operator Runbook: Binary Rollback, Database Rollback, and Identity Safety
 
+Pass `--state /absolute/selected/state` to every maintenance/engine command below
+when using legacy/custom state. These retained engine commands keep their default
+state convention; selecting the TUI state does not change an engine command's
+flags. Stop that exact daemon and inspect recovery markers before replacing data.
+
 This runbook explains how to roll back binary versions in Orbit, how to recover from an earlier SQLite database backup, and why restoring older metadata requires an immediate identity reset under the Orbit causal consistency protocol.
 
 ---
 
 ## 1. Scenario A: Compatible Binary Rollback (Schema Unchanged)
 
-If an upgraded binary introduced an application regression, but the database schema version remains identical (`database user_version == binary CurrentSchema`):
+A binary rollback keeps the **current** metadata and author counters. Schema
+compatibility is necessary but insufficient: the older binary must understand
+terminal runtime settings and durable operation ledgers. Reconcile pending
+operations/editor/onboarding recovery first and migrate reviewed finite budgets
+to the older supported configuration explicitly. Do not run an older browser-era
+binary over new terminal records merely because both use schema 13. Once those
+compatibility conditions have actual evidence:
 
 1. Stop the running service:
    ```bash
@@ -103,10 +114,10 @@ Action required: re-enroll new device ID in folder memberships with peers (Invar
 Because the node has assumed a fresh cryptographic identity, you must approve the new device ID on participating peer devices:
 ```bash
 # Display new identity and certificate pin
-orbit identity --certificate
+filesync identity --certificate
 
 # On peer device(s), approve the new device ID:
-orbit pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-pin>
+filesync pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-pin>
 # Or via enrollment request workflow:
 # orbit requests approve --request <request-id>
 ```

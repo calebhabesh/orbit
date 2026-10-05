@@ -1,5 +1,21 @@
 # Orbit terminal implementation status
 
+Native WAN amendment, 2026-10-05: follow the [W plan](../orbit-wan-implementation-plan.md)
+and [W tracker](wan-status.md) for automatic networking and onboarding changes.
+This tracker retains terminal baseline evidence and remaining T13 technical checks;
+the WAN plan does not mark them complete or replace earlier network test provenance.
+
+## Owner-directed delivery amendment — 2026-10-04
+
+The owner deferred personal-use observations and the unaided learning/explanation
+review until after project delivery. They are follow-up activities, not engineering
+completion gates. Finish automated validation, product polish, measured resource
+behavior and evidence-backed portfolio artifacts now. Retain historical P17 pilot
+records and data; do not claim automated campaigns establish personal adoption or
+owner understanding. Required technical checks and declared engine guarantees
+remain in force; report unavailable network/host conditions explicitly.
+
+
 Updated: 2026-10-04. **T00 complete** as a baseline/disposition packet; its
 historical opt-in assertions remain retained. **T01 complete** for contracts and
 design experiments; **T02 complete** for shared client/initialization/lifecycle;
@@ -10,12 +26,16 @@ design experiments; **T02 complete** for shared client/initialization/lifecycle;
 **T07 complete** for qualified copy/status, persistent attention, and actionable diagnostics;
 **T08 complete** for reviewed conflict/editor/history/restore workflows and stream parity;
 **T09 complete** for the keyboard shell, pinned v2 adapters and actual PTY/terminal lifetime;
-**T10 complete** for reviewed keyboard onboarding, scoped sharing/approval and device/folder management.
+**T10 complete** for reviewed keyboard onboarding, scoped sharing/approval and device/folder management;
+**T11 complete** for everyday TUI management, external editor and recovery workflows;
+**T12 complete** for terminal entry/packages, compatible adoption and operator runbooks.
 TG1 transport/rollout, TG2 onboarding, and TG3 command adapter parity are recorded;
 TG3 exact stream/editor adapters and TG4 scoped production proof are recorded;
-TG5 terminal-lifetime proof is recorded; packaged entry/native modes remain T12/T13.
-Reviewed editor-screen integration remains T11/T13.
-Next eligible packet: **T11**. T11–T13 acceptance is unexecuted.
+TG5 terminal lifetime and packaged entry/adoption are verified; native modes remain T13.
+Reviewed editor-screen and everyday management integration is verified; native/cross-host validation remains T13.
+Next eligible packet: **T13**. Clean release/failure, ordinary LAN and actual-host
+engine validation pass. Existing Tailscale, ordinary native three-host onboarding
+and native login/logout/boot acceptance remain; personal review is deferred.
 Existing [P status](status.md) and
 [O status](orbit-status.md) retain their historical evidence and P17 limitations.
 
@@ -39,9 +59,9 @@ by the specifications; this tracker records implementation evidence.
 | T08 | complete | T06, T07 | [Content/recovery evidence](../evidence/terminal-t08-20261004/summary.md); interactive PTY editor integration remains T11/T13 |
 | T09 | complete | T01, T02, T06 | [Shell/PTY evidence](../evidence/terminal-t09-20261004/summary.md); reviewed editor screens T11, native/package/owner release T12/T13 |
 | T10 | complete | T04, T05, T07, T09 | [Onboarding/device evidence](../evidence/terminal-t10-20261004/summary.md); native/cross-host/owner campaign remains T12/T13 |
-| T11 | pending | T07, T08, T09 | Everyday TUI management, external editor and recovery |
-| T12 | pending | T10, T11 | Terminal packages/entry, compatible adoption and operator runbooks |
-| T13 | pending | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | Integrated native/failure/owner campaign and honest release handoff |
+| T11 | complete | T07, T08, T09 | [Everyday TUI evidence](../evidence/terminal-t11-20261004/summary.md); packages/adoption remains T12, cross-host/owner release T13 |
+| T12 | complete | T10, T11 | [Entry/package/adoption evidence](../evidence/terminal-t12-20261004/summary.md); native/cross-host/owner release remains T13 |
+| T13 | in_progress | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | [Release evidence](../evidence/terminal-t13-20261004/summary.md); existing Tailscale, ordinary native third-host and login/logout/boot checks remain; owner review deferred |
 
 ## Design gate evidence
 
@@ -51,7 +71,7 @@ by the specifications; this tracker records implementation evidence.
 | TG2 Durable onboarding | [T01 resolved](../terminal-design-gates.md) | [T04 production proof](../evidence/terminal-t04-20261004/summary.md); native release campaign pending |
 | TG3 Shared adapters | [T01 resolved](../terminal-design-gates.md) | [T02 client/lifecycle subset](../evidence/terminal-t02-20261003/summary.md) and [T06 adapter parity](../evidence/terminal-t06-20261004/summary.md); [T08 exact stream/editor adapters](../evidence/terminal-t08-20261004/summary.md) verified |
 | TG4 Reviewed content workflow | [T01 resolved](../terminal-design-gates.md) | [T08 scoped production proof](../evidence/terminal-t08-20261004/summary.md); interactive PTY integration T11/T13 |
-| TG5 Terminal/legacy lifecycle | [T01 resolved](../terminal-design-gates.md) | [T09 shell/PTY lifetime](../evidence/terminal-t09-20261004/summary.md) verified; packaged entry/native modes T12/T13 |
+| TG5 Terminal/legacy lifecycle | [T01 resolved](../terminal-design-gates.md) | [T09 shell/PTY lifetime](../evidence/terminal-t09-20261004/summary.md) and [T12 packages/adoption](../evidence/terminal-t12-20261004/summary.md) verified; native modes T13 |
 
 The earlier G01–G05 outcomes remain historical. New source findings do not
 constitute executed failure evidence, and an earlier complete label does not
@@ -936,3 +956,257 @@ This explanation is not unaided owner evidence.
 Next eligible packet: **T11 — TUI everyday management**. Reuse T09/T10's serialized
 lane and keyboard/PTY adapters and the real T08 reviewed sessions/streams. Preserve
 native/cross-host and P17 owner requirements for the later release campaign.
+
+## T11 — TUI everyday management
+
+Packet/state: **T11 / complete**, 2026-10-04, for the required local actual-control/
+PTY acceptance bar. Development entry remains explicit; native release is separate.
+
+Dependencies/owning contracts read: T07, T08, T09, T10 complete; main/terminal
+plans/status, scope/glossary, UX/architecture, TG3/TG4/TG5, typed contracts and
+protocol/persistence/operations/verification. Historical P/O/T evidence and the
+existing runtime work were preserved. No agent delegation.
+
+Changed ownership: `internal/terminal/{everyday,everyday_render,everyday_test}.go`,
+`internal/control/terminal_everyday.go`, `internal/controlclient/session_result.go`,
+`scripts/terminal_everyday_pty_test.py`, `tests/terminal/everyday_test.go`, updates to
+`internal/terminal/{app,keys,render,setup,setup_render,share}.go`, `internal/app/app.go`,
+`internal/control/{terminal_content,terminal_lifecycle,terminal_status}.go`,
+`internal/control/terminalcontract/{types,validate}.go`, `internal/repository/work.go`,
+`internal/scheduler/{retry,scheduler,watcher}.go`, and Makefile targets.
+No dependency or schema migration.
+
+Invariants/scenarios: I03–I07, I11, I13–I14, I16, I18–I20, I25–I28 at keyboard,
+authenticated control, SQLite, transport, identity and actual file seams.
+The seven core everyday management scenarios were verified under real two-daemon PTY execution:
+1. Real offline/reconnect concurrent heads
+2. Canonical diff and external editor invocation with non-zero exit code recovery
+3. Stale editor session refusal with fresh review renewal
+4. Exact select and keep copies conflict resolution
+5. Delete history restore with separate copy creation
+6. Storage preview with narrow root unavailable protection
+7. Terminal restoration and continued daemon sync after client quit
+
+All seven `TestTerminalT11*` cases passed twice without skips. `GOFLAGS=-race` packet
+tests passed cleanly, instrumenting built child daemons and CLI invocations.
+Sanitized standalone PTY transcripts were verified and archived. Relevant T08/T09/T10
+regressions passed, explicit CLI tests passed, five independent VT tests passed,
+`make check` passed with static builds, and **full `make test-race` passed** across the
+entire repository.
+
+Intermediate outcomes retained: scheduler watch revalidation bug with ROOT_UNAVAILABLE
+was fixed to revalidate before clearing in-memory paused state.
+
+Limitations/unexecuted: T12 owns packages and adoption; native laptop/Pi/VPS, physical
+LAN/Tailscale, boot/login/logout/unattended validation, and VM reset/power loss remain T12/T13.
+**P17 actual owner use and unaided explanation remain outstanding.**
+
+Worker explanation: everyday status displays authoritative engine observations rather
+than synthetic progress bars. Conflicts present concurrent heads frozen in time until
+explicit resolution. Staging editor outputs validates content hashes and streams bytes
+to quarantine before atomic commit confirmation. Temporary unavailable roots pause
+activity without mass deletions and automatically resume when the root directory returns.
+
+Next eligible packet: **T12 — Terminal packages/entry, compatible adoption and operator runbooks**.
+
+
+## T12 — Terminal packages/entry, compatible adoption and operator runbooks
+
+Packet/state: **T12 / complete**, 2026-10-04, for its local entry/package/adoption
+acceptance bar. Native and owner release acceptance remains T13.
+Prerequisites T10/T11 complete; read terminal UX/architecture/TG5/release packet,
+main status, scope/glossary, operations, persistence/recovery/relocation and
+verification. Historical P/O/T evidence and initial dirty runtime work preserved.
+No agent delegation, dependency change, causal/wire/schema/identity rewrite.
+
+Changed ownership: CLI main/TUI/help/completion, doctor startup advice, Makefile,
+package generator/desktop/install/uninstall, bare PTY adapter, new package runner,
+four T12 tests, README and operator/install/network/recovery/rollback/upgrade/
+uninstall runbooks. Shared controllers remain owners of review/admission/replay;
+repository/workspace retain counters, migrations, recovery and relocation.
+
+Implemented bare TTY TUI/pipe/JSON entry, correct legacy discovery, explicit frozen
+legacy-browser/launch compatibility, terminal desktop entry, one service with
+aliases, all-format completions/runbooks/notices/checksums, custom-unit-preserving
+standalone upgrade and scoped uninstall. Real package-manager failures closed
+missing Debian directories and RPM tag/order/region/digest/ownership defects.
+Normal checks now include CLI tests, terminal journeys and extracted-package PTY;
+container transactions/QEMU remain an explicit optional target.
+
+Four ordinary T12 tests passed twice; instrumented packet race passed with built
+CLI/daemon children included. Compatibility migrations/newer refusal/interrupted
+recovery/rekey/relocation and peer auth/protocol mismatch checks passed. Native
+amd64 and QEMU 7.2 arm64 extracted tar/deb/rpm CLI execution passed. Standalone
+repeat installation/removal retained custom unit, identity/state and files.
+Actual Debian bookworm/Fedora 43 transactions with normal reviewed setup and
+manual daemon startup/stop retained captured history after reinstallation and
+files/config/database after removal. Bare actual PTY lifetime/capture passed.
+`make demo` passed. Final `make check` passed (356.253s) and full
+`make test-race` passed (320.850s, no race warnings). Final `make package`
+passed, followed by all 11 final native/emulated/distro/PTY package scenarios
+(16.786s); checksums and sanitized PTY frames are archived. Four T12 tests
+passed twice (22.700s) and instrumented packet race passed (42.155s). Explicit
+retained browser compatibility, CLI, formatting and diff checks passed. Exact
+source/commands are in
+[T12 evidence](../evidence/terminal-t12-20261004/summary.md).
+
+Invariants/scenarios: I07–I08, I19–I22, I27 at real CLI/PTY/SQLite/state lock,
+capability/peer authorization, migration/recovery and package-manager boundaries.
+Failure findings and corrected test fixture assumptions are retained in evidence.
+A temporary test version-type compile error stopped the initial broad gate; final
+stable broad validation is recorded separately. No failing oracle was weakened.
+
+Limitations/unexecuted: native laptop/Pi/VPS, physical LAN/Tailscale, systemd
+login/logout/boot/unattended persistence, clean-checkout/native terminal release,
+VM reset/power loss and actual personal use remain T13. QEMU is emulation;
+containers do not establish native systemd behavior. Reinstall tests do not prove
+arbitrary older terminal binaries understand current operations/runtime settings.
+**P17 actual owner use and unaided explanation remain outstanding.**
+
+Worker explanation: binary rollback keeps the current database/counters and
+requires schema plus runtime/operation compatibility. Restoring old metadata
+loses knowledge of already authored counters, so recovery creates a fresh key/
+device identity and reenrollment rather than reusing the old author. This is
+worker explanation, not unaided owner evidence.
+
+Next eligible packet: **T13 — integrated native/failure/owner release campaign**.
+Use the packaged terminal entry and current evidence, preserve P17 pilot data,
+and distinguish actual owner use/explanation from worker scripts.
+
+## T13 — Release campaign and portfolio delivery
+
+Packet/state: **T13 / in_progress**, 2026-10-04. Prerequisites T00–T12 complete.
+Read main/terminal plans and status, scope/glossary, UX/architecture, protocol,
+persistence, operations and verification. Historical P/O/T evidence, existing
+pilot roots/services and the original dirty tree were preserved. No delegation,
+new dependency, migration, causal/wire guarantee or owner-use claim.
+
+The owner deferred personal use and comprehensive explanation/review until after
+project delivery. The dated amendment in the owning scope/plan/packet supersedes
+those learning gates. Independent technical acceptance continues. P17 engineering
+and portfolio delivery is reconciled in the [main tracker](status.md#p17-delivery-reconciliation--2026-10-04).
+
+Changed ownership: repository history/readiness/connection startup, control
+status/operation publication observation/live identity inspection, pending TUI
+operation timing and explicit retry, native/snapshot/fault safety runners,
+six normally enabled T13 tests, and README/case-study/resume/operator/evidence
+artifacts. Diagnosing-bugs skill applied to reproduced performance and storage
+faults. Temporary executable diagnostic probes removed; logs/profiles retained.
+
+Production findings: scoped prepared history statements and batched/reused
+readiness resolve the 1,024-file status timeout while retaining unavailable and
+concurrent heads. Single-owner exclusive WAL is configured before WAL access,
+including reopened databases, to prevent mapped-index SIGBUS under real disk
+exhaustion; FULL synchronization is retained. Live inspections use the owning
+repository/control. Operation observations recognize actual publication without
+reauthoring; pending UI uses ticks and explicit `r` replays the same operation.
+Automatic unavailable-root pauses retain their cause. Regressions went red before
+fixes and pass afterwards. Older raw-live-database/double-owner harness fixtures
+now close or back up correctly; no acceptance assertion was removed.
+
+Exact final production candidate: isolated snapshot
+`e37e2600cd236776d5161f3a293718098bd7500e`. Original branch/index untouched.
+A separate clean clone passed `make check` (392.981 s), uncached
+`go test -race -count=1 ./...` (347.162 s), `make demo` (0.605 s), all 16
+abrupt-reset cases, all five storage-failure cases, package checksums and
+byte-identical repeated packages. Six `TestTerminalT13*` cases passed twice:
+ordinary 4.687 s; `GOFLAGS=-race` plus test race 69.535 s, including child binaries.
+Post-snapshot changes are two PTY timing fixtures and documentation; all current
+production source matched the candidate at this entry's 2026-10-04 assembly and
+the exact fixture hashes are recorded. The later 2026-10-05 follow-up below
+records the subsequent production change separately.
+
+Direct packaged laptop/Pi LAN normal create/invite/join/exact approval passed,
+including both daemon restarts before approval, original bytes, bidirectional
+edits, a second folder on the same device, heads/membership/identity agreement and
+offline/reconnect. Actual packaged laptop/Pi/VPS engine campaign passed (129.045 s),
+including offline concurrency, late arrival/stale refusal, forwarding, interruption
+with six verified chunks reused, restore and restart integrity. Manual membership
+and SSH relays in that engine campaign are explicitly distinct from ordinary LAN
+onboarding. Final native Pi/VPS/laptop runs all passed the three keyboard campaigns
+and unique user-service enable/start/capture/restart/removal; 33 sanitized
+transcripts are archived. All 11 package transaction scenarios passed, including extracted PTY
+and Debian/Fedora install/reinstall/removal. Containers and arm64 emulation are
+labeled separately from actual native execution.
+
+Thirty-two CLI resource observations cover two ordinary and two instrumented
+repetitions of 1,024 files, 512 reviewed tombstones and exact 8/32-MiB streamed
+merges. Ordinary sampled peak RSS 19,728–21,928 KiB; instrumented
+52,180–57,816 KiB; 6–7 descriptors. Five-ms sampling can miss brief peaks;
+inherited child high-water RSS is separate; daemon/editor memory is not included.
+The full suite verifies background large-file progress under continuing small
+edits. Historical 45-run full-size engine measurements remain dated.
+Dependency verification and pinned vulnerability scan passed at execution time.
+Python safety/VT tests and source/diff checks passed.
+
+Invariants I01–I28 map to named executable assertions with evidence/limits in the
+[T13 map](../evidence/terminal-t13-20261004/invariant-map.md).
+VM reset/storage experiments establish tested virtual ext4 outcomes, not physical
+Pi media power loss or arbitrary broken flush promises. All fault roots are newly
+marked disposable environments; safety tests refuse pilot/unrelated actions.
+
+Remaining technical acceptance: no existing authenticated Tailscale path exists
+on the hosts; laptop/Pi have no private route to the VPS for ordinary native
+three-host onboarding/forwarding and reviewed retirement/replacement; native
+login/logout/boot has not run, with all user
+managers `Linger=no`. Scoped service restart/removal cannot prove those conditions.
+Do not reboot existing workloads or replace these checks with emulation. Next step:
+use an existing authenticated private route and a designated disposable native
+service environment for the three named checks. Owner review follows delivery.
+[Commands/results/provenance and resumable handoff](../evidence/terminal-t13-20261004/summary.md).
+
+### T13 follow-up — 2026-10-05
+
+State remains **in_progress**, prerequisites T00–T12 complete. Initial read-only
+host inspection, before the owner's installation, found no installed/authenticated
+Tailscale and `Linger=no` on
+laptop/Pi/VPS. The owner asked about deployment; the network runbook now
+recommends one personal tailnet with a client on each host, separate Orbit
+folder approval, laptop login startup and deliberately configured unattended
+Pi/VPS startup. Existing WireGuard, pilot services and the original branch/index
+are preserved. VPN policy, credentials, lingering and reboot remain untouched.
+
+The additional ordinary CLI retirement/replacement campaign found two concrete
+gaps. Retired-key approval failed safely but returned a generic internal error;
+the enrollment owner now returns `RETIRED_MEMBER_REVIVAL` with fresh-identity
+recovery. Fresh replacement enrollment omitted hash-bound retirement artifacts,
+so admitted known retired histories remained blocked. The controller now fetches
+the exact admitted revision's canonical snapshots through existing pinned mTLS
+membership transport before history import. Repository same-revision replay can
+hydrate those artifacts atomically without changing membership. Both regressions
+went red before the fixes. Unknown retired histories, wrong artifacts, replay,
+keys/counters, schemas and per-IP admission limits remain protected.
+
+Eight instrumented T13 tests passed (73.545 s), including reopened incomplete
+bootstrap recovery. Repository/control/CLI race checks passed. Package-extracted
+checks and Python safety/VT checks passed. The current packaged ordinary journey
+passed locally (153.065 s) and on laptop/Pi LAN installations (291.666 s), including
+original-author forwarding, reviewed retirement, retired-key refusal, preserved
+retired data and fresh replacement. The native rehearsal uses two physical hosts;
+it does not establish the laptop/Pi/VPS acceptance. Full isolated current-candidate
+reproduction passed `make check` (427.656 s), uncached full race (382.094 s), demo,
+16 VM reset cases, five storage exhaustion cases, checksums and identical repeated
+packages. The isolated candidate is `00992f6d8b6afcde7dfaffe2c8aad8c27c847602`;
+current production source matches it. Results and exact provenance are recorded in the
+[follow-up evidence](../evidence/terminal-t13-20261005/summary.md).
+All experiments use newly marked disposable roots and stop only their own workers.
+Historical failing attempts remain archived with their actual rate/expiry and
+missing-artifact outcomes. The earlier candidate is historical; this follow-up
+records current-source validation separately.
+
+After the owner installed/authenticated Tailscale on all four devices, read-only
+preflight confirmed authenticated/online clients and `tailscale0` peer routes on
+laptop/Pi/VPS. The actual ordinary three-host journey passed in 277.636 s using
+the exact clean candidate packages: create/join/delayed exact approval, preserved
+existing bytes, edits, offline-source original-author VPS forwarding, reviewed
+retirement/export/import/replay, explicit retired-key refusal and fresh Pi
+replacement with preserved history/data. Three physical hosts were observed;
+there were no owned-worker cleanup errors. Agent network policy, credentials,
+lingering and reboot remained untouched. The earlier absent-Tailscale and LAN
+rehearsal limitations retain their historical scope.
+
+Remaining: actual native login/logout/unattended boot in a designated disposable
+environment. Authenticated Tailscale and ordinary laptop/Pi/VPS private-route
+onboarding/forwarding/retirement/replacement are satisfied. Personal use and unaided owner review remain
+deferred follow-up work, not completion blockers. T13 is still the only open
+packet; there is no T14.

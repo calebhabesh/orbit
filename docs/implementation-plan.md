@@ -2,7 +2,15 @@
 
 Planning baseline: 2026-09-20. Implementation exists through P17; current release acceptance and remaining validation are recorded in [packet status](implementation/status.md).
 
-## Active product work: Orbit
+## Active product work: Orbit native WAN
+
+The owner selected native WAN networking and simple CLI/TUI setup on 2026-10-05,
+with preconfigured services and optional self-hosting. Follow the
+[WAN plan](orbit-wan-implementation-plan.md) and [W status](implementation/wan-status.md),
+starting with W00 for implementation. Existing P/O/T work and technical acceptance
+remain the baseline; no networking runtime claim is established by the new plan.
+
+## Terminal baseline
 
 The owner selected the Orbit terminal redesign on 2026-10-03. Use the
 [terminal implementation plan](orbit-terminal-implementation-plan.md) and
@@ -12,7 +20,8 @@ can implement eligible packets as an implementation worker.
 The [earlier Orbit plan](orbit-implementation-plan.md) and
 [O status](implementation/orbit-status.md) retain browser-era and relocation
 history. This document remains the original sync-engine plan. P17's actual
-owner use/explanation remains outstanding; a new interface does not complete it.
+owner use/explanation is deferred until after delivery under the 2026-10-04
+scope amendment. Keep its historical pilot data and evidence intact.
 
 ## Read in this order
 

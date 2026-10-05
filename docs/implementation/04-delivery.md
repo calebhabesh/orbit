@@ -44,10 +44,10 @@ Run controlled abrupt-reset experiments in disposable environments and publish t
 
 Use the laptop, Pi and Oracle VPS with a dedicated non-sensitive shared folder. Record actual architecture, storage, OS, network route and versions; inventory provided hardware through read-only checks when access is available. Set up only project-specific paths/services, preserving unrelated VPS workloads.
 
-Demonstrate normal sync, three independent offline edits, reviewed resolution with late arrivals, A→VPS→B without A/B overlap, interrupted/resumed transfer and historical restore. Run real personal use long enough to record normal edits, at least one offline/reconnect cycle and a restart; report actual duration rather than manufacturing adoption. Keep destructive faults in disposable environments.
+Demonstrate normal sync, three independent offline edits, reviewed resolution with late arrivals, A→VPS→B without A/B overlap, interrupted/resumed transfer and historical restore. Under the owner's 2026-10-04 scope amendment, personal use and comprehensive owner review follow delivery. Preserve the prepared pilot; any later personal-use record reports actual duration, normal edits, offline/reconnect and restart. Keep destructive faults in disposable environments.
 
 Execute benchmark matrix against fair full-file baseline, publish raw results and workload generators, then write the case study, architecture diagram, short demo and evidence-backed resume bullets. Include negative results, limits, one difficult bug and attributed design references. Finish README with current installation/demo commands only after they work.
 
 **Acceptance:** all three actual hosts participate with verified content; forwarding and status semantics demonstrated; real pilot and synthetic benchmarks labeled separately; reproduction works from documented commands; claims link to evidence. If hardware/cloud access is unavailable, record a concrete blocker and finish independent artifacts without substituting three containers for three-host proof.
 
-**Evidence:** release manifest, pilot log, raw benchmark runs, demo and case study. **Explain:** a 60-second product story, causal-resolution walkthrough, recovery trace, GC tradeoff and measured bottleneck without agent assistance.
+**Evidence:** release manifest, separately labeled automated pilot preparation, raw benchmark runs, demo and case study. **Deferred owner review:** product story, causal-resolution walkthrough, recovery trace, GC tradeoff and measured bottleneck.

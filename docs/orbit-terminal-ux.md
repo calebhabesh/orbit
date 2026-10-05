@@ -1,5 +1,10 @@
 # Orbit terminal UX and implementation handoff
 
+Network amendment, 2026-10-05: [WAN UX](orbit-wan-ux.md) supersedes the LAN/Tailscale
+prerequisite and address-entry portions of this handoff for new Automatic-mode
+work. Its relay/default-service journeys are planned, not implemented. Existing
+manual/private-network flows and all non-network terminal guarantees remain.
+
 Date: 2026-10-03. The owner agreed to recommendations Q1–Q14 and selected the
 terminal redesign. This document is the agreed UX contract. The comprehensive
 [implementation plan](orbit-terminal-implementation-plan.md),

@@ -1,5 +1,10 @@
 # Operator Runbook: Database Recovery and Identity Reset
 
+Pass `--state /absolute/selected/state` to every maintenance/engine command below
+when using legacy/custom state. These retained engine commands keep their default
+state convention; selecting the TUI state does not change an engine command's
+flags. Stop that exact daemon and inspect recovery markers before replacing data.
+
 ## Trigger and Symptoms
 - Storage media corruption, unrecoverable SQLite corruption error, or accidental database deletion.
 - Recovery from an older database backup or filesystem snapshot.
@@ -71,22 +76,22 @@ orbit maintenance reset-identity --json
 1. For each shared folder, approve membership of the new device ID and key pin from an active surviving peer:
    ```bash
    # On surviving peer:
-   orbit pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-key-pin>
-   orbit membership export --folder <folder-id> --file updated-membership.json
+   filesync pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-key-pin>
+   filesync membership export --folder <folder-id> --file updated-membership.json
 
    # On recovered device:
-   orbit membership import --folder <folder-id> --file updated-membership.json --approve
+   filesync membership import --folder <folder-id> --file updated-membership.json --approve
    orbit folders revalidate --folder <folder-id>
    ```
 
 #### Step 3: Reconcile Workspace Root
 Trigger a full scan to adopt existing local files under the new identity:
 ```bash
-orbit work scan --folder <folder-id> --full
-orbit work sync --folder <folder-id>
+filesync work scan --folder <folder-id> --full
+filesync work sync --folder <folder-id>
 ```
 Verify convergence:
 ```bash
 orbit doctor
-orbit work status --folder <folder-id>
+filesync work status --folder <folder-id>
 ```

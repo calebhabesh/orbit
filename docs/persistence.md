@@ -2,6 +2,23 @@
 
 Status: implementation contract; D1/D4/D5 outcomes are in [design gates](design-gates.md). Release evidence is tracked separately. This document owns durability and cleanup rules.
 
+## Native WAN persistence extension — 2026-10-05
+
+Status: planned; no migration implemented. The [WAN architecture](orbit-wan-architecture.md#durable-and-transient-state)
+and [network protocol](orbit-wan-protocol.md#routed-enrollment-v3) specify reviewed
+mode/profile and pinned peer route references plus v3 setup/attempt/approval data.
+W01 freezes records; W02/W05/W14 implement additive migrations under existing
+exclusive ownership and durable-write/replay rules. Preserve existing keys, IDs,
+roots, counters, operations, protected chunks and manual peers.json compatibility.
+
+Candidate leases, sockets, relay reservations, ICE secrets and service replay
+caches are transient bounded state. Rebuild them from durable intent after restart;
+they do not substitute for stored receipts or persistent approval. Keep receiver
+invitation inputs only under existing private setup rules, never in service storage
+or ordinary logs. Scope/expiry/root-review changes still require the existing exact
+operation handling. Service restart may invalidate all transient leases/tunnels;
+the client must reannounce and retry safely rather than manufacturing completion.
+
 ## Terminal onboarding and reviewed-content persistence
 
 The [terminal plan](orbit-terminal-implementation-plan.md) adds TG2/TG4 and
@@ -79,7 +96,7 @@ One process holds an exclusive state-directory lock. Prevent a root from being r
 
 ## 3. Metadata and content commit
 
-Baseline SQLite: WAL mode, foreign keys enabled, explicit durability configuration suitable for the promised crash model, short transactions and controlled checkpoints. P00/P03 must verify the selected driver's connection/PRAGMA behavior; `synchronous=FULL` is the intended durable baseline. Do not assume one connection's setting configures an entire pool. Use a serialized writer and bounded readers. Never copy only the live main SQLite file as a backup while ignoring its WAL; use a supported consistent backup procedure.
+Baseline SQLite: WAL mode, foreign keys enabled, `synchronous=FULL`, short transactions and controlled checkpoints. One exclusive state owner uses one serialized database connection. Set SQLite `locking_mode=EXCLUSIVE` before the first WAL access on every connection, including reopened state. This keeps the volatile WAL index in private memory and avoids a memory-mapped shared-index allocation fault during actual disk exhaustion. The driver sorts DSN PRAGMAs; enable WAL separately after locking mode has been applied. P00/P03 verify connection settings and reopen behavior. Live readers use authenticated control operations; direct SQLite inspection requires stopping the owner or inspecting a consistent backup. Never copy only the live main SQLite file as a backup while ignoring its WAL; use a supported consistent backup procedure. This is SQLite's [supported WAL mode without shared memory](https://sqlite.org/wal.html#use_of_wal_without_shared_memory), with the same database format and FULL durability setting.
 
 Local capture ordering:
 
@@ -518,6 +535,19 @@ legacy resume consults the authoritative job and cannot turn pending approval or
 content into a blind local-scan completion. Old T03-only join records without a
 reviewed job explicitly require setup review rather than being silently renewed.
 
+Replacement onboarding after retirement also needs the canonical retirement
+artifacts named by its approved membership. Before importing history, the
+controller fetches the exact admitted revision and all of its retirement
+snapshots through the authenticated peer interface, or verifies the already
+stored artifacts. It checks folder, revision/digest, retired identities,
+retired-at revisions and complete canonical snapshot hashes. Membership and
+artifacts commit through the owning repository transaction. A replay of the
+same approved revision can hydrate missing hash-bound artifacts atomically;
+it cannot change the membership digest or admit a different snapshot. This
+also resumes older blocked jobs which had already installed membership without
+the artifacts. Unknown retired-author versions remain rejected. Artifacts are
+stored in existing retirement tables; no migration or enrollment wire change.
+
 ## T05 sharing and endpoint persistence
 
 Additional-folder invitations retain `target_device` and `target_pin` under the
@@ -548,6 +578,14 @@ the recorded result and never reapplies old bytes after a later capture. Newer o
 competing heads block pending publication with `STALE_VIEW`, retaining the committed
 effects for inspection. Interrupted copy operations retain their destination IDs and source
 provenance; no cross-path atomicity is implied.
+
+T13 operation queries observe actual working projections for pending publication
+effects. They may record completion after all committed versions were applied;
+they never publish bytes or author another version. Pending TUI observations
+use the ordinary refresh tick, rather than starting a continuous query loop.
+An explicit `r` on a retained pending content operation resubmits the exact
+durable operation identity through the shared mutation adapter. This retries
+publication under the same current-head guards and preserves its committed IDs.
 
 Working review hashes are descriptor-rooted observations without hidden capture.
 They bind root registration/membership, exact heads and named inode/stat/content.
