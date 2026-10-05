@@ -40,6 +40,7 @@ if [ ! -f "${BIN_SRC}" ]; then
 fi
 
 MODE="${1:-user}"
+case "$MODE" in user|system) ;; *) echo "Usage: install.sh [user|system]" >&2; exit 1 ;; esac
 
 if [ "${MODE}" = "system" ]; then
     echo "Installing Orbit system-wide (requires root)..."
@@ -55,7 +56,7 @@ if [ "${MODE}" = "system" ]; then
     ln -sf "${INSTALL_BIN}" "${INSTALL_ORBIT_BIN}"
 
     install -d -m 0755 /usr/lib/systemd/user
-    if [ -f "${SERVICE_SRC}" ]; then
+    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${INSTALL_SERVICE}" ] && [ ! -L "${INSTALL_SERVICE}" ] && [ ! -e "${INSTALL_ORBIT_SERVICE}" ] && [ ! -L "${INSTALL_ORBIT_SERVICE}" ]; then
         sed "s|/usr/bin/filesync|${INSTALL_BIN}|g; s|/usr/bin/orbit|${INSTALL_ORBIT_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
         chmod 0644 "${INSTALL_SERVICE}"
         ln -sf filesync.service "${INSTALL_ORBIT_SERVICE}"
@@ -63,7 +64,7 @@ if [ "${MODE}" = "system" ]; then
 
     if [ -f "${DESKTOP_SRC}" ]; then
         install -d -m 0755 "${INSTALL_APP_DIR}"
-        sed "s|Exec=orbit launch|Exec=${INSTALL_ORBIT_BIN} launch|g" "${DESKTOP_SRC}" > "${INSTALL_APP_DIR}/orbit.desktop"
+        sed "s|Exec=orbit$|Exec=${INSTALL_ORBIT_BIN}|g" "${DESKTOP_SRC}" > "${INSTALL_APP_DIR}/orbit.desktop"
         chmod 0644 "${INSTALL_APP_DIR}/orbit.desktop"
     fi
 
@@ -87,7 +88,7 @@ else
     ln -sf filesync "${TARGET_BIN_DIR}/orbit"
 
     mkdir -p "${TARGET_SERVICE_DIR}"
-    if [ -f "${SERVICE_SRC}" ]; then
+    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${TARGET_SERVICE_DIR}/filesync.service" ] && [ ! -L "${TARGET_SERVICE_DIR}/filesync.service" ] && [ ! -e "${TARGET_SERVICE_DIR}/orbit.service" ] && [ ! -L "${TARGET_SERVICE_DIR}/orbit.service" ]; then
         sed "s|/usr/bin/filesync|${TARGET_BIN_DIR}/filesync|g; s|/usr/bin/orbit|${TARGET_BIN_DIR}/orbit|g" "${SERVICE_SRC}" > "${TARGET_SERVICE_DIR}/filesync.service"
         chmod 0644 "${TARGET_SERVICE_DIR}/filesync.service"
         ln -sf filesync.service "${TARGET_SERVICE_DIR}/orbit.service"
@@ -95,7 +96,7 @@ else
 
     if [ -f "${DESKTOP_SRC}" ]; then
         mkdir -p "${TARGET_APP_DIR}"
-        sed "s|Exec=orbit launch|Exec=${TARGET_BIN_DIR}/orbit launch|g" "${DESKTOP_SRC}" > "${TARGET_APP_DIR}/orbit.desktop"
+        sed "s|Exec=orbit$|Exec=${TARGET_BIN_DIR}/orbit|g" "${DESKTOP_SRC}" > "${TARGET_APP_DIR}/orbit.desktop"
         chmod 0644 "${TARGET_APP_DIR}/orbit.desktop"
     fi
 
@@ -113,6 +114,20 @@ else
         echo "Notice: ${TARGET_BIN_DIR} is not currently in your PATH."
         echo "Add 'export PATH=\"\$HOME/.local/bin:\$PATH\"' to your ~/.bashrc or ~/.profile."
     fi
+fi
+
+# Install completions and runbooks alongside the selected installation.
+SHARE_SRC="${SCRIPT_DIR}/share"
+if [ -d "$SHARE_SRC" ]; then
+    if [ "$MODE" = system ]; then TARGET_SHARE="/usr/local/share"; else TARGET_SHARE="${HOME}/.local/share"; fi
+    for entry in bash-completion/completions/orbit zsh/site-functions/_orbit fish/vendor_completions.d/orbit.fish; do
+        install -D -m 0644 "$SHARE_SRC/$entry" "$TARGET_SHARE/$entry"
+    done
+    mkdir -p "$TARGET_SHARE/doc/filesync/runbooks"
+    install -m 0644 "$SHARE_SRC"/doc/filesync/runbooks/*.md "$TARGET_SHARE/doc/filesync/runbooks/"
+    for entry in LICENSE NOTICE LICENSES.md README.md release-manifest.json; do
+        install -m 0644 "$SCRIPT_DIR/$entry" "$TARGET_SHARE/doc/filesync/$entry"
+    done
 fi
 
 # Reload systemd user daemon and smoothly adopt existing service if running (G05 policy)
@@ -134,7 +149,7 @@ fi
 echo ""
 echo "Installation complete!"
 echo "Next steps:"
-echo "1. Launch Orbit directly: orbit (or 'orbit launch' to open browser UI)"
+echo "1. Launch Orbit directly: orbit (TTY) or orbit status (scripts)"
 echo "2. Check service and status: orbit status"
-echo "3. For headless servers/VPS, enable lingering: loginctl enable-linger ${USER}"
-echo "4. Enable and start background sync service: orbit service enable && orbit service start"
+echo "3. Choose manual, login, or unattended startup; see the installed runbooks."
+echo "4. Review existing state/units before enabling startup; no service is enabled by installation."

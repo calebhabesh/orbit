@@ -2,11 +2,11 @@
 Version=1.0
 Type=Application
 Name=Orbit
-GenericName=Personal File Manager
-Comment=Personal P2P sync and file manager over trusted Linux replicas
-Exec=orbit launch
+GenericName=File Synchronization
+Comment=Terminal management and P2P sync over trusted Linux replicas
+Exec=orbit
 Icon=orbit
-Terminal=false
+Terminal=true
 Categories=Network;FileTransfer;Utility;
 Keywords=sync;files;p2p;causal;storage;orbit;filesync;
 StartupNotify=true
