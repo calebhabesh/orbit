@@ -1,0 +1,39 @@
+package terminal_test
+
+import (
+	"context"
+	"encoding/hex"
+	"fmt"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+)
+
+func TestStatusProbe(t *testing.T) {
+	f := fresh(t)
+	folder := f.folder("probe")
+	for i := 0; i < 1024; i++ {
+		os.WriteFile(filepath.Join(f.root, "probe", fmt.Sprint(i)), []byte("small"), 0600)
+	}
+	f.ws.Scan(context.Background(), folder)
+	start := time.Now()
+	var r tc.Readiness
+	err := f.db.OnboardingReadiness(context.Background(), folder, &r)
+	t.Logf("[DEBUG-t13] readiness=%s err=%v", time.Since(start), err)
+	start = time.Now()
+	_, err = f.db.Conflicts(context.Background(), folder)
+	t.Logf("[DEBUG-t13] conflicts=%s err=%v", time.Since(start), err)
+	start = time.Now()
+	_, err = f.db.StructuralConflicts(context.Background(), folder)
+	t.Logf("[DEBUG-t13] structural=%s err=%v", time.Since(start), err)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	start = time.Now()
+	_, err = f.ctrl.TerminalQuery(ctx, tc.Query{Version: "1", Kind: "status", Folder: hex.EncodeToString(folder[:])})
+	t.Logf("[DEBUG-t13] status=%s err=%v", time.Since(start), err)
+	if err != nil {
+		t.Fatal(err)
+	}
+}

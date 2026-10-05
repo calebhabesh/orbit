@@ -5,7 +5,7 @@ DATE ?= 2026-10-01
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
 GOFLAGS ?=
 
-.PHONY: build build-arm64 check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty vet clean package demo
+.PHONY: build build-arm64 check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
 
 build:
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync ./cmd/filesync
@@ -27,7 +27,7 @@ vet:
 	$(GO) vet ./...
 
 test:
-	$(GO) test ./internal/... ./model/...
+	$(GO) test ./cmd/filesync/... ./internal/... ./model/...
 
 test-race: build
 	$(GO) test -race ./...
@@ -50,7 +50,25 @@ test-terminal-pty: build
 test-terminal-onboarding-pty: build
 	python3 scripts/terminal_onboarding_pty_test.py --binary bin/filesync
 
-check: fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package
+test-terminal-everyday-pty: build
+	python3 scripts/terminal_everyday_pty_test.py --binary bin/filesync
+
+test-legacy-browser: build
+	$(GO) test ./tests/integration -run '^(TestP14|TestP15EmbeddedUI|TestOrbitSession)'
+
+test-terminal:
+	$(GO) test ./tests/terminal/...
+
+test-terminal-release:
+	GOFLAGS=-race $(GO) test -race -count=2 -v ./tests/terminal -run '^TestTerminalT13'
+
+test-terminal-packages: package
+	python3 scripts/terminal_package_test.py --dist dist
+
+test-terminal-package-transactions: package
+	python3 scripts/terminal_package_test.py --dist dist --containers --emulate-arm64
+
+check: test-terminal test-terminal-packages fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package
 
 clean:
 	rm -rf bin/filesync bin/orbit bin/filesync-linux-arm64 dist/

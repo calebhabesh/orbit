@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause
+    release_test.go:90: automatic pause hid the root cause: [{ID:33fb1aeb95164c57e89c8b40267ce3819b2d7c62ca2c1d70c1998c977025ac26 Folder:4994f6100e3a0a28e40eaf7977967ea1eac10a4ec372fe35d4e95f3a929a61b8 Path: Code:FOLDER_PAUSED Action:Resume folder with 'orbit folders resume 4994f6100e3a0a28e40eaf7977967ea1eac10a4ec372fe35d4e95f3a929a61b8' OperationID:}]
+--- FAIL: TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause (0.01s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.015s
+FAIL

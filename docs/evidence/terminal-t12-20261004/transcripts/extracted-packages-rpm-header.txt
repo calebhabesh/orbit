@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/terminal_package_test.py", line 187, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "<repo>/scripts/terminal_package_test.py", line 95, in main
+    qemu.write_bytes(run(['docker','run','--rm','--label','orbit.disposable='+token,'--entrypoint','/bin/cat','multiarch/qemu-user-static:x86_64-aarch64','/usr/bin/qemu-aarch64-static']))
+                     ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/terminal_package_test.py", line 24, in run
+    assert result.returncode == 0, (argv, result.returncode, (result.stdout+result.stderr).decode(errors='replace')[-4000:])
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (['docker', 'run', '--rm', '--label', 'orbit.disposable=79aa27dd750640ec929c24910cab5148', '--entrypoint', '/bin/cat', 'multiarch/qemu-user-static:x86_64-aarch64', '/usr/bin/qemu-aarch64-static'], 127, 'docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "/bin/cat": stat /bin/cat: no such file or directory\n\nRun \'docker run --help\' for more information\n')

@@ -1,0 +1,7 @@
+PASS local Markdown targets: 380 links across 29 documents; fences and whitespace
+PASS git diff --check
+PASS current production matches final candidate; two PTY timing fixture changes match recorded hashes
+PASS workspace bin/dist artifacts match all final candidate hashes
+PASS final clean/native reports, native binary/package provenance and 44 named invariant checks
+PASS 33 collected native transcripts contain no private key or unmasked invitation
+PASS remaining technical conditions explicitly unexecuted; owner review deferred

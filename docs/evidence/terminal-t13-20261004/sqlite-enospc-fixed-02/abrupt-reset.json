@@ -1,0 +1,20 @@
+{
+  "fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "d680363d908f925bc5f8d83b6a848e90baf4d96191179b07c68553b71fbd28a0",
+  "guest_init_sha256": "f9a64eadb2a4391909c5eb76a74bcdbd84e7e6e565d20d5d172275a61846f66a",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-05T00:31:04Z",
+  "runs": [
+    {
+      "hook": "enospc.sqlite",
+      "success": true,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.663558682994335,
+      "enospc_seconds": 0.788658994002617,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.sqlite error=database or disk is full (13)\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.sqlite protected_hashes=true reopened=true"
+    }
+  ],
+  "success": true
+}

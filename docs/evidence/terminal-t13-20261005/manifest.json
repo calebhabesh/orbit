@@ -1,0 +1,119 @@
+{
+  "original_head": "61da64fca723f21ec888f4e7190e938fe231c3b1",
+  "source_kind": "development tree; original branch and index preserved",
+  "prior_campaign_candidate": "e37e2600cd236776d5161f3a293718098bd7500e",
+  "current_isolated_candidate": "00992f6d8b6afcde7dfaffe2c8aad8c27c847602",
+  "snapshot_manifest": "reproduction-hydration/snapshot-manifest.json",
+  "production_source_audit": "source-audit.json",
+  "correction_file_sha256": {
+    "internal/control/terminal_enrollment.go": "9c959549a70538911718f3b97262431cf1acd23ec0d45e70bb4a73f31855793f",
+    "internal/control/terminal_setup.go": "578bc208b786fa45d497bb9c682ef8e1c7a5e4d78f3b1be094858ce2fc5b3e16",
+    "internal/repository/peers.go": "8e9b00ab6131ad6dc9b9fc80b672ea2c934cbec7dbd866dbc70089582a10460b",
+    "internal/repository/retirement_hydration_test.go": "4a974a8feb7c2ff44beda489ee83464575fa3888e7770de750d4e9b173c1ca74",
+    "tests/terminal/retirement_release_test.go": "784ee3211502f395c751f651eb6722d2abe0305f25ecd9b95e1a34aebc38185a",
+    "scripts/validation/host_agent.py": "2b947e013d803274767d6f87e8be3a9a8a143b3307f3e0fb35f7f1e45d273ec4",
+    "scripts/validation/terminal_private.py": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d",
+    "scripts/validation/test_safety.py": "557125fe484884bf3fece5c4f0ae98ab9fbc73adc5f2e97a5595101005bab309"
+  },
+  "initial_error_reporting_phase_provenance": "manifest-error-reporting.json",
+  "development_package_sha256": {
+    "SHA256SUMS": "fd38c4f6e997062479b54223752246c9bba218df6545931d2322d01e703dc55d",
+    "filesync-1.0.0-1.aarch64.rpm": "02a1083e2a7bc1212f755b01ccc3376509c4dba4757d46730dc2ee2e08ef4f52",
+    "filesync-1.0.0-1.x86_64.rpm": "012be4d589a71ac5777876dc70966496081a0029f2c99d1c471428f085074bb2",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "dee0f9b66e76347fceb0a551b7c9c0edd1e34ddc3b25a56b5918a96177b46dcc",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "5af11a89e2d96eacd95608d514cb96df394b6dc117d08b313c874de5d8edf5f4",
+    "filesync_1.0.0_amd64.deb": "20678139b7f355fe80c8995ee790069fc51ef148b68414821a334d27d1eeca84",
+    "filesync_1.0.0_arm64.deb": "85fb2a3907528423ce0f4da3445e2bba0785a5ec01fcfccbd3f5f4b9a2b7d183",
+    "orbit-v1.0.0-linux-amd64.tar.gz": "dee0f9b66e76347fceb0a551b7c9c0edd1e34ddc3b25a56b5918a96177b46dcc",
+    "orbit-v1.0.0-linux-arm64.tar.gz": "5af11a89e2d96eacd95608d514cb96df394b6dc117d08b313c874de5d8edf5f4",
+    "release-manifest.json": "a06749f5b54e3f5bc3b201ce5c69c2ea5cc4fb2c5fe53b1b85e23326aa553fde"
+  },
+  "development_package_manifest": {
+    "browser_runtime_required": false,
+    "built": "2026-10-01",
+    "commit": "61da64f",
+    "config_format_version": 1,
+    "embedded_assets": {
+      "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+      "total_files": 3
+    },
+    "legacy_browser_entry": "orbit legacy-browser",
+    "license": "MIT",
+    "node_runtime_required": false,
+    "ordinary_entry": "terminal",
+    "product": "Orbit",
+    "pure_go_sqlite": true,
+    "release": "1",
+    "schema_version": 13,
+    "version": "1.0.0"
+  },
+  "development_binary_sha256": {
+    "bin/filesync": "099ad67841738a730ad02d35117122a40b8fe8f6c506c70222dec7fe4b6ad07d",
+    "bin/filesync-linux-arm64": "6329390d8ecd0813b95a8e9ccb5a28018df6380c031c7888062b832060c2b697"
+  },
+  "journeys": {
+    "local-private-05": {
+      "success": true,
+      "seconds": 153.06488533501397,
+      "physical_host_count": 1,
+      "cleanup_errors": [],
+      "runner_sha256": "258d2e628e57bf4120104640498cd843e3664f5b829de127739cea08ee248b6f"
+    },
+    "native-lan-05": {
+      "success": true,
+      "seconds": 291.6658575379988,
+      "physical_host_count": 2,
+      "cleanup_errors": [],
+      "runner_sha256": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d"
+    },
+    "tailscale-three-host-01": {
+      "success": true,
+      "seconds": 277.6363871289941,
+      "physical_host_count": 3,
+      "cleanup_errors": [],
+      "runner_sha256": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d",
+      "package_provenance": "Exact isolated clean candidate packages",
+      "package_hashes_match_clean_candidate": true,
+      "evidence": "tailscale-three-host-01/terminal-private.json"
+    }
+  },
+  "clean_reproduction": {
+    "state": "passed",
+    "evidence": "reproduction-hydration/clean-release/reproduction.json",
+    "checkout": "/tmp/filesync-reproduction-e3jo0307/checkout",
+    "source_commit": "00992f6d8b6afcde7dfaffe2c8aad8c27c847602",
+    "artifact_sha256": {
+      "SHA256SUMS": "5c47b75ec9c364c7b63b804a6453665d361db71b5ce0cdf291c653ecbb4536d4",
+      "filesync-1.0.0-1.aarch64.rpm": "72a5443713f8d21eb81c5f397600d4d1a640a5993a86c70ec2941eaf3bf5abd4",
+      "filesync-1.0.0-1.x86_64.rpm": "7506cf2539de2b5e2c387a3fa339aabb583d781290d262a1f536b04eb880515e",
+      "filesync-v1.0.0-linux-amd64.tar.gz": "b1a35866e966a3481891ee438a96152a3de736b16f5332035b52166cdb8fa211",
+      "filesync-v1.0.0-linux-arm64.tar.gz": "e19980400fd8e91d8d445e2be7e485c571a6c38157b11180048fe31b2451f769",
+      "filesync_1.0.0_amd64.deb": "6807c84838eea67feec99bb0b8cb1e944b0cf0de5e6ca9da510a509ae8b22052",
+      "filesync_1.0.0_arm64.deb": "946d9ca2f894dfaa1cbc23b892e9568f27b21cc672713507247910fb1107b617",
+      "orbit-v1.0.0-linux-amd64.tar.gz": "b1a35866e966a3481891ee438a96152a3de736b16f5332035b52166cdb8fa211",
+      "orbit-v1.0.0-linux-arm64.tar.gz": "e19980400fd8e91d8d445e2be7e485c571a6c38157b11180048fe31b2451f769",
+      "release-manifest.json": "ae46e984c2abf3991b54be6802497d9d79891c79f7d504e8bb735834d039cf03"
+    },
+    "packages_identical_on_repeat": true,
+    "final_tracked_changes": ""
+  },
+  "unexecuted": [
+    "Actual native login/logout and unattended boot in a designated disposable native environment"
+  ],
+  "production_source_matches_snapshot": true,
+  "provenance_limits": [
+    "Nine extracted package scenarios ran before retirement artifact correction; initial phase manifest retained",
+    "Successful native journey used development packages with original HEAD build labels; all current production source matches isolated candidate",
+    "Final native runner adds one exact observation-timeout retry after source snapshot; report records runner hash",
+    "Clean candidate packages carry isolated commit label and separate hashes; authenticated actual three-host Tailscale journey now passed; native lifecycle remains unexecuted"
+  ],
+  "authenticated_tailscale_preflight": {
+    "evidence": "tailscale-authenticated-preflight-01/terminal-private.json",
+    "preflight_success": true,
+    "hosts": [
+      "laptop",
+      "rpi",
+      "vps"
+    ]
+  }
+}

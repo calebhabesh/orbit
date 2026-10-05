@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT13StatusKeepsRunningAndStartupSeparate
+--- PASS: TestTerminalT13StatusKeepsRunningAndStartupSeparate (0.01s)
+=== RUN   TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads
+--- PASS: TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.027s

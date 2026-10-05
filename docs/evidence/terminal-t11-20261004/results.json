@@ -1,0 +1,107 @@
+{
+  "packet": "T11",
+  "state": "complete",
+  "checks": [
+    {
+      "check": "packet_discovery",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/discovery.log",
+      "test_executions": 7
+    },
+    {
+      "check": "packet_count2",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/packet-final.log",
+      "test_executions": 14
+    },
+    {
+      "check": "packet_race",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/packet-race-final.log",
+      "test_executions": 7
+    },
+    {
+      "check": "final_pty_race_confirmation",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/pty-race-confirmation.log",
+      "test_executions": 1
+    },
+    {
+      "check": "relevant_regressions",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/regressions.log"
+    },
+    {
+      "check": "explicit_cli",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/cli-final.log"
+    },
+    {
+      "check": "vt_oracle",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/vt-final.log",
+      "test_executions": 5
+    },
+    {
+      "check": "make_check",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/make-check-final.log"
+    },
+    {
+      "check": "full_make_test_race",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/make-test-race.log"
+    },
+    {
+      "check": "sanitized_pty_transcripts",
+      "result": "passed",
+      "exit_code": 0,
+      "log": "logs/pty-transcripts.log"
+    }
+  ],
+  "actual_assertions": [
+    "frozen review during polling and exact retry preservation",
+    "bounded path search and draft selection",
+    "unavailable content refusal and narrow help screen layout",
+    "qualified observations and partial effect tracking",
+    "bounded search and storage preview with live and stopped daemons",
+    "hash-and-stream session result staging with symlink rejection",
+    "two-daemon real PTY offline/reconnect concurrent heads",
+    "canonical diff and external editor invocation with non-zero exit code recovery",
+    "stale editor session refusal with fresh review renewal",
+    "exact select and keep copies conflict resolution",
+    "delete history restore with separate copy creation",
+    "storage preview with narrow root unavailable protection",
+    "terminal restoration and continued daemon sync after client quit"
+  ],
+  "intermediate_failures": [
+    {
+      "log": "logs/packet-race-final.log",
+      "disposition": "scheduler refreshRootWatches restored and revalidates ROOT_UNAVAILABLE without clearing in-memory paused state"
+    }
+  ],
+  "unexecuted": [
+    "native laptop/Pi/VPS",
+    "physical LAN/Tailscale",
+    "packaged bare entry/adoption",
+    "boot/login/logout/unattended host validation",
+    "VM reset/power loss",
+    "P17 actual owner use and unaided explanation"
+  ],
+  "next_packet": "T12",
+  "evidence": {
+    "commands": "commands.md",
+    "source_manifest": "manifest.json",
+    "summary": "summary.md",
+    "sanitized_transcripts": "transcripts/results.json"
+  }
+}

@@ -1,0 +1,8 @@
+=== RUN   TestOrbitBrowse_CLIStoppedAndLiveParity
+--- PASS: TestOrbitBrowse_CLIStoppedAndLiveParity (0.02s)
+=== RUN   TestRelocationCLIStoppedAndLive
+--- PASS: TestRelocationCLIStoppedAndLive (0.01s)
+=== RUN   TestTerminalT02RuntimeCLIReviewedReplay
+--- PASS: TestTerminalT02RuntimeCLIReviewedReplay (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.057s

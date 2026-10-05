@@ -1,0 +1,13 @@
+{
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "filesync: INTERNAL_ERROR: membership has a zero, duplicate, or active-and-retired member (action: inspect error logs and retry operation)\n",
+  "resources": {
+    "sampled_peak_fds": 3,
+    "sampled_peak_rss_kib": 8836,
+    "user_seconds": 0.012943999999999999,
+    "system_seconds": 0.0,
+    "peak_rss_kib": 27760,
+    "sampling_interval_seconds": 0.02
+  }
+}

@@ -1,0 +1,9 @@
+filesync-v1.0.0-linux-amd64.tar.gz: OK
+orbit-v1.0.0-linux-amd64.tar.gz: OK
+filesync_1.0.0_amd64.deb: OK
+filesync-1.0.0-1.x86_64.rpm: OK
+filesync-v1.0.0-linux-arm64.tar.gz: OK
+orbit-v1.0.0-linux-arm64.tar.gz: OK
+filesync_1.0.0_arm64.deb: OK
+filesync-1.0.0-1.aarch64.rpm: OK
+release-manifest.json: OK

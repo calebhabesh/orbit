@@ -1,0 +1,140 @@
+{
+  "source_commit": "e37e2600cd236776d5161f3a293718098bd7500e",
+  "checkout": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+  "started_utc": "2026-10-05T02:09:04Z",
+  "checks": [
+    {
+      "name": "status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 0.05430386899388395
+    },
+    {
+      "name": "check",
+      "command": [
+        "make",
+        "check"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 392.9808127669967
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./..."
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 347.1619573390053
+    },
+    {
+      "name": "demo",
+      "command": [
+        "make",
+        "demo"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 0.6051189940044424
+    },
+    {
+      "name": "reset",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reset"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 35.359925709009985
+    },
+    {
+      "name": "disk-full",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/disk-full",
+        "--hook",
+        "enospc.object",
+        "--hook",
+        "enospc.sqlite",
+        "--hook",
+        "enospc.checkpoint",
+        "--hook",
+        "enospc.staging",
+        "--hook",
+        "enospc.fsync"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 8.086518106007134
+    },
+    {
+      "name": "checksum",
+      "command": [
+        "sha256sum",
+        "-c",
+        "SHA256SUMS"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout/dist",
+      "exit_code": 0,
+      "seconds": 0.050288931000977755
+    },
+    {
+      "name": "package-repeat",
+      "command": [
+        "make",
+        "package"
+      ],
+      "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+      "exit_code": 0,
+      "seconds": 1.3948969350021798
+    }
+  ],
+  "success": true,
+  "cleanup": "fresh marked checkout retained; no existing environment reset",
+  "artifact_sha256": {
+    "SHA256SUMS": "f8cd58d2b416cf6c84947b191728aae7ff3b638ad5e29689d6c40ff7d5e83736",
+    "filesync-1.0.0-1.aarch64.rpm": "bcefe3107d990698447214dc8ab7ee30bd6dd46bb2079a42cf83cc2d6c2f4e78",
+    "filesync-1.0.0-1.x86_64.rpm": "f735c5d70a5da131fd7e6734b0bb428c21fbe0abaeef3d8e2b52fb0be2af074b",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+    "filesync_1.0.0_amd64.deb": "c8457817819be8e8144b67777c7d78d032e3067274e0286af556726fac55cb2b",
+    "filesync_1.0.0_arm64.deb": "8ecac914fa201e2db0514fc3f970c67b1f9cdf3a248822e86f4319e1bb210d60",
+    "orbit-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+    "orbit-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+    "release-manifest.json": "e13fd412d44b51fe108331e4c2ce82f53b60815f5a148a0f8c0065a4186cfdcd"
+  },
+  "binary_version": "filesync 1.0.0 (commit=e37e260, built=2026-10-01, linux/amd64, go=go1.27.1-X:nodwarf5)\n",
+  "orbit_version": "Orbit Personal File Manager v1.0.0 (filesync compat v1.0.0)\nCommit: e37e260 (built 2026-10-01)\nRuntime: linux/amd64 (go1.27.1-X:nodwarf5, pure-Go SQLite, zero Node runtime)\nSchema: SQLite user_version 13, Config format 1\nEmbedded Assets: 3 files (SHA-256: ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e)\n",
+  "repeat_artifact_sha256": {
+    "SHA256SUMS": "f8cd58d2b416cf6c84947b191728aae7ff3b638ad5e29689d6c40ff7d5e83736",
+    "filesync-1.0.0-1.aarch64.rpm": "bcefe3107d990698447214dc8ab7ee30bd6dd46bb2079a42cf83cc2d6c2f4e78",
+    "filesync-1.0.0-1.x86_64.rpm": "f735c5d70a5da131fd7e6734b0bb428c21fbe0abaeef3d8e2b52fb0be2af074b",
+    "filesync-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+    "filesync-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+    "filesync_1.0.0_amd64.deb": "c8457817819be8e8144b67777c7d78d032e3067274e0286af556726fac55cb2b",
+    "filesync_1.0.0_arm64.deb": "8ecac914fa201e2db0514fc3f970c67b1f9cdf3a248822e86f4319e1bb210d60",
+    "orbit-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+    "orbit-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+    "release-manifest.json": "e13fd412d44b51fe108331e4c2ce82f53b60815f5a148a0f8c0065a4186cfdcd"
+  },
+  "packages_identical_on_repeat": true,
+  "final_tracked_changes": ""
+}

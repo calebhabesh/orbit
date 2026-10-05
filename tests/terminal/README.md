@@ -30,3 +30,54 @@ Evidence, dispositions, packet ownership and the source-only cases are recorded
 in [the T00 report](../../docs/evidence/terminal-t00-20261003/summary.md).
 Run broad gates sequentially: packaging tests and `make check` write the same
 `dist` artifacts, so overlapping them can invalidate packaging observations.
+
+T12 adds bare entry/legacy discovery and adoption replay tests, plus the same
+real PTY lifetime oracle using bare entry. `make test` includes cmd/filesync;
+`make check` includes tests/terminal and `make test-terminal-packages`, which
+checks every payload/checksum, actual native extracted entry, standalone repeated
+installation/custom-unit preservation/uninstall, and package-extracted bare PTY.
+Optional `python3 scripts/terminal_package_test.py --dist dist --containers
+--emulate-arm64` performs actual Debian/Fedora manager transactions in new --rm
+containers and arm64 execution through QEMU copied from the local multiarch image.
+It does not establish native arm64, systemd login/logout/boot or LAN/Tailscale.
+
+T13 adds a 1,024-file status fixture, 512 reviewed deletions with cursor paging,
+and actual streamed 8/32-MiB editor merges. `make test-terminal-release` runs
+these twice with both tests and spawned binaries instrumented for races. RSS and
+descriptor samples describe the measured CLI processes, not an unlimited-scale
+or speed guarantee. The suite also checks running-versus-startup status,
+quarantined payloads/concurrent heads, and disposable-harness refusal paths.
+The retirement release cases exercise exact reviewed retired-key approval refusal
+and fresh replacement onboarding after retirement. Replacement must recover the
+original retired-author version and bytes, including when an interrupted owner
+already has approved membership without its canonical artifacts. Repository
+regressions separately reject wrong artifacts and unknown retired-author history.
+
+Release commands retain failed experiments in separate evidence directories:
+
+```sh
+python3 scripts/validation/snapshot_release.py --kernel /boot/vmlinuz-linux --output /new/reproduction
+python3 scripts/validation/terminal_native.py --dist /snapshot/dist --hosts laptop rpi --output /new/lan
+python3 scripts/validation/terminal_hosts.py --dist /snapshot/dist --hosts laptop rpi vps --output /new/hosts
+python3 scripts/validation/terminal_private.py --dist /snapshot/dist \
+  --hosts laptop rpi vps --addresses <laptop-ip> <pi-ip> <vps-ip> \
+  --network tailscale --output /new/private
+```
+
+The snapshot runner commits an isolated copy of the current dirty source and
+validates a clean clone, recording every input hash without changing the original
+index or branch. Native runners extract checksum-verified packages into marked
+roots. The LAN runner uses ordinary create/invite/join/exact approval controls;
+SSH carries harness commands, while Orbit transfers directly over the recorded
+interfaces. The host runner uses real PTYs and unique private systemd user units,
+checks capture/restart/uninstall and preserves installed aliases. Neither runner
+changes firewall/VPN policy, enables lingering or reboots an existing workload.
+The private runner extends ordinary onboarding with offline-source forwarding,
+exact survivor retirement review, CLI-exported membership rollout, retired-key
+refusal and a fresh replacement preserving retired data. Tailscale mode requires
+authenticated host addresses/routes before creating installations. A rehearsal
+with fewer than three physical hosts is explicitly labeled and cannot establish
+laptop/Pi/VPS acceptance.
+Live SQLite inspection is replaced by authenticated history queries; interrupted
+transfer waits on hash-verified immutable objects and inspects persisted progress
+only after stopping its own marked worker.

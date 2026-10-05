@@ -1,0 +1,52 @@
+Orbit
+Daemon: running   Startup: manual (not enabled)
+[Overview]  Folders  Attention  Devices
+Search page:
+Devices: device-0654ed71 | d: inspect
+Needs attention, then synced folders (first pages)
+> Notes界  <disposable>/Notes界
+j/k Enter / ? q | c create J join a add s share w requests u setupKeyboard help
+q / Ctrl-C: close interface
+Sync and committed work continue.
+j/k or arrows: select
+left/right or o/f/n/d: section
+Tab or /: search this page
+Enter: inspect   Esc: back
+r: refresh   ]: next page   [: first page
+e: configured external tool
+b: storage; folder v status h history D deleted C conflicts
+Daemon stop: orbit service stop
+c: create/adopt  J: join  a: add device
+s: share folder  w: requests  u: unfinished setupDevices: device-0654ed71 | d: inspect
+Needs attention, then synced folders (first pages)
+> Notes界  <disposable>/Notes界> Search page: jkq?界 
+
+
+No items on this page.
+Create or join a folder: orbit setup / orbit join
+Type to filter this page; Enter/Esc returns to navigationSearch page: jkq?界j/k Enter / ? q | c create J join a add s share w requests u setup\x1bMSearch page:
+
+
+> Notes界  <disposable>/Notes界unknown   Startup: unknown
+Overview  [Folders]
+
+> Notes界  <disposable>/Notes界\x1bM> Search page: folder, path or device
+> Notes界  <disposable>/Notes界
+Type to filter this page; Enter/Esc returns to navigation| Inspect folder and devices
+Root: <disposable>/Notes界
+Local pause=false; membership revision=1
+Shares with: Device 0654ed71
+Last contact/copy observation: unknown.
+v copy status | h path history | D deleted | C conflicts | b storage
+v h D C b | p pause l relocate a add s share x unregister t retire ?\x1bM
+Daemon: unknown   Startup: unknown
+Overview  [Folders]  Attention  Devices
+Search page:
+> Notes界  <disposable>/Notes界
+j/k Enter / ? q | c create J join a add s share w requests u setupOrbit
+Daemon: unknown   Startup: unknown
+Folders | f n d o
+Search page:
+> Notes界  <disposable>/…
+j/k Enter / ? q\x1bM> Notes界  <disposable>/…TOOL_READY
+filesync: program was killed: context canceled

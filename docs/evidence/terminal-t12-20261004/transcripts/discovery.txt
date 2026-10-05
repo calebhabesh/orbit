@@ -1,0 +1,5 @@
+TestTerminalT12BareEntryAndLegacyDiscovery
+TestTerminalT12LegacySettingsExactlyOnce
+TestTerminalT12BareRealPTY
+TestTerminalT12MixedCapabilitiesRefuseBeforeAction
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s

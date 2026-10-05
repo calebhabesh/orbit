@@ -1,0 +1,159 @@
+{
+  "started_utc": "2026-10-05T11:45:28Z",
+  "success": false,
+  "network": "tailscale",
+  "hosts": [],
+  "preflight": [
+    {
+      "host": "laptop",
+      "role": "source",
+      "routes": {
+        "192.168.88.83": [
+          {
+            "type": "local",
+            "dst": "192.168.88.83",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "192.168.88.83",
+            "flags": [],
+            "uid": 1000,
+            "cache": [
+              "local"
+            ]
+          }
+        ],
+        "192.168.88.63": [
+          {
+            "dst": "192.168.88.63",
+            "dev": "wlp2s0",
+            "prefsrc": "192.168.88.83",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ],
+        "10.0.0.1": [
+          {
+            "dst": "10.0.0.1",
+            "gateway": "192.168.88.1",
+            "dev": "wlp2s0",
+            "prefsrc": "192.168.88.83",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": false,
+        "authenticated": false
+      },
+      "hostname": "owner-laptop",
+      "arch": "x86_64"
+    },
+    {
+      "host": "rpi",
+      "role": "receiver",
+      "routes": {
+        "192.168.88.83": [
+          {
+            "dst": "192.168.88.83",
+            "dev": "eth0",
+            "prefsrc": "192.168.88.63",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ],
+        "192.168.88.63": [
+          {
+            "type": "local",
+            "dst": "192.168.88.63",
+            "dev": "lo",
+            "prefsrc": "192.168.88.63",
+            "flags": [],
+            "uid": 1000,
+            "cache": [
+              "local"
+            ]
+          }
+        ],
+        "10.0.0.1": [
+          {
+            "dst": "10.0.0.1",
+            "gateway": "192.168.88.1",
+            "dev": "eth0",
+            "prefsrc": "192.168.88.63",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": false,
+        "authenticated": false
+      },
+      "hostname": "owner-pi",
+      "arch": "aarch64"
+    },
+    {
+      "host": "vps",
+      "role": "forwarder",
+      "routes": {
+        "192.168.88.83": [
+          {
+            "dst": "192.168.88.83",
+            "gateway": "10.0.0.1",
+            "dev": "enp0s6",
+            "prefsrc": "10.0.0.187",
+            "flags": [],
+            "uid": 1001,
+            "cache": []
+          }
+        ],
+        "192.168.88.63": [
+          {
+            "dst": "192.168.88.63",
+            "gateway": "10.0.0.1",
+            "dev": "enp0s6",
+            "prefsrc": "10.0.0.187",
+            "flags": [],
+            "uid": 1001,
+            "cache": []
+          }
+        ],
+        "10.0.0.1": [
+          {
+            "type": "local",
+            "dst": "10.0.0.1",
+            "dev": "lo",
+            "prefsrc": "10.0.0.1",
+            "flags": [],
+            "uid": 1001,
+            "cache": [
+              "local"
+            ]
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": false,
+        "authenticated": false
+      },
+      "hostname": "main-instance-vnic",
+      "arch": "aarch64"
+    }
+  ],
+  "scenarios": {},
+  "personal_use": false,
+  "limitations": [
+    "No login/logout/boot validation",
+    "No network or host policy changes",
+    "Replacement is a fresh installation on the receiver's host"
+  ],
+  "error": "source",
+  "cleanup_errors": [],
+  "seconds": 1.6602292740135454,
+  "ended_utc": "2026-10-05T11:45:30Z"
+}

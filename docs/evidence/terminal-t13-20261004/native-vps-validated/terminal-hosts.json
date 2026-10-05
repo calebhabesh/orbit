@@ -1,0 +1,208 @@
+{
+  "started_utc": "2026-10-05T02:05:10Z",
+  "success": false,
+  "hosts": [
+    {
+      "host": "vps",
+      "success": false,
+      "root": "/home/ubuntu/filesync-validation-0si14rf0",
+      "inventory": {
+        "hostname": "main-instance-vnic",
+        "kernel": "Linux 6.17.0-1018-oracle",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime,discard,errors=remount-ro,commit=30",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Neoverse-N1\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r3p1\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"50.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; CSV2, BHB\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda1      50884108288 11430260736 39437070336  23% /\n",
+        "route": "default via 10.0.0.1 dev enp0s6 proto dhcp src 10.0.0.187 metric 100 \n10.0.0.0/24 dev wg0 proto kernel scope link src 10.0.0.1 \n10.0.0.0/24 dev enp0s6 proto kernel scope link src 10.0.0.187 metric 100 \n10.0.0.1 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.0.0/16 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.169.254 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-5f4d10805c99 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-0dc61c115f47 proto kernel scope link src 172.19.0.1 \n"
+      },
+      "network": {
+        "addresses": [
+          {
+            "ifindex": 1,
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 65536,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host",
+                "label": "lo",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2,
+            "ifname": "enp0s6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 9000,
+            "qdisc": "mq",
+            "operstate": "UP",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "10.0.0.187",
+                "prefixlen": 24,
+                "metric": 100,
+                "broadcast": "10.0.0.255",
+                "scope": "global",
+                "dynamic": true,
+                "label": "enp0s6",
+                "valid_life_time": 49780,
+                "preferred_life_time": 49780
+              }
+            ]
+          },
+          {
+            "ifindex": 3,
+            "ifname": "wg0",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 8920,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "10.0.0.1",
+                "prefixlen": 24,
+                "scope": "global",
+                "label": "wg0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 5,
+            "ifname": "docker0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "DOWN",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.17.255.255",
+                "scope": "global",
+                "label": "docker0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 1173,
+            "ifname": "br-5f4d10805c99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.18.255.255",
+                "scope": "global",
+                "label": "br-5f4d10805c99",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2247,
+            "ifname": "br-0dc61c115f47",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.19.255.255",
+                "scope": "global",
+                "label": "br-0dc61c115f47",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          }
+        ],
+        "linger": "Linger=no",
+        "tailscale_available": false
+      },
+      "provenance": {
+        "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+        "package_sha256": "59fc5435e19dd455248903f2c719efb064592af00e893ba92c1567aa9ae4da6f",
+        "binary_sha256": "9e7c8361218d3510ce6ecb1c0cd15aad56e0c65388cadd43e5ad6ed7d2ddc0f4"
+      },
+      "pty": {
+        "terminal_pty_test.py": {
+          "returncode": 0,
+          "stdout": "[\n  {\n    \"scenario\": \"80x24-quit-tool\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"40x16-ctrl-c-tool-failure\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-daemon-reconnect\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"locked unavailable daemon, retry and reconnection\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-tool-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"pipe-and-continued-capture\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"no terminal escapes in pipe\",\n      \"protected working bytes intact\",\n      \"actual new digest in captured history\",\n      \"same device identity\"\n    ]\n  }\n]\n",
+          "seconds": 11.049997844005702
+        },
+        "terminal_onboarding_pty_test.py": {
+          "returncode": 0,
+          "stdout": "[\n  {\n    \"scenario\": \"two-process-onboarding\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"nonempty measured review; validation/back/edit\",\n      \"private expired and wrong-pin refusal\",\n      \"exact transcript code and approval\",\n      \"pending client exit/reopen/daemon restart\",\n      \"actual verified bidirectional file bytes\",\n      \"local pause/resume, actual relocation and unregister preview\",\n      \"second folder distinct consent and attempt; device identities retained\",\n      \"actual startup failure under missing-system-tool fixture\",\n      \"terminal restoration\"\n    ]\n  }\n]\n",
+          "seconds": 63.04029220400844
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Unique scoped user units; installed aliases preserved",
+    "No logout/login/boot or unattended claim",
+    "Automated use, not personal adoption"
+  ],
+  "ended_utc": "2026-10-05T02:07:38Z"
+}

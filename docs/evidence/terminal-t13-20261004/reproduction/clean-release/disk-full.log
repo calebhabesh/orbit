@@ -1,0 +1,11 @@
+PASS actual guest disk exhaustion: enospc.object
+Traceback (most recent call last):
+  File "/tmp/filesync-reproduction-d7xkarj_/checkout/scripts/validation/abrupt_reset.py", line 127, in <module>
+    main()
+    ~~~~^^
+  File "/tmp/filesync-reproduction-d7xkarj_/checkout/scripts/validation/abrupt_reset.py", line 110, in main
+    text, elapsed = boot(root, disk, args.kernel, mode, hook, args.output / f"{hook}-{mode}.log")
+                    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/filesync-reproduction-d7xkarj_/checkout/scripts/validation/abrupt_reset.py", line 58, in boot
+    raise RuntimeError("VM exited before expected boundary")
+RuntimeError: VM exited before expected boundary

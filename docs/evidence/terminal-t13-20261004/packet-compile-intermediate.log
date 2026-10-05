@@ -1,0 +1,4 @@
+# github.com/calebhabesh/file-sync/internal/control
+internal/control/terminal_status.go:15:2: "github.com/calebhabesh/file-sync/internal/config" imported and not used
+FAIL	github.com/calebhabesh/file-sync/tests/terminal [build failed]
+FAIL

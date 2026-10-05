@@ -1,0 +1,17 @@
+=== RUN   TestTerminalT13LargeDirectoryAndStreamedMergeResources
+    release_test.go:143: resource command=deleted input_fixture_files=1024 samples=274 interval_ms=5 sampled_peak_rss_kib=54808 child_ru_maxrss_kib=315328 sampled_peak_fds=6 output_bytes=9873 seconds=1.375
+    release_test.go:148: resource command=status input_fixture_files=1024 samples=1027 interval_ms=5 sampled_peak_rss_kib=50684 child_ru_maxrss_kib=315328 sampled_peak_fds=6 output_bytes=405 seconds=5.139
+    release_test.go:148: CLI [orbit status --state /tmp/TestTerminalT13LargeDirectoryAndStreamedMergeResources568310542/001/state --json]: exit status 1 {"versions":null,"version":"1","capabilities":null,"state":"failed","items":null,"requests":null,"observations":null,"attention":null,"effects":null,"cursor":"","error":{"code":"INTERNAL_ERROR","message":"Post \"http://127.0.0.1:34259/control/terminal/v1/query\": net/http: timeout awaiting response headers","retryable":false,"action":"inspect error logs and retry operation","retry_after_seconds":"0"}}
+--- FAIL: TestTerminalT13LargeDirectoryAndStreamedMergeResources (25.98s)
+=== RUN   TestTerminalT13NativeHarnessRefusesUnsafeActions
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.05s)
+=== RUN   TestTerminalT13LargeDirectoryAndStreamedMergeResources
+    release_test.go:143: resource command=deleted input_fixture_files=1024 samples=276 interval_ms=5 sampled_peak_rss_kib=53016 child_ru_maxrss_kib=326052 sampled_peak_fds=6 output_bytes=9872 seconds=1.386
+    release_test.go:148: resource command=status input_fixture_files=1024 samples=1027 interval_ms=5 sampled_peak_rss_kib=50852 child_ru_maxrss_kib=326052 sampled_peak_fds=6 output_bytes=405 seconds=5.141
+    release_test.go:148: CLI [orbit status --state /tmp/TestTerminalT13LargeDirectoryAndStreamedMergeResources2735721722/001/state --json]: exit status 1 {"versions":null,"version":"1","capabilities":null,"state":"failed","items":null,"requests":null,"observations":null,"attention":null,"effects":null,"cursor":"","error":{"code":"INTERNAL_ERROR","message":"Post \"http://127.0.0.1:35085/control/terminal/v1/query\": net/http: timeout awaiting response headers","retryable":false,"action":"inspect error logs and retry operation","retry_after_seconds":"0"}}
+--- FAIL: TestTerminalT13LargeDirectoryAndStreamedMergeResources (26.28s)
+=== RUN   TestTerminalT13NativeHarnessRefusesUnsafeActions
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.05s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	52.368s
+FAIL

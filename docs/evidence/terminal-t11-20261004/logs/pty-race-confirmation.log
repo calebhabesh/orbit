@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT11RealPTYEveryday
+    everyday_test.go:135: {"result": "passed", "scenarios": ["real offline/reconnect concurrent heads", "canonical diff/editor failed exit", "stale editor refusal and fresh review", "exact select and keep copies", "delete history restore and separate copy", "storage preview narrow root block", "terminal restoration and daemon transfer after quit"]}
+        
+--- PASS: TestTerminalT11RealPTYEveryday (62.92s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	63.921s

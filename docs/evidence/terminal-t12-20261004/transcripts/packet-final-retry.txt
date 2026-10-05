@@ -1,0 +1,171 @@
+=== RUN   TestTerminalT12BareEntryAndLegacyDiscovery
+--- PASS: TestTerminalT12BareEntryAndLegacyDiscovery (0.60s)
+=== RUN   TestTerminalT12LegacySettingsExactlyOnce
+--- PASS: TestTerminalT12LegacySettingsExactlyOnce (0.02s)
+=== RUN   TestTerminalT12BareRealPTY
+    packages_test.go:127: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT12BareRealPTY (10.57s)
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content
+    packages_test.go:167: incorrect next action: INVALID_REQUEST: query kind
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management
+--- FAIL: TestTerminalT12MixedCapabilitiesRefuseBeforeAction (0.04s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control (0.01s)
+    --- FAIL: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management (0.01s)
+=== RUN   TestTerminalT12BareEntryAndLegacyDiscovery
+--- PASS: TestTerminalT12BareEntryAndLegacyDiscovery (0.43s)
+=== RUN   TestTerminalT12LegacySettingsExactlyOnce
+--- PASS: TestTerminalT12LegacySettingsExactlyOnce (0.02s)
+=== RUN   TestTerminalT12BareRealPTY
+    packages_test.go:127: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT12BareRealPTY (10.57s)
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content
+    packages_test.go:167: incorrect next action: INVALID_REQUEST: query kind
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management
+--- FAIL: TestTerminalT12MixedCapabilitiesRefuseBeforeAction (0.04s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control (0.01s)
+    --- FAIL: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management (0.01s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	22.281s
+FAIL

@@ -1,0 +1,4 @@
+=== RUN   TestTerminalT13RetiredIdentityApprovalHasRecoveryAction
+--- PASS: TestTerminalT13RetiredIdentityApprovalHasRecoveryAction (13.04s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	13.040s

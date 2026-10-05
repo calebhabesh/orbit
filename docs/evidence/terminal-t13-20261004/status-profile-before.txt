@@ -1,0 +1,33 @@
+File: terminal.test
+Build ID: ce2ab27032f0c6ff6527b7cae52a5bf8341db75b
+Type: cpu
+Time: 2026-10-04 20:12:00 EDT
+Duration: 20.29s, Total samples = 20.97s (103.35%)
+Showing nodes accounting for 0.13s, 0.62% of 20.97s total
+Dropped 775 nodes (cum <= 0.10s)
+Showing top 24 nodes out of 285
+      flat  flat%   sum%        cum   cum%
+         0     0%     0%     14.93s 71.20%  testing.tRunner
+         0     0%     0%     14.92s 71.15%  github.com/calebhabesh/file-sync/tests/terminal_test.TestStatusProbe
+     0.01s 0.048% 0.048%     13.78s 65.71%  database/sql.withLock
+         0     0% 0.048%      9.73s 46.40%  modernc.org/sqlite/lib._sqlite3Prepare
+         0     0% 0.048%      9.71s 46.30%  modernc.org/sqlite.(*conn).prepareV2
+         0     0% 0.048%      9.69s 46.21%  modernc.org/sqlite.newStmt
+         0     0% 0.048%      9.69s 46.21%  modernc.org/sqlite/lib.Xsqlite3_prepare_v2 (inline)
+         0     0% 0.048%      9.69s 46.21%  modernc.org/sqlite/lib._sqlite3LockAndPrepare
+     0.01s 0.048% 0.095%      9.67s 46.11%  modernc.org/sqlite/lib._sqlite3RunParser
+     0.01s 0.048%  0.14%      9.33s 44.49%  database/sql.(*DB).queryDC
+         0     0%  0.14%      9.25s 44.11%  database/sql.(*DB).queryDC.func1
+         0     0%  0.14%      9.24s 44.06%  database/sql.ctxDriverQuery
+         0     0%  0.14%      9.24s 44.06%  modernc.org/sqlite.(*conn).QueryContext
+         0     0%  0.14%      9.24s 44.06%  modernc.org/sqlite.(*conn).query
+     0.02s 0.095%  0.24%      9.24s 44.06%  modernc.org/sqlite/lib._sqlite3Parser
+         0     0%  0.24%      8.86s 42.25%  database/sql.(*DB).retry
+     0.07s  0.33%  0.57%      8.82s 42.06%  modernc.org/sqlite/lib._yy_reduce
+         0     0%  0.57%      8.24s 39.29%  database/sql.(*DB).QueryContext
+     0.01s 0.048%  0.62%      8.24s 39.29%  database/sql.(*DB).QueryContext.func1
+         0     0%  0.62%      8.23s 39.25%  database/sql.(*DB).query
+         0     0%  0.62%      7.12s 33.95%  github.com/calebhabesh/file-sync/internal/repository.(*DB).envelopeAndState
+         0     0%  0.62%      6.47s 30.85%  github.com/calebhabesh/file-sync/internal/repository.loadHistoryQuery
+         0     0%  0.62%      6.27s 29.90%  github.com/calebhabesh/file-sync/internal/repository.loadHistoryReadOnly (inline)
+         0     0%  0.62%      6.24s 29.76%  github.com/calebhabesh/file-sync/internal/workspace.(*Workspace).Scan

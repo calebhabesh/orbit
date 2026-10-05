@@ -1,0 +1,27 @@
+PASS actual guest disk exhaustion: enospc.object
+PASS actual guest disk exhaustion: enospc.sqlite
+PASS actual guest disk exhaustion: enospc.checkpoint
+PASS actual guest disk exhaustion: enospc.staging
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/abrupt_reset.py", line 127, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/validation/abrupt_reset.py", line 110, in main
+    text, elapsed = boot(root, disk, args.kernel, mode, hook, args.output / f"{hook}-{mode}.log")
+                    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/abrupt_reset.py", line 61, in boot
+    raise RuntimeError(output.decode(errors="replace")[-3000:])
+RuntimeError: c[?7l[2J[0mSeaBIOS (version Arch Linux 1.17.0-2-2)
+Booting from ROM...
+Probing EDD (edd=off to disable)... oc[?7l[2J[    0.152034] virt/tdx: TDX not supported by the host platform
+panic: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+
+goroutine 1 [running]:
+main.must(...)
+	./reset_guest.go:32
+main.fsyncWorker()
+	./reset_guest.go:147 +0x445
+main.main()
+	./reset_guest.go:175 +0x85
+FILESYNC_RESET_FAIL exit status 2
+

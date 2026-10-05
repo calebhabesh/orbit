@@ -40,6 +40,12 @@ class Peer(Campaign):
     def initialize(self):
         self.run("init", "--state", str(self.state))
         ip = socket.gethostbyname(socket.gethostname())
+        if ip.startswith("127."):
+            # Some Linux hosts map their hostname to 127.0.1.1. A UDP route
+            # lookup chooses an existing interface without sending a packet.
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as route:
+                route.connect(("192.0.2.1", 9))
+                ip = route.getsockname()[0]
         assert not ip.startswith("127."), "nonloopback interface required"
         sockets = []
         for _ in range(2):
@@ -72,13 +78,13 @@ class Peer(Campaign):
 
 
 class UI:
-    def __init__(self, peer, name, size=(80, 24)):
+    def __init__(self, peer, name, size=(80, 24), extra=None):
         self.peer, self.name = peer, name
         self.master, self.slave = pty.openpty()
         fcntl.ioctl(self.slave, termios.TIOCSWINSZ, struct.pack("HHHH", size[1], size[0], 0, 0))
         self.before = copy.deepcopy(termios.tcgetattr(self.slave))
         self.screen = Screen(*size); self.raw = bytearray(); self.frames = []
-        self.p = peer.spawn(["orbit", "tui", "--state", str(peer.state), "--no-color"],
+        self.p = peer.spawn(["orbit", "tui", "--state", str(peer.state), "--no-color"] + (extra or []),
                             stdin=self.slave, stdout=self.slave, stderr=self.slave,
                             env=dict(os.environ, TERM="xterm-256color", NO_COLOR="1"))
 
@@ -184,7 +190,7 @@ def run(binary, output):
         a,b=peers
         (a.data/"owner.txt").write_bytes(b"owner preexisting bytes")
         (b.data/"local.txt").write_bytes(b"joining preexisting bytes")
-        ua=UI(a,"create-nonempty-back-edit");active.append(ua);ua.wait("Create or join")
+        ua=UI(a,"create-nonempty-back-edit");active.append(ua);ua.wait("Join an existing Orbit [j]")
         ua.send(b"c");ua.wait("Review setup inputs")
         # Invalid root retains draft and requires correction.
         ua.replace("Laptop");ua.send(b"\t");ua.replace("Notes");ua.send(b"\t");ua.replace("relative-root");ua.send(b"\r");ua.wait("absolute local root")
@@ -195,7 +201,7 @@ def run(binary, output):
         ua.back();ua.wait("[Overview]")
         inv=invite(ua,a,a.root/"invite.json")
         code="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(inv).encode()).decode().rstrip("=")
-        ub=UI(b,"join-private-errors-delayed-approval");active.append(ub);ub.wait("Create or join");ub.send(b"j");ub.wait("Join invitation")
+        ub=UI(b,"join-private-errors-delayed-approval");active.append(ub);ub.wait("Join an existing Orbit [j]");ub.send(b"j");ub.wait("Join invitation")
         expired=dict(inv,expires_at="2000-01-01T00:00:00Z")
         expired_code="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(expired).encode()).decode().rstrip("=")
         ub.replace(expired_code);ub.send(b"\r");ub.wait("INVITATION_EXPIRED")
@@ -221,7 +227,7 @@ def run(binary, output):
         ub.back();ub.wait("Overview |")
         ua.back();ua.wait("[Overview]")
         # Local pause/resume uses actual root state, and relocation preserves bytes.
-        ua.send(b"f");ua.wait("[Folders]");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
+        ua.send(b"f");ua.wait("[Folders]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
         ua.send(b"p");ua.wait("Confirm local pause");ua.send(b"\r");ua.wait("Local pause=true")
         assert a.query("folder_management",folder=folder)["folder_management"]["paused"]
         ua.send(b"p");ua.wait("Confirm local resume");ua.send(b"\r");ua.wait("Local pause=false")

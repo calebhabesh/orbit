@@ -1,0 +1,5 @@
+TestTerminalT13LargeDirectoryAndStreamedMergeResources
+TestTerminalT13NativeHarnessRefusesUnsafeActions
+TestTerminalT13StatusKeepsRunningAndStartupSeparate
+TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.001s

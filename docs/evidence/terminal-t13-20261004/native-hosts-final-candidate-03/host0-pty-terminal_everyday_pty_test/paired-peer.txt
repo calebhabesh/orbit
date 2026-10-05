@@ -1,0 +1,99 @@
+Orbit | Create or join                  
+Create your Orbit [c / Enter]           
+Join an existing Orbit [j]              
+Existing folder contents are reviewed   
+before adoption.                        
+Closing this interface leaves background
+sync running.                           
+Esc back  q quit (daemon continues)     
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Join invitation                 
+Paste a private v2 invitation or enter  
+an absolute private file path.          
+The invitation is hidden and never      
+included in status/logs.                
+> Private invitation:                   
+Enter verify  Esc back  Ctrl-C close    
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Review setup inputs             
+Supported existing contents will become 
+shared.                                 
+LAN / existing Tailscale: advertise     
+reachable numeric IP:port.              
+Startup: login needs user systemd;      
+unattended also needs lingering.        
+> Device name: owner-pi                
+  Folder name: Orbit                    
+  Local root: /home/owner/Orbit   
+  Startup (manual/login/unattended):    
+manual                                  
+  Data budget (bytes): 4000000000       
+  Peer listen (IP:port):                
+Tab next  Shift-Tab back  Enter preview 
+Ctrl-A advanced  Esc back               
+--- frame ---
+Orbit | Confirm adoption                
+Device: Pi                              
+Folder: Notes                           
+Root: <disposable>/Notes界                        
+Existing supported local contents become
+shared; nothing is erased.              
+Inviter:                                
+0a483fd73983b30b553be5f02ef84b70285a0a5f
+32be174c4b58e0db0dfebb03                
+Key pin:                                
+043d2f98b03616b262655a9e6b1f11774ba0170d
+b6daa178bc2cbf41e94bedc6                
+Enrollment: https://192.168.88.63:53955 
+Enter confirm exact review  Esc edit    
+arrows scroll  q quit                   
+--- frame ---
+Orbit | Setup progress                  
+State: running | Waiting for approval   
+Approved=false membership current=false 
+root available=false scan complete=false
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Local readiness incomplete. Work remains
+pending.                                
+Operation:                              
+5accc4231d6c885ae1ba4a2bdb57b88b00172c8b
+8b1503ae510dcc3401f86bbc                
+Root: <disposable>/Notes界                        
+r refresh  J new reviewed join  Esc     
+overview  q quit                        
+--- frame ---
+Orbit | Setup progress                  
+State: completed | Local readiness      
+observed                                
+Approved=true membership current=true   
+root available=true scan complete=true  
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Locally ready (observed). Other offline 
+devices may remain pending.             
+Operation:                              
+5accc4231d6c885ae1ba4a2bdb57b88b00172c8b
+8b1503ae510dcc3401f86bbc                
+Root: /tmp/orbit-t11-pty-               
+r refresh  J new reviewed join  Esc     
+overview  q quit                        

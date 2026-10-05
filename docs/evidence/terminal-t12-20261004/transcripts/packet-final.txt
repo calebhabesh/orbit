@@ -1,0 +1,4 @@
+# github.com/calebhabesh/file-sync/tests/terminal_test [github.com/calebhabesh/file-sync/tests/terminal.test]
+tests/terminal/packages_test.go:156:54: cannot use test.version (variable of type uint64) as string value in struct literal
+FAIL	github.com/calebhabesh/file-sync/tests/terminal [build failed]
+FAIL

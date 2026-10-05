@@ -1,0 +1,4 @@
+D: ============== /packages/filesync-1.0.0-1.x86_64.rpm
+D: PRAGMA secure_delete = OFF: 0
+error: error reading from file /packages/filesync-1.0.0-1.x86_64.rpm
+D: Exit status: 1

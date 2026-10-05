@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT13ReplacementBootstrapsRetiredHistory
+    retirement_release_test.go:132: ordinary replacement cannot import approved retired history: &{Code:SETUP_BLOCKED Message:retired-author version absent from approved snapshot Retryable:true Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0} <nil>
+--- FAIL: TestTerminalT13ReplacementBootstrapsRetiredHistory (25.03s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	25.035s
+FAIL

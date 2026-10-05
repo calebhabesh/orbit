@@ -1,0 +1,69 @@
+Orbit
+Daemon: unknown   Startup: unknown
+Overview | f n d o
+Search page:
+Needs attention, then synced folders
+(first pages)
+No items on this page.
+Create or join a folder: orbit setup /
+orbit join
+j/k Enter / ? q\x1bM\x1bMrunning   Startup: manual (not …
+
+
+Devices: device-0261f4d1 | d: inspect
+
+
+> Notes界  <disposable>/…Keyboard help
+q / Ctrl-C: close interface
+Sync and committed work continue.
+j/k or arrows: select
+left/right or o/f/n/d: section
+Tab or /: search this page
+Enter: inspect   Esc: back
+r: refresh   ]: next page   [: first
+page
+e: configured external tool
+b: storage; folder v status h history D
+j/k Enter / ? qDevices: device-0261f4d1 | d: inspect
+Needs attention, then synced folders
+(first pages)
+> Notes界  <disposable>/…
+j/k Enter / ? q> Search page: jkq?界 No items on this page.
+Create or join a folder: orbit setup /
+orbit join
+Type to filter this page; Enter/Esc
+returns to navigation\x1bMSearch page: jkq?界j/k Enter / ? qSearch page:> Notes界  <disposable>/…unknown   Startup: unknown
+Folders 
+Search page:
+> Notes界  <disposable>/…\x1bM> Search page: folder, path or device
+> Notes界  <disposable>/…
+Type to filter this page; Enter/Esc
+returns to navigation\x1bM| Inspect folder and devices
+Loading folder state…
+v copy status | h path history | D
+deleted | C conflicts | b storage
+v h D C b | p pause l relocate a add s
+share x unregister t retire ?\x1bMRoot: /tmp/orbit-t09-pty-
+6rne40oi/Notes界
+Local pause=false; membership revision=1
+Shares with: Device 0261f4d1
+Last contact/copy observation: unknown.
+Daemon: unknown   Startup: unknown
+Folders | f n d o
+Search page:
+> Notes界  <disposable>/…
+j/k Enter / ? qOrbit
+Daemon: unknown   Startup: unknown
+Folders | f n d o
+Search page:
+> Notes界  <disposable>/…
+j/k Enter / ? qTOOL_READY
+ordinary editor input
+Orbit
+Daemon: unknown   Startup: unknown
+Folders | f n d o
+Search page:
+Tool failed; terminal resumed. Review
+the result before using it.
+> Notes界  <disposable>/…
+j/k Enter / ? q\x1bM> Notes界  <disposable>/…

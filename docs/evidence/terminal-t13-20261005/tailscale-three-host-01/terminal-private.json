@@ -1,0 +1,2951 @@
+{
+  "started_utc": "2026-10-05T12:46:01Z",
+  "success": true,
+  "network": "tailscale",
+  "hosts": [
+    {
+      "host": "laptop",
+      "role": "source",
+      "root": "/home/caleb2002/filesync-validation-jjmil69l",
+      "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+      "inventory": {
+        "hostname": "owner-laptop",
+        "kernel": "Linux 7.0.0-34-generic",
+        "arch": "x86_64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 7 5800U with Radeon Graphics\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"25\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"80\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"8\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"53%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"4508.0859\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"407.3580\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"3792.50\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"256 KiB (8 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"4 MiB (8 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"16 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-15\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; Safe RET\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Mitigation; Clear CPU buffers\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB before exit to userspace\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem        1B-blocks         Used  Available Use% Mounted on\n/dev/nvme0n1p5 153681051648 138770776064 7029178368  96% /\n",
+        "route": "default via 192.168.88.1 dev wlp2s0 proto dhcp src 192.168.88.83 metric 20600 \n10.8.0.0/24 dev wg0 proto kernel scope link src 10.8.0.4 metric 50 \n192.168.88.0/24 dev wlp2s0 proto kernel scope link src 192.168.88.83 metric 600 \n"
+      },
+      "network": {
+        "addresses": [
+          {
+            "ifindex": 1,
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 65536,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host",
+                "label": "lo",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2,
+            "ifname": "wlp2s0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "192.168.88.83",
+                "prefixlen": 24,
+                "broadcast": "192.168.88.255",
+                "scope": "global",
+                "dynamic": true,
+                "noprefixroute": true,
+                "label": "wlp2s0",
+                "valid_life_time": 59025,
+                "preferred_life_time": 59025
+              }
+            ]
+          },
+          {
+            "ifindex": 9,
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1280,
+            "qdisc": "fq_codel",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 500,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "100.101.0.12",
+                "prefixlen": 32,
+                "scope": "global",
+                "label": "tailscale0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 10,
+            "ifname": "wg0",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1420,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "10.8.0.4",
+                "prefixlen": 24,
+                "broadcast": "10.8.0.255",
+                "scope": "global",
+                "noprefixroute": true,
+                "label": "wg0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          }
+        ],
+        "linger": "Linger=no",
+        "tailscale_available": true
+      },
+      "settings": {
+        "data_budget": "1073741824",
+        "metadata_budget": "268435456",
+        "reserve_bytes": "16777216",
+        "retention_seconds": "0",
+        "concurrency": "4",
+        "bandwidth_bytes_per_second": "0",
+        "peer_listen": "100.101.0.12:47505",
+        "enrollment_listen": "100.101.0.12:52623",
+        "advertised_peer": "100.101.0.12:47505",
+        "advertised_enrollment": "100.101.0.12:52623",
+        "startup": "manual"
+      },
+      "package": "orbit-v1.0.0-linux-amd64.tar.gz",
+      "package_sha256": "b1a35866e966a3481891ee438a96152a3de736b16f5332035b52166cdb8fa211",
+      "binary_sha256": "9f9b0f3149ed002680db9503dd6d53f90e98615ea9a8ee85f737c490e51bc6a6"
+    },
+    {
+      "host": "rpi",
+      "role": "receiver",
+      "root": "/home/owner/filesync-validation-r6habvjk",
+      "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+      "inventory": {
+        "hostname": "owner-pi",
+        "kernel": "Linux 6.12.93+rpt-rpi-v8",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "filesystem": "ext4   rw,noatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Cortex-A72\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"3\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per cluster:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"-\"\n      },{\n         \"field\": \"Cluster(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r0p3\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"100%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"1800.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"600.0000\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"108.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm crc32 cpuid\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"128 KiB (4 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"192 KiB (4 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"1 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"NUMA node1 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda2      61006897152 17162080256 40727846912  30% /\n",
+        "route": "default via 192.168.88.1 dev eth0 proto dhcp src 192.168.88.63 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-c37d9e23a592 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-bde881461879 proto kernel scope link src 172.19.0.1 \n192.168.88.0/24 dev eth0 proto kernel scope link src 192.168.88.63 metric 100 \n"
+      },
+      "network": {
+        "addresses": [
+          {
+            "ifindex": 1,
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 65536,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host",
+                "label": "lo",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2,
+            "ifname": "eth0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "mq",
+            "operstate": "UP",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "192.168.88.63",
+                "prefixlen": 24,
+                "broadcast": "192.168.88.255",
+                "scope": "global",
+                "dynamic": true,
+                "noprefixroute": true,
+                "label": "eth0",
+                "valid_life_time": 47005,
+                "preferred_life_time": 47005
+              }
+            ]
+          },
+          {
+            "ifindex": 4,
+            "ifname": "br-bde881461879",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.19.255.255",
+                "scope": "global",
+                "label": "br-bde881461879",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 5,
+            "ifname": "br-c37d9e23a592",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.18.255.255",
+                "scope": "global",
+                "label": "br-c37d9e23a592",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 6,
+            "ifname": "docker0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "DOWN",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.17.255.255",
+                "scope": "global",
+                "label": "docker0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 11,
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1280,
+            "qdisc": "pfifo_fast",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 500,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "100.101.0.14",
+                "prefixlen": 32,
+                "scope": "global",
+                "label": "tailscale0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          }
+        ],
+        "linger": "Linger=no",
+        "tailscale_available": true
+      },
+      "settings": {
+        "data_budget": "1073741824",
+        "metadata_budget": "268435456",
+        "reserve_bytes": "16777216",
+        "retention_seconds": "0",
+        "concurrency": "4",
+        "bandwidth_bytes_per_second": "0",
+        "peer_listen": "100.101.0.14:39029",
+        "enrollment_listen": "100.101.0.14:36529",
+        "advertised_peer": "100.101.0.14:39029",
+        "advertised_enrollment": "100.101.0.14:36529",
+        "startup": "manual"
+      },
+      "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+      "package_sha256": "e19980400fd8e91d8d445e2be7e485c571a6c38157b11180048fe31b2451f769",
+      "binary_sha256": "2721663545b544741a5a4cf7fe8eab6cf1e9fd8ece28d09f756bfb1f763c183c"
+    },
+    {
+      "host": "vps",
+      "role": "forwarder",
+      "root": "/home/ubuntu/filesync-validation-yflyyuc3",
+      "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+      "inventory": {
+        "hostname": "main-instance-vnic",
+        "kernel": "Linux 6.17.0-1018-oracle",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+        "filesystem": "ext4   rw,relatime,discard,errors=remount-ro,commit=30",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Neoverse-N1\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r3p1\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"50.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; CSV2, BHB\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda1      50884108288 11695054848 39172276224  23% /\n",
+        "route": "default via 10.0.0.1 dev enp0s6 proto dhcp src 10.0.0.187 metric 100 \n10.0.0.0/24 dev wg0 proto kernel scope link src 10.0.0.1 \n10.0.0.0/24 dev enp0s6 proto kernel scope link src 10.0.0.187 metric 100 \n10.0.0.1 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.0.0/16 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n169.254.169.254 dev enp0s6 proto dhcp scope link src 10.0.0.187 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-5f4d10805c99 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-0dc61c115f47 proto kernel scope link src 172.19.0.1 \n"
+      },
+      "network": {
+        "addresses": [
+          {
+            "ifindex": 1,
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 65536,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host",
+                "label": "lo",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2,
+            "ifname": "enp0s6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 9000,
+            "qdisc": "mq",
+            "operstate": "UP",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "10.0.0.187",
+                "prefixlen": 24,
+                "metric": 100,
+                "broadcast": "10.0.0.255",
+                "scope": "global",
+                "dynamic": true,
+                "label": "enp0s6",
+                "valid_life_time": 54514,
+                "preferred_life_time": 54514
+              }
+            ]
+          },
+          {
+            "ifindex": 3,
+            "ifname": "wg0",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 8920,
+            "qdisc": "noqueue",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 1000,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "10.0.0.1",
+                "prefixlen": 24,
+                "scope": "global",
+                "label": "wg0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 5,
+            "ifname": "docker0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "DOWN",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.17.255.255",
+                "scope": "global",
+                "label": "docker0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 1173,
+            "ifname": "br-5f4d10805c99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.18.255.255",
+                "scope": "global",
+                "label": "br-5f4d10805c99",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2247,
+            "ifname": "br-0dc61c115f47",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1500,
+            "qdisc": "noqueue",
+            "operstate": "UP",
+            "group": "default",
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "broadcast": "172.19.255.255",
+                "scope": "global",
+                "label": "br-0dc61c115f47",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          },
+          {
+            "ifindex": 2327,
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "mtu": 1280,
+            "qdisc": "fq_codel",
+            "operstate": "UNKNOWN",
+            "group": "default",
+            "txqlen": 500,
+            "addr_info": [
+              {
+                "family": "inet",
+                "local": "100.101.0.11",
+                "prefixlen": 32,
+                "scope": "global",
+                "label": "tailscale0",
+                "valid_life_time": 4294967295,
+                "preferred_life_time": 4294967295
+              }
+            ]
+          }
+        ],
+        "linger": "Linger=no",
+        "tailscale_available": true
+      },
+      "settings": {
+        "data_budget": "1073741824",
+        "metadata_budget": "268435456",
+        "reserve_bytes": "16777216",
+        "retention_seconds": "0",
+        "concurrency": "4",
+        "bandwidth_bytes_per_second": "0",
+        "peer_listen": "100.101.0.11:51543",
+        "enrollment_listen": "100.101.0.11:47775",
+        "advertised_peer": "100.101.0.11:51543",
+        "advertised_enrollment": "100.101.0.11:47775",
+        "startup": "manual"
+      },
+      "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+      "package_sha256": "e19980400fd8e91d8d445e2be7e485c571a6c38157b11180048fe31b2451f769",
+      "binary_sha256": "2721663545b544741a5a4cf7fe8eab6cf1e9fd8ece28d09f756bfb1f763c183c"
+    },
+    {
+      "host": "rpi",
+      "role": "replacement",
+      "root": "/home/owner/filesync-validation-n_5x0su1",
+      "device": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+      "inventory": {
+        "hostname": "owner-pi",
+        "kernel": "Linux 6.12.93+rpt-rpi-v8",
+        "arch": "aarch64",
+        "os": "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+        "filesystem": "ext4   rw,noatime",
+        "cpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"aarch64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"ARM\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"Cortex-A72\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"3\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Core(s) per cluster:\",\n         \"data\": \"4\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"-\"\n      },{\n         \"field\": \"Cluster(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"r0p3\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"100%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"1800.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"600.0000\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"108.00\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fp asimd evtstrm crc32 cpuid\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"128 KiB (4 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"192 KiB (4 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"1 MiB (1 instance)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"NUMA node1 CPU(s):\",\n         \"data\": \"0-3\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Vulnerable\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Not affected\"\n      }\n   ]\n}\n",
+        "storage": "Filesystem       1B-blocks        Used   Available Use% Mounted on\n/dev/sda2      61006897152 17187684352 40702242816  30% /\n",
+        "route": "default via 192.168.88.1 dev eth0 proto dhcp src 192.168.88.63 metric 100 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-c37d9e23a592 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-bde881461879 proto kernel scope link src 172.19.0.1 \n192.168.88.0/24 dev eth0 proto kernel scope link src 192.168.88.63 metric 100 \n"
+      },
+      "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+      "package_sha256": "e19980400fd8e91d8d445e2be7e485c571a6c38157b11180048fe31b2451f769",
+      "binary_sha256": "2721663545b544741a5a4cf7fe8eab6cf1e9fd8ece28d09f756bfb1f763c183c"
+    }
+  ],
+  "preflight": [
+    {
+      "host": "laptop",
+      "role": "source",
+      "routes": {
+        "100.101.0.12": [
+          {
+            "type": "local",
+            "dst": "100.101.0.12",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "100.101.0.12",
+            "flags": [],
+            "uid": 1000,
+            "cache": [
+              "local"
+            ]
+          }
+        ],
+        "100.101.0.14": [
+          {
+            "dst": "100.101.0.14",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.12",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ],
+        "100.101.0.11": [
+          {
+            "dst": "100.101.0.11",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.12",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": true,
+        "authenticated": true,
+        "state": "Running",
+        "addresses": [
+          "100.101.0.12",
+          "fd7a:115c:a1e0::b:12"
+        ]
+      },
+      "hostname": "owner-laptop",
+      "arch": "x86_64"
+    },
+    {
+      "host": "rpi",
+      "role": "receiver",
+      "routes": {
+        "100.101.0.12": [
+          {
+            "dst": "100.101.0.12",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.14",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ],
+        "100.101.0.14": [
+          {
+            "type": "local",
+            "dst": "100.101.0.14",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "100.101.0.14",
+            "flags": [],
+            "uid": 1000,
+            "cache": [
+              "local"
+            ]
+          }
+        ],
+        "100.101.0.11": [
+          {
+            "dst": "100.101.0.11",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.14",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": true,
+        "authenticated": true,
+        "state": "Running",
+        "addresses": [
+          "100.101.0.14",
+          "fd7a:115c:a1e0::b:14"
+        ]
+      },
+      "hostname": "owner-pi",
+      "arch": "aarch64"
+    },
+    {
+      "host": "vps",
+      "role": "forwarder",
+      "routes": {
+        "100.101.0.12": [
+          {
+            "dst": "100.101.0.12",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.11",
+            "flags": [],
+            "uid": 1001,
+            "cache": []
+          }
+        ],
+        "100.101.0.14": [
+          {
+            "dst": "100.101.0.14",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.11",
+            "flags": [],
+            "uid": 1001,
+            "cache": []
+          }
+        ],
+        "100.101.0.11": [
+          {
+            "type": "local",
+            "dst": "100.101.0.11",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "100.101.0.11",
+            "flags": [],
+            "uid": 1001,
+            "cache": [
+              "local"
+            ]
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": true,
+        "authenticated": true,
+        "state": "Running",
+        "addresses": [
+          "100.101.0.11",
+          "fd7a:115c:a1e0::b:11"
+        ]
+      },
+      "hostname": "main-instance-vnic",
+      "arch": "aarch64"
+    }
+  ],
+  "scenarios": {
+    "forwarder_approval": {
+      "request": "099a3ad175833f7f16e8690ea495d0f223f9c6863540c591879ffcc06f27a8a9",
+      "attempt": "14f3786984fd729620aefcaf3e8ad47bd092183cb4f5486238daf99a49596ff3",
+      "operation": "dd55b23bb9b60d4edd10b91fef32801c92528de77ddc7e1b137b8de189b9ab63",
+      "verification_code": "572ba-f3fcc-bb779-ee5d0",
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      }
+    },
+    "receiver_approval": {
+      "request": "aa702346aa38aa4c659a508be6ab5529307998aedac735a866e19e5076e3048a",
+      "attempt": "bb254dc9b5e912a82d1d6cdff0b0f4b9243f02a9f2f178a61d51bf9371a6037f",
+      "operation": "510fe0fe9ddc2745ccb1f0aaa1938ad8939778ccb8af37696de8849b568d54e7",
+      "verification_code": "14f4b-9e1ca-0072d-08746",
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      }
+    },
+    "membership": {
+      "source": {
+        "root": "/home/caleb2002/filesync-validation-jjmil69l/data",
+        "paused": false,
+        "membership_digest": "60a04d56a2929ce7ba974833ae99fc55e5dad9b24d32b1a8a468ee8be2d3f558",
+        "revision": "3",
+        "members": [
+          {
+            "id": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "name": "Device 06eec4d7",
+            "root": "",
+            "key_pin": "a89276cd8955b46004d3e28992972c6269084e27c242c9f9cff08600539d8728"
+          },
+          {
+            "id": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "name": "Device 16915534",
+            "root": "",
+            "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+          },
+          {
+            "id": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "name": "Source",
+            "root": "",
+            "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+          }
+        ]
+      },
+      "receiver": {
+        "root": "/home/owner/filesync-validation-r6habvjk/data",
+        "paused": false,
+        "membership_digest": "60a04d56a2929ce7ba974833ae99fc55e5dad9b24d32b1a8a468ee8be2d3f558",
+        "revision": "3",
+        "members": [
+          {
+            "id": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "name": "Receiver",
+            "root": "",
+            "key_pin": "a89276cd8955b46004d3e28992972c6269084e27c242c9f9cff08600539d8728"
+          },
+          {
+            "id": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "name": "Device 16915534",
+            "root": "",
+            "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+          },
+          {
+            "id": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "name": "Device 51e43429",
+            "root": "",
+            "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+          }
+        ]
+      },
+      "forwarder": {
+        "root": "/home/ubuntu/filesync-validation-yflyyuc3/data",
+        "paused": false,
+        "membership_digest": "60a04d56a2929ce7ba974833ae99fc55e5dad9b24d32b1a8a468ee8be2d3f558",
+        "revision": "3",
+        "members": [
+          {
+            "id": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "name": "Device 06eec4d7",
+            "root": "",
+            "key_pin": "a89276cd8955b46004d3e28992972c6269084e27c242c9f9cff08600539d8728"
+          },
+          {
+            "id": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "name": "Forwarder",
+            "root": "",
+            "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+          },
+          {
+            "id": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "name": "Device 51e43429",
+            "root": "",
+            "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+          }
+        ]
+      }
+    },
+    "direct_tcp": {
+      "source": {
+        "receiver": [
+          {
+            "connected": true,
+            "address": "100.101.0.14",
+            "port": 39029
+          },
+          {
+            "connected": true,
+            "address": "100.101.0.14",
+            "port": 36529
+          }
+        ],
+        "forwarder": [
+          {
+            "connected": true,
+            "address": "100.101.0.11",
+            "port": 51543
+          },
+          {
+            "connected": true,
+            "address": "100.101.0.11",
+            "port": 47775
+          }
+        ]
+      },
+      "receiver": {
+        "source": [
+          {
+            "connected": true,
+            "address": "100.101.0.12",
+            "port": 47505
+          },
+          {
+            "connected": true,
+            "address": "100.101.0.12",
+            "port": 52623
+          }
+        ],
+        "forwarder": [
+          {
+            "connected": true,
+            "address": "100.101.0.11",
+            "port": 51543
+          },
+          {
+            "connected": true,
+            "address": "100.101.0.11",
+            "port": 47775
+          }
+        ]
+      },
+      "forwarder": {
+        "source": [
+          {
+            "connected": true,
+            "address": "100.101.0.12",
+            "port": 47505
+          },
+          {
+            "connected": true,
+            "address": "100.101.0.12",
+            "port": 52623
+          }
+        ],
+        "receiver": [
+          {
+            "connected": true,
+            "address": "100.101.0.14",
+            "port": 39029
+          },
+          {
+            "connected": true,
+            "address": "100.101.0.14",
+            "port": 36529
+          }
+        ]
+      }
+    },
+    "preserved_existing": {
+      "source": {
+        "source-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "path": "source-existing",
+            "kind": "file",
+            "device_name": "Source",
+            "display_time": "2026-10-05T12:46:22.212437614Z",
+            "bytes": "25",
+            "digest": "cbb37e018353574130de529ff5b73a97d1c9bcc6985b2f82f4ddf22597a76bcf",
+            "availability": "ready"
+          }
+        ],
+        "receiver-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:20.196467348Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Device 16915534",
+            "display_time": "2026-10-05T12:46:50.754432729Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          }
+        ]
+      },
+      "receiver": {
+        "source-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "path": "source-existing",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:46:22.212437614Z",
+            "bytes": "25",
+            "digest": "cbb37e018353574130de529ff5b73a97d1c9bcc6985b2f82f4ddf22597a76bcf",
+            "availability": "ready"
+          }
+        ],
+        "receiver-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Receiver",
+            "display_time": "2026-10-05T12:47:20.196467348Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Device 16915534",
+            "display_time": "2026-10-05T12:46:50.754432729Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          }
+        ]
+      },
+      "forwarder": {
+        "source-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "path": "source-existing",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:46:22.212437614Z",
+            "bytes": "25",
+            "digest": "cbb37e018353574130de529ff5b73a97d1c9bcc6985b2f82f4ddf22597a76bcf",
+            "availability": "ready"
+          }
+        ],
+        "receiver-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:20.196467348Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Forwarder",
+            "display_time": "2026-10-05T12:46:50.754432729Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          }
+        ]
+      }
+    },
+    "source_status_before_offline": {
+      "versions": [],
+      "version": "1",
+      "capabilities": [
+        "terminal_control_v1",
+        "lifecycle_settings_v1",
+        "enrollment_v2",
+        "reviewed_setup_v1",
+        "folder_sharing_v1",
+        "context_v1",
+        "reviewed_content_v1",
+        "onboarding_management_v1",
+        "everyday_management_v1"
+      ],
+      "state": "success",
+      "service": {
+        "running": true,
+        "enabled": false,
+        "mode": "manual",
+        "unattended_verified": false,
+        "root_healthy": true,
+        "capture_healthy": true
+      },
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "items": [
+        {
+          "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "name": "Notes",
+          "root": "/home/caleb2002/filesync-validation-jjmil69l/data",
+          "key_pin": ""
+        }
+      ],
+      "requests": [],
+      "observations": [
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        },
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        },
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        },
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "counter": "2"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        },
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "counter": "2"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        },
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "counter": "2"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        },
+        {
+          "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "version": {
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "counter": "3"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-05T12:47:50Z",
+          "last_contact": "2026-10-05T12:47:50Z",
+          "availability": "available",
+          "online": true
+        }
+      ],
+      "attention": [],
+      "effects": [],
+      "cursor": "",
+      "daemon_running": true,
+      "state_directory": "/home/caleb2002/filesync-validation-jjmil69l/state",
+      "control_address": "127.0.0.1:38537",
+      "service_status": {
+        "systemd_available": true,
+        "unit_installed": false,
+        "enabled_on_login": false,
+        "currently_running": true,
+        "root_verified": false,
+        "capture_successful": false,
+        "lingering_enabled": false,
+        "lingering_instruction": "loginctl enable-linger caleb2002",
+        "manual_command": "filesync serve --state=/home/caleb2002/filesync-validation-jjmil69l/state --control-listen=127.0.0.1:8080"
+      },
+      "setup": {
+        "initialized": true,
+        "device_id": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+        "suggested_root": "/home/caleb2002/Orbit",
+        "current_phase": "ready",
+        "setup_completed": true,
+        "settings": {
+          "format_version": 1,
+          "device_label": "Source",
+          "default_workspace": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "workspace_names": {
+            "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08": "Notes"
+          },
+          "theme": "dark",
+          "dark_theme": true
+        },
+        "registered_count": 1
+      },
+      "folders": [
+        {
+          "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "name": "Notes",
+          "root": "/home/caleb2002/filesync-validation-jjmil69l/data",
+          "key_pin": ""
+        }
+      ]
+    },
+    "forwarding": {
+      "original_version": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+        "counter": "3"
+      },
+      "history": {
+        "receiver": {
+          "forwarded": [
+            {
+              "version": {
+                "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+                "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+                "counter": "3"
+              },
+              "path": "forwarded",
+              "kind": "file",
+              "device_name": "Device 51e43429",
+              "display_time": "2026-10-05T12:47:48.202528178Z",
+              "bytes": "64",
+              "digest": "74471ad9fc2213d3cb3e254f6afdc2717d11628f5845fc7251cb3e174aed1ffb",
+              "availability": "ready"
+            }
+          ]
+        },
+        "forwarder": {
+          "forwarded": [
+            {
+              "version": {
+                "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+                "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+                "counter": "3"
+              },
+              "path": "forwarded",
+              "kind": "file",
+              "device_name": "Device 51e43429",
+              "display_time": "2026-10-05T12:47:48.202528178Z",
+              "bytes": "64",
+              "digest": "74471ad9fc2213d3cb3e254f6afdc2717d11628f5845fc7251cb3e174aed1ffb",
+              "availability": "ready"
+            }
+          ]
+        }
+      },
+      "source_receiver_online_overlap": false
+    },
+    "qualified_status": {
+      "source": {
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "name": "Notes",
+            "root": "/home/caleb2002/filesync-validation-jjmil69l/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:05Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": "",
+        "daemon_running": true,
+        "state_directory": "/home/caleb2002/filesync-validation-jjmil69l/state",
+        "control_address": "127.0.0.1:43503",
+        "service_status": {
+          "systemd_available": true,
+          "unit_installed": false,
+          "enabled_on_login": false,
+          "currently_running": true,
+          "root_verified": false,
+          "capture_successful": false,
+          "lingering_enabled": false,
+          "lingering_instruction": "loginctl enable-linger caleb2002",
+          "manual_command": "filesync serve --state=/home/caleb2002/filesync-validation-jjmil69l/state --control-listen=127.0.0.1:8080"
+        },
+        "setup": {
+          "initialized": true,
+          "device_id": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+          "suggested_root": "/home/caleb2002/Orbit",
+          "current_phase": "ready",
+          "setup_completed": true,
+          "settings": {
+            "format_version": 1,
+            "device_label": "Source",
+            "default_workspace": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "workspace_names": {
+              "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08": "Notes"
+            },
+            "theme": "dark",
+            "dark_theme": true
+          },
+          "registered_count": 1
+        },
+        "folders": [
+          {
+            "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "name": "Notes",
+            "root": "/home/caleb2002/filesync-validation-jjmil69l/data",
+            "key_pin": ""
+          }
+        ]
+      },
+      "receiver": {
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "name": "Notes",
+            "root": "/home/owner/filesync-validation-r6habvjk/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:04Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:04Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:04Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:04Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:05Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": "",
+        "daemon_running": true,
+        "state_directory": "/home/owner/filesync-validation-r6habvjk/state",
+        "control_address": "127.0.0.1:37311",
+        "service_status": {
+          "systemd_available": true,
+          "unit_installed": false,
+          "enabled_on_login": false,
+          "currently_running": true,
+          "root_verified": false,
+          "capture_successful": false,
+          "lingering_enabled": false,
+          "lingering_instruction": "loginctl enable-linger owner",
+          "manual_command": "filesync serve --state=/home/owner/filesync-validation-r6habvjk/state --control-listen=127.0.0.1:8080"
+        },
+        "setup": {
+          "initialized": true,
+          "device_id": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+          "suggested_root": "/home/owner/Orbit",
+          "current_phase": "ready",
+          "setup_completed": true,
+          "settings": {
+            "format_version": 1,
+            "device_label": "Receiver",
+            "default_workspace": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "workspace_names": {
+              "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08": "Notes"
+            },
+            "theme": "dark",
+            "dark_theme": true
+          },
+          "registered_count": 1
+        },
+        "folders": [
+          {
+            "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "name": "Notes",
+            "root": "/home/owner/filesync-validation-r6habvjk/data",
+            "key_pin": ""
+          }
+        ]
+      },
+      "forwarder": {
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "name": "Notes",
+            "root": "/home/ubuntu/filesync-validation-yflyyuc3/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-05T12:48:06Z",
+            "last_contact": "2026-10-05T12:48:06Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": "",
+        "daemon_running": true,
+        "state_directory": "/home/ubuntu/filesync-validation-yflyyuc3/state",
+        "control_address": "127.0.0.1:41147",
+        "service_status": {
+          "systemd_available": true,
+          "unit_installed": false,
+          "enabled_on_login": false,
+          "currently_running": true,
+          "root_verified": false,
+          "capture_successful": false,
+          "lingering_enabled": false,
+          "lingering_instruction": "loginctl enable-linger ubuntu",
+          "manual_command": "filesync serve --state=/home/ubuntu/filesync-validation-yflyyuc3/state --control-listen=127.0.0.1:8080"
+        },
+        "setup": {
+          "initialized": true,
+          "device_id": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+          "suggested_root": "/home/ubuntu/Orbit",
+          "current_phase": "ready",
+          "setup_completed": true,
+          "settings": {
+            "format_version": 1,
+            "device_label": "Forwarder",
+            "default_workspace": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "workspace_names": {
+              "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08": "Notes"
+            },
+            "theme": "dark",
+            "dark_theme": true
+          },
+          "registered_count": 1
+        },
+        "folders": [
+          {
+            "id": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "name": "Notes",
+            "root": "/home/ubuntu/filesync-validation-yflyyuc3/data",
+            "key_pin": ""
+          }
+        ]
+      }
+    },
+    "retirement": {
+      "previews": {
+        "source": {
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "target_device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+          "current_revision": 3,
+          "next_revision": 4,
+          "accepted_versions_count": 2,
+          "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012",
+          "next_membership_digest": "76819f08a8e7dd6bf1eca4a1da56995de176539067ac06fb3ecbb06134727c83",
+          "surviving_members": [
+            "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76"
+          ]
+        },
+        "forwarder": {
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "target_device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+          "current_revision": 3,
+          "next_revision": 4,
+          "accepted_versions_count": 2,
+          "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012",
+          "next_membership_digest": "76819f08a8e7dd6bf1eca4a1da56995de176539067ac06fb3ecbb06134727c83",
+          "surviving_members": [
+            "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76"
+          ]
+        }
+      },
+      "warning": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "device_id": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+        "device_name": "Device 06eec4d75e23146b",
+        "current_revision": 3,
+        "next_revision": 4,
+        "remaining_count": 2,
+        "surviving_peers": [
+          "16915534120415ab",
+          "Source"
+        ],
+        "warning": "Permanent action: Device cannot rejoin this workspace under this cryptographic identity (Invariant I24).",
+        "disclaimer": "Retirement preserves this device's recorded history on remaining replicas. It cannot remotely erase files or data on the retired device's physical disk."
+      },
+      "result": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "target_device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+        "approved_revision": 4,
+        "approved_digest": "76819f08a8e7dd6bf1eca4a1da56995de176539067ac06fb3ecbb06134727c83",
+        "snapshot": {
+          "Folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "ConfigurationRev": 3,
+          "RetiredDevice": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+          "AcceptedByRetiree": [
+            {
+              "Counter": 1,
+              "EnvelopeDigest": "ee151f61cd817b16f4b55afa0eb16b552e3ba88ad72a6b5d6770abb735ffa22b"
+            },
+            {
+              "Counter": 2,
+              "EnvelopeDigest": "0c3823f2fcafc5e7ce12f33f9463be3b128321f21d6544ceb60b8a93adec8bf7"
+            }
+          ]
+        },
+        "next_membership": {
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "revision": 4,
+          "prior_digest": "60a04d56a2929ce7ba974833ae99fc55e5dad9b24d32b1a8a468ee8be2d3f558",
+          "active": [
+            {
+              "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+            },
+            {
+              "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+            }
+          ],
+          "retired": [
+            {
+              "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "retired_at": 4,
+              "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012"
+            }
+          ]
+        }
+      },
+      "replay": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "target_device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+        "approved_revision": 4,
+        "approved_digest": "76819f08a8e7dd6bf1eca4a1da56995de176539067ac06fb3ecbb06134727c83",
+        "snapshot": {
+          "Folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "ConfigurationRev": 3,
+          "RetiredDevice": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+          "AcceptedByRetiree": [
+            {
+              "Counter": 1,
+              "EnvelopeDigest": "ee151f61cd817b16f4b55afa0eb16b552e3ba88ad72a6b5d6770abb735ffa22b"
+            },
+            {
+              "Counter": 2,
+              "EnvelopeDigest": "0c3823f2fcafc5e7ce12f33f9463be3b128321f21d6544ceb60b8a93adec8bf7"
+            }
+          ]
+        },
+        "next_membership": {
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "revision": 4,
+          "prior_digest": "60a04d56a2929ce7ba974833ae99fc55e5dad9b24d32b1a8a468ee8be2d3f558",
+          "active": [
+            {
+              "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+            },
+            {
+              "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+            }
+          ],
+          "retired": [
+            {
+              "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "retired_at": 4,
+              "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012"
+            }
+          ]
+        },
+        "replay": true
+      },
+      "survivor_import": {
+        "approved": true,
+        "result": {
+          "Revision": 4,
+          "Digest": "76819f08a8e7dd6bf1eca4a1da56995de176539067ac06fb3ecbb06134727c83"
+        }
+      },
+      "bundle_sha256": "3c543eeed1669ebcabed64244cbe68f728ac547c619402606d84d27ca624f1d1"
+    },
+    "retired_rejoin_refused": {
+      "approval": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "filesync: RETIRED_MEMBER_REVIVAL: cannot revive or readmit retired device identity (action: generate a fresh device identity to enroll a replaced or wiped device (Invariant I24))\n",
+        "resources": {
+          "sampled_peak_fds": 4,
+          "sampled_peak_rss_kib": 19688,
+          "user_seconds": 0.01859,
+          "system_seconds": 0.004373999999999999,
+          "peak_rss_kib": 22728,
+          "sampling_interval_seconds": 0.02
+        }
+      },
+      "operation": {
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "running",
+        "operation": {
+          "id": "329bdabb9c4f1068c75c1ad7a00ca7ca4761a6f31ad4d37b20bb0c56d0bc6acf",
+          "fingerprint": "6814a2893245ed23a7ec18e113a969b0c9313f9bd0b0e8207d8676c5a9fc469c",
+          "kind": "join",
+          "state": "running",
+          "phase": "awaiting_approval",
+          "committed_effects": [],
+          "cancel_requested": false
+        },
+        "join": {
+          "operation": {
+            "id": "329bdabb9c4f1068c75c1ad7a00ca7ca4761a6f31ad4d37b20bb0c56d0bc6acf",
+            "fingerprint": "6814a2893245ed23a7ec18e113a969b0c9313f9bd0b0e8207d8676c5a9fc469c",
+            "kind": "join",
+            "state": "running",
+            "phase": "awaiting_approval",
+            "committed_effects": [],
+            "cancel_requested": false
+          },
+          "attempt": "05914943e04a7656d05bdf1ad72991fcae006de64c7f86a5a7b7d6bd60221b43",
+          "request": "8db7ebc735f0543de1dc61d6f454cfda23d1207741a9d92a3b56c6175df4a774",
+          "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+          "root": "/home/owner/filesync-validation-r6habvjk/rejoin",
+          "preview": {
+            "token": "2338cd649eee5f942a2c9de95f3ec6ab6efa2a6474fad458df6999fe2ed5bc8a",
+            "generation": "65081ae96df21aae03ca5236c66bddb0caecdca07e86f875f5c966052f883169",
+            "expires_at": "2026-10-05T12:53:16.174957129Z"
+          },
+          "inviter": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+          "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227",
+          "certificate_der": "MIIBmjCCAUygAwIBAgIRAIh9AptdnLT35vj4T6BThncwBQYDK2VwMCsxKTAnBgNVBAMTIGZpbGVzeW5jLWRldmljZS01MWU0MzQyOWNmMGRlY2RjMB4XDTI2MTAwNTEyNDEwOFoXDTM2MTAwNTEyNDYwOFowKzEpMCcGA1UEAxMgZmlsZXN5bmMtZGV2aWNlLTUxZTQzNDI5Y2YwZGVjZGMwKjAFBgMrZXADIQA0E1JOb7O+LxcA+cK+joa4Bcvjt3Xn+6ySDJX7WEhB/aOBhDCBgTAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFNMOzmR6dkD/1CERcfivSuMPvwVNMCAGA1UdEQQZMBeCFXBlZXIuZmlsZXN5bmMuaW52YWxpZDAFBgMrZXADQQB3qN/gIqI4YAJ+nfbbTcc3mfhnxGiiQ83vN1dL7Tzi8ZIEWWFUD0LdTo/XyxHd9CBhBN4BMxO2GxHAvhp9u5oF",
+          "enrollment_endpoint": "https://100.101.0.12:52623",
+          "peer_endpoint": "https://100.101.0.12:47505",
+          "readiness": {
+            "approved": false,
+            "membership_current": false,
+            "root_available": false,
+            "scan_complete": false,
+            "unsupported": "0",
+            "unreadable": "0",
+            "uncaptured": "0",
+            "missing_content": "0",
+            "pending_publication": "0",
+            "conflicts": "0",
+            "storage_blocked": false
+          }
+        },
+        "readiness": {
+          "approved": false,
+          "membership_current": false,
+          "root_available": false,
+          "scan_complete": false,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [],
+        "requests": [
+          {
+            "id": "8db7ebc735f0543de1dc61d6f454cfda23d1207741a9d92a3b56c6175df4a774",
+            "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+            "requester": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "key_pin": "a89276cd8955b46004d3e28992972c6269084e27c242c9f9cff08600539d8728",
+            "label": "",
+            "transcript_digest": "6b3ba4a88ce0bc37e8769bf0d85be242fbf02576d1109762003ffa3f2439597e",
+            "verification_code": "6b3ba-4a88c-e0bc3-7e876",
+            "expected_membership": "",
+            "state": "pending_approval"
+          }
+        ],
+        "observations": [],
+        "attention": [],
+        "effects": [],
+        "cursor": ""
+      }
+    },
+    "replacement_enrollment_quiet_seconds": 60,
+    "replacement_approval": {
+      "request": "ad2a295b0643d4c91f4d57c94d999c9c7a8afdba7c9a5763eb8de37e81bbc44d",
+      "attempt": "433c069e273f943e814513f4dcccbcac28ac94c5288520a8ac5ba031d659282e",
+      "operation": "3532680f5fa589676710c3a1d3f45c051c46d7ab4eba08eb8abb1fb5b71a716d",
+      "verification_code": "1be0e-5ea5c-12e90-9f752",
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      }
+    },
+    "replacement_history": {
+      "source": {
+        "source-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "path": "source-existing",
+            "kind": "file",
+            "device_name": "Source",
+            "display_time": "2026-10-05T12:46:22.212437614Z",
+            "bytes": "25",
+            "digest": "cbb37e018353574130de529ff5b73a97d1c9bcc6985b2f82f4ddf22597a76bcf",
+            "availability": "ready"
+          }
+        ],
+        "receiver-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "4"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device b9bd8a2b",
+            "display_time": "2026-10-05T12:50:00.612023576Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "3"
+            },
+            "path": "receiver-existing",
+            "kind": "deleted",
+            "device_name": "Device b9bd8a2b",
+            "display_time": "2026-10-05T12:50:00.325969994Z",
+            "bytes": "0",
+            "digest": "",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:20.196467348Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "2"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Device b9bd8a2b",
+            "display_time": "2026-10-05T12:50:00.085311754Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Device 16915534",
+            "display_time": "2026-10-05T12:46:50.754432729Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          }
+        ],
+        "source-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "path": "source-edit",
+            "kind": "file",
+            "device_name": "Source",
+            "display_time": "2026-10-05T12:47:38.901620296Z",
+            "bytes": "21",
+            "digest": "db2cfad400d5dc202057bcffddb248ff450194413765d83a4674d0706f866a38",
+            "availability": "ready"
+          }
+        ],
+        "receiver-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "path": "receiver-edit",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:42.608299372Z",
+            "bytes": "23",
+            "digest": "79a988fac8a2962da724bfa1eb8d7452d13727fdd89b42a9dd29c6af018f3b11",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "path": "forwarder-edit",
+            "kind": "file",
+            "device_name": "Device 16915534",
+            "display_time": "2026-10-05T12:47:45.467586532Z",
+            "bytes": "24",
+            "digest": "1ba88f1bab785a535798689cd85d0331f0782fd34014ecb47a2d0fa6f1f0c4ae",
+            "availability": "ready"
+          }
+        ],
+        "forwarded": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "path": "forwarded",
+            "kind": "file",
+            "device_name": "Source",
+            "display_time": "2026-10-05T12:47:48.202528178Z",
+            "bytes": "64",
+            "digest": "74471ad9fc2213d3cb3e254f6afdc2717d11628f5845fc7251cb3e174aed1ffb",
+            "availability": "ready"
+          }
+        ]
+      },
+      "forwarder": {
+        "source-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "path": "source-existing",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:46:22.212437614Z",
+            "bytes": "25",
+            "digest": "cbb37e018353574130de529ff5b73a97d1c9bcc6985b2f82f4ddf22597a76bcf",
+            "availability": "ready"
+          }
+        ],
+        "receiver-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "4"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device b9bd8a2b",
+            "display_time": "2026-10-05T12:50:00.612023576Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "3"
+            },
+            "path": "receiver-existing",
+            "kind": "deleted",
+            "device_name": "Device b9bd8a2b",
+            "display_time": "2026-10-05T12:50:00.325969994Z",
+            "bytes": "0",
+            "digest": "",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:20.196467348Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "2"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Device b9bd8a2b",
+            "display_time": "2026-10-05T12:50:00.085311754Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Forwarder",
+            "display_time": "2026-10-05T12:46:50.754432729Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          }
+        ],
+        "source-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "path": "source-edit",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:47:38.901620296Z",
+            "bytes": "21",
+            "digest": "db2cfad400d5dc202057bcffddb248ff450194413765d83a4674d0706f866a38",
+            "availability": "ready"
+          }
+        ],
+        "receiver-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "path": "receiver-edit",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:42.608299372Z",
+            "bytes": "23",
+            "digest": "79a988fac8a2962da724bfa1eb8d7452d13727fdd89b42a9dd29c6af018f3b11",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "path": "forwarder-edit",
+            "kind": "file",
+            "device_name": "Forwarder",
+            "display_time": "2026-10-05T12:47:45.467586532Z",
+            "bytes": "24",
+            "digest": "1ba88f1bab785a535798689cd85d0331f0782fd34014ecb47a2d0fa6f1f0c4ae",
+            "availability": "ready"
+          }
+        ],
+        "forwarded": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "path": "forwarded",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:47:48.202528178Z",
+            "bytes": "64",
+            "digest": "74471ad9fc2213d3cb3e254f6afdc2717d11628f5845fc7251cb3e174aed1ffb",
+            "availability": "ready"
+          }
+        ]
+      },
+      "replacement": {
+        "source-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "1"
+            },
+            "path": "source-existing",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:46:22.212437614Z",
+            "bytes": "25",
+            "digest": "cbb37e018353574130de529ff5b73a97d1c9bcc6985b2f82f4ddf22597a76bcf",
+            "availability": "ready"
+          }
+        ],
+        "receiver-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "4"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Replacement",
+            "display_time": "2026-10-05T12:50:00.612023576Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "3"
+            },
+            "path": "receiver-existing",
+            "kind": "deleted",
+            "device_name": "Replacement",
+            "display_time": "2026-10-05T12:50:00.325969994Z",
+            "bytes": "0",
+            "digest": "",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "1"
+            },
+            "path": "receiver-existing",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:20.196467348Z",
+            "bytes": "27",
+            "digest": "fca7d25e7242e9b5206150f74eeeefb6fb35173bcbb183e2098274bbd5f4765e",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-existing": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+              "counter": "2"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Replacement",
+            "display_time": "2026-10-05T12:50:00.085311754Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          },
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "1"
+            },
+            "path": "forwarder-existing",
+            "kind": "file",
+            "device_name": "Device 16915534",
+            "display_time": "2026-10-05T12:46:50.754432729Z",
+            "bytes": "28",
+            "digest": "15f5bb006bb91470edddad9d6f460779448ffa2f7ad7c89aac90562885bdd43f",
+            "availability": "ready"
+          }
+        ],
+        "source-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "2"
+            },
+            "path": "source-edit",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:47:38.901620296Z",
+            "bytes": "21",
+            "digest": "db2cfad400d5dc202057bcffddb248ff450194413765d83a4674d0706f866a38",
+            "availability": "ready"
+          }
+        ],
+        "receiver-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+              "counter": "2"
+            },
+            "path": "receiver-edit",
+            "kind": "file",
+            "device_name": "Device 06eec4d7",
+            "display_time": "2026-10-05T12:47:42.608299372Z",
+            "bytes": "23",
+            "digest": "79a988fac8a2962da724bfa1eb8d7452d13727fdd89b42a9dd29c6af018f3b11",
+            "availability": "ready"
+          }
+        ],
+        "forwarder-edit": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+              "counter": "2"
+            },
+            "path": "forwarder-edit",
+            "kind": "file",
+            "device_name": "Device 16915534",
+            "display_time": "2026-10-05T12:47:45.467586532Z",
+            "bytes": "24",
+            "digest": "1ba88f1bab785a535798689cd85d0331f0782fd34014ecb47a2d0fa6f1f0c4ae",
+            "availability": "ready"
+          }
+        ],
+        "forwarded": [
+          {
+            "version": {
+              "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+              "author": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+              "counter": "3"
+            },
+            "path": "forwarded",
+            "kind": "file",
+            "device_name": "Device 51e43429",
+            "display_time": "2026-10-05T12:47:48.202528178Z",
+            "bytes": "64",
+            "digest": "74471ad9fc2213d3cb3e254f6afdc2717d11628f5845fc7251cb3e174aed1ffb",
+            "availability": "ready"
+          }
+        ]
+      }
+    },
+    "replacement_membership": {
+      "source": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "revision": 5,
+        "digest": "bb4df4e8f375b288d95b84a2d0aa2006ecd35dc1dadacc438fab8c8f468627c8",
+        "active": [
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+          },
+          {
+            "device": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+            "key_pin": "82b6c6b72c88061f2e7a1968f89fb0f1f078dee0a4cf732d1ffdd032b1a45984"
+          }
+        ],
+        "retired": [
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "retired_at": 4,
+            "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012"
+          }
+        ],
+        "aliases": {
+          "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76": "Source"
+        }
+      },
+      "forwarder": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "revision": 5,
+        "digest": "bb4df4e8f375b288d95b84a2d0aa2006ecd35dc1dadacc438fab8c8f468627c8",
+        "active": [
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+          },
+          {
+            "device": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+            "key_pin": "82b6c6b72c88061f2e7a1968f89fb0f1f078dee0a4cf732d1ffdd032b1a45984"
+          }
+        ],
+        "retired": [
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "retired_at": 4,
+            "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012"
+          }
+        ],
+        "aliases": {
+          "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c": "Forwarder"
+        }
+      },
+      "replacement": {
+        "folder": "9c839005fd06006843f5da4c208b26ce4264aeef7e78e9f624c706aa9b7e9a08",
+        "revision": 5,
+        "digest": "bb4df4e8f375b288d95b84a2d0aa2006ecd35dc1dadacc438fab8c8f468627c8",
+        "active": [
+          {
+            "device": "16915534120415abab05a537297b4e0002e47d0884fb56eab89309fec17e176c",
+            "key_pin": "7be7b5e5c6f516e62d45ab5370398afa703981ac098ccda27043780c842287c7"
+          },
+          {
+            "device": "51e43429cf0decdc6e86027a0a0a3cdecca864d7998a11d51c0ebe4bfbb84f76",
+            "key_pin": "61c3f68a962d81d9dda621a39a2c269ff0b857ba828b962333117b92e541d227"
+          },
+          {
+            "device": "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8",
+            "key_pin": "82b6c6b72c88061f2e7a1968f89fb0f1f078dee0a4cf732d1ffdd032b1a45984"
+          }
+        ],
+        "retired": [
+          {
+            "device": "06eec4d75e23146baa106ac4cc33b087c6f2c4abf0f1a221ccc7f7b2458b6c25",
+            "retired_at": 4,
+            "snapshot_digest": "933cdbcec3317bb54d6c94b90e58d658ac056f7ad161d9741f529ca0a37ea012"
+          }
+        ],
+        "aliases": {
+          "b9bd8a2b64bb6bc9c6205418532b663fdcc4e42c370c3fb10437732705fc3eb8": "Replacement"
+        }
+      }
+    }
+  },
+  "personal_use": false,
+  "runner_sha256": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d",
+  "limitations": [
+    "No login/logout/boot validation",
+    "No network or host policy changes",
+    "Replacement is a fresh installation on the receiver's host"
+  ],
+  "physical_host_count": 3,
+  "cleanup_errors": [],
+  "seconds": 277.6363871289941,
+  "ended_utc": "2026-10-05T12:50:39Z"
+}

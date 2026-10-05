@@ -1,0 +1,20 @@
+=== RUN   TestTerminalT11FrozenReviewAndExactRetry
+--- PASS: TestTerminalT11FrozenReviewAndExactRetry (0.00s)
+=== RUN   TestTerminalT11PathDraftPollingAndSelection
+--- PASS: TestTerminalT11PathDraftPollingAndSelection (0.00s)
+=== RUN   TestTerminalT11UnavailableContentAndNarrowHelp
+--- PASS: TestTerminalT11UnavailableContentAndNarrowHelp (0.01s)
+=== RUN   TestTerminalT11QualifiedObservationsAndPartialEffects
+--- PASS: TestTerminalT11QualifiedObservationsAndPartialEffects (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	1.140s
+=== RUN   TestTerminalT11BoundedSearchStorageAndLiveStopped
+--- PASS: TestTerminalT11BoundedSearchStorageAndLiveStopped (1.29s)
+=== RUN   TestTerminalT11SessionResultStreamAndSymlinkRefusal
+--- PASS: TestTerminalT11SessionResultStreamAndSymlinkRefusal (0.45s)
+=== RUN   TestTerminalT11RealPTYEveryday
+    everyday_test.go:135: {"result": "passed", "scenarios": ["real offline/reconnect concurrent heads", "canonical diff/editor failed exit", "stale editor refusal and fresh review", "exact select and keep copies", "delete history restore and separate copy", "storage preview narrow root block", "terminal restoration and daemon transfer after quit"]}
+        
+--- PASS: TestTerminalT11RealPTYEveryday (62.77s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	65.515s

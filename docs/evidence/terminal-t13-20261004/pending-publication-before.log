@@ -1,0 +1,11 @@
+=== RUN   TestTerminalT13OperationObservesPublicationWithoutReauthoring
+    release_test.go:62: stale publication observation: {CopyPlans:[] Storage:<nil> FolderManagement:<nil> Upload:<nil> Versions:[] ContentReview:<nil> Version:1 Capabilities:[terminal_control_v1 lifecycle_settings_v1 enrollment_v2 reviewed_setup_v1 folder_sharing_v1 context_v1 reviewed_content_v1 onboarding_management_v1 everyday_management_v1] State:pending Context:<nil> Operation:0x22a5b7d7fd00 Preview:<nil> Join:<nil> Invitation:<nil> Session:<nil> Settings:<nil> Service:<nil> Readiness:<nil> Items:[] Requests:[] Observations:[] Attention:[] Effects:[{Path:doc Version:0x22a5b7c967e0 Source:0x22a5b7c96810 State:captured}] Review:<nil> Cursor: Error:<nil>} <nil>
+--- FAIL: TestTerminalT13OperationObservesPublicationWithoutReauthoring (0.02s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.024s
+=== RUN   TestTerminalT13PendingContentUsesTickAndExactExplicitRetry
+    everyday_test.go:33: pending observation started an immediate polling loop
+--- FAIL: TestTerminalT13PendingContentUsesTickAndExactExplicitRetry (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/terminal	0.016s
+FAIL

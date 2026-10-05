@@ -30,7 +30,8 @@ from terminal_vt import Screen
 
 
 class Campaign:
-    def __init__(self, root, binary, output):
+    def __init__(self, root, binary, output, bare=False):
+        self.bare = bare
         self.root = root.resolve()
         self.token = uuid.uuid4().hex
         marker = root / ".filesync-disposable"
@@ -105,7 +106,7 @@ class Campaign:
         master, slave = pty.openpty()
         fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", size[1], size[0], 0, 0))
         before = copy.deepcopy(termios.tcgetattr(slave))
-        args = ["orbit", "tui", "--state", str(self.state), "--no-color"]
+        args = ["orbit", *([] if self.bare else ["tui"]), "--state", str(self.state), "--no-color"]
         scratch = beneath(self.root, "tool result.txt")
         if tool_mode:
             scratch.write_text("before tool")
@@ -171,6 +172,20 @@ print('TOOL_DONE',flush=True)
                 raise AssertionError(f"{name}: shutdown hung; stack={bytes(transcript[-24000:]).decode(errors='replace')}")
             return p.wait()
 
+        def read_visible(needle, timeout=10):
+            deadline = time.monotonic() + timeout
+            while time.monotonic() < deadline:
+                if needle in screen.text():
+                    return
+                if select.select([master], [], [], 0.05)[0]:
+                    data = os.read(master, 65536)
+                    transcript.extend(data)
+                    screen.feed(data)
+                    assert len(transcript) < 2 << 20, "unbounded terminal output"
+                if p.poll() is not None:
+                    break
+            raise AssertionError(f"{name}: visible {needle!r} absent; frame={screen.text()!r}")
+
         try:
             read_until("Notes界".encode())
             assert b"\x1b[?1049h" in transcript, "not an actual alternate-screen client"
@@ -192,6 +207,7 @@ print('TOOL_DONE',flush=True)
             os.write(master, b"\x1b[B\x1b[A\t")
             read_until(b"Type to filter")
             os.write(master, b"\r")
+            read_visible("> Notes界")
             os.write(master, b"\r")
             read_until(b"Inspect")
             os.write(master, b"\x1b")
@@ -326,11 +342,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--binary", default="bin/filesync")
     parser.add_argument("--output")
+    parser.add_argument("--bare", action="store_true", help="exercise ordinary Orbit entry")
     args = parser.parse_args()
     binary = Path(args.binary).resolve(strict=True)
     root = Path(tempfile.mkdtemp(prefix="orbit-t09-pty-")).resolve()
     root.chmod(0o700)
-    c = Campaign(root, binary, args.output)
+    c = Campaign(root, binary, args.output, args.bare)
     try:
         c.execute()
     finally:

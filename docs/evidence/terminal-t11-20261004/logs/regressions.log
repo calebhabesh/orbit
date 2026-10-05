@@ -1,0 +1,134 @@
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.014s [no tests to run]
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.07s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.64s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:434: CLI history peak_rss_kib=62688
+    content_recovery_test.go:441: CLI restore peak_rss_kib=62688
+    content_recovery_test.go:442: CLI restore peak_rss_kib=62688
+    content_recovery_test.go:448: CLI export peak_rss_kib=62688
+    content_recovery_test.go:455: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:459: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:465: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:469: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:469: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:481: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:489: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:494: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:499: CLI conflicts peak_rss_kib=62688
+    content_recovery_test.go:512: CLI conflicts peak_rss_kib=62688
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.80s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.04s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.02s)
+=== RUN   TestTerminalT10BlockedSetupPagesAndFolderManagement
+--- PASS: TestTerminalT10BlockedSetupPagesAndFolderManagement (0.01s)
+=== RUN   TestTerminalT10RealPTYOnboarding
+    tui_onboarding_test.go:88: [
+          {
+            "scenario": "two-process-onboarding",
+            "result": "passed",
+            "assertions": [
+              "nonempty measured review; validation/back/edit",
+              "private expired and wrong-pin refusal",
+              "exact transcript code and approval",
+              "pending client exit/reopen/daemon restart",
+              "actual verified bidirectional file bytes",
+              "local pause/resume, actual relocation and unregister preview",
+              "second folder distinct consent and attempt; device identities retained",
+              "actual startup failure under missing-system-tool fixture",
+              "terminal restoration"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT10RealPTYOnboarding (63.19s)
+=== RUN   TestTerminalT10FolderForkLagAndConservativePreview
+--- PASS: TestTerminalT10FolderForkLagAndConservativePreview (0.04s)
+=== RUN   TestTerminalT10SetupRetryRetainsNetworkRestartAndExactIntent
+--- PASS: TestTerminalT10SetupRetryRetainsNetworkRestartAndExactIntent (0.02s)
+=== RUN   TestTerminalT09NamedPages
+--- PASS: TestTerminalT09NamedPages (0.16s)
+=== RUN   TestTerminalT09RealPTYLifetime
+    tui_test.go:88: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+        
+--- PASS: TestTerminalT09RealPTYLifetime (10.58s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	75.668s

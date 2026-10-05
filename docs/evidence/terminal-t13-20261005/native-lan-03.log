@@ -1,0 +1,17 @@
+Prepared three fresh packaged installations
+PASS ordinary joining, delayed approval and exact membership
+PASS original-author forwarding without source/receiver overlap
+PASS exact survivor retirement review, exported rollout and replay
+replacement: observing retained rate-limited join until submission
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/terminal_private.py", line 254, in <module>
+    parser.add_argument("--hosts", nargs=3, default=["laptop", "rpi", "vps"])
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/terminal_private.py", line 211, in run
+    if replacement.device in {n.device for n in nodes}:
+                                                  ^^^^^
+  File "<repo>/scripts/validation/terminal_native.py", line 135, in approve
+    completed = wait("approved durable join", done)
+  File "<repo>/scripts/validation/terminal_native.py", line 28, in wait
+    raise RuntimeError("timeout: " + label)
+RuntimeError: timeout: approved durable join

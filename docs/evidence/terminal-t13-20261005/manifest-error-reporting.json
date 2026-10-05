@@ -1,0 +1,45 @@
+{
+  "original_head": "61da64fca723f21ec888f4e7190e938fe231c3b1",
+  "source_kind": "development tree; original branch and index preserved",
+  "candidate_of_prior_campaign": "e37e2600cd236776d5161f3a293718098bd7500e",
+  "changed_since_prior_candidate": [
+    "internal/control/terminal_enrollment.go",
+    "tests/terminal/retirement_release_test.go",
+    "scripts/validation/host_agent.py",
+    "scripts/validation/terminal_private.py",
+    "scripts/validation/test_safety.py"
+  ],
+  "sha256": {
+    "internal/control/terminal_enrollment.go": "9c959549a70538911718f3b97262431cf1acd23ec0d45e70bb4a73f31855793f",
+    "tests/terminal/retirement_release_test.go": "b766baa5e00ee20de4e1f03bf3094b2915aff3c4ce2545206e9c8a65b8077303",
+    "scripts/validation/host_agent.py": "2b947e013d803274767d6f87e8be3a9a8a143b3307f3e0fb35f7f1e45d273ec4",
+    "scripts/validation/terminal_private.py": "e3564d5634291f65f1d57df9aa97ae7e1f9dc83d8ec97e9d1e392e17cfdbaa28",
+    "scripts/validation/test_safety.py": "557125fe484884bf3fece5c4f0ae98ab9fbc73adc5f2e97a5595101005bab309"
+  },
+  "packages_sha256": "1d9d79e88efff7e989c1b423dbd784cabc7fefe317342d531c6e9311a08c7272  filesync-v1.0.0-linux-amd64.tar.gz\n1d9d79e88efff7e989c1b423dbd784cabc7fefe317342d531c6e9311a08c7272  orbit-v1.0.0-linux-amd64.tar.gz\n554fbaca1d9e656375dbc1df66d43f5873b6b3c2dd6832c852addbc80fbb031a  filesync_1.0.0_amd64.deb\n2bafa9d72430fbf86990c0120ca9d047a066addfe316b05c46e4d79d08c7c50f  filesync-1.0.0-1.x86_64.rpm\n759e23c06ba26c1b324a4b05c6f895289f6477e5dc49d4ec2531dc908968b3ee  filesync-v1.0.0-linux-arm64.tar.gz\n759e23c06ba26c1b324a4b05c6f895289f6477e5dc49d4ec2531dc908968b3ee  orbit-v1.0.0-linux-arm64.tar.gz\n018d820331df862154038f6dab3ebd4792f1c809a05b041110015ce938f573c4  filesync_1.0.0_arm64.deb\nfc7fa42e382c0b28e64ab134af0262656f953322760eb2b4b48b7ccb1f1e4d68  filesync-1.0.0-1.aarch64.rpm\na06749f5b54e3f5bc3b201ce5c69c2ea5cc4fb2c5fe53b1b85e23326aa553fde  release-manifest.json\n",
+  "package_manifest": {
+    "browser_runtime_required": false,
+    "built": "2026-10-01",
+    "commit": "61da64f",
+    "config_format_version": 1,
+    "embedded_assets": {
+      "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+      "total_files": 3
+    },
+    "legacy_browser_entry": "orbit legacy-browser",
+    "license": "MIT",
+    "node_runtime_required": false,
+    "ordinary_entry": "terminal",
+    "product": "Orbit",
+    "pure_go_sqlite": true,
+    "release": "1",
+    "schema_version": 13,
+    "version": "1.0.0"
+  },
+  "unexecuted": [
+    "Authenticated Tailscale journey",
+    "Ordinary laptop/Pi/VPS private-route onboarding, forwarding and replacement",
+    "Native login/logout and unattended boot",
+    "Full clean release reproduction of the new error-reporting correction"
+  ]
+}

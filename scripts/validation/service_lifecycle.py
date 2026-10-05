@@ -26,7 +26,6 @@ def main():
             node.setup(uuid.uuid4().hex * 2)
             node.put("data/keep.txt", b"installation and uninstall preserve these bytes\n")
             node.scan()
-            before_progress=node.call("progress")
             installed = False
             entry = {"host": host, "inventory": node.inventory, "root": node.root, "success": False,
                      "template_sha256": hashlib.sha256(template.encode()).hexdigest(),
@@ -43,10 +42,11 @@ def main():
                 node.put("data/keep.txt",edited)
                 deadline=time.monotonic()+20
                 while time.monotonic()<deadline:
-                    if node.call("progress")["ready_versions"]>before_progress["ready_versions"]:break
+                    observed = node.call("terminal-query", query={"kind":"history", "folder":node.folder,"path":"keep.txt"})
+                    if any(v["digest"] == hashlib.sha256(edited).hexdigest() for v in observed["versions"]):break
                     time.sleep(0.1)
                 else:raise RuntimeError("service is alive but cannot capture ordinary edits")
-                entry["ordinary_capture"]={"ready_versions_increased":True,"expected_sha256":hashlib.sha256(edited).hexdigest()}
+                entry["ordinary_capture"]={"ready_history_digest_observed":True,"expected_sha256":hashlib.sha256(edited).hexdigest()}
                 entry["after"] = node.call("service-restart")
                 if entry["before"]["pid"] == entry["after"]["pid"]:
                     raise RuntimeError("restart did not change service process")

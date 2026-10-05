@@ -141,6 +141,7 @@ def main():
         a.put("data/resume.bin", payload)
         a.scan()
         before = b.call("progress")
+        before_objects = b.call("verified-objects")
         name, port = a.serve()
         try:
             with link(a, b, port, bandwidth=1024 * 1024) as (url, proxy):
@@ -148,8 +149,8 @@ def main():
                                            "--peer-certificate", b.root + "/laptop.pem", "--json"])
                 deadline = time.monotonic() + 45
                 while time.monotonic() < deadline:
-                    progress = b.call("progress")
-                    if progress["verified_chunks"] > before["verified_chunks"]:
+                    progress = b.call("verified-objects")
+                    if progress["verified_objects"] >= before_objects["verified_objects"] + 2:
                         break
                     if b.call("poll", name=worker)["returncode"] is not None:
                         raise RuntimeError("transfer completed before interruption")

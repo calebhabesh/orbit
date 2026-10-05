@@ -1,0 +1,265 @@
+Orbit                                   
+Daemon: running   Startup: manual (not …
+Overview | f n d o                      
+Search page:                            
+Devices: device-75df7b93, Laptop | d: i…
+Needs attention, then synced folders    
+(first pages)                           
+> Notes  <disposable>/No…
+j/k Enter / ? q                         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit                                   
+Daemon: unknown   Startup: unknown      
+Folders | f n d o                       
+Search page:                            
+> Notes  <disposable>/No…
+j/k Enter / ? q                         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Inspect folder and devices      
+Root: <disposable>/Notes界                        
+Local pause=false; membership revision=2
+Shares with: Device 75df7b93            
+Shares with: Laptop                     
+Last contact: 2026-10-05T02:24:58Z |    
+available                               
+Reported stored=true applied=false      
+direct=true; observed=2026-10-          
+05T02:24:59Z                            
+Last contact: 2026-10-05T02:24:58Z |    
+available                               
+Reported stored=true applied=false      
+v h D C b | p pause l relocate a add s  
+share x unregister t retire ?           
+--- frame ---
+Orbit | Inspect folder and devices      
+Root: <disposable>/Notes界                        
+Local pause=false; membership revision=2
+Shares with: Device 75df7b93            
+Shares with: Laptop                     
+Last contact: 2026-10-05T02:24:58Z |    
+available                               
+Reported stored=true applied=false      
+direct=true; observed=2026-10-          
+05T02:24:59Z                            
+Last contact: 2026-10-05T02:24:58Z |    
+available                               
+Reported stored=true applied=false      
+v h D C b | p pause l relocate a add s  
+share x unregister t retire ?           
+--- frame ---
+Orbit | Storage and retention           
+Objects=91 / data budget=4000000000     
+bytes                                   
+Metadata=4709880 / budget=268435456     
+bytes                                   
+Staging=0 recovery=57 quarantine=0 bytes
+Free space reserve=16777216 bytes       
+History availability depends on retained
+verified bytes, not a deletion timer.   
+Preview only: inspection never runs     
+cleanup.                                
+Maintenance: orbit storage --help       
+Root/recovery: docs/runbooks/terminal-  
+recovery.md                             
+m maintenance preview j/k scroll r      
+refresh ? Esc q                         
+--- frame ---
+Orbit | Storage and retention           
+Objects=91 / data budget=4000000000     
+bytes                                   
+Metadata=4709880 / budget=268435456     
+bytes                                   
+Staging=0 recovery=57 quarantine=0 bytes
+Free space reserve=16777216 bytes       
+History availability depends on retained
+verified bytes, not a deletion timer.   
+Preview only: inspection never runs     
+cleanup.                                
+Maintenance: orbit storage --help       
+Root/recovery: docs/runbooks/terminal-  
+recovery.md                             
+m maintenance preview j/k scroll r      
+refresh ? Esc q                         
+--- frame ---
+Orbit | Storage and retention           
+Objects=91 / data budget=4000000000     
+bytes                                   
+Metadata=4709880 / budget=268435456     
+bytes                                   
+Staging=0 recovery=57 quarantine=0 bytes
+Free space reserve=16777216 bytes       
+Retention: 30 days; minimum superseded: 
+20                                      
+                                        
+Known versions=17 retained=17 expired=0 
+                                        
+Cleanup candidates=0 reclaimable=0      
+bytes; suspended=false                  
+m maintenance preview j/k scroll r      
+refresh ? Esc q                         
+--- frame ---
+Orbit                                   
+Daemon: unknown   Startup: unknown      
+Folders | f n d o                       
+Search page:                            
+> Notes  <disposable>/No…
+j/k Enter / ? q                         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Inspect folder and devices      
+Root: <disposable>/Notes界                        
+Local pause=false; membership revision=2
+Shares with: Device 75df7b93            
+Shares with: Laptop                     
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+Reported stored=true applied=false      
+direct=true; observed=2026-10-          
+05T02:24:59Z                            
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+Reported stored=true applied=false      
+v h D C b | p pause l relocate a add s  
+share x unregister t retire ?           
+--- frame ---
+Orbit | Inspect folder and devices      
+Root: <disposable>/Notes界                        
+Local pause=false; membership revision=2
+Shares with: Device 75df7b93            
+Shares with: Laptop                     
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+Reported stored=true applied=false      
+direct=true; observed=2026-10-          
+05T02:24:59Z                            
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+Reported stored=true applied=false      
+v h D C b | p pause l relocate a add s  
+share x unregister t retire ?           
+--- frame ---
+Orbit | Confirm local pause             
+This action changes local               
+synchronization for the selected folder.
+It does not erase remote files or change
+remote device membership.               
+Enter confirm  Esc back  q quit         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Inspect folder and devices      
+Local folder action completed: pause    
+Root: <disposable>/Notes界                        
+Local pause=true; membership revision=2 
+Shares with: Device 75df7b93            
+Shares with: Laptop                     
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+Reported stored=true applied=false      
+direct=true; observed=2026-10-          
+05T02:24:59Z                            
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+v h D C b | p pause l relocate a add s  
+share x unregister t retire ?           
+--- frame ---
+Orbit | Confirm local resume            
+Local folder action completed: pause    
+This action changes local               
+synchronization for the selected folder.
+It does not erase remote files or change
+remote device membership.               
+Enter confirm  Esc back  q quit         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Inspect folder and devices      
+Local folder action completed: resume   
+Root: <disposable>/Notes界                        
+Local pause=false; membership revision=2
+Shares with: Device 75df7b93            
+Shares with: Laptop                     
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+Reported stored=true applied=false      
+direct=true; observed=2026-10-          
+05T02:25:00Z                            
+Last contact: 2026-10-05T02:24:59Z |    
+available                               
+v h D C b | p pause l relocate a add s  
+share x unregister t retire ?           
+--- frame ---
+Orbit                                   
+Daemon: unknown   Startup: unknown      
+Attention | f n d o                     
+Search page:                            
+>   ROOT_UNAVAILABLE                    
+j/k Enter / ? q                         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit                                   
+Daemon: unknown   Startup: unknown      
+Attention | f n d o                     
+Search page:                            
+>   ROOT_UNAVAILABLE                    
+j/k Enter / ? q                         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        

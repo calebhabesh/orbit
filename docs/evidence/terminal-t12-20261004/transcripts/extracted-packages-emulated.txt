@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/terminal_package_test.py", line 192, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "<repo>/scripts/terminal_package_test.py", line 95, in main
+    cid = run(['docker','create','--label','orbit.disposable='+token,'multiarch/qemu-user-static:x86_64-aarch64']).decode().strip()
+          ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/terminal_package_test.py", line 24, in run
+    assert result.returncode == 0, (argv, result.returncode, (result.stdout+result.stderr).decode(errors='replace')[-4000:])
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (['docker', 'create', '--label', 'orbit.disposable=f36e9e0a3a2e40df9d096f45823787de', 'multiarch/qemu-user-static:x86_64-aarch64'], 1, 'Error response from daemon: no command specified\n')

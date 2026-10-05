@@ -1,0 +1,15 @@
+[
+  {
+    "scenario": "two-process-everyday-tui",
+    "result": "passed",
+    "assertions": [
+      "real offline/reconnect concurrent heads",
+      "canonical diff/editor failed exit",
+      "stale editor refusal and fresh review",
+      "exact select and keep copies",
+      "delete history restore and separate copy",
+      "storage preview narrow root block",
+      "terminal restoration and daemon transfer after quit"
+    ]
+  }
+]

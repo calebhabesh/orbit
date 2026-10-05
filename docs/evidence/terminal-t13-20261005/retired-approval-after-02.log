@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT13RetiredIdentityApprovalHasRecoveryAction
+    retirement_release_test.go:76: retired request was not declined: {Version: Request: State: TranscriptDigest: VerificationCode: MembershipHex: PeerEndpoint:} RATE_LIMITED
+--- FAIL: TestTerminalT13RetiredIdentityApprovalHasRecoveryAction (13.03s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	13.031s
+FAIL

@@ -1,0 +1,9 @@
+PASS 51 local Markdown links
+PASS all current production source matches isolated passing candidate
+PASS authenticated Tailscale peer routes on all three hosts
+PASS exact clean candidate package hashes on all native installations
+PASS three physical host ordinary Tailscale journey in 277.636 s
+PASS zero owned-worker cleanup errors
+PASS preserved pilot services still active/running on all three hosts
+PASS git diff --check
+T13 remains in_progress: actual native login/logout/boot unexecuted

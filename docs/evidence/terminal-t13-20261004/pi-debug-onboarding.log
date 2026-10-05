@@ -1,0 +1,3 @@
+Traceback (most recent call last):
+  File "<stdin>", line 9, in <module>
+AttributeError: 'TerminalNode' object has no attribute 'raw'

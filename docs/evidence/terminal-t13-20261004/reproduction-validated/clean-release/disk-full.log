@@ -1,0 +1,5 @@
+PASS actual guest disk exhaustion: enospc.object
+PASS actual guest disk exhaustion: enospc.sqlite
+PASS actual guest disk exhaustion: enospc.checkpoint
+PASS actual guest disk exhaustion: enospc.staging
+PASS VM-child fsync syscall ENOSPC injection: enospc.fsync

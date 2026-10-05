@@ -1,0 +1,44 @@
+qemu-aarch64 version 7.2.0 (Debian 1:7.2+dfsg-1~bpo11+2)
+Copyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers
+
+Selecting previously unselected package filesync.
+(Reading database ... 6096 files and directories currently installed.)
+Preparing to unpack .../filesync_1.0.0_amd64.deb ...
+Unpacking filesync (1.0.0) ...
+Setting up filesync (1.0.0) ...
+initialized device f9490fceaea0c34d14d9be21455bfa52d8cf2b4ef3a534b7da14be1b77d627bc in /tmp/orbit-t12/.filesync
+{"versions":[],"version":"1","capabilities":["terminal_control_v1","lifecycle_settings_v1","enrollment_v2","reviewed_setup_v1","folder_sharing_v1","context_v1","reviewed_content_v1","onboarding_management_v1","everyday_management_v1"],"state":"empty","service":{"running":false,"enabled":true,"mode":"manual","unattended_verified":false,"root_healthy":true,"capture_healthy":true},"readiness":{"approved":false,"membership_current":false,"root_available":false,"scan_complete":false,"unsupported":"0","unreadable":"0","uncaptured":"0","missing_content":"0","pending_publication":"0","conflicts":"0","storage_blocked":false},"items":[],"requests":[],"observations":null,"attention":[],"effects":[],"cursor":"","daemon_running":false,"state_directory":"/tmp/orbit-t12/.filesync","service_status":{"systemd_available":false,"unit_installed":false,"enabled_on_login":false,"currently_running":false,"root_verified":false,"capture_successful":false,"lingering_enabled":false,"lingering_instruction":"loginctl enable-linger root","manual_command":"filesync serve --state=/tmp/orbit-t12/.filesync --control-listen=127.0.0.1:8080","status_detail":"service belongs to another or unverified state"},"setup":{"initialized":true,"device_id":"f9490fceaea0c34d14d9be21455bfa52d8cf2b4ef3a534b7da14be1b77d627bc","suggested_root":"/tmp/orbit-t12/Orbit","current_phase":"initial","setup_completed":false,"settings":{"format_version":1,"device_label":"","theme":"dark","dark_theme":true},"registered_count":0},"folders":[]}
+Orbit Doctor Report: overall=OK
+  [OK] daemon_lifecycle: running in stopped-state adapter (daemon inactive; launch with 'orbit launch' if background sync desired)
+    remediation: run 'orbit launch' or 'orbit service start' to start the background daemon
+  [OK] identity_key: identity key permissions are secure (0600)
+  [OK] state_directory: state directory permissions are secure (0700)
+  [OK] metadata_database: metadata database permissions are secure (0600)
+  [OK] folder_roots: no folders registered on this device
+  [OK] free_disk_space: state partition has sufficient free space (68232 MiB available)
+  [OK] wal_file_size: SQLite WAL file is within soft cap (0 MiB)
+  [OK] data_budget: stored objects (0 MiB) within data budget (10240 MiB)
+  [OK] network_configuration: network configuration is healthy
+  [OK] membership_revisions: membership revisions and approvals are consistent
+  [OK] service_configuration: service configuration is normal
+  [OK] protocol_version: protocol version 1 is supported
+  [OK] schema_version: database schema version 13 matches binary
+  [OK] exhausted_tasks: no exhausted durable work tasks
+  [OK] pending_publications: zero pending publication journals
+(Reading database ... 6141 files and directories currently installed.)
+Preparing to unpack .../filesync_1.0.0_amd64.deb ...
+Unpacking filesync (1.0.0) over (1.0.0) ...
+Setting up filesync (1.0.0) ...
+(Reading database ... 6141 files and directories currently installed.)
+Removing filesync (1.0.0) ...
+
+Traceback (most recent call last):
+  File "<repo>/scripts/terminal_package_test.py", line 192, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "<repo>/scripts/terminal_package_test.py", line 182, in main
+    output=run(['docker','run','--rm','--label','orbit.disposable='+token,'--mount',f'type=bind,source={dist},target=/packages,readonly',image,'sh','-c',script])
+  File "<repo>/scripts/terminal_package_test.py", line 24, in run
+    assert result.returncode == 0, (argv, result.returncode, (result.stdout+result.stderr).decode(errors='replace')[-4000:])
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (['docker', 'run', '--rm', '--label', 'orbit.disposable=1e2b9674891c4fe1a63fc9f02a6b4b19', '--mount', 'type=bind,source=<repo>/dist,target=/packages,readonly', 'fedora:43', 'sh', '-c', 'set -eu\nmkdir -m 700 /tmp/orbit-t12\nprintf \'disposable container\\n\' > /tmp/orbit-t12/.filesync-disposable\nexport HOME=/tmp/orbit-t12\nexport XDG_STATE_HOME=$HOME/.local/state\nrpm -U --replacepkgs --nosignature /packages/filesync-1.0.0-1.x86_64.rpm\norbit init --state "$HOME/.filesync"\ncp "$HOME/.filesync/config.json" "$HOME/identity-before"\norbit --json\norbit doctor --state "$HOME/.filesync"\nrpm -U --replacepkgs --nosignature /packages/filesync-1.0.0-1.x86_64.rpm\ncmp "$HOME/identity-before" "$HOME/.filesync/config.json"\ntest -f /tmp/orbit-t12/.filesync-disposable\nrpm -e filesync\ncmp "$HOME/identity-before" "$HOME/.filesync/config.json"\ntest ! -e /usr/bin/orbit\n'], 1, 'error: /packages/filesync-1.0.0-1.x86_64.rpm: tag[14]: BAD, tag 1085 type 8 offset 241 count 1 len 57\nerror: /packages/filesync-1.0.0-1.x86_64.rpm cannot be installed\n')

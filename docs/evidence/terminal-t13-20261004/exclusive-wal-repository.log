@@ -1,0 +1,5 @@
+--- FAIL: TestRemoteMetadataRemainsPendingUntilWholeFileReady (0.01s)
+    p03_test.go:173: database is locked (5) (SQLITE_BUSY)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/repository	1.772s
+FAIL

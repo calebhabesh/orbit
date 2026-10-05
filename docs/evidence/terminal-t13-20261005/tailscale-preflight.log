@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/terminal_private.py", line 225, in <module>
+    run(args.dist, args.hosts, args.addresses, args.network, args.output, args.preflight_only)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/terminal_private.py", line 62, in run
+    raise RuntimeError(n.role + ": authenticated Tailscale address unavailable")
+RuntimeError: source: authenticated Tailscale address unavailable

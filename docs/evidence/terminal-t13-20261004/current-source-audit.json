@@ -1,0 +1,23 @@
+{
+  "candidate_commit": "e37e2600cd236776d5161f3a293718098bd7500e",
+  "production_source_matches_candidate": true,
+  "post_snapshot_test_changes": {
+    "scripts/terminal_everyday_pty_test.py": {
+      "candidate_sha256": "8474c88a7a6fa4050443879459fa966b7b5cacb888a8b5c64c7ab89e1a2349e0",
+      "current_sha256": "e79b8f76962f99276d834707217b1adfc51ad7d9eb2e693d5d8b5bb16a638202"
+    },
+    "scripts/terminal_pty_test.py": {
+      "candidate_sha256": "21eb806424b4499972c7398c2ac2a448a0b5808aca5d558fe61d634ac189df31",
+      "current_sha256": "33915f25aa46345833d7cfecc81ccdf1a0674314af99c3264045d3de0844744f"
+    }
+  },
+  "reason": "Native PTY waits for the selected row after search/navigation and verified content after metadata arrives; acceptance assertions retained. Current shell and everyday PTY/native runners validate these timing fixes.",
+  "runner_sha256": {
+    "scripts/validation/terminal_hosts.py": "8e97502c7ab16dce15ed4d1c22e3db2b23bf2e01ee56f44c17209bd30487820e",
+    "scripts/validation/terminal_native.py": "7e5edc2bba44de4d20b8ecb0dd15c1ed1b7e8f03a4c16f6a76c8343893a5617a",
+    "scripts/validation/host_agent.py": "f29fa69dfdd3784f5eed4af0505ba2876d14947e27f41e35f5e787e0d427784b",
+    "scripts/terminal_pty_test.py": "33915f25aa46345833d7cfecc81ccdf1a0674314af99c3264045d3de0844744f",
+    "scripts/terminal_onboarding_pty_test.py": "6d15c85dc6cdab139b93e458a1054cb3ea575ac685d576fcaa05994d5ef0bf69",
+    "scripts/terminal_everyday_pty_test.py": "e79b8f76962f99276d834707217b1adfc51ad7d9eb2e693d5d8b5bb16a638202"
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "campaign_date_local": "2026-10-04",
+  "timezone": "America/Toronto",
+  "source_commit": "e37e2600cd236776d5161f3a293718098bd7500e",
+  "original_branch_untouched": true,
+  "production_matches_snapshot": true,
+  "post_snapshot_test_changes": {
+    "scripts/terminal_everyday_pty_test.py": "e79b8f76962f99276d834707217b1adfc51ad7d9eb2e693d5d8b5bb16a638202",
+    "scripts/terminal_pty_test.py": "33915f25aa46345833d7cfecc81ccdf1a0674314af99c3264045d3de0844744f"
+  },
+  "binary_sha256": {
+    "amd64": "58315fd136a97541e458378c18753de093f95e03ee2a4d53acdc319ffb1ee1c6",
+    "arm64": "1e2e71732f7a2c6982df44448a6718d613c33c534f4c0716af647acaa0c1a03d"
+  },
+  "package_provenance_matches_all_native_runs": true,
+  "clean_reproduction": {
+    "source_commit": "e37e2600cd236776d5161f3a293718098bd7500e",
+    "checkout": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+    "started_utc": "2026-10-05T02:09:04Z",
+    "checks": [
+      {
+        "name": "status",
+        "command": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 0.05430386899388395
+      },
+      {
+        "name": "check",
+        "command": [
+          "make",
+          "check"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 392.9808127669967
+      },
+      {
+        "name": "race",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-count=1",
+          "./..."
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 347.1619573390053
+      },
+      {
+        "name": "demo",
+        "command": [
+          "make",
+          "demo"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 0.6051189940044424
+      },
+      {
+        "name": "reset",
+        "command": [
+          "python3",
+          "scripts/validation/abrupt_reset.py",
+          "--kernel",
+          "/boot/vmlinuz-linux",
+          "--output",
+          "<repo>/docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reset"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 35.359925709009985
+      },
+      {
+        "name": "disk-full",
+        "command": [
+          "python3",
+          "scripts/validation/abrupt_reset.py",
+          "--kernel",
+          "/boot/vmlinuz-linux",
+          "--output",
+          "<repo>/docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/disk-full",
+          "--hook",
+          "enospc.object",
+          "--hook",
+          "enospc.sqlite",
+          "--hook",
+          "enospc.checkpoint",
+          "--hook",
+          "enospc.staging",
+          "--hook",
+          "enospc.fsync"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 8.086518106007134
+      },
+      {
+        "name": "checksum",
+        "command": [
+          "sha256sum",
+          "-c",
+          "SHA256SUMS"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout/dist",
+        "exit_code": 0,
+        "seconds": 0.050288931000977755
+      },
+      {
+        "name": "package-repeat",
+        "command": [
+          "make",
+          "package"
+        ],
+        "cwd": "/tmp/filesync-reproduction-_5wwjg6f/checkout",
+        "exit_code": 0,
+        "seconds": 1.3948969350021798
+      }
+    ],
+    "success": true,
+    "cleanup": "fresh marked checkout retained; no existing environment reset",
+    "artifact_sha256": {
+      "SHA256SUMS": "f8cd58d2b416cf6c84947b191728aae7ff3b638ad5e29689d6c40ff7d5e83736",
+      "filesync-1.0.0-1.aarch64.rpm": "bcefe3107d990698447214dc8ab7ee30bd6dd46bb2079a42cf83cc2d6c2f4e78",
+      "filesync-1.0.0-1.x86_64.rpm": "f735c5d70a5da131fd7e6734b0bb428c21fbe0abaeef3d8e2b52fb0be2af074b",
+      "filesync-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+      "filesync-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+      "filesync_1.0.0_amd64.deb": "c8457817819be8e8144b67777c7d78d032e3067274e0286af556726fac55cb2b",
+      "filesync_1.0.0_arm64.deb": "8ecac914fa201e2db0514fc3f970c67b1f9cdf3a248822e86f4319e1bb210d60",
+      "orbit-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+      "orbit-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+      "release-manifest.json": "e13fd412d44b51fe108331e4c2ce82f53b60815f5a148a0f8c0065a4186cfdcd"
+    },
+    "binary_version": "filesync 1.0.0 (commit=e37e260, built=2026-10-01, linux/amd64, go=go1.27.1-X:nodwarf5)\n",
+    "orbit_version": "Orbit Personal File Manager v1.0.0 (filesync compat v1.0.0)\nCommit: e37e260 (built 2026-10-01)\nRuntime: linux/amd64 (go1.27.1-X:nodwarf5, pure-Go SQLite, zero Node runtime)\nSchema: SQLite user_version 13, Config format 1\nEmbedded Assets: 3 files (SHA-256: ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e)\n",
+    "repeat_artifact_sha256": {
+      "SHA256SUMS": "f8cd58d2b416cf6c84947b191728aae7ff3b638ad5e29689d6c40ff7d5e83736",
+      "filesync-1.0.0-1.aarch64.rpm": "bcefe3107d990698447214dc8ab7ee30bd6dd46bb2079a42cf83cc2d6c2f4e78",
+      "filesync-1.0.0-1.x86_64.rpm": "f735c5d70a5da131fd7e6734b0bb428c21fbe0abaeef3d8e2b52fb0be2af074b",
+      "filesync-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+      "filesync-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+      "filesync_1.0.0_amd64.deb": "c8457817819be8e8144b67777c7d78d032e3067274e0286af556726fac55cb2b",
+      "filesync_1.0.0_arm64.deb": "8ecac914fa201e2db0514fc3f970c67b1f9cdf3a248822e86f4319e1bb210d60",
+      "orbit-v1.0.0-linux-amd64.tar.gz": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+      "orbit-v1.0.0-linux-arm64.tar.gz": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+      "release-manifest.json": "e13fd412d44b51fe108331e4c2ce82f53b60815f5a148a0f8c0065a4186cfdcd"
+    },
+    "packages_identical_on_repeat": true,
+    "final_tracked_changes": ""
+  },
+  "native_keyboard_service": {
+    "success": true,
+    "hosts": [
+      {
+        "host": "rpi",
+        "success": true,
+        "provenance": {
+          "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+          "package_sha256": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+          "binary_sha256": "1e2e71732f7a2c6982df44448a6718d613c33c534f4c0716af647acaa0c1a03d"
+        },
+        "integrity": {
+          "sqlite": "ok"
+        },
+        "pty": {
+          "terminal_pty_test.py": {
+            "returncode": 0,
+            "stdout": "[\n  {\n    \"scenario\": \"80x24-quit-tool\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"40x16-ctrl-c-tool-failure\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-daemon-reconnect\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"locked unavailable daemon, retry and reconnection\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-tool-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"pipe-and-continued-capture\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"no terminal escapes in pipe\",\n      \"protected working bytes intact\",\n      \"actual new digest in captured history\",\n      \"same device identity\"\n    ]\n  }\n]\n",
+            "seconds": 15.012760890997015
+          },
+          "terminal_onboarding_pty_test.py": {
+            "returncode": 0,
+            "stdout": "[\n  {\n    \"scenario\": \"two-process-onboarding\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"nonempty measured review; validation/back/edit\",\n      \"private expired and wrong-pin refusal\",\n      \"exact transcript code and approval\",\n      \"pending client exit/reopen/daemon restart\",\n      \"actual verified bidirectional file bytes\",\n      \"local pause/resume, actual relocation and unregister preview\",\n      \"second folder distinct consent and attempt; device identities retained\",\n      \"actual startup failure under missing-system-tool fixture\",\n      \"terminal restoration\"\n    ]\n  }\n]\n",
+            "seconds": 75.67930025899841
+          },
+          "terminal_everyday_pty_test.py": {
+            "returncode": 0,
+            "stdout": "{\"result\": \"passed\", \"scenarios\": [\"real offline/reconnect concurrent heads\", \"canonical diff/editor failed exit\", \"stale editor refusal and fresh review\", \"exact select and keep copies\", \"delete history restore and separate copy\", \"storage preview narrow root block\", \"terminal restoration and daemon transfer after quit\"]}\n",
+            "seconds": 71.95081558100355
+          }
+        }
+      },
+      {
+        "host": "vps",
+        "success": true,
+        "provenance": {
+          "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+          "package_sha256": "4de2773e5f3d41070540f9117c9f3381a09f22233df014896f90a995e5236036",
+          "binary_sha256": "1e2e71732f7a2c6982df44448a6718d613c33c534f4c0716af647acaa0c1a03d"
+        },
+        "integrity": {
+          "sqlite": "ok"
+        },
+        "pty": {
+          "terminal_pty_test.py": {
+            "returncode": 0,
+            "stdout": "[\n  {\n    \"scenario\": \"80x24-quit-tool\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"40x16-ctrl-c-tool-failure\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-daemon-reconnect\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"locked unavailable daemon, retry and reconnection\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-tool-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"pipe-and-continued-capture\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"no terminal escapes in pipe\",\n      \"protected working bytes intact\",\n      \"actual new digest in captured history\",\n      \"same device identity\"\n    ]\n  }\n]\n",
+            "seconds": 11.038536173000466
+          },
+          "terminal_onboarding_pty_test.py": {
+            "returncode": 0,
+            "stdout": "[\n  {\n    \"scenario\": \"two-process-onboarding\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"nonempty measured review; validation/back/edit\",\n      \"private expired and wrong-pin refusal\",\n      \"exact transcript code and approval\",\n      \"pending client exit/reopen/daemon restart\",\n      \"actual verified bidirectional file bytes\",\n      \"local pause/resume, actual relocation and unregister preview\",\n      \"second folder distinct consent and attempt; device identities retained\",\n      \"actual startup failure under missing-system-tool fixture\",\n      \"terminal restoration\"\n    ]\n  }\n]\n",
+            "seconds": 63.1002961829945
+          },
+          "terminal_everyday_pty_test.py": {
+            "returncode": 0,
+            "stdout": "{\"result\": \"passed\", \"scenarios\": [\"real offline/reconnect concurrent heads\", \"canonical diff/editor failed exit\", \"stale editor refusal and fresh review\", \"exact select and keep copies\", \"delete history restore and separate copy\", \"storage preview narrow root block\", \"terminal restoration and daemon transfer after quit\"]}\n",
+            "seconds": 48.38095279100526
+          }
+        }
+      },
+      {
+        "host": "laptop",
+        "success": true,
+        "provenance": {
+          "package": "orbit-v1.0.0-linux-amd64.tar.gz",
+          "package_sha256": "a1c168f26bf211a60b5a77599af83f6ce32551982af504d15d3de7d1c58c1e7d",
+          "binary_sha256": "58315fd136a97541e458378c18753de093f95e03ee2a4d53acdc319ffb1ee1c6"
+        },
+        "integrity": {
+          "sqlite": "ok"
+        },
+        "pty": {
+          "terminal_pty_test.py": {
+            "returncode": 0,
+            "stdout": "[\n  {\n    \"scenario\": \"80x24-quit-tool\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"40x16-ctrl-c-tool-failure\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-daemon-reconnect\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"locked unavailable daemon, retry and reconnection\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"80x24-tool-sigterm\",\n    \"assertions\": [\n      \"keyboard/search/paste/resize\",\n      \"no SGR\",\n      \"exact termios restoration\",\n      \"daemon alive\",\n      \"direct argv tool canonical/raw handoff and actual bytes\"\n    ],\n    \"result\": \"passed\"\n  },\n  {\n    \"scenario\": \"pipe-and-continued-capture\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"no terminal escapes in pipe\",\n      \"protected working bytes intact\",\n      \"actual new digest in captured history\",\n      \"same device identity\"\n    ]\n  }\n]\n",
+            "seconds": 10.829154869003105
+          },
+          "terminal_onboarding_pty_test.py": {
+            "returncode": 0,
+            "stdout": "[\n  {\n    \"scenario\": \"two-process-onboarding\",\n    \"result\": \"passed\",\n    \"assertions\": [\n      \"nonempty measured review; validation/back/edit\",\n      \"private expired and wrong-pin refusal\",\n      \"exact transcript code and approval\",\n      \"pending client exit/reopen/daemon restart\",\n      \"actual verified bidirectional file bytes\",\n      \"local pause/resume, actual relocation and unregister preview\",\n      \"second folder distinct consent and attempt; device identities retained\",\n      \"actual startup failure under missing-system-tool fixture\",\n      \"terminal restoration\"\n    ]\n  }\n]\n",
+            "seconds": 63.48254063101194
+          },
+          "terminal_everyday_pty_test.py": {
+            "returncode": 0,
+            "stdout": "{\"result\": \"passed\", \"scenarios\": [\"real offline/reconnect concurrent heads\", \"canonical diff/editor failed exit\", \"stale editor refusal and fresh review\", \"exact select and keep copies\", \"delete history restore and separate copy\", \"storage preview narrow root block\", \"terminal restoration and daemon transfer after quit\"]}\n",
+            "seconds": 42.86049170300248
+          }
+        }
+      }
+    ],
+    "report": "native-hosts-final-candidate-03/terminal-hosts.json"
+  },
+  "ordinary_lan": {
+    "success": true,
+    "seconds": 114.58183956699213,
+    "report": "lan-final-candidate/terminal-native.json"
+  },
+  "three_host_engine": {
+    "success": true,
+    "seconds": 129.04482606399688,
+    "manual_membership": true,
+    "ssh_relays": true,
+    "report": "native-engine-final-candidate/three-host.json"
+  },
+  "t13_tests": {
+    "cases": 6,
+    "repetitions_each_mode": 2,
+    "ordinary_seconds": 4.687,
+    "race_seconds": 69.535,
+    "spawned_binaries_race_instrumented": true
+  },
+  "package_transactions": [
+    {
+      "scenario": "all-package-checksums",
+      "result": "passed"
+    },
+    {
+      "scenario": "amd64-tar-payload-and-entry",
+      "result": "passed",
+      "execution": "native amd64"
+    },
+    {
+      "scenario": "amd64-deb-payload-and-entry",
+      "result": "passed",
+      "execution": "native amd64"
+    },
+    {
+      "scenario": "amd64-rpm-payload-and-entry",
+      "result": "passed",
+      "execution": "native amd64"
+    },
+    {
+      "scenario": "arm64-tar-payload-and-entry",
+      "result": "passed",
+      "execution": "QEMU emulation; not native"
+    },
+    {
+      "scenario": "arm64-deb-payload-and-entry",
+      "result": "passed",
+      "execution": "QEMU emulation; not native"
+    },
+    {
+      "scenario": "arm64-rpm-payload-and-entry",
+      "result": "passed",
+      "execution": "QEMU emulation; not native"
+    },
+    {
+      "scenario": "standalone-install-repeat-upgrade-uninstall",
+      "result": "passed",
+      "assertions": [
+        "custom unit preserved",
+        "legacy identity/state preserved",
+        "ordinary bytes preserved",
+        "no user service changes"
+      ]
+    },
+    {
+      "scenario": "package-extracted-bare-PTY",
+      "result": "passed"
+    },
+    {
+      "scenario": "debian:bookworm-slim-install-reinstall-remove",
+      "result": "passed",
+      "limitations": "no boot/logout/systemd user manager"
+    },
+    {
+      "scenario": "fedora:43-install-reinstall-remove",
+      "result": "passed",
+      "limitations": "no boot/logout/systemd user manager"
+    }
+  ],
+  "invariant_named_tests_verified": 44,
+  "technical_unexecuted": [
+    "existing authenticated Tailscale path",
+    "ordinary native laptop/Pi/VPS join/forward and reviewed retirement/replacement over reachable private route",
+    "native login/logout/unattended boot"
+  ],
+  "owner_review": "deferred by owner until after delivery",
+  "t13_state": "in_progress",
+  "p17_engine_portfolio_state": "complete under owner scope amendment",
+  "workspace_artifacts": {
+    "bin": "matching candidate payloads atomically replaced; orbit symlink retained",
+    "dist": "matching all final reproduction package/checksum hashes",
+    "source_commit": "e37e2600cd236776d5161f3a293718098bd7500e"
+  }
+}

@@ -1,0 +1,8 @@
+=== RUN   TestTerminalT13OperationObservesPublicationWithoutReauthoring
+--- PASS: TestTerminalT13OperationObservesPublicationWithoutReauthoring (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.021s
+=== RUN   TestTerminalT13PendingContentUsesTickAndExactExplicitRetry
+--- PASS: TestTerminalT13PendingContentUsesTickAndExactExplicitRetry (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.013s

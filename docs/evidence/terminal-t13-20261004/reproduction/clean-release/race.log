@@ -1,0 +1,23 @@
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	3.259s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	1.010s
+ok  	github.com/calebhabesh/file-sync/internal/control	20.963s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.032s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	1.011s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.012s
+ok  	github.com/calebhabesh/file-sync/internal/replication	72.383s
+ok  	github.com/calebhabesh/file-sync/internal/repository	65.149s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	13.570s
+ok  	github.com/calebhabesh/file-sync/internal/state	1.023s
+ok  	github.com/calebhabesh/file-sync/internal/terminal	1.227s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	1.018s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	20.626s
+ok  	github.com/calebhabesh/file-sync/model	2.762s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/designgates	1.651s
+ok  	github.com/calebhabesh/file-sync/tests/faults	35.366s
+ok  	github.com/calebhabesh/file-sync/tests/integration	116.283s
+ok  	github.com/calebhabesh/file-sync/tests/terminal	343.103s
+?   	github.com/calebhabesh/file-sync/web	[no test files]

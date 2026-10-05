@@ -1,0 +1,19 @@
+{
+  "browser_runtime_required": false,
+  "built": "2026-10-01",
+  "commit": "61da64f",
+  "config_format_version": 1,
+  "embedded_assets": {
+    "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+    "total_files": 3
+  },
+  "legacy_browser_entry": "orbit legacy-browser",
+  "license": "MIT",
+  "node_runtime_required": false,
+  "ordinary_entry": "terminal",
+  "product": "Orbit",
+  "pure_go_sqlite": true,
+  "release": "1",
+  "schema_version": 13,
+  "version": "1.0.0"
+}

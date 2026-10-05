@@ -1,0 +1,52 @@
+{
+  "fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "d680363d908f925bc5f8d83b6a848e90baf4d96191179b07c68553b71fbd28a0",
+  "guest_init_sha256": "6e1eddde4fac2b6d04d98f2a82143ee06d8e92605ea2cc462ed9120bc61ed0b3",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-05T12:26:07Z",
+  "runs": [
+    {
+      "hook": "enospc.object",
+      "success": true,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.7537787890178151,
+      "enospc_seconds": 0.7749943310045637,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.object error=write incoming chunk: write /disk/state/incoming/chunk-3781905830: no space left on device\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.object protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.sqlite",
+      "success": true,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.6727886460139416,
+      "enospc_seconds": 0.8231213979888707,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.sqlite error=database or disk is full (13)\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.sqlite protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.checkpoint",
+      "success": true,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.6969097600085661,
+      "enospc_seconds": 0.7546266590070445,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.checkpoint error=checkpoint WAL: database or disk is full (13)\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.checkpoint protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.staging",
+      "success": true,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.7345062989916187,
+      "enospc_seconds": 0.820764676987892,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.staging error=write stage-e10ddd53f26d0eb9c751290317191358: no space left on device\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.staging protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.fsync",
+      "success": true,
+      "kind": "VM-child fsync syscall ENOSPC injection",
+      "setup_seconds": 0.7309080440027174,
+      "enospc_seconds": 0.648256237996975,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.fsync error=flush incoming chunk: sync /disk/state/incoming/chunk-1088970101: no space left on device\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.fsync protected_hashes=true syscall_fault=true"
+    }
+  ],
+  "success": true
+}

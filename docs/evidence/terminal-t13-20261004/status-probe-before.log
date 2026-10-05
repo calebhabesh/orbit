@@ -1,0 +1,8 @@
+=== RUN   TestStatusProbe
+    status_probe_test.go:24: [DEBUG-t13] readiness=4.121324162s err=<nil>
+    status_probe_test.go:27: [DEBUG-t13] conflicts=1.337770961s err=<nil>
+    status_probe_test.go:30: [DEBUG-t13] structural=1.340775151s err=<nil>
+    status_probe_test.go:35: [DEBUG-t13] status=5.000107769s err=<nil>
+--- PASS: TestStatusProbe (20.29s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	21.328s

@@ -1,0 +1,4 @@
+=== RUN   TestTerminalT13ReplacementBootstrapsRetiredHistory
+--- PASS: TestTerminalT13ReplacementBootstrapsRetiredHistory (25.06s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	25.064s

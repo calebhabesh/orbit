@@ -1,0 +1,8 @@
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.285s
+--- FAIL: TestOrbitMutation (5.09s)
+    --- FAIL: TestOrbitMutation/CLIPartityStoppedAndLiveDaemon (5.09s)
+        orbit_mutations_test.go:697: live orbit mkdir failed: exit status 1
+            Output: orbit: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	7.706s
+FAIL

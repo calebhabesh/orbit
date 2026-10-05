@@ -1,0 +1,38 @@
+{
+  "operation": {
+    "id": "94df96954dbc91d8cfdb9ef886fde3bf6845a0dd875c6de33064fb2840054855",
+    "fingerprint": "54845979189f2861b5ebbd9fed4142c59c696dd6ceb8e0ccbef03fe223b46f2f",
+    "kind": "join",
+    "state": "blocked",
+    "phase": "content_pending",
+    "committed_effects": [],
+    "cancel_requested": false,
+    "error": {
+      "code": "SETUP_BLOCKED",
+      "message": "context canceled",
+      "retryable": true,
+      "action": "inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt",
+      "retry_after_seconds": "0"
+    }
+  },
+  "error": {
+    "code": "SETUP_BLOCKED",
+    "message": "context canceled",
+    "retryable": true,
+    "action": "inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt",
+    "retry_after_seconds": "0"
+  },
+  "readiness": {
+    "approved": false,
+    "membership_current": false,
+    "root_available": true,
+    "scan_complete": false,
+    "unsupported": "0",
+    "unreadable": "0",
+    "uncaptured": "1",
+    "missing_content": "0",
+    "pending_publication": "0",
+    "conflicts": "0",
+    "storage_blocked": false
+  }
+}

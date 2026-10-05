@@ -1,0 +1,26 @@
+{
+  "fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "d680363d908f925bc5f8d83b6a848e90baf4d96191179b07c68553b71fbd28a0",
+  "guest_init_sha256": "71889ef28838a4850857575f95d523df97dfe720bee905fde64ea16fe0f29895",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-05T00:22:34Z",
+  "runs": [
+    {
+      "hook": "enospc.object",
+      "success": true,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.6763764729985269,
+      "enospc_seconds": 0.7590452729928074,
+      "oracle": "FILESYNC_ENOSPC_ERROR hook=enospc.object error=write incoming chunk: write /disk/state/incoming/chunk-3751274836: no space left on device\r\nFILESYNC_ENOSPC_VERIFY_OK hook=enospc.object protected_hashes=true reopened=true"
+    },
+    {
+      "hook": "enospc.sqlite",
+      "success": false,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.7174733739957446
+    }
+  ],
+  "success": false
+}

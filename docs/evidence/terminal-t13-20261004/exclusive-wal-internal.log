@@ -1,0 +1,20 @@
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.003s
+--- FAIL: TestMaintenanceOperations (5.02s)
+    maintenance_test.go:188: reset identity: update folder local author and counter: database is locked (5) (SQLITE_BUSY)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/control	10.499s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.005s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	0.004s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/replication	32.611s
+ok  	github.com/calebhabesh/file-sync/internal/repository	1.553s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	7.493s
+ok  	github.com/calebhabesh/file-sync/internal/state	0.004s
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.021s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.528s
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.081s
+FAIL

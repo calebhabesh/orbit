@@ -1,0 +1,140 @@
+{
+  "rpi": {
+    "host0-pty-terminal_pty_test/80x24-quit-tool.txt": {
+      "sha256": "4f227e69a11886731c8f5ceab505d9fce44dd6decb8ebe5404ed0f4da58f9e93",
+      "bytes": 2399
+    },
+    "host0-pty-terminal_pty_test/80x24-daemon-reconnect.txt": {
+      "sha256": "9dae405c6790824bd8c9c53fd3cb1b5091b9060c4cfdd00c5e7cc8ae976f287d",
+      "bytes": 2320
+    },
+    "host0-pty-terminal_pty_test/40x16-ctrl-c-tool-failure.txt": {
+      "sha256": "57526861d32fc25b093a6c1a1c9638807d315c6180c292c70cf6dad14beb16e9",
+      "bytes": 2116
+    },
+    "host0-pty-terminal_pty_test/80x24-tool-sigterm.txt": {
+      "sha256": "c70d0f6eec20a4070556ef215a3a687c9f5d14be597cd94441034e5f89f2974d",
+      "bytes": 2324
+    },
+    "host0-pty-terminal_pty_test/80x24-sigterm.txt": {
+      "sha256": "55daa92d504e2e15380aef516e83da3ce3e777b2934be18ce47c7d58ee48cb18",
+      "bytes": 2177
+    },
+    "host0-pty-terminal_onboarding_pty_test/1-resume-after-daemon-restart.txt": {
+      "sha256": "6c3bd2ca4cebc623e280c6677014ace93a17ccdc7a57b5fb11afe6ddbc6caa25",
+      "bytes": 5272
+    },
+    "host0-pty-terminal_onboarding_pty_test/1-join-private-errors-delayed-approval.txt": {
+      "sha256": "ca79055c2e82518625c0e55a98fb67e841a8c624c2da34ed7214f1332fe68e03",
+      "bytes": 13663
+    },
+    "host0-pty-terminal_onboarding_pty_test/0-create-nonempty-back-edit.txt": {
+      "sha256": "397b51ca09e681ffbc940e54c5410892a7b21c7453b486dca2db61c41fee500b",
+      "bytes": 65554
+    },
+    "host0-pty-terminal_everyday_pty_test/paired-peer.txt": {
+      "sha256": "1836259d8564dedfdb6dc73521777176c051f8d1c440656028ff13cb4966db5a",
+      "bytes": 3945
+    },
+    "host0-pty-terminal_everyday_pty_test/everyday-offline-conflict-editor.txt": {
+      "sha256": "35e7972cefbcc8402b5e60150ca23d690d4b636df59279e90d8f62151d55d923",
+      "bytes": 65576
+    },
+    "host0-pty-terminal_everyday_pty_test/narrow-storage-root-recovery.txt": {
+      "sha256": "fe8c79ffce4a77437a612b0ad48e4acdbdc3e912e21ace85e6bfcd3975ec2352",
+      "bytes": 10531
+    }
+  },
+  "vps": {
+    "host1-pty-terminal_pty_test/40x16-ctrl-c-tool-failure.txt": {
+      "sha256": "7c8109c0709e7081a1313725a7e05e10aca69bd71563d2a5d49310e745818399",
+      "bytes": 1964
+    },
+    "host1-pty-terminal_pty_test/80x24-tool-sigterm.txt": {
+      "sha256": "006f408a01251ce4e15fffe8cace9ec541af03c8bc6b2f5e72a42f23647ea79d",
+      "bytes": 2125
+    },
+    "host1-pty-terminal_pty_test/80x24-daemon-reconnect.txt": {
+      "sha256": "3c7f532b8a81469a30e0cdbdcadc4e2ff55c6a9a42a28665d7bad3dc7537657a",
+      "bytes": 2274
+    },
+    "host1-pty-terminal_pty_test/80x24-sigterm.txt": {
+      "sha256": "2e4aeecca2ed5876e12f9f3b52db2d8f8aeb9c40ff470aeee4090d1f758825a8",
+      "bytes": 2079
+    },
+    "host1-pty-terminal_pty_test/80x24-quit-tool.txt": {
+      "sha256": "50737418e31f1c51bfb1e02282c8fb2aed08e971cb41a9dce69409b9ca8df926",
+      "bytes": 2301
+    },
+    "host1-pty-terminal_onboarding_pty_test/1-join-private-errors-delayed-approval.txt": {
+      "sha256": "b701c90b2e0add09ac9a5fe99daf152ce7f3dc759175c4de91e88656efd3f8ef",
+      "bytes": 13663
+    },
+    "host1-pty-terminal_onboarding_pty_test/1-resume-after-daemon-restart.txt": {
+      "sha256": "bf55a8707768903f3a6a7ac37375333bc7f87dde2e7fbca486d2de286921360e",
+      "bytes": 5261
+    },
+    "host1-pty-terminal_onboarding_pty_test/0-create-nonempty-back-edit.txt": {
+      "sha256": "4a91171eb467da6da751616f3042f5fc897f20db2c41748805372d8d5ac37a28",
+      "bytes": 65552
+    },
+    "host1-pty-terminal_everyday_pty_test/paired-peer.txt": {
+      "sha256": "0d8a1063c5850e88365d1ef2f36d428b47b486438ca59108c1a82d7a8bf0ed4e",
+      "bytes": 3945
+    },
+    "host1-pty-terminal_everyday_pty_test/everyday-offline-conflict-editor.txt": {
+      "sha256": "2c19b33a1d1811efea08bf27a04a25cc5ad29200d5aef76087913087e00bd5e7",
+      "bytes": 65578
+    },
+    "host1-pty-terminal_everyday_pty_test/narrow-storage-root-recovery.txt": {
+      "sha256": "00286318bc6b23a384362c9d2cb2695eaa70fce5de8a2b9111132ff098261ef1",
+      "bytes": 10522
+    }
+  },
+  "laptop": {
+    "host2-pty-terminal_pty_test/80x24-quit-tool.txt": {
+      "sha256": "57d914427e31b04fc09a27ebcc9fce9d936ec748465dcd2211b9dd97fbd8fd85",
+      "bytes": 2301
+    },
+    "host2-pty-terminal_pty_test/40x16-ctrl-c-tool-failure.txt": {
+      "sha256": "b7bb89a6f842281c1087e634f1ded9916695a882ffe4e26e3e89579e9aa87834",
+      "bytes": 1964
+    },
+    "host2-pty-terminal_pty_test/80x24-sigterm.txt": {
+      "sha256": "59b57040983ea4597a9afc8fa8056481e0af517878ee7ce2a9c8a041864d4103",
+      "bytes": 2079
+    },
+    "host2-pty-terminal_pty_test/80x24-tool-sigterm.txt": {
+      "sha256": "c6aa80739c541797d6dc357c10090f22bfbc2a9c114d1e37c70bfa2ab9afa557",
+      "bytes": 2125
+    },
+    "host2-pty-terminal_pty_test/80x24-daemon-reconnect.txt": {
+      "sha256": "38aa50011f19884d59baf46ceb7ca795554d9e241329436b70df45466f2f7c8f",
+      "bytes": 2274
+    },
+    "host2-pty-terminal_onboarding_pty_test/1-join-private-errors-delayed-approval.txt": {
+      "sha256": "4b16f1c4266bd41f232f42e2eb242436ab48c17e659bec946366152d5e407c23",
+      "bytes": 13663
+    },
+    "host2-pty-terminal_onboarding_pty_test/1-resume-after-daemon-restart.txt": {
+      "sha256": "d866df5a1fa3d23d76f75558cb2b4263b19525bc904a6a5c875e9c06d12f14e6",
+      "bytes": 5261
+    },
+    "host2-pty-terminal_onboarding_pty_test/0-create-nonempty-back-edit.txt": {
+      "sha256": "f2bc2caf906f53c5c1c1633e86fc99f3c9c5ab2f5842b8724e858993569fec3b",
+      "bytes": 65552
+    },
+    "host2-pty-terminal_everyday_pty_test/everyday-offline-conflict-editor.txt": {
+      "sha256": "92c6dbc5412f13b92b996af48c0c3ecf07f3c86cb133a46c4db7657c78295a3e",
+      "bytes": 65578
+    },
+    "host2-pty-terminal_everyday_pty_test/paired-peer.txt": {
+      "sha256": "8a89b1552f3ca536399373b0680fa10357f26053b9a20d2aee75969e37e0ca9b",
+      "bytes": 3945
+    },
+    "host2-pty-terminal_everyday_pty_test/narrow-storage-root-recovery.txt": {
+      "sha256": "8245b09c4f9d3731c8ca4b35c98ee3ebfefcda0ea9cc9913a3575695e39a3ddf",
+      "bytes": 10490
+    }
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "started_utc": "2026-10-05T12:44:48Z",
+  "success": false,
+  "network": "tailscale",
+  "hosts": [],
+  "preflight": [
+    {
+      "host": "laptop",
+      "role": "source",
+      "routes": {
+        "100.101.0.12": [
+          {
+            "type": "local",
+            "dst": "100.101.0.12",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "100.101.0.12",
+            "flags": [],
+            "uid": 1000,
+            "cache": [
+              "local"
+            ]
+          }
+        ],
+        "100.101.0.14": [
+          {
+            "dst": "100.101.0.14",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.12",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ],
+        "100.101.0.11": [
+          {
+            "dst": "100.101.0.11",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.12",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": true,
+        "authenticated": true,
+        "state": "Running",
+        "addresses": [
+          "100.101.0.12",
+          "fd7a:115c:a1e0::b:12"
+        ]
+      },
+      "hostname": "owner-laptop",
+      "arch": "x86_64"
+    },
+    {
+      "host": "rpi",
+      "role": "receiver",
+      "routes": {
+        "100.101.0.12": [
+          {
+            "dst": "100.101.0.12",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.14",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ],
+        "100.101.0.14": [
+          {
+            "type": "local",
+            "dst": "100.101.0.14",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "100.101.0.14",
+            "flags": [],
+            "uid": 1000,
+            "cache": [
+              "local"
+            ]
+          }
+        ],
+        "100.101.0.11": [
+          {
+            "dst": "100.101.0.11",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.14",
+            "flags": [],
+            "uid": 1000,
+            "cache": []
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": true,
+        "authenticated": true,
+        "state": "Running",
+        "addresses": [
+          "100.101.0.14",
+          "fd7a:115c:a1e0::b:14"
+        ]
+      },
+      "hostname": "owner-pi",
+      "arch": "aarch64"
+    },
+    {
+      "host": "vps",
+      "role": "forwarder",
+      "routes": {
+        "100.101.0.12": [
+          {
+            "dst": "100.101.0.12",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.11",
+            "flags": [],
+            "uid": 1001,
+            "cache": []
+          }
+        ],
+        "100.101.0.14": [
+          {
+            "dst": "100.101.0.14",
+            "dev": "tailscale0",
+            "table": "52",
+            "prefsrc": "100.101.0.11",
+            "flags": [],
+            "uid": 1001,
+            "cache": []
+          }
+        ],
+        "100.101.0.11": [
+          {
+            "type": "local",
+            "dst": "100.101.0.11",
+            "dev": "lo",
+            "table": "local",
+            "prefsrc": "100.101.0.11",
+            "flags": [],
+            "uid": 1001,
+            "cache": [
+              "local"
+            ]
+          }
+        ]
+      },
+      "tailscale": {
+        "installed": true,
+        "authenticated": true,
+        "state": "Running",
+        "addresses": [
+          "100.101.0.11",
+          "fd7a:115c:a1e0::b:11"
+        ]
+      },
+      "hostname": "main-instance-vnic",
+      "arch": "aarch64"
+    }
+  ],
+  "scenarios": {},
+  "personal_use": false,
+  "runner_sha256": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d",
+  "limitations": [
+    "No login/logout/boot validation",
+    "No network or host policy changes",
+    "Replacement is a fresh installation on the receiver's host"
+  ],
+  "preflight_success": true,
+  "unexecuted": "Preflight only; no installations or journey executed",
+  "cleanup_errors": [],
+  "seconds": 1.5844779949984513,
+  "ended_utc": "2026-10-05T12:44:49Z"
+}

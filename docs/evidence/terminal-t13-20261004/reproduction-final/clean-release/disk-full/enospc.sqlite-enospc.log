@@ -1,0 +1,212 @@
+c[?7l[2J[0mSeaBIOS (version Arch Linux 1.17.0-2-2)
+Booting from ROM...
+Probing EDD (edd=off to disable)... oc[?7l[2J[    0.153467] virt/tdx: TDX not supported by the host platform
+unexpected fault address 0x7f6ec1623000
+fatal error: fault
+[signal SIGBUS: bus error code=0x2 addr=0x7f6ec1623000 pc=0x48b537]
+
+goroutine 1 gp=0x1696685c1e0 m=0 mp=0xc062e0 [running]:
+runtime.throw({0x81b514?, 0x169669120b0?})
+	runtime/panic.go:1243 +0x48 fp=0x1696698e030 sp=0x1696698e000 pc=0x484468
+runtime.sigpanic()
+	runtime/signal_unix.go:928 +0x10a fp=0x1696698e090 sp=0x1696698e030 pc=0x48634a
+runtime.memclrNoHeapPointers()
+	runtime/memclr_amd64.s:68 +0xb7 fp=0x1696698e098 sp=0x1696698e090 pc=0x48b537
+modernc.org/libc.Xmemset(0x746fc3?, 0x169669120b0?, 0x0?, 0x7f6e7ab30820?)
+	modernc.org/libc@v1.75.7/native_musl.go:69 +0x78 fp=0x1696698e0e8 sp=0x1696698e098 pc=0x5b6d78
+modernc.org/sqlite/lib._walIndexAppend(0x169669120b0, 0x7f6e7aaf0228, 0x1, 0x6a)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001fea8.go:17097 +0xf6 fp=0x1696698e158 sp=0x1696698e0e8 pc=0x710956
+modernc.org/sqlite/lib._walFrames(0x169669120b0, 0x7f6e7aaf0228, 0x1000, 0x7f6e7aab7060, 0x0, 0x0, 0xa)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001fea8.go:17046 +0xa45 fp=0x1696698e260 sp=0x1696698e158 pc=0x7105a5
+modernc.org/sqlite/lib._sqlite3WalFrames(...)
+	modernc.org/sqlite@v1.59.0/lib/sqlite.go:38413
+modernc.org/sqlite/lib._pagerWalFrames(0x169669120b0, 0x7f6e7ab50428, 0x7f6e7aab7060, 0x0, 0x0)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001feab.go:10660 +0x112 fp=0x1696698e2d0 sp=0x1696698e260 pc=0x72bd52
+modernc.org/sqlite/lib._pagerStress(0x169669120b0, 0x7f6e7ab50428, 0x7f6e7aab7060)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001feab.go:10593 +0x105 fp=0x1696698e310 sp=0x1696698e2d0 pc=0x72bb85
+modernc.org/sqlite/lib._sqlite3PcacheFetchStress(0x169669120b0, 0x7f6e7ab50428?, 0x219, 0x7f6e7aaf3820)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001ffff.go:10551 +0x108 fp=0x1696698e348 sp=0x1696698e310 pc=0x75d0e8
+modernc.org/sqlite/lib._getPageNormal(0x169669120b0, 0x7f6e7ab50428, 0x219, 0x7f6e7ab22020, 0x1)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001fea8.go:6400 +0xeb fp=0x1696698e3c8 sp=0x1696698e348 pc=0x6f812b
+modernc.org/sqlite/lib._sqlite3PagerGet(...)
+	modernc.org/sqlite@v1.59.0/lib/sqlite.go:35016
+modernc.org/sqlite/lib._btreeGetPage(0x169669120b0, 0x7f6e7ab80628, 0x219, 0x7f6e7ab33028, 0x1)
+	modernc.org/sqlite@v1.59.0/lib/sqlite.go:20161 +0xa3 fp=0x1696698e430 sp=0x1696698e3c8 pc=0x5c9683
+modernc.org/sqlite/lib._btreeGetUnusedPage(0x169669120b0, 0xb6d6b8?, 0x66916ff0?, 0x7f6e7ab33028, 0x400000?)
+	modernc.org/sqlite@v1.59.0/lib/sqlite.go:20183 +0x25 fp=0x1696698e468 sp=0x1696698e430 pc=0x5c97c5
+modernc.org/sqlite/lib._allocateBtreePage(0x169669120b0, 0x7f6e7ab80628, 0x7f6e7ab33028, 0x7f6e7ab33024, 0x218, 0x0)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001fea8.go:1119 +0x46a fp=0x1696698e598 sp=0x1696698e468 pc=0x6e5bca
+modernc.org/sqlite/lib._fillInCell(0x169669120b0, 0x7f6e7aab30b0, 0x7f6e7aae802c, 0x7f6e7ab50968, 0x7f6e7ab30028)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001fea8.go:2388 +0x5e6 fp=0x1696698e678 sp=0x1696698e598 pc=0x6eae26
+modernc.org/sqlite/lib._sqlite3BtreeInsert(0x169669120b0, 0x7f6e7ab07138, 0x7f6e7ab50968, 0x8, 0x0)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001dea8.go:2203 +0x745 fp=0x1696698e7a0 sp=0x1696698e678 pc=0x6cfe25
+modernc.org/sqlite/lib._sqlite3VdbeExec(0x169669120b0, 0x7f6e7ab07a08)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_0000000000000480.go:23122 +0x8d0d fp=0x1696698f0e0 sp=0x1696698e7a0 pc=0x6284ad
+modernc.org/sqlite/lib._sqlite3Step(0x169669120b0, 0x7f6e7ab07a08)
+	modernc.org/sqlite@v1.59.0/lib/sqlite_g_000000000001deab.go:3968 +0x6c fp=0x1696698f120 sp=0x1696698f0e0 pc=0x6dbbcc
+modernc.org/sqlite/lib.Xsqlite3_step(0x169669120b0, 0x7f6e7ab07a08)
+	modernc.org/sqlite@v1.59.0/lib/sqlite.go:11977 +0xab fp=0x1696698f168 sp=0x1696698f120 pc=0x5c746b
+modernc.org/sqlite.(*conn).step(0x16966900300, 0x7f6e7ab07a08)
+	modernc.org/sqlite@v1.59.0/conn.go:435 +0x31 fp=0x1696698f1a0 sp=0x1696698f168 pc=0x79d651
+modernc.org/sqlite.(*stmt).exec.func2(0x1696691c2b8, {0x16966954230?, 0x7f6e7ab70e20?, 0x1696698f230?}, 0x1696698f288, 0x169669083e4, {0xbaf7a0, 0xc25a80})
+	modernc.org/sqlite@v1.59.0/stmt.go:145 +0x10f fp=0x1696698f228 sp=0x1696698f1a0 pc=0x7adcaf
+modernc.org/sqlite.(*stmt).exec(0x1696691c2b8, {0xbaf7a0, 0xc25a80}, {0x16966954230, 0x2, 0x2})
+	modernc.org/sqlite@v1.59.0/stmt.go:175 +0x1bd fp=0x1696698f310 sp=0x1696698f228 pc=0x7a721d
+modernc.org/sqlite.(*conn).exec(0x0?, {0xbaf7a0, 0xc25a80}, {0x82f264?, 0x0?}, {0x16966954230, 0x2, 0x2})
+	modernc.org/sqlite@v1.59.0/conn.go:1077 +0xf6 fp=0x1696698f3a0 sp=0x1696698f310 pc=0x7a0196
+modernc.org/sqlite.(*conn).ExecContext(0x0?, {0xbaf7a0?, 0xc25a80?}, {0x82f264?, 0x0?}, {0x16966954230?, 0x0?, 0x1696699fa70?})
+	modernc.org/sqlite@v1.59.0/conn.go:1336 +0x27 fp=0x1696698f3f0 sp=0x1696698f3a0 pc=0x7a0907
+database/sql.ctxDriverExec({0xbaf7a0?, 0xc25a80?}, {0x7f6ec1636e00?, 0x16966900300?}, {0x0?, 0x0?}, {0x82f264?, 0x0?}, {0x16966954230, 0x2, ...})
+	database/sql/ctxutil.go:31 +0xbf fp=0x1696698f450 sp=0x1696698f3f0 pc=0x51b53f
+database/sql.(*DB).execDC.func2()
+	database/sql/sql.go:1718 +0x15c fp=0x1696698f510 sp=0x1696698f450 pc=0x526b1c
+database/sql.withLock({0xbaf4f0, 0x16966940100}, 0x1696698f6d0)
+	database/sql/sql.go:3621 +0x71 fp=0x1696698f550 sp=0x1696698f510 pc=0x525df1
+database/sql.(*DB).execDC(0x47c901?, {0xbaf7a0, 0xc25a80}, 0x16966940100, 0x1696698f7e8?, {0x82f264, 0x6e}, {0x1696699fa60, 0x2, 0x2})
+	database/sql/sql.go:1713 +0x1f6 fp=0x1696698f770 sp=0x1696698f550 pc=0x520ef6
+database/sql.(*DB).exec(0x1696691b1e0, {0xbaf7a0, 0xc25a80}, {0x82f264, 0x6e}, {0x1696699fa60, 0x2, 0x2}, 0x1?)
+	database/sql/sql.go:1698 +0xcf fp=0x1696698f7e0 sp=0x1696698f770 pc=0x520c8f
+database/sql.(*DB).ExecContext.func1(0x0?)
+	database/sql/sql.go:1677 +0x4f fp=0x1696698f848 sp=0x1696698f7e0 pc=0x52686f
+database/sql.(*DB).retry(0x487092?, 0x1696698f8c0)
+	database/sql/sql.go:1581 +0x42 fp=0x1696698f890 sp=0x1696698f848 pc=0x5204a2
+database/sql.(*DB).ExecContext(0x169669a0000?, {0xbaf7a0?, 0xc25a80?}, {0x82f264?, 0x0?}, {0x1696699fa60?, 0x0?, 0x0?})
+	database/sql/sql.go:1676 +0x9b fp=0x1696698f928 sp=0x1696698f890 pc=0x520b1b
+github.com/calebhabesh/file-sync/internal/repository.(*DB).PutInstallationValue(...)
+	github.com/calebhabesh/file-sync/internal/repository/repository.go:751
+main.fullDiskExperiment(0x169669041c0, 0x169669505b0, {0x1696695c047, 0xd}, {{0x1, 0x0, 0x0, 0x0, 0x0, 0x0, ...}, ...}, ...)
+	./reset_guest.go:97 +0x5f9 fp=0x1696699faa0 sp=0x1696698f928 pc=0x7e17f9
+main.main()
+	./reset_guest.go:275 +0xb9d fp=0x1696699feb8 sp=0x1696699faa0 pc=0x7e303d
+runtime.main()
+	runtime/proc.go:302 +0x427 fp=0x1696699ffe0 sp=0x1696699feb8 pc=0x44e907
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x1696699ffe8 sp=0x1696699ffe0 pc=0x48afe1
+
+goroutine 2 gp=0x1696685c780 m=nil [force gc (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	runtime/proc.go:474 +0xca fp=0x16966884fa8 sp=0x16966884f88 pc=0x48454a
+runtime.goparkunlock(...)
+	runtime/proc.go:480
+runtime.forcegchelper()
+	runtime/proc.go:387 +0xb3 fp=0x16966884fe0 sp=0x16966884fa8 pc=0x44ebd3
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x16966884fe8 sp=0x16966884fe0 pc=0x48afe1
+created by runtime.init.7 in goroutine 1
+	runtime/proc.go:375 +0x1a
+
+goroutine 3 gp=0x1696685cd20 m=nil [GC sweep wait]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	runtime/proc.go:474 +0xca fp=0x16966885788 sp=0x16966885768 pc=0x48454a
+runtime.goparkunlock(...)
+	runtime/proc.go:480
+runtime.bgsweep(0x169668a4000)
+	runtime/mgcsweep.go:279 +0x94 fp=0x169668857c8 sp=0x16966885788 pc=0x439b94
+runtime.gcenable.gowrap1()
+	runtime/mgc.go:214 +0x17 fp=0x169668857e0 sp=0x169668857c8 pc=0x47bc97
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x169668857e8 sp=0x169668857e0 pc=0x48afe1
+created by runtime.gcenable in goroutine 1
+	runtime/mgc.go:214 +0x66
+
+goroutine 4 gp=0x1696685cf00 m=nil [GC scavenge wait]:
+runtime.gopark(0x169668a4000?, 0x8400a0?, 0x1?, 0x0?, 0x1696685cf00?)
+	runtime/proc.go:474 +0xca fp=0x16966885f78 sp=0x16966885f58 pc=0x48454a
+runtime.goparkunlock(...)
+	runtime/proc.go:480
+runtime.(*scavengerState).park(0xc04980)
+	runtime/mgcscavenge.go:425 +0x49 fp=0x16966885fa8 sp=0x16966885f78 pc=0x437769
+runtime.bgscavenge(0x169668a4000)
+	runtime/mgcscavenge.go:653 +0x3c fp=0x16966885fc8 sp=0x16966885fa8 pc=0x437cbc
+runtime.gcenable.gowrap2()
+	runtime/mgc.go:215 +0x17 fp=0x16966885fe0 sp=0x16966885fc8 pc=0x47bc57
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x16966885fe8 sp=0x16966885fe0 pc=0x48afe1
+created by runtime.gcenable in goroutine 1
+	runtime/mgc.go:215 +0xa5
+
+goroutine 17 gp=0x16966902000 m=nil [GOMAXPROCS updater (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	runtime/proc.go:474 +0xca fp=0x16966880788 sp=0x16966880768 pc=0x48454a
+runtime.goparkunlock(...)
+	runtime/proc.go:480
+runtime.updateMaxProcsGoroutine()
+	runtime/proc.go:7146 +0xe7 fp=0x169668807e0 sp=0x16966880788 pc=0x45bf47
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x169668807e8 sp=0x169668807e0 pc=0x48afe1
+created by runtime.defaultGOMAXPROCSUpdateEnable in goroutine 1
+	runtime/proc.go:7134 +0x37
+
+goroutine 18 gp=0x169669021e0 m=nil [finalizer wait]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	runtime/proc.go:474 +0xca fp=0x16966880e20 sp=0x16966880e00 pc=0x48454a
+runtime.runFinalizers()
+	runtime/mfinal.go:210 +0x107 fp=0x16966880fe0 sp=0x16966880e20 pc=0x42aec7
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x16966880fe8 sp=0x16966880fe0 pc=0x48afe1
+created by runtime.createfing in goroutine 1
+	runtime/mfinal.go:172 +0x3d
+
+goroutine 19 gp=0x169669023c0 m=nil [cleanup wait]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	runtime/proc.go:474 +0xca fp=0x16966881768 sp=0x16966881748 pc=0x48454a
+runtime.goparkunlock(...)
+	runtime/proc.go:480
+runtime.(*cleanupQueue).dequeue(0xc04b80)
+	runtime/mcleanup.go:522 +0xd3 fp=0x169668817a0 sp=0x16966881768 pc=0x427bf3
+runtime.runCleanups()
+	runtime/mcleanup.go:718 +0x45 fp=0x169668817e0 sp=0x169668817a0 pc=0x428265
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x169668817e8 sp=0x169668817e0 pc=0x48afe1
+created by runtime.(*cleanupQueue).createGs in goroutine 1
+	runtime/mcleanup.go:672 +0xa5
+
+goroutine 20 gp=0x169669025a0 m=nil [select]:
+runtime.gopark(0x16966881f88?, 0x2?, 0x0?, 0x0?, 0x16966881f84?)
+	runtime/proc.go:474 +0xca fp=0x16966881e10 sp=0x16966881df0 pc=0x48454a
+runtime.selectgo(0x16966881f88, 0x16966881f80, 0x0?, 0x0, 0x0?, 0x1)
+	runtime/select.go:351 +0xa97 fp=0x16966881f50 sp=0x16966881e10 pc=0x460997
+database/sql.(*DB).connectionOpener(0x1696691b1e0, {0xbaf810, 0x169669540a0})
+	database/sql/sql.go:1266 +0x89 fp=0x16966881fb8 sp=0x16966881f50 pc=0x51eb49
+database/sql.OpenDB.gowrap1()
+	database/sql/sql.go:846 +0x1f fp=0x16966881fe0 sp=0x16966881fb8 pc=0x52655f
+runtime.goexit({})
+	runtime/asm_amd64.s:1264 +0x1 fp=0x16966881fe8 sp=0x16966881fe0 pc=0x48afe1
+created by database/sql.OpenDB in goroutine 1
+	database/sql/sql.go:846 +0x135
+[    0.794170] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000200
+[    0.794862] CPU: 0 UID: 0 PID: 63 Comm: init Not tainted 7.2.8-arch1-2 #1 PREEMPT(full)  186163caea6eb5dc4b2a0252463c7ce1c6927294
+[    0.795894] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-2-2 04/01/2014
+[    0.796739] Call Trace:
+[    0.796979]  <TASK>
+[    0.797211]  dump_stack_lvl+0x5d/0x80
+[    0.797616]  vpanic+0x20a/0x410
+[    0.797930]  panic+0x6b/0x70
+[    0.798216]  do_exit.cold+0x27/0x5d
+[    0.798546]  do_group_exit+0x2d/0xc0
+[    0.798882]  get_signal+0x83c/0x8f0
+[    0.799217]  arch_do_signal_or_restart+0x77/0x2d0
+[    0.799653]  exit_to_user_mode_loop+0xe5/0x740
+[    0.800068]  do_syscall_64+0x21d/0x660
+[    0.800423]  ? schedule+0x27/0xa0
+[    0.800739]  ? do_nanosleep+0x78/0x150
+[    0.801095]  ? hrtimer_nanosleep+0xc2/0x140
+[    0.801480]  ? __pfx_hrtimer_wakeup+0x10/0x10
+[    0.801898]  ? __x64_sys_nanosleep+0xb8/0xf0
+[    0.802296]  ? do_syscall_64+0x252/0x660
+[    0.802659]  ? do_syscall_64+0x252/0x660
+[    0.803142]  ? do_syscall_64+0x252/0x660
+[    0.803521]  ? do_syscall_64+0x252/0x660
+[    0.803897]  ? do_syscall_64+0x5f/0x660
+[    0.804266]  ? exc_page_fault+0x90/0x1e0
+[    0.804638]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[    0.805122] RIP: 0033:0x48cb23
+[    0.805432] Code: c3 cc cc cc cc cc cc 48 8b 7c 24 08 8b 74 24 10 8b 54 24 14 4c 8b 54 24 18 4c 8b 44 24 20 44 8b 4c 24 28 b8 ca 00 00 00 0f 05 <89> 44 24 30 c3 cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc
+[    0.807119] RSP: 002b:0000016966873e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+[    0.807809] RAX: fffffffffffffdfc RBX: 0000000000000000 RCX: 000000000048cb23
+[    0.808467] RDX: 0000000000000000 RSI: 0000000000000080 RDI: 0000000000c07560
+[    0.809128] RBP: 0000016966873eb0 R08: 0000000000000000 R09: 0000000000000000
+[    0.809793] R10: 0000016966873ea0 R11: 0000000000000246 R12: 0000016966873ea0
+[    0.810459] R13: 0000000000000001 R14: 000001696685c5a0 R15: ffffffffffffff01
+[    0.811124]  </TASK>
+[    0.811455] Kernel Offset: 0x8a00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)

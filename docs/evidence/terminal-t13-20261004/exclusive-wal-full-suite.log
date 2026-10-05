@@ -1,0 +1,46 @@
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.096s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.005s
+ok  	github.com/calebhabesh/file-sync/internal/control	6.423s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.007s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	0.003s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/replication	32.760s
+ok  	github.com/calebhabesh/file-sync/internal/repository	1.927s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	7.511s
+ok  	github.com/calebhabesh/file-sync/internal/state	0.005s
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.025s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.731s
+ok  	github.com/calebhabesh/file-sync/model	0.406s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.553s
+--- FAIL: TestP06TransferKillRestartBoundaries (25.20s)
+    --- FAIL: TestP06TransferKillRestartBoundaries/transfer.chunk.verified (5.05s)
+        p06_boundaries_test.go:114: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+    --- FAIL: TestP06TransferKillRestartBoundaries/transfer.readiness.before (5.04s)
+        p06_boundaries_test.go:114: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+    --- FAIL: TestP06TransferKillRestartBoundaries/transfer.readiness.after (5.04s)
+        p06_boundaries_test.go:114: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+    --- FAIL: TestP06TransferKillRestartBoundaries/transfer.receipt.before_send (5.04s)
+        p06_boundaries_test.go:114: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+    --- FAIL: TestP06TransferKillRestartBoundaries/transfer.receipt.after_send (5.04s)
+        p06_boundaries_test.go:114: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/faults	26.188s
+--- FAIL: TestOrbitMutation (5.04s)
+    --- FAIL: TestOrbitMutation/CLIPartityStoppedAndLiveDaemon (5.03s)
+        orbit_mutations_test.go:620: orbit mkdir failed: exit status 1
+            Output: orbit: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+--- FAIL: TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot (5.03s)
+    orbit_o13_campaign_test.go:82: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+--- FAIL: TestP11PeerAssistedRepairAndInvariantPreservation (5.52s)
+    p11_cli_test.go:289: check on B: exit status 1
+        filesync: enable metadata WAL: database is locked (5) (SQLITE_BUSY)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	94.885s
+ok  	github.com/calebhabesh/file-sync/tests/terminal	264.795s
+?   	github.com/calebhabesh/file-sync/web	[no test files]
+FAIL

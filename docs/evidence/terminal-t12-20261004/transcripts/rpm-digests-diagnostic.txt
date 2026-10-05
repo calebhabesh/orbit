@@ -1,0 +1,125 @@
+D: ============== /packages/filesync-1.0.0-1.x86_64.rpm
+D: /packages/filesync-1.0.0-1.x86_64.rpm: Header SHA256 digest: OK
+D: PRAGMA secure_delete = OFF: 0
+D: 	added binary package [0]
+D: found 0 source and 1 binary packages
+D: ========== +++ filesync-1.0.0-1 x86_64/linux 0x0
+D: ========== recording tsort relations
+D: ========== tsorting packages (order, #predecessors, #succesors, depth)
+D:     0    0    0    1   +filesync-1.0.0-1.x86_64
+D: installing binary packages
+D: PRAGMA secure_delete = OFF: 0
+D: PRAGMA journal_mode = WAL: 0
+D: PRAGMA wal_autocheckpoint = 10000: 0
+D: CREATE INDEX IF NOT EXISTS 'Name_key_idx' ON 'Name'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Basenames_key_idx' ON 'Basenames'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Basenames_hnum_idx' ON 'Basenames'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Group_key_idx' ON 'Group'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Requirename_key_idx' ON 'Requirename'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Requirename_hnum_idx' ON 'Requirename'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Providename_key_idx' ON 'Providename'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Providename_hnum_idx' ON 'Providename'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Conflictname_key_idx' ON 'Conflictname'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Conflictname_hnum_idx' ON 'Conflictname'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Obsoletename_key_idx' ON 'Obsoletename'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Obsoletename_hnum_idx' ON 'Obsoletename'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Triggername_key_idx' ON 'Triggername'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Triggername_hnum_idx' ON 'Triggername'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Dirnames_key_idx' ON 'Dirnames'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Dirnames_hnum_idx' ON 'Dirnames'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Sha1header_key_idx' ON 'Sha1header'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Filetriggername_key_idx' ON 'Filetriggername'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Filetriggername_hnum_idx' ON 'Filetriggername'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Transfiletriggername_key_idx' ON 'Transfiletriggername'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Transfiletriggername_hnum_idx' ON 'Transfiletriggername'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Recommendname_key_idx' ON 'Recommendname'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Recommendname_hnum_idx' ON 'Recommendname'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Suggestname_key_idx' ON 'Suggestname'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Suggestname_hnum_idx' ON 'Suggestname'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Supplementname_key_idx' ON 'Supplementname'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Supplementname_hnum_idx' ON 'Supplementname'(hnum ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Enhancename_key_idx' ON 'Enhancename'(key ASC): 0
+D: CREATE INDEX IF NOT EXISTS 'Enhancename_hnum_idx' ON 'Enhancename'(hnum ASC): 0
+D: sanity checking 1 elements
+Verifying packages...
+D: running %pretrans scripts
+D: computing 33 file fingerprints
+Preparing packages...
+D: computing file dispositions
+D: 0x0000003d     4096     17467153     20929336 rotational:-1 /
+D: running %preuntrans scripts
+D: ========== +++ filesync-1.0.0-1 x86_64-linux 0x0
+D: filesync-1.0.0-1.x86_64: Header SHA256 digest: OK
+D:   install: filesync-1.0.0-1.x86_64 has 33 files
+filesync-1.0.0-1.x86_64
+D: create     100755  1 (   0,   0)26416300 /usr/bin/filesync;6ac2e177
+D: create     120777  1 (   0,   0)     8 /usr/bin/orbit;6ac2e177
+D: create     100644  1 (   0,   0)   845 /usr/lib/systemd/user/filesync.service;6ac2e177
+D: create     120777  1 (   0,   0)    16 /usr/lib/systemd/user/orbit.service;6ac2e177
+D: create     100644  1 (   0,   0)   309 /usr/share/applications/orbit.desktop;6ac2e177
+D: create     100644  1 (   0,   0)  2315 /usr/share/icons/hicolor/scalable/apps/orbit.svg;6ac2e177
+D: create     100644  1 (   0,   0)    12 /usr/share/doc/filesync/LICENSE;6ac2e177
+D: create     100644  1 (   0,   0) 34759 /usr/share/doc/filesync/NOTICE;6ac2e177
+D: create     100644  1 (   0,   0)  2870 /usr/share/doc/filesync/LICENSES.md;6ac2e177
+D: create     100644  1 (   0,   0)   504 /usr/share/doc/filesync/release-manifest.json;6ac2e177
+D: create     100644  1 (   0,   0)  1824 /usr/share/bash-completion/completions/orbit;6ac2e177
+D: create     100644  1 (   0,   0)  2077 /usr/share/doc/filesync/runbooks/corrupt-content.md;6ac2e177
+D: create     100644  1 (   0,   0)  3859 /usr/share/doc/filesync/runbooks/database-recovery.md;6ac2e177
+D: create     100644  1 (   0,   0)  2566 /usr/share/doc/filesync/runbooks/expired-history.md;6ac2e177
+D: create     100644  1 (   0,   0)  2692 /usr/share/doc/filesync/runbooks/full-disk.md;6ac2e177
+D: create     100644  1 (   0,   0)  1980 /usr/share/doc/filesync/runbooks/headless-pairing.md;6ac2e177
+D: create     100644  1 (   0,   0)  2393 /usr/share/doc/filesync/runbooks/incompatible-versions.md;6ac2e177
+D: create     100644  1 (   0,   0)  5536 /usr/share/doc/filesync/runbooks/install.md;6ac2e177
+D: create     100644  1 (   0,   0)  4758 /usr/share/doc/filesync/runbooks/lost-device-replacement.md;6ac2e177
+D: create     100644  1 (   0,   0)  2990 /usr/share/doc/filesync/runbooks/membership-fork.md;6ac2e177
+D: create     100644  1 (   0,   0)  5830 /usr/share/doc/filesync/runbooks/private-network.md;6ac2e177
+D: create     100644  1 (   0,   0)  2299 /usr/share/doc/filesync/runbooks/retired-lost-device.md;6ac2e177
+D: create     100644  1 (   0,   0)  5689 /usr/share/doc/filesync/runbooks/rollback.md;6ac2e177
+D: create     100644  1 (   0,   0)  2237 /usr/share/doc/filesync/runbooks/root-unavailable.md;6ac2e177
+D: create     100644  1 (   0,   0)  3064 /usr/share/doc/filesync/runbooks/stuck-conflict.md;6ac2e177
+D: create     100644  1 (   0,   0)  5642 /usr/share/doc/filesync/runbooks/terminal-onboarding.md;6ac2e177
+D: create     100644  1 (   0,   0)  4629 /usr/share/doc/filesync/runbooks/terminal-operator.md;6ac2e177
+D: create     100644  1 (   0,   0)  5810 /usr/share/doc/filesync/runbooks/terminal-recovery.md;6ac2e177
+D: create     100644  1 (   0,   0)  3427 /usr/share/doc/filesync/runbooks/terminal-shell.md;6ac2e177
+D: create     100644  1 (   0,   0)  1478 /usr/share/doc/filesync/runbooks/uninstall.md;6ac2e177
+D: create     100644  1 (   0,   0)  3834 /usr/share/doc/filesync/runbooks/upgrade.md;6ac2e177
+D: create     100644  1 (   0,   0)  2514 /usr/share/fish/vendor_completions.d/orbit.fish;6ac2e177
+D: create     100644  1 (   0,   0)  2714 /usr/share/zsh/site-functions/_orbit;6ac2e177
+D: /usr/share/icons/hicolor directory created with perms 0755
+D: /usr/share/icons/hicolor/scalable directory created with perms 0755
+D: /usr/share/icons/hicolor/scalable/apps directory created with perms 0755
+D: /usr/share/doc/filesync directory created with perms 0755
+D: /usr/share/doc/filesync/runbooks directory created with perms 0755
+D: SAVEPOINT 'rwlock': 0
+D: SAVEPOINT 'Packages': 0
+D: RELEASE 'Packages': 0
+D: SAVEPOINT 'Name': 0
+D: adding "filesync" to Name index.
+D: RELEASE 'Name': 0
+D: SAVEPOINT 'Basenames': 0
+D: adding 33 entries to Basenames index.
+D: RELEASE 'Basenames': 0
+D: SAVEPOINT 'Group': 0
+D: adding "Applications/System" to Group index.
+D: RELEASE 'Group': 0
+D: SAVEPOINT 'Dirnames': 0
+D: adding 9 entries to Dirnames index.
+D: RELEASE 'Dirnames': 0
+D: SAVEPOINT 'Installtid': 0
+D: adding 1 entries to Installtid index.
+D: RELEASE 'Installtid': 0
+D: SAVEPOINT 'Sigmd5': 0
+D: adding 1 entries to Sigmd5 index.
+D: RELEASE 'Sigmd5': 0
+D: RELEASE 'rwlock': 0
+D: %filetriggerin(filesystem-3.18-50.fc43.x86_64): running <lua> scriptlet.
+D: running %posttrans scripts
+D: running %postuntrans scripts
+D: %transfiletriggerin(glibc-common-2.42-16.fc43.x86_64): running <lua> scriptlet.
+D:  read h#     144 
+Header SHA256 digest: OK
+D: syncing fs /
+D: PRAGMA synchronous = FULL: 0
+D: PRAGMA optimize: 0
+D: PRAGMA wal_checkpoint = TRUNCATE: 0
+D: Exit status: 0

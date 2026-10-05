@@ -1,0 +1,6 @@
+=== RUN   TestTerminalT13RetiredIdentityApprovalHasRecoveryAction
+    retirement_release_test.go:63: rejected approval admitted data access: {Version: Request: State: TranscriptDigest: VerificationCode: MembershipHex: PeerEndpoint:} RATE_LIMITED
+--- FAIL: TestTerminalT13RetiredIdentityApprovalHasRecoveryAction (0.03s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.027s
+FAIL

@@ -1,0 +1,18 @@
+{
+  "fault": "dedicated QEMU VM: abrupt cache-discard/reboot matrix or explicitly selected actual disk exhaustion",
+  "disk": "new raw ext4 image, virtio-blk cache=none; host storage remains running",
+  "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim",
+  "kernel_sha256": "d680363d908f925bc5f8d83b6a848e90baf4d96191179b07c68553b71fbd28a0",
+  "guest_init_sha256": "7bc611cac635d5853dca6cc4e4f60f9b5fa30313f44f39fed2a393005520a32e",
+  "qemu": "QEMU emulator version 11.1.1",
+  "started_utc": "2026-10-05T00:26:28Z",
+  "runs": [
+    {
+      "hook": "enospc.sqlite",
+      "success": false,
+      "kind": "actual guest disk exhaustion",
+      "setup_seconds": 0.773779604001902
+    }
+  ],
+  "success": false
+}

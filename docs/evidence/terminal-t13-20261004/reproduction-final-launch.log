@@ -1,0 +1,25 @@
+Isolated source snapshot: /tmp/orbit-t13-snapshot-uwdevp8e/source
+PASS status
+PASS check
+PASS race
+PASS demo
+PASS reset
+FAIL disk-full
+Traceback (most recent call last):
+  File "/tmp/orbit-t13-snapshot-uwdevp8e/source/scripts/validation/reproduce_release.py", line 78, in <module>
+    main()
+    ~~~~^^
+  File "/tmp/orbit-t13-snapshot-uwdevp8e/source/scripts/validation/reproduce_release.py", line 59, in main
+    run("disk-full", disk)
+    ~~~^^^^^^^^^^^^^^^^^^^
+  File "/tmp/orbit-t13-snapshot-uwdevp8e/source/scripts/validation/reproduce_release.py", line 46, in run
+    raise RuntimeError(name + " failed; see retained log")
+RuntimeError: disk-full failed; see retained log
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/snapshot_release.py", line 64, in <module>
+    run(args.kernel, args.output)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/snapshot_release.py", line 56, in run
+    if result.returncode: raise RuntimeError("clean reproduction failed; inspect retained logs")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: clean reproduction failed; inspect retained logs

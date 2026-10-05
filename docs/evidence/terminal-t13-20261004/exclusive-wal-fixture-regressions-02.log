@@ -1,0 +1,5 @@
+# github.com/calebhabesh/file-sync/tests/integration_test [github.com/calebhabesh/file-sync/tests/integration.test]
+tests/integration/orbit_o13_campaign_test.go:33:2: "github.com/calebhabesh/file-sync/internal/workspace" imported and not used
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.211s
+FAIL	github.com/calebhabesh/file-sync/tests/integration [build failed]
+FAIL

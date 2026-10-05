@@ -1,0 +1,645 @@
+{
+  "packet": "T12",
+  "state": "complete",
+  "scope": "local entry/package/adoption; native/owner T13 remains",
+  "final_gates": [
+    "packet-final-fixed",
+    "packet-race-final",
+    "compatibility",
+    "peer-compatibility",
+    "cli-final",
+    "check-final",
+    "test-race-final",
+    "demo",
+    "packages-final",
+    "package-acceptance-final",
+    "legacy-browser-final",
+    "formatting-final",
+    "diff-final"
+  ],
+  "package_scenarios": [
+    {
+      "scenario": "all-package-checksums",
+      "result": "passed"
+    },
+    {
+      "scenario": "amd64-tar-payload-and-entry",
+      "result": "passed",
+      "execution": "native amd64"
+    },
+    {
+      "scenario": "amd64-deb-payload-and-entry",
+      "result": "passed",
+      "execution": "native amd64"
+    },
+    {
+      "scenario": "amd64-rpm-payload-and-entry",
+      "result": "passed",
+      "execution": "native amd64"
+    },
+    {
+      "scenario": "arm64-tar-payload-and-entry",
+      "result": "passed",
+      "execution": "QEMU emulation; not native"
+    },
+    {
+      "scenario": "arm64-deb-payload-and-entry",
+      "result": "passed",
+      "execution": "QEMU emulation; not native"
+    },
+    {
+      "scenario": "arm64-rpm-payload-and-entry",
+      "result": "passed",
+      "execution": "QEMU emulation; not native"
+    },
+    {
+      "scenario": "standalone-install-repeat-upgrade-uninstall",
+      "result": "passed",
+      "assertions": [
+        "custom unit preserved",
+        "legacy identity/state preserved",
+        "ordinary bytes preserved",
+        "no user service changes"
+      ]
+    },
+    {
+      "scenario": "package-extracted-bare-PTY",
+      "result": "passed"
+    },
+    {
+      "scenario": "debian:bookworm-slim-install-reinstall-remove",
+      "result": "passed",
+      "limitations": "no boot/logout/systemd user manager"
+    },
+    {
+      "scenario": "fedora:43-install-reinstall-remove",
+      "result": "passed",
+      "limitations": "no boot/logout/systemd user manager"
+    }
+  ],
+  "runs": [
+    {
+      "name": "packet",
+      "command": [
+        "go",
+        "test",
+        "-count=2",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:19:35.666467+00:00",
+      "elapsed_seconds": 22.441,
+      "exit_code": 0
+    },
+    {
+      "name": "package",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:23:34.170604+00:00",
+      "elapsed_seconds": 2.389,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:23:51.532806+00:00",
+      "elapsed_seconds": 0.194,
+      "exit_code": 1
+    },
+    {
+      "name": "packet-race",
+      "command": [
+        "env",
+        "GOFLAGS=-race",
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:23:42.574449+00:00",
+      "elapsed_seconds": 39.6,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages-retry",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:24:30.030325+00:00",
+      "elapsed_seconds": 12.999,
+      "exit_code": 1
+    },
+    {
+      "name": "compatibility",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-v",
+        "./cmd/filesync",
+        "./tests/integration",
+        "./internal/repository",
+        "./internal/controlclient",
+        "-run",
+        "Test(Relocation|OrbitMigration|OrbitRecovery|OrbitSchemaRollback|OrbitStoppedMetadata|P15|TerminalT02|TerminalT05)"
+      ],
+      "started_at": "2026-10-04T23:24:39.785928+00:00",
+      "elapsed_seconds": 4.745,
+      "exit_code": 0
+    },
+    {
+      "name": "package-directories",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:24:56.191809+00:00",
+      "elapsed_seconds": 1.38,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages-directories",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:25:04.699739+00:00",
+      "elapsed_seconds": 15.074,
+      "exit_code": 1
+    },
+    {
+      "name": "demo",
+      "command": [
+        "make",
+        "demo"
+      ],
+      "started_at": "2026-10-04T23:25:31.582657+00:00",
+      "elapsed_seconds": 0.604,
+      "exit_code": 0
+    },
+    {
+      "name": "package-rpm-header",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:25:52.496987+00:00",
+      "elapsed_seconds": 1.383,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages-rpm-header",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:26:06.460198+00:00",
+      "elapsed_seconds": 0.261,
+      "exit_code": 1
+    },
+    {
+      "name": "extracted-packages-emulated",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:26:21.297230+00:00",
+      "elapsed_seconds": 0.093,
+      "exit_code": 1
+    },
+    {
+      "name": "extracted-packages-emulated-retry",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:26:28.723682+00:00",
+      "elapsed_seconds": 15.65,
+      "exit_code": 1
+    },
+    {
+      "name": "package-rpm-offsets",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:27:21.611299+00:00",
+      "elapsed_seconds": 1.409,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages-rpm-offsets",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:27:33.062749+00:00",
+      "elapsed_seconds": 15.722,
+      "exit_code": 1
+    },
+    {
+      "name": "package-rpm-v4",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:28:28.546900+00:00",
+      "elapsed_seconds": 1.443,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages-rpm-v4",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:28:36.644500+00:00",
+      "elapsed_seconds": 15.615,
+      "exit_code": 1
+    },
+    {
+      "name": "rpm-diagnostic",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--label",
+        "orbit.disposable=t12-rpm-diagnostic",
+        "--mount",
+        "type=bind,source=<repo>/dist,target=/packages,readonly",
+        "fedora:43",
+        "sh",
+        "-c",
+        "mkdir -m 700 /tmp/orbit-t12; touch /tmp/orbit-t12/.filesync-disposable; rpm -vv -U --replacepkgs --nosignature /packages/filesync-1.0.0-1.x86_64.rpm"
+      ],
+      "started_at": "2026-10-04T23:29:00.798220+00:00",
+      "elapsed_seconds": 0.273,
+      "exit_code": 1
+    },
+    {
+      "name": "rpm-query",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--label",
+        "orbit.disposable=t12-rpm-query",
+        "--mount",
+        "type=bind,source=<repo>/dist,target=/packages,readonly",
+        "fedora:43",
+        "sh",
+        "-c",
+        "mkdir -m 700 /tmp/orbit-t12; touch /tmp/orbit-t12/.filesync-disposable; rpm -vv -qp --nodigest --nosignature /packages/filesync-1.0.0-1.x86_64.rpm"
+      ],
+      "started_at": "2026-10-04T23:29:12.224594+00:00",
+      "elapsed_seconds": 0.275,
+      "exit_code": 0
+    },
+    {
+      "name": "package-rpm-digests",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:29:48.883976+00:00",
+      "elapsed_seconds": 1.439,
+      "exit_code": 0
+    },
+    {
+      "name": "rpm-digests-diagnostic",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--label",
+        "orbit.disposable=t12-rpm-digests",
+        "--mount",
+        "type=bind,source=<repo>/dist,target=/packages,readonly",
+        "fedora:43",
+        "sh",
+        "-c",
+        "mkdir -m 700 /tmp/orbit-t12; touch /tmp/orbit-t12/.filesync-disposable; rpm -vv -U --replacepkgs --nosignature /packages/filesync-1.0.0-1.x86_64.rpm"
+      ],
+      "started_at": "2026-10-04T23:29:59.095576+00:00",
+      "elapsed_seconds": 0.417,
+      "exit_code": 0
+    },
+    {
+      "name": "package-lifecycle",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:30:41.817413+00:00",
+      "elapsed_seconds": 1.402,
+      "exit_code": 0
+    },
+    {
+      "name": "extracted-packages-final",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:30:54.265279+00:00",
+      "elapsed_seconds": 16.836,
+      "exit_code": 1
+    },
+    {
+      "name": "extracted-packages-hash-oracle",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json"
+      ],
+      "started_at": "2026-10-04T23:31:32.089521+00:00",
+      "elapsed_seconds": 16.609,
+      "exit_code": 0
+    },
+    {
+      "name": "packet-final",
+      "command": [
+        "go",
+        "test",
+        "-count=2",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:32:11.938755+00:00",
+      "elapsed_seconds": 0.454,
+      "exit_code": 1
+    },
+    {
+      "name": "check",
+      "command": [
+        "make",
+        "check"
+      ],
+      "started_at": "2026-10-04T23:27:43.810742+00:00",
+      "elapsed_seconds": 275.298,
+      "exit_code": 2
+    },
+    {
+      "name": "packet-final-retry",
+      "command": [
+        "go",
+        "test",
+        "-count=2",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:32:27.292726+00:00",
+      "elapsed_seconds": 22.709,
+      "exit_code": 1
+    },
+    {
+      "name": "packet-final-fixed",
+      "command": [
+        "go",
+        "test",
+        "-count=2",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:33:43.027873+00:00",
+      "elapsed_seconds": 22.7,
+      "exit_code": 0
+    },
+    {
+      "name": "discovery",
+      "command": [
+        "go",
+        "test",
+        "./tests/terminal",
+        "-list",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:35:25.631210+00:00",
+      "elapsed_seconds": 0.22,
+      "exit_code": 0
+    },
+    {
+      "name": "peer-compatibility",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-v",
+        "./internal/replication",
+        "-run",
+        "^TestAuthenticationAuthorizationAndCompatibilityMatrix$"
+      ],
+      "started_at": "2026-10-04T23:35:25.869447+00:00",
+      "elapsed_seconds": 0.216,
+      "exit_code": 0
+    },
+    {
+      "name": "cli-final",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./cmd/filesync"
+      ],
+      "started_at": "2026-10-04T23:35:26.104373+00:00",
+      "elapsed_seconds": 0.531,
+      "exit_code": 0
+    },
+    {
+      "name": "packet-race-final",
+      "command": [
+        "env",
+        "GOFLAGS=-race",
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "-v",
+        "./tests/terminal",
+        "-run",
+        "^TestTerminalT12"
+      ],
+      "started_at": "2026-10-04T23:35:00.576360+00:00",
+      "elapsed_seconds": 42.155,
+      "exit_code": 0
+    },
+    {
+      "name": "source-checks",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-04T23:38:55.832461+00:00",
+      "elapsed_seconds": 0.008,
+      "exit_code": 0
+    },
+    {
+      "name": "check-final",
+      "command": [
+        "make",
+        "check"
+      ],
+      "started_at": "2026-10-04T23:33:44.171812+00:00",
+      "elapsed_seconds": 356.253,
+      "exit_code": 0
+    },
+    {
+      "name": "test-race-final",
+      "command": [
+        "make",
+        "test-race"
+      ],
+      "started_at": "2026-10-04T23:40:17.276215+00:00",
+      "elapsed_seconds": 320.85,
+      "exit_code": 0
+    },
+    {
+      "name": "whitespace-final",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-04T23:46:17.041838+00:00",
+      "elapsed_seconds": 0.007,
+      "exit_code": 0
+    },
+    {
+      "name": "packages-final",
+      "command": [
+        "make",
+        "package"
+      ],
+      "started_at": "2026-10-04T23:46:32.006376+00:00",
+      "elapsed_seconds": 1.331,
+      "exit_code": 0
+    },
+    {
+      "name": "legacy-browser-final",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "./tests/integration",
+        "-run",
+        "^(TestP14|TestP15EmbeddedUI|TestOrbitSession)"
+      ],
+      "started_at": "2026-10-04T23:46:33.162812+00:00",
+      "elapsed_seconds": 0.772,
+      "exit_code": 0
+    },
+    {
+      "name": "package-acceptance-final",
+      "command": [
+        "python3",
+        "scripts/terminal_package_test.py",
+        "--dist",
+        "dist",
+        "--containers",
+        "--emulate-arm64",
+        "--output",
+        "docs/evidence/terminal-t12-20261004/package-results.json",
+        "--pty-output",
+        "docs/evidence/terminal-t12-20261004/pty"
+      ],
+      "started_at": "2026-10-04T23:46:46.670635+00:00",
+      "elapsed_seconds": 16.786,
+      "exit_code": 0
+    },
+    {
+      "name": "formatting-final",
+      "command": [
+        "make",
+        "fmt-check"
+      ],
+      "started_at": "2026-10-04T23:47:34.085636+00:00",
+      "elapsed_seconds": 0.047,
+      "exit_code": 0
+    },
+    {
+      "name": "diff-final",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-10-04T23:47:34.151549+00:00",
+      "elapsed_seconds": 0.007,
+      "exit_code": 0
+    }
+  ]
+}

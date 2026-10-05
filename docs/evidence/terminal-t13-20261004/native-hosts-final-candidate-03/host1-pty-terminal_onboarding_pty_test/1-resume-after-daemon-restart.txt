@@ -1,0 +1,134 @@
+Orbit | Setup progress                  
+State: running | Waiting for approval   
+Approved=false membership current=false 
+root available=false scan complete=false
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Local readiness incomplete. Work remains
+pending.                                
+Operation:                              
+4c015f48300f3cefd9c41031bd72dbd4297a25c9
+6f93721d69e7869520222c27                
+Root: <disposable>/Notes界                        
+r refresh  J new reviewed join  Esc     
+overview  q quit                        
+--- frame ---
+Orbit | Setup progress                  
+State: completed | Local readiness      
+observed                                
+Approved=true membership current=true   
+root available=true scan complete=true  
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Locally ready (observed). Other offline 
+devices may remain pending.             
+Operation:                              
+4c015f48300f3cefd9c41031bd72dbd4297a25c9
+6f93721d69e7869520222c27                
+Root: /tmp/orbit-t10-pty-               
+r refresh  J new reviewed join  Esc     
+overview  q quit                        
+--- frame ---
+Orbit                                   
+Daemon: running   Startup: manual (not …
+Overview | f n d o                      
+Search page:                            
+Devices: Pi, device-6f0d942c | d: inspe…
+Needs attention, then synced folders    
+(first pages)                           
+> Notes  <disposable>/No…
+j/k Enter / ? q                         
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Join invitation                 
+Paste a private v2 invitation or enter  
+an absolute private file path.          
+The invitation is hidden and never      
+included in status/logs.                
+> Private invitation:                   
+Enter verify  Esc back  Ctrl-C close    
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+--- frame ---
+Orbit | Review setup inputs             
+Supported existing contents will become 
+shared.                                 
+LAN / existing Tailscale: advertise     
+reachable numeric IP:port.              
+Startup: login needs user systemd;      
+unattended also needs lingering.        
+> Device name: main-instance-vnic       
+  Folder name: Orbit                    
+  Local root: /home/ubuntu/Orbit        
+  Startup (manual/login/unattended):    
+manual                                  
+  Data budget (bytes): 4000000000       
+  Peer listen (IP:port):                
+Tab next  Shift-Tab back  Enter preview 
+Ctrl-A advanced  Esc back               
+--- frame ---
+Orbit | Confirm adoption                
+Device: Pi                              
+Folder: Notes                           
+Root: <disposable>/second
+Existing supported local contents become
+shared; nothing is erased.              
+Inviter:                                
+6f0d942cad0a7c9e2969e5d1e79facc0c0047d9c
+557c87326fde4d6fc68e8e8c                
+Key pin:                                
+e686240aa364f220211ec93117e4e5eeaa1b74aa
+3388b62b113ec87eb1cb3f06                
+Enrollment: https://10.0.0.187:55471    
+Invitation folder:                      
+Enter confirm exact review  Esc edit    
+arrows scroll  q quit                   
+--- frame ---
+Orbit | Setup progress                  
+State: running | Waiting for approval   
+Approved=false membership current=false 
+root available=false scan complete=false
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Local readiness incomplete. Work remains
+pending.                                
+Operation:                              
+4f1107f6cc32aced159ba42874a334ca9dcef3d2
+eb56dab45668c25185ad213a                
+Root: <disposable>/second
+Request:                                
+r refresh  J new reviewed join  Esc     
+overview  q quit                        
+--- frame ---
+Orbit | Setup progress                  
+State: completed | Local readiness      
+observed                                
+Approved=true membership current=true   
+root available=true scan complete=true  
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Locally ready (observed). Other offline 
+devices may remain pending.             
+Operation:                              
+4f1107f6cc32aced159ba42874a334ca9dcef3d2
+eb56dab45668c25185ad213a                
+Root: <disposable>/second
+r refresh  J new reviewed join  Esc     
+overview  q quit                        

@@ -1,0 +1,47 @@
+GOFLAGS=-race go test -race -count=2 -v ./tests/terminal -run '^TestTerminalT13'
+=== RUN   TestTerminalT13OperationObservesPublicationWithoutReauthoring
+--- PASS: TestTerminalT13OperationObservesPublicationWithoutReauthoring (0.48s)
+=== RUN   TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause
+--- PASS: TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause (0.35s)
+=== RUN   TestTerminalT13LargeDirectoryAndStreamedMergeResources
+    release_test.go:209: resource command=deleted input_fixture_files=1024 samples=275 interval_ms=5 sampled_peak_rss_kib=54876 child_ru_maxrss_kib=316328 sampled_peak_fds=6 output_bytes=9875 seconds=1.382
+    release_test.go:214: resource command=status input_fixture_files=1024 samples=615 interval_ms=5 sampled_peak_rss_kib=52180 child_ru_maxrss_kib=316328 sampled_peak_fds=7 output_bytes=2233 seconds=3.080
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=235 interval_ms=5 sampled_peak_rss_kib=55436 child_ru_maxrss_kib=316328 sampled_peak_fds=6 output_bytes=2029 seconds=1.179
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=250 interval_ms=5 sampled_peak_rss_kib=57108 child_ru_maxrss_kib=316328 sampled_peak_fds=7 output_bytes=639 seconds=1.256
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=254 interval_ms=5 sampled_peak_rss_kib=52464 child_ru_maxrss_kib=316328 sampled_peak_fds=6 output_bytes=1043 seconds=1.272
+    release_test.go:239: verified streamed merge fixture_bytes=8388608 digest=96283cc9067fda56816d90f9084f9022f9e92e258d4fa5c3b5a84446d63a7965
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=240 interval_ms=5 sampled_peak_rss_kib=53236 child_ru_maxrss_kib=316328 sampled_peak_fds=6 output_bytes=2034 seconds=1.206
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=280 interval_ms=5 sampled_peak_rss_kib=55944 child_ru_maxrss_kib=316328 sampled_peak_fds=7 output_bytes=640 seconds=1.406
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=300 interval_ms=5 sampled_peak_rss_kib=52652 child_ru_maxrss_kib=316328 sampled_peak_fds=6 output_bytes=1045 seconds=1.506
+    release_test.go:239: verified streamed merge fixture_bytes=33554432 digest=faade46d584f4cc4d270161865f1e8db5efafae1e99c5d618ede6303bfaba409
+--- PASS: TestTerminalT13LargeDirectoryAndStreamedMergeResources (32.78s)
+=== RUN   TestTerminalT13NativeHarnessRefusesUnsafeActions
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.05s)
+=== RUN   TestTerminalT13StatusKeepsRunningAndStartupSeparate
+--- PASS: TestTerminalT13StatusKeepsRunningAndStartupSeparate (0.31s)
+=== RUN   TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads
+--- PASS: TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads (0.36s)
+=== RUN   TestTerminalT13OperationObservesPublicationWithoutReauthoring
+--- PASS: TestTerminalT13OperationObservesPublicationWithoutReauthoring (0.42s)
+=== RUN   TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause
+--- PASS: TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause (0.35s)
+=== RUN   TestTerminalT13LargeDirectoryAndStreamedMergeResources
+    release_test.go:209: resource command=deleted input_fixture_files=1024 samples=280 interval_ms=5 sampled_peak_rss_kib=53160 child_ru_maxrss_kib=318556 sampled_peak_fds=6 output_bytes=9875 seconds=1.404
+    release_test.go:214: resource command=status input_fixture_files=1024 samples=650 interval_ms=5 sampled_peak_rss_kib=52360 child_ru_maxrss_kib=318556 sampled_peak_fds=7 output_bytes=2229 seconds=3.256
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=236 interval_ms=5 sampled_peak_rss_kib=55392 child_ru_maxrss_kib=318556 sampled_peak_fds=6 output_bytes=2027 seconds=1.185
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=249 interval_ms=5 sampled_peak_rss_kib=57220 child_ru_maxrss_kib=318556 sampled_peak_fds=7 output_bytes=639 seconds=1.252
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=254 interval_ms=5 sampled_peak_rss_kib=54728 child_ru_maxrss_kib=318556 sampled_peak_fds=6 output_bytes=1043 seconds=1.276
+    release_test.go:239: verified streamed merge fixture_bytes=8388608 digest=96283cc9067fda56816d90f9084f9022f9e92e258d4fa5c3b5a84446d63a7965
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=239 interval_ms=5 sampled_peak_rss_kib=55288 child_ru_maxrss_kib=318556 sampled_peak_fds=6 output_bytes=2030 seconds=1.198
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=282 interval_ms=5 sampled_peak_rss_kib=57816 child_ru_maxrss_kib=318556 sampled_peak_fds=7 output_bytes=640 seconds=1.413
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=299 interval_ms=5 sampled_peak_rss_kib=54828 child_ru_maxrss_kib=318556 sampled_peak_fds=6 output_bytes=1045 seconds=1.498
+    release_test.go:239: verified streamed merge fixture_bytes=33554432 digest=faade46d584f4cc4d270161865f1e8db5efafae1e99c5d618ede6303bfaba409
+--- PASS: TestTerminalT13LargeDirectoryAndStreamedMergeResources (32.72s)
+=== RUN   TestTerminalT13NativeHarnessRefusesUnsafeActions
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.05s)
+=== RUN   TestTerminalT13StatusKeepsRunningAndStartupSeparate
+--- PASS: TestTerminalT13StatusKeepsRunningAndStartupSeparate (0.32s)
+=== RUN   TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads
+--- PASS: TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads (0.35s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	69.535s

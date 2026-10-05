@@ -2,6 +2,7 @@
 """Private validation worker. All mutations remain in a fresh marked run root."""
 import base64
 import hashlib
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -16,6 +17,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.request
 
 
 def validated_root(req):
@@ -66,7 +68,7 @@ def stop(root, name):
     if state == "Z":
         return
     argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
-    if ticks != record["start_ticks"] or os.fsencode(root / "filesync") not in argv or os.fsencode(root / "state") not in argv:
+    if ticks != record["start_ticks"] or os.fsencode(root / "filesync") not in argv or not any(a in (os.fsencode(root / "state"), b"--state=" + os.fsencode(root / "state")) for a in argv):
         raise RuntimeError("refusing signal: process identity or state path changed")
     os.kill(pid, signal.SIGKILL if record["kind"] == "sync" else signal.SIGTERM)
     for _ in range(100):
@@ -81,6 +83,25 @@ def stop(root, name):
 
 def dispatch(req):
     action = req["action"]
+    if action == "network-preflight":
+        # Read-only prerequisite discovery is allowed before creating a run root.
+        addresses = [str(ipaddress.IPv4Address(a)) for a in req["addresses"]]
+        if any(ipaddress.ip_address(a).is_loopback or ipaddress.ip_address(a).is_unspecified
+               or not ipaddress.ip_address(a).is_private and not ipaddress.ip_address(a) in ipaddress.ip_network("100.64.0.0/10")
+               for a in addresses):
+            raise RuntimeError("campaign addresses must be private nonloopback IPv4")
+        routes = {a: json.loads(subprocess.check_output(["ip", "-j", "route", "get", a], text=True))
+                  for a in addresses}
+        tailscale = {"installed": False, "authenticated": False}
+        if __import__("shutil").which("tailscale"):
+            tailscale["installed"] = True
+            result = subprocess.run(["tailscale", "status", "--json"], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0:
+                status = json.loads(result.stdout)
+                tailscale.update(state=status.get("BackendState"), addresses=status.get("TailscaleIPs", []),
+                                 authenticated=status.get("BackendState") == "Running" and bool(status.get("Self", {}).get("Online")))
+        return {"routes": routes, "tailscale": tailscale,
+                "hostname": os.uname().nodename, "arch": os.uname().machine}
     if action == "create":
         if req.get("purpose") == "pilot":
             name = req.get("pilot_name", "FileSyncPilot-20261001")
@@ -106,6 +127,66 @@ def dispatch(req):
                 "storage": subprocess.check_output(["df", "-B1", str(Path.home())], text=True),
                 "route": subprocess.check_output(["ip", "route"], text=True)}
     root = validated_root(req)
+    if action == "tcp-probe":
+        address = str(ipaddress.IPv4Address(req["address"]))
+        if ipaddress.ip_address(address).is_loopback or ipaddress.ip_address(address).is_unspecified:
+            raise RuntimeError("native probe requires a nonloopback address")
+        with socket.create_connection((address, int(req["port"])), timeout=3):
+            return {"connected": True, "address": address, "port": int(req["port"])}
+    if action == "terminal-pty":
+        script = req["script"]
+        if script not in ("terminal_pty_test.py", "terminal_onboarding_pty_test.py", "terminal_everyday_pty_test.py"):
+            raise RuntimeError("unknown terminal campaign")
+        args = [sys.executable, str(beneath(root, script)), "--binary", str(beneath(root, "filesync")),
+                "--output", str(beneath(root, "pty-" + script.removesuffix(".py")))]
+        if script == "terminal_pty_test.py":
+            args.append("--bare")
+        result = subprocess.run(args, capture_output=True, text=True, timeout=300)
+        if result.returncode:
+            raise RuntimeError("native PTY failed: " + (result.stdout + result.stderr)[-6000:])
+        return {"returncode": result.returncode, "stdout": result.stdout}
+    if action == "network":
+        return {"addresses": json.loads(subprocess.check_output(["ip", "-j", "-4", "address"], text=True)),
+                "linger": subprocess.run(["loginctl", "show-user", str(os.getuid()), "-p", "Linger"], capture_output=True, text=True).stdout.strip() or "unavailable",
+                "tailscale_available": __import__("shutil").which("tailscale") is not None}
+    if action == "terminal-query":
+        state = beneath(root, "state")
+        address = beneath(root, "state/control.addr").read_text().strip()
+        host, port = address.rsplit(":", 1)
+        if host != "127.0.0.1":
+            raise RuntimeError("owner control must be loopback")
+        token = beneath(root, "state/control.token").read_text().strip()
+        request = urllib.request.Request("http://" + address + "/control/terminal/v1/query",
+            data=json.dumps({"version": "1", **req["query"]}).encode(),
+            headers={"Authorization": "Bearer " + token, "Content-Type": "application/json"})
+        with urllib.request.build_opener(urllib.request.ProxyHandler({})).open(request, timeout=8) as response:
+            if response.headers["X-Orbit-Device"] != json.loads((state / "config.json").read_text())["device_id"]:
+                raise RuntimeError("owner identity mismatch")
+            return json.load(response)
+    if action == "terminal-stop":
+        # Launcher-created daemons also require exact private binary/state ownership.
+        pidfile = beneath(root, "state/.agent.pid")
+        if not pidfile.exists():
+            return {"stopped": False}
+        pid = int(pidfile.read_text().strip())
+        try:
+            ticks, process_state = identity(pid)
+        except FileNotFoundError:
+            return {"stopped": False}
+        if process_state == "Z":
+            return {"stopped": False}
+        argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+        if os.fsencode(root / "filesync") not in argv or not any(
+                a in (os.fsencode(root / "state"), b"--state=" + os.fsencode(root / "state")) for a in argv):
+            raise RuntimeError("refusing signal: terminal daemon ownership mismatch")
+        name = "terminal-" + str(pid)
+        record = {"pid": pid, "start_ticks": ticks, "kind": "serve"}
+        target = beneath(root, name + ".pid.json")
+        if target.exists() and json.loads(target.read_text()) != record:
+            raise RuntimeError("refusing signal: reused terminal PID")
+        target.write_text(json.dumps(record))
+        stop(root, name)
+        return {"stopped": True}
     if action == "reserve-port":
         with socket.socket() as sock:
             sock.bind((req.get("address","127.0.0.1"),0))
@@ -193,6 +274,22 @@ def dispatch(req):
     if action == "stop":
         stop(root, req["name"])
         return {}
+    if action == "verified-objects":
+        # Inspect immutable durable objects without opening the owner's live DB.
+        directory = beneath(root, "state/objects/sha256")
+        count = 0
+        for candidate in directory.rglob("*"):
+            relative = candidate.relative_to(directory).as_posix().replace("/", "")
+            if candidate.is_file() and re.fullmatch(r"[0-9a-f]{64}", relative):
+                safe = beneath(root, candidate.relative_to(root))
+                digest = hashlib.sha256()
+                with safe.open("rb") as source:
+                    for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                        digest.update(chunk)
+                if digest.hexdigest() != relative:
+                    raise RuntimeError("immutable object digest mismatch")
+                count += 1
+        return {"verified_objects": count}
     if action == "progress":
         with sqlite3.connect(f"file:{root}/state/metadata.sqlite?mode=ro", uri=True) as db:
             chunks = db.execute("SELECT COUNT(*) FROM transfer_chunks WHERE verified=1").fetchone()[0]
@@ -208,7 +305,9 @@ def dispatch(req):
     if action == "service-install":
         unit = ("filesync-pilot-" if req.get("purpose") == "pilot" else "filesync-validation-") + req["token"] + ".service"
         target = beneath(root, unit)
-        text = req["template"].replace("/usr/bin/filesync", str(root / "filesync"))
+        text = req["template"].replace("/usr/bin/filesync", str(root / "filesync")).replace("/usr/bin/orbit", str(root / "filesync"))
+        # Unique validation units must never create/remove the installed aliases.
+        text = "\n".join(line for line in text.splitlines() if not line.startswith("Alias=")) + "\n"
         text = text.replace("%h/.local/state/filesync", str(root / "state"))
         text = text.replace("127.0.0.1:8080", "127.0.0.1:0")
         if req.get("peer_listen"):

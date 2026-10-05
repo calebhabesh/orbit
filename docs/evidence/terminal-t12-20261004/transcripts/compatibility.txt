@@ -1,0 +1,57 @@
+=== RUN   TestRelocationCLIStoppedAndLive
+--- PASS: TestRelocationCLIStoppedAndLive (0.01s)
+=== RUN   TestTerminalT02RuntimeCLIReviewedReplay
+--- PASS: TestTerminalT02RuntimeCLIReviewedReplay (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.039s
+=== RUN   TestOrbitSchemaRollbackRefusal
+--- PASS: TestOrbitSchemaRollbackRefusal (0.00s)
+=== RUN   TestOrbitStoppedMetadataRestoreFreshIdentity
+--- PASS: TestOrbitStoppedMetadataRestoreFreshIdentity (0.06s)
+=== RUN   TestP15VersionAndBuildMetadata
+--- PASS: TestP15VersionAndBuildMetadata (0.01s)
+=== RUN   TestP15ReleaseBinaryExcludesDestructiveTestHooks
+--- PASS: TestP15ReleaseBinaryExcludesDestructiveTestHooks (0.01s)
+=== RUN   TestP15EmbeddedUIWithoutNode
+--- PASS: TestP15EmbeddedUIWithoutNode (0.12s)
+=== RUN   TestP15ConfigValidation
+--- PASS: TestP15ConfigValidation (0.06s)
+=== RUN   TestP15AgentStop
+--- PASS: TestP15AgentStop (0.24s)
+=== RUN   TestP15UpgradePreflight
+--- PASS: TestP15UpgradePreflight (0.05s)
+=== RUN   TestP15InterruptedMigrationRollback
+--- PASS: TestP15InterruptedMigrationRollback (0.00s)
+=== RUN   TestP15ConsistentBackupAndRestoreSafety
+--- PASS: TestP15ConsistentBackupAndRestoreSafety (0.06s)
+=== RUN   TestP15PackagingOutputsAndChecksums
+--- PASS: TestP15PackagingOutputsAndChecksums (1.33s)
+=== RUN   TestP15UninstallPreservesUserData
+--- PASS: TestP15UninstallPreservesUserData (0.03s)
+=== RUN   TestOrbitMigration_EndToEnd_LegacyAdoption
+--- PASS: TestOrbitMigration_EndToEnd_LegacyAdoption (0.01s)
+=== RUN   TestOrbitMigration_EndToEnd_NewerSchemaRefused
+--- PASS: TestOrbitMigration_EndToEnd_NewerSchemaRefused (0.01s)
+=== RUN   TestOrbitMigration_EndToEnd_InterruptedRecoveryDetected
+--- PASS: TestOrbitMigration_EndToEnd_InterruptedRecoveryDetected (0.01s)
+=== RUN   TestOrbitRecoveryCandidate1ConfigWriteAndRestart
+--- PASS: TestOrbitRecoveryCandidate1ConfigWriteAndRestart (0.44s)
+=== RUN   TestOrbitRecoveryCandidate2KeyRotation
+--- PASS: TestOrbitRecoveryCandidate2KeyRotation (0.42s)
+=== RUN   TestOrbitRecoveryCandidate3TransactionalAuthorAlignment
+--- PASS: TestOrbitRecoveryCandidate3TransactionalAuthorAlignment (0.46s)
+=== RUN   TestOrbitRecoveryCandidate4InspectionDoesNotMutateState
+--- PASS: TestOrbitRecoveryCandidate4InspectionDoesNotMutateState (0.01s)
+=== RUN   TestOrbitRecoveryCandidate5RunbookWorkflow
+--- PASS: TestOrbitRecoveryCandidate5RunbookWorkflow (0.57s)
+=== RUN   TestOrbitRecoveryLiveResetFenced
+--- PASS: TestOrbitRecoveryLiveResetFenced (0.37s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	4.257s
+=== RUN   TestOrbitMigration_Schema11MigrationAndOperations
+--- PASS: TestOrbitMigration_Schema11MigrationAndOperations (0.01s)
+=== RUN   TestOrbitMigration_LegacyAdoptionAndRollbackLimit
+--- PASS: TestOrbitMigration_LegacyAdoptionAndRollbackLimit (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.020s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]

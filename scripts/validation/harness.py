@@ -103,10 +103,10 @@ class Node:
 
 
 def pair(nodes):
-    membership = {"membership": {"Folder": nodes[0].folder, "Revision": 1,
-                                  "PriorDigest": "0" * 64,
-                                  "Active": [{"Device": n.device, "KeyPin": n.pin} for n in nodes],
-                                  "Retired": []}}
+    membership = {"membership": {"folder": nodes[0].folder, "revision": 1,
+                                  "prior_digest": "0" * 64,
+                                  "active": [{"device": n.device, "key_pin": n.pin} for n in nodes],
+                                  "retired": []}}
     for node in nodes:
         node.put("membership.json", json.dumps(membership).encode())
         node.cli("membership", "import", "--folder", node.folder, "--file", node.root + "/membership.json", "--approve")

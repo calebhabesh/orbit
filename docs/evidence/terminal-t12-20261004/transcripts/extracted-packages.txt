@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/terminal_package_test.py", line 179, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "<repo>/scripts/terminal_package_test.py", line 115, in main
+    assert status['state_dir']==str(state) and not status['service']['running']
+           ~~~~~~^^^^^^^^^^^^^
+KeyError: 'state_dir'

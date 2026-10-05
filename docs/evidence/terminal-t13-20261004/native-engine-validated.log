@@ -1,0 +1,3 @@
+usage: three_host.py [-h] [--laptop LAPTOP] [--pi PI] [--vps VPS]
+                     --output OUTPUT
+three_host.py: error: unrecognized arguments: --hosts laptop rpi vps

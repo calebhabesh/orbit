@@ -1,0 +1,4 @@
+=== RUN   TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause
+--- PASS: TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.015s

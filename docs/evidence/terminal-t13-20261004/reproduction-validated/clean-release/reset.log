@@ -1,0 +1,16 @@
+PASS abrupt guest stop/reboot: dirty-cache-control
+PASS abrupt guest stop/reboot: object.flushed
+PASS abrupt guest stop/reboot: object.installed
+PASS abrupt guest stop/reboot: object.recorded
+PASS abrupt guest stop/reboot: sql.version.before_commit
+PASS abrupt guest stop/reboot: sql.version.after_commit
+PASS abrupt guest stop/reboot: publication.prepared
+PASS abrupt guest stop/reboot: publication.stage.flushed
+PASS abrupt guest stop/reboot: publication.staged
+PASS abrupt guest stop/reboot: publication.intent
+PASS abrupt guest stop/reboot: publication.exchange.before
+PASS abrupt guest stop/reboot: publication.filesystem.transition
+PASS abrupt guest stop/reboot: publication.recovery.named
+PASS abrupt guest stop/reboot: publication.directory.flushed
+PASS abrupt guest stop/reboot: publication.renamed
+PASS abrupt guest stop/reboot: publication.committed

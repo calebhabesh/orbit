@@ -1,0 +1,343 @@
+{
+  "packet": "T13",
+  "state": "in_progress",
+  "candidate": "00992f6d8b6afcde7dfaffe2c8aad8c27c847602",
+  "production_source_matches_candidate": true,
+  "checks": [
+    {
+      "evidence": "t13-hydration-race.log",
+      "success": true,
+      "cases": 8,
+      "seconds": 73.545,
+      "instrumented_children": true
+    },
+    {
+      "evidence": "hydration-repository-control-race.log",
+      "success": true,
+      "packages": [
+        "internal/repository",
+        "internal/control",
+        "internal/control/terminalcontract",
+        "cmd/filesync"
+      ]
+    },
+    {
+      "evidence": "python-safety-final.log",
+      "success": true,
+      "cases": 12
+    },
+    {
+      "evidence": "test-discovery.log",
+      "success": true,
+      "cases": 8
+    },
+    {
+      "evidence": "package-scenarios.json",
+      "success": true,
+      "cases": 9,
+      "scope": "Initial error-reporting-only packages; no container or arm emulation"
+    }
+  ],
+  "clean_reproduction": {
+    "evidence": "reproduction-hydration/clean-release/reproduction.json",
+    "success": true,
+    "checks": [
+      {
+        "name": "status",
+        "command": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 0.05794069799594581
+      },
+      {
+        "name": "check",
+        "command": [
+          "make",
+          "check"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 427.6560057850147
+      },
+      {
+        "name": "race",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-count=1",
+          "./..."
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 382.09395174498786
+      },
+      {
+        "name": "demo",
+        "command": [
+          "make",
+          "demo"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 0.6030726820172276
+      },
+      {
+        "name": "reset",
+        "command": [
+          "python3",
+          "scripts/validation/abrupt_reset.py",
+          "--kernel",
+          "/boot/vmlinuz-linux",
+          "--output",
+          "<repo>/docs/evidence/terminal-t13-20261005/reproduction-hydration/clean-release/reset"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 35.76299351800117
+      },
+      {
+        "name": "disk-full",
+        "command": [
+          "python3",
+          "scripts/validation/abrupt_reset.py",
+          "--kernel",
+          "/boot/vmlinuz-linux",
+          "--output",
+          "<repo>/docs/evidence/terminal-t13-20261005/reproduction-hydration/clean-release/disk-full",
+          "--hook",
+          "enospc.object",
+          "--hook",
+          "enospc.sqlite",
+          "--hook",
+          "enospc.checkpoint",
+          "--hook",
+          "enospc.staging",
+          "--hook",
+          "enospc.fsync"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 7.91750614400371
+      },
+      {
+        "name": "checksum",
+        "command": [
+          "sha256sum",
+          "-c",
+          "SHA256SUMS"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout/dist",
+        "exit_code": 0,
+        "seconds": 0.04942545699304901
+      },
+      {
+        "name": "package-repeat",
+        "command": [
+          "make",
+          "package"
+        ],
+        "cwd": "/tmp/filesync-reproduction-e3jo0307/checkout",
+        "exit_code": 0,
+        "seconds": 1.3109594169945922
+      }
+    ],
+    "packages_identical_on_repeat": true
+  },
+  "vm_campaigns": [
+    {
+      "evidence": "reproduction-hydration/clean-release/reset/abrupt-reset.json",
+      "success": true,
+      "case_count": 16,
+      "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim"
+    },
+    {
+      "evidence": "reproduction-hydration/clean-release/disk-full/abrupt-reset.json",
+      "success": true,
+      "case_count": 5,
+      "limitations": "Guest dirty caches lost; no physical power loss, host cache loss or Pi hardware claim"
+    }
+  ],
+  "journeys": [
+    {
+      "evidence": "local-private-01/terminal-private.json",
+      "success": false,
+      "seconds": 64.2235140420089,
+      "error": "retired identity rejoin did not report retirement",
+      "physical_host_count": null,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "local-private-02/terminal-private.json",
+      "success": false,
+      "seconds": 65.97057506299461,
+      "error": "replacement",
+      "physical_host_count": 1,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "local-private-03/terminal-private.json",
+      "success": false,
+      "seconds": 155.9522758660023,
+      "error": "timeout",
+      "physical_host_count": 1,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "local-private-04/terminal-private.json",
+      "success": false,
+      "seconds": 156.40961774101015,
+      "error": "timeout",
+      "physical_host_count": 1,
+      "cleanup_errors": [],
+      "runner_sha256": "3c94ac23071d6b9c1a3933ddcd146064e69525bff21116837c0716b472e1ba16"
+    },
+    {
+      "evidence": "local-private-05/terminal-private.json",
+      "success": true,
+      "seconds": 153.06488533501397,
+      "error": null,
+      "physical_host_count": 1,
+      "cleanup_errors": [],
+      "runner_sha256": "258d2e628e57bf4120104640498cd843e3664f5b829de127739cea08ee248b6f"
+    },
+    {
+      "evidence": "native-lan-01/terminal-private.json",
+      "success": false,
+      "seconds": 49.972899205982685,
+      "error": "receiver",
+      "physical_host_count": null,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "native-lan-02/terminal-private.json",
+      "success": false,
+      "seconds": 165.0012574220018,
+      "error": "replacement",
+      "physical_host_count": 2,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "native-lan-03/terminal-private.json",
+      "success": false,
+      "seconds": 261.0490010670037,
+      "error": "timeout",
+      "physical_host_count": 2,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "native-lan-04/terminal-private.json",
+      "success": false,
+      "seconds": 269.73911008500727,
+      "error": "replacement terminal-query",
+      "physical_host_count": 2,
+      "cleanup_errors": [],
+      "runner_sha256": "258d2e628e57bf4120104640498cd843e3664f5b829de127739cea08ee248b6f"
+    },
+    {
+      "evidence": "native-lan-05/terminal-private.json",
+      "success": true,
+      "seconds": 291.6658575379988,
+      "error": null,
+      "physical_host_count": 2,
+      "cleanup_errors": [],
+      "runner_sha256": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d"
+    },
+    {
+      "evidence": "tailscale-preflight/terminal-private.json",
+      "success": false,
+      "seconds": 1.6602292740135454,
+      "error": "source",
+      "physical_host_count": null,
+      "cleanup_errors": [],
+      "runner_sha256": null
+    },
+    {
+      "evidence": "tailscale-three-host-01/terminal-private.json",
+      "success": true,
+      "seconds": 277.6363871289941,
+      "physical_host_count": 3,
+      "cleanup_errors": [],
+      "runner_sha256": "699d39bfb5e27cfe6ac97bdb5f165fc4721617483a146e142b7200f33893f52d",
+      "network": "tailscale",
+      "exact_clean_candidate_packages": true
+    }
+  ],
+  "pilot_service_checks": [
+    {
+      "host": "laptop",
+      "evidence": "pilot-laptop-after.log",
+      "running": true
+    },
+    {
+      "host": "rpi",
+      "evidence": "pilot-pi-after.log",
+      "running": true
+    },
+    {
+      "host": "vps",
+      "evidence": "pilot-vps-after.log",
+      "running": true
+    }
+  ],
+  "unexecuted": [
+    "Actual native login/logout and unattended boot in a designated disposable native environment"
+  ],
+  "deferred_not_blocking": [
+    "Personal use",
+    "Comprehensive owner review"
+  ],
+  "environment_policy_changes": false,
+  "native_reboot_or_logout_performed": false,
+  "authenticated_tailscale_preflight": {
+    "evidence": "tailscale-authenticated-preflight-01/terminal-private.json",
+    "preflight_success": true,
+    "hosts": [
+      "laptop",
+      "rpi",
+      "vps"
+    ]
+  },
+  "native_lifecycle_observations": {
+    "startup": {
+      "source": "manual",
+      "receiver": "manual",
+      "forwarder": "manual",
+      "replacement": "not recorded"
+    },
+    "linger": {
+      "source": "Linger=no",
+      "receiver": "Linger=no",
+      "forwarder": "Linger=no",
+      "replacement": "not recorded"
+    },
+    "actual_logout_login_or_boot_executed": false
+  },
+  "pilot_service_checks_after_tailscale": [
+    {
+      "host": "laptop",
+      "evidence": "pilot-laptop-tailscale-after.log",
+      "running": true
+    },
+    {
+      "host": "rpi",
+      "evidence": "pilot-pi-tailscale-after.log",
+      "running": true
+    },
+    {
+      "host": "vps",
+      "evidence": "pilot-vps-tailscale-after.log",
+      "running": true
+    }
+  ]
+}

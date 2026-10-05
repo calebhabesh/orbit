@@ -63,10 +63,14 @@ func fullDiskExperiment(db *repository.DB, ws *workspace.Workspace, hook string,
 		panic("invalid disk-full experiment")
 	}
 	if hook == "enospc.fsync" {
+		must(db.Close())
 		out, err := exec.Command("/init", "--fsync-worker").CombinedOutput()
 		fmt.Print(string(out))
 		must(err)
-		must(db.VerifyVersionContent(ctx, baseID))
+		reopened, err := repository.Open(ctx, "/disk/state")
+		must(err)
+		defer reopened.Close()
+		must(reopened.VerifyVersionContent(ctx, baseID))
 		fmt.Println("FILESYNC_ENOSPC_VERIFY_OK hook=enospc.fsync protected_hashes=true syscall_fault=true")
 		return
 	}

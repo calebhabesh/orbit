@@ -1,0 +1,91 @@
+{
+  "source_commit": "0c382e91860c7affb61f4040ce28c562d47e3c8c",
+  "checkout": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+  "started_utc": "2026-10-05T00:09:36Z",
+  "checks": [
+    {
+      "name": "status",
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+      "exit_code": 0,
+      "seconds": 0.045884969003964216
+    },
+    {
+      "name": "check",
+      "command": [
+        "make",
+        "check"
+      ],
+      "cwd": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+      "exit_code": 0,
+      "seconds": 393.9078581620124
+    },
+    {
+      "name": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./..."
+      ],
+      "cwd": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+      "exit_code": 0,
+      "seconds": 348.3526097629947
+    },
+    {
+      "name": "demo",
+      "command": [
+        "make",
+        "demo"
+      ],
+      "cwd": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+      "exit_code": 0,
+      "seconds": 0.6262678040075116
+    },
+    {
+      "name": "reset",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/terminal-t13-20261004/reproduction/clean-release/reset"
+      ],
+      "cwd": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+      "exit_code": 0,
+      "seconds": 35.63163519000227
+    },
+    {
+      "name": "disk-full",
+      "command": [
+        "python3",
+        "scripts/validation/abrupt_reset.py",
+        "--kernel",
+        "/boot/vmlinuz-linux",
+        "--output",
+        "<repo>/docs/evidence/terminal-t13-20261004/reproduction/clean-release/disk-full",
+        "--hook",
+        "enospc.object",
+        "--hook",
+        "enospc.sqlite",
+        "--hook",
+        "enospc.checkpoint",
+        "--hook",
+        "enospc.staging",
+        "--hook",
+        "enospc.fsync"
+      ],
+      "cwd": "/tmp/filesync-reproduction-d7xkarj_/checkout",
+      "exit_code": 1,
+      "seconds": 3.3562685070064617
+    }
+  ],
+  "success": false,
+  "cleanup": "fresh marked checkout retained; no existing environment reset"
+}
