@@ -1,8 +1,20 @@
 # Implementation guidance
 
+For the selected **Orbit native WAN expansion**, start with
+[WAN plan](docs/orbit-wan-implementation-plan.md) and
+[WAN status](docs/implementation/wan-status.md). Read its
+[UX](docs/orbit-wan-ux.md), [architecture](docs/orbit-wan-architecture.md),
+[network protocol](docs/orbit-wan-protocol.md), design gates and selected packet.
+Implement its first eligible packet (initially W00) when assigned a build task.
+Planning requests produce the handoff rather than starting implementation.
+Either 6.1 Sol Medium or 3.8 Flash High can implement any eligible W packet.
+Preserve existing P/O/T changes and evidence, unfinished T13 technical checks,
+and deferred P17 owner use/explanation. Preconfigured Orbit services with optional
+self-hosting are the approved direction; runtime capabilities require evidence.
+
 This repository has a working implementation with release validation in progress. Start at [the implementation plan](docs/implementation-plan.md) and [packet status](docs/implementation/status.md). Work on the first eligible packet unless the user selects another task.
 
-For the selected **Orbit terminal redesign**, read
+For terminal baseline work, read
 [UX](docs/orbit-terminal-ux.md), [architecture](docs/orbit-terminal-architecture.md),
 [plan](docs/orbit-terminal-implementation-plan.md) and
 [terminal status](docs/implementation/terminal-status.md). Start with its first
