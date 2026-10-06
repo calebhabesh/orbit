@@ -103,22 +103,25 @@ type Issue struct {
 	Code string `json:"code"`
 }
 type SetupIntent struct {
-	DeviceName string   `json:"device_name"`
-	FolderName string   `json:"folder_name"`
-	Root       string   `json:"root"`
-	Preview    Review   `json:"preview"`
-	Settings   Settings `json:"settings"`
+	Network    *NetworkPolicy `json:"network,omitempty"`
+	DeviceName string         `json:"device_name"`
+	FolderName string         `json:"folder_name"`
+	Root       string         `json:"root"`
+	Preview    Review         `json:"preview"`
+	Settings   Settings       `json:"settings"`
 }
 type Invitation struct {
-	Version            string `json:"version"`
-	Folder             string `json:"folder"`
-	Inviter            string `json:"inviter"`
-	CertificateDER     string `json:"certificate_der"` // base64 DER; exact trust anchor
-	KeyPin             string `json:"key_pin"`         // SHA-256 SPKI
-	EnrollmentEndpoint string `json:"enrollment_endpoint"`
-	PeerEndpoint       string `json:"peer_endpoint"`
-	Capability         string `json:"capability"` // explicit transfer only; never in status
-	ExpiresAt          string `json:"expires_at"`
+	Route              *protocol.EnrollmentRoute `json:"route,omitempty"`
+	Profile            *protocol.NetworkProfile  `json:"profile,omitempty"`
+	Version            string                    `json:"version"`
+	Folder             string                    `json:"folder"`
+	Inviter            string                    `json:"inviter"`
+	CertificateDER     string                    `json:"certificate_der"` // base64 DER; exact trust anchor
+	KeyPin             string                    `json:"key_pin"`         // SHA-256 SPKI
+	EnrollmentEndpoint string                    `json:"enrollment_endpoint"`
+	PeerEndpoint       string                    `json:"peer_endpoint"`
+	Capability         string                    `json:"capability"` // explicit transfer only; never in status
+	ExpiresAt          string                    `json:"expires_at"`
 }
 type InviteIntent struct {
 	Folder             string `json:"folder"`
@@ -127,13 +130,14 @@ type InviteIntent struct {
 	Device             string `json:"device"` // empty for a new device; exact known key for sharing
 }
 type JoinIntent struct {
-	Invitation Invitation `json:"invitation"`
-	Attempt    string     `json:"attempt"` // fresh random 32 bytes hex, persisted before network
-	DeviceName string     `json:"device_name"`
-	FolderName string     `json:"folder_name"`
-	Root       string     `json:"root"`
-	Preview    Review     `json:"preview"`
-	Settings   Settings   `json:"settings"`
+	Network    *NetworkPolicy `json:"network,omitempty"`
+	Invitation Invitation     `json:"invitation"`
+	Attempt    string         `json:"attempt"` // fresh random 32 bytes hex, persisted before network
+	DeviceName string         `json:"device_name"`
+	FolderName string         `json:"folder_name"`
+	Root       string         `json:"root"`
+	Preview    Review         `json:"preview"`
+	Settings   Settings       `json:"settings"`
 }
 type ApprovalIntent struct {
 	Request            string `json:"request"`
@@ -206,6 +210,7 @@ type ServiceIntent struct {
 // Mutation is a closed tagged union. Exactly one matching intent is required.
 // Operation IDs are random 32-byte lowercase hex, scoped to this state identity.
 type Mutation struct {
+	Network     *NetworkIntent  `json:"network,omitempty"`
 	Version     string          `json:"version"`
 	OperationID string          `json:"operation_id"`
 	Kind        string          `json:"kind"`
@@ -224,9 +229,10 @@ type CancelIntent struct {
 	Target string `json:"target"`
 }
 type Query struct {
-	RootPlan *SetupIntent `json:"root_plan,omitempty"`
-	Version  string       `json:"version"`
-	Kind     string       `json:"kind"` // capabilities, context, root_preview, operation, status,
+	NetworkPlan *NetworkIntent `json:"network_plan,omitempty"`
+	RootPlan    *SetupIntent   `json:"root_plan,omitempty"`
+	Version     string         `json:"version"`
+	Kind        string         `json:"kind"` // capabilities, context, root_preview, operation, status,
 	// attention, devices, folders, requests, history, deleted, content_review,
 	// session, settings, service, doctor
 	Folder      string     `json:"folder"`
@@ -352,6 +358,7 @@ type Storage struct {
 }
 
 type Result struct {
+	Network          *NetworkStatus      `json:"network,omitempty"`
 	CopyPlans        []CopyPlan          `json:"copy_plans,omitempty"`
 	Storage          *Storage            `json:"storage,omitempty"`
 	FolderManagement *FolderManagement   `json:"folder_management,omitempty"`

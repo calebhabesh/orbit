@@ -57,7 +57,7 @@ func (m Mutation) Validate() error {
 		return fmt.Errorf("INVALID_REQUEST: operation identity")
 	}
 	count := 0
-	for _, present := range []bool{m.Setup != nil, m.Invite != nil, m.Join != nil, m.Approval != nil, m.Folder != nil, m.Content != nil, m.Session != nil, m.Settings != nil, m.Service != nil, m.Cancel != nil} {
+	for _, present := range []bool{m.Network != nil, m.Setup != nil, m.Invite != nil, m.Join != nil, m.Approval != nil, m.Folder != nil, m.Content != nil, m.Session != nil, m.Settings != nil, m.Service != nil, m.Cancel != nil} {
 		if present {
 			count++
 		}
@@ -128,6 +128,9 @@ func (m Mutation) Validate() error {
 				}
 			}
 		}
+	case "network":
+		p := m.Network
+		ok = p != nil && validReview(p.Review) && p.Policy.Validate() == nil && len(p.ServiceRoots) <= MaxServiceRoots && (p.ServiceRoots == "" || (p.Profile != nil && p.Environment != "release"))
 	case "settings":
 		p := m.Settings
 		ok = p != nil && validReview(p.Review) && validSettings(p.Settings)
@@ -136,6 +139,12 @@ func (m Mutation) Validate() error {
 		ok = p != nil && validReview(p.Review) && slices.Contains([]string{"start", "stop", "restart", "enable", "disable"}, p.Action) && slices.Contains([]string{"manual", "login", "unattended"}, p.Mode)
 	case "cancel":
 		ok = m.Cancel != nil && validID(m.Cancel.Target) && m.Cancel.Target != m.OperationID
+	}
+	if ok && m.Setup != nil && m.Setup.Network != nil {
+		ok = m.Setup.Network.Validate() == nil
+	}
+	if ok && m.Join != nil && m.Join.Network != nil {
+		ok = m.Join.Network.Validate() == nil
 	}
 	if !ok {
 		return fmt.Errorf("INVALID_REQUEST: invalid %s intent", m.Kind)
@@ -171,7 +180,11 @@ func (q Query) Validate() error {
 		return fmt.Errorf("INVALID_PATH")
 	}
 	switch q.Kind {
-	case "capabilities", "context", "status", "attention", "devices", "folders", "requests", "settings", "service", "doctor":
+	case "network_doctor":
+		if q.ID != "" && !validID(q.ID) {
+			return fmt.Errorf("INVALID_REQUEST: device")
+		}
+	case "network_status", "network_preview", "capabilities", "context", "status", "attention", "devices", "folders", "requests", "settings", "service", "doctor":
 	case "root_preview":
 		if q.RootPlan != nil && (q.RootPlan.Root != q.Path || !validName(q.RootPlan.DeviceName) || !validName(q.RootPlan.FolderName) || !validSettings(q.RootPlan.Settings)) {
 			return fmt.Errorf("INVALID_REQUEST: root plan")
@@ -237,11 +250,11 @@ func ExitCode(r Result) int {
 			return ExitAuthentication
 		case "STALE_VIEW", "STALE_ROOT", "DESTINATION_COLLISION", "MEMBERSHIP_FORK", "IDEMPOTENCY_CONFLICT", "EXPIRED_REPLAY", "CONTENT_EXPIRED":
 			return ExitReview
-		case "OFFLINE", "CONTENT_PENDING", "CONTENT_UNAVAILABLE", "ROOT_UNAVAILABLE", "RATE_LIMITED", "DAEMON_REQUIRED":
+		case "OFFLINE", "CONTENT_PENDING", "CONTENT_UNAVAILABLE", "ROOT_UNAVAILABLE", "RATE_LIMITED", "DAEMON_REQUIRED", "SERVICE_UNAVAILABLE", "PROFILE_MISSING", "PROFILE_EXPIRED":
 			return ExitPending
 		case "DISK_BUDGET", "METADATA_BUDGET":
 			return ExitResource
-		case "INCOMPATIBLE_VERSION", "UNSUPPORTED_CAPABILITY":
+		case "INCOMPATIBLE_VERSION", "UNSUPPORTED_CAPABILITY", "LOCAL_DISCOVERY_NOT_IMPLEMENTED", "LOCAL_ONLY_ROUTE_UNAVAILABLE":
 			return ExitIncompatible
 		case "CANCELED":
 			return ExitCanceled

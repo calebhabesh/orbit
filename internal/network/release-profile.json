@@ -1,0 +1,22 @@
+{
+  "profile": {
+    "service_key": "2f630e69a4a337df26e12d2cf30d2e3f7929f2a9228d8ed28e5d2e1119b5b097",
+    "version": "1",
+    "operator": "Caleb Habesh",
+    "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+    "epoch": "1",
+    "expires": "1799091457",
+    "origins": [
+      "https://connect.calebhabesh.com:8443",
+      "wss://connect.calebhabesh.com:8443"
+    ],
+    "stun": [
+      "132.145.111.200:3478"
+    ],
+    "privacy": "Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.",
+    "signature": "a4fb9949df8645075731512c20d915ef56b02505e4b899b5088d16a926758e3fa453847f86d3a2e1e36bd12b075249995efab7a8d7cccbdc4f2e3875f1021906"
+  },
+  "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+  "highest_epoch": "1",
+  "environment": "release"
+}

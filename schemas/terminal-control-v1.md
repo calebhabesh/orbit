@@ -307,3 +307,123 @@ explicit-transfer-only. CLI and TUI submit identical setup/adopt/join mutations;
 the shared client persists an owner-only exact retry intent and listener-restart
 record before submission. Folder pause/resume/relocation and retirement preview
 reuse the existing authenticated compatibility operations and recovery ownership.
+
+## Additive WAN contracts — W01
+
+[Network-v1](network-v1.md#additive-terminal-contracts-and-migration) freezes
+policy/query/preview/apply, observation and private setup types in
+`internal/control/terminalcontract/network.go`. The capability names
+`network_control_v1` and `enrollment_v3` are reserved; W01 does not advertise them
+or expose production handlers. Existing terminal JSON, signed v2/manual enrollment
+and v1 membership/version contracts are unchanged.
+
+## W06 network controls and CLI activation
+
+`network_control_v1` is now advertised by production terminal controls.
+Queries `network_status` and `network_preview` use the same authenticated terminal
+query route. Preview carries `network_plan` with `policy`, optional signed
+`profile`, independently reviewed `authority` and `environment`; the returned
+review binds both current state and the exact intent. Mutation `kind=network`
+carries the same intent plus its `review` and the existing operation identity.
+Acceptance, replay, expiry and changed-input behavior use the existing ledger.
+Policy generation is assigned by preview; LAN advertising is explicitly refused
+until implemented. `NetworkPolicy.awaiting_profile` is optional and may be true
+only for Automatic with no profile. This is explicit incomplete desired intent,
+not a trusted route. Missing this field retains the strict W01 policy validation.
+
+W13 adds optional `network_plan.service_roots`: at most 16 KiB of PEM containing
+one to four currently valid CA (or self-signed service) certificates. It is
+accepted only together with a `profile` whose `environment` is `self_hosted` or
+`development`; release profiles always verify against system roots. Preview and
+the review generation bind the exact bytes; applying a profile replaces or removes
+the stored trust. `network.service_trust` reports `system`, `custom:<sha256>` or
+`invalid`. Trust never weakens hostname verification or per-peer pins.
+
+Setup/join intents can add optional `network` policy, included in root review and
+fingerprint. Legacy intents omit it. Results can add `network` with desired and
+active policy, restart requirement, cached readiness/code, reviewed operator/privacy
+text and bounded dated peer route observations. Service readiness and route
+observations never substitute for stored/applied receipts. No capability bytes,
+relay attachment credentials, candidate lease or directory lookup appears in these
+results. Cached queries do not initiate probes; W12 still owns network doctor.
+
+
+### W11 reviewed route timing and fair bandwidth reservations
+
+The private `NetworkPolicy.timing` object adds optional decimal-string millisecond
+fields. Missing/zero fields retain finite defaults. `head_start_ms` defaults to
+750 (250–3,000), `cycle_ms` to 10,000 (5,000–30,000), `probe_ms` to 60,000
+(10,000–300,000), `cooldown_ms` to 240,000 (probe interval–900,000), `poll_ms`
+to 2,000 (500–10,000), and `quiet_ms` to 5,000 (2,000–30,000). Cycle must cover
+two head starts; quiet period must cover polling. Cooldown includes the existing
+0–15-second stable peer jitter after its configured cap. Service quota refill,
+ICE establishment, invitation/proof expiry and authentication bounds remain fixed.
+
+`orbit network preview --review-file PRIVATE_FILE` accepts Advanced duration flags
+`--direct-head-start`, `--connection-cycle`, `--direct-probe`, `--direct-cooldown`,
+`--network-poll`, `--network-quiet`. Omit `--mode` to retain current policy. Whole
+nonnegative milliseconds are required; zero restores the corresponding default.
+The existing preview/apply ledger binds exact timing, current policy and generation;
+apply activates changes by daemon restart. Desired/active timing is exposed in
+cached status. TUI network details point to this shared reviewed control flow.
+Timing never supplies remote authority or expands an invitation deadline.
+
+Replication reserves each manifest chunk's bytes before every primary/fallback
+network attempt. Uncertain delivery and retries consume budget. The global/per-peer
+limiter serves at most 128 waiting reservations in arrival order; cancellation
+removes the waiter and wakes the next one. Overflow is retryable `NETWORK_BUSY`.
+This prevents repeated tiny reservations taking every refill ahead of a large
+waiting chunk; one slow peer can delay later reservations until its finite request
+is admitted or canceled. A configured limit governs scheduled pull chunk payload attempts, with
+a one-second initial burst; protocol/control overhead is additional. Serving a
+remote peer remains subject to the existing request/stream quotas rather than
+this local pull limiter. This is not
+a strict interface-wide bandwidth cap. Queue aging and verified-chunk/receipt
+semantics are unchanged. W11 evidence must separately record measured progress
+and combined process resources on the declared host.
+
+## W12 qualified diagnostics
+
+Production terminal controls advertise additive `network_diagnostics_v1`.
+`network_status` remains a passive query; `network_doctor` is an explicit query
+with an optional validated device ID and the same authenticated control envelope.
+`NetworkStatus` adds `generated_at`, `profile_expires`, `profile_state`, `action`
+and bounded `probes` while retaining desired/active policy, restart/readiness,
+operator/privacy and peer observations. `NetworkObservation` adds `freshness`,
+`action`, `lan_candidates`, `public_candidates`, `expired_candidates` and
+`udp_code`; it does not merge route state with capture, stored/applied copies or
+membership. `ProbeResult` records only `kind`, typed `code` and `observed_at`.
+
+Doctor probe kinds are `service_dns_tcp`, `service_tls`, `directory`,
+`direct_tls`, `relay_inner_tls` and `udp_stun`. Stable codes distinguish
+`VERIFIED`, `UNAVAILABLE`, `NOT_TESTED`, `DISABLED_BY_POLICY`, `TIMEOUT`,
+`CANCELLED`, `QUOTA_EXCEEDED`, `IDENTITY_MISMATCH`, `TLS_IDENTITY_FAILED` and
+`PEER_OFFLINE`; unrecognized transport text is sanitized to `UNAVAILABLE`.
+The result never contains invitation, ICE, relay credential, candidate lease or
+private filename data. Passive status and support export perform no probes.
+
+## W14 packaged profile, migration and invitation codes
+
+Production terminal controls advertise additive `packaged_profile_v1`.
+`NetworkStatus` adds optional `builtin` (`digest`, `operator`, `privacy`, `epoch`,
+`expires`, `expired`) describing the signed release profile compiled into the
+daemon, `profile_update` (`"available"` when that profile is a newer epoch of the
+selected release authority whose operator or privacy text changed) and
+`automatic_offer` (a manual install that has not reviewed or declined Automatic).
+A setup, join or network intent whose `policy.profile` equals `builtin.digest`
+selects that profile; the daemon installs it on apply. `NetworkIntent` adds
+`replace_operator` (confirms a reviewed switch to another authority or
+environment; without it the preview fails `PROFILE_OPERATOR_CHANGE`) and
+`decline_automatic_offer`. All fields are omitted when unused, so earlier
+clients decode unchanged results; earlier daemons reject the new intent fields
+under strict decoding, and clients check the capability first.
+
+Invitation codes keep their prefixes. A routed `orbit-invitation:v3:` code whose
+route digest equals the inviter's packaged profile may omit `profile`; the
+receiver restores it from its own packaged profile (the route digest still binds
+the exact bytes) or fails `PROFILE_NOT_PACKAGED`. Invitation files keep the full
+form. A code prefix or invitation `version` above 3 fails
+`UNSUPPORTED_INVITATION_VERSION`. Routed joins against a different profile fail
+`PROFILE_OPERATOR_MISMATCH` or `PROFILE_EPOCH_MISMATCH` with an action naming the
+device to change; a manual device given a routed code fails
+`NETWORK_REVIEW_REQUIRED`.
