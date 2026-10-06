@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"crypto/tls"
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"io"
 	"os"
 	"path/filepath"
@@ -17,7 +19,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
@@ -27,6 +31,14 @@ import (
 type FaultHook func(name string) error
 
 type Options struct {
+	NetworkPolicy  *tc.NetworkPolicy
+	NetworkSelfPin string
+	NetworkPeerTLS func(network.Target) (*tls.Config, error)
+	NetworkService *network.ServiceClient
+	StopInternet   func() error
+	NetworkError   string
+	Network        *network.ConnectionManager
+	Relay          *network.RelayRuntime
 	StoppedAdapter bool
 	FaultHook      FaultHook
 	Now            func() time.Time
@@ -1570,6 +1582,13 @@ func (c *Controller) WorkScan(ctx context.Context, req WorkScanRequest) (*WorkSc
 }
 
 func (c *Controller) WorkSync(ctx context.Context, req WorkSyncRequest, client replication.PeerClient, localID history.ID, membership repository.ApprovedMembership) (*WorkSyncResult, error) {
+	policy, e := config.LoadNetworkPolicy(c.db.StateDir())
+	if e != nil {
+		return nil, e
+	}
+	if policy.Mode == "local_only" {
+		return nil, terminalError("LOCAL_ONLY_ROUTE_UNAVAILABLE")
+	}
 	var reqDigest history.Digest
 	if req.IdempotencyKey != "" {
 		existing, digest, err := c.checkIdempotency(ctx, req.IdempotencyKey, req)

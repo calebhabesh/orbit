@@ -2,7 +2,9 @@ package controlclient
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"os"
@@ -59,10 +61,13 @@ func (c *Client) Setup(ctx context.Context, m tc.Mutation) (tc.Result, error) {
 		return tc.Result{}, err
 	}
 	desired := tc.Settings{}
+	var policy *tc.NetworkPolicy
 	if m.Setup != nil {
 		desired = m.Setup.Settings
+		policy = m.Setup.Network
 	} else {
 		desired = m.Join.Settings
+		policy = m.Join.Network
 	}
 	restartName := "setup-network-" + m.OperationID + ".json"
 	restart := struct{ Required, Completed bool }{}
@@ -72,7 +77,14 @@ func (c *Client) Setup(ctx context.Context, m tc.Mutation) (tc.Result, error) {
 			return tc.Result{}, err
 		}
 	} else if errors.Is(e, os.ErrNotExist) {
-		restart.Required = before.Settings != nil && (before.Settings.PeerListen != desired.PeerListen || before.Settings.EnrollmentListen != desired.EnrollmentListen || before.Settings.AdvertisedPeer != desired.AdvertisedPeer || before.Settings.AdvertisedEnrollment != desired.AdvertisedEnrollment)
+		if policy != nil {
+			current, e := c.Query(ctx, tc.Query{Version: tc.Version, Kind: "network_status"})
+			if e != nil {
+				return tc.Result{}, e
+			}
+			restart.Required = current.Network == nil || current.Network.ActivePolicy != *policy
+		}
+		restart.Required = restart.Required || before.Settings != nil && (before.Settings.PeerListen != desired.PeerListen || before.Settings.EnrollmentListen != desired.EnrollmentListen || before.Settings.AdvertisedPeer != desired.AdvertisedPeer || before.Settings.AdvertisedEnrollment != desired.AdvertisedEnrollment)
 		b, _ := json.Marshal(restart)
 		if err = writeNewPrivate(c.StateDir, restartName, b); err != nil {
 			return tc.Result{}, err
@@ -119,6 +131,16 @@ func (c *Client) SaveInvitation(ctx context.Context, path string, inv tc.Invitat
 		return err
 	}
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if errors.Is(err, os.ErrExist) {
+		old, e := state.ReadPrivate(filepath.Dir(path), filepath.Base(path), 16384)
+		if e != nil {
+			return e
+		}
+		if string(old) == string(b) {
+			return nil
+		}
+		return errors.New("IDEMPOTENCY_CONFLICT")
+	}
 	if err != nil {
 		return err
 	}
@@ -211,8 +233,10 @@ func PrivateInvitation(ctx context.Context, path string) ([]byte, error) {
 		return nil, err
 	}
 	code := strings.TrimSpace(string(b))
-	if strings.HasPrefix(code, "orbit-invitation:v2:") {
-		return base64.RawURLEncoding.DecodeString(strings.TrimPrefix(code, "orbit-invitation:v2:"))
+	for _, prefix := range []string{"orbit-invitation:v2:", "orbit-invitation:v3:"} {
+		if strings.HasPrefix(code, prefix) {
+			return base64.RawURLEncoding.DecodeString(strings.TrimPrefix(code, prefix))
+		}
 	}
 	return b, nil
 }
@@ -249,4 +273,20 @@ func writeNewPrivate(dir, name string, b []byte) error {
 	}
 	defer d.Close()
 	return d.Sync()
+}
+
+// RevokeInvitation binds deliberate transfer to the owning controller's digest operation.
+func (c *Client) RevokeInvitation(ctx context.Context, inv tc.Invitation) error {
+	if err := inv.Validate(); err != nil {
+		return err
+	}
+	token, err := hex.DecodeString(inv.Capability)
+	if err != nil {
+		return err
+	}
+	req := control.RevokeInvitationRequest{Digest: sha256.Sum256(token)}
+	return c.WithController(ctx, func() error {
+		var out control.RevokeInvitationResult
+		return c.Call(ctx, "POST", "/api/v1/invitations/revoke", req, &out)
+	}, func(ctrl *control.Controller) error { _, err := ctrl.RevokeInvitation(ctx, req); return err })
 }

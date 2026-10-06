@@ -93,7 +93,12 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 			if err != nil {
 				return err
 			}
-			if settings.AdvertisedEnrollment == "" || settings.AdvertisedPeer == "" || settings.EnrollmentListen == "" || settings.PeerListen == "" {
+			policy, err := config.LoadNetworkPolicy(c.db.StateDir())
+			if err != nil {
+				return err
+			}
+			routed := policy.Mode == "automatic" || policy.Mode == "self_hosted"
+			if !routed && (settings.AdvertisedEnrollment == "" || settings.AdvertisedPeer == "" || settings.EnrollmentListen == "" || settings.PeerListen == "") {
 				return terminalError("NETWORK_REVIEW_REQUIRED")
 			}
 			membership, digest, err := t.Membership(terminalID(p.Folder))
@@ -117,6 +122,27 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 				return terminalError("INVALID_REQUEST")
 			}
 			inv := tc.Invitation{Version: tc.Version, Folder: p.Folder, Inviter: hex.EncodeToString(id.DeviceID[:]), CertificateDER: base64.StdEncoding.EncodeToString(id.Leaf.Raw), KeyPin: hex.EncodeToString(id.KeyPin[:]), EnrollmentEndpoint: "https://" + settings.AdvertisedEnrollment, PeerEndpoint: "https://" + settings.AdvertisedPeer, ExpiresAt: p.ExpiresAt}
+			if routed {
+				if c.options.Relay == nil {
+					return terminalError("SERVICE_UNAVAILABLE")
+				}
+				selection, e := config.LoadNetworkProfile(c.db.StateDir(), uint64(now.Unix()))
+				if e != nil {
+					return e
+				}
+				profile, e := selection.Digest()
+				if e != nil {
+					return e
+				}
+				if policy.Profile != profile {
+					return terminalError("PROFILE_MISMATCH")
+				}
+				inv.Version = "3"
+				inv.EnrollmentEndpoint = ""
+				inv.PeerEndpoint = ""
+				inv.Route = &protocol.EnrollmentRoute{Device: inv.Inviter, Pin: inv.KeyPin, Profile: profile, Purpose: "enrollment"}
+				inv.Profile = &selection.Profile
+			}
 			b, _ := hex.DecodeString(capability)
 			d := sha256.Sum256(b)
 			if err := t.Put("invite/"+hex.EncodeToString(d[:]), replication.EnrollmentInvitation{Invitation: inv, Digest: hex.EncodeToString(d[:]), TargetDevice: p.Device, TargetPin: targetPin}); err != nil {
@@ -181,6 +207,20 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 				}
 				record.Result.MembershipHex = hex.EncodeToString(bytes)
 				record.Result.State = "approved"
+				if record.Routed != nil {
+					d, e := protocol.MembershipDigest(membership)
+					if e != nil {
+						return e
+					}
+					approval := protocol.RoutedEnrollmentApproval{Version: "3", Request: p.Request, TranscriptDigest: record.Digest, PriorMembership: p.ExpectedMembership, MembershipDigest: hex.EncodeToString(d[:])}
+					bytes, e := approval.Canonical()
+					if e != nil {
+						return e
+					}
+					record.Approval = &approval
+					record.ApprovalSignature = hex.EncodeToString(ed25519.Sign(id.Certificate.PrivateKey.(ed25519.PrivateKey), bytes))
+				}
+
 			} else {
 				record.Result.State = "declined"
 			}
@@ -199,9 +239,17 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 		return r, err
 	}
 	if m.Kind == "approval" && m.Approval.Decision == "approve" {
+		if err = c.callHook("terminal.enrollment.approved"); err != nil {
+			return r, err
+		}
 		record, found, err := c.enrollmentV2Record(owned, m.Approval.Request)
 		if err != nil {
 			return r, err
+		}
+		if found && record.Routed != nil {
+			if err = c.persistLogicalRoute(record.Wire.Folder, record.Routed.Transcript.Requester, record.Routed.CertificateDER); err != nil {
+				return r, err
+			}
 		}
 		if found && record.Wire.RequesterEndpoint != "" {
 			if err = c.persistRequesterEndpoint(record); err != nil {

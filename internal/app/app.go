@@ -3,6 +3,8 @@ package app
 import (
 	"context"
 	"crypto/rand"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -18,6 +20,8 @@ import (
 	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/control"
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/internal/scheduler"
@@ -88,16 +92,19 @@ func initializeLocked(dir string, deps Dependencies) (config.Config, error) {
 }
 
 type ServeOptions struct {
-	PeerAddress       string
-	ControlAddress    string // loopback control listener, e.g. "127.0.0.1:8080"
-	Ready             io.Writer
-	Profile           string        // "laptop" or "pi"
-	BandwidthLimitBps int64         // 0 = unlimited
-	SyncInterval      time.Duration // default 5m
-	FullScanInterval  time.Duration // default 24h
-	NoWatch           bool
-	ClientFactory     scheduler.ClientFactory
-	AllowInitialize   bool // auto-initialize clean uninitialized state directory
+	TransferFaultHook   func(string) error // deterministic disposable transfer campaigns
+	NetworkRoots        *x509.CertPool     // independently configured self-host/development service trust
+	ControllerFaultHook control.FaultHook  // deterministic disposable fault campaigns
+	PeerAddress         string
+	ControlAddress      string // loopback control listener, e.g. "127.0.0.1:8080"
+	Ready               io.Writer
+	Profile             string        // "laptop" or "pi"
+	BandwidthLimitBps   int64         // 0 = unlimited
+	SyncInterval        time.Duration // default 5m
+	FullScanInterval    time.Duration // default 24h
+	NoWatch             bool
+	ClientFactory       scheduler.ClientFactory
+	AllowInitialize     bool // auto-initialize clean uninitialized state directory
 }
 
 func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) error {
@@ -193,8 +200,242 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		return err
 	}
 	defer db.Close()
+	if packaged, ok := network.BuiltinProfile(); ok {
+		outcome, e := config.AdoptPackagedProfile(stateDir, packaged, uint64(time.Now().Unix()))
+		if e != nil {
+			return e
+		}
+		if outcome != "" && outcome != config.PackagedReview && opts.Ready != nil {
+			fmt.Fprintf(opts.Ready, "network profile: %s packaged release epoch %d\n", outcome, packaged.Profile.Epoch)
+		}
+	}
+	networkPolicy, err := config.LoadNetworkPolicy(stateDir)
+	if err != nil {
+		return err
+	}
+
+	manager := network.NewManager(network.ManagerOptions{Generation: uint64(networkPolicy.Generation)})
+	if err := manager.ConfigureTiming(networkPolicy.Timing); err != nil {
+		return err
+	}
+	defer manager.Close() // after setup/scheduler joins, before SQLite closes
 	ws = workspace.New(db, workspace.Options{})
-	ctrl = control.New(db, ws, control.Options{LocalDevice: deviceID})
+	var directListener net.Listener
+	var quicEndpoint *network.QUICEndpoint
+	var lanDiscovery *network.LANDiscovery
+	var directInterfaces []network.LocalInterface
+	if networkPolicy.Mode != "manual" {
+		settings, e := config.LoadDirectSettings(stateDir)
+		if e == nil {
+			directInterfaces, e = network.SelectedInterfaces(settings.Interfaces)
+		}
+		if e == nil {
+			directListener, e = network.OptionalDirectListener(settings)
+		}
+		// UDP bind failure is independent of TCP and never blocks capture/relay.
+		if len(directInterfaces) > 0 {
+			var socket net.PacketConn
+			var udpErr error
+			if networkPolicy.Mode == "local_only" {
+				socket, udpErr = network.OptionalLocalQUICSocket(settings, directInterfaces)
+			} else {
+				socket, udpErr = network.OptionalQUICSocket(settings)
+			}
+			if udpErr == nil && socket != nil {
+				quicEndpoint, udpErr = manager.NewPeerQUICEndpoint(socket, identity.ServerTLSConfig(), replication.NewServer(db, identity))
+				if udpErr != nil {
+					_ = socket.Close()
+				} else {
+					defer quicEndpoint.Close()
+					if udpErr = manager.EnableQUIC(quicEndpoint); udpErr != nil {
+						return udpErr
+					}
+				}
+			}
+			if udpErr != nil && opts.Ready != nil {
+				fmt.Fprintf(opts.Ready, "UDP route limitation: %v\n", udpErr)
+			}
+		}
+		if e != nil && opts.Ready != nil {
+			fmt.Fprintf(opts.Ready, "direct route limitation: %v\n", e)
+		}
+		if directListener != nil {
+			if networkPolicy.Mode == "local_only" {
+				directListener = network.LocalListener(directListener, directInterfaces)
+			}
+			defer directListener.Close()
+		}
+	}
+	// Reviewed durable identities remain eligible for LAN-only routing even if a
+	// public service profile is missing or unavailable. Addresses supply no trust.
+	durableRoutes, e := config.LoadPeerRoutes(stateDir)
+	if e != nil {
+		return e
+	}
+	for _, route := range durableRoutes {
+		if networkPolicy.Mode == "manual" {
+			break
+		}
+		target := network.Target{Device: controlID(route.Device), Pin: history.Digest(controlID(route.Pin)), Profile: history.Digest(controlID(route.Profile)), Purpose: network.PeerData}
+		if e = manager.RegisterDirect(target, nil); e != nil {
+			return e
+		}
+	}
+	var lanCandidates []protocol.NetworkCandidate
+	if directListener != nil {
+		lanCandidates = network.GatherCandidates(directInterfaces, directListener.Addr(), false)
+	}
+	if quicEndpoint != nil {
+		lanCandidates = network.CombineDirectCandidates(lanCandidates, network.GatherCandidates(directInterfaces, quicEndpoint.LocalAddr(), false))
+	}
+	if networkPolicy.LANAdvertising && len(lanCandidates) > 0 {
+		lanDiscovery, e = network.NewLANDiscovery(ctx, manager, cfg.DeviceID, hex.EncodeToString(identity.KeyPin[:]), identity.Certificate, directInterfaces, lanCandidates, manager.KnownTargets)
+		if e != nil && opts.Ready != nil {
+			fmt.Fprintf(opts.Ready, "local discovery limitation: %v\n", e)
+		}
+		if lanDiscovery != nil {
+			defer lanDiscovery.Close()
+		}
+	}
+
+	var relayRuntime *network.RelayRuntime
+	var serviceClient *network.ServiceClient
+	networkError := ""
+	activateNetwork := func() error {
+		if networkPolicy.Mode == "automatic" || networkPolicy.Mode == "self_hosted" {
+			selection, e := config.LoadNetworkProfile(stateDir, uint64(time.Now().Unix()))
+			if e != nil {
+				return e
+			}
+			if networkPolicy.Mode == "automatic" && selection.Environment != "release" {
+				return errors.New("PROFILE_UNTRUSTED")
+			}
+			digest, e := selection.Digest()
+			if e != nil {
+				return e
+			}
+			if digest != networkPolicy.Profile {
+				return errors.New("PROFILE_MISMATCH")
+			}
+			// Completes a rotation interrupted between profile and route writes.
+			if e = config.RebindPeerRoutes(stateDir, digest); e != nil {
+				return e
+			}
+			origin := ""
+			for _, o := range selection.Profile.Origins {
+				if strings.HasPrefix(o, "https://") {
+					origin = o
+					break
+				}
+			}
+			// Release profiles verify against system roots only; reviewed custom
+			// trust applies to self-hosted/development services.
+			roots := opts.NetworkRoots
+			if roots == nil && selection.Environment != "release" {
+				if roots, _, e = config.LoadServiceRoots(stateDir, time.Now()); e != nil {
+					return e
+				}
+			}
+			serviceClient, e = network.NewServiceClient(network.ServiceClientOptions{Selection: selection, Origin: origin, Device: cfg.DeviceID, Certificate: identity.Certificate, Roots: roots})
+			if e != nil {
+				return e
+			}
+
+			var iceOptions *network.ICEOptions
+			settings, settingsErr := config.LoadDirectSettings(stateDir)
+			if settingsErr == nil && !settings.UDPDisabled {
+				iceOptions = &network.ICEOptions{TLS: identity.ServerTLSConfig(), Peer: replication.NewServer(db, identity), Interfaces: settings.Interfaces}
+			}
+			relayRuntime, e = network.NewRelayRuntime(ctx, serviceClient, manager, uint64(networkPolicy.Generation), digest, iceOptions)
+			if e != nil {
+				_ = serviceClient.Close()
+				return e
+			}
+
+			var publicCandidates []protocol.NetworkCandidate
+			if directListener != nil {
+				publicCandidates = network.GatherCandidates(directInterfaces, directListener.Addr(), true)
+			}
+			if quicEndpoint != nil {
+				publicCandidates = network.CombineDirectCandidates(publicCandidates, network.GatherCandidates(directInterfaces, quicEndpoint.LocalAddr(), true))
+			}
+			_ = relayRuntime.SetPublicCandidates(publicCandidates)
+			routes, e := config.LoadPeerRoutes(stateDir)
+			if e != nil {
+				return e
+			}
+			for _, route := range routes {
+				target := network.Target{Device: controlID(route.Device), Pin: history.Digest(controlID(route.Pin)), Profile: history.Digest(controlID(route.Profile)), Purpose: network.PeerData}
+				if e = relayRuntime.Register(target); e != nil {
+					return e
+				}
+			}
+		}
+		return nil
+	}
+	if e := activateNetwork(); e != nil {
+		networkError = "PROFILE_MISSING_OR_EXPIRED"
+		if !errors.Is(e, os.ErrNotExist) {
+			networkError = "PROFILE_INVALID"
+			switch e.Error() {
+			case "PROFILE_EXPIRED", "PROFILE_UNTRUSTED", "PROFILE_MISMATCH":
+				networkError = e.Error()
+			}
+		}
+	}
+	if serviceClient != nil {
+		defer serviceClient.Close()
+	}
+	if relayRuntime != nil {
+		defer relayRuntime.Close()
+	}
+
+	ctrl = control.New(db, ws, control.Options{LocalDevice: deviceID, Network: manager, Relay: relayRuntime, NetworkPolicy: &networkPolicy, NetworkError: networkError, NetworkService: serviceClient, NetworkSelfPin: hex.EncodeToString(identity.KeyPin[:]), NetworkPeerTLS: func(t network.Target) (*tls.Config, error) {
+		routes, e := config.LoadPeerRoutes(stateDir)
+		if e != nil {
+			return nil, e
+		}
+		for _, route := range routes {
+			if route.Device == hex.EncodeToString(t.Device[:]) && route.Pin == hex.EncodeToString(t.Pin[:]) {
+				cert, _, e := protocol.NetworkCertificate(route.CertificateDER, route.Pin, uint64(time.Now().Unix()))
+				if e != nil {
+					return nil, e
+				}
+				return identity.ClientTLSConfig(cert, t.Pin)
+			}
+		}
+		endpoints, e := config.LoadPeerEndpoints(stateDir)
+		if e != nil {
+			return nil, e
+		}
+		for _, endpoint := range endpoints {
+			if endpoint.Device == hex.EncodeToString(t.Device[:]) {
+				b, e := os.ReadFile(endpoint.Certificate)
+				if e != nil {
+					return nil, e
+				}
+				cert, e := replication.ParsePeerCertificate(b)
+				if e != nil {
+					return nil, e
+				}
+				return identity.ClientTLSConfig(cert, t.Pin)
+			}
+		}
+		return nil, errors.New("IDENTITY_MISMATCH")
+	}, StopInternet: func() error {
+		if relayRuntime != nil {
+			_ = relayRuntime.Close()
+		}
+		if serviceClient != nil {
+			_ = serviceClient.Close()
+		}
+		// Keep the local control listener and daemon alive so the reviewed
+		// mutation can return its restart-required state. Invalidate all
+		// WAN leases and drain idle pools; the next daemon generation binds
+		// only the selected local/manual policy.
+		manager.NetworkChanged()
+		return nil
+	}, FaultHook: opts.ControllerFaultHook})
 	runtimeSettings, err = config.LoadRuntimeSettings(stateDir)
 	if err != nil {
 		return err
@@ -215,11 +456,20 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		}
 	}
 	peerTargets := func() ([]scheduler.PeerTarget, error) {
+
 		endpoints, err := config.LoadPeerEndpoints(stateDir)
 		if err != nil {
 			return nil, err
 		}
+		routes, err := config.LoadPeerRoutes(stateDir)
+		if err != nil {
+			return nil, err
+		}
+		for _, route := range routes {
+			endpoints = append(endpoints, config.PeerEndpoint{Folder: route.Folder, Device: route.Device})
+		}
 		var targets []scheduler.PeerTarget
+		seen := map[string]bool{}
 		for _, endpoint := range endpoints {
 			folder, err := decodeDeviceID(endpoint.Folder)
 			if err != nil {
@@ -243,6 +493,11 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 			if !active {
 				continue
 			}
+			key := endpoint.Folder + "/" + endpoint.Device
+			if seen[key] {
+				continue
+			}
+			seen[key] = true
 			targets = append(targets, scheduler.PeerTarget{Folder: folder, Peer: peer})
 		}
 		return targets, nil
@@ -253,6 +508,40 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	}
 	if opts.ClientFactory == nil {
 		opts.ClientFactory = func(folder, peer history.ID) (replication.PeerClient, error) {
+			routes, e := config.LoadPeerRoutes(stateDir)
+			if e != nil {
+				return nil, e
+			}
+			for _, route := range routes {
+				if route.Folder == hex.EncodeToString(folder[:]) && route.Device == hex.EncodeToString(peer[:]) {
+
+					cert, _, e := protocol.NetworkCertificate(route.CertificateDER, route.Pin, uint64(time.Now().Unix()))
+					if e != nil {
+						return nil, e
+					}
+					membership, e := db.Membership(ctx, folder)
+					if e != nil {
+						return nil, e
+					}
+					pin := replication.PublicKeyPin(cert)
+					if e = db.AuthorizePeer(ctx, folder, peer, pin, membership.Revision, membership.Digest); e != nil {
+						return nil, e
+					}
+					target := network.Target{Device: peer, Pin: pin, Profile: history.Digest(controlID(route.Profile)), Purpose: network.PeerData}
+					if relayRuntime != nil {
+						e = relayRuntime.Register(target)
+					} else if networkPolicy.Mode != "manual" {
+						e = manager.RegisterDirect(target, nil)
+					} else {
+						e = errors.New("UNSUPPORTED_CAPABILITY")
+					}
+					if e != nil {
+						return nil, e
+					}
+					return replication.NewRoutedClient(ctx, network.LogicalOrigin(target), identity, cert, target, manager)
+				}
+			}
+
 			endpoints, err := config.LoadPeerEndpoints(stateDir)
 			if err != nil {
 				return nil, err
@@ -277,7 +566,17 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 				if err = db.AuthorizePeer(ctx, folder, peer, pin, membership.Revision, membership.Digest); err != nil {
 					return nil, err
 				}
-				return replication.NewClient(endpoint.URL, identity, cert, pin)
+				target := network.Target{Device: peer, Pin: pin, Purpose: network.PeerData}
+				if networkPolicy.Mode == "local_only" && !network.LocalEndpoint(endpoint.URL) {
+					if err = manager.RegisterDirect(target, nil); err != nil {
+						return nil, err
+					}
+					return replication.NewRoutedClient(ctx, network.LogicalOrigin(target), identity, cert, target, manager)
+				}
+				if err := manager.SetManual(target, endpoint.URL); err != nil {
+					return nil, err
+				}
+				return replication.NewRoutedClient(ctx, endpoint.URL, identity, cert, target, manager)
 			}
 			return nil, errors.New("peer endpoint is not configured")
 		}
@@ -294,6 +593,11 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 			opts.BandwidthLimitBps = int64(runtimeSettings.BandwidthBytesPerSecond)
 		}
 	}
+	// Routed onboarding admits new roots and peer routes after startup. Refresh
+	// them promptly rather than waiting for the legacy five-minute cadence.
+	if opts.SyncInterval == 0 && (networkPolicy.Mode == "automatic" || networkPolicy.Mode == "self_hosted" || networkPolicy.Mode == "local_only") {
+		opts.SyncInterval = 5 * time.Second
+	}
 	if opts.SyncInterval > 0 {
 		prof.ReconcileInterval = opts.SyncInterval
 	}
@@ -307,6 +611,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	}
 
 	sched, err := scheduler.NewScheduler(db, ws, scheduler.SchedulerOptions{
+		TransferHook:  opts.TransferFaultHook,
 		Profile:       prof,
 		Limiter:       limiter,
 		NoWatch:       opts.NoWatch,
@@ -320,10 +625,13 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	}
 
 	var peerListener net.Listener
-	if opts.PeerAddress != "" {
+	if opts.PeerAddress != "" && (networkPolicy.Mode != "local_only" || network.LocalEndpoint("https://"+opts.PeerAddress)) {
 		peerListener, err = net.Listen("tcp", opts.PeerAddress)
 		if err != nil {
 			return fmt.Errorf("listen for peers: %w", err)
+		}
+		if networkPolicy.Mode == "local_only" {
+			peerListener = network.LocalListener(peerListener, directInterfaces)
 		}
 		defer peerListener.Close()
 		if err := config.WritePrivate(stateDir, "peer.addr", []byte(peerListener.Addr().String()+"\n")); err != nil {
@@ -332,10 +640,13 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		defer os.Remove(filepath.Join(stateDir, "peer.addr"))
 	}
 	var enrollmentListener net.Listener
-	if runtimeSettings.EnrollmentListen != "" {
+	if runtimeSettings.EnrollmentListen != "" && (networkPolicy.Mode != "local_only" || network.LocalEndpoint("https://"+runtimeSettings.EnrollmentListen)) {
 		enrollmentListener, err = net.Listen("tcp", runtimeSettings.EnrollmentListen)
 		if err != nil {
 			return fmt.Errorf("listen for enrollment: %w", err)
+		}
+		if networkPolicy.Mode == "local_only" {
+			enrollmentListener = network.LocalListener(enrollmentListener, directInterfaces)
 		}
 		defer enrollmentListener.Close()
 		if err := config.WritePrivate(stateDir, "enrollment.addr", []byte(enrollmentListener.Addr().String()+"\n")); err != nil {
@@ -405,8 +716,18 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 
 	networkCtx, networkCancel := context.WithCancel(ctx)
 	defer networkCancel()
-	networkDone := make(chan error, 2)
-	count := 0
+	networkDone := make(chan error, 5)
+	count := 2
+	virtualData, _ := manager.IncomingListener(network.PeerData)
+	virtualEnrollment, _ := manager.IncomingListener(network.Enrollment)
+	go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, virtualData) }()
+	go func() {
+		networkDone <- replication.NewEnrollmentServer(db, identity).Serve(networkCtx, virtualEnrollment)
+	}()
+	if directListener != nil {
+		count++
+		go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, directListener) }()
+	}
 	if enrollmentListener != nil {
 		count++
 		go func() {
@@ -417,10 +738,70 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		count++
 		go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, peerListener) }()
 	}
+	// Interface and default-route observations are transient. One joined watcher
+	// refreshes actual candidates; it never writes policy, trust or sync history.
+	if networkPolicy.Mode != "manual" {
+		if settings, settingsErr := config.LoadDirectSettings(stateDir); settingsErr == nil {
+			stopNetwork := network.WatchNetworkTiming(ctx, func() (string, error) {
+				return network.NetworkSnapshot(settings.Interfaces)
+			}, func() {
+				interfaces, _ := network.SelectedInterfaces(settings.Interfaces)
+				manager.NetworkChanged()
+				network.RefreshLocalListener(directListener, interfaces)
+				network.RefreshLocalListener(peerListener, interfaces)
+				network.RefreshLocalListener(enrollmentListener, interfaces)
+				if networkPolicy.Mode == "local_only" {
+					// Retire the old concrete binding before rebinding a fixed port.
+					// Failed requests retain existing chunk/operation retry rules.
+					_ = manager.ReplaceQUIC(nil)
+					// Local UDP is bound to one concrete address; replace it on roaming.
+					var next *network.QUICEndpoint
+					if socket, socketErr := network.OptionalLocalQUICSocket(settings, interfaces); socketErr == nil && socket != nil {
+						next, socketErr = manager.NewPeerQUICEndpoint(socket, identity.ServerTLSConfig(), replication.NewServer(db, identity))
+						if socketErr != nil {
+							_ = socket.Close()
+						}
+					}
+					if replaceErr := manager.ReplaceQUIC(next); replaceErr != nil && next != nil {
+						_ = next.Close()
+					}
+					quicEndpoint = next
+				}
+				var localCandidates, publicCandidates []protocol.NetworkCandidate
+				if directListener != nil {
+					localCandidates = network.GatherCandidates(interfaces, directListener.Addr(), false)
+					publicCandidates = network.GatherCandidates(interfaces, directListener.Addr(), true)
+				}
+				if quicEndpoint != nil {
+					localCandidates = network.CombineDirectCandidates(localCandidates, network.GatherCandidates(interfaces, quicEndpoint.LocalAddr(), false))
+					publicCandidates = network.CombineDirectCandidates(publicCandidates, network.GatherCandidates(interfaces, quicEndpoint.LocalAddr(), true))
+				}
+				if lanDiscovery != nil {
+					_ = lanDiscovery.Close()
+					lanDiscovery = nil
+				}
+				if networkPolicy.LANAdvertising && len(localCandidates) > 0 {
+					lanDiscovery, _ = network.NewLANDiscovery(ctx, manager, cfg.DeviceID, hex.EncodeToString(identity.KeyPin[:]), identity.Certificate, interfaces, localCandidates, manager.KnownTargets)
+				}
+				if relayRuntime != nil {
+					_ = relayRuntime.SetPublicCandidates(publicCandidates)
+					relayRuntime.NetworkChanged()
+				}
+			}, time.Duration(networkPolicy.Timing.Effective().PollMS)*time.Millisecond, time.Duration(networkPolicy.Timing.Effective().QuietMS)*time.Millisecond)
+			defer func() {
+				stopNetwork()
+				if lanDiscovery != nil {
+					_ = lanDiscovery.Close()
+				}
+			}()
+		}
+	}
 	if opts.Ready != nil {
 		peerAddress := "disabled"
 		if peerListener != nil {
 			peerAddress = peerListener.Addr().String()
+		} else if directListener != nil {
+			peerAddress = directListener.Addr().String()
 		}
 		enrollmentAddress := "disabled"
 		if enrollmentListener != nil {
@@ -538,4 +919,11 @@ func StopAgent(stateDir string, timeout time.Duration) error {
 	}
 
 	return fmt.Errorf("timed out after %v waiting for agent (pid %d) to stop", timeout, pid)
+}
+
+func controlID(s string) history.ID {
+	var id history.ID
+	b, _ := hex.DecodeString(s)
+	copy(id[:], b)
+	return id
 }

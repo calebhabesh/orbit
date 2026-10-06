@@ -88,7 +88,11 @@ func (c *Client) Call(ctx context.Context, method, path string, input, output an
 		}
 		body = bytes.NewReader(b)
 	}
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	callTimeout, headerTimeout := 10*time.Second, 5*time.Second
+	if q, ok := input.(tc.Query); ok && q.Kind == "network_doctor" {
+		callTimeout, headerTimeout = 25*time.Second, 25*time.Second
+	}
+	ctx, cancel := context.WithTimeout(ctx, callTimeout)
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, method, endpoint+path, body)
 	if err != nil {
@@ -98,7 +102,7 @@ func (c *Client) Call(ctx context.Context, method, path string, input, output an
 	if input != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
-	transport := &http.Transport{Proxy: nil, DisableCompression: true, DialContext: (&net.Dialer{Timeout: 2 * time.Second}).DialContext, ResponseHeaderTimeout: 5 * time.Second, MaxResponseHeaderBytes: 16 << 10}
+	transport := &http.Transport{Proxy: nil, DisableCompression: true, DialContext: (&net.Dialer{Timeout: 2 * time.Second}).DialContext, ResponseHeaderTimeout: headerTimeout, MaxResponseHeaderBytes: 16 << 10}
 	defer transport.CloseIdleConnections()
 	client := &http.Client{Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("control redirects are forbidden") }}
 	resp, err := client.Do(req)
@@ -231,6 +235,19 @@ func (c *Client) terminalCall(ctx context.Context, path string, input any, out *
 	}
 	if q, ok := input.(tc.Query); ok && (q.Kind == "setups" || q.Kind == "folder_management") && !slices.Contains(capabilities.Capabilities, "onboarding_management_v1") {
 		return &control.ControlError{Code: "UNSUPPORTED_CAPABILITY", Message: "daemon does not advertise onboarding management", Action: "use a compatible daemon"}
+	}
+	needsNetwork := false
+	switch v := input.(type) {
+	case tc.Mutation:
+		needsNetwork = v.Kind == "network"
+	case tc.Query:
+		needsNetwork = v.Kind == "network_status" || v.Kind == "network_preview" || v.Kind == "network_doctor"
+	}
+	if needsNetwork && !slices.Contains(capabilities.Capabilities, tc.NetworkCapability) {
+		return &control.ControlError{Code: "UNSUPPORTED_CAPABILITY", Message: "daemon does not advertise network controls", Action: "use a compatible daemon"}
+	}
+	if q, ok := input.(tc.Query); ok && q.Kind == "network_doctor" && !slices.Contains(capabilities.Capabilities, tc.NetworkDiagnosticsCapability) {
+		return &control.ControlError{Code: "UNSUPPORTED_CAPABILITY", Message: "daemon does not advertise explicit network diagnostics", Action: "use a compatible daemon"}
 	}
 	needsContent := false
 	switch v := input.(type) {

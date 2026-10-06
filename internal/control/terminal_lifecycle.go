@@ -21,7 +21,7 @@ import (
 )
 
 func terminalResult() tc.Result {
-	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, "lifecycle_settings_v1", "enrollment_v2", "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
+	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, tc.NetworkCapability, tc.NetworkDiagnosticsCapability, "lifecycle_settings_v1", "enrollment_v2", tc.RoutedEnrollmentCapability, tc.PackagedProfileCapability, "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
 }
 func terminalError(code string) error {
 	return &ControlError{Code: code, Message: code, Action: "inspect state and obtain a fresh review"}
@@ -79,6 +79,10 @@ func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (tc.Result, 
 	}
 	r := terminalResult()
 	switch q.Kind {
+	case "network_doctor":
+		return c.terminalNetworkDoctor(ctx, q)
+	case "network_status", "network_preview":
+		return c.terminalNetworkQuery(ctx, q)
 	case "paths", "storage", "maintenance":
 		return c.terminalEveryday(ctx, q)
 	case "setups":
@@ -168,6 +172,9 @@ func (c *Controller) TerminalMutate(ctx context.Context, m tc.Mutation) (tc.Resu
 	if err != nil {
 		return tc.Result{}, err
 	}
+	if m.Kind == "network" {
+		return c.terminalNetworkMutation(ctx, m)
+	}
 	if m.Kind == "cancel" {
 		return c.terminalSessionCancel(ctx, m)
 	}
@@ -247,7 +254,12 @@ func (c *Controller) executeTerminal(ctx context.Context, record repository.Term
 	m := record.Mutation
 	r := record.Result
 	var err error
-	if m.Kind == "settings" {
+	if m.Kind == "network" {
+		err = c.saveNetworkIntent(*m.Network)
+		if err == nil {
+			r.Operation.CommittedEffects = append(r.Operation.CommittedEffects, tc.Effect{State: "network_saved_restart_required"})
+		}
+	} else if m.Kind == "settings" {
 		err = config.SaveRuntimeSettings(c.db.StateDir(), m.Settings.Settings)
 		if err == nil {
 			r.Settings = &m.Settings.Settings
@@ -310,7 +322,7 @@ func (c *Controller) RecoverTerminalOperations(ctx context.Context) error {
 		if record.Result.Operation.State != "running" {
 			continue
 		}
-		if record.Mutation.Kind == "settings" {
+		if record.Mutation.Kind == "settings" || record.Mutation.Kind == "network" {
 			if _, err := c.executeTerminal(ctx, record); err != nil {
 				return err
 			}

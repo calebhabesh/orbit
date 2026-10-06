@@ -15,6 +15,7 @@ import (
 
 	"github.com/calebhabesh/file-sync/internal/config"
 	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
@@ -28,14 +29,15 @@ type rootReview struct {
 	Used string                 `json:"used"`
 }
 type setupJob struct {
-	NextContact string                           `json:"next_contact"`
-	Folder      string                           `json:"folder"`
-	Root        workspace.AdoptionWalk           `json:"root"`
-	Wire        *protocol.TerminalEnrollmentWire `json:"wire,omitempty"`
-	Membership  *protocol.Membership             `json:"membership,omitempty"`
-	Registered  bool                             `json:"registered"`
-	Configured  bool                             `json:"configured"`
-	Captured    bool                             `json:"captured"`
+	Routed      *protocol.RoutedEnrollmentRequest `json:"routed,omitempty"`
+	NextContact string                            `json:"next_contact"`
+	Folder      string                            `json:"folder"`
+	Root        workspace.AdoptionWalk            `json:"root"`
+	Wire        *protocol.TerminalEnrollmentWire  `json:"wire,omitempty"`
+	Membership  *protocol.Membership              `json:"membership,omitempty"`
+	Registered  bool                              `json:"registered"`
+	Configured  bool                              `json:"configured"`
+	Captured    bool                              `json:"captured"`
 }
 
 func randomTerminalID() (string, error) {
@@ -48,7 +50,7 @@ func setupPlan(m tc.Mutation) tc.SetupIntent {
 		return *m.Setup
 	}
 	p := m.Join
-	return tc.SetupIntent{DeviceName: p.DeviceName, FolderName: p.FolderName, Root: p.Root, Preview: p.Preview, Settings: p.Settings}
+	return tc.SetupIntent{DeviceName: p.DeviceName, FolderName: p.FolderName, Root: p.Root, Network: p.Network, Preview: p.Preview, Settings: p.Settings}
 }
 func (c *Controller) terminalRootPreview(ctx context.Context, q tc.Query) (tc.Result, error) {
 	r := terminalResult()
@@ -176,6 +178,18 @@ func (c *Controller) terminalSetupMutation(ctx context.Context, m tc.Mutation) (
 		return tc.Result{}, terminalError("DAEMON_REQUIRED")
 	}
 	plan := setupPlan(m)
+	if plan.Network != nil {
+		current, e := config.LoadNetworkPolicy(c.db.StateDir())
+		if e != nil {
+			return tc.Result{}, e
+		}
+		if *plan.Network != current && (current.Generation == ^tc.Uint(0) || plan.Network.Generation != current.Generation+1) {
+			return tc.Result{}, terminalError("STALE_VIEW")
+		}
+		if e = c.validateNetworkIntent(tc.NetworkIntent{Policy: *plan.Network}); e != nil {
+			return tc.Result{}, e
+		}
+	}
 	var saved rootReview
 	if err = c.db.TerminalRecord(ctx, "rootreview/"+plan.Preview.Token, &saved); err != nil {
 		return tc.Result{}, terminalError("STALE_VIEW")
@@ -183,7 +197,7 @@ func (c *Controller) terminalSetupMutation(ctx context.Context, m tc.Mutation) (
 	expiry, _ := time.Parse(time.RFC3339Nano, saved.Walk.Preview.Review.ExpiresAt)
 	bare := plan
 	bare.Preview = tc.Review{}
-	if saved.Used != "" || saved.Kind != m.Kind || saved.Plan != bare || saved.Walk.Preview.Review != plan.Preview || !c.options.Now().Before(expiry) {
+	if saved.Used != "" || saved.Kind != m.Kind || generation(saved.Plan) != generation(bare) || saved.Walk.Preview.Review != plan.Preview || !c.options.Now().Before(expiry) {
 		return tc.Result{}, terminalError("STALE_VIEW")
 	}
 	if !saved.Walk.Preview.Complete || saved.Walk.Preview.Unsupported != 0 || saved.Walk.Preview.Unreadable != 0 {
@@ -293,11 +307,34 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 			job.NextContact = c.options.Now().Add(25 * time.Second).UTC().Format(time.RFC3339Nano)
 		}
 		if err.Error() == "RATE_LIMITED" {
-			job.NextContact = c.options.Now().Add(60 * time.Second).UTC().Format(time.RFC3339Nano)
+			expires := ""
+			if job.Wire != nil {
+				expires = job.Wire.ExpiresUnix
+			}
+			delay := preparedRequestThrottleDelay(r.Operation.Phase, expires, c.options.Now())
+			job.NextContact = c.options.Now().Add(delay).UTC().Format(time.RFC3339Nano)
 		}
+		switch err.Error() {
+		case "STALE_VIEW", "RATE_LIMITED", "PROFILE_MISSING", "PROFILE_EXPIRED", "PROFILE_UNTRUSTED", "PROFILE_MISMATCH", "IDENTITY_MISMATCH", "EXPIRED_ATTEMPT", "EXPIRED_OR_DECLINED_ATTEMPT":
+			code = err.Error()
+		}
+		var se *network.ServiceError
+		if errors.As(err, &se) {
+			code = se.Code
+		}
+		action := "inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt"
 		var ce *ControlError
 		if errors.As(err, &ce) {
 			code = ce.Code
+			if ce.Action != "" && ce.Action != "inspect state and obtain a fresh review" {
+				action = ce.Action
+			}
+		}
+		if code == "SERVICE_UNAVAILABLE" && m.Join != nil && !job.Registered {
+			// This device's own service connection is not ready yet (typically
+			// just after a daemon restart). Nothing reached the inviter, so its
+			// request budget is untouched; retry soon instead of in 25 s.
+			job.NextContact = c.options.Now().Add(3 * time.Second).UTC().Format(time.RFC3339Nano)
 		}
 		if repository.IsAdmissionError(err) {
 			code = "STORAGE_BLOCKED"
@@ -305,7 +342,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		}
 		r.State = "blocked"
 		r.Operation.State = "blocked"
-		r.Error = &tc.Error{Code: code, Message: err.Error(), Retryable: code != "STALE_VIEW" && code != "EXPIRED_ATTEMPT" && code != "EXPIRED_OR_DECLINED_ATTEMPT", Action: "inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt"}
+		r.Error = &tc.Error{Code: code, Message: err.Error(), Retryable: code != "STALE_VIEW" && code != "EXPIRED_ATTEMPT" && code != "EXPIRED_OR_DECLINED_ATTEMPT", Action: action}
 		r.Operation.Error = r.Error
 		if e := c.saveSetupPhase(context.WithoutCancel(ctx), &record, job, r.Operation.Phase); e != nil {
 			return *r, e
@@ -313,6 +350,19 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		return *r, nil
 	}
 	if !job.Configured {
+		if plan.Network != nil {
+			// Reviewed Automatic naming the packaged digest installs that profile
+			// first; a retry finds it stored and only saves the policy.
+			if in := c.resolvePackaged(tc.NetworkIntent{Policy: *plan.Network}); in.Profile != nil {
+				s := network.ProfileSelection{Profile: *in.Profile, Authority: in.Authority, Environment: in.Environment, HighestEpoch: in.Profile.Epoch}
+				if err := config.SaveNetworkProfile(c.db.StateDir(), s, uint64(c.options.Now().Unix())); err != nil {
+					return block(err)
+				}
+			}
+			if err := config.SaveNetworkPolicy(c.db.StateDir(), *plan.Network); err != nil {
+				return block(err)
+			}
+		}
 		if err := config.SaveRuntimeSettings(c.db.StateDir(), plan.Settings); err != nil {
 			return block(err)
 		}
@@ -334,7 +384,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		if err != nil {
 			return block(err)
 		}
-		client, err := replication.NewEnrollmentClient(m.Join.Invitation, id)
+		client, err := c.enrollmentClient(ctx, m.Join.Invitation, id)
 		if err != nil {
 			return block(err)
 		}
@@ -351,25 +401,49 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 			if plan.Settings.AdvertisedPeer != "" {
 				endpoint = "https://" + plan.Settings.AdvertisedPeer
 			}
-			wire, err := client.Prepare(ctx, m.Join.Attempt, plan.DeviceName, endpoint)
-			if err != nil {
-				return block(err)
+			if m.Join.Invitation.Version == "3" {
+				wire, e := client.PrepareV3(ctx, m.Join.Attempt, plan.DeviceName)
+				if e != nil {
+					return block(e)
+				}
+				job.Routed = &wire
+				projected := replication.RoutedRecordWire(wire)
+				job.Wire = &projected
+				request, e := wire.Transcript.RequestID()
+				if e != nil {
+					return block(e)
+				}
+				r.Join.Request = request
+				code, e := wire.Transcript.VerificationCode()
+				if e != nil {
+					return block(e)
+				}
+				bytes, e := wire.Transcript.Canonical()
+				if e != nil {
+					return block(e)
+				}
+				r.Requests = []tc.EnrollmentRequest{{ID: request, Folder: wire.Transcript.Folder, Requester: wire.Transcript.Requester.Device, KeyPin: wire.Transcript.Requester.Pin, TranscriptDigest: protocol.NetworkDigest(bytes), VerificationCode: code, State: "pending_approval"}}
+			} else {
+				wire, e := client.Prepare(ctx, m.Join.Attempt, plan.DeviceName, endpoint)
+				if e != nil {
+					return block(e)
+				}
+				job.Wire = &wire
+				tr, e := wire.Transcript()
+				if e != nil {
+					return block(e)
+				}
+				r.Join.Request = tr.RequestID()
+				code, e := tr.VerificationCode()
+				if e != nil {
+					return block(e)
+				}
+				digest, e := tr.Digest()
+				if e != nil {
+					return block(e)
+				}
+				r.Requests = []tc.EnrollmentRequest{{ID: r.Join.Request, Folder: wire.Folder, Requester: wire.Requester, KeyPin: wire.RequesterPin, TranscriptDigest: hex.EncodeToString(digest[:]), VerificationCode: code, State: "pending_approval"}}
 			}
-			job.Wire = &wire
-			tr, err := wire.Transcript()
-			if err != nil {
-				return block(err)
-			}
-			r.Join.Request = tr.RequestID()
-			code, e := tr.VerificationCode()
-			if e != nil {
-				return block(e)
-			}
-			digest, e := tr.Digest()
-			if e != nil {
-				return block(e)
-			}
-			r.Requests = []tc.EnrollmentRequest{{ID: r.Join.Request, Folder: job.Wire.Folder, Requester: job.Wire.Requester, KeyPin: job.Wire.RequesterPin, TranscriptDigest: hex.EncodeToString(digest[:]), VerificationCode: code, State: "pending_approval"}}
 
 			if err = c.saveSetupPhase(ctx, &record, job, "request_prepared"); err != nil {
 				return *r, err
@@ -381,20 +455,34 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 			if parseErr != nil || c.options.Now().Unix() >= expires {
 				// A lost acknowledgement may hide an already accepted request. Inspect by
 				// possession before classifying an expired unsent transcript; never renew it.
-				status, e := client.Status(ctx, r.Join.Request)
+				status, e := setupEnrollmentStatus(ctx, client, job, r.Join.Request)
 				if e != nil {
-					if e.Error() == "RATE_LIMITED" {
+					if e.Error() == "RATE_LIMITED" || (job.Routed != nil && e.Error() != "UNAUTHORIZED" && e.Error() != "INVITATION_INVALID" && e.Error() != "EXPIRED_REPLAY") {
+						// Transport failure cannot establish that an uncertain
+						// submission was never accepted. Preserve the signed
+						// v3 request and inspect again after reconnection.
 						return block(e)
 					}
 					return block(terminalError("EXPIRED_ATTEMPT"))
 				}
 				recoveredStatus = &status
 			} else {
-				if _, err := client.Submit(ctx, *job.Wire); err != nil {
-					return block(err)
+				submitted, submitErr := setupEnrollmentSubmit(ctx, client, job)
+				if submitErr != nil {
+					return block(submitErr)
+				}
+				// The authenticated submit response already reports pending approval.
+				// Avoid spending two extra possession-status tokens immediately;
+				// lost responses still use the original status recovery path.
+				recoveredStatus = &submitted
+				if err = c.callHook("terminal.setup.request_accepted"); err != nil {
+					return *r, err
 				}
 			}
 			job.Wire.Token = ""
+			if job.Routed != nil {
+				job.Routed.Capability = ""
+			}
 			record.Mutation.Join.Invitation.Capability = strings.Repeat("1", 64)
 			if err = c.saveSetupPhase(ctx, &record, job, "awaiting_approval"); err != nil {
 				return *r, err
@@ -405,7 +493,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		if recoveredStatus != nil {
 			status = *recoveredStatus
 		} else {
-			status, err = client.Status(ctx, r.Join.Request)
+			status, err = setupEnrollmentStatus(ctx, client, job, r.Join.Request)
 			if err != nil {
 				return block(err)
 			}
@@ -441,6 +529,12 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		job.Membership = &membership
 		if err = c.saveSetupPhase(ctx, &record, job, "membership_received"); err != nil {
 			return *r, err
+		}
+	}
+	if m.Join != nil && m.Join.Invitation.Version == "3" {
+		inv := m.Join.Invitation
+		if err := c.persistLogicalRoute(job.Folder, *inv.Route, inv.CertificateDER); err != nil {
+			return block(err)
 		}
 	}
 	var retirementSnapshots []protocol.RetirementSnapshot
@@ -561,8 +655,10 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		if err = config.WritePrivate(c.db.StateDir(), name, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der})); err != nil {
 			return block(err)
 		}
-		if err = config.SetPeerEndpoint(c.db.StateDir(), config.PeerEndpoint{Folder: job.Folder, Device: inv.Inviter, URL: inv.PeerEndpoint, Certificate: filepath.Join(c.db.StateDir(), name)}); err != nil {
-			return block(err)
+		if inv.Version != "3" {
+			if err = config.SetPeerEndpoint(c.db.StateDir(), config.PeerEndpoint{Folder: job.Folder, Device: inv.Inviter, URL: inv.PeerEndpoint, Certificate: filepath.Join(c.db.StateDir(), name)}); err != nil {
+				return block(err)
+			}
 		}
 		cert, err := replication.ParsePeerCertificate(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der}))
 		if err != nil {
@@ -572,7 +668,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		if err != nil {
 			return block(err)
 		}
-		client, err := replication.NewClient(inv.PeerEndpoint, id, cert, replication.PublicKeyPin(cert))
+		client, err := c.peerClient(ctx, inv.PeerEndpoint, id, cert, terminalID(inv.Inviter))
 		if err != nil {
 			return block(err)
 		}
@@ -658,7 +754,7 @@ func (c *Controller) onboardingRetirementSnapshots(ctx context.Context, membersh
 	if err != nil {
 		return nil, err
 	}
-	client, err := replication.NewClient(invitation.PeerEndpoint, identity, certificate, replication.PublicKeyPin(certificate))
+	client, err := c.peerClient(ctx, invitation.PeerEndpoint, identity, certificate, terminalID(invitation.Inviter))
 	if err != nil {
 		return nil, err
 	}
@@ -687,6 +783,9 @@ func (c *Controller) onboardingRetirementSnapshots(ctx context.Context, membersh
 func (c *Controller) ResumeSetupJobs(ctx context.Context) error {
 	c.terminalMu.Lock()
 	defer c.terminalMu.Unlock()
+	if err := c.recoverApprovedRoutes(ctx); err != nil {
+		return err
+	}
 	records, err := c.db.TerminalOperations(ctx)
 	if err != nil {
 		return err
@@ -751,4 +850,32 @@ func (c *Controller) setupStartup(ctx context.Context, parent repository.Termina
 		return &ControlError{Code: r.Error.Code, Message: r.Error.Message, Action: r.Error.Action, Retryable: r.Error.Retryable}
 	}
 	return nil
+}
+
+func setupEnrollmentStatus(ctx context.Context, client *replication.EnrollmentClient, job setupJob, request string) (protocol.TerminalEnrollmentResult, error) {
+	if job.Routed == nil {
+		return client.Status(ctx, request)
+	}
+	out, err := client.StatusV3(ctx, *job.Routed)
+	return protocol.TerminalEnrollmentResult{Version: out.Version, Request: out.Request, State: out.State, TranscriptDigest: out.TranscriptDigest, VerificationCode: out.VerificationCode, MembershipHex: out.MembershipHex}, err
+}
+func setupEnrollmentSubmit(ctx context.Context, client *replication.EnrollmentClient, job setupJob) (protocol.TerminalEnrollmentResult, error) {
+	if job.Routed == nil {
+		return client.Submit(ctx, *job.Wire)
+	}
+	out, err := client.SubmitV3(ctx, *job.Routed)
+	return protocol.TerminalEnrollmentResult{Version: out.Version, Request: out.Request, State: out.State, TranscriptDigest: out.TranscriptDigest, VerificationCode: out.VerificationCode, MembershipHex: out.MembershipHex}, err
+}
+
+// Two source-admission tokens refill in 25 seconds. Waiting a full minute after
+// a refused prepared submit would expire its one-minute proof before any retry.
+// Retain that exact proof; expired or nearly expired requests keep status recovery.
+func preparedRequestThrottleDelay(phase, expires string, now time.Time) time.Duration {
+	if phase == "request_prepared" {
+		deadline, err := strconv.ParseInt(expires, 10, 64)
+		if err == nil && time.Unix(deadline, 0).After(now.Add(25*time.Second)) {
+			return 25 * time.Second
+		}
+	}
+	return 60 * time.Second
 }

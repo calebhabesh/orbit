@@ -64,7 +64,7 @@ func (c *Controller) pinnedJoinStatus(ctx context.Context, endpoint, request str
 	if err != nil {
 		return nil, err
 	}
-	client, err := replication.NewEnrollmentClient(record.Invitation, id)
+	client, err := c.enrollmentClient(ctx, record.Invitation, id)
 	if err != nil {
 		return nil, err
 	}

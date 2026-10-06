@@ -724,7 +724,11 @@ func (c *Controller) CreateInvitation(ctx context.Context, req CreateInvitationR
 	if e != nil {
 		return nil, e
 	}
-	if settings.AdvertisedEnrollment != "" {
+	policy, e := config.LoadNetworkPolicy(c.db.StateDir())
+	if e != nil {
+		return nil, e
+	}
+	if settings.AdvertisedEnrollment != "" || policy.Mode == "automatic" || policy.Mode == "self_hosted" {
 		if req.MaxUses > 1 {
 			return nil, terminalError("INVALID_REQUEST")
 		}
@@ -753,7 +757,7 @@ func (c *Controller) CreateInvitation(ctx context.Context, req CreateInvitationR
 		}
 		raw, _ := hex.DecodeString(r.Invitation.Capability)
 		digest := sha256.Sum256(raw)
-		return &CreateInvitationResult{Token: r.Invitation.Capability, Digest: digest, Folder: req.Folder, ExpiresAt: r.Invitation.ExpiresAt, MaxUses: 1, InvitationCode: "orbit-invitation:v2:" + base64.RawURLEncoding.EncodeToString(b)}, nil
+		return &CreateInvitationResult{Token: r.Invitation.Capability, Digest: digest, Folder: req.Folder, ExpiresAt: r.Invitation.ExpiresAt, MaxUses: 1, InvitationCode: invitationCodePrefix(r.Invitation) + base64.RawURLEncoding.EncodeToString(b)}, nil
 	}
 
 	rawToken := make([]byte, 32)
@@ -1545,4 +1549,13 @@ func (c *Controller) PreviewDeviceRetirement(ctx context.Context, req RetireDevi
 
 func ptr[T any](v T) *T {
 	return &v
+}
+
+// The legacy invitation envelope uses control version 1 inside its v2 transfer
+// code. Routed v3 is additive; never relabel the historical envelope as v1.
+func invitationCodePrefix(inv *tc.Invitation) string {
+	if inv != nil && inv.Version == "3" {
+		return "orbit-invitation:v3:"
+	}
+	return "orbit-invitation:v2:"
 }

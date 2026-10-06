@@ -9,11 +9,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 	"runtime"
-	"strings"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/config"
 	"github.com/calebhabesh/file-sync/internal/repository"
 )
 
@@ -63,8 +62,7 @@ func (r *pathRedactor) Redact(p string) string {
 	}
 	r.count++
 	h := sha256.Sum256([]byte(p))
-	ext := filepath.Ext(p)
-	pseudonym := fmt.Sprintf("path_%s%s", hex.EncodeToString(h[:4]), ext)
+	pseudonym := fmt.Sprintf("path_%s", hex.EncodeToString(h[:4]))
 	r.mapping[p] = pseudonym
 	return pseudonym
 }
@@ -115,14 +113,15 @@ func (c *Controller) ExportSupportBundle(ctx context.Context, req SupportExportR
 	if err != nil {
 		return nil, fmt.Errorf("generate doctor report for export: %w", err)
 	}
-	if req.RedactPaths {
-		for i := range docReport.Checks {
-			// Redact path if in message
-			if strings.Contains(docReport.Checks[i].Message, "/") {
-				docReport.Checks[i].Message = redactor.Redact(docReport.Checks[i].Message)
-			}
+	// Diagnostic prose and remediation may include paths or nested OS errors.
+	// Keep structured names/status, withhold free text in a redacted export.
+	for i := range docReport.Checks {
+		if req.RedactPaths {
+			docReport.Checks[i].Message = redactor.Redact(docReport.Checks[i].Message)
+			docReport.Checks[i].Remediation = redactor.Redact(docReport.Checks[i].Remediation)
 		}
 	}
+
 	docBytes, _ := json.MarshalIndent(docReport, "", "  ")
 
 	// 2. System metadata
@@ -136,18 +135,9 @@ func (c *Controller) ExportSupportBundle(ctx context.Context, req SupportExportR
 	sysBytes, _ := json.MarshalIndent(sysInfo, "", "  ")
 
 	// 3. Config (sanitized)
-	cfgPath := filepath.Join(c.db.StateDir(), "config.json")
-	var sanitizedConfig map[string]any
-	if raw, err := os.ReadFile(cfgPath); err == nil {
-		_ = json.Unmarshal(raw, &sanitizedConfig)
-		// Ensure no secrets exist
-		delete(sanitizedConfig, "private_key")
-		delete(sanitizedConfig, "token")
-		delete(sanitizedConfig, "secret")
-	} else {
-		sanitizedConfig = map[string]any{"state_dir": "[REDACTED]"}
-	}
-	cfgBytes, _ := json.MarshalIndent(sanitizedConfig, "", "  ")
+	// Whitelist the typed identity metadata; never copy arbitrary config fields.
+	cfg, _ := config.Load(c.db.StateDir())
+	cfgBytes, _ := json.MarshalIndent(map[string]any{"format_version": cfg.FormatVersion, "device_id": cfg.DeviceID, "created_at": cfg.CreatedAt}, "", "  ")
 
 	// 4. Membership & Folders
 	folders, _ := c.db.Folders(ctx)
@@ -175,7 +165,7 @@ func (c *Controller) ExportSupportBundle(ctx context.Context, req SupportExportR
 			MembershipRevision: f.MembershipRevision,
 			RootPath:           rootP,
 			Paused:             f.Paused,
-			PauseReason:        f.PauseReason,
+			PauseReason:        supportCode(f.PauseReason),
 			ActivePeers:        len(pl.Active),
 		})
 	}
@@ -205,14 +195,29 @@ func (c *Controller) ExportSupportBundle(ctx context.Context, req SupportExportR
 			}
 		}
 	}
+	for i := range tasks {
+		tasks[i].LastError = ""
+		tasks[i].ErrorCode = supportCode(tasks[i].ErrorCode)
+	}
 	tasksBytes, _ := json.MarshalIndent(tasks, "", "  ")
 
 	// 7. Events
 	events, _ := c.db.ListEvents(ctx, 100)
+	for i := range events {
+		events[i].ErrorCode = supportCode(events[i].ErrorCode)
+		events[i].Phase = supportCode(events[i].Phase)
+	}
 	eventsBytes, _ := json.MarshalIndent(events, "", "  ")
 
 	// 8. Metrics
 	metrics, _ := c.Metrics(ctx)
+	if metrics != nil {
+		clean := map[string]uint64{}
+		for code, count := range metrics.RetryCauses {
+			clean[supportCode(code)] += count
+		}
+		metrics.RetryCauses = clean
+	}
 	metricsBytes, _ := json.MarshalIndent(metrics, "", "  ")
 
 	// 9. Manifest
@@ -241,7 +246,7 @@ func (c *Controller) ExportSupportBundle(ctx context.Context, req SupportExportR
 	}
 
 	// Create output tar.gz
-	f, err := os.OpenFile(req.DestinationPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+	f, err := os.OpenFile(req.DestinationPath, os.O_CREATE|os.O_WRONLY|os.O_EXCL, 0o600)
 	if err != nil {
 		return nil, fmt.Errorf("create support archive %s: %w", req.DestinationPath, err)
 	}
@@ -288,4 +293,21 @@ func (c *Controller) ExportSupportBundle(ctx context.Context, req SupportExportR
 		RedactedPaths:  req.RedactPaths,
 		RedactionCount: redactor.count,
 	}, nil
+}
+
+// Only bounded structured reason codes belong in export. Arbitrary error text
+// could contain invitation tokens, ICE passwords or private paths.
+func supportCode(s string) string {
+	if s == "" {
+		return ""
+	}
+	if len(s) > 64 {
+		return "[REDACTED]"
+	}
+	for _, c := range s {
+		if !(c >= 'A' && c <= 'Z') && c != '_' && !(c >= '0' && c <= '9') {
+			return "[REDACTED]"
+		}
+	}
+	return s
 }

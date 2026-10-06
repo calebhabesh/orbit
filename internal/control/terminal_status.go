@@ -654,6 +654,12 @@ func (c *Controller) terminalStatus(ctx context.Context, q tc.Query) (tc.Result,
 	// 6. Set overall state
 	r.State = computeStateFromAttention(r.Attention, len(r.Items) == 0)
 
+	networkResult, e := c.terminalNetworkQuery(ctx, tc.Query{Version: tc.Version, Kind: "network_status"})
+	if e != nil {
+		return r, e
+	}
+	r.Network = networkResult.Network
+
 	return r, nil
 }
 
