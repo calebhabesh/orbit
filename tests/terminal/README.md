@@ -81,3 +81,62 @@ laptop/Pi/VPS acceptance.
 Live SQLite inspection is replaced by authenticated history queries; interrupted
 transfer waits on hash-verified immutable objects and inspects persisted progress
 only after stopping its own marked worker.
+
+
+W07 adds `TestWANW07RealPTYRelayOnboarding` and the keyboard runner
+`scripts/terminal_wan_pty_test.py`. Run it through the Go test: that fixture
+provides an independently signed local-development profile, TLS CA and marked
+service-outage trigger. It requires no configured peer addresses/direct listener,
+separate init/serve or host service changes. Test queries verify exact byte/hash/
+version-author/head identities and persistent certificate/pin/operation/attempt;
+PTY frames are supporting evidence. `ORBIT_W07_PTY_EVIDENCE=/new/empty/directory`
+retains sanitized frames/results. Deliberate revealed transfer codes are excluded.
+The rapid second-folder run can exhaust the historical process-local enrollment
+bucket before a prepared challenge expires; successful second-folder acceptance
+keeps both daemons/routes alive and allows the existing bucket to refill for 65
+seconds. Restart-only attempts are retained without acceptance credit. Expired unsent transcripts
+remain blocked and are never renewed by an ordinary Retry. The runner also tests
+service loss, fresh missing-profile Automatic and reviewed Local-only capture.
+No default hosted/native WAN, QUIC/ICE/roaming or T13 lifecycle credit is implied.
+
+
+W08: `GOFLAGS=-race go test -race ./tests/terminal -run '^TestWANW08' -count=2 -v`
+runs `TestWANW08BinaryLocalOnlyLANAfterApproval` (production invitation/approval,
+actual daemon multicast known-peer sync, zero service requests, two-way exact heads/
+hashes, persistent identities and outage capture) and
+`TestWANW08BinaryOptionalCollisionFreshRelayOnboarding` (fresh real CLI setup with
+optional ports occupied, verified relay bytes and mandatory manual-listener failure).
+Both use marked disposable roots; five-second production reconciliation is retained.
+Restart-to-relay quota/generation stress is uncredited and remains W11.
+Public-scope IPv4/IPv6 namespace fixtures live in `internal/replication` and require
+the separate marked `scripts/wan_direct_namespace_test.py` runner; they are simulated,
+while the ordinary test package reports actual local IPv6 availability.
+
+### W11 roaming and measured peer fairness
+
+`TestWANW11BinaryReviewedTimingAndRestart` runs the actual CLI/daemon policy review,
+apply/replay, restart and default restoration. `TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes`
+enrolls three trusted replicas, transfers a real 16 MiB version concurrently with
+continuous small versions over WSS, TCP and HTTP3, and reports shared rate, combined
+sampled heap/FD/goroutine peaks and CPU. Discover these names before executing;
+ordinary aggregate execution skips the namespace-only whole-daemon case.
+
+Compile `go test -c -race -o /tmp/orbit-w11-terminal.test ./tests/terminal` and run
+`scripts/wan_daemon_roaming_namespace_test.py` under a newly created
+`unshare --user --map-root-user --net` namespace. Supply the compiled `--test-binary`,
+a canonical private `--root` containing a regular `.filesync-disposable` marker,
+and the host network namespace identity as `--parent-namespace` (captured before
+unshare). The runner validates the owning user namespace before any `ip`, firewall
+or `tc` action. `--latency-ms 25 --loss-percent 1` impairs actual peer/service
+traffic while exempting loopback owner control; `--default-timing` uses production
+poll/reprobe/cooldown defaults. Otherwise the fixture applies reviewed faster
+poll/reprobe settings without altering identity or service quotas. No existing
+Pi/VPS/host network namespace may be used for these mutations.
+
+For Pi measurements, cross-compile the test binary with
+`CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go test -c ...`, copy it and the runner into
+a newly marked private remote root, and invoke the same guarded namespace runner.
+The Pi need not install Go. The daemon sampler records process metrics beneath
+the disposable root; capture these before cleanup. This tests the production
+`app.ServeWithOptions` lifecycle in child test binaries, rather than an installed
+package/systemd/login session. Native host lifecycle remains T13.

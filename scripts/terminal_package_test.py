@@ -17,6 +17,10 @@ import tarfile
 import tempfile
 import uuid
 
+# Hermetic: never select the packaged hosted profile, so no daemon started here
+# contacts the operated service (W14). Child processes inherit this.
+os.environ.setdefault('ORBIT_DISABLE_PACKAGED_PROFILE', '1')
+
 
 
 def run(argv, **kwargs):
@@ -170,6 +174,7 @@ mkdir -m 700 /tmp/orbit-t12
 printf 'disposable container\\n' > /tmp/orbit-t12/.filesync-disposable
 export HOME=/tmp/orbit-t12
 export XDG_STATE_HOME=$HOME/.local/state
+export ORBIT_DISABLE_PACKAGED_PROFILE=1
 INSTALL /packages/PACKAGE
 orbit init --state "$HOME/.filesync"
 cp "$HOME/.filesync/config.json" "$HOME/identity-before"

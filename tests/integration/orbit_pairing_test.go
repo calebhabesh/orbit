@@ -596,7 +596,7 @@ func TestOrbitPairing_CLI_Parity(t *testing.T) {
 	if err := os.Chmod(disposable, 0700); err != nil {
 		t.Fatal(err)
 	}
-	cmd := reviewedCLISetup(t, orbitCmd, disposable, "--state", stateDir, "--root", rootPath, "--label", "CLI-Node", "--name", "TestCLI")
+	cmd := reviewedCLISetup(t, orbitCmd, disposable, "--state", stateDir, "--root", rootPath, "--label", "CLI-Node", "--name", "TestCLI", "--connection", "manual")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("orbit setup failed: %v\nOutput: %s", err, string(out))
@@ -688,7 +688,7 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 	}
 
 	// 1. orbit setup on node A
-	cmd := reviewedCLISetup(t, orbitCmd, disposable, "--state", stateA, "--root", rootA, "--label", "Desktop-Workstation", "--name", "Lab-Workspace")
+	cmd := reviewedCLISetup(t, orbitCmd, disposable, "--state", stateA, "--root", rootA, "--label", "Desktop-Workstation", "--name", "Lab-Workspace", "--connection", "manual")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("setup A failed: %v: %s", err, string(out))

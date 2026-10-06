@@ -24,6 +24,10 @@ import urllib.request
 from terminal_pty_test import Campaign
 from terminal_vt import Screen
 
+# Hermetic: never select the packaged hosted profile, so no daemon started here
+# contacts the operated service (W14). Child processes inherit this.
+os.environ.setdefault('ORBIT_DISABLE_PACKAGED_PROFILE', '1')
+
 
 class Peer(Campaign):
     def query(self, kind, **fields):

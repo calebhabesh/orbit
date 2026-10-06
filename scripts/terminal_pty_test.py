@@ -28,6 +28,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "validation"))
 from host_agent import beneath, identity, validated_root
 from terminal_vt import Screen
 
+# Hermetic: never select the packaged hosted profile, so no daemon started here
+# contacts the operated service (W14). Child processes inherit this.
+os.environ.setdefault('ORBIT_DISABLE_PACKAGED_PROFILE', '1')
+
 
 class Campaign:
     def __init__(self, root, binary, output, bare=False):

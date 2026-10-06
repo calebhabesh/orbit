@@ -14,6 +14,10 @@ import time
 
 from terminal_onboarding_pty_test import Peer, UI, invite, approve, wait_bytes
 
+# Hermetic: never select the packaged hosted profile, so no daemon started here
+# contacts the operated service (W14). Child processes inherit this.
+os.environ.setdefault('ORBIT_DISABLE_PACKAGED_PROFILE', '1')
+
 
 def until(fn, uis=(), timeout=35):
     end=time.monotonic()+timeout
