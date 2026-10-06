@@ -5,7 +5,7 @@ DATE ?= 2026-10-01
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
 GOFLAGS ?=
 
-.PHONY: build build-arm64 check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
+.PHONY: build build-arm64 build-orbit-net package-orbit-net test-orbit-net-rehearsal check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
 
 build:
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync ./cmd/filesync
@@ -16,6 +16,16 @@ build-arm64:
 
 package: build build-arm64
 	$(GO) run ./scripts/build_packages.go
+
+# Operator-only connection service; never part of end-user packages.
+build-orbit-net:
+	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/orbit-net ./cmd/orbit-net
+
+package-orbit-net:
+	$(GO) run ./scripts/build_orbit_net.go
+
+test-orbit-net-rehearsal: build build-orbit-net
+	$(GO) test -count=1 -v ./tests/terminal -run '^TestWANW13'
 
 demo: build
 	$(GO) run ./scripts/local_demo.go --quick
@@ -57,7 +67,7 @@ test-legacy-browser: build
 	$(GO) test ./tests/integration -run '^(TestP14|TestP15EmbeddedUI|TestOrbitSession)'
 
 test-terminal:
-	$(GO) test ./tests/terminal/...
+	$(GO) test -timeout=30m ./tests/terminal/...
 
 test-terminal-release:
 	GOFLAGS=-race $(GO) test -race -count=2 -v ./tests/terminal -run '^TestTerminalT13'
@@ -71,4 +81,4 @@ test-terminal-package-transactions: package
 check: test-terminal test-terminal-packages fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package
 
 clean:
-	rm -rf bin/filesync bin/orbit bin/filesync-linux-arm64 dist/
+	rm -rf bin/filesync bin/orbit bin/filesync-linux-arm64 bin/orbit-net bin/orbit-net-linux-amd64 bin/orbit-net-linux-arm64 dist/

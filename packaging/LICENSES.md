@@ -8,6 +8,7 @@ See the root [`NOTICE`](../NOTICE) file for complete copyright assertions and li
 
 | Module | Version | License | Direct Purpose |
 | --- | --- | --- | --- |
+| `github.com/coder/websocket` | `v1.8.15` | ISC | WSS binary-stream transport adapter (W01; daemon integration W02/W04) |
 | `golang.org/x/sys` | `v0.47.0` | BSD-3-Clause | Linux flock / statfs system call interface |
 | `modernc.org/sqlite` | `v1.59.0` | BSD-3-Clause (SQLite in Public Domain, sqlite-vec MIT) | Pure-Go CGO-free SQLite database engine |
 
@@ -55,3 +56,26 @@ Exact license texts and copyright notices are retained in `NOTICE` and included 
 | `github.com/rivo/uniseg` | `v0.4.7` | MIT |
 | `github.com/xo/terminfo` | `v0.0.0-20220910002029-abceb7e1c41e` | MIT |
 | `golang.org/x/sync` | `v0.22.0` | BSD-3-Clause |
+
+## W09 QUIC and ICE API dependencies
+
+Pion is imported by the adapter compatibility tests; production ICE establishment remains W10. HTTP/3 is linked into the daemon. Exact license texts are included in `NOTICE`.
+
+| Module | Version | License |
+| --- | --- | --- |
+| `github.com/pion/dtls/v3` | `v3.1.9` | MIT |
+| `github.com/pion/ice/v4` | `v4.4.6` | MIT |
+| `github.com/pion/logging` | `v0.2.4` | MIT |
+| `github.com/pion/mdns/v2` | `v2.2.2` | MIT |
+| `github.com/pion/randutil` | `v0.1.0` | MIT |
+| `github.com/pion/stun/v4` | `v4.0.1` | MIT |
+| `github.com/pion/transport/v5` | `v5.0.1` | MIT |
+| `github.com/pion/turn/v5` | `v5.1.2` | MIT |
+| `github.com/quic-go/go-ossfuzz-seeds` | `v0.1.0` | MIT |
+| `github.com/quic-go/qpack` | `v0.6.0` | MIT |
+| `github.com/quic-go/quic-go` | `v0.63.0` | MIT |
+| `github.com/wlynxg/anet` | `v0.0.5` | BSD-3-Clause |
+| `golang.org/x/crypto` | `v0.54.0` | BSD-3-Clause |
+| `golang.org/x/net` | `v0.56.0` | BSD-3-Clause |
+| `golang.org/x/text` | `v0.40.0` | BSD-3-Clause |
+| `golang.org/x/time` | `v0.14.0` | BSD-3-Clause |

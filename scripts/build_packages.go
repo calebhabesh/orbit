@@ -16,6 +16,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/calebhabesh/file-sync/internal/network"
 )
 
 const (
@@ -214,6 +216,22 @@ func run() error {
 		assetDigest = hex.EncodeToString(h.Sum(nil))
 	}
 
+	// Ordinary packages carry the signed release profile compiled into the
+	// binary. Refuse to package one that is invalid or expires within 30 days:
+	// devices need time to receive the next epoch before this one lapses.
+	packaged, err := network.EmbeddedProfile()
+	if err != nil {
+		return fmt.Errorf("packaged release profile invalid: %w", err)
+	}
+	packagedDigest, err := packaged.Digest()
+	if err != nil {
+		return err
+	}
+	packagedExpires := time.Unix(int64(packaged.Profile.Expires), 0).UTC()
+	if time.Until(packagedExpires) < 30*24*time.Hour {
+		return fmt.Errorf("packaged release profile expires %s; sign and package the next epoch first (docs/orbit-net-operator.md)", packagedExpires.Format(time.RFC3339))
+	}
+
 	manifestData := map[string]any{
 		"product":                  "Orbit",
 		"version":                  PackageVersion,
@@ -230,6 +248,13 @@ func run() error {
 		"embedded_assets": map[string]any{
 			"total_files":   assetCount,
 			"digest_sha256": assetDigest,
+		},
+		"packaged_profile": map[string]any{
+			"operator":  packaged.Profile.Operator,
+			"authority": packaged.Authority,
+			"epoch":     uint64(packaged.Profile.Epoch),
+			"expires":   packagedExpires.Format(time.RFC3339),
+			"digest":    packagedDigest,
 		},
 		"license": "MIT",
 	}
