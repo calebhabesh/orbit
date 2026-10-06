@@ -1,0 +1,35 @@
+{
+  "proof": {
+    "version": "1",
+    "kind": "offer",
+    "profile": "ccb1922b6c4e53ed8d0b6baebd2f68a2735dacef340b3b2ef3ea7a7134573bf3",
+    "origin": "https://rendezvous.example.org",
+    "sender": "0202020202020202020202020202020202020202020202020202020202020202",
+    "sender_pin": "fd110d301d2f077de1414b8f99f441b1403fab207b2052fbd2c065e4ee8e7dc2",
+    "target": "0505050505050505050505050505050505050505050505050505050505050505",
+    "target_pin": "0606060606060606060606060606060606060606060606060606060606060606",
+    "purpose": "peer_data",
+    "challenge": "0303030303030303030303030303030303030303030303030303030303030303",
+    "operation": "0404040404040404040404040404040404040404040404040404040404040404",
+    "session": "0707070707070707070707070707070707070707070707070707070707070707",
+    "generation": "1",
+    "role": "initiator",
+    "expires": "1800000060",
+    "payload": "ac8a3bf1cc914d1d823b21994445ab751fed6f5a6a98e82e4e1e4ea62409e1bd",
+    "certificate_der": "MIHcMIGPoAMCAQICAQEwBQYDK2VwMBgxFjAUBgNVBAMMDXN5bnRoZXRpYy13MDEwHhcNMjYwMTAxMDAwMDAwWhcNMzAwMTAxMDAwMDAwWjAYMRYwFAYDVQQDDA1zeW50aGV0aWMtdzAxMCowBQYDK2VwAyEAiojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1wwBQYDK2VwA0EA3+amHdKdBHlnhU4I4kq39KNTumkXKf8txKBNfAmx1hQXqpTmZ5piRYB0tL8oQrJAkaeLzdxfNr8YTc+EC6/VBg==",
+    "signature": "a622f0b74c3992da8cef48192fcd95f35550310da18aa726c663a0e823d1ecc5351127001a5ca1d099c98e5fb6aacb3355a68fc3d88b37185e7358d221bfe803"
+  },
+  "offer": {
+    "sender_generation": "1",
+    "target_generation": "2",
+    "candidates": [],
+    "ice": {
+      "mode": "offer",
+      "ufrag": "abcd",
+      "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "candidates": [
+        "1 1 udp 2130706431 11.23.45.1 12345 typ host"
+      ]
+    }
+  }
+}

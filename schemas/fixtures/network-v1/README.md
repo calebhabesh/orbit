@@ -1,0 +1,1 @@
+Synthetic independent fixtures. Python cryptography Ed25519 signer, device/profile seed 01 and online relay seed 10 (hex), each repeated 32 bytes, fixed certificate/time. Never production credentials. Canonical framing uses explicit ordered fields, not Go encoder. Generator retained in W01 evidence. Verification time 1800000000.

@@ -1,0 +1,17 @@
+{
+  "generation": "1",
+  "expires": "1800000600",
+  "candidates": [
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:7443",
+      "scope": "public",
+      "interface": ""
+    }
+  ],
+  "capabilities": [
+    "direct_https_v1",
+    "relay_inner_tls_v1"
+  ],
+  "relay": true
+}

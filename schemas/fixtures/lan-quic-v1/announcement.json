@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "device": "0700000000000000000000000000000000000000000000000000000000000000",
+  "pin": "a050837d85070582ccf7394b0988847cc312cb88259b894899f6f239cf1791a5",
+  "key": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+  "generation": "1",
+  "expires": "2000000600",
+  "capabilities": [
+    "direct_https_v1",
+    "quic_http3_v1"
+  ],
+  "candidates": [
+    {
+      "transport": "tcp",
+      "address": "192.168.10.2:4567",
+      "scope": "lan",
+      "interface": "remote-name"
+    },
+    {
+      "transport": "udp",
+      "address": "192.168.10.2:4567",
+      "scope": "lan",
+      "interface": "remote-name"
+    }
+  ],
+  "signature": "4a44efccb3b8b240087075af76ab61f5319e6e2a817038588df22c7b110322d07afb937f0a9c2ee15285775054bbb5ab4bf20bdb2ea501fd5e07c4498caf5e0b"
+}

@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "kind": "announce",
+  "profile": "ccb1922b6c4e53ed8d0b6baebd2f68a2735dacef340b3b2ef3ea7a7134573bf3",
+  "origin": "https://rendezvous.example.org",
+  "sender": "0202020202020202020202020202020202020202020202020202020202020202",
+  "sender_pin": "fd110d301d2f077de1414b8f99f441b1403fab207b2052fbd2c065e4ee8e7dc2",
+  "target": "",
+  "target_pin": "",
+  "purpose": "peer_data",
+  "challenge": "0303030303030303030303030303030303030303030303030303030303030303",
+  "operation": "0404040404040404040404040404040404040404040404040404040404040404",
+  "session": "",
+  "generation": "1",
+  "role": "",
+  "expires": "1800000060",
+  "payload": "49337234237e25f61c16f406292d3eca4b5218510f50ba981c0e4a313d2fafb1",
+  "certificate_der": "MIHcMIGPoAMCAQICAQEwBQYDK2VwMBgxFjAUBgNVBAMMDXN5bnRoZXRpYy13MDEwHhcNMjYwMTAxMDAwMDAwWhcNMzAwMTAxMDAwMDAwWjAYMRYwFAYDVQQDDA1zeW50aGV0aWMtdzAxMCowBQYDK2VwAyEAiojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1wwBQYDK2VwA0EA3+amHdKdBHlnhU4I4kq39KNTumkXKf8txKBNfAmx1hQXqpTmZ5piRYB0tL8oQrJAkaeLzdxfNr8YTc+EC6/VBg==",
+  "signature": "ac1205a6fa3472eb3d7a7dcb00d154929dfdd21897e2b6f40a3caf0a6d6f362108930412450b403fed6bad79374d708d984c2ed556bd138171cbc0b6a0f1d90a"
+}

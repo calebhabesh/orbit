@@ -1,0 +1,28 @@
+{
+  "transcript": {
+    "version": "3",
+    "folder": "0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+    "inviter": {
+      "device": "0707070707070707070707070707070707070707070707070707070707070707",
+      "pin": "fd110d301d2f077de1414b8f99f441b1403fab207b2052fbd2c065e4ee8e7dc2",
+      "profile": "ccb1922b6c4e53ed8d0b6baebd2f68a2735dacef340b3b2ef3ea7a7134573bf3",
+      "purpose": "enrollment"
+    },
+    "requester": {
+      "device": "0202020202020202020202020202020202020202020202020202020202020202",
+      "pin": "fd110d301d2f077de1414b8f99f441b1403fab207b2052fbd2c065e4ee8e7dc2",
+      "profile": "ccb1922b6c4e53ed8d0b6baebd2f68a2735dacef340b3b2ef3ea7a7134573bf3",
+      "purpose": "enrollment"
+    },
+    "capability_digest": "8c0cc17a04942cc4f8e0fe0b302606d3108860c126428ba2ceeb5f9ed41c2b05",
+    "attempt": "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
+    "challenge": "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c",
+    "public_key": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+    "prior_membership": "0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d",
+    "expires": "1800000600",
+    "label": "Synthetic laptop"
+  },
+  "capability": "0909090909090909090909090909090909090909090909090909090909090909",
+  "certificate_der": "MIHcMIGPoAMCAQICAQEwBQYDK2VwMBgxFjAUBgNVBAMMDXN5bnRoZXRpYy13MDEwHhcNMjYwMTAxMDAwMDAwWhcNMzAwMTAxMDAwMDAwWjAYMRYwFAYDVQQDDA1zeW50aGV0aWMtdzAxMCowBQYDK2VwAyEAiojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1wwBQYDK2VwA0EA3+amHdKdBHlnhU4I4kq39KNTumkXKf8txKBNfAmx1hQXqpTmZ5piRYB0tL8oQrJAkaeLzdxfNr8YTc+EC6/VBg==",
+  "signature": "7954db47c12aa2e4c7b6fd5e7729d489d2c4df5d56649c5360c250d81be3c574c58d0b73693ee5bd3239eeee2963c9a9a1231e92b4eaaafe47fb026dfb14360c"
+}

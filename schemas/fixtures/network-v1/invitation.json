@@ -1,0 +1,30 @@
+{
+  "version": "3",
+  "folder": "0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+  "inviter_route": {
+    "device": "0707070707070707070707070707070707070707070707070707070707070707",
+    "pin": "fd110d301d2f077de1414b8f99f441b1403fab207b2052fbd2c065e4ee8e7dc2",
+    "profile": "ccb1922b6c4e53ed8d0b6baebd2f68a2735dacef340b3b2ef3ea7a7134573bf3",
+    "purpose": "enrollment"
+  },
+  "certificate_der": "MIHcMIGPoAMCAQICAQEwBQYDK2VwMBgxFjAUBgNVBAMMDXN5bnRoZXRpYy13MDEwHhcNMjYwMTAxMDAwMDAwWhcNMzAwMTAxMDAwMDAwWjAYMRYwFAYDVQQDDA1zeW50aGV0aWMtdzAxMCowBQYDK2VwAyEAiojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1wwBQYDK2VwA0EA3+amHdKdBHlnhU4I4kq39KNTumkXKf8txKBNfAmx1hQXqpTmZ5piRYB0tL8oQrJAkaeLzdxfNr8YTc+EC6/VBg==",
+  "capability": "0909090909090909090909090909090909090909090909090909090909090909",
+  "expires": "1800000600",
+  "profile": {
+    "service_key": "5c9c6df261c9cb840475776aaefcd944b405328fab28f9b3a95ef40490d3de84",
+    "version": "1",
+    "operator": "Orbit synthetic test operator",
+    "authority": "8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c",
+    "epoch": "1",
+    "expires": "1800000600",
+    "origins": [
+      "https://rendezvous.example.org",
+      "wss://relay.example.org"
+    ],
+    "stun": [
+      "8.8.8.8:3478"
+    ],
+    "privacy": "Synthetic fixture: addresses, identities and timing visible; no production service.",
+    "signature": "0b845dd1d16c300cf539f143fc46396236f86c754371dc341a8f872746bdc608769a1d6e43ee66c34c97e80ce7145af664f7ca7e49d84db4a3708dd1371c7b02"
+  }
+}

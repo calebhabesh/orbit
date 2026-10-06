@@ -1,0 +1,109 @@
+{
+  "generation": "18446744073709551615",
+  "expires": "1800000600",
+  "candidates": [
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65535",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65534",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65533",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65532",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65531",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65530",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65529",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65528",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65527",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65526",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65525",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65524",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65523",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65522",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65521",
+      "scope": "public",
+      "interface": ""
+    },
+    {
+      "transport": "tcp",
+      "address": "8.8.8.8:65520",
+      "scope": "public",
+      "interface": ""
+    }
+  ],
+  "capabilities": [
+    "direct_https_v1",
+    "relay_inner_tls_v1",
+    "enrollment_v3",
+    "quic_ice_v1"
+  ],
+  "relay": true
+}
