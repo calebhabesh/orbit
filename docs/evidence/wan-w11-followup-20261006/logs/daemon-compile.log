@@ -1,0 +1,3 @@
+# github.com/calebhabesh/file-sync/tests/terminal_test
+# [github.com/calebhabesh/file-sync/tests/terminal_test]
+tests/terminal/wan_roaming_test.go:142:55: (*testing.common).Logf format %s has arg obs.Generation of wrong type github.com/calebhabesh/file-sync/internal/control/terminalcontract.Uint

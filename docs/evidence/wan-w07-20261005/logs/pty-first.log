@@ -1,0 +1,18 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:47: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 189, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 62, in run
+            peer.run('network', 'preview', '--state', str(peer.state), '--mode', 'self_hosted', '--profile-file', str(profile), '--review-file', str(review), '--json')
+            ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/scripts/terminal_pty_test.py", line 59, in run
+            raise AssertionError(f"CLI {args[0]} failed ({proc.returncode}): " + (proc.stdout+proc.stderr).decode(errors="replace"))
+        AssertionError: CLI network failed (1): usage: filesync <init|serve|stop|config|identity|pair-approve|register|scan|sync|status|peers|membership|enroll|conflicts|resolve|restore|export|history|storage|check|repair|work|inspect|approve-deletions|apply|doctor|support-export|logs|metrics|folders|safety|maintenance|control|version> [options]
+        filesync: unknown command "network"
+        
+--- FAIL: TestWANW07RealPTYRelayOnboarding (0.67s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	0.672s
+FAIL

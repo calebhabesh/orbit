@@ -1,0 +1,70 @@
+{
+  "state": "complete",
+  "focused_race": {
+    "count": 23,
+    "passed": true,
+    "tests": [
+      "TestWANW04BandwidthCeilingAndCancellation",
+      "TestWANW04BandwidthReconnectRetention",
+      "TestWANW04BrokerSeesOnlyInnerTLSCiphertext",
+      "TestWANW04ConcurrentDuplicateLegAdmission",
+      "TestWANW04IdleLifetimeByteQuotaAndCancel",
+      "TestWANW04ManagerRelayIsolationAndPendingCancel",
+      "TestWANW04ManagerRetiresPooledRelayBeforeNewRequest",
+      "TestWANW04OutboundLegsAndBidirectionalBytes",
+      "TestWANW04PerPairAdmissionCannotBeBypassedByNewClient",
+      "TestWANW04PostAuthenticationFrameBounds",
+      "TestWANW04ProductionRelayFolderAndPinIsolation",
+      "TestWANW04ProductionRelayLossPreservesCapture",
+      "TestWANW04ProductionRelayLostReceiptReplay",
+      "TestWANW04ProductionRelayRequestCancellationJoins",
+      "TestWANW04ProductionRelayRestartResumesVerifiedChunks",
+      "TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse",
+      "TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl",
+      "TestWANW04PurposeListenerIsolation",
+      "TestWANW04RestartEpochAndFreshChallenge",
+      "TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation",
+      "TestWANW04TypedRelayFailuresUseExistingRetryBudget",
+      "TestWANW04UnpairedExpiryAndAbruptLoss",
+      "TestWANW04WrongAttachmentsAndReplay"
+    ],
+    "log": "logs/complete-race.log"
+  },
+  "restart_repetitions": {
+    "count": 20,
+    "passed": true,
+    "kind": "local HTTP-service epoch/reannouncement and verified-chunk resume; not OS-process kill"
+  },
+  "compatibility": "passed uncached",
+  "manual_journeys": "T04/T05 plus separately named integration background test passed uncached",
+  "make_check": {
+    "passed": true,
+    "log": "logs/make-check.log"
+  },
+  "service_builds": [
+    "static linux amd64",
+    "static linux arm64 cross-build"
+  ],
+  "resources": [
+    "    relay_test.go:380: 66 live tunnels: heap=36424216 delta=34978368 FDs=272 delta=265 goroutines=664 delta=660",
+    "    relay_test.go:423: streamed 8388608 bytes in 1.747695311s; heap=28070456 FDs=279 goroutines=676",
+    "    relay_test.go:452: joined: FDs=6 goroutines=2"
+  ],
+  "fixture_qualifications": [
+    "single development host",
+    "explicit development profile/CA",
+    "accepted reservations seeded for 66-tunnel capacity fixture",
+    "production sync/enrollment use full coordination"
+  ],
+  "unexecuted": [
+    "operated hosted defaults/profile/signing custody",
+    "physical WAN/NAT",
+    "Pi peak RSS/CPU/FD",
+    "v3 durable setup and ordinary policy activation",
+    "QUIC/ICE/automatic roaming",
+    "T13 native login/logout/unattended boot"
+  ],
+  "failures_retained": true,
+  "final_vet": "passed",
+  "documentation_preservation": "passed: 161 local links/anchors; 23 discovered tests executed; 4936 initial files outside owning changes preserved; final source hashes unchanged"
+}

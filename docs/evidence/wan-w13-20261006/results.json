@@ -1,0 +1,33 @@
+{
+  "packet": "W13",
+  "date": "2026-10-06",
+  "state": "partial_wg6_open",
+  "checks": {
+    "fmt_vet": "passed",
+    "unit_packages": "passed",
+    "race_changed_packages": "passed",
+    "focused_w13_inspection_rotation": "passed",
+    "rehearsal_fresh_build": "passed",
+    "rehearsal_packaged_amd64": "passed",
+    "affected_wan_terminal_suites": "passed",
+    "reproducible_archives": "passed",
+    "systemd_user_sandbox": "passed",
+    "pi_arm64_smoke": "passed",
+    "docs_links_whitespace": "passed",
+    "rotation_defect_negative_reproduction": "failed_as_expected_without_fix"
+  },
+  "unexecuted": [
+    "root_only_unit_properties",
+    "public_deployment_actual_operator",
+    "arm64_device_daemon_rehearsal",
+    "full_go_test_aggregate"
+  ],
+  "wg6_missing": [
+    "operator_identity_contact",
+    "controlled_dns_and_trusted_certificate",
+    "public_host_egress_budget",
+    "authority_key_custody",
+    "signed_release_profile",
+    "monitoring_oncall_destination"
+  ]
+}

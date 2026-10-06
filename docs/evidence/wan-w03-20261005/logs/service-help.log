@@ -1,0 +1,13 @@
+Usage of /tmp/orbit-net-w03-amd64:
+  -listen string
+    	TLS listen address (default ":8443")
+  -origin string
+    	HTTPS origin from profile
+  -profile string
+    	private reviewed ProfileSelection JSON
+  -service-key string
+    	private hex Ed25519 signing key file
+  -tls-cert string
+    	service certificate PEM
+  -tls-key string
+    	service TLS key PEM

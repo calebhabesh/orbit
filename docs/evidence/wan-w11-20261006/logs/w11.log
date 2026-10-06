@@ -1,0 +1,56 @@
+=== RUN   TestWANW11RelayDirectReprobeAndGenerationDrain
+    roaming_test.go:97: authenticated relay/direct/relay routing used real TLS/HTTP; addresses/dial outcome and time were injected
+--- PASS: TestWANW11RelayDirectReprobeAndGenerationDrain (0.01s)
+=== RUN   TestWANW11LateLookupCannotPublishIntoNewGeneration
+--- PASS: TestWANW11LateLookupCannotPublishIntoNewGeneration (0.00s)
+=== RUN   TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide
+panic: test timed out after 1m30s
+	running tests:
+		TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide (1m30s)
+
+goroutine 59 [running]:
+testing.(*M).startAlarm.func1()
+	/usr/lib/go/src/testing/testing.go:2959 +0x34a
+created by time.goFunc
+	/usr/lib/go/src/time/sleep.go:182 +0x2d
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0x2d86481e2fc8, {0xa2d1c5?, 0x2d86481edaa0?}, 0x104ac60)
+	/usr/lib/go/src/testing/testing.go:2266 +0x4f2
+testing.runTests.func1(0x2d86481e2fc8)
+	/usr/lib/go/src/testing/testing.go:2742 +0x37
+testing.tRunner(0x2d86481e2fc8, 0x2d86481edbc8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+testing.runTests({0xa17537, 0x20}, {0xa25e32, 0x31}, 0x2d86481b6378, {0x10bc7a0, 0x2f, 0x2f}, {0xc2a9613eaa37c084, 0x14f47471ea, ...})
+	/usr/lib/go/src/testing/testing.go:2740 +0x510
+testing.(*M).Run(0x2d86481a9d60)
+	/usr/lib/go/src/testing/testing.go:2600 +0x6af
+main.main()
+	_testmain.go:138 +0x9b
+
+goroutine 58 [sync.Mutex.Lock]:
+internal/sync.runtime_SemacquireMutex(0x2d8648330070?, 0x0?, 0x10494d8?)
+	/usr/lib/go/src/runtime/sema.go:95 +0x25
+internal/sync.(*Mutex).lockSlow(0x2d8648374720)
+	/usr/lib/go/src/internal/sync/mutex.go:149 +0x15a
+internal/sync.(*Mutex).Lock(...)
+	/usr/lib/go/src/internal/sync/mutex.go:70
+sync.(*Mutex).Lock(...)
+	/usr/lib/go/src/sync/mutex.go:46
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).serviceCooldown(0x2d8648374680)
+	<repo>/internal/network/relay_runtime.go:324 +0x50
+github.com/calebhabesh/file-sync/internal/network.TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide(0x2d8648376488)
+	<repo>/internal/network/roaming_test.go:156 +0x445
+testing.tRunner(0x2d8648376488, 0x104ac60)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+FAIL	github.com/calebhabesh/file-sync/internal/network	90.064s
+=== RUN   TestWANW11ContinuousSmallWorkCannotStarveLargeRetry
+    wan_fairness_test.go:67: 1-TiB declared task selected within nine ready dispatches twice, including retry and queue reload; no 1-TiB payload transferred
+--- PASS: TestWANW11ContinuousSmallWorkCannotStarveLargeRetry (0.01s)
+=== RUN   TestWANW11ServiceQuotaRetryAllowsQuietRefill
+--- PASS: TestWANW11ServiceQuotaRetryAllowsQuietRefill (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.014s
+FAIL

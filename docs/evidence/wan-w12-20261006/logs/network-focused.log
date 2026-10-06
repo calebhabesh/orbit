@@ -1,0 +1,5 @@
+# github.com/calebhabesh/file-sync/internal/network [github.com/calebhabesh/file-sync/internal/network.test]
+internal/network/diagnostics_test.go:47:12: undefined: managerTarget
+internal/network/diagnostics_test.go:87:12: assignment mismatch: 1 variable but NewSTUNServer returns 2 values
+FAIL	github.com/calebhabesh/file-sync/internal/network [build failed]
+FAIL

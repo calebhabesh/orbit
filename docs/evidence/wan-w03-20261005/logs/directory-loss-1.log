@@ -1,0 +1,4 @@
+# github.com/calebhabesh/file-sync/internal/replication [github.com/calebhabesh/file-sync/internal/replication.test]
+internal/replication/directory_loss_test.go:112:14: heads[0].Author undefined (type history.Envelope has no field or method Author)
+FAIL	github.com/calebhabesh/file-sync/internal/replication [build failed]
+FAIL

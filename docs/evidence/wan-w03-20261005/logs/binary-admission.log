@@ -1,0 +1,6 @@
+=== RUN   TestWANW03WSSAdmissionBounds
+--- PASS: TestWANW03WSSAdmissionBounds (0.02s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.19s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	1.215s

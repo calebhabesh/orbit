@@ -1,0 +1,10 @@
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+--- PASS: TestWANW06BinaryGuidedFirstDevice (4.17s)
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (12.51s)
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+--- PASS: TestWANW06BinaryGuidedFirstDevice (4.16s)
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (12.40s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	34.297s

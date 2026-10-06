@@ -1,0 +1,6 @@
+=== RUN   TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation
+    relay_test.go:356: session 64: QUOTA_EXCEEDED
+--- FAIL: TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation (4.57s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/rendezvous	4.585s
+FAIL

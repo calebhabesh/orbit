@@ -2,7 +2,7 @@
 
 Read [plan](../orbit-wan-implementation-plan.md), [architecture](../orbit-wan-architecture.md),
 [network protocol](../orbit-wan-protocol.md), [UX](../orbit-wan-ux.md) and
-[tracker](wan-status.md). All outcomes/checks below are planned and unexecuted.
+[tracker](wan-status.md). W03–W05 production outcomes are recorded below; W06 CLI controls/local integration and aggregate validation are complete; W07 keyboard TUI/local relay acceptance and full aggregate validation are complete.
 Use the same production control/replication operations from CLI and TUI.
 
 ## W03 — Authenticated rendezvous and profiles
@@ -36,6 +36,25 @@ Acceptance evidence:
 - Local capture/manual direct connections survive directory loss; privacy mode
   causes no public announcements. Profiles distinguish test versus release endpoints.
 
+### W03 production outcomes — 2026-10-05
+
+Implemented `internal/rendezvous`, the separately runnable `cmd/orbit-net`,
+`network.ServiceClient` and private reviewed profile persistence. Exact signed
+ID/pin/purpose records, single-use challenges, semantic idempotency, lease/offer
+expiry, authenticated addressed WSS events, partner acceptance and signed
+reservation intent use the W01 canonical bytes without changing golden fixtures.
+Public candidate scope, all-answer DNS checks, normal outer TLS and independent
+request/dial/socket/control/cache limits enforce the packet's trust/resource seam.
+
+[Architecture](../orbit-wan-architecture.md#w03-directory-and-profile-integration)
+records bounds and metadata retention; [schema clarification](../../schemas/network-v1.md#w03-implemented-service-selection-and-wss-control-behavior)
+records HTTPS challenge binding on same-host WSS and heartbeat behavior.
+[W03 evidence](../evidence/wan-w03-20261005/summary.md) records actual tests,
+operator/binary fixtures and limitations. No default hosted operator, relay
+forwarding, automatic daemon activation, v3 enrollment or new runtime capability
+is claimed. Saving a profile leaves manual behavior intact. W04 and W05/W06
+integrate routing and reviewed setup; W13 supplies production operator values.
+
 ## W04 — Encrypted WSS relay
 
 Dependencies: W01, W02, W03; WG1/WG2 closed. Change: broker, WSS stream adapter,
@@ -64,6 +83,26 @@ Acceptance evidence:
   request cancellation. Verified chunks survive; no false receipt or file completion.
 - Bound memory/FD/goroutines under idle, overload and streaming tests; unknown
   enrollment cannot starve already-admitted data or local capture.
+
+### W04 production outcomes — 2026-10-05
+
+Implemented live WSS attachment/forwarding, fresh exact leg proof admission,
+separate enrollment/data limits, finite bandwidth/byte/idle/lifetime ceilings,
+purpose-specific control coordination and manager logical routes/observations.
+Daemon-owned virtual listeners serve the existing isolated pinned TLS handlers;
+manual policy still selects no public service. Operator flags configure positive
+finite relay ceilings. No routing acknowledgement becomes a file receipt.
+
+[Evidence](../evidence/wan-w04-20261005/summary.md) records 23 discovered race tests,
+20 local service restart/chunk-resume repetitions, complete production-service
+bidirectional verified sync with direct disabled, broker-boundary ciphertext
+inspection, unknown v2 enrollment/folder/control isolation, bounded capacity and
+manual compatibility plus make check. Capacity reservations are explicitly seeded;
+full offer/accept/control journeys have separate production tests. Hosted/native
+WAN/Pi and ordinary v3/CLI/TUI activation remain later packet requirements.
+[Architecture](../orbit-wan-architecture.md#w04-encrypted-relay-integration) and
+[wire clarification](../../schemas/network-v1.md#w04-implemented-wss-attachment-behavior)
+record exact limits/lifetimes and the unchanged canonical contracts.
 
 ## W05 — Routed enrollment v3 and peer data
 
@@ -96,6 +135,31 @@ Acceptance evidence:
   exact operation/identity/root and recover uncertain responses without duplicates.
 - Two folders to the same device, third-device/offline rollout, fork and retired
   history fixtures pass. V2 fixtures and signed bytes remain unchanged.
+
+### W05 production outcomes — 2026-10-05
+
+Implemented additive routed enrollment v3 in `internal/protocol`,
+`internal/replication` and the existing reviewed control/setup path. V3 carries
+logical profile-bound routes, signs the exact requester transcript, verifies the
+inviter certificate before capability disclosure, and binds approval to the
+canonical membership digest. Accepted records retain the exact signed request
+and token digest; raw capabilities stay private and are omitted from ordinary
+inspection.
+
+Private bounded `peer-routes.json` records preserve both pull directions and are
+reloaded after daemon restart. Route registration is idempotent and refuses a
+changed pin/profile for a known device. Existing v2/manual invitations and
+`peers.json` remain unchanged. Approval recovery installs canonical membership
+and retirement snapshots through the existing repository transaction.
+
+Focused security, quota, route-persistence and compatibility checks pass. The
+marked-root daemon campaign kills request-prepared, request-accepted, approval
+and membership-received boundaries and recovers the same identity, attempt,
+root, request and reverse data. The third-device/offline, fork and retired
+history fixture passes. Evidence and limitations are recorded in
+[`wan-w05-20261005`](../evidence/wan-w05-20261005/summary.md). Hosted/default
+operator readiness, native WAN, QUIC/ICE, roaming and ordinary CLI/TUI activation
+remain later packets.
 
 ## W06 — Automatic CLI setup and scripting
 
@@ -152,3 +216,60 @@ Acceptance evidence:
   resize/colorless mode, paste and quit while pending retain safe state/inputs.
 - M2 includes CLI/TUI parity and daemon capture after interface exit. Snapshot-only
   screen tests do not establish the milestone; default hosted tests remain W16.
+
+### W06 production CLI outcomes — 2026-10-05
+
+Implementation and focused controls/CLI evidence are recorded in the
+[tracker](wan-status.md#w06--automatic-cli-setup-and-scripting) and
+[run summary](../evidence/wan-w06-20261005/summary.md); the clean aggregate
+`make check` passes all of its targets. Names/root/capacity/startup and optional connection policy share the
+existing reviewed root job. Fresh setup selects Automatic; missing operated
+configuration reports a networking block without losing local capture. Existing
+manual state and explicit legacy settings keep their mode until owner review.
+Network policy/profile preview/apply uses the durable controller ledger and
+monotone private writes; CLI presentation never owns routing or folder authority.
+
+Named invitations save owner-only transfer artifacts and omit capabilities from
+normal progress/JSON. Retained invite/approval vocabulary continues alongside
+exact request/key/folder/transcript/membership reviews and real TTY confirmation.
+Private v2/v3 files/codes and stdin support scripted root reviews and resumable
+operations; secret argv is refused. The production-binary fixture checks both
+verified transfer directions, version authorship, inviter trust, second-folder
+approval, quota/delay/relaunch, wrong-pin/expiry, input permissions, blocked root
+review and local capture through service outage. Guided CLI PTY evidence is
+separate from W07's keyboard TUI work.
+
+The experiment exposed a five-minute onboarding delay in the old CLI default;
+routed policies now default to five-second reconciliation through the same bounded
+scheduler. Explicit overrides/manual cadence remain. The aggregate terminal
+campaign exceeded Go's default ten minutes, so its finite target budget is now
+thirty minutes without removing cases. All fixtures remain local/disposable;
+real operated profiles, LAN/direct traversal, roaming/Pi measurements, T13 native
+lifecycle and P17 owner use/explanation are not completed by this packet.
+
+### W07 production TUI outcomes — 2026-10-05
+
+W07 is complete through the same reviewed controls used by the CLI. The
+[run summary](../evidence/wan-w07-20261005/summary.md) and
+[tracker](wan-status.md#w07--tui-onboarding-and-relay-milestone) record actual
+commands, failures, passing oracles and limitations. Ordinary create/join review
+shows connection/privacy choices without address/port prompts; Advanced retains
+legacy configuration. Fresh Automatic and pre-confirmation Local-only preserve
+local capture, and existing installations retain their policy. Private v2/v3
+input, exact approval, safe retry/resume and durable revocation use shared controls.
+Connection details show dated observed routes separately from file-copy readiness.
+
+Five focused W07 tests pass with the terminal/shared-client/CLI race campaign.
+The real production-binary PTY journey verifies bytes in both directions, an
+existing-file edit, exact version/hash/author and inviter identity, second-folder
+consent, pending exit/daemon restart with unchanged request/attempt, wrong pin,
+expiry, root correction, masked paste, resize and terminal restoration. Marked
+local service shutdown retains drafts and daemon capture. Full `make check`
+passes, including the 925.129-second terminal campaign. Initial fixture failures
+remain uncredited in the evidence; the additional-folder journey allows the
+existing enrollment bucket 65 seconds to refill without restarting either daemon.
+
+This is one-host local development-service acceptance. Operated defaults,
+physical WAN/NAT, direct discovery/traversal, QUIC/ICE/STUN, roaming and Pi evidence
+remain later packets. T13 native lifecycle remains incomplete; P17 owner
+use/explanation remains deferred. Next sequential packet: **W08**.

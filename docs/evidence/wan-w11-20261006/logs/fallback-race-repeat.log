@@ -1,0 +1,29 @@
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:187: Post "https://5252525252525252525252525252525252525252525252525252525252525252.peer.orbit.invalid/peer/v1/hello": NO_ROUTE
+--- FAIL: TestWANW10AuthenticatedNATPeerMatrix (11.95s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (11.95s)
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:187: Post "https://5252525252525252525252525252525252525252525252525252525252525252.peer.orbit.invalid/peer/v1/hello": NO_ROUTE
+--- FAIL: TestWANW10AuthenticatedNATPeerMatrix (11.94s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (11.94s)
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:187: Post "https://5252525252525252525252525252525252525252525252525252525252525252.peer.orbit.invalid/peer/v1/hello": NO_ROUTE
+--- FAIL: TestWANW10AuthenticatedNATPeerMatrix (11.95s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (11.95s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	35.859s
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	3.269s
+FAIL

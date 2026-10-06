@@ -1,0 +1,105 @@
+go test -timeout=30m ./tests/terminal/...
+ok  	github.com/calebhabesh/file-sync/tests/terminal	784.945s
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=ee461a7 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=ee461a7 -X main.date=2026-10-01' -o bin/filesync-linux-arm64 ./cmd/filesync
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> <repo>/bin/filesync
+Building binary for linux/arm64 -> <repo>/bin/filesync-linux-arm64
+Generating filesync-v1.0.0-linux-amd64.tar.gz...
+Generating filesync_1.0.0_amd64.deb...
+Generating filesync-1.0.0-1.x86_64.rpm...
+Generating filesync-v1.0.0-linux-arm64.tar.gz...
+Generating filesync_1.0.0_arm64.deb...
+Generating filesync-1.0.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - filesync-v1.0.0-linux-amd64.tar.gz (15314102 bytes)
+  - orbit-v1.0.0-linux-amd64.tar.gz (15314102 bytes)
+  - filesync_1.0.0_amd64.deb (15306702 bytes)
+  - filesync-1.0.0-1.x86_64.rpm (15311866 bytes)
+  - filesync-v1.0.0-linux-arm64.tar.gz (14362560 bytes)
+  - orbit-v1.0.0-linux-arm64.tar.gz (14362560 bytes)
+  - filesync_1.0.0_arm64.deb (14349864 bytes)
+  - filesync-1.0.0-1.aarch64.rpm (14348773 bytes)
+  - release-manifest.json (504 bytes)
+  - SHA256SUMS
+python3 scripts/terminal_package_test.py --dist dist
+[
+  {
+    "scenario": "all-package-checksums",
+    "result": "passed"
+  },
+  {
+    "scenario": "amd64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "arm64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "standalone-install-repeat-upgrade-uninstall",
+    "result": "passed",
+    "assertions": [
+      "custom unit preserved",
+      "legacy identity/state preserved",
+      "ordinary bytes preserved",
+      "no user service changes"
+    ]
+  },
+  {
+    "scenario": "package-extracted-bare-PTY",
+    "result": "passed"
+  }
+]
+go vet ./...
+go test ./cmd/filesync/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.098s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.071s
+ok  	github.com/calebhabesh/file-sync/internal/control	0.607s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.013s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	(cached)
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/network	0.433s
+ok  	github.com/calebhabesh/file-sync/internal/protocol	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	33.571s
+ok  	github.com/calebhabesh/file-sync/internal/replication	34.354s
+ok  	github.com/calebhabesh/file-sync/internal/repository	1.687s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	7.499s
+ok  	github.com/calebhabesh/file-sync/internal/state	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.038s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.592s
+ok  	github.com/calebhabesh/file-sync/model	(cached)
+go test ./tests/integration/...
+--- FAIL: TestOrbitPairing_CLI_RunningDaemon_Parity (0.51s)
+    orbit_pairing_test.go:771: invite create while daemon running failed: exit status 1: orbit: UNSUPPORTED_CAPABILITY: UNSUPPORTED_CAPABILITY (action: inspect state and obtain a fresh review)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	51.391s
+FAIL
+make: *** [Makefile:36: test-integration] Error 1

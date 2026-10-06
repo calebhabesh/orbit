@@ -1,0 +1,27 @@
+ M NOTICE
+ M docs/implementation/wan-foundations.md
+ M docs/implementation/wan-status.md
+ M docs/orbit-wan-architecture.md
+ M docs/orbit-wan-design-gates.md
+ M docs/orbit-wan-implementation-plan.md
+ M docs/orbit-wan-protocol.md
+ M go.mod
+ M go.sum
+ M packaging/LICENSES.md
+ M schemas/terminal-control-v1.md
+?? docs/evidence/wan-w00-20261005/
+?? docs/evidence/wan-w01-20261005/
+?? docs/implementation/wan-baseline.md
+?? docs/implementation/wan-contracts.md
+?? internal/control/terminalcontract/network.go
+?? internal/control/terminalcontract/network_test.go
+?? internal/network/
+?? internal/protocol/network.go
+?? internal/protocol/network_test.go
+?? internal/protocol/routed_enrollment.go
+?? internal/replication/wan_transport_test.go
+?? model/network.go
+?? model/network_test.go
+?? schemas/fixtures/network-v1/
+?? schemas/network-v1.md
+?? tests/terminal/wan_baseline_test.go

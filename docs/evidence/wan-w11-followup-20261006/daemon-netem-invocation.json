@@ -1,0 +1,21 @@
+{
+  "root": "/tmp/orbit-w11-netem-tt0so7r4",
+  "argv": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "scripts/wan_daemon_roaming_namespace_test.py",
+    "--test-binary",
+    "/tmp/orbit-w11-terminal-final.test",
+    "--root",
+    "/tmp/orbit-w11-netem-tt0so7r4",
+    "--parent-namespace",
+    "net:[4026531833]",
+    "--latency-ms",
+    "25",
+    "--loss-percent",
+    "1"
+  ]
+}

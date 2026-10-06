@@ -1,0 +1,3 @@
+?   	github.com/calebhabesh/file-sync/internal/rendezvous	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/network	0.300s
+ok  	github.com/calebhabesh/file-sync/internal/config	0.002s

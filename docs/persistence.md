@@ -4,12 +4,21 @@ Status: implementation contract; D1/D4/D5 outcomes are in [design gates](design-
 
 ## Native WAN persistence extension — 2026-10-05
 
-Status: planned; no migration implemented. The [WAN architecture](orbit-wan-architecture.md#durable-and-transient-state)
+Status: W02 adds a read-only private policy migration scaffold and W03 adds
+private reviewed profile persistence; no database migration is implemented. The [WAN architecture](orbit-wan-architecture.md#durable-and-transient-state)
 and [network protocol](orbit-wan-protocol.md#routed-enrollment-v3) specify reviewed
 mode/profile and pinned peer route references plus v3 setup/attempt/approval data.
 W01 freezes records; W02/W05/W14 implement additive migrations under existing
 exclusive ownership and durable-write/replay rules. Preserve existing keys, IDs,
 roots, counters, operations, protected chunks and manual peers.json compatibility.
+
+W02 reads optional private `network.json` using the frozen policy fields. Absence
+returns manual mode/generation 1 without creating a file. Generation must be
+positive; unknown fields and malformed policy fail. Only manual/no-LAN-advertising
+intent is activated at this stage. v1 `peers.json` remains the durable explicit
+route source, reloaded through existing controllers/scheduler; discovered routes
+never write it. Private profile persistence is implemented by W03 below; reviewed policy apply/activation
+remains W06/W12/W14.
 
 Candidate leases, sockets, relay reservations, ICE secrets and service replay
 caches are transient bounded state. Rebuild them from durable intent after restart;
@@ -505,7 +514,11 @@ private CLI request file remains an explicit owner-held replay artifact; it is
 never a diagnostic input. Status `JoinRecord` omits the capability and signature.
 
 The daemon resumes unfinished jobs with bounded work contexts and persisted
-network backoff (25s between two-request status proofs; 60s after throttling).
+network backoff (25s between two-request status proofs; normally 60s after
+throttling). W11 retries a quota-refused prepared submit after 25s only when its
+original signed proof still has more than 25s left; it never renews that proof.
+A successful authenticated submit response supplies the pending state until the
+next scheduled status poll, avoiding two redundant immediate admission requests.
 The same signed request is replayed after a lost response. If its preparation
 nonce expired, requester possession status first distinguishes a previously
 accepted request from an unsent expired transcript; accepted work is recovered,
@@ -607,3 +620,125 @@ status reads never perform that cleanup. Cancellation preserves result candidate
 Only explicit `session discard`, bound to a fresh review, unlinks known private
 paths and releases reservations after successful cleanup. Unknown auxiliary files
 leave an incomplete recovery state. Session/replay metadata IDs are not recycled.
+
+## W03 reviewed profile persistence
+
+Private `network-profile.json` stores the signed `profile`, independently reviewed
+`authority`, `highest_epoch` and explicit `environment` (`release`, `self_hosted`,
+`development`). Loading uses the closed bounded network codec and normal private
+state validation. Saving requires exclusive state ownership, validates the signature
+and expiry, refuses authority/environment replacement, lower epochs and changed
+same-epoch digests, and uses an owner-only temporary file, file fsync, atomic rename
+and directory fsync. An expired prior profile still supplies the epoch rollback
+floor. There is no profile-autotrust or database/identity/history migration.
+Reviewed authority/environment replacement is W14 work (below); an unreviewed
+in-object authority change never counts as rotation. No transient candidate,
+challenge, offer, reservation or WSS credential is written into this file or v1
+`peers.json`. Saving it leaves the current manual policy unchanged.
+
+## W06 network review and desired policy
+
+The existing terminal mutation ledger now admits `kind=network`. A private
+`networkreview/<token>` binds the exact normalized intended policy/profile,
+independently reviewed authority/environment, current policy/profile generation
+and fifteen-minute expiration. Changed inputs, consumed generations and expired
+reviews cannot admit a fresh operation. Accepted work commits to SQLite before
+profile/policy writes; recovery repeats the owning atomic private-file writers.
+The profile write precedes `network.json`; retry after that boundary revalidates
+W03's same-authority/epoch/digest floor. The operation ID/fingerprint replay guard
+is unchanged. An apply retry compares desired with actual daemon policy to recover
+an interrupted restart without treating a saved policy as an active connection.
+
+Setup/join can add an optional network policy to their root review and durable
+job. Legacy mutations without it retain their historical encoding and behavior.
+A new policy must equal current intent or advance its generation exactly once;
+reviewed root/name/settings/policy are compared by canonical generation rather
+than Go pointer identity. Initial Automatic without an operated profile persists
+explicit `awaiting_profile=true`. Such intent grants no service trust or traffic.
+Invitation transfers remain explicit private owner artifacts; status/operation
+records omit capabilities under the existing W05 scrub boundary.
+
+## W08 local direct settings and ephemeral candidates
+
+Reviewed `network.json.lan_advertising` now activates scoped local announcements
+in nonmanual modes. Fresh setup reviews the choice before persisting; existing
+false values are preserved. Private optional `direct-network.json` stores only
+selected interface names, optional numeric bind address and listener-disable intent.
+Absence supplies default `:0` and eligible interfaces without a migration write.
+Malformed advanced settings are an optional route limitation, never a history/key
+repair or a local capture failure. Settings changes require daemon restart.
+
+LAN/public candidate leases, interface/generation cache floors, lookup caches,
+optional bound ports and complete TCP/TLS attempt state remain ephemeral. They
+never rewrite `peers.json`, `peer-routes.json`, membership, counters or invitations.
+Local-only reuses reviewed persistent routes and their pins while refusing WAN
+source traffic. Restart reconstructs candidates from actual listeners and selected
+interfaces; no old socket or discovered address becomes durable authorization.
+
+## W09 optional UDP settings and transient transport
+
+Private `direct-network.json` retains required `interfaces`, `listen`, `disabled`
+fields and accepts additive optional `udp_listen`/`udp_disabled` fields. Its local
+strict decoder rejects duplicate/unknown/null values while preserving older files.
+No migration write or database change is required. UDP bound ports, QUIC connections,
+HTTP3 pools and established-pair addresses remain transient; actual addresses are
+regathered after restart. No ICE credentials/socket state or content receipt is
+persisted by the network adapter. Existing histories/keys/manual routes and recovery
+semantics remain in their owning modules. Actual ICE persistence policy remains W10.
+
+## W10 ephemeral ICE ownership
+
+ICE username/passwords, signed coordination messages, raw UDP sockets, selected
+pairs, QUIC pools and typed failure observations stay in memory. No database,
+identity/history, `peers.json`, profile or invitation migration is introduced.
+Generation retirement/shutdown cancels and joins the owning pair workers, retires
+the Pion agent and clears Orbit's local credential record. Existing signed service
+operations/session/replay expiration remains bounded and transient. Failed or
+replaced routes use existing stable request/version identities and verified chunk
+reuse; transport establishment cannot create a stored/applied receipt.
+
+## W13 service trust and route rebinding
+
+Private `network-roots.pem` (owner-only, ≤ 16 KiB) holds reviewed custom CA trust
+for a `self_hosted` or `development` profile. It is written with the profile under
+the same exclusive network apply, through the private temporary-file/rename/
+directory-fsync path, and removed when a later profile review carries no trust.
+Loading revalidates it (one to four currently valid CA or self-signed
+certificates); invalid stored trust fails service activation rather than falling
+back. Release profiles ignore it.
+
+Profile apply rebinds every `peer-routes.json` entry to the newly reviewed digest;
+device IDs, pins and certificates are unchanged. Service activation repeats the
+rebind for a verified profile whose digest matches the policy, completing a
+rotation interrupted between the profile/policy and route writes. Rebinding
+creates no route, membership, counter, history or `peers.json` change.
+
+## W14 packaged profile adoption, rollback floors and the Automatic offer
+
+Daemon start runs `config.AdoptPackagedProfile` under exclusive ownership before
+loading the policy. It acts only for policy mode `automatic` and the packaged
+release selection: an install awaiting a profile with no `network-profile.json`
+adopts it; a stored release selection of the same authority adopts a newer
+packaged epoch when operator and privacy text are unchanged (otherwise status
+reports `profile_update: available`). It writes the profile, then the policy
+(new digest, `awaiting_profile` cleared, generation + 1), then rebinds routes; a
+later start finishes an interruption between the first two by pointing the
+policy at the stored packaged digest. Manual, Local-only, self-hosted, other
+authorities, expired packaged profiles and invalid stored selections are never
+changed. No identity, history, database or `peers.json` data changes.
+
+Private `network-profile-floors.json` (`{"floors":{"<authority>":"<epoch>"}}`)
+holds the highest epoch accepted per authority. A profile save writes it before
+the selection, so an interruption can only leave a floor at least as high as the
+stored epoch. A missing file is empty; the stored selection still supplies its
+own floor, so pre-W14 state needs no migration. Operator replacement requires
+the reviewed `replace_operator` and still refuses any epoch below a floor.
+
+Private `network-offer.json` (`{"declined":true}`) records a reviewed decline of
+the one-time Automatic offer on a manual install. Removing it only re-shows the
+offer.
+
+Pre-WAN binaries ignore all network files: rolling back opens the same database,
+identity and peers and keeps explicit manual endpoints working (W14 mixed-version
+test). An Automatic-only install rolled back to a pre-WAN binary has no manual
+addresses and stays local until its owner configures them or reinstalls W14.

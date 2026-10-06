@@ -1,0 +1,20 @@
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:181: network <nil> {"policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"active_policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"restart_required":false,"ready":false,"code":"LOCAL_ONLY","operator":"","privacy":"","observations":[{"device":"1503c4b29ebad8d8ead421c0bf22d3bdc247727848b9e8a1e9bcab8779c2e4c5","pin":"cb7bc4344fe4f1a7f21bbfc31529a572e2f228bb6fe9c75826e0db5a6105df7f","purpose":"peer_data","route":"unavailable","code":"CONNECTION_FAILED","observed_at":"2026-10-06T05:34:30.992657448Z","generation":"2"}]}
+    wan_direct_test.go:181: daemon direct route limitation: INVALID_ENCODING
+        agent ready: device=fd20e42890e5fe9fe0d3fc16cf8a21b1f60fdc81a7b3b53175dfd0d5468f278e schema=13 peer-listener=disabled key-pin=d964d999459525864ce84b03172ffccf2010599814440a39518fbdcee4b04aa7 enrollment-listener=disabled control-listener=http://127.0.0.1:36819
+        
+    wan_direct_test.go:181: network <nil> {"policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"active_policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"restart_required":false,"ready":false,"code":"LOCAL_ONLY","operator":"","privacy":"","observations":[{"device":"fd20e42890e5fe9fe0d3fc16cf8a21b1f60fdc81a7b3b53175dfd0d5468f278e","pin":"d964d999459525864ce84b03172ffccf2010599814440a39518fbdcee4b04aa7","purpose":"peer_data","route":"unavailable","code":"CONNECTION_FAILED","observed_at":"2026-10-06T05:34:31.016475513Z","generation":"2"}]}
+    wan_direct_test.go:181: daemon direct route limitation: INVALID_ENCODING
+        agent ready: device=1503c4b29ebad8d8ead421c0bf22d3bdc247727848b9e8a1e9bcab8779c2e4c5 schema=13 peer-listener=disabled key-pin=cb7bc4344fe4f1a7f21bbfc31529a572e2f228bb6fe9c75826e0db5a6105df7f enrollment-listener=disabled control-listener=http://127.0.0.1:41123
+        
+    wan_direct_test.go:181: binary verified bytes absent binary-a.txt
+    wan_direct_test.go:87: daemon direct route limitation: INVALID_ENCODING
+        agent ready: device=1503c4b29ebad8d8ead421c0bf22d3bdc247727848b9e8a1e9bcab8779c2e4c5 schema=13 peer-listener=disabled key-pin=cb7bc4344fe4f1a7f21bbfc31529a572e2f228bb6fe9c75826e0db5a6105df7f enrollment-listener=disabled control-listener=http://127.0.0.1:41123
+        
+    wan_direct_test.go:87: daemon direct route limitation: INVALID_ENCODING
+        agent ready: device=fd20e42890e5fe9fe0d3fc16cf8a21b1f60fdc81a7b3b53175dfd0d5468f278e schema=13 peer-listener=disabled key-pin=d964d999459525864ce84b03172ffccf2010599814440a39518fbdcee4b04aa7 enrollment-listener=disabled control-listener=http://127.0.0.1:36819
+        
+--- FAIL: TestWANW09BinaryLocalOnlyQUICAfterApproval (120.36s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	120.364s
+FAIL

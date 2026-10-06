@@ -1,0 +1,2 @@
+/tmp/orbit-net-w04-amd64: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, Go BuildID=dzpmT_vWMkrBw6onDK2Y/BMxohNj9vuH5b-b_tYfM/teOwR1Yea3dkOETWLBCZ/JdpRqrJdcwMUI6YCL6HQ, BuildID[sha1]=b589c74030dd785fa75acf7aa46230f4362880d2, with debug_info, not stripped
+/tmp/orbit-net-w04-arm64: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, Go BuildID=DQzVrn-007XqmUPl2bjp/ayduczRsvssGKODHnxYf/bSw1zCRv_rwgj693tXBo/Mmenfz61J1cNYOPW2UwW, BuildID[sha1]=0535bd3b53b820320afe63fdf381809806a6b857, with debug_info, not stripped

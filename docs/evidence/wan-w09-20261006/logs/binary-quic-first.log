@@ -1,0 +1,6 @@
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:160: binary verified bytes absent binary-a.txt
+--- FAIL: TestWANW09BinaryLocalOnlyQUICAfterApproval (121.51s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	121.514s
+FAIL

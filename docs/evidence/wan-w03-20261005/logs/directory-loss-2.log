@@ -1,0 +1,4 @@
+=== RUN   TestWANW03DirectoryLossPreservesManualCaptureAndSync
+--- PASS: TestWANW03DirectoryLossPreservesManualCaptureAndSync (0.65s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	1.660s

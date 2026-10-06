@@ -1,0 +1,4 @@
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.017s
+ok  	github.com/calebhabesh/file-sync/internal/control	23.169s
+ok  	github.com/calebhabesh/file-sync/internal/config	1.523s
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	2.512s

@@ -1,0 +1,24 @@
+orbit-net 1.0.0 (ee461a7, 2026-10-01)
+operator:    W13 Pi smoke
+environment: self_hosted
+epoch:       1
+orbit-net: warning: profile epoch 1 expires in 1h0m0s; sign and distribute the next epoch
+orbit-net: warning: TLS certificate expires in 48h0m0s; renew and send SIGHUP
+orbit-net: warning: serving a self_hosted profile; clients must review it explicitly with custom trust
+orbit-net: configuration valid for https://192.168.88.63:56457, profile epoch 1 (self_hosted) until 2026-10-06T19:47:52Z
+orbit-net: warning: profile epoch 1 expires in 1h0m0s; sign and distribute the next epoch
+orbit-net: warning: TLS certificate expires in 48h0m0s; renew and send SIGHUP
+orbit-net: warning: serving a self_hosted profile; clients must review it explicitly with custom trust
+orbit-net: serving https://192.168.88.63:56457 on 192.168.88.63:56457 (profile epoch 1, self_hosted)
+ok
+challenge with unknown profile: 403
+serial before=serial=217EF2BA9D2A5D7075F6BA1FE0FA667E36383833 after-SIGHUP=serial=217EF2BA9D2A5D7075F6BA1FE0FA667E36383834
+STUN answers=10 largest=32B for 100 requests
+fds=9 VmRSS:	    9180 kB
+orbit_net_certificate_reloads_total 1
+orbit_net_refusals_total{reason="untrusted"} 1
+orbit_net_stun_answered_total 10
+orbit_net_stun_dropped_total{reason="rate"} 90
+exit=0
+orbit-net: stopping; closing controls and relays, then draining HTTP
+zsh:1: no matches found: /tmp/orbit-w13-smoke-*

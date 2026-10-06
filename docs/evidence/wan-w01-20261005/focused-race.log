@@ -1,0 +1,128 @@
+=== RUN   TestWANW01StreamBoundsAndDeadlines
+--- PASS: TestWANW01StreamBoundsAndDeadlines (0.01s)
+=== RUN   TestWANW01StreamInvalidFrames
+=== RUN   TestWANW01StreamInvalidFrames/maximum
+=== RUN   TestWANW01StreamInvalidFrames/one-over
+=== RUN   TestWANW01StreamInvalidFrames/text
+--- PASS: TestWANW01StreamInvalidFrames (0.02s)
+    --- PASS: TestWANW01StreamInvalidFrames/maximum (0.01s)
+    --- PASS: TestWANW01StreamInvalidFrames/one-over (0.01s)
+    --- PASS: TestWANW01StreamInvalidFrames/text (0.00s)
+=== RUN   TestWANW01WSSSlowReceiverCancellation
+    stream_test.go:116: slow receiver blocked after 106 bounded frames; cancellation joined writer
+--- PASS: TestWANW01WSSSlowReceiverCancellation (0.11s)
+=== RUN   TestWANW01ForwardBackpressureCleanup
+--- PASS: TestWANW01ForwardBackpressureCleanup (0.03s)
+=== RUN   TestWANW01ListenerCancel
+--- PASS: TestWANW01ListenerCancel (0.00s)
+=== RUN   TestWANW01BrokerBrowserOrigin
+--- PASS: TestWANW01BrokerBrowserOrigin (0.00s)
+=== RUN   TestWANW01TransportTrustAndPlaintext
+--- PASS: TestWANW01TransportTrustAndPlaintext (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.174s
+=== RUN   TestWANW01CanonicalGoldens
+--- PASS: TestWANW01CanonicalGoldens (0.01s)
+=== RUN   TestWANW01StrictNetworkCodec
+--- PASS: TestWANW01StrictNetworkCodec (0.00s)
+=== RUN   TestWANW01MaximumMessages
+--- PASS: TestWANW01MaximumMessages (0.00s)
+=== RUN   TestWANW01ProofSubstitution
+--- PASS: TestWANW01ProofSubstitution (0.00s)
+=== RUN   TestWANW01URLScope
+--- PASS: TestWANW01URLScope (0.00s)
+=== RUN   TestWANW01RoutedBindingsAndV2Coexistence
+--- PASS: TestWANW01RoutedBindingsAndV2Coexistence (0.00s)
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/expired
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/rollback
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/missing-authority
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/self-supplied-authority
+--- PASS: TestWANW01ProfileAuthorityExpiryAndRotation (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/expired (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/rollback (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/missing-authority (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/self-supplied-authority (0.00s)
+=== RUN   TestWANW01OfferMaximum
+--- PASS: TestWANW01OfferMaximum (0.00s)
+=== RUN   TestWANW01CertificateMaximum
+--- PASS: TestWANW01CertificateMaximum (0.13s)
+=== RUN   TestWANW01CrossEnvelopeBindings
+--- PASS: TestWANW01CrossEnvelopeBindings (0.00s)
+=== RUN   TestWANW01InvitationSizeBound
+--- PASS: TestWANW01InvitationSizeBound (0.00s)
+=== RUN   TestWANW01MaximumGoldenAndOneOver
+--- PASS: TestWANW01MaximumGoldenAndOneOver (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.158s
+=== RUN   TestWANW01PinnedTransport
+=== RUN   TestWANW01PinnedTransport/direct
+=== RUN   TestWANW01PinnedTransport/relay
+--- PASS: TestWANW01PinnedTransport (1.33s)
+    --- PASS: TestWANW01PinnedTransport/direct (0.64s)
+    --- PASS: TestWANW01PinnedTransport/relay (0.68s)
+=== RUN   TestWANW01WrongPinAndIsolation
+=== RUN   TestWANW01WrongPinAndIsolation/direct/enrollment
+2026/10/05 11:31:10 http: TLS handshake error from 127.0.0.1:41890: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/direct/peer_data
+2026/10/05 11:31:11 http: TLS handshake error from 127.0.0.1:54630: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/relay/enrollment
+2026/10/05 11:31:12 http: TLS handshake error from orbit-relay:0: use of closed network connection
+=== RUN   TestWANW01WrongPinAndIsolation/relay/peer_data
+2026/10/05 11:31:12 http: TLS handshake error from orbit-relay:0: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/data-missing-cert
+2026/10/05 11:31:13 http: TLS handshake error from orbit-relay:0: tls: client didn't provide a certificate
+=== RUN   TestWANW01WrongPinAndIsolation/enrollment-no-data
+=== RUN   TestWANW01WrongPinAndIsolation/enrollment-no-control
+=== RUN   TestWANW01WrongPinAndIsolation/data-no-control
+--- PASS: TestWANW01WrongPinAndIsolation (4.72s)
+    --- PASS: TestWANW01WrongPinAndIsolation/direct/enrollment (0.59s)
+    --- PASS: TestWANW01WrongPinAndIsolation/direct/peer_data (0.58s)
+    --- PASS: TestWANW01WrongPinAndIsolation/relay/enrollment (0.59s)
+    --- PASS: TestWANW01WrongPinAndIsolation/relay/peer_data (0.59s)
+    --- PASS: TestWANW01WrongPinAndIsolation/data-missing-cert (0.59s)
+    --- PASS: TestWANW01WrongPinAndIsolation/enrollment-no-data (0.62s)
+    --- PASS: TestWANW01WrongPinAndIsolation/enrollment-no-control (0.59s)
+    --- PASS: TestWANW01WrongPinAndIsolation/data-no-control (0.58s)
+=== RUN   TestWANW01EnrollmentHandlerThroughRelay
+--- PASS: TestWANW01EnrollmentHandlerThroughRelay (0.60s)
+=== RUN   TestWANW01V3EnrollmentTransportAndMembership
+=== RUN   TestWANW01V3EnrollmentTransportAndMembership/direct
+=== RUN   TestWANW01V3EnrollmentTransportAndMembership/relay
+--- PASS: TestWANW01V3EnrollmentTransportAndMembership (1.20s)
+    --- PASS: TestWANW01V3EnrollmentTransportAndMembership/direct (0.60s)
+    --- PASS: TestWANW01V3EnrollmentTransportAndMembership/relay (0.60s)
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/direct/cancel
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/direct/redirect
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/direct/target-pin
+2026/10/05 11:31:18 http: TLS handshake error from 127.0.0.1:37504: remote error: tls: bad certificate
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/relay/cancel
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/relay/redirect
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/relay/target-pin
+2026/10/05 11:31:20 http: TLS handshake error from orbit-relay:0: remote error: tls: bad certificate
+--- PASS: TestWANW01TransportCancellationRedirectAndBinding (3.44s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/direct/cancel (0.57s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/direct/redirect (0.57s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/direct/target-pin (0.57s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/relay/cancel (0.57s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/relay/redirect (0.59s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/relay/target-pin (0.57s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	12.289s
+=== RUN   TestWANW01NetworkControlContracts
+--- PASS: TestWANW01NetworkControlContracts (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.005s
+=== RUN   TestWANW01AdmissionReplayIdentityAndRestart
+--- PASS: TestWANW01AdmissionReplayIdentityAndRestart (0.00s)
+=== RUN   TestWANW01AdmissionCapacity
+--- PASS: TestWANW01AdmissionCapacity (0.00s)
+=== RUN   TestWANW01EnrollmentExactApproval
+--- PASS: TestWANW01EnrollmentExactApproval (0.00s)
+=== RUN   TestWANW01ConnectionGenerationAndBounds
+--- PASS: TestWANW01ConnectionGenerationAndBounds (0.01s)
+=== RUN   TestWANW01ReplayCapacityCannotEvictLiveProtection
+--- PASS: TestWANW01ReplayCapacityCannotEvictLiveProtection (0.03s)
+PASS
+ok  	github.com/calebhabesh/file-sync/model	1.044s

@@ -1,0 +1,4 @@
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.23s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1.229s

@@ -1,0 +1,80 @@
+{
+  "packet": "W00",
+  "state": "complete",
+  "checks": [
+    {
+      "id": "make-check",
+      "command": "make check",
+      "exit_code": 0,
+      "log": "logs/make-check.log"
+    },
+    {
+      "id": "discovery",
+      "command": "go test -list '^(TestWANW00|TestTerminalT04|TestTerminalT05|Test)' ./cmd/filesync/... ./internal/control/... ./internal/replication/... ./tests/terminal/...",
+      "exit_code": 0,
+      "log": "logs/discovery.log"
+    },
+    {
+      "id": "wan-w00",
+      "command": "go test -count=1 -v ./tests/terminal -run '^TestWANW00'",
+      "exit_code": 0,
+      "log": "logs/wan-w00.log",
+      "go_reported_package_seconds": 0.325
+    },
+    {
+      "id": "focused-uncached",
+      "command": "go test -count=1 ./cmd/filesync/... ./internal/control/... ./internal/replication/...",
+      "exit_code": 0,
+      "log": "logs/focused-uncached.log"
+    },
+    {
+      "id": "manual-process",
+      "command": "go test -count=1 -v ./tests/terminal -run '^(TestTerminalT04.*CLI|TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh)$'",
+      "exit_code": 0,
+      "log": "logs/manual-process.log",
+      "go_reported_package_seconds": 85.799
+    },
+    {
+      "id": "manual-cli",
+      "command": "go test -count=1 -v ./tests/terminal -run '^TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits$'",
+      "exit_code": 0,
+      "log": "logs/manual-cli.log",
+      "go_reported_package_seconds": 28.402
+    },
+    {
+      "id": "wan-w00-race",
+      "command": "go test -race -count=1 -v ./tests/terminal -run '^TestWANW00'",
+      "exit_code": 0,
+      "log": "logs/wan-w00-race.log",
+      "go_reported_package_seconds": 1.917
+    },
+    {
+      "id": "docs-check",
+      "command": "python3 docs/evidence/wan-w00-20261005/check_docs.py",
+      "exit_code": 0,
+      "log": "logs/docs-check.log"
+    },
+    {
+      "id": "diff-check",
+      "command": "git diff --check",
+      "exit_code": 0,
+      "log": "logs/diff-check.log"
+    }
+  ],
+  "test_discovery_count": 206,
+  "make_check": "Passed; ordinary Go caching retained; terminal suite compiled before W00 fixture addition. New fixture independently passed uncached and race. CLI is included in make test.",
+  "reproductions": {
+    "missing_explicit_address": "Both peer and enrollment endpoint omissions refused by production enrollment client.",
+    "unusable_explicit_address": "Synthetic nonaccepting held listener; deadline failure with unchanged both identity files/configs, captured canonical head, verified manifest and working bytes.",
+    "changed_peer_address": "Existing production T05 process test observed sync task error after listener change and resumed after explicit CLI endpoint update, retaining saved anchor/key/membership, original author and heads."
+  },
+  "limitations": [
+    "Single-host nonloopback process sockets; not physical LAN/WAN or NAT emulation.",
+    "W01-W17 runtime, gate experiments, hosted operator/service activation and native WAN measurements unexecuted.",
+    "Namespaces/netem/firewall privilege-dependent harness not implemented or run.",
+    "Full uncached race/demo/VM resets/long resource/native/container campaigns not rerun by W00; existing evidence retained.",
+    "T13 actual native login/logout/unattended boot remains incomplete.",
+    "P17 owner use/unaided explanation deferred."
+  ],
+  "next_packet": "W01"
+}

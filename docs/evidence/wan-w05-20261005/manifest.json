@@ -1,0 +1,15 @@
+{
+  "packet": "W05",
+  "run_id": "wan-w05-20261005",
+  "host": "single Linux development host",
+  "profile": "development self-hosted fixture",
+  "filesystem": "fresh marked disposable roots",
+  "network": "local non-loopback service fixtures and encrypted WSS relay",
+  "credentials": "disposable device identities and development CA",
+  "limitations": [
+    "not hosted/default operator evidence",
+    "not physical WAN/NAT/Pi capacity",
+    "not QUIC/ICE/roaming",
+    "T13 native lifecycle remains open"
+  ]
+}

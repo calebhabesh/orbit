@@ -1,0 +1,31 @@
+== versions
+Packaged service profile: "Caleb Habesh" epoch 1, expires 2027-01-04T19:37:37Z (SHA-256: 356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165)
+Packaged service profile: "Caleb Habesh" epoch 1, expires 2027-01-04T19:37:37Z (SHA-256: 356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165)
+== laptop: an earlier install that chose Automatic before a profile was packaged
+Connection: automatic; code=PROFILE_MISSING_OR_EXPIRED; ready=false; restart_required=false
+Next action: Review an updated signed service profile; local capture remains available.
+== laptop: upgrade = same state, packaged profile now present
+Already using Automatic with "Caleb Habesh".
+ready after 0.3 s
+Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+Operator: "Caleb Habesh"
+Profile: verified; expires=2027-01-04T19:37:37Z
+Packaged profile: "Caleb Habesh" epoch 1; expires=2027-01-04T19:37:37Z (current)
+== pairing a fresh Pi with a one-line code (join is its first setup)
+code: orbit-invitation:v3:... (1683 chars, not recorded)
+join-exit=5
+Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+Operator: "Caleb Habesh"
+Profile: verified; expires=2027-01-04T19:37:37Z
+request visible on laptop after 5.3 s
+Device "W14 Pi"; folder=341111eb0410ee5c0818f64176374c398633eaff63dde46252fbfc6fdcae171c; request=…
+Key pin: 2267614a6311ba3d9b60e7b1f9004dee3ed5093cae95f04d94370e7ac19c4e2d; verification code: e60d4-1be3b-7f488-f297c; state=pending_approval
+approved after 5.7 s
+laptop->Pi first file after 34.3 s from join
+Pi->laptop after 5.7 s
+61c90c887202618145d08a3fbab72836a9a8b296c96b534754a0279ccdd5b810  LOCAL/notes/from-laptop.txt
+2cfb74a6994b82c353637cd52c5585a1675bd68b3a8e7bc2fca1a72dde175267  LOCAL/notes/from-pi.txt
+61c90c887202618145d08a3fbab72836a9a8b296c96b534754a0279ccdd5b810  REMOTE/notes/from-laptop.txt
+2cfb74a6994b82c353637cd52c5585a1675bd68b3a8e7bc2fca1a72dde175267  REMOTE/notes/from-pi.txt
+Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+Device …: quic; code=CONNECTED; observed=2026-10-06T20:17:17.139785628Z

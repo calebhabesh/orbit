@@ -3,14 +3,16 @@
 Read [plan](../orbit-wan-implementation-plan.md), [architecture](../orbit-wan-architecture.md),
 [UX](../orbit-wan-ux.md), [network protocol](../orbit-wan-protocol.md),
 [verification](../verification.md#native-wan-verification) and [tracker](wan-status.md).
-All work/checks below are planned and unexecuted. Preserve historical P/O/T evidence
+Required work and acceptance below define each packet; dated outcomes record executed checks. Preserve historical P/O/T evidence
 and deferred personal-use/unaided-explanation records.
 
 ## W12 — Observations, diagnostics and controls
 
-Dependencies: W06, W07, W11. Change: typed network queries/policy mutations,
-doctor/support export, CLI/TUI status/details/help. Invariants: I13, I19–I23,
-I27–I28, N01, N05–N10.
+Dependencies: W06, W07, W11. State: **complete for the recorded local CLI/TUI,
+privacy and bounded diagnostics acceptance**. Change: typed network
+queries/policy mutations, doctor/support export, CLI/TUI status/details/help.
+Invariants: I13, I19–I23, I27–I28, N01, N05–N10. See the
+[packet status/evidence](wan-status.md#w12--qualified-network-status-diagnostics-and-controls).
 
 Required work:
 
@@ -27,7 +29,7 @@ Required work:
 - Keep fresh consent under first-setup review and existing installs under manual
   defaults until reviewed opt-in. Verify CLI/TUI results/context/error parity.
 
-Acceptance evidence:
+Acceptance evidence recorded 2026-10-06:
 
 - Service healthy + peer offline, relay connected + file conflicted, direct healthy
   + service down, stale peer receipt, membership fork and blocked capture display
@@ -36,7 +38,13 @@ Acceptance evidence:
   settings replay/stale reviews and daemon restart preserve intended policy.
 - Doctor cancellation/timeout stays finite; redacted exports/logs contain no
   invitation/ICE/relay credentials or private filenames. No inferred NAT diagnosis
-  is presented as measured fact.
+  is presented as measured fact. Focused package/race tests and a real binary/PTY
+  journey pass; exact commands and retained failed reproductions are in
+  `docs/evidence/wan-w12-20261006/`.
+
+The recorded acceptance uses disposable local service/peer fixtures. Operated
+hosted defaults, physical WAN/CGNAT, packaged self-host deployment and the
+remaining release packets stay unexecuted and are not implied by this state.
 
 ## W13 — Operated defaults and self-hosting
 
@@ -72,6 +80,35 @@ Acceptance evidence:
 - Self-host profile works with production clients without disabling verification;
   runbook distinguishes user installation from operator provisioning work.
 
+### W13 outcome — partial, 2026-10-06
+
+Local deliverables pass and the hosted service is live; **WG6 stays open** for
+authority-key backup and alerting.
+`orbit-net` gained operator tooling (`keygen`, `profile sign/verify` with
+`--previous` rollback protection), a strict `serve --config/--check` path,
+SIGHUP certificate reload, a loopback sanitized `/metrics`/`/healthz`, and
+two-epoch rotation overlap in `internal/rendezvous`. Devices review custom
+self-host CA trust (`--service-roots`), routes follow the active epoch and
+same-service adjacent-epoch peers keep syncing. Reproducible amd64/arm64 operator
+archives carry a hardened systemd unit, sysusers entry, examples and the
+[operator runbook](../orbit-net-operator.md).
+
+| Criterion | Result |
+| --- | --- |
+| WG6 actual operator/profile readiness | **Mostly met**: operator Caleb Habesh, `connect.calebhabesh.com:8443` on the owner's Oracle VPS, Let's Encrypt with renewal, release profile epoch 1, budgets; live laptop↔Pi relay sync ([deployment](../evidence/wan-w13-20261006/deployment.md)). Missing: second offline authority-key copy and an alert/on-call destination. |
+| Package/server launch | Packaged amd64 binary in the real-binary rehearsal; arm64 archive smoke on the owner's Pi 4B; sandbox properties under `systemd-run --user` |
+| Certificate/profile expiration and rotation | SIGHUP renewal, wrong-host refusal, epoch 1→2 overlap with mixed-epoch devices, per-epoch expiry, expired-profile refusal by service and device |
+| Overload, STUN abuse, restart, revoke/disable, rollback | 320-socket flood capped at 256 (fds 265, RSS ≈ 25 MiB), pre-auth quotas, STUN 10 answers per 100 requests at 32 B, graceful restart, Local-only disable, rollback-to-older-epoch refused and stranded-device signal |
+| Outer relay cannot read content | `TestWANW04BrokerSeesOnlyInnerTLSCiphertext`/`TestWANW01PinnedTransport` re-run; rehearsal metrics/logs carry no IDs, pins, capability, filenames or content |
+| Self-host with production clients, verification on | Without reviewed trust the device stays unready; with `--service-roots` it pairs and transfers |
+
+System-manager-only unit properties (`User=`, ambient capability,
+`ProtectSystem`, `ConfigurationDirectory`) were unexecuted in the local rehearsal;
+the subsequent [live deployment](../evidence/wan-w13-20261006/deployment.md)
+exercised the real system unit. Native public-internet service load and hosted
+capacity remain unexecuted (W16). Evidence:
+[W13 summary](../evidence/wan-w13-20261006/summary.md).
+
 ## W14 — Migration, mixed versions and packaged defaults
 
 Dependencies: W05–W07, W12, W13. Change: deliberate migration/configuration,
@@ -102,6 +139,41 @@ Acceptance evidence:
 - Manual/local-only modes preserve privacy and existing configuration; confirmed
   Automatic mode removes normal IP/port/Tailscale steps. M4 includes operator
   runbooks and package provenance, without claiming unexecuted WAN behavior.
+
+### W14 outcome — implementation recorded; final-source validation in progress, 2026-10-06
+
+Ordinary amd64/arm64 builds embed the live release profile (epoch 1, digest
+`356f0ced…ec165`, expires 2027-01-04) under a frozen authority; fresh setup goes
+straight to Automatic with it. Upgrades keep reviewed choices (manual installs get
+a one-time offer; Automatic installs awaiting a profile adopt it at start; same-text
+newer epochs apply at start, changed text needs `orbit network update`). Operator
+replacement is a reviewed switch with per-authority rollback floors. People get
+one-step `network automatic|update|set` with a single `Apply? [Y/n]`, and
+`devices invite --code` prints a one-line code (compact when both builds carry the
+packaged profile). Mismatched pairings name the cause and the device to change.
+
+| Criterion | Result |
+| --- | --- |
+| Legacy state reopens with stable IDs/counters/hashes; interrupted writes recover | Real pre-WAN binary (`ef462f2`) state upgraded in place: identity and exact head records unchanged, manual kept, profile not adopted; interrupted adoption completes on next start; floors written before selection |
+| Old/new invitation and capability combinations; unsupported future version | Pre-WAN inviter → upgraded joiner over v2, both directions; rollback to the pre-WAN binary opens and syncs; compact/full v3 codes; `v4` code and version rejected precisely; `packaged_profile_v1` capability |
+| Native packaged CLI/service with the real included profile | Packaged amd64 (laptop) and arm64 (Pi 4B) archives, fresh disposable state, no profile file or addresses: awaiting-profile install adopts at start; Pi join from a pasted one-line code; approval; relay transfer both ways with matching SHA-256 |
+| No-profile / expired-profile / self-host override | No profile: hermetic suites and native step 1 (`PROFILE_MISSING_OR_EXPIRED`, local capture). Expired: unit-level only (adoption skipped, status `expired`, package build refuses < 30 days). Self-host: reviewed operator replacement and back (control test) plus W13 production-client rehearsal |
+| Manual/Local-only privacy and configuration | Adoption matrix leaves manual/local-only/self-hosted untouched; real-profile manual daemon makes no service contact while offering review |
+| Automatic removes IP/port/Tailscale steps; runbooks and provenance | Native journey; operator runbook rotation/packaging steps; `orbit version` and `release-manifest.json` record the packaged profile |
+
+Defect found and fixed: a fresh joiner whose own relay was still connecting after
+the setup restart backed off 25 s; it now retries in 3 s (no inviter budget used).
+Request-visible time fell from 26.8 s to 5.3 s in the native journey. Approval to
+first transfer remains about 25–30 s because status polling keeps the inviter's
+5-requests/minute enrollment budget; W16 measures ordinary setup timing.
+
+Limitations: WG6 (offline authority-key copy, alert destination) still gates
+publishing packages beyond the owner; the TUI offer/update is an overview line
+pointing at the CLI command rather than an in-TUI confirm; expired-profile
+behavior has no native run (no clock control for static Go binaries); a pre-WAN
+receiver cannot use an Automatic device's routed invitation (issue v2 from Manual
+mode or upgrade it); short human-typeable codes need a service mailbox (future).
+Evidence: [W14 summary](../evidence/wan-w14-20261006/summary.md).
 
 ## W15 — Integrated failures, security and resources
 

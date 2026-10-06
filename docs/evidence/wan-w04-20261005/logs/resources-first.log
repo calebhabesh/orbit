@@ -1,0 +1,57 @@
+=== RUN   TestWANW04OutboundLegsAndBidirectionalBytes
+--- PASS: TestWANW04OutboundLegsAndBidirectionalBytes (0.14s)
+=== RUN   TestWANW04WrongAttachmentsAndReplay
+=== RUN   TestWANW04WrongAttachmentsAndReplay/role
+=== RUN   TestWANW04WrongAttachmentsAndReplay/pin
+=== RUN   TestWANW04WrongAttachmentsAndReplay/purpose
+=== RUN   TestWANW04WrongAttachmentsAndReplay/epoch
+=== RUN   TestWANW04WrongAttachmentsAndReplay/signature
+=== RUN   TestWANW04WrongAttachmentsAndReplay/expired
+=== RUN   TestWANW04WrongAttachmentsAndReplay/released
+=== RUN   TestWANW04WrongAttachmentsAndReplay/duplicate
+--- PASS: TestWANW04WrongAttachmentsAndReplay (0.40s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/role (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/pin (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/purpose (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/epoch (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/signature (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/expired (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/released (0.06s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/duplicate (0.06s)
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/expiry
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/close
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/service
+--- PASS: TestWANW04UnpairedExpiryAndAbruptLoss (0.17s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/expiry (0.06s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/close (0.06s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/service (0.06s)
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/idle
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/lifetime
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/bytes
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/cancel
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/slow
+--- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel (0.54s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/idle (0.10s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/lifetime (0.10s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/bytes (0.06s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/cancel (0.06s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/slow (0.21s)
+=== RUN   TestWANW04BandwidthCeilingAndCancellation
+--- PASS: TestWANW04BandwidthCeilingAndCancellation (0.10s)
+=== RUN   TestWANW04ConcurrentDuplicateLegAdmission
+--- PASS: TestWANW04ConcurrentDuplicateLegAdmission (0.06s)
+=== RUN   TestWANW04PurposeListenerIsolation
+--- PASS: TestWANW04PurposeListenerIsolation (0.07s)
+=== RUN   TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation
+    relay_test.go:351: session 64: SERVICE_UNAVAILABLE
+--- FAIL: TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation (1.55s)
+=== RUN   TestWANW04RestartEpochAndFreshChallenge
+    relay_test.go:417: INVALID_ENCODING
+--- FAIL: TestWANW04RestartEpochAndFreshChallenge (0.05s)
+=== RUN   TestWANW04BandwidthReconnectRetention
+--- PASS: TestWANW04BandwidthReconnectRetention (0.07s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/rendezvous	3.166s
+FAIL

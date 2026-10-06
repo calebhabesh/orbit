@@ -1,0 +1,14 @@
+[
+  "unshare",
+  "--user",
+  "--map-root-user",
+  "--net",
+  "python3",
+  "scripts/wan_ice_namespace_test.py",
+  "--test-binary",
+  "/tmp/orbit-w10-replication-final.test",
+  "--root",
+  "/tmp/orbit-w10-final-3lpel_xb",
+  "--parent-namespace",
+  "net:[4026531833]"
+]

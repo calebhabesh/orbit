@@ -1,0 +1,4 @@
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (2.12s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	3.132s

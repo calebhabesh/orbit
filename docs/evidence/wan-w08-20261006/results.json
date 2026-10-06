@@ -1,0 +1,89 @@
+{
+  "packet": "W08",
+  "state": "complete",
+  "acceptance": "production integration and local/isolated fixtures",
+  "discovered_tests": 15,
+  "passing_checks": {
+    "focused_race": {
+      "result": "passed",
+      "log": "logs/focused-race-final.log"
+    },
+    "repeated_network_race": {
+      "result": "passed",
+      "log": "logs/network-race-final.log"
+    },
+    "compatibility_race": {
+      "result": "passed",
+      "log": "logs/compatibility-race-current.log"
+    },
+    "instrumented_binary_repetitions": {
+      "result": "passed",
+      "log": "logs/binary-race-fresh-final.log"
+    },
+    "public_namespace_race": {
+      "result": "passed",
+      "log": "logs/public-namespace-final-fixed.log"
+    },
+    "w06_w07_binary_pty_compatibility": {
+      "result": "passed",
+      "log": "logs/binary-pty-final.log"
+    },
+    "focused_make_aggregate": {
+      "result": "passed",
+      "log": "logs/aggregate-focused-final.log"
+    },
+    "legacy_control_compatibility": {
+      "result": "passed",
+      "log": "logs/legacy-control-final.log"
+    },
+    "namespace_safety_refusals": {
+      "result": "passed",
+      "log": "logs/namespace-refusal.log"
+    },
+    "final_format_vet_packages": {
+      "result": "passed",
+      "log": "logs/final-sanity-packages.log"
+    },
+    "relative_document_links": {
+      "result": "passed",
+      "log": "logs/docs-links.log"
+    }
+  },
+  "ordinary_namespace_skip": "separately executed with compiled race test in marked isolated namespace",
+  "binary_instrumentation": "GOFLAGS=-race; go test -race; each final journey twice",
+  "resource_observations": {
+    "max_raw_outgoing_dials": 32,
+    "max_pre_tls_incoming_sockets": 64,
+    "spoof_oversized_datagrams": 1000,
+    "process_fds": [
+      6,
+      8,
+      6
+    ],
+    "process_goroutines_before_after": [
+      2,
+      2
+    ],
+    "heap": "whole test-process samples retained in logs; not isolated/Pi capacity"
+  },
+  "real_ipv6": "actual nonloopback local ULA transfer passed",
+  "public_addresses": "isolated simulated namespace; actual signed directory, TCP4/TCP6 and pinned verified engine transfer",
+  "uncredited": [
+    "binary-first.log",
+    "binary-second.log",
+    "binary-third.log",
+    "binary-race-repeat-final.log"
+  ],
+  "remaining": [
+    "W09 QUIC/HTTP3 WG4 subgate",
+    "W10 ICE/STUN",
+    "W11 restart-to-relay quota/generation recovery, cooldown/reprobe/roaming/fairness",
+    "W13 operated defaults WG6",
+    "W15/W16 native WAN/Pi/resource campaign",
+    "IPv6-only LAN multicast",
+    "Fresh Local-only ordinary pairing without explicit legacy local enrollment settings",
+    "T13 native login/logout/unattended boot",
+    "Deferred P17 owner use/explanation"
+  ],
+  "full_make_check": "not rerun in W08; W07 passing evidence preserved"
+}

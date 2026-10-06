@@ -1,0 +1,8 @@
+TestWANW07ReviewedPrivacyAndAdvancedFocus
+TestWANW07ExistingPolicyAndExactJoinRetry
+TestWANW07PollingPreservesSelectionAndLateContexts
+TestWANW07ObservedRelaySeparateFromReadiness
+TestWANW07ExpiredV3PasteRetainsInput
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.013s
+TestWANW07RealPTYRelayOnboarding
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s

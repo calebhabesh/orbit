@@ -3,7 +3,10 @@
 Read the [master plan](../orbit-wan-implementation-plan.md),
 [architecture](../orbit-wan-architecture.md), [network protocol](../orbit-wan-protocol.md),
 [UX](../orbit-wan-ux.md), [gates](../orbit-wan-design-gates.md) and
-[tracker](wan-status.md). Outcomes/checks below are planned and unexecuted.
+[tracker](wan-status.md). W00 execution is recorded in the tracker and
+[baseline inventory](wan-baseline.md); [W01 contract/gate outcomes](wan-contracts.md)
+and its evidence are recorded in the tracker. W02 integrates the manual manager;
+its acceptance/evidence is recorded in the tracker.
 Either implementation worker owns its assigned packet and integration.
 
 ## W00 — Baseline and reproductions

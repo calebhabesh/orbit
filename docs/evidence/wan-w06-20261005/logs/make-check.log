@@ -1,0 +1,2361 @@
+go test ./tests/terminal/...
+2026/10/05 17:10:23 http: TLS handshake error from 127.0.0.1:45768: remote error: tls: bad certificate
+2026/10/05 17:10:23 http: TLS handshake error from 192.168.88.171:34798: tls: client didn't provide a certificate
+PASS
+PASS
+PASS
+2026/10/05 17:17:52 http: TLS handshake error from orbit-relay:0: i/o timeout
+panic: test timed out after 10m0s
+	running tests:
+		TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (58s)
+
+goroutine 56302 [running]:
+testing.(*M).startAlarm.func1()
+	/usr/lib/go/src/testing/testing.go:2959 +0x34a
+created by time.goFunc
+	/usr/lib/go/src/time/sleep.go:182 +0x2d
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0x546d26c2248, {0xcf5e58?, 0x546d2611aa0?}, 0x14b0e28)
+	/usr/lib/go/src/testing/testing.go:2266 +0x4f2
+testing.runTests.func1(0x546d26c2248)
+	/usr/lib/go/src/testing/testing.go:2742 +0x37
+testing.tRunner(0x546d26c2248, 0x546d2611bc8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+testing.runTests({0xcde33a, 0x20}, {0xcedfd9, 0x2f}, 0x546d25de1b0, {0x152a638, 0x6f, 0x6f}, {0xc2a9230544d9bc12, 0x8bb2cde5ae, ...})
+	/usr/lib/go/src/testing/testing.go:2740 +0x510
+testing.(*M).Run(0x546d26a0500)
+	/usr/lib/go/src/testing/testing.go:2600 +0x6af
+main.main()
+	_testmain.go:266 +0x9b
+
+goroutine 19 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26c3b08)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06ContextResolutionCwdAndName(0x546d26c3b08)
+	<repo>/tests/terminal/commands_context_test.go:45 +0x2a
+testing.tRunner(0x546d26c3b08, 0x14b0cc0)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 20 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26c3d48)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06AmbiguousAndOutsideRootContext(0x546d26c3d48)
+	<repo>/tests/terminal/commands_context_test.go:195 +0x2a
+testing.tRunner(0x546d26c3d48, 0x14b0cb8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 21 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26fa008)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06StaleAndUnavailableRoot(0x546d26fa008)
+	<repo>/tests/terminal/commands_context_test.go:306 +0x2a
+testing.tRunner(0x546d26fa008, 0x14b0ce8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 22 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26fa248)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06PathSafetyAndLiteralPaths(0x546d26fa248)
+	<repo>/tests/terminal/commands_context_test.go:361 +0x2a
+testing.tRunner(0x546d26fa248, 0x14b0cd8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 23 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26fa488)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06OutputEscapingAndControlCharacters(0x546d26fa488)
+	<repo>/tests/terminal/commands_context_test.go:457 +0x2a
+testing.tRunner(0x546d26fa488, 0x14b0cd0)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 24 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26fa6c8)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06LiveAndStoppedAdapterParity(0x546d26fa6c8)
+	<repo>/tests/terminal/commands_context_test.go:523 +0x39
+testing.tRunner(0x546d26fa6c8, 0x14b0cc8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 25 [chan receive, 9 minutes]:
+testing.(*T).Parallel(0x546d26fa908)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT06ShellCompletionsAndHelpWalkthrough(0x546d26fa908)
+	<repo>/tests/terminal/commands_context_test.go:650 +0x2a
+testing.tRunner(0x546d26fa908, 0x14b0ce0)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 29658 [chan receive, 8 minutes]:
+testing.(*T).Parallel(0x546d2a14fc8)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits(0x546d2a14fc8)
+	<repo>/tests/terminal/setup_cli_test.go:25 +0x32
+testing.tRunner(0x546d2a14fc8, 0x14b0c70)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 55928 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c019200, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2100?, 0x546d350bc00?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2100, {0x546d350bc00, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2100, {0x546d350bc00?, 0x0?, 0x546d33a8a10?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d280e658, {0x546d350bc00?, 0x546d33a8a38?, 0x3?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e5f808, {0x7fc25d2afbf0, 0x546d41055c0}, 0x546d33a8c58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e5f808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e5f808, {0x546d28b2000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d2fd4a00, {0x546d28b2000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d3685b60)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d3685b60, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d2fd4a00)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 56243
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 54109 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c014200, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2b54000?, 0x546d2fb3000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2b54000, {0x546d2fb3000, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2b54000, {0x546d2fb3000?, 0x61e?, 0x546d2bc5868?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d25ce378, {0x546d2fb3000?, 0x546d2bc5890?, 0xf000000000000?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e9e408, {0x7fc25d418830, 0x546d27d63c0}, 0x546d2bc5ab0?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e9e408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e9e408, {0x546d2786000, 0x1000, 0x546d310e410?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d3cfe1e0, {0x546d2786000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d27e00c0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d27e00c0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d27e00c0, {0x546d303a600, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d303a5a0, {0x14aeef8, 0x546d310e410})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d303a5a0, {0x14aeef8, 0x546d310e410})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d303a5a0, {0x14aeef8, 0x546d310e410})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x2d9?, {0x14aeef8?, 0x546d310e410?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl.func3()
+	<repo>/internal/rendezvous/control.go:90 +0x58
+created by github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl in goroutine 53795
+	<repo>/internal/rendezvous/control.go:90 +0xaf5
+
+goroutine 31473 [chan receive, 8 minutes]:
+testing.(*T).Parallel(0x546d294cb48)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT04JoinPhaseRecovery(0x546d294cb48)
+	<repo>/tests/terminal/setup_test.go:473 +0x25
+testing.tRunner(0x546d294cb48, 0x14b0c40)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 55193 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc2a6261a00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a6e080?, 0x546d2d78700?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a6e080, {0x546d2d78700, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a6e080, {0x546d2d78700?, 0xe?, 0x546d2cf17d8?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2d80030, {0x546d2d78700?, 0x546d2cf1800?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2f07808, {0x7fc25d2afbf0, 0x546d2e04a50}, 0x546d2cf1a20?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2f07808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2f07808, {0x546d2d15000, 0x1000, 0x546d2cf1ad8?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d33022f0?, {0x546d2d15000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d286d020)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d286d020)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d286d020, {0x546d303a420, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d303a3c0, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d303a3c0, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d303a3c0, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d279c4b0)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55172
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 54902 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run(0x546d322e460, {0xcc812b, 0xa})
+	<repo>/internal/network/relay_runtime.go:95 +0x651
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayRuntime in goroutine 54056
+	<repo>/internal/network/relay_runtime.go:42 +0x3c6
+
+goroutine 54910 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceControl).Next(_, {_, _})
+	<repo>/internal/network/service_client.go:625 +0x11c
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).run(0x546d29b3100)
+	<repo>/internal/network/relay_endpoint.go:59 +0x12a
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayEndpoint in goroutine 54901
+	<repo>/internal/network/relay_endpoint.go:51 +0x456
+
+goroutine 55203 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc256f44e00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2200?, 0x546d2e45000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2200, {0x546d2e45000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2200, {0x546d2e45000?, 0x0?, 0x546d2ce07c0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d280e1c0, {0x546d2e45000?, 0x546d2ce07e8?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282e408, {0x7fc25d418830, 0x546d30714a0}, 0x546d2ce0a08?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282e408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282e408, {0x546d3206000, 0x1000, 0x546d314a8c0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d3cff3f8, {0x546d3206000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d286cfc0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d286cfc0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d286cfc0, {0x546d2fda9c0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2fda960, {0x14aeef8, 0x546d314a8c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2fda960, {0x14aeef8, 0x546d314a8c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2fda960, {0x14aeef8, 0x546d314a8c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d28b8a50)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 54960
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 55175 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.Forward({0x14aef68, 0x546d2802620}, {0x14b0650, 0x546d2f98540}, {0x14b0650, 0x546d2f98580}, 0xdf8475800)
+	<repo>/internal/network/stream.go:244 +0x35a
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveRelay(0x546d2e146c8, {0x14ae720, 0x546d2a02690}, 0x546d2cda780)
+	<repo>/internal/rendezvous/relay.go:230 +0xecc
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d2a02690}, 0x546d2cda780)
+	<repo>/internal/rendezvous/service.go:507 +0x44f
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d2a02690?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d2a02690?}, 0x546d2f75af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d2d93100?}, {0x14ae720?, 0x546d2a02690?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2812630, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 55204 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c018a00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2b54a80?, 0x546d2e88000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2b54a80, {0x546d2e88000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2b54a80, {0x546d2e88000?, 0x546d29a3ad8?, 0x546d2fbf7c0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2b8a1e8, {0x546d2e88000?, 0x546d2fbf7e8?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d27ffc08, {0x7fc25d418830, 0x546d407c5d0}, 0x546d2fbfa08?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d27ffc08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d27ffc08, {0x546d2e80000, 0x1000, 0x546d314a8c0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d3cff428, {0x546d2e80000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d2874660)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2874660)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2874660, {0x546d2fdaba0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2fdab40, {0x14aeef8, 0x546d314a8c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2fdab40, {0x14aeef8, 0x546d314a8c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2fdab40, {0x14aeef8, 0x546d314a8c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d28b8b40)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55175
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 55792 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run.func1()
+	<repo>/internal/network/relay_runtime.go:87 +0x465
+created by github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run in goroutine 56228
+	<repo>/internal/network/relay_runtime.go:68 +0x5de
+
+goroutine 54241 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d28b80f0, {0x546d2996000, 0x8000, 0x152fde0?})
+	<repo>/internal/network/stream.go:139 +0x385
+github.com/calebhabesh/file-sync/internal/network.Forward.func2({0x14b0650, 0x546d25f0fc0}, {0x14b0650, 0x546d25f0f40})
+	<repo>/internal/network/stream.go:223 +0xaf
+created by github.com/calebhabesh/file-sync/internal/network.Forward in goroutine 54922
+	<repo>/internal/network/stream.go:243 +0x33f
+
+goroutine 55345 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach.func4()
+	<repo>/internal/network/relay_client.go:161 +0xe9
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach in goroutine 55539
+	<repo>/internal/network/relay_client.go:158 +0x1a5e
+
+goroutine 56230 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*StreamListener).Accept(0x546d2d59e28?)
+	<repo>/internal/network/stream.go:287 +0x5f
+crypto/tls.(*listener).Accept(0x546d2e22a80)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d3186280, {0x14ae5a0, 0x546d2e22a80})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+github.com/calebhabesh/file-sync/tests/terminal_test.(*w05Node).start.func1()
+	<repo>/tests/terminal/wan_enrollment_test.go:169 +0x96
+sync.(*WaitGroup).Go.func1()
+	/usr/lib/go/src/sync/waitgroup.go:258 +0x4a
+created by sync.(*WaitGroup).Go in goroutine 54056
+	/usr/lib/go/src/sync/waitgroup.go:238 +0x7d
+
+goroutine 54058 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c014400, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2617a00?, 0x100?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0x546d2617a00)
+	/usr/lib/go/src/internal/poll/fd_unix.go:618 +0x27d
+net.(*netFD).accept(0x546d2617a00)
+	/usr/lib/go/src/net/fd_unix.go:149 +0x29
+net.(*TCPListener).accept(0x546d2e8c380)
+	/usr/lib/go/src/net/tcpsock_posix.go:159 +0x1b
+net.(*TCPListener).Accept(0x546d2e8c380)
+	/usr/lib/go/src/net/tcpsock.go:387 +0x30
+github.com/calebhabesh/file-sync/internal/rendezvous.(*boundedListener).Accept(0x546d2f800f0)
+	<repo>/internal/rendezvous/control.go:174 +0x3b
+crypto/tls.(*listener).Accept(0x546d2f80108)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d2c61b80, {0x14ae5a0, 0x546d2f80108})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+net/http.(*Server).ServeTLS(0x546d2c61b80, {0x14ae570, 0x546d2f800f0}, {0x0, 0x0}, {0x0, 0x0})
+	/usr/lib/go/src/net/http/server.go:3632 +0x1c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func4()
+	<repo>/tests/terminal/wan_enrollment_test.go:86 +0xbe
+created by github.com/calebhabesh/file-sync/tests/terminal_test.w05Service in goroutine 54056
+	<repo>/tests/terminal/wan_enrollment_test.go:86 +0x1377
+
+goroutine 55784 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c13d800, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a78080?, 0x546d2e5b000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a78080, {0x546d2e5b000, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a78080, {0x546d2e5b000?, 0x546d2a78080?, 0x546d2d477b0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d298e008, {0x546d2e5b000?, 0x546d2d477d8?, 0x546d3195c00?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282fc08, {0x7fc25d418830, 0x546d26f6120}, 0x546d2d479f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282fc08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282fc08, {0x546d3633000, 0x1000, 0x546d2d47a78?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d2f98100, {0x546d3633000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d32915c0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d32915c0, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d26e61b0, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 56228 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run(0x546d294a0e0, {0xcc75f8, 0x9})
+	<repo>/internal/network/relay_runtime.go:95 +0x651
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayRuntime in goroutine 54056
+	<repo>/internal/network/relay_runtime.go:42 +0x3c6
+
+goroutine 54913 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceControl).Next(_, {_, _})
+	<repo>/internal/network/service_client.go:625 +0x11c
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).run(0x546d2f88080)
+	<repo>/internal/network/relay_endpoint.go:59 +0x12a
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayEndpoint in goroutine 54902
+	<repo>/internal/network/relay_endpoint.go:51 +0x456
+
+goroutine 55587 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d29464b0, {0x546d2bef500, 0xa80, 0x3?})
+	<repo>/internal/network/stream.go:139 +0x385
+crypto/tls.(*Conn).readFromUntil(0x546d2e84008, {0x7fc25ca72c78, 0x546d2960500}, 0x546d2c20c58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e84008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e84008, {0x546d2e13000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d29f9b80, {0x546d2e13000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d2874420)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2874420, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d29f9b80)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 55537
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 38169 [chan receive, 6 minutes]:
+testing.(*T).Parallel(0x546d294cd88)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT07_Status_BoundedPaginationAndCancellation(0x546d294cd88)
+	<repo>/tests/terminal/status_diagnostics_test.go:345 +0x2a
+testing.tRunner(0x546d294cd88, 0x14b0d08)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 56249 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceControl).Next(_, {_, _})
+	<repo>/internal/network/service_client.go:625 +0x11c
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).run(0x546d29b2680)
+	<repo>/internal/network/relay_endpoint.go:59 +0x12a
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayEndpoint in goroutine 56229
+	<repo>/internal/network/relay_endpoint.go:51 +0x456
+
+goroutine 54964 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c018e00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2300?, 0x546d2767000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2300, {0x546d2767000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2300, {0x546d2767000?, 0x546d3196300?, 0x546d2c347d8?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d3092030, {0x546d2767000?, 0x546d2c34800?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282ec08, {0x7fc25d2afbf0, 0x546d3d3ed20}, 0x546d2c34a20?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282ec08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282ec08, {0x546d2a7a000, 0x1000, 0x546d2c34ad8?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2814240?, {0x546d2a7a000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d31be000)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d31be000)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d31be000, {0x546d2fda7e0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2fda780, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2fda780, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2fda780, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d29460f0)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 54951
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 55181 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d2a02780, {0x546d2ea0a80, 0xa80, 0x3?})
+	<repo>/internal/network/stream.go:139 +0x385
+crypto/tls.(*Conn).readFromUntil(0x546d2e9e008, {0x7fc25ca72c78, 0x546d287ab40}, 0x546d2a8cc58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e9e008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e9e008, {0x546d2eb9000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d29f88c0, {0x546d2eb9000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d2ebaa20)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2ebaa20, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d29f88c0)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 55170
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 54801 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c019400, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2280?, 0x546d2e6f000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2280, {0x546d2e6f000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2280, {0x546d2e6f000?, 0x546d2c8d500?, 0x546d2cd27d8?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2b8a0c0, {0x546d2e6f000?, 0x546d2cd2800?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2f07408, {0x7fc25d2afbf0, 0x546d3070540}, 0x546d2cd2a20?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2f07408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2f07408, {0x546d2922000, 0x1000, 0x546d2cd2ad8?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2814010?, {0x546d2922000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2d7c000)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2d7c000)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2d7c000, {0x546d2b067e0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2b06780, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2b06780, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2b06780, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d2946000)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 54917
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 54182 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc2a6261600, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d3114000?, 0x546d2f16e00?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d3114000, {0x546d2f16e00, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d3114000, {0x546d2f16e00?, 0x0?, 0x546d2b76a10?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2702018, {0x546d2f16e00?, 0x546d2b76a38?, 0x4?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2f06808, {0x7fc25d2afbf0, 0x546d3cd8210}, 0x546d2b76c58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2f06808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2f06808, {0x546d3225000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d2d10f00, {0x546d3225000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d2693980)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2693980, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d2d10f00)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 54136
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 54965 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach.func4()
+	<repo>/internal/network/relay_client.go:161 +0xe9
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach in goroutine 54951
+	<repo>/internal/network/relay_client.go:158 +0x1a5e
+
+goroutine 56250 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run.func1()
+	<repo>/internal/network/relay_runtime.go:87 +0x465
+created by github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run in goroutine 56229
+	<repo>/internal/network/relay_runtime.go:68 +0x5de
+
+goroutine 53488 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d29460f0, {0x546d2c8ce00, 0x700, 0x2?})
+	<repo>/internal/network/stream.go:139 +0x385
+crypto/tls.(*Conn).readFromUntil(0x546d27ff408, {0x7fc25ca72c78, 0x546d289c000}, 0x546d2adec58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d27ff408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d27ff408, {0x546d2d69000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d2d11b80, {0x546d2d69000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d28754a0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d28754a0, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d2d11b80)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 54951
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 55194 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach.func4()
+	<repo>/internal/network/relay_client.go:161 +0xe9
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach in goroutine 55172
+	<repo>/internal/network/relay_client.go:158 +0x1a5e
+
+goroutine 56248 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc256f45600, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2b54280?, 0x546d3194e00?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2b54280, {0x546d3194e00, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2b54280, {0x546d3194e00?, 0x0?, 0x546d2e710f0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2c3a150, {0x546d3194e00?, 0x546d2e71118?, 0x685477939fd43?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d29c2008, {0x7fc25d2afbf0, 0x546d3cd98c0}, 0x546d2e71338?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d29c2008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d29c2008, {0x546d30f0000, 0x1000, 0x546d2e713f0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2f02700?, {0x546d30f0000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2d673e0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2d673e0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2d673e0, {0x546d281b140, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d281b0e0, {0x14aef68, 0x546d31d4ee0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d281b0e0, {0x14aef68, 0x546d31d4ee0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d281b0e0, {0x14aef68, 0x546d31d4ee0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x14aeef8?, {0x14aef68?, 0x546d31d4ee0?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control.func1()
+	<repo>/internal/network/service_client.go:570 +0x328
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control in goroutine 56229
+	<repo>/internal/network/service_client.go:557 +0xd9b
+
+goroutine 55633 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c13dc00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a78280?, 0x546d2e5b800?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a78280, {0x546d2e5b800, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a78280, {0x546d2e5b800?, 0x546d28a38c0?, 0x546d28a3868?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d298e200, {0x546d2e5b800?, 0x546d28a3890?, 0x546d2750a08?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e84c08, {0x7fc25d418830, 0x546d26f6870}, 0x546d28a3ab0?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e84c08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e84c08, {0x546d2e66000, 0x1000, 0x546d2e58780?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d274ac00, {0x546d2e66000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d2b718c0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2b718c0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2b718c0, {0x546d2c84ba0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2c84b40, {0x14aeef8, 0x546d2e58780})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2c84b40, {0x14aeef8, 0x546d2e58780})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2c84b40, {0x14aeef8, 0x546d2e58780})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x1?, {0x14aeef8?, 0x546d2e58780?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl.func3()
+	<repo>/internal/rendezvous/control.go:90 +0x58
+created by github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl in goroutine 55789
+	<repo>/internal/rendezvous/control.go:90 +0xaf5
+
+goroutine 55790 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc256f46400, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d3114100?, 0x546d2b16700?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d3114100, {0x546d2b16700, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d3114100, {0x546d2b16700?, 0x40?, 0x546d2cc30f0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d298e1b0, {0x546d2b16700?, 0x546d2cc3118?, 0x74e0a58016f0113?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e84808, {0x7fc25d2afbf0, 0x546d26f67e0}, 0x546d2cc3338?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e84808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e84808, {0x546d3686000, 0x1000, 0x546d2cc33f0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2f29620?, {0x546d3686000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d3684000)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d3684000)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d3684000, {0x546d2c84600, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2c845a0, {0x14aef68, 0x546d2d003f0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2c845a0, {0x14aef68, 0x546d2d003f0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2c845a0, {0x14aef68, 0x546d2d003f0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x14aeef8?, {0x14aef68?, 0x546d2d003f0?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control.func1()
+	<repo>/internal/network/service_client.go:570 +0x328
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control in goroutine 56228
+	<repo>/internal/network/service_client.go:557 +0xd9b
+
+goroutine 55570 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d2a022d0, {0x546d2d4f000, 0x800, 0x546d2d18078?})
+	<repo>/internal/network/stream.go:139 +0x385
+crypto/tls.(*Conn).readFromUntil(0x546d2e5e808, {0x7fc25ca72c58, 0x546d260dcd0}, 0x546d2d479f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e5e808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e5e808, {0x546d2ea2000, 0x1000, 0x0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d32945c0, {0x546d2ea2000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d2692cc0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2692cc0, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d3181950, {0x14aeec0, 0x546d2e27bc0})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54904
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54239 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0adc00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2380?, 0x546d2d14000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2380, {0x546d2d14000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2380, {0x546d2d14000?, 0x0?, 0x546d2c737c0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d334a360, {0x546d2d14000?, 0x546d2c737e8?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d27fe408, {0x7fc25d418830, 0x546d3cd8300}, 0x546d2c73a08?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d27fe408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d27fe408, {0x546d28c0000, 0x1000, 0x546d284a000?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d3cfe8d0, {0x546d28c0000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d286dc20)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d286dc20)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d286dc20, {0x546d2f658c0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2f65860, {0x14aeef8, 0x546d284a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2f65860, {0x14aeef8, 0x546d284a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2f65860, {0x14aeef8, 0x546d284a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d28b80f0)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 54922
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 54962 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach.func4()
+	<repo>/internal/network/relay_client.go:161 +0xe9
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach in goroutine 54917
+	<repo>/internal/network/relay_client.go:158 +0x1a5e
+
+goroutine 38170 [chan receive, 6 minutes]:
+testing.(*T).Parallel(0x546d294cfc8)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT07_Doctor_DiagnosticsAndRemediations(0x546d294cfc8)
+	<repo>/tests/terminal/status_diagnostics_test.go:477 +0x1c
+testing.tRunner(0x546d294cfc8, 0x14b0cf8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 54108 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ae800, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2ad0100?, 0x546d2e7f800?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2ad0100, {0x546d2e7f800, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2ad0100, {0x546d2e7f800?, 0x2000?, 0x546d27ce868?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2b8a000, {0x546d2e7f800?, 0x546d27ce890?, 0xf000000000000?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e84408, {0x7fc25d418830, 0x546d2d0c090}, 0x546d27ceab0?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e84408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e84408, {0x546d274e000, 0x1000, 0x546d2825b30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d2f80078, {0x546d274e000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d31bea80)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d31bea80)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d31bea80, {0x546d2b8e240, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2b8e1e0, {0x14aeef8, 0x546d2825b30})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2b8e1e0, {0x14aeef8, 0x546d2825b30})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2b8e1e0, {0x14aeef8, 0x546d2825b30})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x0?, {0x14aeef8?, 0x546d2825b30?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl.func3()
+	<repo>/internal/rendezvous/control.go:90 +0x58
+created by github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl in goroutine 54139
+	<repo>/internal/rendezvous/control.go:90 +0xaf5
+
+goroutine 38167 [chan receive, 6 minutes]:
+testing.(*T).Parallel(0x546d294c488)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT07_Status_Observations_MixedState(0x546d294c488)
+	<repo>/tests/terminal/status_diagnostics_test.go:40 +0x2a
+testing.tRunner(0x546d294c488, 0x14b0d10)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 54872 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl(0x546d2e146c8, {0x14ae720, 0x546d28b81e0}, 0x546d2fd4b40)
+	<repo>/internal/rendezvous/control.go:95 +0xcdd
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d28b81e0}, 0x546d2fd4b40)
+	<repo>/internal/rendezvous/service.go:511 +0x4c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d28b81e0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d28b81e0?}, 0x546d2611af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d25f10c0?}, {0x14ae720?, 0x546d28b81e0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2902ab0, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 56298 [select]:
+net/http.awaitLegacyCancel({0x14aeef8?, 0x546d2eae410?}, 0x546d28050a0, 0x546d2d1c080?)
+	/usr/lib/go/src/net/http/transport.go:778 +0x74
+created by net/http.(*Transport).roundTrip in goroutine 54056
+	/usr/lib/go/src/net/http/transport.go:679 +0x8d9
+
+goroutine 55206 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d28b8b40, {0x546d2f48000, 0x8000, 0x152fde0?})
+	<repo>/internal/network/stream.go:139 +0x385
+github.com/calebhabesh/file-sync/internal/network.Forward.func2({0x14b0650, 0x546d2f98580}, {0x14b0650, 0x546d2f98540})
+	<repo>/internal/network/stream.go:223 +0xaf
+created by github.com/calebhabesh/file-sync/internal/network.Forward in goroutine 55175
+	<repo>/internal/network/stream.go:243 +0x33f
+
+goroutine 56229 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run(0x546d294a0e0, {0xcc812b, 0xa})
+	<repo>/internal/network/relay_runtime.go:95 +0x651
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayRuntime in goroutine 54056
+	<repo>/internal/network/relay_runtime.go:42 +0x3c6
+
+goroutine 53799 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveRelay(0x546d2e146c8, {0x14ae720, 0x546d28b85a0}, 0x546d2fd48c0)
+	<repo>/internal/rendezvous/relay.go:233 +0x1005
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d28b85a0}, 0x546d2fd48c0)
+	<repo>/internal/rendezvous/service.go:507 +0x44f
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d28b85a0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d28b85a0?}, 0x546d2ddbaf0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d3ce7100?}, {0x14ae720?, 0x546d28b85a0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2812f30, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 55791 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceControl).Next(_, {_, _})
+	<repo>/internal/network/service_client.go:625 +0x11c
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).run(0x546d2a78380)
+	<repo>/internal/network/relay_endpoint.go:59 +0x12a
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayEndpoint in goroutine 56228
+	<repo>/internal/network/relay_endpoint.go:51 +0x456
+
+goroutine 54908 [select]:
+net/http.(*persistConn).writeLoop(0x546d29f8500)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 54870
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 54213 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ade00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2ad0300?, 0x546d2609000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2ad0300, {0x546d2609000, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2ad0300, {0x546d2609000?, 0x0?, 0x546d2fc0868?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d25ce3d0, {0x546d2609000?, 0x546d2fc0890?, 0x1436388?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2f06408, {0x7fc25d418830, 0x546d2806b40}, 0x546d2fc0ab0?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2f06408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2f06408, {0x546d2c8a000, 0x1000, 0x10?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d3cfe2a0, {0x546d2c8a000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d2e19ce0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2e19ce0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2e19ce0, {0x546d2fda600, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2fda5a0, {0x14aeef8, 0x546d284a780})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2fda5a0, {0x14aeef8, 0x546d284a780})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2fda5a0, {0x14aeef8, 0x546d284a780})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x546d2fc0fa8?, {0x14aeef8?, 0x546d284a780?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl.func3()
+	<repo>/internal/rendezvous/control.go:90 +0x58
+created by github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl in goroutine 54872
+	<repo>/internal/rendezvous/control.go:90 +0xaf5
+
+goroutine 56246 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl(0x546d2e146c8, {0x14ae720, 0x546d29463c0}, 0x546d2c60640)
+	<repo>/internal/rendezvous/control.go:95 +0xcdd
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d29463c0}, 0x546d2c60640)
+	<repo>/internal/rendezvous/service.go:511 +0x4c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d29463c0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d29463c0?}, 0x546d2f93af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d3294580?}, {0x14ae720?, 0x546d29463c0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d35baa20, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54914 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run.func1()
+	<repo>/internal/network/relay_runtime.go:87 +0x465
+created by github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run in goroutine 54902
+	<repo>/internal/network/relay_runtime.go:68 +0x5de
+
+goroutine 55929 [select]:
+net/http.(*persistConn).writeLoop(0x546d2fd4a00)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 56243
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 56224 [select]:
+database/sql.(*DB).connectionOpener(0x546d2d13450, {0x14aeef8, 0x546d28ce000})
+	/usr/lib/go/src/database/sql/sql.go:1266 +0x89
+created by database/sql.OpenDB in goroutine 54056
+	/usr/lib/go/src/database/sql/sql.go:846 +0x135
+
+goroutine 53489 [select]:
+net/http.(*persistConn).writeLoop(0x546d2d11b80)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 54951
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 54901 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run(0x546d322e460, {0xcc75f8, 0x9})
+	<repo>/internal/network/relay_runtime.go:95 +0x651
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayRuntime in goroutine 54056
+	<repo>/internal/network/relay_runtime.go:42 +0x3c6
+
+goroutine 55787 [select]:
+net/http.(*persistConn).writeLoop(0x546d2d10500)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 55926
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 54168 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ae000, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2f88380?, 0x546d3195500?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2f88380, {0x546d3195500, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2f88380, {0x546d3195500?, 0xd25514294287b38?, 0x546d2d4b0f0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2f82000, {0x546d3195500?, 0x546d2d4b118?, 0x546d2d4b2e8?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2a6a808, {0x7fc25d2afbf0, 0x546d3070300}, 0x546d2d4b338?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2a6a808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2a6a808, {0x546d283e000, 0x1000, 0x546d2d4b3f0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2814d60?, {0x546d283e000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2a09b00)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2a09b00)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2a09b00, {0x546d2b06600, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2b065a0, {0x14aef68, 0x546d322eb60})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2b065a0, {0x14aef68, 0x546d322eb60})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2b065a0, {0x14aef68, 0x546d322eb60})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x14aeef8?, {0x14aef68?, 0x546d322eb60?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control.func1()
+	<repo>/internal/network/service_client.go:570 +0x328
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control in goroutine 54209
+	<repo>/internal/network/service_client.go:557 +0xd9b
+
+goroutine 54170 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run.func1()
+	<repo>/internal/network/relay_runtime.go:87 +0x465
+created by github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run in goroutine 54209
+	<repo>/internal/network/relay_runtime.go:68 +0x5de
+
+goroutine 56299 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).Dial(0x546d29b2680, {0x14aef68, 0x546d294aa80}, {{0xc7, 0xb4, 0x1c, 0x99, 0xca, 0x97, 0x4e, ...}, ...})
+	<repo>/internal/network/relay_endpoint.go:171 +0xbf7
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).Dial(0x546d294a0e0, {0x14aef68, 0x546d294aa80}, {{0xc7, 0xb4, 0x1c, 0x99, 0xca, 0x97, 0x4e, ...}, ...})
+	<repo>/internal/network/relay_runtime.go:155 +0x1ee
+github.com/calebhabesh/file-sync/internal/network.(*ConnectionManager).connect(0x546d2c7e000, {0x14aeef8, 0x546d2eae4b0}, {{0xc7, 0xb4, 0x1c, 0x99, 0xca, 0x97, 0x4e, ...}, ...}, ...)
+	<repo>/internal/network/manager.go:289 +0x3b1
+github.com/calebhabesh/file-sync/internal/network.(*ConnectionManager).Transport.func1({0x14aeef8?, 0x546d2eae4b0?}, {{0xc7, 0xb4, 0x1c, 0x99, 0xca, 0x97, 0x4e, 0x20, ...}, ...})
+	<repo>/internal/network/manager.go:188 +0xc5
+github.com/calebhabesh/file-sync/internal/network.NewTransport.func2({0x14aeef8?, 0x546d2eae4b0?}, {0x128?, 0x14a3a58?}, {0x546d2a49590?, 0x546d2d35940?})
+	<repo>/internal/network/transport.go:89 +0x77
+net/http.(*Transport).dial(0x0?, {0x14aeef8?, 0x546d2eae4b0?}, {0xcc51ba?, 0x546d2f12780?}, {0x546d3119860?, 0x546d3119860?})
+	/usr/lib/go/src/net/http/transport.go:1374 +0xdc
+net/http.(*Transport).dialConn(0x546d2751c00, {0x14aeef8, 0x546d2eae4b0}, {{}, 0x0, {0x546d2f12780, 0x5}, {0x546d3119860, 0x57}, 0x0}, ...)
+	/usr/lib/go/src/net/http/transport.go:1920 +0x9b9
+net/http.(*Transport).dialConnFor(0x546d2751c00, 0x546d2e34840)
+	/usr/lib/go/src/net/http/transport.go:1715 +0x8e
+net/http.(*Transport).startDialConnForLocked.func1()
+	/usr/lib/go/src/net/http/transport.go:1696 +0x35
+created by net/http.(*Transport).startDialConnForLocked in goroutine 54056
+	/usr/lib/go/src/net/http/transport.go:1695 +0x11c
+
+goroutine 55556 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c014000, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a6e280?, 0x546d2e12000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a6e280, {0x546d2e12000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a6e280, {0x546d2e12000?, 0x546d2c8c700?, 0x546d31607d8?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2f82068, {0x546d2e12000?, 0x546d3160800?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282f808, {0x7fc25d2afbf0, 0x546d2a48870}, 0x546d3160a20?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282f808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282f808, {0x546d2d4c000, 0x1000, 0x546d3160ad8?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2f02050?, {0x546d2d4c000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2ebae40)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2ebae40)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2ebae40, {0x546d2a54d80, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2a54d20, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2a54d20, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2a54d20, {0x14aeef8, 0x546d3222230})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d29464b0)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55537
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 56231 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*StreamListener).Accept(0x546d277ce28?)
+	<repo>/internal/network/stream.go:287 +0x5f
+crypto/tls.(*listener).Accept(0x546d3cfe3a8)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d31863c0, {0x14ae5a0, 0x546d3cfe3a8})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+github.com/calebhabesh/file-sync/tests/terminal_test.(*w05Node).start.func1()
+	<repo>/tests/terminal/wan_enrollment_test.go:169 +0x96
+sync.(*WaitGroup).Go.func1()
+	/usr/lib/go/src/sync/waitgroup.go:258 +0x4a
+created by sync.(*WaitGroup).Go in goroutine 54056
+	/usr/lib/go/src/sync/waitgroup.go:238 +0x7d
+
+goroutine 54907 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc256f44c00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2ad0000?, 0x546d2b17c00?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2ad0000, {0x546d2b17c00, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2ad0000, {0x546d2b17c00?, 0x0?, 0x546d2ce4a10?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d25ce3a8, {0x546d2b17c00?, 0x546d2ce4a38?, 0x1?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d27ff008, {0x7fc25d2afbf0, 0x546d28066f0}, 0x546d2ce4c58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d27ff008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d27ff008, {0x546d2a85000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d29f8500, {0x546d2a85000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d28751a0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d28751a0, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d29f8500)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 54870
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 38171 [chan receive, 6 minutes]:
+testing.(*T).Parallel(0x546d294d208)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT07_CLI_StatusAndDoctor_Parity(0x546d294d208)
+	<repo>/tests/terminal/status_diagnostics_test.go:628 +0x39
+testing.tRunner(0x546d294d208, 0x14b0cf0)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 54240 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d28b8000, {0x546d2bf8000, 0x8000, 0x152fde0?})
+	<repo>/internal/network/stream.go:139 +0x385
+github.com/calebhabesh/file-sync/internal/network.Forward.func2({0x14b0650, 0x546d25f0f40}, {0x14b0650, 0x546d25f0fc0})
+	<repo>/internal/network/stream.go:223 +0xaf
+created by github.com/calebhabesh/file-sync/internal/network.Forward in goroutine 54922
+	<repo>/internal/network/stream.go:242 +0x2b1
+
+goroutine 55354 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveRelay(0x546d2e146c8, {0x14ae720, 0x546d279c690}, 0x546d2c61540)
+	<repo>/internal/rendezvous/relay.go:233 +0x1005
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d279c690}, 0x546d2c61540)
+	<repo>/internal/rendezvous/service.go:507 +0x44f
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d279c690?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d279c690?}, 0x546d2e57af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d298b200?}, {0x14ae720?, 0x546d279c690?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2a1a3f0, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 55205 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d28b8a50, {0x546d2f9a000, 0x8000, 0x152fde0?})
+	<repo>/internal/network/stream.go:139 +0x385
+github.com/calebhabesh/file-sync/internal/network.Forward.func2({0x14b0650, 0x546d2f98540}, {0x14b0650, 0x546d2f98580})
+	<repo>/internal/network/stream.go:223 +0xaf
+created by github.com/calebhabesh/file-sync/internal/network.Forward in goroutine 55175
+	<repo>/internal/network/stream.go:242 +0x2b1
+
+goroutine 54909 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc256f3fa00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a6e180?, 0x546d2f17500?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a6e180, {0x546d2f17500, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a6e180, {0x546d2f17500?, 0x60d002ef85305202?, 0x546d2e4b0f0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d3d08360, {0x546d2f17500?, 0x546d2e4b118?, 0x546d2e4b2e8?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e9e808, {0x7fc25d2afbf0, 0x546d407dd40}, 0x546d2e4b338?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e9e808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e9e808, {0x546d2dbd000, 0x1000, 0x546d2e4b3f0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d260ca60?, {0x546d2dbd000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2a08ba0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2a08ba0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2a08ba0, {0x546d2a54060, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2a54000, {0x14aef68, 0x546d30061c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2a54000, {0x14aef68, 0x546d30061c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2a54000, {0x14aef68, 0x546d30061c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x14aeef8?, {0x14aef68?, 0x546d30061c0?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control.func1()
+	<repo>/internal/network/service_client.go:570 +0x328
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control in goroutine 54901
+	<repo>/internal/network/service_client.go:557 +0xd9b
+
+goroutine 54905 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c13ce00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2f80?, 0x546d2e7e000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2f80, {0x546d2e7e000, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2f80, {0x546d2e7e000?, 0x546d29b2f80?, 0x546d2d477b0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d32848a0, {0x546d2e7e000?, 0x546d2d477d8?, 0x546d28b2000?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d27fec08, {0x7fc25d418830, 0x546d2e27d70}, 0x546d2d479f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d27fec08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d27fec08, {0x546d2ec3000, 0x1000, 0x546d2d47a78?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d25f0040, {0x546d2ec3000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d2e180c0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2e180c0, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d2a1b200, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54128 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c13da00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2f89000?, 0x4201b7?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0x546d2f89000)
+	/usr/lib/go/src/internal/poll/fd_unix.go:618 +0x27d
+net.(*netFD).accept(0x546d2f89000)
+	/usr/lib/go/src/net/fd_unix.go:149 +0x29
+net.(*TCPListener).accept(0x546d2e8d000)
+	/usr/lib/go/src/net/tcpsock_posix.go:159 +0x1b
+net.(*TCPListener).Accept(0x546d2e8d000)
+	/usr/lib/go/src/net/tcpsock.go:387 +0x30
+net/http.(*Server).Serve(0x546d2fd4500, {0x14ae8a0, 0x546d2e8d000})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+net/http/httptest.(*Server).goServe.func1()
+	/usr/lib/go/src/net/http/httptest/server.go:586 +0x55
+created by net/http/httptest.(*Server).goServe in goroutine 54056
+	/usr/lib/go/src/net/http/httptest/server.go:584 +0x92
+
+goroutine 55789 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl(0x546d2e146c8, {0x14ae720, 0x546d29465a0}, 0x546d2ff2dc0)
+	<repo>/internal/rendezvous/control.go:95 +0xcdd
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d29465a0}, 0x546d2ff2dc0)
+	<repo>/internal/rendezvous/service.go:511 +0x4c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d29465a0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d29465a0?}, 0x546d2de3af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d25f1400?}, {0x14ae720?, 0x546d29465a0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d26e65a0, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 38168 [chan receive, 6 minutes]:
+testing.(*T).Parallel(0x546d294c908)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT07_Status_Attention_PersistenceAcrossRestart(0x546d294c908)
+	<repo>/tests/terminal/status_diagnostics_test.go:186 +0x2a
+testing.tRunner(0x546d294c908, 0x14b0d00)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 54903 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*StreamListener).Accept(0x546d2d3de28?)
+	<repo>/internal/network/stream.go:287 +0x5f
+crypto/tls.(*listener).Accept(0x546d2d196b0)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d2d8e780, {0x14ae5a0, 0x546d2d196b0})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+github.com/calebhabesh/file-sync/tests/terminal_test.(*w05Node).start.func1()
+	<repo>/tests/terminal/wan_enrollment_test.go:169 +0x96
+sync.(*WaitGroup).Go.func1()
+	/usr/lib/go/src/sync/waitgroup.go:258 +0x4a
+created by sync.(*WaitGroup).Go in goroutine 54056
+	/usr/lib/go/src/sync/waitgroup.go:238 +0x7d
+
+goroutine 54212 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*StreamListener).Accept(0x493f72?)
+	<repo>/internal/network/stream.go:287 +0x5f
+crypto/tls.(*listener).Accept(0x546d2a7faa0)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d2cdaf00, {0x14ae5a0, 0x546d2a7faa0})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+github.com/calebhabesh/file-sync/tests/terminal_test.(*w05Node).start.func1()
+	<repo>/tests/terminal/wan_enrollment_test.go:169 +0x96
+sync.(*WaitGroup).Go.func1()
+	/usr/lib/go/src/sync/waitgroup.go:258 +0x4a
+created by sync.(*WaitGroup).Go in goroutine 54056
+	/usr/lib/go/src/sync/waitgroup.go:238 +0x7d
+
+goroutine 54057 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.New.func1()
+	<repo>/internal/rendezvous/service.go:139 +0x105
+created by github.com/calebhabesh/file-sync/internal/rendezvous.New in goroutine 54056
+	<repo>/internal/rendezvous/service.go:134 +0xef7
+
+goroutine 54911 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run.func1()
+	<repo>/internal/network/relay_runtime.go:87 +0x465
+created by github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run in goroutine 54901
+	<repo>/internal/network/relay_runtime.go:68 +0x5de
+
+goroutine 54238 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c013800, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2f88600?, 0x546d2766000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2f88600, {0x546d2766000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2f88600, {0x546d2766000?, 0x0?, 0x546d2bdd7c0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d25ce3a0, {0x546d2766000?, 0x546d2bdd7e8?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2a6b408, {0x7fc25d418830, 0x546d2e04f00}, 0x546d2bdda08?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2a6b408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2a6b408, {0x546d2a53000, 0x1000, 0x546d284a000?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d3cfe8b8, {0x546d2a53000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d28757a0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d28757a0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d28757a0, {0x546d2f64420, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2f643c0, {0x14aeef8, 0x546d284a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2f643c0, {0x14aeef8, 0x546d284a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2f643c0, {0x14aeef8, 0x546d284a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d28b8000)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 53799
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 54794 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ae200, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2b54380?, 0x546d2a4a800?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2b54380, {0x546d2a4a800, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2b54380, {0x546d2a4a800?, 0x546d297b810?, 0x546d297b868?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2f82040, {0x546d2a4a800?, 0x546d297b890?, 0xf000000000000?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282e808, {0x7fc25d418830, 0x546d2d0cf90}, 0x546d297bab0?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282e808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282e808, {0x546d2873000, 0x1000, 0x546d2ac60a0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d2c961e0, {0x546d2873000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d286c1e0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d286c1e0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d286c1e0, {0x546d2f65aa0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2f65a40, {0x14aeef8, 0x546d2ac60a0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2f65a40, {0x14aeef8, 0x546d2ac60a0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2f65a40, {0x14aeef8, 0x546d2ac60a0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x1?, {0x14aeef8?, 0x546d2ac60a0?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl.func3()
+	<repo>/internal/rendezvous/control.go:90 +0x58
+created by github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl in goroutine 54792
+	<repo>/internal/rendezvous/control.go:90 +0xaf5
+
+goroutine 53951 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ae600, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2b54080?, 0x546d2fb2800?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2b54080, {0x546d2fb2800, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2b54080, {0x546d2fb2800?, 0x546d2b54080?, 0x546d2d717b0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d334a270, {0x546d2fb2800?, 0x546d2d717d8?, 0x546d2ea1500?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282e008, {0x7fc25d418830, 0x546d28065d0}, 0x546d2d719f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282e008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282e008, {0x546d2e31000, 0x1000, 0x546d2d71a78?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d2d1c0c0, {0x546d2e31000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d28cc0c0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d28cc0c0, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d3308000, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54139 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl(0x546d2e146c8, {0x14ae720, 0x546d279c000}, 0x546d2cda280)
+	<repo>/internal/rendezvous/control.go:95 +0xcdd
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d279c000}, 0x546d2cda280)
+	<repo>/internal/rendezvous/service.go:511 +0x4c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d279c000?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d279c000?}, 0x546d2dd7af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d2d924c0?}, {0x14ae720?, 0x546d279c000?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2902000, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54169 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceControl).Next(_, {_, _})
+	<repo>/internal/network/service_client.go:625 +0x11c
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).run(0x546d2f88100)
+	<repo>/internal/network/relay_endpoint.go:59 +0x12a
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayEndpoint in goroutine 54209
+	<repo>/internal/network/relay_endpoint.go:51 +0x456
+
+goroutine 54124 [select]:
+database/sql.(*DB).connectionOpener(0x546d2a0cdd0, {0x14aeef8, 0x546d2abb680})
+	/usr/lib/go/src/database/sql/sql.go:1266 +0x89
+created by database/sql.OpenDB in goroutine 54056
+	/usr/lib/go/src/database/sql/sql.go:846 +0x135
+
+goroutine 31254 [chan receive, 8 minutes]:
+testing.(*T).Parallel(0x546d294dd48)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT04DivergentBootstrapRemainsConflict(0x546d294dd48)
+	<repo>/tests/terminal/setup_test.go:379 +0x2a
+testing.tRunner(0x546d294dd48, 0x14b0c08)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 55195 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d279c4b0, {0x546d2e5a800, 0x800, 0x546d2d18510?})
+	<repo>/internal/network/stream.go:139 +0x385
+crypto/tls.(*Conn).readFromUntil(0x546d2e5e408, {0x7fc25ca72c58, 0x546d33020b0}, 0x546d2d719f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e5e408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e5e408, {0x546d2f96000, 0x1000, 0x0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d29af280, {0x546d2f96000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d2e18e40)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2e18e40, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d2902a20, {0x14aeec0, 0x546d3182930})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54212
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 53795 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl(0x546d2e146c8, {0x14ae720, 0x546d29462d0}, 0x546d2d10280)
+	<repo>/internal/rendezvous/control.go:95 +0xcdd
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d29462d0}, 0x546d2d10280)
+	<repo>/internal/rendezvous/service.go:511 +0x4c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d29462d0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d29462d0?}, 0x546d2d61af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d3ce6000?}, {0x14ae720?, 0x546d29462d0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2ebe120, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54625 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d2dca000, {0x546d2f66000, 0x8000, 0x152fde0?})
+	<repo>/internal/network/stream.go:139 +0x385
+github.com/calebhabesh/file-sync/internal/network.Forward.func2({0x14b0650, 0x546d29aefc0}, {0x14b0650, 0x546d29af000})
+	<repo>/internal/network/stream.go:223 +0xaf
+created by github.com/calebhabesh/file-sync/internal/network.Forward in goroutine 55341
+	<repo>/internal/network/stream.go:242 +0x2b1
+
+goroutine 54209 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run(0x546d2fe45b0, {0xcc75f8, 0x9})
+	<repo>/internal/network/relay_runtime.go:95 +0x651
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayRuntime in goroutine 54056
+	<repo>/internal/network/relay_runtime.go:42 +0x3c6
+
+goroutine 54904 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*StreamListener).Accept(0x493f72?)
+	<repo>/internal/network/stream.go:287 +0x5f
+crypto/tls.(*listener).Accept(0x546d2d19698)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d2d8e8c0, {0x14ae5a0, 0x546d2d19698})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+github.com/calebhabesh/file-sync/tests/terminal_test.(*w05Node).start.func1()
+	<repo>/tests/terminal/wan_enrollment_test.go:169 +0x96
+sync.(*WaitGroup).Go.func1()
+	/usr/lib/go/src/sync/waitgroup.go:258 +0x4a
+created by sync.(*WaitGroup).Go in goroutine 54056
+	/usr/lib/go/src/sync/waitgroup.go:238 +0x7d
+
+goroutine 54208 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c013c00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d3023200?, 0x480133?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0x546d3023200)
+	/usr/lib/go/src/internal/poll/fd_unix.go:618 +0x27d
+net.(*netFD).accept(0x546d3023200)
+	/usr/lib/go/src/net/fd_unix.go:149 +0x29
+net.(*TCPListener).accept(0x546d2e8d5c0)
+	/usr/lib/go/src/net/tcpsock_posix.go:159 +0x1b
+net.(*TCPListener).Accept(0x546d2e8d5c0)
+	/usr/lib/go/src/net/tcpsock.go:387 +0x30
+net/http.(*Server).Serve(0x546d2cda500, {0x14ae8a0, 0x546d2e8d5c0})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+net/http/httptest.(*Server).goServe.func1()
+	/usr/lib/go/src/net/http/httptest/server.go:586 +0x55
+created by net/http/httptest.(*Server).goServe in goroutine 54056
+	/usr/lib/go/src/net/http/httptest/server.go:584 +0x92
+
+goroutine 55341 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.Forward({0x14aef68, 0x546d322e230}, {0x14b0650, 0x546d29aefc0}, {0x14b0650, 0x546d29af000}, 0xdf8475800)
+	<repo>/internal/network/stream.go:244 +0x35a
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveRelay(0x546d2e146c8, {0x14ae720, 0x546d279c780}, 0x546d2c61680)
+	<repo>/internal/rendezvous/relay.go:230 +0xecc
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d279c780}, 0x546d2c61680)
+	<repo>/internal/rendezvous/service.go:507 +0x44f
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d279c780?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d279c780?}, 0x546d2e53af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d298b380?}, {0x14ae720?, 0x546d279c780?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d3181830, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54171 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc2a6261c00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2f88280?, 0x546d2f16700?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2f88280, {0x546d2f16700, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2f88280, {0x546d2f16700?, 0xcf80c99d64fc7724?, 0x546d2d750f0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d3284040, {0x546d2f16700?, 0x546d2d75118?, 0x546d2d752e8?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2a6a008, {0x7fc25d2afbf0, 0x546d2d0c000}, 0x546d2d75338?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2a6a008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2a6a008, {0x546d275a000, 0x1000, 0x546d2d753f0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d3303ba0?, {0x546d275a000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d31beae0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d31beae0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d31beae0, {0x546d2f64240, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2f641e0, {0x14aef68, 0x546d2fe4e70})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2f641e0, {0x14aef68, 0x546d2fe4e70})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2f641e0, {0x14aef68, 0x546d2fe4e70})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x14aeef8?, {0x14aef68?, 0x546d2fe4e70?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control.func1()
+	<repo>/internal/network/service_client.go:570 +0x328
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control in goroutine 54210
+	<repo>/internal/network/service_client.go:557 +0xd9b
+
+goroutine 54960 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveRelay(0x546d2e146c8, {0x14ae720, 0x546d2a025a0}, 0x546d2d8e280)
+	<repo>/internal/rendezvous/relay.go:233 +0x1005
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d2a025a0}, 0x546d2d8e280)
+	<repo>/internal/rendezvous/service.go:507 +0x44f
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d2a025a0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d2a025a0?}, 0x546d2f79af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d3ce7280?}, {0x14ae720?, 0x546d2a025a0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d2ebf0e0, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 31253 [chan receive, 8 minutes]:
+testing.(*T).Parallel(0x546d294d8c8)
+	/usr/lib/go/src/testing/testing.go:1957 +0x230
+github.com/calebhabesh/file-sync/tests/terminal_test.TestTerminalT04DelayedJoinRestartAndTransfer(0x546d294d8c8)
+	<repo>/tests/terminal/setup_test.go:322 +0x2a
+testing.tRunner(0x546d294d8c8, 0x14b0c00)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 54204 [select]:
+database/sql.(*DB).connectionOpener(0x546d29db520, {0x14aeef8, 0x546d27bceb0})
+	/usr/lib/go/src/database/sql/sql.go:1266 +0x89
+created by database/sql.OpenDB in goroutine 54056
+	/usr/lib/go/src/database/sql/sql.go:846 +0x135
+
+goroutine 54173 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run.func1()
+	<repo>/internal/network/relay_runtime.go:87 +0x465
+created by github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run in goroutine 54210
+	<repo>/internal/network/relay_runtime.go:68 +0x5de
+
+goroutine 55785 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c019000, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a78100?, 0x546d2f7a000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a78100, {0x546d2f7a000, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a78100, {0x546d2f7a000?, 0x546d2a78100?, 0x546d2d717b0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d298e010, {0x546d2f7a000?, 0x546d2d717d8?, 0x546d3644400?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e9fc08, {0x7fc25d418830, 0x546d26f61e0}, 0x546d2d719f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e9fc08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e9fc08, {0x546d2924000, 0x1000, 0x546d2d71a78?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d3294240, {0x546d2924000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d27d0a80)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d27d0a80, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d26e6510, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 56297 [select]:
+net/http.setRequestCancel.func4()
+	/usr/lib/go/src/net/http/client.go:409 +0x85
+created by net/http.setRequestCancel in goroutine 54056
+	/usr/lib/go/src/net/http/client.go:408 +0x433
+
+goroutine 55638 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c019600, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2600?, 0x546d30c8000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d29b2600, {0x546d30c8000, 0x800, 0x800})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d29b2600, {0x546d30c8000?, 0x546d2d39810?, 0x546d2d39868?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d280e678, {0x546d30c8000?, 0x546d2d39890?, 0x45c09a9b00000001?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e5fc08, {0x7fc25d418830, 0x546d4105d70}, 0x546d2d39ab0?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e5fc08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e5fc08, {0x546d2abe000, 0x1000, 0x546d2e585a0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d274abb8, {0x546d2abe000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d2a83560)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2a83560)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2a83560, {0x546d2c84420, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2c843c0, {0x14aeef8, 0x546d2e585a0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2c843c0, {0x14aeef8, 0x546d2e585a0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2c843c0, {0x14aeef8, 0x546d2e585a0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x1?, {0x14aeef8?, 0x546d2e585a0?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl.func3()
+	<repo>/internal/rendezvous/control.go:90 +0x58
+created by github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl in goroutine 56246
+	<repo>/internal/rendezvous/control.go:90 +0xaf5
+
+goroutine 56242 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ace00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2000?, 0x480133?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0x546d29b2000)
+	/usr/lib/go/src/internal/poll/fd_unix.go:618 +0x27d
+net.(*netFD).accept(0x546d29b2000)
+	/usr/lib/go/src/net/fd_unix.go:149 +0x29
+net.(*TCPListener).accept(0x546d2e782c0)
+	/usr/lib/go/src/net/tcpsock_posix.go:159 +0x1b
+net.(*TCPListener).Accept(0x546d2e782c0)
+	/usr/lib/go/src/net/tcpsock.go:387 +0x30
+net/http.(*Server).Serve(0x546d2fd4000, {0x14ae8a0, 0x546d2e782c0})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+net/http/httptest.(*Server).goServe.func1()
+	/usr/lib/go/src/net/http/httptest/server.go:586 +0x55
+created by net/http/httptest.(*Server).goServe in goroutine 54056
+	/usr/lib/go/src/net/http/httptest/server.go:584 +0x92
+
+goroutine 55182 [select]:
+net/http.(*persistConn).writeLoop(0x546d29f88c0)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 55170
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 54900 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc256f45000, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d29b2c00?, 0x4201b7?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0x546d29b2c00)
+	/usr/lib/go/src/internal/poll/fd_unix.go:618 +0x27d
+net.(*netFD).accept(0x546d29b2c00)
+	/usr/lib/go/src/net/fd_unix.go:149 +0x29
+net.(*TCPListener).accept(0x546d298b180)
+	/usr/lib/go/src/net/tcpsock_posix.go:159 +0x1b
+net.(*TCPListener).Accept(0x546d298b180)
+	/usr/lib/go/src/net/tcpsock.go:387 +0x30
+net/http.(*Server).Serve(0x546d2d8e500, {0x14ae8a0, 0x546d298b180})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+net/http/httptest.(*Server).goServe.func1()
+	/usr/lib/go/src/net/http/httptest/server.go:586 +0x55
+created by net/http/httptest.(*Server).goServe in goroutine 54056
+	/usr/lib/go/src/net/http/httptest/server.go:584 +0x92
+
+goroutine 54056 [select]:
+net/http.(*Transport).getConn(0x546d2751c00, 0x546d2eae460, {{}, 0x0, {0x546d2f12780, 0x5}, {0x546d3119860, 0x57}, 0x0})
+	/usr/lib/go/src/net/http/transport.go:1619 +0x4b0
+net/http.(*Transport).roundTrip(0x546d2751c00, 0x546d2fd4780)
+	/usr/lib/go/src/net/http/transport.go:714 +0xa99
+net/http.(*Transport).RoundTrip(...)
+	/usr/lib/go/src/net/http/roundtrip.go:33
+github.com/calebhabesh/file-sync/internal/network.(*Transport).RoundTrip(0x546d2fd4640?, 0x14aeec0?)
+	<repo>/internal/network/transport.go:104 +0x51
+github.com/calebhabesh/file-sync/internal/network.(*managedPool).roundTrip(0x546d2e346e0, 0x546d2fd4640, 0x546d29004e0)
+	<repo>/internal/network/manager.go:397 +0x78a
+github.com/calebhabesh/file-sync/internal/network.(*borrowedPool).RoundTrip(0x546d2fd4640?, 0x14ac058?)
+	<repo>/internal/network/manager.go:328 +0x1d
+net/http.send(0x546d2fd4280, {0x14ac058, 0x546d2804dc0}, {0x546d303fe68?, 0x4912a6?, 0x152fde0?})
+	/usr/lib/go/src/net/http/client.go:266 +0x654
+net/http.(*Client).send(0x546d2a492c0, 0x546d2fd4280, {0xd99928?, 0x546d303fea8?, 0x152fde0?})
+	/usr/lib/go/src/net/http/client.go:187 +0x250
+net/http.(*Client).do(0x546d2a492c0, 0x546d2fd4280)
+	/usr/lib/go/src/net/http/client.go:745 +0x9f7
+net/http.(*Client).Do(...)
+	/usr/lib/go/src/net/http/client.go:604
+github.com/calebhabesh/file-sync/internal/replication.(*EnrollmentClient).post(0x546d26be300, {0x14aef68, 0x546d294a230}, {0xcd54c4, 0x18}, {0x1484148?, 0x546d2c7e0c0?}, {0x13b6620, 0x546d2e8c6c0})
+	<repo>/internal/replication/enrollment.go:641 +0x2c6
+github.com/calebhabesh/file-sync/internal/replication.(*EnrollmentClient).PrepareV3(_, {_, _}, {_, _}, {_, _})
+	<repo>/internal/replication/routed_enrollment.go:310 +0x667
+github.com/calebhabesh/file-sync/internal/control.(*Controller).advanceSetup(_, {_, _}, {{0x0, 0x0}, {0x0, 0x0}, {0x0, {0xd99598, 0x1}, ...}, ...})
+	<repo>/internal/control/terminal_setup.go:361 +0xe8b
+github.com/calebhabesh/file-sync/internal/control.(*Controller).terminalSetupMutation(_, {_, _}, {0x0, {0xd99598, 0x1}, {0x546d2ba0400, 0x40}, {0xcc53ee, 0x4}, ...})
+	<repo>/internal/control/terminal_setup.go:238 +0x1871
+github.com/calebhabesh/file-sync/internal/control.(*Controller).TerminalMutate(_, {_, _}, {0x0, {0xd99598, 0x1}, {0x546d2ba0400, 0x40}, {0xcc53ee, 0x4}, ...})
+	<repo>/internal/control/terminal_lifecycle.go:186 +0x985
+github.com/calebhabesh/file-sync/tests/terminal_test.w05MutateRetry(_, _, {0x0, {0xd99598, 0x1}, {0x546d2ba0400, 0x40}, {0xcc53ee, 0x4}, 0x0, ...})
+	<repo>/tests/terminal/wan_enrollment_test.go:389 +0x17d
+github.com/calebhabesh/file-sync/tests/terminal_test.TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap(0x546d294d448)
+	<repo>/tests/terminal/wan_enrollment_test.go:476 +0x23f8
+testing.tRunner(0x546d294d448, 0x14b0e28)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 54172 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceControl).Next(_, {_, _})
+	<repo>/internal/network/service_client.go:625 +0x11c
+github.com/calebhabesh/file-sync/internal/network.(*RelayEndpoint).run(0x546d2f88480)
+	<repo>/internal/network/relay_endpoint.go:59 +0x12a
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayEndpoint in goroutine 54210
+	<repo>/internal/network/relay_endpoint.go:51 +0x456
+
+goroutine 55178 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ad200, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d31d2100?, 0x546d2eb8000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d31d2100, {0x546d2eb8000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d31d2100, {0x546d2eb8000?, 0x546d3195c00?, 0x546d2c227d8?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2f82200, {0x546d2eb8000?, 0x546d2c22800?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2a6bc08, {0x7fc25d2afbf0, 0x546d3d3ef60}, 0x546d2c22a20?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2a6bc08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2a6bc08, {0x546d2d90000, 0x1000, 0x546d2c22ad8?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d30894f0?, {0x546d2d90000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d286d080)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d286d080)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d286d080, {0x546d303af60, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d303af00, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d303af00, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d303af00, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d2a02780)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55170
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 54211 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*StreamListener).Accept(0x493f72?)
+	<repo>/internal/network/stream.go:287 +0x5f
+crypto/tls.(*listener).Accept(0x546d292a258)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24
+net/http.(*Server).Serve(0x546d2cdadc0, {0x14ae5a0, 0x546d292a258})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379
+github.com/calebhabesh/file-sync/tests/terminal_test.(*w05Node).start.func1()
+	<repo>/tests/terminal/wan_enrollment_test.go:169 +0x96
+sync.(*WaitGroup).Go.func1()
+	/usr/lib/go/src/sync/waitgroup.go:258 +0x4a
+created by sync.(*WaitGroup).Go in goroutine 54056
+	/usr/lib/go/src/sync/waitgroup.go:238 +0x7d
+
+goroutine 54896 [select]:
+database/sql.(*DB).connectionOpener(0x546d3282ea0, {0x14aeef8, 0x546d310e870})
+	/usr/lib/go/src/database/sql/sql.go:1266 +0x89
+created by database/sql.OpenDB in goroutine 54056
+	/usr/lib/go/src/database/sql/sql.go:846 +0x135
+
+goroutine 54183 [select]:
+net/http.(*persistConn).writeLoop(0x546d2d10f00)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 54136
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 54210 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*RelayRuntime).run(0x546d2fe45b0, {0xcc812b, 0xa})
+	<repo>/internal/network/relay_runtime.go:95 +0x651
+created by github.com/calebhabesh/file-sync/internal/network.NewRelayRuntime in goroutine 54056
+	<repo>/internal/network/relay_runtime.go:42 +0x3c6
+
+goroutine 55557 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach.func4()
+	<repo>/internal/network/relay_client.go:161 +0xe9
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach in goroutine 55537
+	<repo>/internal/network/relay_client.go:158 +0x1a5e
+
+goroutine 54922 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.Forward({0x14aef68, 0x546d2c65810}, {0x14b0650, 0x546d25f0f40}, {0x14b0650, 0x546d25f0fc0}, 0xdf8475800)
+	<repo>/internal/network/stream.go:244 +0x35a
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveRelay(0x546d2e146c8, {0x14ae720, 0x546d28b8690}, 0x546d2c02f00)
+	<repo>/internal/rendezvous/relay.go:230 +0xecc
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d28b8690}, 0x546d2c02f00)
+	<repo>/internal/rendezvous/service.go:507 +0x44f
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d28b8690?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d28b8690?}, 0x546d2ecfaf0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d298a540?}, {0x14ae720?, 0x546d28b8690?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d3180870, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 55586 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d2dca0f0, {0x546d2e28000, 0x8000, 0x152fde0?})
+	<repo>/internal/network/stream.go:139 +0x385
+github.com/calebhabesh/file-sync/internal/network.Forward.func2({0x14b0650, 0x546d29af000}, {0x14b0650, 0x546d29aefc0})
+	<repo>/internal/network/stream.go:223 +0xaf
+created by github.com/calebhabesh/file-sync/internal/network.Forward in goroutine 55341
+	<repo>/internal/network/stream.go:243 +0x33f
+
+goroutine 55344 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c0ad000, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2934100?, 0x546d26cca00?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2934100, {0x546d26cca00, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2934100, {0x546d26cca00?, 0x41a767?, 0x546d2c6a7d8?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2d80060, {0x546d26cca00?, 0x546d2c6a800?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e9f008, {0x7fc25d2afbf0, 0x546d2956060}, 0x546d2c6aa20?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e9f008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e9f008, {0x546d279f000, 0x1000, 0x546d2c6aad8?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0x546d2804400?, {0x546d279f000?, 0x48b279?, 0x4dc6c5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2d7c3c0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2d7c3c0)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2d7c3c0, {0x546d303ad80, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d303ad20, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d303ad20, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d303ad20, {0x14aeef8, 0x546d32237c0})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d2a022d0)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55539
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 55786 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c018c00, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2cec000?, 0x546d2fcee00?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2cec000, {0x546d2fcee00, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2cec000, {0x546d2fcee00?, 0x0?, 0x546d2d30a10?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d3092038, {0x546d2fcee00?, 0x546d2d30a38?, 0x1?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d25c9008, {0x7fc25d2afbf0, 0x546d3054540}, 0x546d2d30c58?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d25c9008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d25c9008, {0x546d2f2b000, 0x1000, 0x13e3e30?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*persistConn).Read(0x546d2d10500, {0x546d2f2b000?, 0x14aac18?, 0x1517890?})
+	/usr/lib/go/src/net/http/transport.go:2300 +0x47
+bufio.(*Reader).fill(0x546d27d08a0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d27d08a0, 0x1)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*persistConn).readLoop(0x546d2d10500)
+	/usr/lib/go/src/net/http/transport.go:2483 +0x172
+created by net/http.(*Transport).dialConn in goroutine 55926
+	/usr/lib/go/src/net/http/transport.go:2123 +0x1da5
+
+goroutine 54792 [select]:
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).serveControl(0x546d2e146c8, {0x14ae720, 0x546d2a020f0}, 0x546d2c60780)
+	<repo>/internal/rendezvous/control.go:95 +0xcdd
+github.com/calebhabesh/file-sync/internal/rendezvous.(*Service).ServeHTTP(0x546d2e146c8, {0x14ae720, 0x546d2a020f0}, 0x546d2c60780)
+	<repo>/internal/rendezvous/service.go:511 +0x4c5
+github.com/calebhabesh/file-sync/tests/terminal_test.w05Service.func3({0x14ae720?, 0x546d2a020f0?}, 0x1444c40?)
+	<repo>/tests/terminal/wan_enrollment_test.go:83 +0x30
+net/http.HandlerFunc.ServeHTTP(0x48b239?, {0x14ae720?, 0x546d2a020f0?}, 0x546d2ed3af0?)
+	/usr/lib/go/src/net/http/server.go:2338 +0x29
+net/http.serverHandler.ServeHTTP({0x546d29af040?}, {0x14ae720?, 0x546d2a020f0?}, 0x1?)
+	/usr/lib/go/src/net/http/server.go:3413 +0x8e
+net/http.(*conn).serve(0x546d3308750, {0x14aeec0, 0x546d2e041e0})
+	/usr/lib/go/src/net/http/server.go:2137 +0x6dc
+created by net/http.(*Server).Serve in goroutine 54058
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 54912 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c019800, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d3022080?, 0x546d26cc300?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d3022080, {0x546d26cc300, 0x700, 0x700})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d3022080, {0x546d26cc300?, 0x546d2e73140?, 0x546d2e730f0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d334a1e0, {0x546d26cc300?, 0x546d2e73118?, 0x284?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2e5e008, {0x7fc25d2afbf0, 0x546d3070990}, 0x546d2e73338?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2e5e008, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2e5e008, {0x546d2c90000, 0x1000, 0x546d2e733f0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*readWriteCloserBody).Read(0xffffffffffffffff?, {0x546d2c90000?, 0x48b279?, 0x4dc6e5?})
+	/usr/lib/go/src/net/http/transport.go:2788 +0x88
+bufio.(*Reader).fill(0x546d2e19d40)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2e19d40)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2e19d40, {0x546d2b07320, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2b072c0, {0x14aef68, 0x546d2e01b20})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2b072c0, {0x14aef68, 0x546d2e01b20})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2b072c0, {0x14aef68, 0x546d2e01b20})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/coder/websocket.(*Conn).Read(0x14aeef8?, {0x14aef68?, 0x546d2e01b20?})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:42 +0x1e
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control.func1()
+	<repo>/internal/network/service_client.go:570 +0x328
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Control in goroutine 54902
+	<repo>/internal/network/service_client.go:557 +0xd9b
+
+goroutine 54963 [select]:
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).Read(0x546d2946000, {0x546d279e000, 0x1000, 0x546d2b3c168?})
+	<repo>/internal/network/stream.go:139 +0x385
+crypto/tls.(*Conn).readFromUntil(0x546d27fe808, {0x7fc25ca72c58, 0x546d3302830}, 0x546d2d479f8?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d27fe808, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d27fe808, {0x546d26e9000, 0x1000, 0x0?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+net/http.(*connReader).Read(0x546d298a280, {0x546d26e9000, 0x1000, 0x1000})
+	/usr/lib/go/src/net/http/server.go:856 +0x150
+bufio.(*Reader).fill(0x546d2e18ba0)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).Peek(0x546d2e18ba0, 0x4)
+	/usr/lib/go/src/bufio/bufio.go:152 +0x52
+net/http.(*conn).serve(0x546d3180240, {0x14aeec0, 0x546d29573b0})
+	/usr/lib/go/src/net/http/server.go:2173 +0x833
+created by net/http.(*Server).Serve in goroutine 54211
+	/usr/lib/go/src/net/http/server.go:3581 +0x4fd
+
+goroutine 55179 [chan receive]:
+github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach.func4()
+	<repo>/internal/network/relay_client.go:161 +0xe9
+created by github.com/calebhabesh/file-sync/internal/network.(*ServiceClient).Attach in goroutine 55170
+	<repo>/internal/network/relay_client.go:158 +0x1a5e
+
+goroutine 54623 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc2a6261200, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d31d2180?, 0x546d2e44000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d31d2180, {0x546d2e44000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d31d2180, {0x546d2e44000?, 0x546d27f7858?, 0x546d27f77c0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d2f82050, {0x546d2e44000?, 0x546d27f77e8?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d282f408, {0x7fc25d418830, 0x546d2a48720}, 0x546d27f7a08?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d282f408, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d282f408, {0x546d2edd000, 0x1000, 0x546d314a000?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d2b8c5b8, {0x546d2edd000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d2e18a80)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2e18a80)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2e18a80, {0x546d2fdb500, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2fdb4a0, {0x14aeef8, 0x546d314a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2fdb4a0, {0x14aeef8, 0x546d314a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2fdb4a0, {0x14aeef8, 0x546d314a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d2dca000)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55354
+	<repo>/internal/network/stream.go:27 +0x2d6
+
+goroutine 55588 [select]:
+net/http.(*persistConn).writeLoop(0x546d29f9b80)
+	/usr/lib/go/src/net/http/transport.go:2810 +0xe6
+created by net/http.(*Transport).dialConn in goroutine 55537
+	/usr/lib/go/src/net/http/transport.go:2124 +0x1e05
+
+goroutine 54624 [IO wait]:
+internal/poll.runtime_pollWait(0x7fc25c13d600, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x546d2a6e300?, 0x546d2dee000?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Read(0x546d2a6e300, {0x546d2dee000, 0x1000, 0x1000})
+	/usr/lib/go/src/internal/poll/fd_unix.go:170 +0x2a8
+net.(*netFD).Read(0x546d2a6e300, {0x546d2dee000?, 0x18c66a10fbd1f?, 0x546d2d327c0?})
+	/usr/lib/go/src/net/fd_posix.go:68 +0x25
+net.(*conn).Read(0x546d280e550, {0x546d2dee000?, 0x546d2d327e8?, 0x0?})
+	/usr/lib/go/src/net/net.go:196 +0x45
+crypto/tls.(*Conn).readFromUntil(0x546d2f07c08, {0x7fc25d418830, 0x546d2e26360}, 0x546d2d32a08?)
+	/usr/lib/go/src/crypto/tls/conn.go:820 +0xf4
+crypto/tls.(*Conn).readRecordOrCCS(0x546d2f07c08, 0x0)
+	/usr/lib/go/src/crypto/tls/conn.go:626 +0x3fb
+crypto/tls.(*Conn).readRecord(...)
+	/usr/lib/go/src/crypto/tls/conn.go:588
+crypto/tls.(*Conn).Read(0x546d2f07c08, {0x546d2936000, 0x1000, 0x546d314a000?})
+	/usr/lib/go/src/crypto/tls/conn.go:1392 +0x148
+io.(*multiReader).Read(0x546d2b8c5e8, {0x546d2936000, 0x1000, 0x1000})
+	/usr/lib/go/src/io/multi.go:26 +0x93
+bufio.(*Reader).fill(0x546d2e18c00)
+	/usr/lib/go/src/bufio/bufio.go:113 +0x103
+bufio.(*Reader).ReadByte(0x546d2e18c00)
+	/usr/lib/go/src/bufio/bufio.go:273 +0x27
+github.com/coder/websocket.readFrameHeader(0x546d2e18c00, {0x546d2fdb6e0, 0x8, 0x8})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/frame.go:55 +0x87
+github.com/coder/websocket.(*Conn).readFrameHeader(0x546d2fdb680, {0x14aeef8, 0x546d314a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:267 +0x105
+github.com/coder/websocket.(*Conn).readLoop(0x546d2fdb680, {0x14aeef8, 0x546d314a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:185 +0x65
+github.com/coder/websocket.(*Conn).reader(0x546d2fdb680, {0x14aeef8, 0x546d314a000})
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:382 +0x10f
+github.com/coder/websocket.(*Conn).Reader(...)
+	/home/owner/go/pkg/mod/github.com/coder/websocket@v1.8.15/read.go:36
+github.com/calebhabesh/file-sync/internal/network.(*binaryStream).readPump(0x546d2dca0f0)
+	<repo>/internal/network/stream.go:65 +0x95
+created by github.com/calebhabesh/file-sync/internal/network.BinaryStream in goroutine 55341
+	<repo>/internal/network/stream.go:27 +0x2d6
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	600.009s
+FAIL
+make: *** [Makefile:60: test-terminal] Error 1

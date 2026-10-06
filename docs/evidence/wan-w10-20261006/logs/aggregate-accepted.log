@@ -1,0 +1,525 @@
+go vet ./...
+go test ./cmd/filesync/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.131s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.127s
+ok  	github.com/calebhabesh/file-sync/internal/control	0.782s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	(cached)
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	(cached)
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/network	85.742s
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.042s
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	34.610s
+ok  	github.com/calebhabesh/file-sync/internal/replication	83.247s
+ok  	github.com/calebhabesh/file-sync/internal/repository	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/state	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.034s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/workspace	(cached)
+ok  	github.com/calebhabesh/file-sync/model	(cached)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=ee461a7 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+go test ./tests/integration/...
+ok  	github.com/calebhabesh/file-sync/tests/integration	82.116s
+go test -count=1 -v ./model/...
+=== RUN   TestReferenceSetOracleInterleavings
+=== RUN   TestReferenceSetOracleInterleavings/[begin_reference_unlink]
+=== RUN   TestReferenceSetOracleInterleavings/[begin_unlink_reference]
+=== RUN   TestReferenceSetOracleInterleavings/[reference_begin_unlink]
+--- PASS: TestReferenceSetOracleInterleavings (0.00s)
+    --- PASS: TestReferenceSetOracleInterleavings/[begin_reference_unlink] (0.00s)
+    --- PASS: TestReferenceSetOracleInterleavings/[begin_unlink_reference] (0.00s)
+    --- PASS: TestReferenceSetOracleInterleavings/[reference_begin_unlink] (0.00s)
+=== RUN   TestReferenceSetOracleServeLeaseBlocksGCIntent
+--- PASS: TestReferenceSetOracleServeLeaseBlocksGCIntent (0.00s)
+=== RUN   TestReferenceSetOracleSharedChunks
+--- PASS: TestReferenceSetOracleSharedChunks (0.00s)
+=== RUN   TestReferenceSetOraclePendingFallbackPreservation
+--- PASS: TestReferenceSetOraclePendingFallbackPreservation (0.00s)
+=== RUN   TestReferenceSetOracleClockJumps
+--- PASS: TestReferenceSetOracleClockJumps (0.00s)
+=== RUN   TestReferenceSetOracleCrashRecovery
+=== RUN   TestReferenceSetOracleCrashRecovery/crash-after-intent
+=== RUN   TestReferenceSetOracleCrashRecovery/crash-after-unlink
+--- PASS: TestReferenceSetOracleCrashRecovery (0.00s)
+    --- PASS: TestReferenceSetOracleCrashRecovery/crash-after-intent (0.00s)
+    --- PASS: TestReferenceSetOracleCrashRecovery/crash-after-unlink (0.00s)
+=== RUN   TestReferenceSetOracleCorruptionAndRepair
+=== RUN   TestReferenceSetOracleCorruptionAndRepair/shared-chunk-corruption-diagnoses-all-versions
+=== RUN   TestReferenceSetOracleCorruptionAndRepair/pins-during-repair-protect-from-gc
+=== RUN   TestReferenceSetOracleCorruptionAndRepair/distinguish-all-availability-states
+--- PASS: TestReferenceSetOracleCorruptionAndRepair (0.00s)
+    --- PASS: TestReferenceSetOracleCorruptionAndRepair/shared-chunk-corruption-diagnoses-all-versions (0.00s)
+    --- PASS: TestReferenceSetOracleCorruptionAndRepair/pins-during-repair-protect-from-gc (0.00s)
+    --- PASS: TestReferenceSetOracleCorruptionAndRepair/distinguish-all-availability-states (0.00s)
+=== RUN   TestOrbitMembershipSequentialRollout
+--- PASS: TestOrbitMembershipSequentialRollout (0.00s)
+=== RUN   TestOrbitMembershipCompetingAdministrationForks
+--- PASS: TestOrbitMembershipCompetingAdministrationForks (0.00s)
+=== RUN   TestOrbitMembershipUnauthorizedOrForgedSignatures
+--- PASS: TestOrbitMembershipUnauthorizedOrForgedSignatures (0.00s)
+=== RUN   TestWANW01AdmissionReplayIdentityAndRestart
+--- PASS: TestWANW01AdmissionReplayIdentityAndRestart (0.00s)
+=== RUN   TestWANW01AdmissionCapacity
+--- PASS: TestWANW01AdmissionCapacity (0.00s)
+=== RUN   TestWANW01EnrollmentExactApproval
+--- PASS: TestWANW01EnrollmentExactApproval (0.00s)
+=== RUN   TestWANW01ConnectionGenerationAndBounds
+--- PASS: TestWANW01ConnectionGenerationAndBounds (0.00s)
+=== RUN   TestWANW01ReplayCapacityCannotEvictLiveProtection
+--- PASS: TestWANW01ReplayCapacityCannotEvictLiveProtection (0.01s)
+=== RUN   TestWANW01AttachmentExpiryIsNotTunnelExpiry
+--- PASS: TestWANW01AttachmentExpiryIsNotTunnelExpiry (0.00s)
+=== RUN   TestBoundedExhaustiveActorSchedulesAgree
+--- PASS: TestBoundedExhaustiveActorSchedulesAgree (0.00s)
+=== RUN   TestDeterministicGeneratedSchedulesAgree
+--- PASS: TestDeterministicGeneratedSchedulesAgree (0.24s)
+=== RUN   TestOracleCatchesIntentionalDominanceMutation
+--- PASS: TestOracleCatchesIntentionalDominanceMutation (0.00s)
+=== RUN   TestOracleKeepsAvailabilityAndRetirementSeparateFromHeads
+--- PASS: TestOracleKeepsAvailabilityAndRetirementSeparateFromHeads (0.00s)
+=== RUN   TestGoldenHistoryFixture
+--- PASS: TestGoldenHistoryFixture (0.00s)
+=== RUN   TestGoldenWireEnvelopeMapsToDomain
+--- PASS: TestGoldenWireEnvelopeMapsToDomain (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/model	0.251s
+go test -count=1 -v ./tests/designgates/... ./tests/faults/...
+=== RUN   TestD1PreRenameStatCannotCloseSaveByRenameRace
+    d1_publication_linux_test.go:51: counterexample: target passed pre-rename stat, editor atomically saved a new inode, then plain rename removed its only name
+--- PASS: TestD1PreRenameStatCannotCloseSaveByRenameRace (0.00s)
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename/in-place-overwrite-before-exchange
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename/save-by-rename
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename/open-descriptor
+    d1_publication_linux_test.go:112: limit: exchange preserves the displaced inode, but no finite observation proves a long-lived writer has stopped mutating it
+--- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename (0.00s)
+    --- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename/in-place-overwrite-before-exchange (0.00s)
+    --- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename/save-by-rename (0.00s)
+    --- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename/open-descriptor (0.00s)
+=== RUN   TestD1StageMustShareTargetFilesystem
+--- PASS: TestD1StageMustShareTargetFilesystem (0.00s)
+=== RUN   TestD1DescriptorRootedOpenRejectsSymlinkSwap
+    d1_publication_linux_test.go:168: openat2 rejected swapped intermediate symlink: too many levels of symbolic links
+--- PASS: TestD1DescriptorRootedOpenRejectsSymlinkSwap (0.00s)
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants/staged
+    d1_publication_linux_test.go:215: recovery observation: map[stage:new target:old]
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants/exchange-complete
+    d1_publication_linux_test.go:215: recovery observation: map[stage:old target:new]
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants/recovery-named
+    d1_publication_linux_test.go:215: recovery observation: map[recovery:old target:new]
+--- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants (0.00s)
+    --- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants/staged (0.00s)
+    --- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants/exchange-complete (0.00s)
+    --- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants/recovery-named (0.00s)
+=== RUN   TestD2WorkingBasisDoesNotImplicitlyResolveReceivedHead
+    d2_working_basis_test.go:121: A2 extends the working basis A1, not all known heads; unreviewed B1 remains concurrent
+--- PASS: TestD2WorkingBasisDoesNotImplicitlyResolveReceivedHead (0.00s)
+=== RUN   TestD2SameAuthorStaleBasisBlocksCandidate
+    d2_working_basis_test.go:132: candidate bytes are preserved for review and event creation is blocked: latest same-author event A2 is absent from working basis
+--- PASS: TestD2SameAuthorStaleBasisBlocksCandidate (0.00s)
+=== RUN   TestD2ResolutionCoversOnlyReviewedHeads
+--- PASS: TestD2ResolutionCoversOnlyReviewedHeads (0.00s)
+=== RUN   TestD2EqualBytesDoNotEraseAncestry
+--- PASS: TestD2EqualBytesDoNotEraseAncestry (0.00s)
+=== RUN   TestD3CanonicalMembershipAndRetirementFixtures
+    d3_membership_test.go:178: membership sha256=84560dcb0304c7a7b4d3aa5eb0ed4420577d46b68ef9c40692410e7f30f7987d
+    d3_membership_test.go:179: retirement sha256=09629ab3321e761ac3844c7120784a63e380d417c6d6f9b924bd5ee22a87638d
+--- PASS: TestD3CanonicalMembershipAndRetirementFixtures (0.00s)
+=== RUN   TestD3CanonicalEncodingIgnoresInputOrderAndRejectsDuplicates
+--- PASS: TestD3CanonicalEncodingIgnoresInputOrderAndRejectsDuplicates (0.00s)
+=== RUN   TestD3RetirementRejectsOldEpochResurrection
+    d3_membership_test.go:262: known retired envelopes remain forwardable; unknown old-epoch versions and their successor histories are blocked
+--- PASS: TestD3RetirementRejectsOldEpochResurrection (0.00s)
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:head unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:head]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:head gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:in-flight-fetch unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:in-flight-fetch]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:in-flight-fetch gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:publication unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:publication]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:publication gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:restore unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:restore]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:restore gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:enrollment unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:enrollment]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:enrollment gc-blocked-by-pin unlink-blocked]
+--- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[reference_begin_unlink] (0.00s)
+=== RUN   TestD4ActiveServeLeaseExcludesDeletionIntent
+--- PASS: TestD4ActiveServeLeaseExcludesDeletionIntent (0.00s)
+=== RUN   TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence
+=== RUN   TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-intent
+=== RUN   TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-unlink
+--- PASS: TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence (0.00s)
+    --- PASS: TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-intent (0.00s)
+    --- PASS: TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-unlink (0.00s)
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/expired-head
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/pending-publication
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/active-restore
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/offline-peer-only
+--- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/expired-head (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/pending-publication (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/active-restore (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/offline-peer-only (0.00s)
+=== RUN   TestD5CanonicalPathPolicy
+--- PASS: TestD5CanonicalPathPolicy (0.00s)
+=== RUN   TestD5RootIdentityDetectsReplacementAndMarkerMismatch
+--- PASS: TestD5RootIdentityDetectsReplacementAndMarkerMismatch (0.00s)
+=== RUN   TestD5ProjectionScaffoldingDoesNotFabricateDirectoryVersions
+--- PASS: TestD5ProjectionScaffoldingDoesNotFabricateDirectoryVersions (0.00s)
+=== RUN   TestD5ParentDeleteOrFileVsChildIsStructuralConflict
+=== RUN   TestD5ParentDeleteOrFileVsChildIsStructuralConflict/file
+=== RUN   TestD5ParentDeleteOrFileVsChildIsStructuralConflict/tombstone
+--- PASS: TestD5ParentDeleteOrFileVsChildIsStructuralConflict (0.00s)
+    --- PASS: TestD5ParentDeleteOrFileVsChildIsStructuralConflict/file (0.00s)
+    --- PASS: TestD5ParentDeleteOrFileVsChildIsStructuralConflict/tombstone (0.00s)
+=== RUN   TestD5DirectoryDeletePreviewInvalidatedByNewChild
+--- PASS: TestD5DirectoryDeletePreviewInvalidatedByNewChild (0.00s)
+=== RUN   TestD5BootstrapAndIncompleteScansNeverInferDeletion
+--- PASS: TestD5BootstrapAndIncompleteScansNeverInferDeletion (0.00s)
+=== RUN   TestD5DivergentEnrollmentCreatesIndependentHistories
+--- PASS: TestD5DivergentEnrollmentCreatesIndependentHistories (0.00s)
+=== RUN   TestOrbitG01SingletonExclusiveOwnership
+--- PASS: TestOrbitG01SingletonExclusiveOwnership (0.00s)
+=== RUN   TestOrbitG01OneUseBootstrapHandoff
+--- PASS: TestOrbitG01OneUseBootstrapHandoff (0.25s)
+=== RUN   TestOrbitG01SessionAndLogoutKeepsSyncActive
+--- PASS: TestOrbitG01SessionAndLogoutKeepsSyncActive (0.00s)
+=== RUN   TestOrbitG02InvitationCreationAndDigestStorage
+--- PASS: TestOrbitG02InvitationCreationAndDigestStorage (0.00s)
+=== RUN   TestOrbitG02CapabilityGatingAndDosLimits
+--- PASS: TestOrbitG02CapabilityGatingAndDosLimits (0.00s)
+=== RUN   TestOrbitG02KeyPossessionAndOwnerApproval
+--- PASS: TestOrbitG02KeyPossessionAndOwnerApproval (0.00s)
+=== RUN   TestOrbitG02OfflineRolloutAndCompetingFork
+--- PASS: TestOrbitG02OfflineRolloutAndCompetingFork (0.00s)
+=== RUN   TestOrbitG02RetiredDeviceCannotRejoin
+--- PASS: TestOrbitG02RetiredDeviceCannotRejoin (0.00s)
+=== RUN   TestOrbitG03MoveOverwriteAndRecoveryPreservation
+--- PASS: TestOrbitG03MoveOverwriteAndRecoveryPreservation (0.00s)
+=== RUN   TestOrbitG03MoveSourceConcurrentModificationRetainsBoth
+--- PASS: TestOrbitG03MoveSourceConcurrentModificationRetainsBoth (0.00s)
+=== RUN   TestOrbitG03DirectorySubtreeInvalidation
+--- PASS: TestOrbitG03DirectorySubtreeInvalidation (0.00s)
+=== RUN   TestOrbitG03ReadLeaseProtectsChunksFromGC
+--- PASS: TestOrbitG03ReadLeaseProtectsChunksFromGC (0.25s)
+=== RUN   TestOrbitG04LiveIdentityResetFenced
+--- PASS: TestOrbitG04LiveIdentityResetFenced (0.00s)
+=== RUN   TestOrbitG04AtomicTransitionAndRollbackSafety
+--- PASS: TestOrbitG04AtomicTransitionAndRollbackSafety (0.00s)
+=== RUN   TestOrbitG04InterruptedTransitionDetection
+--- PASS: TestOrbitG04InterruptedTransitionDetection (0.00s)
+=== RUN   TestOrbitG04MissingPayloadsAfterMetadataRestore
+--- PASS: TestOrbitG04MissingPayloadsAfterMetadataRestore (0.00s)
+=== RUN   TestOrbitG05ProductSettingsSeparation
+--- PASS: TestOrbitG05ProductSettingsSeparation (0.00s)
+=== RUN   TestOrbitG05ProtocolCapabilityNegotiation
+--- PASS: TestOrbitG05ProtocolCapabilityNegotiation (0.00s)
+=== RUN   TestOrbitG05LegacyStateAdoptionAndRollbackLimits
+--- PASS: TestOrbitG05LegacyStateAdoptionAndRollbackLimits (0.00s)
+=== RUN   TestTerminalT01TG1Transcript
+--- PASS: TestTerminalT01TG1Transcript (0.00s)
+=== RUN   TestTerminalT01TG1TLSIsolation
+2026/10/06 04:03:38 http: TLS handshake error from 127.0.0.1:56532: remote error: tls: bad certificate
+--- PASS: TestTerminalT01TG1TLSIsolation (0.00s)
+=== RUN   TestTerminalT01TG1AtomicAdmission
+--- PASS: TestTerminalT01TG1AtomicAdmission (0.00s)
+=== RUN   TestTerminalT01TG2RestartAndReadiness
+--- PASS: TestTerminalT01TG2RestartAndReadiness (0.00s)
+=== RUN   TestTerminalT01TG3AdaptersAndReplay
+--- PASS: TestTerminalT01TG3AdaptersAndReplay (0.00s)
+=== RUN   TestTerminalT01TG4ReviewedSession
+--- PASS: TestTerminalT01TG4ReviewedSession (0.01s)
+=== RUN   TestTerminalT01TG5Lifecycle
+--- PASS: TestTerminalT01TG5Lifecycle (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.523s
+=== RUN   TestP03KillRestartBoundaries
+=== RUN   TestP03KillRestartBoundaries/object.flushed
+=== RUN   TestP03KillRestartBoundaries/object.installed
+=== RUN   TestP03KillRestartBoundaries/object.recorded
+=== RUN   TestP03KillRestartBoundaries/sql.version.before_commit
+=== RUN   TestP03KillRestartBoundaries/sql.version.after_commit
+=== RUN   TestP03KillRestartBoundaries/sql.readiness.before_commit
+=== RUN   TestP03KillRestartBoundaries/sql.readiness.after_commit
+--- PASS: TestP03KillRestartBoundaries (0.08s)
+    --- PASS: TestP03KillRestartBoundaries/object.flushed (0.01s)
+    --- PASS: TestP03KillRestartBoundaries/object.installed (0.01s)
+    --- PASS: TestP03KillRestartBoundaries/object.recorded (0.01s)
+    --- PASS: TestP03KillRestartBoundaries/sql.version.before_commit (0.01s)
+    --- PASS: TestP03KillRestartBoundaries/sql.version.after_commit (0.01s)
+    --- PASS: TestP03KillRestartBoundaries/sql.readiness.before_commit (0.01s)
+    --- PASS: TestP03KillRestartBoundaries/sql.readiness.after_commit (0.01s)
+=== RUN   TestP03BoundaryHelper
+--- PASS: TestP03BoundaryHelper (0.00s)
+=== RUN   TestP04PublicationKillRestartBoundaries
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.prepared
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.stage.flushed
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.staged
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.intent
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.exchange.before
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.filesystem.transition
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.recovery.named
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.directory.flushed
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.renamed
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.committed
+--- PASS: TestP04PublicationKillRestartBoundaries (0.13s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.prepared (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.stage.flushed (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.staged (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.intent (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.exchange.before (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.filesystem.transition (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.recovery.named (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.directory.flushed (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.renamed (0.01s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.committed (0.01s)
+=== RUN   TestP04NewFileKillRestartBoundaries
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.prepared
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.stage.flushed
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.staged
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.intent
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.exchange.before
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.filesystem.transition
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.directory.flushed
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.renamed
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.committed
+--- PASS: TestP04NewFileKillRestartBoundaries (0.11s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.prepared (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.stage.flushed (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.staged (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.intent (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.exchange.before (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.filesystem.transition (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.directory.flushed (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.renamed (0.01s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.committed (0.01s)
+=== RUN   TestP04ParentCreationKillDoesNotAuthorScaffold
+--- PASS: TestP04ParentCreationKillDoesNotAuthorScaffold (0.01s)
+=== RUN   TestP04BoundaryHelper
+--- PASS: TestP04BoundaryHelper (0.00s)
+=== RUN   TestP04DirectoryTombstoneKillRestart
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.prepared
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.intent
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.filesystem.transition
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.renamed
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.committed
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.prepared
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.intent
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.filesystem.transition
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.renamed
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.committed
+--- PASS: TestP04DirectoryTombstoneKillRestart (0.11s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.prepared (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.intent (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.filesystem.transition (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.renamed (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.committed (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.prepared (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.intent (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.filesystem.transition (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.renamed (0.01s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.committed (0.01s)
+=== RUN   TestP04StructuralHelper
+--- PASS: TestP04StructuralHelper (0.00s)
+=== RUN   TestP06TransferKillRestartBoundaries
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.chunk.verified
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.readiness.before
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.readiness.after
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.receipt.before_send
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.receipt.after_send
+--- PASS: TestP06TransferKillRestartBoundaries (0.21s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.chunk.verified (0.04s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.readiness.before (0.04s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.readiness.after (0.04s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.receipt.before_send (0.04s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.receipt.after_send (0.04s)
+=== RUN   TestP06BoundaryHelper
+--- PASS: TestP06BoundaryHelper (0.00s)
+=== RUN   TestP16StorageBarrierSmoke
+=== RUN   TestP16StorageBarrierSmoke/FlushedFileReadback
+=== RUN   TestP16StorageBarrierSmoke/OrderlySQLiteReopen
+=== RUN   TestP16StorageBarrierSmoke/ScratchIsolationAndOrdinaryCapture
+--- PASS: TestP16StorageBarrierSmoke (0.02s)
+    --- PASS: TestP16StorageBarrierSmoke/FlushedFileReadback (0.00s)
+    --- PASS: TestP16StorageBarrierSmoke/OrderlySQLiteReopen (0.01s)
+    --- PASS: TestP16StorageBarrierSmoke/ScratchIsolationAndOrdinaryCapture (0.01s)
+=== RUN   TestP16CheckpointBoundaries
+=== RUN   TestP16CheckpointBoundaries/sql.checkpoint.before
+=== RUN   TestP16CheckpointBoundaries/sql.checkpoint.after
+--- PASS: TestP16CheckpointBoundaries (0.02s)
+    --- PASS: TestP16CheckpointBoundaries/sql.checkpoint.before (0.01s)
+    --- PASS: TestP16CheckpointBoundaries/sql.checkpoint.after (0.01s)
+=== RUN   TestP16CheckpointHelper
+--- PASS: TestP16CheckpointHelper (0.00s)
+=== RUN   TestP16GCBoundaries
+=== RUN   TestP16GCBoundaries/gc.intent
+=== RUN   TestP16GCBoundaries/gc.unlink
+=== RUN   TestP16GCBoundaries/gc.finalization
+--- PASS: TestP16GCBoundaries (0.03s)
+    --- PASS: TestP16GCBoundaries/gc.intent (0.01s)
+    --- PASS: TestP16GCBoundaries/gc.unlink (0.01s)
+    --- PASS: TestP16GCBoundaries/gc.finalization (0.01s)
+=== RUN   TestP16GCHelper
+--- PASS: TestP16GCHelper (0.00s)
+=== RUN   TestP16ControlResolutionBoundaries
+=== RUN   TestP16ControlResolutionBoundaries/control.select.committed
+=== RUN   TestP16ControlResolutionBoundaries/control.restore.committed
+--- PASS: TestP16ControlResolutionBoundaries (0.03s)
+    --- PASS: TestP16ControlResolutionBoundaries/control.select.committed (0.01s)
+    --- PASS: TestP16ControlResolutionBoundaries/control.restore.committed (0.01s)
+=== RUN   TestP16ControlHelper
+--- PASS: TestP16ControlHelper (0.00s)
+=== RUN   TestP16IntegrityQuarantineRepairBoundaries
+=== RUN   TestP16IntegrityQuarantineRepairBoundaries/integrity.chunk.quarantined
+=== RUN   TestP16IntegrityQuarantineRepairBoundaries/repair.installed
+--- PASS: TestP16IntegrityQuarantineRepairBoundaries (0.03s)
+    --- PASS: TestP16IntegrityQuarantineRepairBoundaries/integrity.chunk.quarantined (0.01s)
+    --- PASS: TestP16IntegrityQuarantineRepairBoundaries/repair.installed (0.01s)
+=== RUN   TestP16IntegrityHelper
+--- PASS: TestP16IntegrityHelper (0.00s)
+=== RUN   TestP16InvariantI01_ImmutableVersionIDOneEnvelope
+--- PASS: TestP16InvariantI01_ImmutableVersionIDOneEnvelope (0.01s)
+=== RUN   TestP16InvariantI02_SameValidHistoryEquivalentHeads
+--- PASS: TestP16InvariantI02_SameValidHistoryEquivalentHeads (0.00s)
+=== RUN   TestP16InvariantI03_ConcurrentHeadsSurviveUntilResolution
+--- PASS: TestP16InvariantI03_ConcurrentHeadsSurviveUntilResolution (0.01s)
+=== RUN   TestP16InvariantI04_OrdinaryCaptureDoesNotResolveReceivedHeads
+--- PASS: TestP16InvariantI04_OrdinaryCaptureDoesNotResolveReceivedHeads (0.00s)
+=== RUN   TestP16InvariantI05_NoStoredReceiptWithoutDurableMetadataAndContent
+--- PASS: TestP16InvariantI05_NoStoredReceiptWithoutDurableMetadataAndContent (0.01s)
+=== RUN   TestP16InvariantI06_PartialOrCorruptContentNeverPublished
+--- PASS: TestP16InvariantI06_PartialOrCorruptContentNeverPublished (0.01s)
+=== RUN   TestP16InvariantI07_RecoveryPreservesProtectedVersionsAndReportsAmbiguity
+--- PASS: TestP16InvariantI07_RecoveryPreservesProtectedVersionsAndReportsAmbiguity (0.01s)
+=== RUN   TestP16InvariantI08_AtomicCounterAndNoIdentityRollbackReuse
+--- PASS: TestP16InvariantI08_AtomicCounterAndNoIdentityRollbackReuse (0.01s)
+=== RUN   TestP16InvariantI09_PeerInputCannotEscapeAuthorizedFolder
+--- PASS: TestP16InvariantI09_PeerInputCannotEscapeAuthorizedFolder (0.00s)
+=== RUN   TestP16InvariantI10_GCNeverRemovesProtectedContent
+--- PASS: TestP16InvariantI10_GCNeverRemovesProtectedContent (0.01s)
+=== RUN   TestP16InvariantI11_UnavailableRootsIncompleteScansNeverDelete
+--- PASS: TestP16InvariantI11_UnavailableRootsIncompleteScansNeverDelete (0.01s)
+=== RUN   TestP16InvariantI12_StructuralOperationsPreserveChildBytes
+--- PASS: TestP16InvariantI12_StructuralOperationsPreserveChildBytes (0.00s)
+=== RUN   TestP16InvariantI13_BoundedWorkAndResourceLimits
+--- PASS: TestP16InvariantI13_BoundedWorkAndResourceLimits (0.05s)
+=== RUN   TestP16InvariantI14_ThirdPartyForwardingPreservesAuthorAncestry
+--- PASS: TestP16InvariantI14_ThirdPartyForwardingPreservesAuthorAncestry (0.00s)
+=== RUN   TestP16InvariantI15_MembershipRetirementRejectionAndStaleRejoin
+--- PASS: TestP16InvariantI15_MembershipRetirementRejectionAndStaleRejoin (0.00s)
+=== RUN   TestP16InvariantI16_RestoreResolutionIdempotentAndStaleRejected
+--- PASS: TestP16InvariantI16_RestoreResolutionIdempotentAndStaleRejected (0.01s)
+=== RUN   TestP16InvariantI17_ScanAfterApplyDoesNotFabricateEdits
+--- PASS: TestP16InvariantI17_ScanAfterApplyDoesNotFabricateEdits (0.01s)
+=== RUN   TestP16InvariantI18_CorruptionYieldsUnavailableOrVerifiedRepair
+--- PASS: TestP16InvariantI18_CorruptionYieldsUnavailableOrVerifiedRepair (0.01s)
+=== RUN   TestP16InvariantI19_UICLIParityAndQualifiedProgress
+--- PASS: TestP16InvariantI19_UICLIParityAndQualifiedProgress (0.01s)
+=== RUN   TestP16InvariantI20_IncompatibleSchemaLimitsPreserveRecoverableState
+--- PASS: TestP16InvariantI20_IncompatibleSchemaLimitsPreserveRecoverableState (0.01s)
+=== RUN   TestP16HarnessRefusesUnsafePaths
+--- PASS: TestP16HarnessRefusesUnsafePaths (0.00s)
+=== RUN   TestP16ScenarioCatalogHasDescriptions
+--- PASS: TestP16ScenarioCatalogHasDescriptions (0.00s)
+=== RUN   FuzzProtocolEnvelopeDecode
+=== RUN   FuzzProtocolEnvelopeDecode/seed#0
+=== RUN   FuzzProtocolEnvelopeDecode/seed#1
+=== RUN   FuzzProtocolEnvelopeDecode/seed#2
+=== RUN   FuzzProtocolEnvelopeDecode/seed#3
+--- PASS: FuzzProtocolEnvelopeDecode (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#0 (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#1 (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#2 (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#3 (0.00s)
+=== RUN   FuzzPathSanitization
+=== RUN   FuzzPathSanitization/seed#0
+=== RUN   FuzzPathSanitization/seed#1
+=== RUN   FuzzPathSanitization/seed#2
+=== RUN   FuzzPathSanitization/seed#3
+=== RUN   FuzzPathSanitization/seed#4
+=== RUN   FuzzPathSanitization/seed#5
+=== RUN   FuzzPathSanitization/seed#6
+=== RUN   FuzzPathSanitization/seed#7
+=== RUN   FuzzPathSanitization/seed#8
+=== RUN   FuzzPathSanitization/seed#9
+--- PASS: FuzzPathSanitization (0.00s)
+    --- PASS: FuzzPathSanitization/seed#0 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#1 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#2 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#3 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#4 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#5 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#6 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#7 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#8 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#9 (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.959s
+python3 -m unittest discover -s scripts/validation -p 'test_*.py'
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.010s
+
+OK
+make: Nothing to be done for 'build'.
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=ee461a7 -X main.date=2026-10-01' -o bin/filesync-linux-arm64 ./cmd/filesync
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> <repo>/bin/filesync
+Building binary for linux/arm64 -> <repo>/bin/filesync-linux-arm64
+Generating filesync-v1.0.0-linux-amd64.tar.gz...
+Generating filesync_1.0.0_amd64.deb...
+Generating filesync-1.0.0-1.x86_64.rpm...
+Generating filesync-v1.0.0-linux-arm64.tar.gz...
+Generating filesync_1.0.0_arm64.deb...
+Generating filesync-1.0.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - filesync-v1.0.0-linux-amd64.tar.gz (18400855 bytes)
+  - orbit-v1.0.0-linux-amd64.tar.gz (18400855 bytes)
+  - filesync_1.0.0_amd64.deb (18399200 bytes)
+  - filesync-1.0.0-1.x86_64.rpm (18400220 bytes)
+  - filesync-v1.0.0-linux-arm64.tar.gz (17226867 bytes)
+  - orbit-v1.0.0-linux-arm64.tar.gz (17226867 bytes)
+  - filesync_1.0.0_arm64.deb (17207098 bytes)
+  - filesync-1.0.0-1.aarch64.rpm (17224130 bytes)
+  - release-manifest.json (504 bytes)
+  - SHA256SUMS

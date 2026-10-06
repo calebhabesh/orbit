@@ -1,0 +1,14 @@
+# github.com/calebhabesh/file-sync/internal/rendezvous [github.com/calebhabesh/file-sync/internal/rendezvous.test]
+internal/rendezvous/relay_test.go:513:11: undefined: x509
+internal/rendezvous/relay_test.go:517:12: undefined: tls
+internal/rendezvous/relay_test.go:518:39: undefined: sha256
+internal/rendezvous/relay_test.go:519:11: undefined: errors
+internal/rendezvous/relay_test.go:525:11: undefined: tls
+internal/rendezvous/relay_test.go:526:12: undefined: tls
+internal/rendezvous/relay_test.go:537:10: undefined: errors
+internal/rendezvous/relay_test.go:562:49: undefined: tls
+internal/rendezvous/relay_test.go:564:11: undefined: x509
+internal/rendezvous/relay_test.go:568:10: undefined: tls
+internal/rendezvous/relay_test.go:568:10: too many errors
+FAIL	github.com/calebhabesh/file-sync/internal/rendezvous [build failed]
+FAIL

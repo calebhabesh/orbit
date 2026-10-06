@@ -1,0 +1,181 @@
+[
+  {
+    "name": "discovery",
+    "command": [
+      "go",
+      "test",
+      "-list",
+      "^TestWANW02",
+      "./internal/...",
+      "./model/...",
+      "./tests/...",
+      "./cmd/filesync/..."
+    ],
+    "exit_code": 0,
+    "log": "logs/discovery.log",
+    "provenance": "pre-freeze validation; final acceptance uses frozen-source M0 and final focused/compatibility logs"
+  },
+  {
+    "name": "focused-race",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout",
+      "90s",
+      "-run",
+      "^TestWANW02",
+      "-v",
+      "./internal/network",
+      "./internal/config",
+      "./internal/replication",
+      "./internal/scheduler"
+    ],
+    "exit_code": 0,
+    "log": "logs/focused-race.log",
+    "provenance": "pre-freeze validation; final acceptance uses frozen-source M0 and final focused/compatibility logs"
+  },
+  {
+    "name": "production-journeys",
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "-timeout",
+      "180s",
+      "-v",
+      "./tests/terminal",
+      "-run",
+      "^(TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits|TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh)$"
+    ],
+    "exit_code": 0,
+    "log": "logs/production-journeys.log",
+    "provenance": "pre-freeze validation; final acceptance uses frozen-source M0 and final focused/compatibility logs"
+  },
+  {
+    "name": "background-progress",
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "-timeout",
+      "120s",
+      "-v",
+      "./tests/integration",
+      "-run",
+      "^TestBackgroundSyncFromPersistedPeerEndpoints$"
+    ],
+    "exit_code": 0,
+    "log": "logs/background-progress.log",
+    "provenance": "pre-freeze validation; final acceptance uses frozen-source M0 and final focused/compatibility logs"
+  },
+  {
+    "name": "make-check",
+    "command": [
+      "make",
+      "check"
+    ],
+    "exit_code": 0,
+    "log": "logs/make-check.log",
+    "provenance": "pre-freeze validation; final acceptance uses frozen-source M0 and final focused/compatibility logs"
+  },
+  {
+    "name": "review-make-check",
+    "command": [
+      "make",
+      "check"
+    ],
+    "exit_code": 0,
+    "log": "logs/review-make-check.log",
+    "provenance": "passed during final review, before source freeze"
+  },
+  {
+    "name": "final-discovery",
+    "command": [
+      "go",
+      "test",
+      "-list",
+      "^TestWANW02",
+      "./internal/...",
+      "./model/...",
+      "./tests/...",
+      "./cmd/filesync/..."
+    ],
+    "exit_code": 0,
+    "log": "logs/final-discovery.log",
+    "provenance": "final frozen Go source in manifest.json"
+  },
+  {
+    "name": "final-focused-race",
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout",
+      "90s",
+      "-run",
+      "^TestWANW02",
+      "-v",
+      "./internal/network",
+      "./internal/config",
+      "./internal/replication",
+      "./internal/scheduler"
+    ],
+    "exit_code": 0,
+    "log": "logs/final-focused-race.log",
+    "provenance": "final frozen Go source in manifest.json"
+  },
+  {
+    "name": "final-uncached-compatibility",
+    "command": [
+      "go",
+      "test",
+      "-count=1",
+      "-timeout",
+      "120s",
+      "./cmd/filesync/...",
+      "./internal/control/...",
+      "./internal/replication/...",
+      "./internal/scheduler/...",
+      "./internal/config/...",
+      "./internal/network/...",
+      "./model/..."
+    ],
+    "exit_code": 0,
+    "log": "logs/final-uncached-compatibility.log",
+    "provenance": "final frozen Go source in manifest.json"
+  },
+  {
+    "name": "frozen-source-make-check",
+    "command": [
+      "make",
+      "check"
+    ],
+    "exit_code": 0,
+    "log": "logs/final-make-check.log",
+    "provenance": "final frozen Go source in manifest.json"
+  },
+  {
+    "name": "docs",
+    "command": [
+      "python3",
+      "docs/evidence/wan-w02-20261005/check_docs.py"
+    ],
+    "exit_code": 0,
+    "log": "logs/docs.log",
+    "provenance": "final completion documentation and frozen source"
+  },
+  {
+    "name": "whitespace",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "logs/whitespace.log",
+    "provenance": "final completion documentation and frozen source"
+  }
+]

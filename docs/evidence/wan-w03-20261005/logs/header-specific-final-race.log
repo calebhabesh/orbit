@@ -1,0 +1,4 @@
+=== RUN   TestWANW03TLSAndHeaderOrigins
+--- PASS: TestWANW03TLSAndHeaderOrigins (0.09s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	1.090s

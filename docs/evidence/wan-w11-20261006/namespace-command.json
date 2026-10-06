@@ -1,0 +1,19 @@
+{
+  "root": "/tmp/orbit-w11-disposable-43fvqj3t",
+  "command": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "scripts/wan_roaming_namespace_test.py",
+    "--test-binary",
+    "/tmp/orbit-w11-network.test",
+    "--replication-binary",
+    "/tmp/orbit-w11-replication.test",
+    "--root",
+    "/tmp/orbit-w11-disposable-43fvqj3t",
+    "--parent-namespace",
+    "net:[4026531833]"
+  ]
+}

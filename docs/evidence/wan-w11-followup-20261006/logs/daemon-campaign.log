@@ -1,0 +1,19 @@
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:169: missing verified bytes relay-start.txt {bc9d96e3c16d478d28d1f911bc3aada4e2ec2e6134a7aa8ab6ef3648d9994c7b bc34a01d04b1ec3da040be33d97b15708beb2c1d401d71e0c83709993c60ce35 peer_data unavailable SERVICE_UNAVAILABLE 2026-10-06T16:46:12.05914694Z 4}
+--- FAIL: TestWANW11WholeDaemonRoamingAndMixedProgress (149.21s)
+FAIL
+Traceback (most recent call last):
+  File "<repo>/scripts/wan_daemon_roaming_namespace_test.py", line 52, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/wan_daemon_roaming_namespace_test.py", line 46, in main
+    subprocess.run([str(Path(args.test_binary).resolve(strict=True)),
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    '-test.run=^TestWANW11WholeDaemonRoamingAndMixedProgress$', '-test.v', '-test.timeout=8m'],
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                   env=env, check=True, timeout=500)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/tmp/orbit-w11-terminal.test', '-test.run=^TestWANW11WholeDaemonRoamingAndMixedProgress$', '-test.v', '-test.timeout=8m']' returned non-zero exit status 1.

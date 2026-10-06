@@ -1,0 +1,13 @@
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+2026/10/06 12:57:23 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+    wan_bandwidth_test.go:278: actual relay: large=16777216 bytes completed=17.020764982s first verified chunk=532.101842ms first small=410.558639ms small versions=9; shared cap=2097152 B/s; peak sampled heap=42228472 goroutines=119 FD=61 process CPU=6744520us; original author=c7e78c0b2c207a61e49f8d031a625f647c3b8953328d0c67b861413cb846cb62
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:278: actual direct: large=16777216 bytes completed=20.937163509s first verified chunk=380.046796ms first small=1.552611699s small versions=6; shared cap=2097152 B/s; peak sampled heap=41136392 goroutines=96 FD=53 process CPU=6107861us; original author=c7e78c0b2c207a61e49f8d031a625f647c3b8953328d0c67b861413cb846cb62
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:278: actual quic: large=16777216 bytes completed=19.477150235s first verified chunk=402.711398ms first small=1.664767157s small versions=3; shared cap=2097152 B/s; peak sampled heap=68153400 goroutines=119 FD=57 process CPU=6208152us; original author=c7e78c0b2c207a61e49f8d031a625f647c3b8953328d0c67b861413cb846cb62
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (135.91s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (23.71s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (26.60s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (26.62s)
+PASS

@@ -1,0 +1,9 @@
+{
+  "host": "rpi",
+  "root": "/tmp/orbit-w11-default-final.KcQ8w0",
+  "race": false,
+  "latency_ms": 25,
+  "loss_percent": 1,
+  "timing": "production defaults",
+  "loss_scope": "peer/service; loopback owner-control exempt"
+}

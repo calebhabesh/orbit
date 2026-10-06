@@ -1,0 +1,6 @@
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+    wan_enrollment_test.go:483: replacement join: <nil> &{Code:EXPIRED_ATTEMPT Message:EXPIRED_ATTEMPT: EXPIRED_ATTEMPT (action: inspect state and obtain a fresh review) Retryable:false Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0}
+--- FAIL: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (135.23s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	135.234s
+FAIL

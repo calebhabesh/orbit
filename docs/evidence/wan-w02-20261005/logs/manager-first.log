@@ -1,0 +1,18 @@
+=== RUN   TestWANW02ManagerReuseScopeIdentityAndShutdown
+--- PASS: TestWANW02ManagerReuseScopeIdentityAndShutdown (0.00s)
+=== RUN   TestWANW02GenerationMatchesIndependentModel
+--- PASS: TestWANW02GenerationMatchesIndependentModel (0.00s)
+=== RUN   TestWANW02SlowPeerBoundsCancellationAndOtherProgress
+--- PASS: TestWANW02SlowPeerBoundsCancellationAndOtherProgress (0.00s)
+=== RUN   TestWANW02PoolLRUAndManualCandidateBounds
+--- PASS: TestWANW02PoolLRUAndManualCandidateBounds (0.00s)
+=== RUN   TestWANW02ShutdownJoinsPendingDial
+--- PASS: TestWANW02ShutdownJoinsPendingDial (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	0.010s
+=== RUN   TestWANW02LegacyNetworkPolicyIsManualWithoutMigration
+    network_test.go:13: {manual  false 1} state directory "/tmp/TestWANW02LegacyNetworkPolicyIsManualWithoutMigration2359865220/001" must not be accessible by group or other users (mode 0700)
+--- FAIL: TestWANW02LegacyNetworkPolicyIsManualWithoutMigration (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/config	0.002s
+FAIL

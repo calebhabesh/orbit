@@ -1,7 +1,6 @@
 # Orbit automatic-network UX
 
-Status: owner-selected direction, 2026-10-05; target journeys, commands and screens
-are unimplemented. This amends network-related choices in [terminal UX](orbit-terminal-ux.md)
+Status: owner-selected direction, 2026-10-05; W06 implements reviewed CLI setup/pairing and network policy controls; W07 implements the keyboard TUI integration; W12 implements qualified status/doctor and privacy controls; hosted defaults remain later packets. This amends network-related choices in [terminal UX](orbit-terminal-ux.md)
 and preserves its keyboard, file-management, conflict and recovery contracts.
 [Plan](orbit-wan-implementation-plan.md) and [status](implementation/wan-status.md)
 own delivery. Use the existing Go Bubble Tea/Bubbles/Lip Gloss stack.
@@ -180,3 +179,120 @@ identity/approval assertions, including incomplete capture, wrong pin, delayed
 approval, restart, expired invite and service outage. Renderer snapshots are
 supporting tests. Any later usability review remains separate from automated
 journey evidence; deferred P17 owner use/explanation is not claimed as complete.
+
+
+## W07 keyboard controls
+
+Create/join forms show device/folder/root, startup, data budget and connection
+mode. Tab/Shift-Tab traverse visible fields, Ctrl-N cycles Automatic / Local
+network only / Manual / Self-hosted and Ctrl-A opens Advanced numeric settings.
+Confirm adoption includes metadata disclosure and the exact measured root; Esc
+returns to editable inputs. Existing installations retain their reviewed mode.
+Self-hosted operator trust is independently reviewed with `orbit network
+preview/apply`; transferred invitation profile details are informational.
+
+Join accepts masked bracketed v2/v3 paste or a private absolute file. Add device
+provides `s` private save, `v` deliberate reveal/hide and `x` exact revocation
+review. A revealed code can be copied from terminal output; no implicit clipboard
+process runs. Exact request review compares key/folder/verification code before
+`a` approval or `x` decline. Pending progress resumes after client/daemon restart.
+`N` opens cached Connection details from overview, folder or setup progress;
+`r` refreshes, while retrying an interrupted submission retains the reviewed
+operation/attempt. Relay observations have dates and stay separate from local
+capture, stored/applied copies, conflicts and membership. Missing profile/service
+availability blocks networking while local capture remains usable.
+
+
+## W08 LAN advertising and direct paths
+
+Fresh setup review now shows whether signed device identity/pin and direct listener
+addresses are broadcast on the LAN. Automatic and Local-only first setup select
+advertising; an existing installation keeps its reviewed value. Advanced shared
+network preview/apply supports `--lan-advertising=true|false` and reports restart
+requirements. Mode/profile changes retain keys, approvals, roots and histories.
+
+Known approved peers can sync on permitted LAN interfaces in Local-only without
+public service traffic. Discovery does not approve unknown devices. Local-only
+first pairing currently uses explicitly configured isolated legacy local enrollment;
+ordinary WAN onboarding remains v3 invitation/approval through reviewed services.
+Optional direct listener collision is a route limitation while capture and relay
+remain available. Connection details report dated actual direct/relay observations
+separately from service readiness and stored/applied copies. W11 owns native
+roaming and W12 owns expanded diagnostics/privacy; physical WAN and hosted
+defaults remain later packets.
+
+## W12 qualified status and explicit doctor
+
+Overview and `orbit status` show the selected connection mode, active-versus-
+desired policy, profile state/expiry, service readiness and a dated observation
+for each known peer. Each observation includes route, freshness, LAN/public/
+expired candidate counts, the last UDP result and a plain next action. These
+fields describe connectivity only; capture, peer-stored/applied copies,
+membership and file conflict state remain separate. A relay route is useful
+status and does not create an attention error.
+
+`orbit network status` reads the cached view and never starts a network probe.
+`orbit network doctor --device ID` is the deliberate action. It has a finite
+budget and reports separate service DNS/TLS, authenticated directory, pinned
+direct, pinned relay and actual UDP STUN results. `VERIFIED`, `UNAVAILABLE`,
+`NOT_TESTED`, `DISABLED_BY_POLICY`, `QUOTA_EXCEEDED`, `IDENTITY_MISMATCH` and
+`TIMEOUT` remain distinct; a timeout does not name a NAT or firewall type. `r`
+refreshes cached details, `d` starts the explicit doctor, and `Esc` cancels it;
+the same status and action text is available in CLI JSON, human output and TUI.
+
+Mode/profile changes are reviewed mutations. Local-only stops global discovery,
+STUN and relays, rejects cached public candidates and drains WAN direct pools;
+identity, keys, history and files remain. Existing installations retain manual
+behavior until the owner reviews automatic mode, while first setup records the
+internet-service consent. Support exports contain only an allowlisted config
+summary and redacted diagnostic strings, with no invitation, ICE/relay secret or
+private filename.
+
+
+## W14 packaged default, upgrades and one-step changes
+
+Every ordinary build carries the hosted service's signed release profile.
+First setup (CLI, guided CLI or TUI) selects Automatic with that profile and the
+review shows its operator, expiry and privacy text next to the existing metadata
+disclosure; there is no profile file to copy and no address to type. A build
+without a usable packaged profile keeps the earlier "Automatic, awaiting profile"
+state and local capture.
+
+Upgrades never change a reviewed choice silently. An install that already chose
+Automatic but was waiting for a profile starts using the packaged one at the next
+daemon start. A manual install stays manual: status, `orbit status` overview and
+the TUI overview show one offer line ("Automatic connection with … is
+available"), which `orbit network automatic` reviews and
+`orbit network automatic --decline` dismisses permanently. Local-only installs
+are not prompted.
+
+`orbit network automatic`, `orbit network update` and `orbit network set` replace
+the preview/review-file/apply pair for people: they print the mode change,
+operator, privacy text and LAN advertising, state that identity, approvals,
+history and files are unchanged, and ask `Apply? [Y/n]` once. Without a terminal
+they refuse unless `--yes` is given; `preview`/`apply` remain for scripts.
+Switching to another operator (self-hosting, or back) explains that devices meet
+through Orbit services only on one operator and asks "Replace the operator?
+[y/N]" before the usual confirmation.
+
+A newer packaged profile from the same operator with unchanged privacy text is
+applied when the daemon starts; changed text appears as "An updated service
+profile … review it with orbit network update" until confirmed.
+
+`orbit devices invite --code` (or pressing Enter at the invite prompt) prints a
+one-line invitation code for the other device's `orbit join` paste prompt or
+`--invitation-stdin`; files remain available with `--out`. When both devices run
+a build with the same packaged profile the routed code omits the profile (about
+1.7 KB instead of about 3 KB). The TUI reveal shows the same code. A QR code is
+not offered: Orbit has no phone client, and the receiving laptop or Pi has no
+camera. A short human-typeable code needs a service-side mailbox and is a future
+extension.
+
+Pairing errors name the cause and the device to change:
+`PROFILE_EPOCH_MISMATCH` ("update Orbit on this device" or "on the inviting
+device"), `PROFILE_OPERATOR_MISMATCH`, `PROFILE_NOT_PACKAGED` (short code from a
+different build; transfer the file instead), `UNSUPPORTED_INVITATION_VERSION`
+(newer Orbit) and `NETWORK_REVIEW_REQUIRED` (manual device given a routed code).
+Pre-WAN Orbit devices can still pair with and sync with upgraded devices through
+v2 invitations issued from Manual mode; an Automatic device's invitation needs an
+upgraded receiver.

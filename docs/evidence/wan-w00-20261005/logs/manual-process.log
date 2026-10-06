@@ -1,0 +1,4 @@
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (85.80s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	85.799s

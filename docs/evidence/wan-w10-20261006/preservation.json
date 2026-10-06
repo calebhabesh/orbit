@@ -1,0 +1,29 @@
+{
+  "initial_files": 2484,
+  "preserved": 2464,
+  "changed_owning_files": [
+    "cmd/orbit-net/main.go",
+    "internal/network/manager.go",
+    "internal/network/quic.go",
+    "internal/network/relay_endpoint.go",
+    "internal/network/relay_runtime.go",
+    "internal/protocol/network.go",
+    "internal/rendezvous/service.go",
+    "internal/replication/relay_test.go",
+    "schemas/network-v1.md",
+    "docs/implementation/wan-direct.md",
+    "docs/implementation/wan-status.md",
+    "docs/operations.md",
+    "docs/orbit-wan-architecture.md",
+    "docs/orbit-wan-design-gates.md",
+    "docs/orbit-wan-implementation-plan.md",
+    "docs/orbit-wan-protocol.md",
+    "docs/persistence.md",
+    "docs/verification.md",
+    "go.mod",
+    "internal/app/app.go"
+  ],
+  "prior_evidence_preserved": 1941,
+  "unexpected_changes": [],
+  "revision": "ee461a75486c385fe77908b93c56365473ff86df"
+}

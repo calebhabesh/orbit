@@ -1,0 +1,63 @@
+=== RUN   TestWANW11RelayDirectReprobeAndGenerationDrain
+    roaming_test.go:97: authenticated relay/direct/relay routing used real TLS/HTTP; addresses/dial outcome and time were injected
+--- PASS: TestWANW11RelayDirectReprobeAndGenerationDrain (0.02s)
+=== RUN   TestWANW11LateLookupCannotPublishIntoNewGeneration
+--- PASS: TestWANW11LateLookupCannotPublishIntoNewGeneration (0.00s)
+=== RUN   TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide
+--- PASS: TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide (0.00s)
+=== RUN   TestWANW11NetworkWatcherCoalescesAndJoins
+--- PASS: TestWANW11NetworkWatcherCoalescesAndJoins (0.03s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.055s
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/no_NAT
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=true double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+2026/10/06 11:02:08 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_nat_test.go:174: actual ICE consent-loss closure and fresh-pair rebuild; elapsed 6.465398105s unchanged heads/hash/author
+    ice_nat_test.go:200: actual directory/control shutdown preserves existing authenticated ICE peer sync
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=1 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:187: Post "https://5252525252525252525252525252525252525252525252525252525252525252.peer.orbit.invalid/peer/v1/hello": context deadline exceeded
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=true blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:187: Post "https://5252525252525252525252525252525252525252525252525252525252525252.peer.orbit.invalid/peer/v1/hello": context deadline exceeded
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:187: Post "https://5252525252525252525252525252525252525252525252525252525252525252.peer.orbit.invalid/peer/v1/hello": context deadline exceeded
+--- FAIL: TestWANW10AuthenticatedNATPeerMatrix (50.87s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/no_NAT (1.23s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent (9.05s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering (2.47s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering (2.08s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings (12.14s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT (11.96s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (11.94s)
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/native
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+    quic_test.go:65: adapter lost and duplicated one encrypted short-header packet in each direction
+--- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume (2.11s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/native (1.21s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter (0.90s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	52.997s
+=== RUN   TestWANW11ContinuousSmallWorkCannotStarveLargeRetry
+    wan_fairness_test.go:67: 1-TiB declared task selected within nine ready dispatches twice, including retry and queue reload; no 1-TiB payload transferred
+--- PASS: TestWANW11ContinuousSmallWorkCannotStarveLargeRetry (0.38s)
+=== RUN   TestWANW11ServiceQuotaRetryAllowsQuietRefill
+--- PASS: TestWANW11ServiceQuotaRetryAllowsQuietRefill (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	1.382s
+FAIL

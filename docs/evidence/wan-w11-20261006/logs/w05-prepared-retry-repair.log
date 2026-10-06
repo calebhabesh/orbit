@@ -1,0 +1,6 @@
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+    wan_enrollment_test.go:483: replacement join: <nil> &{Code:RATE_LIMITED Message:RATE_LIMITED Retryable:true Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0}
+--- FAIL: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (135.23s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	135.231s
+FAIL

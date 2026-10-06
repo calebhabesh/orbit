@@ -1,0 +1,4 @@
+{'command': ['go', 'test', '-c', './internal/network', '-o', '/tmp/orbit-w10-network-amd64'], 'CGO_ENABLED': '0', 'GOOS': 'linux', 'GOARCH': 'amd64'}
+{'command': ['go', 'build', '-o', '/tmp/orbit-w10-net-amd64', './cmd/orbit-net'], 'CGO_ENABLED': '0', 'GOOS': 'linux', 'GOARCH': 'amd64'}
+{'command': ['go', 'test', '-c', './internal/network', '-o', '/tmp/orbit-w10-network-arm64'], 'CGO_ENABLED': '0', 'GOOS': 'linux', 'GOARCH': 'arm64'}
+{'command': ['go', 'build', '-o', '/tmp/orbit-w10-net-arm64', './cmd/orbit-net'], 'CGO_ENABLED': '0', 'GOOS': 'linux', 'GOARCH': 'arm64'}

@@ -1,0 +1,8 @@
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+--- PASS: TestOrbitPairing_CLI_RunningDaemon_Parity (25.96s)
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+--- PASS: TestOrbitPairing_CLI_RunningDaemon_Parity (25.94s)
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+--- PASS: TestOrbitPairing_CLI_RunningDaemon_Parity (25.98s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	77.888s

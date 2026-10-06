@@ -1,0 +1,71 @@
+{
+  "packet": "W11",
+  "state": "in_progress",
+  "WG5": "open",
+  "M3": "incomplete",
+  "recorded_utc": "2026-10-06T16:07:42.709277+00:00",
+  "checks": {
+    "focused_race_current": {
+      "result": "pass",
+      "log": "logs/acceptance-current.log"
+    },
+    "native_namespace": {
+      "result": "pass",
+      "log": "logs/native-namespace-accepted.log",
+      "address_detection_seconds": 4,
+      "default_route_detection_seconds": 6
+    },
+    "binary_PTY": {
+      "result": "pass",
+      "log": "logs/binary-pty-current.log"
+    },
+    "replacement_join_final": {
+      "result": "pass",
+      "seconds": 83.245,
+      "log": "logs/w05-admission-repair.log"
+    },
+    "setup_regression_race": {
+      "result": "pass",
+      "log": "logs/setup-regression-final.log"
+    },
+    "aggregate_without_full_terminal": {
+      "result": "pass",
+      "log": "logs/aggregate-current.log"
+    },
+    "full_check_initial": {
+      "result": "fail",
+      "terminal_seconds": 1044.505,
+      "log": "logs/check.log"
+    },
+    "full_check_final": {
+      "result": "pass",
+      "exit_code": 0,
+      "terminal_seconds": 953.851,
+      "network_unit_seconds": 92.308,
+      "replication_unit_seconds": 82.964,
+      "log": "logs/check-final.log"
+    },
+    "slow_operations_shutdown": {
+      "result": "pass",
+      "runs": 3,
+      "delay": "injected context-aware blocking lookup and relay attachment",
+      "log": "logs/slow-service-shutdown-fixed.log"
+    }
+  },
+  "unexecuted": [
+    "Advanced timing controls",
+    "Pi/latency/loss tuning",
+    "whole production daemon relay/direct and Wi-Fi-style switches during chunks, receipts and membership polling",
+    "slow DNS/relay and competing-peer campaign",
+    "actual large/small bandwidth fairness and combined peak resource measurement",
+    "operated hosted defaults",
+    "physical WAN acceptance",
+    "T13 login/logout/boot lifecycle",
+    "P17 owner use/explanation"
+  ],
+  "preservation": "preservation.json",
+  "source_hashes": "final-source.json",
+  "authorization_deadline_extended": false,
+  "quotas_enlarged": false,
+  "tests_discovered": 16
+}

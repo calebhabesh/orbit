@@ -1,0 +1,32 @@
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 04:11:55 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:263: native lifecycle samples: FDs live/closed=31/11 goroutines live/closed=85/9; persistent repositories/service fixture remain open
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:189: reviewed metadata quota refused fresh reverse relay; bounded five-second quiet refill
+    ice_test.go:249: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:263: native lifecycle samples: FDs live/closed=35/11 goroutines live/closed=71/8; persistent repositories/service fixture remain open
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (9.89s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.18s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (8.71s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:311: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+PASS
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 04:12:06 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:263: native lifecycle samples: FDs live/closed=31/13 goroutines live/closed=85/9; persistent repositories/service fixture remain open
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:189: reviewed metadata quota refused fresh reverse relay; bounded five-second quiet refill
+    ice_test.go:249: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:263: native lifecycle samples: FDs live/closed=35/12 goroutines live/closed=71/8; persistent repositories/service fixture remain open
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (9.97s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.15s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (8.83s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:311: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+PASS

@@ -1,0 +1,15 @@
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+    wan_bandwidth_test.go:168: Post "https://03699d8b61c70382933732ebfc2c39b90ac92e6c1cdeb3e970aa72debee4e88c.peer.orbit.invalid/peer/v1/hello": QUOTA_EXCEEDED
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:216: actual direct: large=4194304 bytes completed=3.172012118s first verified chunk=62.539681ms first small=138.419099ms small versions=7; shared cap=2097152 B/s; sampled heap=11719744 goroutines=97 FD=53; original author=a0cd8eea1be7770b6b998503d22e1527a7b9098935d016e9b44b43f6826c3b40
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:216: actual quic: large=4194304 bytes completed=1.165167625s first verified chunk=63.276559ms first small=638.133132ms small versions=2; shared cap=2097152 B/s; sampled heap=14066064 goroutines=109 FD=49; original author=a0cd8eea1be7770b6b998503d22e1527a7b9098935d016e9b44b43f6826c3b40
+2026/10/06 12:48:57 http: TLS handshake error from orbit-relay:0: use of closed network connection
+--- FAIL: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (58.88s)
+    --- FAIL: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (0.85s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (3.25s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (1.25s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	58.888s
+FAIL

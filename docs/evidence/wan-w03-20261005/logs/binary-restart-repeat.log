@@ -1,0 +1,42 @@
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.22s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.23s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.27s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.26s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.23s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.23s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.22s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.19s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.19s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.19s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.19s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.20s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.19s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	5.220s

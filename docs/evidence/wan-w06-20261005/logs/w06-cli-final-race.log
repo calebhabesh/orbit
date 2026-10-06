@@ -1,0 +1,9 @@
+=== RUN   TestWANW06BinaryReviewedRelayJourney
+    wan_cli_test.go:311: Local signed service fixture; production binaries create/invite/join/relaunch/approve and transfer both directions without init/serve/manual peer addresses
+--- PASS: TestWANW06BinaryReviewedRelayJourney (98.10s)
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.13s)
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+--- PASS: TestWANW06BinaryGuidedFirstDevice (0.67s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	100.901s

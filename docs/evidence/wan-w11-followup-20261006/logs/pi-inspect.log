@@ -1,0 +1,7 @@
+user: uid=1000(owner) gid=1000(owner) groups=1000(owner),4(adm),20(dialout),24(cdrom),27(sudo),29(audio),44(video),46(plugdev),60(games),100(users),102(input),105(render),110(netdev),992(docker),993(gpio),994(i2c),995(spi)
+namespace: tools: /usr/sbin/ip6tables
+/usr/sbin/iptables
+/usr/sbin/nft
+/usr/sbin/tc
+cpu: 1100000
+thermal: 68166

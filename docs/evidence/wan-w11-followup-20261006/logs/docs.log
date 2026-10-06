@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<repo>/docs/evidence/wan-w00-20261005/check_docs.py", line 56, in <module>
+    assert 'First eligible packet: **W01**' in tracker
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

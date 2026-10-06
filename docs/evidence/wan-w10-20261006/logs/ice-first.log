@@ -1,0 +1,776 @@
+=== RUN   TestWANW10ICEHTTP3NATMatrix
+=== RUN   TestWANW10ICEHTTP3NATMatrix/no_NAT
+    ice_test.go:157: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+2026/10/06 02:58:30 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+SIGQUIT: quit
+PC=0x496361 m=0 sigcode=0
+
+goroutine 0 gp=0x10aa840 m=0 mp=0x10abe20 [idle]:
+runtime.futex(0x10abf78, 0x80, 0x0, 0x0, 0x0, 0x0)
+	/usr/lib/go/src/runtime/sys_linux_amd64.s:575 +0x21 fp=0x7ffea0a3cf48 sp=0x7ffea0a3cf40 pc=0x496361
+runtime.futexsleep(0x4?, 0xa0a3cfc0?, 0x4616c8?)
+	/usr/lib/go/src/runtime/os_linux.go:73 +0x30 fp=0x7ffea0a3cf98 sp=0x7ffea0a3cf48 pc=0x44d850
+runtime.notesleep(0x10abf78)
+	/usr/lib/go/src/runtime/lock_futex.go:47 +0x87 fp=0x7ffea0a3cfd0 sp=0x7ffea0a3cf98 pc=0x41fd27
+runtime.mPark(...)
+	/usr/lib/go/src/runtime/proc.go:1985
+runtime.stopm()
+	/usr/lib/go/src/runtime/proc.go:3023 +0x8c fp=0x7ffea0a3d000 sp=0x7ffea0a3cfd0 pc=0x45862c
+runtime.findRunnable()
+	/usr/lib/go/src/runtime/proc.go:3811 +0xeb7 fp=0x7ffea0a3d1d0 sp=0x7ffea0a3d000 pc=0x45a1b7
+runtime.schedule()
+	/usr/lib/go/src/runtime/proc.go:4179 +0xb1 fp=0x7ffea0a3d210 sp=0x7ffea0a3d1d0 pc=0x45b2d1
+runtime.park_m(0x16d051afa780)
+	/usr/lib/go/src/runtime/proc.go:4319 +0x279 fp=0x7ffea0a3d270 sp=0x7ffea0a3d210 pc=0x45b759
+runtime.mcall()
+	/usr/lib/go/src/runtime/asm_amd64.s:463 +0x53 fp=0x7ffea0a3d288 sp=0x7ffea0a3d270 pc=0x492cb3
+
+goroutine 1 gp=0x16d051a1e1e0 m=nil [chan receive]:
+runtime.gopark(0x1026b20?, 0x7f1a8bede4c0?, 0xa0?, 0xa2?, 0xf8ebf0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051bb3908 sp=0x16d051bb38e8 pc=0x48d7ea
+runtime.chanrecv(0x16d051ae2180, 0x16d051bb39ef, 0x1)
+	/usr/lib/go/src/runtime/chan.go:667 +0x4ae fp=0x16d051bb3980 sp=0x16d051bb3908 pc=0x41a58e
+runtime.chanrecv1(0x18?, 0xfd1170?)
+	/usr/lib/go/src/runtime/chan.go:509 +0x12 fp=0x16d051bb39a8 sp=0x16d051bb3980 pc=0x41a0b2
+testing.(*T).Run(0x16d051baafc8, {0xa05462?, 0x16d051bb3aa0?}, 0x102fe10)
+	/usr/lib/go/src/testing/testing.go:2266 +0x4f2 fp=0x16d051bb3a80 sp=0x16d051bb39a8 pc=0x52c312
+testing.runTests.func1(0x16d051baafc8)
+	/usr/lib/go/src/testing/testing.go:2742 +0x37 fp=0x16d051bb3ac0 sp=0x16d051bb3a80 pc=0x531e17
+testing.tRunner(0x16d051baafc8, 0x16d051bb3bc8)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea fp=0x16d051bb3b10 sp=0x16d051bb3ac0 pc=0x52bdaa
+testing.runTests({0xa0a1f2, 0x20}, {0xa189b8, 0x31}, 0x16d051a2c390, {0x10a12c0, 0x27, 0x27}, {0xc2a9457bb3327cd9, 0x8bb2ce925a, ...})
+	/usr/lib/go/src/testing/testing.go:2740 +0x510 fp=0x16d051bb3bf8 sp=0x16d051bb3b10 pc=0x52e370
+testing.(*M).Run(0x16d051bc4280)
+	/usr/lib/go/src/testing/testing.go:2600 +0x6af fp=0x16d051bb3e38 sp=0x16d051bb3bf8 pc=0x52cf2f
+main.main()
+	_testmain.go:122 +0x9b fp=0x16d051bb3eb8 sp=0x16d051bb3e38 pc=0x981ddb
+runtime.main()
+	/usr/lib/go/src/runtime/proc.go:302 +0x427 fp=0x16d051bb3fe0 sp=0x16d051bb3eb8 pc=0x453ba7
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051bb3fe8 sp=0x16d051bb3fe0 pc=0x494801
+
+goroutine 2 gp=0x16d051a1ed20 m=nil [force gc (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051abafa8 sp=0x16d051abaf88 pc=0x48d7ea
+runtime.goparkunlock(...)
+	/usr/lib/go/src/runtime/proc.go:480
+runtime.forcegchelper()
+	/usr/lib/go/src/runtime/proc.go:387 +0xb3 fp=0x16d051abafe0 sp=0x16d051abafa8 pc=0x453e73
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051abafe8 sp=0x16d051abafe0 pc=0x494801
+created by runtime.init.7 in goroutine 1
+	/usr/lib/go/src/runtime/proc.go:375 +0x1a
+
+goroutine 3 gp=0x16d051a1f2c0 m=nil [GC sweep wait]:
+runtime.gopark(0x1?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051abb788 sp=0x16d051abb768 pc=0x48d7ea
+runtime.goparkunlock(...)
+	/usr/lib/go/src/runtime/proc.go:480
+runtime.bgsweep(0x16d051ae2000)
+	/usr/lib/go/src/runtime/mgcsweep.go:324 +0x151 fp=0x16d051abb7c8 sp=0x16d051abb788 pc=0x43c931
+runtime.gcenable.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:214 +0x17 fp=0x16d051abb7e0 sp=0x16d051abb7c8 pc=0x483137
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051abb7e8 sp=0x16d051abb7e0 pc=0x494801
+created by runtime.gcenable in goroutine 1
+	/usr/lib/go/src/runtime/mgc.go:214 +0x66
+
+goroutine 4 gp=0x16d051a1f4a0 m=nil [GC scavenge wait]:
+runtime.gopark(0x10000?, 0xa2ef10?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051abbf78 sp=0x16d051abbf58 pc=0x48d7ea
+runtime.goparkunlock(...)
+	/usr/lib/go/src/runtime/proc.go:480
+runtime.(*scavengerState).park(0x10aa140)
+	/usr/lib/go/src/runtime/mgcscavenge.go:425 +0x49 fp=0x16d051abbfa8 sp=0x16d051abbf78 pc=0x43a429
+runtime.bgscavenge(0x16d051ae2000)
+	/usr/lib/go/src/runtime/mgcscavenge.go:658 +0x59 fp=0x16d051abbfc8 sp=0x16d051abbfa8 pc=0x43a999
+runtime.gcenable.gowrap2()
+	/usr/lib/go/src/runtime/mgc.go:215 +0x17 fp=0x16d051abbfe0 sp=0x16d051abbfc8 pc=0x4830f7
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051abbfe8 sp=0x16d051abbfe0 pc=0x494801
+created by runtime.gcenable in goroutine 1
+	/usr/lib/go/src/runtime/mgc.go:215 +0xa5
+
+goroutine 5 gp=0x16d051a1fa40 m=nil [GOMAXPROCS updater (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051aba788 sp=0x16d051aba768 pc=0x48d7ea
+runtime.goparkunlock(...)
+	/usr/lib/go/src/runtime/proc.go:480
+runtime.updateMaxProcsGoroutine()
+	/usr/lib/go/src/runtime/proc.go:7146 +0xe7 fp=0x16d051aba7e0 sp=0x16d051aba788 pc=0x461387
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051aba7e8 sp=0x16d051aba7e0 pc=0x494801
+created by runtime.defaultGOMAXPROCSUpdateEnable in goroutine 1
+	/usr/lib/go/src/runtime/proc.go:7134 +0x37
+
+goroutine 6 gp=0x16d051afa1e0 m=nil [finalizer wait]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051abc620 sp=0x16d051abc600 pc=0x48d7ea
+runtime.runFinalizers()
+	/usr/lib/go/src/runtime/mfinal.go:210 +0x107 fp=0x16d051abc7e0 sp=0x16d051abc620 pc=0x42d987
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051abc7e8 sp=0x16d051abc7e0 pc=0x494801
+created by runtime.createfing in goroutine 1
+	/usr/lib/go/src/runtime/mfinal.go:172 +0x3d
+
+goroutine 7 gp=0x16d051afa3c0 m=nil [cleanup wait]:
+runtime.gopark(0x7f1a44084c00?, 0x16d051abcf90?, 0xd5?, 0xf8?, 0x7f1a44084c00?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051abcf68 sp=0x16d051abcf48 pc=0x48d7ea
+runtime.goparkunlock(...)
+	/usr/lib/go/src/runtime/proc.go:480
+runtime.(*cleanupQueue).dequeue(0x10aa4c0)
+	/usr/lib/go/src/runtime/mcleanup.go:522 +0xd3 fp=0x16d051abcfa0 sp=0x16d051abcf68 pc=0x42a6b3
+runtime.runCleanups()
+	/usr/lib/go/src/runtime/mcleanup.go:718 +0x45 fp=0x16d051abcfe0 sp=0x16d051abcfa0 pc=0x42ad25
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051abcfe8 sp=0x16d051abcfe0 pc=0x494801
+created by runtime.(*cleanupQueue).createGs in goroutine 1
+	/usr/lib/go/src/runtime/mcleanup.go:672 +0xa5
+
+goroutine 8 gp=0x16d051afa5a0 m=nil [chan receive]:
+runtime.gopark(0x16d051bc4460?, 0x7f1a8bede4c0?, 0xa0?, 0xa2?, 0xf8ebf0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051acbcd8 sp=0x16d051acbcb8 pc=0x48d7ea
+runtime.chanrecv(0x16d051ae2200, 0x16d051acbdbf, 0x1)
+	/usr/lib/go/src/runtime/chan.go:667 +0x4ae fp=0x16d051acbd50 sp=0x16d051acbcd8 pc=0x41a58e
+runtime.chanrecv1(0x18?, 0xfd1170?)
+	/usr/lib/go/src/runtime/chan.go:509 +0x12 fp=0x16d051acbd78 sp=0x16d051acbd50 pc=0x41a0b2
+testing.(*T).Run(0x16d051bab208, {0x9f6ac0?, 0x52bc48?}, 0x16d051bc3a40)
+	/usr/lib/go/src/testing/testing.go:2266 +0x4f2 fp=0x16d051acbe50 sp=0x16d051acbd78 pc=0x52c312
+github.com/calebhabesh/file-sync/internal/network.TestWANW10ICEHTTP3NATMatrix(0x16d051bab208)
+	<repo>/internal/network/ice_test.go:156 +0x1da fp=0x16d051acbf70 sp=0x16d051acbe50 pc=0x962ffa
+testing.tRunner(0x16d051bab208, 0x102fe10)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea fp=0x16d051acbfc0 sp=0x16d051acbf70 pc=0x52bdaa
+testing.(*T).Run.gowrap1()
+	/usr/lib/go/src/testing/testing.go:2258 +0x1b fp=0x16d051acbfe0 sp=0x16d051acbfc0 pc=0x531b9b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051acbfe8 sp=0x16d051acbfe0 pc=0x494801
+created by testing.(*T).Run in goroutine 1
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 9 gp=0x16d051afa780 m=nil [sync.Mutex.Lock]:
+runtime.gopark(0x10b2ae0?, 0x7bce583f620c03a5?, 0xa0?, 0x49?, 0x16d05218f628?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d05218f5e8 sp=0x16d05218f5c8 pc=0x48d7ea
+runtime.goparkunlock(...)
+	/usr/lib/go/src/runtime/proc.go:480
+runtime.semacquire1(0x16d051dac074, 0x0, 0x3, 0x2, 0x16)
+	/usr/lib/go/src/runtime/sema.go:192 +0x232 fp=0x16d05218f650 sp=0x16d05218f5e8 pc=0x466e72
+internal/sync.runtime_SemacquireMutex(0x16d051a58a08?, 0xc0?, 0x0?)
+	/usr/lib/go/src/runtime/sema.go:95 +0x25 fp=0x16d05218f688 sp=0x16d05218f650 pc=0x48ec05
+internal/sync.(*Mutex).lockSlow(0x16d051dac070)
+	/usr/lib/go/src/internal/sync/mutex.go:149 +0x15a fp=0x16d05218f6d8 sp=0x16d05218f688 pc=0x49bcda
+internal/sync.(*Mutex).Lock(...)
+	/usr/lib/go/src/internal/sync/mutex.go:70
+sync.(*Mutex).Lock(...)
+	/usr/lib/go/src/sync/mutex.go:46
+github.com/calebhabesh/file-sync/internal/network.(*PairPacketConn).ReadFrom(0x16d051dac000, {0x16d05218f858, 0x4b0, 0xe5a34c953b4961df?})
+	<repo>/internal/network/packet.go:58 +0x77 fp=0x16d05218f790 sp=0x16d05218f6d8 pc=0x94fb17
+github.com/calebhabesh/file-sync/internal/network.TestWANW10ICEHTTP3NATMatrix.func1(0x16d051bab448)
+	<repo>/internal/network/ice_test.go:228 +0xcc5 fp=0x16d05218ff70 sp=0x16d05218f790 pc=0x97aec5
+testing.tRunner(0x16d051bab448, 0x16d051bc3a40)
+	/usr/lib/go/src/testing/testing.go:2193 +0xea fp=0x16d05218ffc0 sp=0x16d05218ff70 pc=0x52bdaa
+testing.(*T).Run.gowrap1()
+	/usr/lib/go/src/testing/testing.go:2258 +0x1b fp=0x16d05218ffe0 sp=0x16d05218ffc0 pc=0x531b9b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d05218ffe8 sp=0x16d05218ffe0 pc=0x494801
+created by testing.(*T).Run in goroutine 8
+	/usr/lib/go/src/testing/testing.go:2258 +0x4d4
+
+goroutine 10 gp=0x16d051afa960 m=nil [select]:
+runtime.gopark(0x16d051c01fb0?, 0x2?, 0x10?, 0x3?, 0x16d051c01f64?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c01de8 sp=0x16d051c01dc8 pc=0x48d7ea
+runtime.selectgo(0x16d051c01fb0, 0x16d051c01f60, 0x0?, 0x0, 0x16d051abd760?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c01f28 sp=0x16d051c01de8 pc=0x4660d7
+github.com/pion/transport/v5/vnet.(*Router).Start.func1()
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/router.go:241 +0xa5 fp=0x16d051c01fe0 sp=0x16d051c01f28 pc=0x7b3085
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c01fe8 sp=0x16d051c01fe0 pc=0x494801
+created by github.com/pion/transport/v5/vnet.(*Router).Start in goroutine 9
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/router.go:230 +0xed
+
+goroutine 11 gp=0x16d051afab40 m=nil [select]:
+runtime.gopark(0x16d051acce38?, 0x2?, 0xb8?, 0xcc?, 0x16d051accde4?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051accc70 sp=0x16d051accc50 pc=0x48d7ea
+runtime.selectgo(0x16d051acce38, 0x16d051accde0, 0x88?, 0x0, 0x1?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051accdb0 sp=0x16d051accc70 pc=0x4660d7
+github.com/pion/transport/v5/vnet.(*UDPConn).ReadFrom(0x16d051ae5d80, {0x16d051b8c400, 0x400, 0x0?})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/conn.go:159 +0xa5 fp=0x16d051acce78 sp=0x16d051accdb0 pc=0x7a78a5
+github.com/calebhabesh/file-sync/internal/network.iceVirtualPair.func3()
+	<repo>/internal/network/ice_test.go:95 +0xb1 fp=0x16d051accfe0 sp=0x16d051acce78 pc=0x979b91
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051accfe8 sp=0x16d051accfe0 pc=0x494801
+created by github.com/calebhabesh/file-sync/internal/network.iceVirtualPair in goroutine 9
+	<repo>/internal/network/ice_test.go:91 +0x95c
+
+goroutine 12 gp=0x16d051afad20 m=nil [select]:
+runtime.gopark(0x16d052096f58?, 0x2?, 0xee?, 0x14?, 0x16d052096f54?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d052096dd8 sp=0x16d052096db8 pc=0x48d7ea
+runtime.selectgo(0x16d052096f58, 0x16d052096f50, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d052096f18 sp=0x16d052096dd8 pc=0x4660d7
+github.com/pion/ice/v4/internal/taskloop.(*Loop).runLoop(0x16d051ae5e00, 0x0?)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/internal/taskloop/taskloop.go:57 +0xe6 fp=0x16d052096fc0 sp=0x16d052096f18 pc=0x7734a6
+github.com/pion/ice/v4/internal/taskloop.New.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/internal/taskloop/taskloop.go:44 +0x1b fp=0x16d052096fe0 sp=0x16d052096fc0 pc=0x77383b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d052096fe8 sp=0x16d052096fe0 pc=0x494801
+created by github.com/pion/ice/v4/internal/taskloop.New in goroutine 9
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/internal/taskloop/taskloop.go:44 +0x109
+
+goroutine 13 gp=0x16d051afaf00 m=nil [select]:
+runtime.gopark(0x16d051ab6fa0?, 0x2?, 0x0?, 0x0?, 0x16d051ab6f74?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051ac6e00 sp=0x16d051ac6de0 pc=0x48d7ea
+runtime.selectgo(0x16d051ac6fa0, 0x16d051ab6f70, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051ac6f40 sp=0x16d051ac6e00 pc=0x4660d7
+context.(*cancelCtx).propagateCancel.func2()
+	/usr/lib/go/src/context/context.go:524 +0x9a fp=0x16d051ac6fe0 sp=0x16d051ac6f40 pc=0x4d4f9a
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051ac6fe8 sp=0x16d051ac6fe0 pc=0x494801
+created by context.(*cancelCtx).propagateCancel in goroutine 12
+	/usr/lib/go/src/context/context.go:523 +0x425
+
+goroutine 42 gp=0x16d051afb0e0 m=nil [select]:
+runtime.gopark(0x16d051ab77a0?, 0x2?, 0xe0?, 0xb0?, 0x16d051ab7774?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051ab7600 sp=0x16d051ab75e0 pc=0x48d7ea
+runtime.selectgo(0x16d051ab77a0, 0x16d051ab7770, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051ab7740 sp=0x16d051ab7600 pc=0x4660d7
+context.(*cancelCtx).propagateCancel.func2()
+	/usr/lib/go/src/context/context.go:524 +0x9a fp=0x16d051ab77e0 sp=0x16d051ab7740 pc=0x4d4f9a
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051ab77e8 sp=0x16d051ab77e0 pc=0x494801
+created by context.(*cancelCtx).propagateCancel in goroutine 41
+	/usr/lib/go/src/context/context.go:523 +0x425
+
+goroutine 84 gp=0x16d051afb2c0 m=nil [GC worker (idle)]:
+runtime.gopark(0x7d356d?, 0x16d051ab6f38?, 0xf0?, 0x53?, 0x16d051b18550?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051ab6f40 sp=0x16d051ab6f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051ab6fc8 sp=0x16d051ab6f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051ab6fe0 sp=0x16d051ab6fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051ab6fe8 sp=0x16d051ab6fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 83 gp=0x16d051afb4a0 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b46f40 sp=0x16d051b46f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b46fc8 sp=0x16d051b46f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b46fe0 sp=0x16d051b46fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b46fe8 sp=0x16d051b46fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 34 gp=0x16d051b043c0 m=nil [select]:
+runtime.gopark(0x16d051c04db0?, 0x2?, 0x0?, 0x0?, 0x16d051c04d5c?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c04be8 sp=0x16d051c04bc8 pc=0x48d7ea
+runtime.selectgo(0x16d051c04db0, 0x16d051c04d58, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c04d28 sp=0x16d051c04be8 pc=0x4660d7
+github.com/pion/transport/v5/vnet.(*UDPConn).ReadFrom(0x16d051b30000, {0x16d051b70000, 0x2000, 0x16d051b70000?})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/conn.go:159 +0xa5 fp=0x16d051c04df0 sp=0x16d051c04d28 pc=0x7a78a5
+github.com/pion/ice/v4.(*candidateBase).readPacket(0x16d051c0168f?, {0x16d051b70000?, 0x16d051bfa008?, 0xf00178?}, {0x0, 0x0, 0x0})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:322 +0x46 fp=0x16d051c04e28 sp=0x16d051c04df0 pc=0x7d4c06
+github.com/pion/ice/v4.(*candidateBase).readPacket-fm({0x16d051b70000?, 0x168f?, 0x16d051b38000?}, {0x0?, 0x40?, 0x2000?})
+	<autogenerated>:1 +0x39 fp=0x16d051c04e80 sp=0x16d051c04e28 pc=0x7f96f9
+github.com/pion/ice/v4.(*candidateBase).recvLoop(0x16d051b38000, 0x0?)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:301 +0x363 fp=0x16d051c04fc0 sp=0x16d051c04e80 pc=0x7d4a03
+github.com/pion/ice/v4.(*candidateBase).start.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x1b fp=0x16d051c04fe0 sp=0x16d051c04fc0 pc=0x7ef31b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c04fe8 sp=0x16d051c04fe0 pc=0x494801
+created by github.com/pion/ice/v4.(*candidateBase).start in goroutine 12
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x236
+
+goroutine 39 gp=0x16d051b04780 m=nil [select]:
+runtime.gopark(0x16d051c17db0?, 0x2?, 0x0?, 0x0?, 0x16d051c17d5c?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c17be8 sp=0x16d051c17bc8 pc=0x48d7ea
+runtime.selectgo(0x16d051c17db0, 0x16d051c17d58, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c17d28 sp=0x16d051c17be8 pc=0x4660d7
+github.com/pion/transport/v5/vnet.(*UDPConn).ReadFrom(0x16d051b30080, {0x16d051c1c000, 0x2000, 0x16d051c1c000?})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/conn.go:159 +0xa5 fp=0x16d051c17df0 sp=0x16d051c17d28 pc=0x7a78a5
+github.com/pion/ice/v4.(*candidateBase).readPacket(0x16d051b4168f?, {0x16d051c1c000?, 0x1099780?, 0x0?}, {0x0, 0x0, 0x0})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:322 +0x46 fp=0x16d051c17e28 sp=0x16d051c17df0 pc=0x7d4c06
+github.com/pion/ice/v4.(*candidateBase).readPacket-fm({0x16d051c1c000?, 0x168f?, 0x0?}, {0x0?, 0x70?, 0x2000?})
+	<autogenerated>:1 +0x39 fp=0x16d051c17e80 sp=0x16d051c17e28 pc=0x7f96f9
+github.com/pion/ice/v4.(*candidateBase).recvLoop(0x16d051b38160, 0x16d051b4a7b8?)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:301 +0x363 fp=0x16d051c17fc0 sp=0x16d051c17e80 pc=0x7d4a03
+github.com/pion/ice/v4.(*candidateBase).start.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x1b fp=0x16d051c17fe0 sp=0x16d051c17fc0 pc=0x7ef31b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c17fe8 sp=0x16d051c17fe0 pc=0x494801
+created by github.com/pion/ice/v4.(*candidateBase).start in goroutine 12
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x236
+
+goroutine 41 gp=0x16d051b04960 m=nil [select]:
+runtime.gopark(0x16d051ac7f58?, 0x2?, 0xee?, 0x14?, 0x16d051ac7f54?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051ac7dd8 sp=0x16d051ac7db8 pc=0x48d7ea
+runtime.selectgo(0x16d051ac7f58, 0x16d051ac7f50, 0x7d34b9?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051ac7f18 sp=0x16d051ac7dd8 pc=0x4660d7
+github.com/pion/ice/v4/internal/taskloop.(*Loop).runLoop(0x16d051b30380, 0x16d051b4afb8?)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/internal/taskloop/taskloop.go:57 +0xe6 fp=0x16d051ac7fc0 sp=0x16d051ac7f18 pc=0x7734a6
+github.com/pion/ice/v4/internal/taskloop.New.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/internal/taskloop/taskloop.go:44 +0x1b fp=0x16d051ac7fe0 sp=0x16d051ac7fc0 pc=0x77383b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051ac7fe8 sp=0x16d051ac7fe0 pc=0x494801
+created by github.com/pion/ice/v4/internal/taskloop.New in goroutine 9
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/internal/taskloop/taskloop.go:44 +0x109
+
+goroutine 52 gp=0x16d051b050e0 m=nil [select]:
+runtime.gopark(0x16d051c00db0?, 0x2?, 0x0?, 0x0?, 0x16d051c00d5c?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c00be8 sp=0x16d051c00bc8 pc=0x48d7ea
+runtime.selectgo(0x16d051c00db0, 0x16d051c00d58, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c00d28 sp=0x16d051c00be8 pc=0x4660d7
+github.com/pion/transport/v5/vnet.(*UDPConn).ReadFrom(0x16d051b30480, {0x16d051d0c000, 0x2000, 0x16d051d0c000?})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/conn.go:159 +0xa5 fp=0x16d051c00df0 sp=0x16d051c00d28 pc=0x7a78a5
+github.com/pion/ice/v4.(*candidateBase).readPacket(0x16d051c0173d?, {0x16d051d0c000?, 0x1099780?, 0xd?}, {0x0, 0x0, 0x0})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:322 +0x46 fp=0x16d051c00e28 sp=0x16d051c00df0 pc=0x7d4c06
+github.com/pion/ice/v4.(*candidateBase).readPacket-fm({0x16d051d0c000?, 0x173d?, 0x0?}, {0x0?, 0x40?, 0x2000?})
+	<autogenerated>:1 +0x39 fp=0x16d051c00e80 sp=0x16d051c00e28 pc=0x7f96f9
+github.com/pion/ice/v4.(*candidateBase).recvLoop(0x16d051b389a0, 0x16d051b4cfb8?)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:301 +0x363 fp=0x16d051c00fc0 sp=0x16d051c00e80 pc=0x7d4a03
+github.com/pion/ice/v4.(*candidateBase).start.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x1b fp=0x16d051c00fe0 sp=0x16d051c00fc0 pc=0x7ef31b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c00fe8 sp=0x16d051c00fe0 pc=0x494801
+created by github.com/pion/ice/v4.(*candidateBase).start in goroutine 41
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x236
+
+goroutine 57 gp=0x16d051b052c0 m=nil [select]:
+runtime.gopark(0x16d051b4d778?, 0x3?, 0x70?, 0x0?, 0x16d051b4d742?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b4d5c8 sp=0x16d051b4d5a8 pc=0x48d7ea
+runtime.selectgo(0x16d051b4d778, 0x16d051b4d73c, 0x16d051b30380?, 0x0, 0x5cf2fbb?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051b4d708 sp=0x16d051b4d5c8 pc=0x4660d7
+github.com/pion/ice/v4.(*Agent).connectivityChecks(0x16d051b60008)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/agent.go:725 +0x1dd fp=0x16d051b4d7c8 sp=0x16d051b4d708 pc=0x7c945d
+github.com/pion/ice/v4.(*Agent).startConnectivityChecks.func1.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/agent.go:659 +0x17 fp=0x16d051b4d7e0 sp=0x16d051b4d7c8 pc=0x7ed837
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b4d7e8 sp=0x16d051b4d7e0 pc=0x494801
+created by github.com/pion/ice/v4.(*Agent).startConnectivityChecks.func1 in goroutine 41
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/agent.go:659 +0xfa
+
+goroutine 50 gp=0x16d051b054a0 m=nil [select]:
+runtime.gopark(0x16d051c05db0?, 0x2?, 0xec?, 0xb0?, 0x16d051c05d5c?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c05be8 sp=0x16d051c05bc8 pc=0x48d7ea
+runtime.selectgo(0x16d051c05db0, 0x16d051c05d58, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c05d28 sp=0x16d051c05be8 pc=0x4660d7
+github.com/pion/transport/v5/vnet.(*UDPConn).ReadFrom(0x16d051b30540, {0x16d051c96000, 0x2000, 0x16d051c96000?})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/vnet/conn.go:159 +0xa5 fp=0x16d051c05df0 sp=0x16d051c05d28 pc=0x7a78a5
+github.com/pion/ice/v4.(*candidateBase).readPacket(0x16d051b4173d?, {0x16d051c96000?, 0x16d051b60008?, 0xf00178?}, {0x0, 0x0, 0x0})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:322 +0x46 fp=0x16d051c05e28 sp=0x16d051c05df0 pc=0x7d4c06
+github.com/pion/ice/v4.(*candidateBase).readPacket-fm({0x16d051c96000?, 0x173d?, 0x16d051b38840?}, {0x0?, 0x40?, 0x2000?})
+	<autogenerated>:1 +0x39 fp=0x16d051c05e80 sp=0x16d051c05e28 pc=0x7f96f9
+github.com/pion/ice/v4.(*candidateBase).recvLoop(0x16d051b38840, 0x16d051b16630?)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:301 +0x363 fp=0x16d051c05fc0 sp=0x16d051c05e80 pc=0x7d4a03
+github.com/pion/ice/v4.(*candidateBase).start.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x1b fp=0x16d051c05fe0 sp=0x16d051c05fc0 pc=0x7ef31b
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c05fe8 sp=0x16d051c05fe0 pc=0x494801
+created by github.com/pion/ice/v4.(*candidateBase).start in goroutine 41
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/candidate_base.go:263 +0x236
+
+goroutine 82 gp=0x16d051b05680 m=nil [IO wait]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c12b98 sp=0x16d051c12b78 pc=0x48d7ea
+runtime.netpollblock(0x8?, 0x8bede1a0?, 0x1a?)
+	/usr/lib/go/src/runtime/netpoll.go:575 +0xf7 fp=0x16d051c12bd0 sp=0x16d051c12b98 pc=0x44cb17
+internal/poll.runtime_pollWait(0x7f1a8be5f800, 0x72)
+	/usr/lib/go/src/runtime/netpoll.go:351 +0x85 fp=0x16d051c12bf0 sp=0x16d051c12bd0 pc=0x48c9e5
+internal/poll.(*pollDesc).wait(0x16d051d8a100?, 0x1c8?, 0x0)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:84 +0x27 fp=0x16d051c12c28 sp=0x16d051c12bf0 pc=0x4c26e7
+internal/poll.(*pollDesc).waitRead(...)
+	/usr/lib/go/src/internal/poll/fd_poll_runtime.go:89
+internal/poll.(*FD).Accept(0x16d051d8a100)
+	/usr/lib/go/src/internal/poll/fd_unix.go:618 +0x27d fp=0x16d051c12cd0 sp=0x16d051c12c28 pc=0x4c5ddd
+net.(*netFD).accept(0x16d051d8a100)
+	/usr/lib/go/src/net/fd_unix.go:149 +0x29 fp=0x16d051c12d88 sp=0x16d051c12cd0 pc=0x638bc9
+net.(*TCPListener).accept(0x16d051d88100)
+	/usr/lib/go/src/net/tcpsock_posix.go:159 +0x1b fp=0x16d051c12dd8 sp=0x16d051c12d88 pc=0x64cbfb
+net.(*TCPListener).Accept(0x16d051d88100)
+	/usr/lib/go/src/net/tcpsock.go:387 +0x30 fp=0x16d051c12e18 sp=0x16d051c12dd8 pc=0x64bcf0
+crypto/tls.(*listener).Accept(0x16d051d96288)
+	/usr/lib/go/src/crypto/tls/tls.go:78 +0x24 fp=0x16d051c12e68 sp=0x16d051c12e18 pc=0x6e65e4
+net/http.(*Server).Serve(0x16d051dd2000, {0x102b570, 0x16d051d96288})
+	/usr/lib/go/src/net/http/server.go:3551 +0x379 fp=0x16d051c12f98 sp=0x16d051c12e68 pc=0x86a6b9
+net/http/httptest.(*Server).goServe.func1()
+	/usr/lib/go/src/net/http/httptest/server.go:586 +0x55 fp=0x16d051c12fe0 sp=0x16d051c12f98 pc=0x940575
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c12fe8 sp=0x16d051c12fe0 pc=0x494801
+created by net/http/httptest.(*Server).goServe in goroutine 9
+	/usr/lib/go/src/net/http/httptest/server.go:584 +0x92
+
+goroutine 21 gp=0x16d051c1a000 m=nil [select]:
+runtime.gopark(0x16d051ab8778?, 0x3?, 0x70?, 0x0?, 0x16d051ab8742?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051ab85c8 sp=0x16d051ab85a8 pc=0x48d7ea
+runtime.selectgo(0x16d051ab8778, 0x16d051ab873c, 0x16d051ae5e00?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051ab8708 sp=0x16d051ab85c8 pc=0x4660d7
+github.com/pion/ice/v4.(*Agent).connectivityChecks(0x16d051bfa008)
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/agent.go:725 +0x1dd fp=0x16d051ab87c8 sp=0x16d051ab8708 pc=0x7c945d
+github.com/pion/ice/v4.(*Agent).startConnectivityChecks.func1.gowrap1()
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/agent.go:659 +0x17 fp=0x16d051ab87e0 sp=0x16d051ab87c8 pc=0x7ed837
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051ab87e8 sp=0x16d051ab87e0 pc=0x494801
+created by github.com/pion/ice/v4.(*Agent).startConnectivityChecks.func1 in goroutine 12
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/agent.go:659 +0xfa
+
+goroutine 85 gp=0x16d051dd4960 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b47740 sp=0x16d051b47720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b477c8 sp=0x16d051b47740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b477e0 sp=0x16d051b477c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b477e8 sp=0x16d051b477e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 86 gp=0x16d051dd4b40 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b47f40 sp=0x16d051b47f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b47fc8 sp=0x16d051b47f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b47fe0 sp=0x16d051b47fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b47fe8 sp=0x16d051b47fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 87 gp=0x16d051dd4d20 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b48740 sp=0x16d051b48720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b487c8 sp=0x16d051b48740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b487e0 sp=0x16d051b487c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b487e8 sp=0x16d051b487e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 88 gp=0x16d051dd4f00 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b48f40 sp=0x16d051b48f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b48fc8 sp=0x16d051b48f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b48fe0 sp=0x16d051b48fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b48fe8 sp=0x16d051b48fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 89 gp=0x16d051dd50e0 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b49740 sp=0x16d051b49720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b497c8 sp=0x16d051b49740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b497e0 sp=0x16d051b497c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b497e8 sp=0x16d051b497e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 90 gp=0x16d051dd52c0 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b49f40 sp=0x16d051b49f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051b49fc8 sp=0x16d051b49f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051b49fe0 sp=0x16d051b49fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b49fe8 sp=0x16d051b49fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 91 gp=0x16d051dd54a0 m=nil [GC worker (idle)]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f84740 sp=0x16d051f84720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f847c8 sp=0x16d051f84740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f847e0 sp=0x16d051f847c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f847e8 sp=0x16d051f847e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 92 gp=0x16d051dd5680 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a6eb6cf6?, 0x3?, 0x21?, 0xe?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f84f40 sp=0x16d051f84f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f84fc8 sp=0x16d051f84f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f84fe0 sp=0x16d051f84fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f84fe8 sp=0x16d051f84fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 93 gp=0x16d051dd5860 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a6992c70?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f85740 sp=0x16d051f85720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f857c8 sp=0x16d051f85740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f857e0 sp=0x16d051f857c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f857e8 sp=0x16d051f857e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 94 gp=0x16d051dd5a40 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a69997ad?, 0x0?, 0x0?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f85f40 sp=0x16d051f85f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f85fc8 sp=0x16d051f85f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f85fe0 sp=0x16d051f85fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f85fe8 sp=0x16d051f85fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 95 gp=0x16d051dd5c20 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a6ebd65c?, 0x1?, 0x5?, 0x9d?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f86740 sp=0x16d051f86720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f867c8 sp=0x16d051f86740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f867e0 sp=0x16d051f867c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f867e8 sp=0x16d051f867e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 96 gp=0x16d051f7e000 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a6c8dc92?, 0x1?, 0x46?, 0x0?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f86f40 sp=0x16d051f86f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f86fc8 sp=0x16d051f86f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f86fe0 sp=0x16d051f86fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f86fe8 sp=0x16d051f86fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 97 gp=0x16d051f7e1e0 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a6ec02c7?, 0x1?, 0x70?, 0xa?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f87740 sp=0x16d051f87720 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f877c8 sp=0x16d051f87740 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f877e0 sp=0x16d051f877c8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f877e8 sp=0x16d051f877e0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 98 gp=0x16d051f7e3c0 m=nil [GC worker (idle)]:
+runtime.gopark(0xb727a6eb6d32?, 0x1?, 0xd4?, 0x38?, 0x0?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f87f40 sp=0x16d051f87f20 pc=0x48d7ea
+runtime.gcBgMarkWorker(0x16d051d8c1c0)
+	/usr/lib/go/src/runtime/mgc.go:1807 +0xeb fp=0x16d051f87fc8 sp=0x16d051f87f40 pc=0x430dcb
+runtime.gcBgMarkStartWorkers.gowrap1()
+	/usr/lib/go/src/runtime/mgc.go:1711 +0x17 fp=0x16d051f87fe0 sp=0x16d051f87fc8 pc=0x483637
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f87fe8 sp=0x16d051f87fe0 pc=0x494801
+created by runtime.gcBgMarkStartWorkers in goroutine 9
+	/usr/lib/go/src/runtime/mgc.go:1711 +0xfc
+
+goroutine 99 gp=0x16d051c86960 m=nil [select]:
+runtime.gopark(0x16d051c19c40?, 0x2?, 0x2?, 0x2?, 0x16d051c19c0c?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c19a90 sp=0x16d051c19a70 pc=0x48d7ea
+runtime.selectgo(0x16d051c19c40, 0x16d051c19c08, 0xa2f1d0?, 0x0, 0x16d052256bd0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c19bd0 sp=0x16d051c19a90 pc=0x4660d7
+github.com/pion/transport/v5/packetio.(*Buffer).Read(0x16d051a74380, {0x16d051dac078, 0x10000, 0x10000}, {0x16d051c19cf0, 0x0, 0x1})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/packetio/buffer.go:239 +0x1aa fp=0x16d051c19c70 sp=0x16d051c19bd0 pc=0x6fe74a
+github.com/pion/ice/v4.(*Conn).ReadWithAttributes(0x16d051a2c4f8, {0x16d051dac078, 0x10000, 0x10000}, {0x16d051c19cf0, 0x0, 0x1})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/transport.go:140 +0xa6 fp=0x16d051c19cb8 sp=0x16d051c19c70 pc=0x7ec4e6
+github.com/pion/ice/v4.(*Conn).Read(0x16d051dac000?, {0x16d051dac078?, 0x16d051c19d58?, 0x7f1a3973c908?})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/transport.go:129 +0x3e fp=0x16d051c19d20 sp=0x16d051c19cb8 pc=0x7ec3fe
+github.com/calebhabesh/file-sync/internal/network.(*PairPacketConn).ReadFrom(0x16d051dac000, {0x16d0521ac600, 0x5ac, 0x63cda5?})
+	<repo>/internal/network/packet.go:63 +0xe7 fp=0x16d051c19dd8 sp=0x16d051c19d20 pc=0x94fb87
+github.com/quic-go/quic-go.(*basicConn).ReadPacket(0x16d051d96048)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/sys_conn.go:122 +0xab fp=0x16d051c19e28 sp=0x16d051c19dd8 pc=0x8ef68b
+github.com/quic-go/quic-go.(*Transport).listen(0x16d051cbe480, {0x102d610, 0x16d051d96048})
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:531 +0x75 fp=0x16d051c19f80 sp=0x16d051c19e28 pc=0x8f4715
+github.com/quic-go/quic-go.(*Transport).init.func1.1()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:423 +0x65 fp=0x16d051c19fe0 sp=0x16d051c19f80 pc=0x8fc4e5
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c19fe8 sp=0x16d051c19fe0 pc=0x494801
+created by github.com/quic-go/quic-go.(*Transport).init.func1 in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:421 +0x41a
+
+goroutine 100 gp=0x16d051c86b40 m=nil [select]:
+runtime.gopark(0x16d051ab8ee0?, 0x3?, 0x0?, 0x0?, 0x16d051ab8e8a?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051acdcd8 sp=0x16d051acdcb8 pc=0x48d7ea
+runtime.selectgo(0x16d051acdee0, 0x16d051ab8e84, 0x0?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051acde18 sp=0x16d051acdcd8 pc=0x4660d7
+github.com/quic-go/quic-go.(*Transport).runSendQueue(0x16d051cbe480)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:444 +0xef fp=0x16d051acdfc8 sp=0x16d051acde18 pc=0x8f3ecf
+github.com/quic-go/quic-go.(*Transport).init.func1.gowrap1()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:429 +0x17 fp=0x16d051acdfe0 sp=0x16d051acdfc8 pc=0x8fc457
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051acdfe8 sp=0x16d051acdfe0 pc=0x494801
+created by github.com/quic-go/quic-go.(*Transport).init.func1 in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:429 +0x465
+
+goroutine 101 gp=0x16d051c86d20 m=nil [select]:
+runtime.gopark(0x16d052541f90?, 0x2?, 0x0?, 0x0?, 0x16d052541ebc?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d052092d08 sp=0x16d052092ce8 pc=0x48d7ea
+runtime.selectgo(0x16d052092f90, 0x16d052541eb8, 0x16d0521cccf0?, 0x0, 0x16d05213e600?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d052092e48 sp=0x16d052092d08 pc=0x4660d7
+github.com/quic-go/quic-go.(*baseServer).run(0x16d051cbe6c0)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:300 +0x10a fp=0x16d052092fc8 sp=0x16d052092e48 pc=0x8e6c2a
+github.com/quic-go/quic-go.newServer.gowrap1()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:286 +0x17 fp=0x16d052092fe0 sp=0x16d052092fc8 pc=0x8fadb7
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d052092fe8 sp=0x16d052092fe0 pc=0x494801
+created by github.com/quic-go/quic-go.newServer in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:286 +0x53c
+
+goroutine 102 gp=0x16d051c86f00 m=nil [select]:
+runtime.gopark(0x16d051bb1e98?, 0x5?, 0x0?, 0x0?, 0x16d051bb1dc6?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d052287c08 sp=0x16d052287be8 pc=0x48d7ea
+runtime.selectgo(0x16d052287e98, 0x16d051bb1dbc, 0x16d0521cc180?, 0x0, 0x16d05213e000?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d052287d48 sp=0x16d052287c08 pc=0x4660d7
+github.com/quic-go/quic-go.(*baseServer).runSendQueue(0x16d051cbe6c0)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:313 +0x195 fp=0x16d052287fc8 sp=0x16d052287d48 pc=0x8e6ed5
+github.com/quic-go/quic-go.newServer.gowrap2()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:287 +0x17 fp=0x16d052287fe0 sp=0x16d052287fc8 pc=0x8fad77
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d052287fe8 sp=0x16d052287fe0 pc=0x494801
+created by github.com/quic-go/quic-go.newServer in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:287 +0x588
+
+goroutine 103 gp=0x16d051c870e0 m=nil [select]:
+runtime.gopark(0x16d051b4aed8?, 0x3?, 0xc0?, 0x91?, 0x16d051b4aeca?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b4ad50 sp=0x16d051b4ad30 pc=0x48d7ea
+runtime.selectgo(0x16d051b4aed8, 0x16d051b4aec4, 0x42386a?, 0x0, 0x4218f7?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051b4ae90 sp=0x16d051b4ad50 pc=0x4660d7
+github.com/quic-go/quic-go.(*baseServer).accept(0x16d051cbe6c0, {0x102c528, 0x16d051b3a000})
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:335 +0xa5 fp=0x16d051b4af20 sp=0x16d051b4ae90 pc=0x8e7145
+github.com/quic-go/quic-go.(*baseServer).Accept(...)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:331
+github.com/quic-go/quic-go.(*Listener).Accept(0x16d051c9a010?, {0x102c528?, 0x16d051b3a000?})
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:132 +0x25 fp=0x16d051b4af48 sp=0x16d051b4af20 pc=0x8e62e5
+github.com/calebhabesh/file-sync/internal/network.NewQUICEndpoint.func4()
+	<repo>/internal/network/quic.go:76 +0xe5 fp=0x16d051b4afe0 sp=0x16d051b4af48 pc=0x975105
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b4afe8 sp=0x16d051b4afe0 pc=0x494801
+created by github.com/calebhabesh/file-sync/internal/network.NewQUICEndpoint in goroutine 9
+	<repo>/internal/network/quic.go:71 +0x4ac
+
+goroutine 104 gp=0x16d051c874a0 m=nil [select]:
+runtime.gopark(0x16d051ac9c40?, 0x2?, 0x1?, 0x2?, 0x16d051ac9c0c?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051ac9a90 sp=0x16d051ac9a70 pc=0x48d7ea
+runtime.selectgo(0x16d051ac9c40, 0x16d051ac9c08, 0xa2f1d0?, 0x0, 0x16d052380c58?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051ac9bd0 sp=0x16d051ac9a90 pc=0x4660d7
+github.com/pion/transport/v5/packetio.(*Buffer).Read(0x16d051b5c080, {0x16d051d9a078, 0x10000, 0x10000}, {0x16d051ac9cf0, 0x0, 0x1})
+	/home/owner/go/pkg/mod/github.com/pion/transport/v5@v5.0.1/packetio/buffer.go:239 +0x1aa fp=0x16d051ac9c70 sp=0x16d051ac9bd0 pc=0x6fe74a
+github.com/pion/ice/v4.(*Conn).ReadWithAttributes(0x16d051b2e2d0, {0x16d051d9a078, 0x10000, 0x10000}, {0x16d051ac9cf0, 0x0, 0x1})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/transport.go:140 +0xa6 fp=0x16d051ac9cb8 sp=0x16d051ac9c70 pc=0x7ec4e6
+github.com/pion/ice/v4.(*Conn).Read(0x16d051d9a000?, {0x16d051d9a078?, 0x16d051ac9d58?, 0x7f1a3973df88?})
+	/home/owner/go/pkg/mod/github.com/pion/ice/v4@v4.4.6/transport.go:129 +0x3e fp=0x16d051ac9d20 sp=0x16d051ac9cb8 pc=0x7ec3fe
+github.com/calebhabesh/file-sync/internal/network.(*PairPacketConn).ReadFrom(0x16d051d9a000, {0x16d051dccc00, 0x5ac, 0x16d051b4cee4?})
+	<repo>/internal/network/packet.go:63 +0xe7 fp=0x16d051ac9dd8 sp=0x16d051ac9d20 pc=0x94fb87
+github.com/quic-go/quic-go.(*basicConn).ReadPacket(0x16d051d960c0)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/sys_conn.go:122 +0xab fp=0x16d051ac9e28 sp=0x16d051ac9dd8 pc=0x8ef68b
+github.com/quic-go/quic-go.(*Transport).listen(0x16d051cbe7e0, {0x102d610, 0x16d051d960c0})
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:531 +0x75 fp=0x16d051ac9f80 sp=0x16d051ac9e28 pc=0x8f4715
+github.com/quic-go/quic-go.(*Transport).init.func1.1()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:423 +0x65 fp=0x16d051ac9fe0 sp=0x16d051ac9f80 pc=0x8fc4e5
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051ac9fe8 sp=0x16d051ac9fe0 pc=0x494801
+created by github.com/quic-go/quic-go.(*Transport).init.func1 in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:421 +0x41a
+
+goroutine 105 gp=0x16d051c87680 m=nil [select]:
+runtime.gopark(0x16d051b466e0?, 0x3?, 0x20?, 0xb2?, 0x16d051b4668a?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051b464d8 sp=0x16d051b464b8 pc=0x48d7ea
+runtime.selectgo(0x16d051b466e0, 0x16d051b46684, 0x2?, 0x0, 0x7f1a3977bbe8?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051b46618 sp=0x16d051b464d8 pc=0x4660d7
+github.com/quic-go/quic-go.(*Transport).runSendQueue(0x16d051cbe7e0)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:444 +0xef fp=0x16d051b467c8 sp=0x16d051b46618 pc=0x8f3ecf
+github.com/quic-go/quic-go.(*Transport).init.func1.gowrap1()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:429 +0x17 fp=0x16d051b467e0 sp=0x16d051b467c8 pc=0x8fc457
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051b467e8 sp=0x16d051b467e0 pc=0x494801
+created by github.com/quic-go/quic-go.(*Transport).init.func1 in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/transport.go:429 +0x465
+
+goroutine 106 gp=0x16d051c87860 m=nil [select]:
+runtime.gopark(0x16d051fe5f90?, 0x2?, 0xe0?, 0x5d?, 0x16d051fe5ebc?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d05209ed08 sp=0x16d05209ece8 pc=0x48d7ea
+runtime.selectgo(0x16d05209ef90, 0x16d051fe5eb8, 0x16d051c9d2f0?, 0x0, 0x16d051b7e000?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d05209ee48 sp=0x16d05209ed08 pc=0x4660d7
+github.com/quic-go/quic-go.(*baseServer).run(0x16d051cbea20)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:300 +0x10a fp=0x16d05209efc8 sp=0x16d05209ee48 pc=0x8e6c2a
+github.com/quic-go/quic-go.newServer.gowrap1()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:286 +0x17 fp=0x16d05209efe0 sp=0x16d05209efc8 pc=0x8fadb7
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d05209efe8 sp=0x16d05209efe0 pc=0x494801
+created by github.com/quic-go/quic-go.newServer in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:286 +0x53c
+
+goroutine 107 gp=0x16d051c87a40 m=nil [select]:
+runtime.gopark(0x16d051bb1e98?, 0x5?, 0x0?, 0x0?, 0x16d051bb1dc6?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051c15c08 sp=0x16d051c15be8 pc=0x48d7ea
+runtime.selectgo(0x16d051c15e98, 0x16d051bb1dbc, 0x16d051c9cc60?, 0x0, 0x16d051fd9800?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051c15d48 sp=0x16d051c15c08 pc=0x4660d7
+github.com/quic-go/quic-go.(*baseServer).runSendQueue(0x16d051cbea20)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:313 +0x195 fp=0x16d051c15fc8 sp=0x16d051c15d48 pc=0x8e6ed5
+github.com/quic-go/quic-go.newServer.gowrap2()
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:287 +0x17 fp=0x16d051c15fe0 sp=0x16d051c15fc8 pc=0x8fad77
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051c15fe8 sp=0x16d051c15fe0 pc=0x494801
+created by github.com/quic-go/quic-go.newServer in goroutine 9
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:287 +0x588
+
+goroutine 108 gp=0x16d051c87c20 m=nil [select]:
+runtime.gopark(0x16d051f81ed8?, 0x3?, 0x0?, 0x0?, 0x16d051f81eca?)
+	/usr/lib/go/src/runtime/proc.go:474 +0xca fp=0x16d051f81d50 sp=0x16d051f81d30 pc=0x48d7ea
+runtime.selectgo(0x16d051f81ed8, 0x16d051f81ec4, 0x42386a?, 0x0, 0x0?, 0x1)
+	/usr/lib/go/src/runtime/select.go:351 +0xa97 fp=0x16d051f81e90 sp=0x16d051f81d50 pc=0x4660d7
+github.com/quic-go/quic-go.(*baseServer).accept(0x16d051cbea20, {0x102c528, 0x16d051b3a0a0})
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:335 +0xa5 fp=0x16d051f81f20 sp=0x16d051f81e90 pc=0x8e7145
+github.com/quic-go/quic-go.(*baseServer).Accept(...)
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:331
+github.com/quic-go/quic-go.(*Listener).Accept(0x16d051b16160?, {0x102c528?, 0x16d051b3a0a0?})
+	/home/owner/go/pkg/mod/github.com/quic-go/quic-go@v0.63.0/server.go:132 +0x25 fp=0x16d051f81f48 sp=0x16d051f81f20 pc=0x8e62e5
+github.com/calebhabesh/file-sync/internal/network.NewQUICEndpoint.func4()
+	<repo>/internal/network/quic.go:76 +0xe5 fp=0x16d051f81fe0 sp=0x16d051f81f48 pc=0x975105
+runtime.goexit({})
+	/usr/lib/go/src/runtime/asm_amd64.s:1264 +0x1 fp=0x16d051f81fe8 sp=0x16d051f81fe0 pc=0x494801
+created by github.com/calebhabesh/file-sync/internal/network.NewQUICEndpoint in goroutine 9
+	<repo>/internal/network/quic.go:71 +0x4ac
+
+rax    0xca
+rbx    0x0
+rcx    0x496363
+rdx    0x0
+rdi    0x10abf78
+rsi    0x80
+rbp    0x7ffea0a3cf88
+rsp    0x7ffea0a3cf40
+r8     0x0
+r9     0x0
+r10    0x0
+r11    0x286
+r12    0x7ffea0a3cf98
+r13    0x14
+r14    0x10aa840
+r15    0x0
+rip    0x496361
+rflags 0x286
+cs     0x33
+fs     0x0
+gs     0x0
+FAIL	github.com/calebhabesh/file-sync/internal/network	22.376s
+FAIL

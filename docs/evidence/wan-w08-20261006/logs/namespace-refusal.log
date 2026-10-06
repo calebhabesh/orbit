@@ -1,0 +1,2 @@
+PASS: host namespace refused before any ip/interface action
+PASS: user namespace alone refused before any ip/interface action (namespace ownership)

@@ -1,0 +1,8 @@
+=== RUN   TestWANW12BinaryDoctorPrivacyAndPTY
+    wan_diagnostics_test.go:28: {"scenario": "W12-explicit-doctor-keyboard-cancel", "status": "passed"}
+        
+    wan_diagnostics_test.go:51: map[direct_tls:UNAVAILABLE directory:VERIFIED relay_inner_tls:QUOTA_EXCEEDED service_dns_tcp:VERIFIED service_tls:VERIFIED udp_stun:NOT_TESTED]
+--- FAIL: TestWANW12BinaryDoctorPrivacyAndPTY (86.21s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	86.215s
+FAIL

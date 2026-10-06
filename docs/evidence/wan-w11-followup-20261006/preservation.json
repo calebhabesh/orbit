@@ -1,0 +1,32 @@
+{
+  "starting_hash_count": 2521,
+  "prior_evidence_files_checked": 2078,
+  "changed_owned_files": [
+    "cmd/filesync/terminal_help.go",
+    "cmd/filesync/terminal_network.go",
+    "cmd/filesync/terminal_setup.go",
+    "docs/implementation/wan-direct.md",
+    "docs/implementation/wan-status.md",
+    "docs/operations.md",
+    "docs/orbit-wan-architecture.md",
+    "docs/orbit-wan-design-gates.md",
+    "docs/orbit-wan-implementation-plan.md",
+    "docs/verification.md",
+    "internal/app/app.go",
+    "internal/control/terminalcontract/network.go",
+    "internal/control/terminalcontract/network_test.go",
+    "internal/network/direct.go",
+    "internal/network/manager.go",
+    "internal/network/quic.go",
+    "internal/network/roaming.go",
+    "internal/network/route_policy.go",
+    "internal/replication/transfer.go",
+    "internal/scheduler/limiter.go",
+    "internal/scheduler/scheduler.go",
+    "internal/terminal/setup_render.go",
+    "schemas/terminal-control-v1.md"
+  ],
+  "unexpected_changes": [],
+  "missing_files": [],
+  "limitations": "Starting hashes cover docs/cmd/internal/schemas/scripts; tests lack an initial follow-up snapshot and are not covered by this blanket preservation assertion."
+}

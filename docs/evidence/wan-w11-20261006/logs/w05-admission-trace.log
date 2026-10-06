@@ -1,0 +1,25 @@
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+W11 admission path=/enrollment/v3/challenge allowed=true time=1791301556
+W11 admission path=/enrollment/v3/request allowed=true time=1791301556
+W11 admission path=/enrollment/v3/status allowed=true time=1791301556
+W11 admission path=/enrollment/v3/status allowed=true time=1791301556
+W11 admission path=/enrollment/v3/status allowed=true time=1791301582
+W11 admission path=/enrollment/v3/status allowed=true time=1791301582
+W11 admission path=/enrollment/v3/challenge allowed=true time=1791301582
+W11 admission path=/enrollment/v3/request allowed=true time=1791301582
+W11 admission path=/enrollment/v3/status allowed=true time=1791301582
+W11 admission path=/enrollment/v3/status allowed=true time=1791301582
+W11 admission path=/enrollment/v3/status allowed=true time=1791301608
+W11 admission path=/enrollment/v3/status allowed=true time=1791301608
+W11 admission path=/enrollment/v3/challenge allowed=true time=1791301613
+W11 admission path=/enrollment/v3/request allowed=false time=1791301613
+W11 retry phase=request_prepared expires=1791301673 now=1791301613 delay=25s
+W11 admission path=/enrollment/v3/request allowed=true time=1791301639
+W11 admission path=/enrollment/v3/status allowed=true time=1791301639
+W11 admission path=/enrollment/v3/status allowed=false time=1791301639
+W11 retry phase=awaiting_approval expires=1791301673 now=1791301639 delay=1m0s
+    wan_enrollment_test.go:483: replacement join: <nil> &{Code:RATE_LIMITED Message:RATE_LIMITED Retryable:true Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0}
+--- FAIL: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (135.23s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	135.230s
+FAIL

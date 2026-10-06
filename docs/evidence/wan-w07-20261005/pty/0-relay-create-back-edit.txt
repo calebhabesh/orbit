@@ -1,0 +1,665 @@
+                                                                           
+> Second  <disposable>/second                                                        
+  Notes  <disposable>/Notes界                                                        
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Add device / share folder                                                                   
+Selected folder: 03e61fb6ef4b575fe6b24db4f752140a3c70e98ea5ea286d2374af95e5b52385                   
+Reviewed membership revision: 1                                                                     
+Invitation expires in one hour; it grants no file access before approval.                           
+Enter create scoped invitation  Esc back  q quit                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Private invitation                                                                          
+Invitation created for selected folder only.                                                        
+Paste on receiver, review its root, then approve the exact request here.                            
+Expires: 2026-10-05T23:52:29.735982924Z                                                             
+s: save to private transfer file  v: reveal/hide invitation                                         
+Capability hidden. Reveal only for deliberate transfer.                                             
+s save private file  v reveal  x revoke  arrows scroll  Esc back  q quit                            
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | save_invitation                                                                             
+> Private output file (absolute):                                                                   
+Enter continue  Esc back  Ctrl-C close                                                              
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Private invitation                                                                          
+Private invitation saved. Transfer deliberately to the receiving device.                            
+Invitation created for selected folder only.                                                        
+Paste on receiver, review its root, then approve the exact request here.                            
+Expires: 2026-10-05T23:52:29.735982924Z                                                             
+s: save to private transfer file  v: reveal/hide invitation                                         
+Capability hidden. Reveal only for deliberate transfer.                                             
+s save private file  v reveal  x revoke  arrows scroll  Esc back  q quit                            
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Enrollment requests                                                                         
+> Pi | pending_approval | code a7a49-fda96-f8b16-4eb04                                              
+  Pi | approved | code b6688-b2f7b-ee636-b8e17                                                      
+j/k select  Enter exact review  r refresh  ] next  [ first  Esc back                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Enrollment requests                                                                         
+> Pi | pending_approval | code a7a49-fda96-f8b16-4eb04                                              
+  Pi | approved | code b6688-b2f7b-ee636-b8e17                                                      
+j/k select  Enter exact review  r refresh  ] next  [ first  Esc back                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Exact request approval                                                                      
+Device: Pi                                                                                          
+Folder: 03e61fb6ef4b575fe6b24db4f752140a3c70e98ea5ea286d2374af95e5b52385                            
+Request: 1c0e184121a26daec6d48534244c2454df176971db942e0fdd2fe368748796e2                           
+Requester: 342fca623184fc7adf357e63caad00cea8802a11cae6eabcd48a88800b933352                         
+Key pin: ba534e9a477b95ac3c6c14a15d79c0440de7523d2b01a1a3d4b33892fbb86e02                           
+Verification code: a7a49-fda96-f8b16-4eb04                                                          
+State: pending_approval                                                                             
+Compare with the joining device. Approval grants this folder only.                                  
+Offline devices may still need membership updates.                                                  
+a approve exact request  x decline  Esc back  q quit                                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Request decision                                                                            
+Exact request approve completed. Other devices may still need membership updates.                   
+Decision durably recorded; receiver still observes its own readiness.                               
+Esc back  q quit (daemon continues)                                                                 
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit                                                                                               
+Daemon: running   Startup: manual (not enabled)                                                     
+[Overview]  Folders  Attention  Devices                                                             
+Search page:                                                                                        
+Devices: device-342fca62, Laptop | d: inspect                                                       
+Needs attention, then synced folders (first pages)                                                  
+  Second  <disposable>/second                                                        
+> Notes  <disposable>/Notes界                                                        
+j/k Enter / ? q | c create J join a add s share w requests u setup N connection                     
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Select folder                                                                               
+> Second  <disposable>/second                                                        
+  Notes  <disposable>/Notes界                                                        
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Select folder                                                                               
+> Second  <disposable>/second                                                        
+  Notes  <disposable>/Notes界                                                        
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Add device / share folder                                                                   
+Selected folder: 03e61fb6ef4b575fe6b24db4f752140a3c70e98ea5ea286d2374af95e5b52385                   
+Reviewed membership revision: 2                                                                     
+Invitation expires in one hour; it grants no file access before approval.                           
+Enter create scoped invitation  Esc back  q quit                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Private invitation                                                                          
+Invitation created for selected folder only.                                                        
+Paste on receiver, review its root, then approve the exact request here.                            
+Expires: 2026-10-05T23:52:58.936661042Z                                                             
+s: save to private transfer file  v: reveal/hide invitation                                         
+Capability hidden. Reveal only for deliberate transfer.                                             
+s save private file  v reveal  x revoke  arrows scroll  Esc back  q quit                            
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | save_invitation                                                                             
+> Private output file (absolute):                                                                   
+Enter continue  Esc back  Ctrl-C close                                                              
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Private invitation                                                                          
+Private invitation saved. Transfer deliberately to the receiving device.                            
+Invitation created for selected folder only.                                                        
+Paste on receiver, review its root, then approve the exact request here.                            
+Expires: 2026-10-05T23:52:58.936661042Z                                                             
+s: save to private transfer file  v: reveal/hide invitation                                         
+Capability hidden. Reveal only for deliberate transfer.                                             
+s save private file  v reveal  x revoke  arrows scroll  Esc back  q quit                            
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Revoke invitation                                                                           
+Private invitation saved. Transfer deliberately to the receiving device.                            
+Revoke this exact invitation for folder:                                                            
+03e61fb6ef4b575fe6b24db4f752140a3c70e98ea5ea286d2374af95e5b52385                                    
+Pending requests using it cannot be approved. Existing approved membership is preserved.            
+Enter revoke exact invitation  Esc back  q quit                                                     
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Invitation revoked                                                                          
+Invitation revoked; request a fresh invitation for a new attempt.                                   
+Esc back  q quit (daemon continues)                                                                 
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    

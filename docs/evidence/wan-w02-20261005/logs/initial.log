@@ -1,0 +1,4 @@
+ok  	github.com/calebhabesh/file-sync/internal/network	0.143s
+ok  	github.com/calebhabesh/file-sync/internal/replication	32.925s
+ok  	github.com/calebhabesh/file-sync/internal/control	0.458s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]

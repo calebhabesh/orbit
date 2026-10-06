@@ -1,0 +1,123 @@
+{
+  "packet": "W09",
+  "status": "complete for production integration and single-host acceptance",
+  "gate": {
+    "WG4_transport": "closed",
+    "WG4_full_ICE": "pending W10"
+  },
+  "discovered_tests": 15,
+  "packages": [
+    "internal/config",
+    "internal/network",
+    "internal/protocol",
+    "internal/replication",
+    "tests/terminal"
+  ],
+  "checks": [
+    {
+      "command": "go test -race ./internal/network ./internal/protocol ./internal/replication ./internal/config -run ^TestWANW09 -count=2 -v",
+      "result": "passed",
+      "log": "logs/focused-race-final.log",
+      "note": "before additional response-bounds and preserved-TCP fixture; final additional commands below"
+    },
+    {
+      "command": "go test -race ./internal/replication -run ^TestWANW09 -count=2 -v",
+      "result": "passed",
+      "seconds": 19.489,
+      "log": "logs/replication-final.log"
+    },
+    {
+      "command": "go test -race ./internal/network -run ^TestWANW09HTTP3ResponseHeaderAndWriteBounds$ -count=1 -v",
+      "result": "passed",
+      "seconds": 46.058,
+      "log": "logs/response-bounds-final.log"
+    },
+    {
+      "command": "GOFLAGS=-race go test -race ./tests/terminal -run ^TestWANW09 -count=2 -v",
+      "result": "passed",
+      "seconds": 81.669,
+      "log": "logs/binary-quic-final.log",
+      "note": "at execution only Local-only QUIC test existed; collision separately executed once"
+    },
+    {
+      "command": "GOFLAGS=-race go test -race ./tests/terminal -run '^TestWANW09BinaryOptional|^TestWANW08' -count=1 -v",
+      "result": "passed",
+      "seconds": 132.528,
+      "log": "logs/binary-collision-compat.log"
+    },
+    {
+      "command": "GOFLAGS=-race go test -race ./tests/terminal -run ^TestWANW07 -count=1 -v",
+      "result": "passed",
+      "seconds": 156.522,
+      "log": "logs/pty-compat-final.log"
+    },
+    {
+      "command": "go test -race ./internal/config ./internal/network ./internal/protocol ./internal/replication ./internal/control/... ./internal/terminal ./cmd/filesync -count=1",
+      "result": "passed",
+      "log": "logs/compatibility-race-final.log"
+    },
+    {
+      "command": "make fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package",
+      "result": "passed",
+      "log": "logs/aggregate-final.log"
+    },
+    {
+      "command": "CGO_ENABLED=0 linux amd64/arm64 network adapter test and orbit-net service cross-builds (exact commands in commands.md)",
+      "result": "passed",
+      "log": "logs/adapter-cross-build-final.log"
+    },
+    {
+      "command": "python3 scripts/terminal_package_test.py --dist dist",
+      "result": "passed",
+      "log": "logs/package-extract-final.log"
+    }
+  ],
+  "measured_bounds": {
+    "MTU_bytes": 1200,
+    "incoming_sessions": 32,
+    "incoming_request_streams_per_connection": 2,
+    "incoming_control_streams_per_connection": 4,
+    "header_read_seconds": 5,
+    "body_read_seconds": 15,
+    "response_header_seconds": 15,
+    "response_write_seconds": 30,
+    "request_header_bytes": 32768,
+    "response_header_bytes": 16384,
+    "metadata_body_bytes": 8388608,
+    "offered_stream_bytes": 33554432,
+    "stream_heap_before_during_bytes": [
+      [
+        920712,
+        1503776
+      ],
+      [
+        1233800,
+        1985408
+      ]
+    ],
+    "stream_bytes_sent_before_cancel": [
+      196608,
+      181385
+    ],
+    "measurement_scope": "whole-process heap snapshots; not peak RSS/Pi/native WAN capacity"
+  },
+  "failed_uncredited_logs": [
+    "logs/quic-first.log",
+    "logs/quic-second.log",
+    "logs/binary-quic-first.log",
+    "logs/binary-quic-second.log"
+  ],
+  "limitations": [
+    "single Linux development host; native local UDP private IPv4",
+    "synthetic established-pair adapter; pinned Pion API compile only",
+    "actual ICE/STUN/NAT/role conflict unexecuted until W10",
+    "one selected Local-only UDP address; TCP retains family/interface coverage",
+    "full make check not rerun at intermediate W09; retained W07 full aggregate",
+    "W11 transport races/reprobe/generation/roaming/fairness and W08 failed restart cases outstanding",
+    "mixed legacy discovery capability handling W14",
+    "physical WAN/Pi/operated default profile unexecuted",
+    "T13 native login/logout/unattended boot outstanding",
+    "P17 owner use/explanation deferred"
+  ],
+  "next_packet": "W10 \u2014 ICE/STUN coordination and traversal"
+}

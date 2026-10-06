@@ -1,0 +1,26 @@
+[
+  {
+    "root": "/tmp/orbit-w11-current.fgXHLc",
+    "state": "removed after artifact capture; marker/canonical/owner/no-active-process validated"
+  },
+  {
+    "root": "/tmp/orbit-w11-default-final.KcQ8w0",
+    "state": "removed after artifact capture; marker/canonical/owner/no-active-process validated"
+  },
+  {
+    "root": "/tmp/orbit-w11-default-scoped.v0RgHA",
+    "state": "removed after artifact capture; marker/canonical/owner/no-active-process validated"
+  },
+  {
+    "root": "/tmp/orbit-w11-default.Wi8dUu",
+    "state": "removed after artifact capture; marker/canonical/owner/no-active-process validated"
+  },
+  {
+    "root": "/tmp/orbit-w11-final.IM3STd",
+    "state": "removed after artifact capture; marker/canonical/owner/no-active-process validated"
+  },
+  {
+    "root": "/tmp/orbit-w11.bUWbs7",
+    "state": "removed after artifact capture; marker/canonical/owner/no-active-process validated"
+  }
+]

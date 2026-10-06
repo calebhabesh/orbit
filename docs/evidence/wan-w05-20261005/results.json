@@ -1,0 +1,24 @@
+{
+  "packet": "W05",
+  "date": "2026-10-05",
+  "state": "complete_local_acceptance",
+  "focused_security": "pass",
+  "quota_recovery": "pass",
+  "durable_route_persistence": "pass",
+  "routed_two_folder_restart_sync": "pass",
+  "daemon_sigkill_boundaries": [
+    "request_prepared",
+    "request_accepted",
+    "approval",
+    "membership_received"
+  ],
+  "offline_third_device_fork_retirement": "pass",
+  "compatibility_packages": "pass",
+  "make_check": "interrupted_uncredited",
+  "focused_race": "pass",
+  "terminal_t04_t05_compatibility": "pass",
+  "vet": "pass",
+  "git_diff_check": "pass",
+  "aggregate_terminal_run": "interrupted_uncredited",
+  "unexecuted": ["hosted_operator", "physical_wan_nat_pi", "quic_ice", "roaming", "t13_native_lifecycle"]
+}

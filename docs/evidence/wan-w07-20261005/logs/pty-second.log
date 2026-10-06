@@ -1,0 +1,17 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:47: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 189, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 62, in run
+            peer.run('orbit', 'network', 'preview', '--state', str(peer.state), '--mode', 'self_hosted', '--profile-file', str(profile), '--review-file', str(review), '--json')
+            ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/scripts/terminal_pty_test.py", line 59, in run
+            raise AssertionError(f"CLI {args[0]} failed ({proc.returncode}): " + (proc.stdout+proc.stderr).decode(errors="replace"))
+        AssertionError: CLI orbit failed (1): filesync: state directory "/tmp/TestWANW07RealPTYRelayOnboarding4231224477/001/" must not be accessible by group or other users (mode 0700)
+        
+--- FAIL: TestWANW07RealPTYRelayOnboarding (1.12s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1.124s
+FAIL

@@ -1,0 +1,20 @@
+{
+  "packet": "W07",
+  "state": "complete",
+  "focused_race": "passed",
+  "discovered_w07_tests": 6,
+  "production_pty": "passed",
+  "production_pty_seconds": 142.84,
+  "contracts_model": "passed",
+  "source_preservation_initial_files": 5050,
+  "source_preservation": "passed",
+  "documentation_file_links": "passed",
+  "diff_check": "passed",
+  "first_make_check": "failed: test oracle treated existing hex Digest JSON as a byte array; uncredited",
+  "final_make_check": "passed",
+  "native_wan_hosted_defaults": "unexecuted",
+  "direct_traversal_roaming": "unexecuted",
+  "t13_native_lifecycle": "outstanding",
+  "p17_owner_use_explanation": "deferred",
+  "aggregate_terminal_seconds": 925.129
+}

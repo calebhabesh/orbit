@@ -1,0 +1,7 @@
+# github.com/calebhabesh/file-sync/internal/control
+internal/control/control.go:35:40: undefined: tls
+FAIL	github.com/calebhabesh/file-sync/internal/control [build failed]
+ok  	github.com/calebhabesh/file-sync/internal/network	0.002s [no tests to run]
+FAIL	github.com/calebhabesh/file-sync/internal/app [build failed]
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.002s [no tests to run]
+FAIL

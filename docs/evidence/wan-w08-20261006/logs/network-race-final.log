@@ -1,0 +1,158 @@
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/pin
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/signature
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/expired
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/generation
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/public
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/multicast
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/loopback
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/interface
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/source
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/oversized
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown-field
+--- PASS: TestWANW08ScopedSignedDiscoveryAdmission (0.01s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/pin (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/signature (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/expired (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/generation (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/public (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/multicast (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/loopback (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/interface (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/source (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/oversized (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown-field (0.00s)
+=== RUN   TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool
+--- PASS: TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool (0.21s)
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+2026/10/06 00:59:36 http: TLS handshake error from 127.0.0.1:34230: remote error: tls: bad certificate
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked
+--- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure (0.76s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin (0.01s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked (0.75s)
+=== RUN   TestWANW08CandidateBoundsExpiryAndOptionalListener
+--- PASS: TestWANW08CandidateBoundsExpiryAndOptionalListener (0.00s)
+=== RUN   TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota
+--- PASS: TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota (0.00s)
+=== RUN   TestWANW08CancellationLimitsAndJoinedResources
+    direct_test.go:360: peak blocked raw TCP dials=32; joined dials/requests/pools/sockets=0
+--- PASS: TestWANW08CancellationLimitsAndJoinedResources (0.01s)
+=== RUN   TestWANW08DatagramFloodFixedWorkersAndSocketCleanup
+    direct_test.go:425: 1000 spoof/oversized datagrams; FD before/during/after=6/8/6, goroutines before/after=2/2, admitted identity callbacks=10, whole-process HeapAlloc before/during/after=2183592/2343624/2352888
+--- PASS: TestWANW08DatagramFloodFixedWorkersAndSocketCleanup (0.10s)
+=== RUN   TestWANW08OptionalIncomingSocketCeiling
+    direct_test.go:489: 64 raw incoming sockets admitted; excess remains in kernel backlog; slots release on close
+--- PASS: TestWANW08OptionalIncomingSocketCeiling (0.05s)
+=== RUN   TestWANW08IndependentInterfaceLeasesAndAggregateCandidates
+--- PASS: TestWANW08IndependentInterfaceLeasesAndAggregateCandidates (0.00s)
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/pin
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/signature
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/expired
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/generation
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/public
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/multicast
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/loopback
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/interface
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/source
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/oversized
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown-field
+--- PASS: TestWANW08ScopedSignedDiscoveryAdmission (0.01s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/pin (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/signature (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/expired (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/generation (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/public (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/multicast (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/loopback (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/interface (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/source (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/oversized (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown-field (0.00s)
+=== RUN   TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool
+--- PASS: TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool (0.21s)
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+2026/10/06 00:59:37 http: TLS handshake error from 127.0.0.1:45884: remote error: tls: bad certificate
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked
+--- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure (0.76s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin (0.01s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked (0.75s)
+=== RUN   TestWANW08CandidateBoundsExpiryAndOptionalListener
+--- PASS: TestWANW08CandidateBoundsExpiryAndOptionalListener (0.00s)
+=== RUN   TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota
+--- PASS: TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota (0.00s)
+=== RUN   TestWANW08CancellationLimitsAndJoinedResources
+    direct_test.go:360: peak blocked raw TCP dials=32; joined dials/requests/pools/sockets=0
+--- PASS: TestWANW08CancellationLimitsAndJoinedResources (0.01s)
+=== RUN   TestWANW08DatagramFloodFixedWorkersAndSocketCleanup
+    direct_test.go:425: 1000 spoof/oversized datagrams; FD before/during/after=6/8/6, goroutines before/after=2/2, admitted identity callbacks=10, whole-process HeapAlloc before/during/after=1787152/1965840/1966888
+--- PASS: TestWANW08DatagramFloodFixedWorkersAndSocketCleanup (0.10s)
+=== RUN   TestWANW08OptionalIncomingSocketCeiling
+    direct_test.go:489: 64 raw incoming sockets admitted; excess remains in kernel backlog; slots release on close
+--- PASS: TestWANW08OptionalIncomingSocketCeiling (0.02s)
+=== RUN   TestWANW08IndependentInterfaceLeasesAndAggregateCandidates
+--- PASS: TestWANW08IndependentInterfaceLeasesAndAggregateCandidates (0.00s)
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/pin
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/signature
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/expired
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/generation
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/public
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/multicast
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/loopback
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/interface
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/source
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/oversized
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown-field
+--- PASS: TestWANW08ScopedSignedDiscoveryAdmission (0.01s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/pin (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/signature (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/expired (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/generation (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/public (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/multicast (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/loopback (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/interface (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/source (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/oversized (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown-field (0.00s)
+=== RUN   TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool
+--- PASS: TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool (0.21s)
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+2026/10/06 00:59:38 http: TLS handshake error from 127.0.0.1:33656: remote error: tls: bad certificate
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked
+--- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure (0.76s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin (0.01s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked (0.75s)
+=== RUN   TestWANW08CandidateBoundsExpiryAndOptionalListener
+--- PASS: TestWANW08CandidateBoundsExpiryAndOptionalListener (0.00s)
+=== RUN   TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota
+--- PASS: TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota (0.00s)
+=== RUN   TestWANW08CancellationLimitsAndJoinedResources
+    direct_test.go:360: peak blocked raw TCP dials=32; joined dials/requests/pools/sockets=0
+--- PASS: TestWANW08CancellationLimitsAndJoinedResources (0.01s)
+=== RUN   TestWANW08DatagramFloodFixedWorkersAndSocketCleanup
+    direct_test.go:425: 1000 spoof/oversized datagrams; FD before/during/after=6/8/6, goroutines before/after=2/2, admitted identity callbacks=10, whole-process HeapAlloc before/during/after=1866312/2043144/2052408
+--- PASS: TestWANW08DatagramFloodFixedWorkersAndSocketCleanup (0.10s)
+=== RUN   TestWANW08OptionalIncomingSocketCeiling
+    direct_test.go:489: 64 raw incoming sockets admitted; excess remains in kernel backlog; slots release on close
+--- PASS: TestWANW08OptionalIncomingSocketCeiling (0.02s)
+=== RUN   TestWANW08IndependentInterfaceLeasesAndAggregateCandidates
+--- PASS: TestWANW08IndependentInterfaceLeasesAndAggregateCandidates (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	4.365s

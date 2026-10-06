@@ -1,0 +1,7 @@
+TestWANW06BinaryReviewedRelayJourney
+TestWANW06BinaryLocalCaptureAndPrivateInputs
+TestWANW06BinaryGuidedFirstDevice
+TestWANW09BinaryLocalOnlyQUICAfterApproval
+TestWANW09BinaryOptionalUDPCollisionRelayOnboarding
+TestWANW07RealPTYRelayOnboarding
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s

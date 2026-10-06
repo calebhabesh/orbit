@@ -1,0 +1,24 @@
+go test -timeout=30m ./tests/terminal/...
+2026/10/05 18:35:22 http: TLS handshake error from 127.0.0.1:37724: remote error: tls: bad certificate
+2026/10/05 18:35:22 http: TLS handshake error from 192.168.88.171:59264: tls: client didn't provide a certificate
+PASS
+PASS
+PASS
+2026/10/05 18:44:30 http: TLS handshake error from orbit-relay:0: i/o timeout
+--- FAIL: TestWANW07RealPTYRelayOnboarding (137.10s)
+    wan_tui_test.go:71: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 281, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output, args.outage_marker)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 193, in run
+            assert any(bytes(inv['Digest']) == verifier and inv['Revoked'] for inv in invitations), 'revocation not durable'
+                   ^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 193, in <genexpr>
+            assert any(bytes(inv['Digest']) == verifier and inv['Revoked'] for inv in invitations), 'revocation not durable'
+                       ~~~~~^^^^^^^^^^^^^^^
+        TypeError: string argument without an encoding
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	920.094s
+FAIL
+make: *** [Makefile:60: test-terminal] Error 1

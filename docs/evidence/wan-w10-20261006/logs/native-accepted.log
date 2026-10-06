@@ -1,0 +1,28 @@
+Final native race namespace repetition 1
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 03:25:11 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:216: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:216: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (14.96s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.16s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (13.79s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:263: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+PASS
+Final native race namespace repetition 2
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 03:25:27 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:216: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:216: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (15.32s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.42s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (13.91s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:263: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+PASS

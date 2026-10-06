@@ -1,0 +1,8 @@
+sandboxed --check: ok
+sandboxed healthz: ok
+TLS: 400 (400 expected for an invalid body)
+active
+orbit-net: serving https://192.168.88.171:38903 on 192.168.88.171:38903 (profile epoch 1, self_hosted)
+orbit-net: certificate reloaded; valid until 2026-10-08T18:48:19Z
+orbit-net: stopping; closing controls and relays, then draining HTTP
+success

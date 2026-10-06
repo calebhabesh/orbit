@@ -1,0 +1,20 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:50: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 189, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 116, in run
+            oracle(b, folder, 'owner.txt', b'verified owner relay bytes', a.device)
+            ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 47, in oracle
+            assert any(v['digest'] == hashlib.sha256(value).hexdigest() and v['id']['author'] == author for v in versions), 'head/hash/author oracle failed'
+                   ^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 47, in <genexpr>
+            assert any(v['digest'] == hashlib.sha256(value).hexdigest() and v['id']['author'] == author for v in versions), 'head/hash/author oracle failed'
+                                                                            ~^^^^^^
+        KeyError: 'id'
+--- FAIL: TestWANW07RealPTYRelayOnboarding (37.93s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	37.928s
+FAIL

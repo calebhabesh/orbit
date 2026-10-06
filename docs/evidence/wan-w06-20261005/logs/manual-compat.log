@@ -1,0 +1,14 @@
+=== RUN   TestOrbitPairing_CLI_Parity
+--- PASS: TestOrbitPairing_CLI_Parity (0.24s)
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+    orbit_pairing_test.go:775: expected invitation link, got: Workspace Invitation Created:
+          Token:             [REDACTED disposable capability]
+          Invitation Digest: a61ad61bf22b20daf48d3aa80e7cae67ff5e7806b1a7b3bd009304838fd12de1
+          Invitation Code:   orbit-invitation:v1:[REDACTED private transfer]
+          Folder:            a7a6fcf618c459d5241d9e03719854b8eba82dd6529d9b22df1023eab852025c
+          Expires At:        2026-10-05T22:38:16.385118966Z
+          Max Uses:          1
+--- FAIL: TestOrbitPairing_CLI_RunningDaemon_Parity (0.36s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/integration	0.603s
+FAIL

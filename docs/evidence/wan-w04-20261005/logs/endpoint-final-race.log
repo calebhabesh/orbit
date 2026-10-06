@@ -1,0 +1,14 @@
+=== RUN   TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse
+--- PASS: TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse (1.26s)
+=== RUN   TestWANW04ProductionRelayFolderAndPinIsolation
+--- PASS: TestWANW04ProductionRelayFolderAndPinIsolation (0.62s)
+=== RUN   TestWANW04ProductionRelayLossPreservesCapture
+--- PASS: TestWANW04ProductionRelayLossPreservesCapture (0.62s)
+=== RUN   TestWANW04ProductionRelayRestartResumesVerifiedChunks
+--- PASS: TestWANW04ProductionRelayRestartResumesVerifiedChunks (1.21s)
+=== RUN   TestWANW04ProductionRelayLostReceiptReplay
+--- PASS: TestWANW04ProductionRelayLostReceiptReplay (0.73s)
+=== RUN   TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl
+--- PASS: TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl (0.64s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	6.092s

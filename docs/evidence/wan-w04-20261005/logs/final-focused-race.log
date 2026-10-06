@@ -1,0 +1,13 @@
+# github.com/calebhabesh/file-sync/internal/rendezvous
+internal/rendezvous/relay.go:94:51: assignment mismatch: 5 variables but 4 values
+# github.com/calebhabesh/file-sync/internal/rendezvous [github.com/calebhabesh/file-sync/internal/rendezvous.test]
+internal/rendezvous/relay.go:94:51: assignment mismatch: 5 variables but 4 values
+=== RUN   TestWANW04ManagerRetiresPooledRelayBeforeNewRequest
+--- PASS: TestWANW04ManagerRetiresPooledRelayBeforeNewRequest (0.01s)
+=== RUN   TestWANW04ManagerRelayIsolationAndPendingCancel
+--- PASS: TestWANW04ManagerRelayIsolationAndPendingCancel (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.011s
+FAIL	github.com/calebhabesh/file-sync/internal/rendezvous [build failed]
+FAIL	github.com/calebhabesh/file-sync/internal/replication [build failed]
+FAIL

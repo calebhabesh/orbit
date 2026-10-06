@@ -1,0 +1,88 @@
+=== RUN   TestWANW04ManagerRetiresPooledRelayBeforeNewRequest
+--- PASS: TestWANW04ManagerRetiresPooledRelayBeforeNewRequest (0.01s)
+=== RUN   TestWANW04ManagerRelayIsolationAndPendingCancel
+--- PASS: TestWANW04ManagerRelayIsolationAndPendingCancel (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.012s
+=== RUN   TestWANW04OutboundLegsAndBidirectionalBytes
+--- PASS: TestWANW04OutboundLegsAndBidirectionalBytes (0.15s)
+=== RUN   TestWANW04WrongAttachmentsAndReplay
+=== RUN   TestWANW04WrongAttachmentsAndReplay/role
+=== RUN   TestWANW04WrongAttachmentsAndReplay/pin
+=== RUN   TestWANW04WrongAttachmentsAndReplay/purpose
+=== RUN   TestWANW04WrongAttachmentsAndReplay/epoch
+=== RUN   TestWANW04WrongAttachmentsAndReplay/signature
+=== RUN   TestWANW04WrongAttachmentsAndReplay/expired
+=== RUN   TestWANW04WrongAttachmentsAndReplay/released
+=== RUN   TestWANW04WrongAttachmentsAndReplay/duplicate
+--- PASS: TestWANW04WrongAttachmentsAndReplay (0.50s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/role (0.05s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/pin (0.06s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/purpose (0.07s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/epoch (0.07s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/signature (0.06s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/expired (0.06s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/released (0.06s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/duplicate (0.07s)
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/expiry
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/close
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/service
+--- PASS: TestWANW04UnpairedExpiryAndAbruptLoss (0.20s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/expiry (0.07s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/close (0.07s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/service (0.07s)
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/idle
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/lifetime
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/bytes
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/cancel
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/slow
+--- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel (0.58s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/idle (0.11s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/lifetime (0.12s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/bytes (0.07s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/cancel (0.07s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/slow (0.22s)
+=== RUN   TestWANW04BandwidthCeilingAndCancellation
+--- PASS: TestWANW04BandwidthCeilingAndCancellation (0.10s)
+=== RUN   TestWANW04ConcurrentDuplicateLegAdmission
+--- PASS: TestWANW04ConcurrentDuplicateLegAdmission (0.06s)
+=== RUN   TestWANW04PurposeListenerIsolation
+--- PASS: TestWANW04PurposeListenerIsolation (0.07s)
+=== RUN   TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation
+    relay_test.go:380: 66 live tunnels: heap=34588472 delta=32867792 FDs=271 delta=264 goroutines=664 delta=660
+    relay_test.go:423: streamed 8388608 bytes in 1.710639548s; heap=25102360 FDs=279 goroutines=676
+    relay_test.go:452: joined: FDs=6 goroutines=2
+--- PASS: TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation (6.55s)
+=== RUN   TestWANW04RestartEpochAndFreshChallenge
+--- PASS: TestWANW04RestartEpochAndFreshChallenge (0.06s)
+=== RUN   TestWANW04BandwidthReconnectRetention
+--- PASS: TestWANW04BandwidthReconnectRetention (0.07s)
+=== RUN   TestWANW04BrokerSeesOnlyInnerTLSCiphertext
+    relay_test.go:589: inspected 2144 inner-TLS bytes at decrypted outer-WSS boundary
+--- PASS: TestWANW04BrokerSeesOnlyInnerTLSCiphertext (0.07s)
+=== RUN   TestWANW04PostAuthenticationFrameBounds
+=== RUN   TestWANW04PostAuthenticationFrameBounds/maximum
+=== RUN   TestWANW04PostAuthenticationFrameBounds/one-over
+=== RUN   TestWANW04PostAuthenticationFrameBounds/text
+--- PASS: TestWANW04PostAuthenticationFrameBounds (0.22s)
+    --- PASS: TestWANW04PostAuthenticationFrameBounds/maximum (0.07s)
+    --- PASS: TestWANW04PostAuthenticationFrameBounds/one-over (0.07s)
+    --- PASS: TestWANW04PostAuthenticationFrameBounds/text (0.08s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	9.657s
+=== RUN   TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse
+--- PASS: TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse (1.38s)
+=== RUN   TestWANW04ProductionRelayFolderAndPinIsolation
+--- PASS: TestWANW04ProductionRelayFolderAndPinIsolation (0.72s)
+=== RUN   TestWANW04ProductionRelayLossPreservesCapture
+--- PASS: TestWANW04ProductionRelayLossPreservesCapture (0.74s)
+=== RUN   TestWANW04ProductionRelayRestartResumesVerifiedChunks
+--- PASS: TestWANW04ProductionRelayRestartResumesVerifiedChunks (1.37s)
+=== RUN   TestWANW04ProductionRelayLostReceiptReplay
+--- PASS: TestWANW04ProductionRelayLostReceiptReplay (0.82s)
+=== RUN   TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl
+--- PASS: TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl (0.71s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	6.751s

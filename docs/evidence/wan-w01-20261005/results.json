@@ -1,0 +1,154 @@
+[
+  {
+    "name": "discovery",
+    "command": "go test -list ^TestWANW01 ./internal/... ./model/... ./tests/... ./cmd/filesync/...",
+    "exit_code": 0,
+    "seconds": 1.772,
+    "log": "discovery.log"
+  },
+  {
+    "name": "focused",
+    "command": "go test -count=1 -timeout 60s -run ^TestWANW01 -v ./internal/network ./internal/protocol ./internal/replication ./internal/control/terminalcontract ./model",
+    "exit_code": 0,
+    "seconds": 0.591,
+    "log": "focused.log"
+  },
+  {
+    "name": "focused-race",
+    "command": "go test -race -count=1 -timeout 90s -run ^TestWANW01 -v ./internal/network ./internal/protocol ./internal/replication ./internal/control/terminalcontract ./model",
+    "exit_code": 0,
+    "seconds": 14.27,
+    "log": "focused-race.log"
+  },
+  {
+    "name": "compatibility",
+    "command": "go test -count=1 ./cmd/filesync/... ./internal/control/... ./internal/replication/... ./internal/protocol/... ./tests/terminal -run TestTerminalT0[1345]|TestWAN|TestTerminalT01|TestEnrollment|TestReplication|TestClient|TestIdentity|TestControl",
+    "exit_code": 0,
+    "seconds": 130.328,
+    "log": "compatibility.log"
+  },
+  {
+    "name": "all-unit",
+    "command": "go test -count=1 ./internal/... ./model/... ./cmd/filesync/...",
+    "exit_code": 0,
+    "seconds": 34.762,
+    "log": "all-unit.log"
+  },
+  {
+    "name": "vet",
+    "command": "go vet ./...",
+    "exit_code": 0,
+    "seconds": 0.425,
+    "log": "vet.log"
+  },
+  {
+    "name": "compile-amd64",
+    "command": "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./...",
+    "exit_code": 0,
+    "seconds": 5.752,
+    "log": "compile-amd64.log"
+  },
+  {
+    "name": "compile-arm64",
+    "command": "CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build ./...",
+    "exit_code": 0,
+    "seconds": 1.658,
+    "log": "compile-arm64.log"
+  },
+  {
+    "name": "final-focused-race",
+    "command": "go test -race -count=1 -timeout 90s -run ^TestWANW01 -v ./internal/network ./internal/protocol ./internal/replication ./internal/control/terminalcontract ./model",
+    "exit_code": 0,
+    "log": "final-focused-race.log"
+  },
+  {
+    "name": "final-discovery",
+    "command": "go test -list ^TestWANW01 ./internal/network ./internal/protocol ./internal/replication ./internal/control/terminalcontract ./model",
+    "exit_code": 0,
+    "seconds": 0.844,
+    "log": "final-discovery.log"
+  },
+  {
+    "name": "final-model-race",
+    "command": "go test -race -count=1 -run ^TestWANW01 -v ./model",
+    "exit_code": 0,
+    "seconds": 1.153,
+    "log": "final-model-race.log"
+  },
+  {
+    "name": "final-vet",
+    "command": "go vet ./...",
+    "exit_code": 0,
+    "seconds": 0.915,
+    "log": "final-vet.log"
+  },
+  {
+    "name": "final-compile-amd64",
+    "command": "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./...",
+    "exit_code": 0,
+    "seconds": 1.36,
+    "log": "final-compile-amd64.log"
+  },
+  {
+    "name": "final-compile-arm64",
+    "command": "CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build ./...",
+    "exit_code": 0,
+    "seconds": 1.367,
+    "log": "final-compile-arm64.log"
+  },
+  {
+    "name": "docs",
+    "command": "python3 docs/evidence/wan-w01-20261005/check_docs.py",
+    "exit_code": 0,
+    "seconds": 0.039,
+    "log": "docs.log"
+  },
+  {
+    "name": "whitespace",
+    "command": "git diff --check",
+    "exit_code": 0,
+    "seconds": 0.003,
+    "log": "whitespace.log"
+  },
+  {
+    "name": "fixture-reproducibility",
+    "command": "python3 docs/evidence/wan-w01-20261005/generate_fixtures.py; compare every fixture hash before/after",
+    "exit_code": 0,
+    "log": "fixture-reproducibility.log"
+  },
+  {
+    "name": "post-contract-vet",
+    "command": "go vet ./...",
+    "exit_code": 0,
+    "seconds": 0.091,
+    "log": "post-contract-vet.log"
+  },
+  {
+    "name": "post-contract-amd64",
+    "command": "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./...",
+    "exit_code": 0,
+    "seconds": 0.315,
+    "log": "post-contract-amd64.log"
+  },
+  {
+    "name": "post-contract-arm64",
+    "command": "CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build ./...",
+    "exit_code": 0,
+    "seconds": 0.306,
+    "log": "post-contract-arm64.log"
+  },
+  {
+    "name": "post-contract-docs",
+    "command": "python3 docs/evidence/wan-w01-20261005/check_docs.py",
+    "exit_code": 0,
+    "seconds": 0.04,
+    "log": "post-contract-docs.log"
+  },
+  {
+    "name": "post-contract-whitespace",
+    "command": "git diff --check",
+    "exit_code": 0,
+    "seconds": 0.003,
+    "log": "post-contract-whitespace.log"
+  }
+]

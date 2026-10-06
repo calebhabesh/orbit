@@ -1,0 +1,10 @@
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 03:03:11 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:150: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:150: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (162.65s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.06s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (161.59s)
+PASS

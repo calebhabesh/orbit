@@ -1,0 +1,8 @@
+# github.com/calebhabesh/file-sync/internal/network
+internal/network/lan.go:501:29: cannot use interfaces (variable of type []LocalInterface) as "sync".RWMutex value in struct literal
+internal/network/lan.go:501:39: too few values in struct literal of type localPacketConn
+FAIL	github.com/calebhabesh/file-sync/internal/network [build failed]
+FAIL	github.com/calebhabesh/file-sync/internal/scheduler [build failed]
+FAIL	github.com/calebhabesh/file-sync/internal/app [build failed]
+FAIL	github.com/calebhabesh/file-sync/internal/repository [build failed]
+FAIL

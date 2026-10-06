@@ -1,0 +1,8 @@
+=== RUN   TestWANW10STUNMappingMalformedAndRateBounds
+    stun_test.go:98: IPv4 binding response 32/20 bytes; 100-request burst responses 10 ; malformed silent; closure joins sole worker
+--- PASS: TestWANW10STUNMappingMalformedAndRateBounds (0.41s)
+=== RUN   TestWANW10STUNMappingMalformedAndRateBounds
+    stun_test.go:98: IPv4 binding response 32/20 bytes; 100-request burst responses 10 ; malformed silent; closure joins sole worker
+--- PASS: TestWANW10STUNMappingMalformedAndRateBounds (1.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	2.419s

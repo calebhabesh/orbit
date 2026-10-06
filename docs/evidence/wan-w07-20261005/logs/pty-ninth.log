@@ -1,0 +1,16 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:71: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 263, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output, args.outage_marker)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 169, in run
+            wait_bytes(second_a, second_b, 'second.txt', b'separate scoped folder bytes', active)
+            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/scripts/terminal_onboarding_pty_test.py", line 150, in wait_bytes
+            raise AssertionError("verified file transfer timed out: "+name)
+        AssertionError: verified file transfer timed out: second.txt
+--- FAIL: TestWANW07RealPTYRelayOnboarding (109.98s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	109.979s
+FAIL

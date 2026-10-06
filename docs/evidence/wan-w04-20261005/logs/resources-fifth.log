@@ -1,0 +1,9 @@
+=== RUN   TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation
+    relay_test.go:370: 66 live tunnels: heap=35974960 delta=35351168 FDs=272 delta=265 goroutines=664 delta=660
+    relay_test.go:418: joined: FDs=6 goroutines=2
+--- PASS: TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation (4.78s)
+=== RUN   TestWANW04BrokerSeesOnlyInnerTLSCiphertext
+    relay_test.go:555: inspected 2144 inner-TLS bytes at decrypted outer-WSS boundary
+--- PASS: TestWANW04BrokerSeesOnlyInnerTLSCiphertext (0.07s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	5.866s

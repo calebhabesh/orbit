@@ -1,0 +1,27 @@
+=== RUN   TestWANW10ICEHTTP3NATMatrix
+=== RUN   TestWANW10ICEHTTP3NATMatrix/no_NAT
+    ice_test.go:157: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+2026/10/06 02:58:53 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+=== RUN   TestWANW10ICEHTTP3NATMatrix/endpoint_independent
+    ice_test.go:157: gather ICE_NO_CANDIDATES
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering
+    ice_test.go:157: gather ICE_NO_CANDIDATES
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering
+    ice_test.go:157: gather ICE_NO_CANDIDATES
+=== RUN   TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings
+    ice_test.go:157: gather ICE_NO_CANDIDATES
+=== RUN   TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP
+    ice_test.go:157: gather ICE_NO_CANDIDATES
+--- FAIL: TestWANW10ICEHTTP3NATMatrix (0.02s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/no_NAT (0.02s)
+    --- FAIL: TestWANW10ICEHTTP3NATMatrix/endpoint_independent (0.00s)
+    --- FAIL: TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering (0.00s)
+    --- FAIL: TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering (0.00s)
+    --- FAIL: TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings (0.00s)
+    --- FAIL: TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP (0.00s)
+=== RUN   TestWANW10ICEGatherCancellationAndCredentials
+    ice_test.go:242: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEGatherCancellationAndCredentials (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/network	0.026s
+FAIL

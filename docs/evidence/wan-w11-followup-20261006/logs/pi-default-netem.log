@@ -1,0 +1,24 @@
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:185: whole daemon route relay after 212.558439ms generation=4
+    wan_roaming_test.go:187: whole daemon route quic after 23.00442709s generation=4
+    wan_roaming_test.go:204: whole daemon address/default-route generation rebuild after 4.899962133s
+    wan_roaming_test.go:218: whole daemon route relay after 2.17723068s generation=5
+    wan_roaming_test.go:224: {<nil> [] <nil> <nil> <nil> [] <nil>  []  <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> <nil> [] [] [] [] [] <nil>  <nil>} Post "http://127.0.0.1:38467/control/terminal/v1/query": dial tcp 127.0.0.1:38467: i/o timeout
+    wan_roaming_test.go:135: daemon failure transcript === RUN   TestWANW05DaemonChild
+        2026/10/06 12:58:41 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=bdd8aadcbf6d539092bbcdd42b51ae39caf78c04db3bbf64c778ee356603ceb3 schema=13 peer-listener=[::]:34571 key-pin=ec5907ba32a6bf82cd8726a4b7bd597d5b4d6b916d7cac715a72214c080d8428 enrollment-listener=disabled control-listener=http://127.0.0.1:39001
+        
+    wan_roaming_test.go:135: daemon failure transcript === RUN   TestWANW05DaemonChild
+        2026/10/06 12:58:42 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=88b0f020eae8d20bad21ee4a3aa982e1a474e25b5766db8e3889c4a2395d7307 schema=13 peer-listener=[::]:46343 key-pin=d38fdad623123968ef7d1fdf4dc9fcb897e9ef5c9243bbeff2a617ce3db8f561 enrollment-listener=disabled control-listener=http://127.0.0.1:38467
+        
+--- FAIL: TestWANW11WholeDaemonRoamingAndMixedProgress (171.04s)
+FAIL
+Traceback (most recent call last):
+  File "/tmp/orbit-w11-default.Wi8dUu/wan_daemon_roaming_namespace_test.py", line 62, in <module>
+    main()
+  File "/tmp/orbit-w11-default.Wi8dUu/wan_daemon_roaming_namespace_test.py", line 56, in main
+    subprocess.run([str(Path(args.test_binary).resolve(strict=True)),
+  File "/usr/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/orbit-w11-default.Wi8dUu/orbit-w11-terminal-arm64-default.test', '-test.run=^TestWANW11WholeDaemonRoamingAndMixedProgress$', '-test.v', '-test.timeout=8m']' returned non-zero exit status 1.

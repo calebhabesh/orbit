@@ -1,0 +1,19 @@
+Usage of /tmp/orbit-net-w04-amd64:
+  -listen string
+    	TLS listen address (default ":8443")
+  -origin string
+    	HTTPS origin from profile
+  -profile string
+    	private reviewed ProfileSelection JSON
+  -relay-bps int
+    	aggregate ciphertext bytes/sec (finite) (default 20971520)
+  -relay-device-bps int
+    	per-device ciphertext bytes/sec (finite) (default 5242880)
+  -relay-session-bytes int
+    	maximum ciphertext bytes per tunnel (default 17179869184)
+  -service-key string
+    	private hex Ed25519 signing key file
+  -tls-cert string
+    	service certificate PEM
+  -tls-key string
+    	service TLS key PEM

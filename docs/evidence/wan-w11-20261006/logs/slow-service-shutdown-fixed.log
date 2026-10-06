@@ -1,0 +1,20 @@
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	3.261s

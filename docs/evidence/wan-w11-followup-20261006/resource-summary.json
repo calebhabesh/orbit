@@ -1,0 +1,170 @@
+{
+  "metrics/local-daemon-metrics-3613010.jsonl": {
+    "samples": 632,
+    "elapsed_seconds": 157.749928607,
+    "peak": {
+      "goroutines": 66,
+      "fds": 24,
+      "heap_bytes": 9780216,
+      "rss_bytes": 149274624
+    },
+    "cpu_user_us": 9487547,
+    "cpu_system_us": 411008
+  },
+  "metrics/local-daemon-metrics-3612959.jsonl": {
+    "samples": 629,
+    "elapsed_seconds": 157.000480113,
+    "peak": {
+      "goroutines": 63,
+      "fds": 25,
+      "heap_bytes": 5560696,
+      "rss_bytes": 145068032
+    },
+    "cpu_user_us": 9099170,
+    "cpu_system_us": 317415
+  },
+  "metrics/pi-current-invocation/daemon-metrics-4147247.jsonl": {
+    "samples": 668,
+    "elapsed_seconds": 168.749674114,
+    "peak": {
+      "goroutines": 66,
+      "fds": 28,
+      "heap_bytes": 5428256,
+      "rss_bytes": 33280000
+    },
+    "cpu_user_us": 8677069,
+    "cpu_system_us": 2389848
+  },
+  "metrics/pi-current-invocation/daemon-metrics-4147259.jsonl": {
+    "samples": 669,
+    "elapsed_seconds": 168.500428451,
+    "peak": {
+      "goroutines": 65,
+      "fds": 28,
+      "heap_bytes": 6892984,
+      "rss_bytes": 33460224
+    },
+    "cpu_user_us": 10316301,
+    "cpu_system_us": 2466231
+  },
+  "metrics/local-scoped/daemon-metrics-3632979.jsonl": {
+    "samples": 417,
+    "elapsed_seconds": 104.000851962,
+    "peak": {
+      "goroutines": 67,
+      "fds": 24,
+      "heap_bytes": 5613208,
+      "rss_bytes": 144297984
+    },
+    "cpu_user_us": 7675979,
+    "cpu_system_us": 308902
+  },
+  "metrics/local-scoped/daemon-metrics-3632990.jsonl": {
+    "samples": 420,
+    "elapsed_seconds": 104.750275344,
+    "peak": {
+      "goroutines": 68,
+      "fds": 25,
+      "heap_bytes": 8817600,
+      "rss_bytes": 150114304
+    },
+    "cpu_user_us": 9762109,
+    "cpu_system_us": 394371
+  },
+  "metrics/pi-default-invocation/daemon-metrics-4147154.jsonl": {
+    "samples": 345,
+    "elapsed_seconds": 85.998871551,
+    "peak": {
+      "goroutines": 61,
+      "fds": 26,
+      "heap_bytes": 4361560,
+      "rss_bytes": 30031872
+    },
+    "cpu_user_us": 4273354,
+    "cpu_system_us": 1428621
+  },
+  "metrics/pi-default-invocation/daemon-metrics-4147131.jsonl": {
+    "samples": 346,
+    "elapsed_seconds": 86.249059418,
+    "peak": {
+      "goroutines": 69,
+      "fds": 25,
+      "heap_bytes": 4625864,
+      "rss_bytes": 30703616
+    },
+    "cpu_user_us": 5311275,
+    "cpu_system_us": 1367956
+  },
+  "metrics/pi-default-final-invocation/daemon-metrics-4147735.jsonl": {
+    "samples": 658,
+    "elapsed_seconds": 164.249504542,
+    "peak": {
+      "goroutines": 61,
+      "fds": 27,
+      "heap_bytes": 6568432,
+      "rss_bytes": 34070528
+    },
+    "cpu_user_us": 16166040,
+    "cpu_system_us": 4329481
+  },
+  "metrics/pi-default-final-invocation/daemon-metrics-4147723.jsonl": {
+    "samples": 657,
+    "elapsed_seconds": 164.249509051,
+    "peak": {
+      "goroutines": 58,
+      "fds": 26,
+      "heap_bytes": 5801712,
+      "rss_bytes": 33345536
+    },
+    "cpu_user_us": 10329274,
+    "cpu_system_us": 2522489
+  },
+  "metrics/pi-final-invocation/daemon-metrics-4146496.jsonl": {
+    "samples": 688,
+    "elapsed_seconds": 171.998876296,
+    "peak": {
+      "goroutines": 58,
+      "fds": 26,
+      "heap_bytes": 4523344,
+      "rss_bytes": 32821248
+    },
+    "cpu_user_us": 10269291,
+    "cpu_system_us": 2618844
+  },
+  "metrics/pi-final-invocation/daemon-metrics-4146507.jsonl": {
+    "samples": 688,
+    "elapsed_seconds": 171.749652304,
+    "peak": {
+      "goroutines": 57,
+      "fds": 26,
+      "heap_bytes": 6727192,
+      "rss_bytes": 33525760
+    },
+    "cpu_user_us": 11584778,
+    "cpu_system_us": 2721994
+  },
+  "metrics/pi-invocation/daemon-metrics-4146195.jsonl": {
+    "samples": 329,
+    "elapsed_seconds": 86.748951552,
+    "peak": {
+      "goroutines": 67,
+      "fds": 25,
+      "heap_bytes": 4567104,
+      "rss_bytes": 31801344
+    },
+    "cpu_user_us": 6764255,
+    "cpu_system_us": 2007272
+  },
+  "metrics/pi-invocation/daemon-metrics-4146207.jsonl": {
+    "samples": 328,
+    "elapsed_seconds": 86.498855608,
+    "peak": {
+      "goroutines": 65,
+      "fds": 26,
+      "heap_bytes": 6305600,
+      "rss_bytes": 33718272
+    },
+    "cpu_user_us": 9579885,
+    "cpu_system_us": 2118985
+  }
+}

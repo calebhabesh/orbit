@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<repo>/docs/evidence/wan-w04-20261005/check_docs.py", line 30, in <module>
+    assert target.exists(),(name,dst,'missing target')
+           ~~~~~~~~~~~~~^^
+AssertionError: ('docs/evidence/wan-w04-20261005/commands.md', 'logs/diff-check.log', 'missing target')

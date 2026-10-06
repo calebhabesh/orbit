@@ -1,0 +1,6 @@
+=== RUN   TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam
+    roaming_test.go:381: unchanged remote lease could not be freshly authenticated after local roam 2
+--- FAIL: TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/network	0.002s
+FAIL

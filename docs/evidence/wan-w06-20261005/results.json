@@ -1,0 +1,31 @@
+{
+  "packet": "W06",
+  "state": "complete",
+  "focused_checks": "pass, including manual compatibility and retained routed invite alias",
+  "final_make_check": "pass",
+  "initial_make_check": "failed/uncredited: aggregate default ten-minute timeout",
+  "evidence": [
+    "logs/control-final-race.log",
+    "logs/w06-cli-expanded-final.log",
+    "logs/w06-cli-final-race.log",
+    "logs/race-final.log",
+    "logs/contracts.log",
+    "logs/vet-final.log",
+    "logs/manual-compat-final.log",
+    "logs/control-compat-final-race.log",
+    "logs/w06-compat-final-race.log",
+    "logs/make-check-complete.log",
+    "logs/docs-links.log",
+    "logs/diff-check.log"
+  ],
+  "limitations": [
+    "no operated default profile",
+    "no native WAN/QUIC/ICE/roaming",
+    "T13 lifecycle checks unchanged",
+    "P17 owner use/explanation deferred"
+  ],
+  "final_make_check_exit_code": 0,
+  "final_make_check_log": "logs/make-check-complete.log",
+  "intermediate_make_check": "terminal/package/internal checks passed; integration fixture needed explicit Manual review; aggregate failed/uncredited overall",
+  "next_packet": "W07"
+}

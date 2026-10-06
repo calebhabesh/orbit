@@ -1,0 +1,7 @@
+# github.com/calebhabesh/file-sync/internal/network [github.com/calebhabesh/file-sync/internal/network.test]
+internal/network/timing_test.go:36:4: m.SetCandidateSource undefined (type *ConnectionManager has no field or method SetCandidateSource)
+internal/network/timing_test.go:36:87: undefined: protocol.CandidateAnnouncement
+internal/network/timing_test.go:38:19: undefined: protocol.CandidateAnnouncement
+FAIL	github.com/calebhabesh/file-sync/internal/network [build failed]
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	2.015s
+FAIL

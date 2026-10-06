@@ -1,0 +1,26 @@
+=== RUN   TestWANW12DoctorCancellationAndAdmission
+    diagnostics_test.go:22: [{service_dns_tcp CANCELLED 2026-10-06T17:37:33.880175908Z} {service_tls NOT_TESTED }] 50.179785ms
+--- FAIL: TestWANW12DoctorCancellationAndAdmission (0.05s)
+=== RUN   TestWANW12PassiveCandidateFreshness
+--- PASS: TestWANW12PassiveCandidateFreshness (0.00s)
+=== RUN   TestWANW12UDPProbeUsesActualSTUNResponse
+    diagnostics_test.go:106: UDP response verified; no NAT classification inferred
+--- PASS: TestWANW12UDPProbeUsesActualSTUNResponse (0.00s)
+=== RUN   TestWANW12ProbeCodesDoNotLeakRawErrors
+--- PASS: TestWANW12ProbeCodesDoNotLeakRawErrors (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/network	0.062s
+=== RUN   TestSupportExport
+--- PASS: TestSupportExport (0.32s)
+=== RUN   TestWANW06PolicyReviewReplayAndStaleness
+--- PASS: TestWANW06PolicyReviewReplayAndStaleness (0.28s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	1.612s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	1.139s [no tests to run]
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	1.148s [no tests to run]
+FAIL

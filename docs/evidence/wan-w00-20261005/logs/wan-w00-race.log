@@ -1,0 +1,5 @@
+=== RUN   TestWANW00ManualInvitationRequiresReachableAddress
+    wan_baseline_test.go:109: missing endpoint refused; unusable endpoint bounded; both identities, protected head/CAS and local bytes preserved
+--- PASS: TestWANW00ManualInvitationRequiresReachableAddress (0.91s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1.917s

@@ -1,0 +1,155 @@
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns
+    roaming_competition_test.go:97: 32 competing peers phase=dns DNS peak=4 relay attempts peak=5; joined cancellation=10.172356ms; active requests/pools/dials/resolvers/relay=0
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay
+    roaming_competition_test.go:97: 32 competing peers phase=relay DNS peak=0 relay attempts peak=19; joined cancellation=2.247325ms; active requests/pools/dials/resolvers/relay=0
+--- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation (0.02s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns (0.02s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay (0.01s)
+=== RUN   TestWANW11IsolatedAddressDefaultRouteDetection
+    roaming_namespace_test.go:20: requires marked disposable namespace runner
+--- SKIP: TestWANW11IsolatedAddressDefaultRouteDetection (0.00s)
+=== RUN   TestWANW11RelayDirectReprobeAndGenerationDrain
+    roaming_test.go:97: authenticated relay/direct/relay routing used real TLS/HTTP; addresses/dial outcome and time were injected
+--- PASS: TestWANW11RelayDirectReprobeAndGenerationDrain (0.02s)
+=== RUN   TestWANW11LateLookupCannotPublishIntoNewGeneration
+--- PASS: TestWANW11LateLookupCannotPublishIntoNewGeneration (0.00s)
+=== RUN   TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide
+--- PASS: TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide (0.00s)
+=== RUN   TestWANW11NetworkWatcherCoalescesAndJoins
+--- PASS: TestWANW11NetworkWatcherCoalescesAndJoins (0.03s)
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+=== RUN   TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession
+--- PASS: TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession (5.01s)
+=== RUN   TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt
+--- PASS: TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt (0.00s)
+=== RUN   TestWANW11RepeatedFlappingBoundsBusyGenerations
+    roaming_test.go:360: 200 reordered generations across eight pinned TCP targets retained exactly two pools/requests per target; body drain pruned all old work
+--- PASS: TestWANW11RepeatedFlappingBoundsBusyGenerations (0.08s)
+=== RUN   TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam
+--- PASS: TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam (0.00s)
+=== RUN   TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe
+--- PASS: TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe (0.00s)
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+=== RUN   TestWANW11ReviewedTimingControlsRuntimeDeadlines
+--- PASS: TestWANW11ReviewedTimingControlsRuntimeDeadlines (0.25s)
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns
+    roaming_competition_test.go:97: 32 competing peers phase=dns DNS peak=4 relay attempts peak=2; joined cancellation=6.984225ms; active requests/pools/dials/resolvers/relay=0
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay
+    roaming_competition_test.go:97: 32 competing peers phase=relay DNS peak=0 relay attempts peak=28; joined cancellation=1.446534ms; active requests/pools/dials/resolvers/relay=0
+--- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation (0.02s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns (0.01s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay (0.01s)
+=== RUN   TestWANW11IsolatedAddressDefaultRouteDetection
+    roaming_namespace_test.go:20: requires marked disposable namespace runner
+--- SKIP: TestWANW11IsolatedAddressDefaultRouteDetection (0.00s)
+=== RUN   TestWANW11RelayDirectReprobeAndGenerationDrain
+    roaming_test.go:97: authenticated relay/direct/relay routing used real TLS/HTTP; addresses/dial outcome and time were injected
+--- PASS: TestWANW11RelayDirectReprobeAndGenerationDrain (0.01s)
+=== RUN   TestWANW11LateLookupCannotPublishIntoNewGeneration
+--- PASS: TestWANW11LateLookupCannotPublishIntoNewGeneration (0.00s)
+=== RUN   TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide
+--- PASS: TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide (0.00s)
+=== RUN   TestWANW11NetworkWatcherCoalescesAndJoins
+--- PASS: TestWANW11NetworkWatcherCoalescesAndJoins (0.03s)
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+=== RUN   TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession
+--- PASS: TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession (5.01s)
+=== RUN   TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt
+--- PASS: TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt (0.00s)
+=== RUN   TestWANW11RepeatedFlappingBoundsBusyGenerations
+    roaming_test.go:360: 200 reordered generations across eight pinned TCP targets retained exactly two pools/requests per target; body drain pruned all old work
+--- PASS: TestWANW11RepeatedFlappingBoundsBusyGenerations (0.07s)
+=== RUN   TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam
+--- PASS: TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam (0.00s)
+=== RUN   TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe
+--- PASS: TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe (0.00s)
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+=== RUN   TestWANW11ReviewedTimingControlsRuntimeDeadlines
+--- PASS: TestWANW11ReviewedTimingControlsRuntimeDeadlines (0.25s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	14.829s
+=== RUN   TestWANW11BandwidthFIFOAndQueuedCancellation
+--- PASS: TestWANW11BandwidthFIFOAndQueuedCancellation (2.00s)
+=== RUN   TestWANW11BandwidthQueueBoundIsRetryable
+--- PASS: TestWANW11BandwidthQueueBoundIsRetryable (0.00s)
+=== RUN   TestBandwidthLimiterRequestLargerThanRateMakesProgress
+--- PASS: TestBandwidthLimiterRequestLargerThanRateMakesProgress (6.00s)
+=== RUN   TestBandwidthLimiterUnlimited
+--- PASS: TestBandwidthLimiterUnlimited (0.00s)
+=== RUN   TestBandwidthLimiterThrottlingAndCancellation
+--- PASS: TestBandwidthLimiterThrottlingAndCancellation (1.05s)
+=== RUN   TestWANW11ContinuousSmallWorkCannotStarveLargeRetry
+    wan_fairness_test.go:67: 1-TiB declared task selected within nine ready dispatches twice, including retry and queue reload; no 1-TiB payload transferred
+--- PASS: TestWANW11ContinuousSmallWorkCannotStarveLargeRetry (0.34s)
+=== RUN   TestWANW11ServiceQuotaRetryAllowsQuietRefill
+--- PASS: TestWANW11ServiceQuotaRetryAllowsQuietRefill (0.00s)
+=== RUN   TestWANW11BandwidthFIFOAndQueuedCancellation
+--- PASS: TestWANW11BandwidthFIFOAndQueuedCancellation (2.00s)
+=== RUN   TestWANW11BandwidthQueueBoundIsRetryable
+--- PASS: TestWANW11BandwidthQueueBoundIsRetryable (0.00s)
+=== RUN   TestBandwidthLimiterRequestLargerThanRateMakesProgress
+--- PASS: TestBandwidthLimiterRequestLargerThanRateMakesProgress (6.00s)
+=== RUN   TestBandwidthLimiterUnlimited
+--- PASS: TestBandwidthLimiterUnlimited (0.00s)
+=== RUN   TestBandwidthLimiterThrottlingAndCancellation
+--- PASS: TestBandwidthLimiterThrottlingAndCancellation (1.05s)
+=== RUN   TestWANW11ContinuousSmallWorkCannotStarveLargeRetry
+    wan_fairness_test.go:67: 1-TiB declared task selected within nine ready dispatches twice, including retry and queue reload; no 1-TiB payload transferred
+--- PASS: TestWANW11ContinuousSmallWorkCannotStarveLargeRetry (0.38s)
+=== RUN   TestWANW11ServiceQuotaRetryAllowsQuietRefill
+--- PASS: TestWANW11ServiceQuotaRetryAllowsQuietRefill (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	19.843s
+=== RUN   TestWANW11BandwidthReservationPrecedesNetworkIO
+--- PASS: TestWANW11BandwidthReservationPrecedesNetworkIO (0.66s)
+=== RUN   TestWANW11NativeQUICToTCPChunkAndReceiptRecovery
+    roaming_test.go:105: native QUIC to TCP after chunk-boundary interruption: 38.915376ms; reused=1 fetched=1
+    roaming_test.go:138: native TCP to QUIC receipt recovery: 52.282516ms; original version/author, heads, manifests and working bytes preserved
+--- PASS: TestWANW11NativeQUICToTCPChunkAndReceiptRecovery (0.75s)
+=== RUN   TestWANW11BandwidthReservationPrecedesNetworkIO
+--- PASS: TestWANW11BandwidthReservationPrecedesNetworkIO (0.62s)
+=== RUN   TestWANW11NativeQUICToTCPChunkAndReceiptRecovery
+    roaming_test.go:105: native QUIC to TCP after chunk-boundary interruption: 39.03281ms; reused=1 fetched=1
+    roaming_test.go:138: native TCP to QUIC receipt recovery: 49.889734ms; original version/author, heads, manifests and working bytes preserved
+--- PASS: TestWANW11NativeQUICToTCPChunkAndReceiptRecovery (0.73s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	3.776s
+=== RUN   TestWANW11PreparedEnrollmentRetryRetainsOriginalExpiry
+--- PASS: TestWANW11PreparedEnrollmentRetryRetainsOriginalExpiry (0.00s)
+=== RUN   TestWANW11TimingReviewIsExactDurableAndRestartRequired
+--- PASS: TestWANW11TimingReviewIsExactDurableAndRestartRequired (0.32s)
+=== RUN   TestWANW11PreparedEnrollmentRetryRetainsOriginalExpiry
+--- PASS: TestWANW11PreparedEnrollmentRetryRetainsOriginalExpiry (0.00s)
+=== RUN   TestWANW11TimingReviewIsExactDurableAndRestartRequired
+--- PASS: TestWANW11TimingReviewIsExactDurableAndRestartRequired (0.31s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	1.644s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/config	1.008s [no tests to run]
+=== RUN   TestWANW11RouteTimingBoundsAndLegacyDefaults
+--- PASS: TestWANW11RouteTimingBoundsAndLegacyDefaults (0.00s)
+=== RUN   TestWANW11RouteTimingBoundsAndLegacyDefaults
+--- PASS: TestWANW11RouteTimingBoundsAndLegacyDefaults (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.009s
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.008s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	1.150s [no tests to run]

@@ -1,0 +1,7 @@
+{
+  "host": "rpi",
+  "root": "/tmp/orbit-w11-final.IM3STd",
+  "race": false,
+  "latency_ms": 25,
+  "loss_percent": 1
+}

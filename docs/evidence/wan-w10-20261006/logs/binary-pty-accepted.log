@@ -1,0 +1,5 @@
+--- FAIL: TestWANW09BinaryOptionalUDPCollisionRelayOnboarding (45.19s)
+    wan_cli_test.go:224: Post "http://127.0.0.1:46495/control/terminal/v1/query": net/http: timeout awaiting response headers
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	247.431s
+FAIL

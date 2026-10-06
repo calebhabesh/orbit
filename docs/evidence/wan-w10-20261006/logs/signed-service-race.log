@@ -1,0 +1,6 @@
+=== RUN   TestWANW10SignedICESessionReplayAndIsolation
+--- PASS: TestWANW10SignedICESessionReplayAndIsolation (0.12s)
+=== RUN   TestWANW10SignedICESessionReplayAndIsolation
+--- PASS: TestWANW10SignedICESessionReplayAndIsolation (0.12s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	1.247s

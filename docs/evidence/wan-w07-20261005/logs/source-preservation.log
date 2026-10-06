@@ -1,0 +1,17 @@
+PASS: 5050 initial files checked; 16 existing owning files changed. Existing P/O/T/W00-W06 evidence intact.
+cmd/filesync/terminal_tui.go
+docs/implementation/wan-relay.md
+docs/implementation/wan-status.md
+docs/orbit-wan-architecture.md
+docs/orbit-wan-implementation-plan.md
+docs/orbit-wan-ux.md
+docs/verification.md
+internal/controlclient/onboarding.go
+internal/terminal/join.go
+internal/terminal/keys.go
+internal/terminal/library.go
+internal/terminal/render.go
+internal/terminal/setup.go
+internal/terminal/setup_render.go
+internal/terminal/share.go
+tests/terminal/README.md

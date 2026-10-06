@@ -1,0 +1,7 @@
+--- FAIL: TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse (0.64s)
+    relay_test.go:171: chunk 0 should be available after partial sync: avail=false err=<nil>
+--- FAIL: TestWANW04ProductionRelayFolderAndPinIsolation (0.59s)
+    relay_test.go:222: unshared folder Post "https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid/peer/v1/inventory": peer public key pin mismatch
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	1.856s
+FAIL

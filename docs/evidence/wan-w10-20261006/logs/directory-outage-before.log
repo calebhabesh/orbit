@@ -1,0 +1,12 @@
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+2026/10/06 03:44:34 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:221: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_nat_test.go:174: actual ICE consent-loss closure and fresh-pair rebuild; elapsed 6.536739614s unchanged heads/hash/author
+    ice_nat_test.go:184: directory outage broke authenticated ICE Post "https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid/peer/v1/hello": SERVICE_UNAVAILABLE
+--- FAIL: TestWANW10AuthenticatedNATPeerMatrix (8.94s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent (8.94s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	8.948s
+FAIL

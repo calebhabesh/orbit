@@ -1,0 +1,32 @@
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/control	0.006s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.004s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	0.004s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+TestWANW10ICEHTTP3NATMatrix
+TestWANW10ICEGatherCancellationAndCredentials
+TestWANW10ICESocketAndSessionAdmission
+TestWANW10IncompatibleDoubleNAT
+ok  	github.com/calebhabesh/file-sync/internal/network	0.007s
+TestWANW10ICEContractBoundsAndLegacyEncoding
+TestWANW10ICEDeterministicRoleAndPurpose
+TestWANW10IndependentSignedICEGolden
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.003s
+TestWANW10SignedICESessionReplayAndIsolation
+TestWANW10STUNMappingMalformedAndRateBounds
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	0.005s
+TestWANW10IsolatedICEPeerSyncAndFallback
+ok  	github.com/calebhabesh/file-sync/internal/replication	0.006s
+ok  	github.com/calebhabesh/file-sync/internal/repository	0.007s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	0.004s
+ok  	github.com/calebhabesh/file-sync/internal/state	0.004s
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.020s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.003s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.003s
+ok  	github.com/calebhabesh/file-sync/tests/designgates	0.002s
+ok  	github.com/calebhabesh/file-sync/tests/faults	0.003s
+ok  	github.com/calebhabesh/file-sync/tests/integration	0.002s
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	0.015s

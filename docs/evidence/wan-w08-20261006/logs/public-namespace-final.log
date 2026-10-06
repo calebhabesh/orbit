@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/wan_direct_namespace_test.py", line 43, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/wan_direct_namespace_test.py", line 20, in main
+    parent_namespace = os.readlink(f'/proc/{os.getppid()}/ns/net')
+PermissionError: [Errno 13] Permission denied: '/proc/2468395/ns/net'

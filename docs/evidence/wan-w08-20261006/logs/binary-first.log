@@ -1,0 +1,6 @@
+=== RUN   TestWANW08BinaryLANAndOptionalCollisionRelay
+    wan_direct_test.go:178: binary verified bytes absent collision-a.txt
+--- FAIL: TestWANW08BinaryLANAndOptionalCollisionRelay (67.56s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	67.558s
+FAIL

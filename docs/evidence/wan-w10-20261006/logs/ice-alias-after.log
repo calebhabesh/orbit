@@ -1,0 +1,14 @@
+=== RUN   TestWANW10ICEContractBoundsAndLegacyEncoding
+--- PASS: TestWANW10ICEContractBoundsAndLegacyEncoding (0.00s)
+=== RUN   TestWANW10ICEDeterministicRoleAndPurpose
+--- PASS: TestWANW10ICEDeterministicRoleAndPurpose (0.00s)
+=== RUN   TestWANW10IndependentSignedICEGolden
+--- PASS: TestWANW10IndependentSignedICEGolden (0.00s)
+=== RUN   TestWANW10ICEContractBoundsAndLegacyEncoding
+--- PASS: TestWANW10ICEContractBoundsAndLegacyEncoding (0.00s)
+=== RUN   TestWANW10ICEDeterministicRoleAndPurpose
+--- PASS: TestWANW10ICEDeterministicRoleAndPurpose (0.00s)
+=== RUN   TestWANW10IndependentSignedICEGolden
+--- PASS: TestWANW10IndependentSignedICEGolden (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.009s

@@ -1,0 +1,21 @@
+{
+  "root": "/tmp/orbit-w11-scoped-yg6rnuil",
+  "argv": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "scripts/wan_daemon_roaming_namespace_test.py",
+    "--test-binary",
+    "/tmp/orbit-w11-terminal-current.test",
+    "--root",
+    "/tmp/orbit-w11-scoped-yg6rnuil",
+    "--parent-namespace",
+    "net:[4026531833]",
+    "--latency-ms",
+    "25",
+    "--loss-percent",
+    "1"
+  ]
+}

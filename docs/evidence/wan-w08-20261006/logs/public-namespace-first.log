@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/wan_direct_namespace_test.py", line 39, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/wan_direct_namespace_test.py", line 33, in main
+    subprocess.run([str(Path(args.test_binary).resolve(strict=True)),
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/pathlib/__init__.py", line 938, in resolve
+    return self.with_segments(os.path.realpath(self, strict=strict))
+                              ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 457, in realpath
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/orbit-w08-public-tests'

@@ -1,0 +1,8 @@
+{"name": "final-discovery", "command": ["go", "test", "-list", "^TestWANW02", "./internal/...", "./model/...", "./tests/...", "./cmd/filesync/..."], "exit_code": 0}
+{"name": "final-focused-race", "command": ["go", "test", "-race", "-count=1", "-timeout", "90s", "-run", "^TestWANW02", "-v", "./internal/network", "./internal/config", "./internal/replication", "./internal/scheduler"], "exit_code": 0}
+{"name": "final-uncached-compatibility", "command": ["go", "test", "-count=1", "-timeout", "120s", "./cmd/filesync/...", "./internal/control/...", "./internal/replication/...", "./internal/scheduler/...", "./internal/config/...", "./internal/network/...", "./model/..."], "exit_code": 0}
+{"name": "final-discovery", "command": ["go", "test", "-list", "^TestWANW02", "./internal/...", "./model/...", "./tests/...", "./cmd/filesync/..."], "exit_code": 0}
+{"name": "final-focused-race", "command": ["go", "test", "-race", "-count=1", "-timeout", "90s", "-run", "^TestWANW02", "-v", "./internal/network", "./internal/config", "./internal/replication", "./internal/scheduler"], "exit_code": 0}
+{"name": "final-uncached-compatibility", "command": ["go", "test", "-count=1", "-timeout", "120s", "./cmd/filesync/...", "./internal/control/...", "./internal/replication/...", "./internal/scheduler/...", "./internal/config/...", "./internal/network/...", "./model/..."], "exit_code": 0}
+{"name": "final-make-check", "command": ["make", "check"], "exit_code": 0}
+{"name": "frozen-source-make-check", "command": ["make", "check"], "exit_code": 0}

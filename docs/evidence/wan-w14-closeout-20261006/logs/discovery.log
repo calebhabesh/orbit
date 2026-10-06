@@ -1,0 +1,17 @@
+TestWANW14PackagedReleaseProfile
+TestWANW14ReviewOperatorChange
+ok  	github.com/calebhabesh/file-sync/internal/network	0.002s
+TestWANW14PackagedProfileAdoptionMatrix
+TestWANW14OperatorSwitchKeepsRollbackFloors
+ok  	github.com/calebhabesh/file-sync/internal/config	0.002s
+TestWANW14ProfileMismatchIsPrecise
+TestWANW14PackagedOfferReviewAndOperatorReplacement
+TestWANW14PackagedUpdateNeedsReviewWhenTextChanges
+TestWANW14CapabilityAdvertised
+ok  	github.com/calebhabesh/file-sync/internal/control	0.002s
+TestWANW14CompactInvitationCode
+TestWANW14FutureInvitationVersionIsPrecise
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.002s
+TestWANW14OneStepNetworkAndInvitationCode
+TestWANW14MixedVersionUpgradeAndRollback
+ok  	github.com/calebhabesh/file-sync/tests/terminal	0.002s

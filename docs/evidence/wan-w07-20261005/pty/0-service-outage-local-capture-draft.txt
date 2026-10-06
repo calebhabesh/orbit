@@ -1,0 +1,295 @@
+Orbit                                                                                               
+Daemon: running   Startup: manual (not enabled)                                                     
+[Overview]  Folders  Attention  Devices                                                             
+Search page:                                                                                        
+Devices: device-342fca62, Laptop | d: inspect                                                       
+Needs attention, then synced folders (first pages)                                                  
+> Second  <disposable>/second                                                        
+  Notes  <disposable>/Notes界                                                        
+j/k Enter / ? q | c create J join a add s share w requests u setup N connection                     
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_UNAVAILABLE; ready=false                                             
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+342fca623184fc7adf357e63caad00cea8802a11cae6eabcd48a88800b933352: Connected via relay;              
+observed=2026-10-05T22:52:58.302114595Z; CONNECTED                                                  
+342fca623184fc7adf357e63caad00cea8802a11cae6eabcd48a88800b933352: Connected via relay;              
+observed=2026-10-05T22:52:58.302114595Z; CONNECTED                                                  
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_UNAVAILABLE; ready=false                                             
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+342fca623184fc7adf357e63caad00cea8802a11cae6eabcd48a88800b933352: Connected via relay;              
+observed=2026-10-05T22:52:58.302114595Z; CONNECTED                                                  
+342fca623184fc7adf357e63caad00cea8802a11cae6eabcd48a88800b933352: Connected via relay;              
+observed=2026-10-05T22:52:58.302114595Z; CONNECTED                                                  
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit                                                                                               
+Daemon: running   Startup: manual (not enabled)                                                     
+[Overview]  Folders  Attention  Devices                                                             
+Search page:                                                                                        
+Devices: device-342fca62, Laptop | d: inspect                                                       
+Needs attention, then synced folders (first pages)                                                  
+> Second  <disposable>/second                                                        
+  Notes  <disposable>/Notes界                                                        
+j/k Enter / ? q | c create J join a add s share w requests u setup N connection                     
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+> Device name: owner-desktop                                                                              
+  Folder name: Orbit                                                                                
+  Local root: /home/owner/Orbit                                                                 
+  Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): self_hosted                                 
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Confirm adoption                                                                            
+Device: Laptop                                                                                      
+Folder: OfflineDraft                                                                                
+Root: <disposable>/offline-draft                                                     
+Existing supported local contents become shared; nothing is erased.                                 
+Connection: Self-hosted automatic                                                                   
+Orbit services help your devices connect. They see device addresses and connection metadata; file   
+contents stay encrypted in transit.                                                                 
+Measured files=0 directories=0 bytes=0; complete=true                                               
+Unsupported=0 unreadable=0 capacity known=true available=15445237760 bytes                          
+Startup=manual; data=10737418240 metadata=268435456 reserve=536870912 bytes; concurrency=4          
+bandwidth=0                                                                                         
+Enter confirm exact review  Esc edit  arrows scroll  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+  Device name: Laptop                                                                               
+  Folder name: OfflineDraft                                                                         
+  Local root: <disposable>/offline-draft                                             
+> Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): self_hosted                                 
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+  Device name: Laptop                                                                               
+  Folder name: OfflineDraft                                                                         
+  Local root: <disposable>/offline-draft                                             
+> Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): self_hosted                                 
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    

@@ -1,0 +1,41 @@
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/native
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter
+2026/10/06 01:37:36 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+    quic_test.go:65: adapter lost and duplicated one encrypted short-header packet in each direction
+--- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume (1.79s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/native (0.90s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter (0.89s)
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds/missing
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds/wrong_pin
+--- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds (0.78s)
+    --- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds/missing (0.00s)
+    --- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds/wrong_pin (0.00s)
+=== RUN   TestWANW09PartialChunkNoReceiptAndBorrowerPin
+--- PASS: TestWANW09PartialChunkNoReceiptAndBorrowerPin (1.39s)
+=== RUN   TestWANW09UnavailableUDPUsesPreservedPinnedTCP
+--- PASS: TestWANW09UnavailableUDPUsesPreservedPinnedTCP (5.16s)
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/native
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+    quic_test.go:65: adapter lost and duplicated one encrypted short-header packet in each direction
+--- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume (1.99s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/native (1.08s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter (0.91s)
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds/wrong_pin
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds/missing
+--- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds (0.77s)
+    --- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds/wrong_pin (0.00s)
+    --- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds/missing (0.00s)
+=== RUN   TestWANW09PartialChunkNoReceiptAndBorrowerPin
+--- PASS: TestWANW09PartialChunkNoReceiptAndBorrowerPin (1.39s)
+=== RUN   TestWANW09UnavailableUDPUsesPreservedPinnedTCP
+--- PASS: TestWANW09UnavailableUDPUsesPreservedPinnedTCP (5.20s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	19.489s

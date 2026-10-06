@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "python3",
+    "docs/evidence/wan-w14-closeout-20261006/check_links.py"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T20:41:43.858346+00:00",
+  "source_before": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.024,
+  "finished_at": "2026-10-06T20:41:43.882108+00:00",
+  "source_after": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c"
+}

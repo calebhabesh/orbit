@@ -1,0 +1,26 @@
+=== RUN   TestWANW02ManagerReuseScopeIdentityAndShutdown
+--- PASS: TestWANW02ManagerReuseScopeIdentityAndShutdown (0.01s)
+=== RUN   TestWANW02GenerationMatchesIndependentModel
+--- PASS: TestWANW02GenerationMatchesIndependentModel (0.01s)
+=== RUN   TestWANW02SlowPeerBoundsCancellationAndOtherProgress
+--- PASS: TestWANW02SlowPeerBoundsCancellationAndOtherProgress (0.01s)
+=== RUN   TestWANW02PoolLRUAndManualCandidateBounds
+--- PASS: TestWANW02PoolLRUAndManualCandidateBounds (0.48s)
+=== RUN   TestWANW02ShutdownJoinsPendingDial
+--- PASS: TestWANW02ShutdownJoinsPendingDial (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.513s
+=== RUN   TestWANW02LegacyNetworkPolicyIsManualWithoutMigration
+--- PASS: TestWANW02LegacyNetworkPolicyIsManualWithoutMigration (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/config	1.005s
+=== RUN   TestWANW02TwoWaySyncInterruptedChunkReuse
+--- PASS: TestWANW02TwoWaySyncInterruptedChunkReuse (0.81s)
+=== RUN   TestWANW02RoutedPeerWrongPinAndUnknownRequester
+--- PASS: TestWANW02RoutedPeerWrongPinAndUnknownRequester (0.57s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	2.382s
+=== RUN   TestWANW02NetworkBackpressureUsesExistingRetryBudget
+--- PASS: TestWANW02NetworkBackpressureUsesExistingRetryBudget (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	1.005s

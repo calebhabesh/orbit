@@ -1,0 +1,52 @@
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown
+    direct_test.go:76: INVALID_LAN_ANNOUNCEMENT
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/pin
+    direct_test.go:79: INVALID_LAN_ANNOUNCEMENT
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/signature
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/expired
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/generation
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/public
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/multicast
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/loopback
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/interface
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/source
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/oversized
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown-field
+--- FAIL: TestWANW08ScopedSignedDiscoveryAdmission (0.01s)
+    --- FAIL: TestWANW08ScopedSignedDiscoveryAdmission/unknown (0.00s)
+    --- FAIL: TestWANW08ScopedSignedDiscoveryAdmission/pin (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/signature (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/expired (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/generation (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/public (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/multicast (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/loopback (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/interface (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/source (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/oversized (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown-field (0.00s)
+=== RUN   TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool
+--- PASS: TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool (0.21s)
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+=== NAME  TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+    direct_test.go:173: wrong-pin candidate received HTTP request
+=== NAME  TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+    direct_test.go:203: {{[1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] [56 159 158 222 82 13 188 51 210 174 188 72 146 70 173 137 226 33 209 236 21 246 147 195 72 197 139 8 33 147 103 170] peer_data [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]} direct CONNECTED 2026-10-06 00:46:03.230357978 -0400 EDT m=+0.220066698 1}
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked
+--- FAIL: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure (0.76s)
+    --- FAIL: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin (0.00s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked (0.75s)
+=== RUN   TestWANW08CandidateBoundsExpiryAndOptionalListener
+--- PASS: TestWANW08CandidateBoundsExpiryAndOptionalListener (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/network	0.981s
+=== RUN   TestWANW08ProductionMulticastKnownPeerTwoWaySync
+    lan_test.go:159: real nonloopback local IPv6 listener availability=true; public IPv6 internet reachability remains unexecuted
+--- PASS: TestWANW08ProductionMulticastKnownPeerTwoWaySync (0.99s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	2.002s
+FAIL

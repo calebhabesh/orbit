@@ -2,7 +2,10 @@
 
 Read [plan](../orbit-wan-implementation-plan.md), [architecture](../orbit-wan-architecture.md),
 [network protocol](../orbit-wan-protocol.md), [gates](../orbit-wan-design-gates.md)
-and [tracker](wan-status.md). All checks/outcomes below are planned and unexecuted.
+and [tracker](wan-status.md). W08 implementation and local acceptance are recorded
+in [evidence](../evidence/wan-w08-20261006/summary.md); W09 native HTTP3 and its transport subgate have
+[evidence](../evidence/wan-w09-20261006/summary.md); W10 authenticated ICE/STUN has
+[evidence](../evidence/wan-w10-20261006/summary.md); W11 route policy/roaming/fairness has complete local native/emulator and actual Pi acceptance in the [follow-up](../evidence/wan-w11-followup-20261006/summary.md).
 The relay milestone remains usable while these packets are developed.
 
 ## W08 — LAN discovery and reachable direct candidates
@@ -38,6 +41,22 @@ Acceptance evidence:
 - Finite packets/timers/sockets and maximum candidate bounds pass race/resource
   checks. Real IPv6 availability is reported rather than inferred from loopback tests.
 
+W08 outcomes: bounded signed IPv4 multicast carries scoped private IPv4/ULA IPv6
+TCP candidates. Known peers use the existing pinned mTLS/HTTP engine; public
+candidates use actual bound ports and unchanged authenticated directory lookup.
+Optional listeners, reviewed advertising and Local-only known-peer sync are wired
+to the production daemon. Exact defaults and remaining limits are frozen in
+[architecture](../orbit-wan-architecture.md#w08-direct-tcp-and-local-discovery-integration).
+Native local IPv6, simulated public IPv4/IPv6 in a new isolated namespace, adversarial
+records, candidate expiry/interface changes, bounded admission/cancellation and
+real binaries have acceptance evidence. Ordinary invitation/approval remains mandatory.
+
+One-second retry and restart-to-relay experiments remain failed/uncredited, with
+W11 owning generation/retry recovery. W08 collision acceptance uses fresh ordinary
+CLI onboarding with the optional port occupied from startup. IPv6-only multicast,
+public internet/Pi/physical multi-host reachability and operated defaults are not
+claimed. W09 is next; WG4/WG6 and inherited T13 technical checks remain open.
+
 ## W09 — QUIC HTTP3 transport and integration subgate
 
 Dependencies: W01, W02, W08. Change: direct UDP transport adapter, HTTP3 server/
@@ -69,6 +88,20 @@ Acceptance evidence:
   sends premature stored receipts. Streaming memory stays bounded on tested loads.
 - WG4 transport subgate recorded complete with selected versions/composition;
   full ICE integration and NAT success remain explicitly unexecuted until W10.
+
+W09 outcomes: **complete for native transport and local acceptance**, with
+[commands/results](../evidence/wan-w09-20261006/summary.md), selected/pinned APIs
+and licenses, amd64/arm64 builds and owning architecture/protocol/operations
+updates. Real native UDP HTTP3 and the synthetic established-pair adapter use
+unchanged pinned TLS/peer handlers in both pull directions; partial/interrupted
+chunks retain the existing hash/receipt rules. Explicit pre-parser header and
+body/response deadlines, 1,200-byte packet boundaries, frozen addresses, admission,
+loss/duplicates, backpressure/cancel/join and real binaries have evidence.
+Optional UDP/TCP failures preserve relay; Local-only keeps service traffic at zero.
+The native HTTP3 seam passes, so no alternate raw stream/inner-TLS is selected.
+WG4 transport subgate closes; actual Pion ICE establishment/NAT/role conflicts,
+full WG4, roaming/fairness/Pi/physical WAN and operated defaults remain later work.
+
 
 ## W10 — ICE/STUN coordination and traversal
 
@@ -103,6 +136,20 @@ Acceptance evidence:
 - Slow receiver/large stream, MTU loss, pair-change rebuild and shutdown release
   all resources. Repeat relevant race/HTTP authorization tests over the full path.
 
+W10 outcomes: **complete for production integration and local native/emulator
+acceptance**, with [commands/results and handoff](../evidence/wan-w10-20261006/summary.md).
+Full WG4 closes using actual Pion agents, signed deterministic-role exchange and
+W09's selected-pair HTTP3 adapter. Fourteen tests across four packages execute;
+focused race checks and the separate marked native UDP4/UDP6 namespace runner
+pass twice. Full authenticated two-way sync verifies heads/hashes/authors and
+interrupted chunk reuse over supported NAT paths and WSS fallback. Actual consent
+loss rebuilds pairs; directory outage permits subsequent capture/transfer over
+live pairs. Signed abuses, STUN bounds, authority/body/isolation, encrypted loss,
+slow stream, shared admission and joined closure pass. Exact rules, limits,
+failed attempts and final compatibility/build/package evidence remain recorded.
+Physical WAN/Pi/CGNAT, native roaming/fairness and operated defaults remain later
+work. Existing P/O/T evidence and outstanding T13/P17 work remain preserved.
+
 ## W11 — Route policy, roaming and fair progress
 
 Dependencies: W08, W09, W10; WG4 complete. Change: manager state machine, cooldowns,
@@ -132,3 +179,28 @@ Acceptance evidence:
   invitation authorization after route switching. Working files stay protected.
 - M3 reports tested reconnection times and fair large/small progress; source-only
   state-machine review does not replace executable WG5 evidence.
+
+
+W11 is **complete for production integration, local native/emulator and actual Pi
+acceptance**. The [original record](../evidence/wan-w11-20261006/summary.md) remains
+historical partial evidence; the [completion follow-up](../evidence/wan-w11-followup-20261006/summary.md)
+supersedes that packet state. Authenticated races, relay reprobes/cooldowns, scoped
+network rebuilding, queue aging and reviewed finite Advanced timing are integrated.
+FIFO bandwidth admission precedes primary/fallback attempts, with bounded waiting,
+cancellation, rate/burst and legacy policy-byte oracles.
+
+Production daemon lifecycle/socket journeys pass relay→QUIC→address/default-route
+change during 16 MiB chunks→relay→QUIC, with committed receipt-boundary failure/retry
+and preserved keys/pins/heads/authors/manifests/bytes. Native isolated netem uses
+25 ms delay/1% loss; actual Raspberry Pi 4B production-default timing passes without
+changing host network/buffers/governor/services. Three-peer mixed large/small
+transfers over WSS/TCP/HTTP3 measure progress plus combined unique sockets, RSS,
+heap, FD, goroutines and CPU locally and on Pi. Slow DNS/relay competing-peer
+cancellation remains within four resolver/32 attempt bounds and joins cleanly.
+
+All check targets have passing evidence, with the initial aggregate integration
+control-poll timeout and its minimized CLI repair retained. Same-operation read-only
+polling retries within the original deadline; no authorization is regenerated.
+WG5 closes and M3 is satisfied for these declared conditions. Hosted-default
+readiness, physical multi-host WAN and inherited T13 checks remain separate.
+Next sequential packet: W12. No W12 implementation is included here.

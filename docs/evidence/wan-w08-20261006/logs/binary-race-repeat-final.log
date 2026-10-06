@@ -1,0 +1,9 @@
+=== RUN   TestWANW08BinaryLANAndOptionalCollisionRelay
+    wan_direct_test.go:185: binary verified bytes absent collision-a.txt
+--- FAIL: TestWANW08BinaryLANAndOptionalCollisionRelay (127.72s)
+=== RUN   TestWANW08BinaryLANAndOptionalCollisionRelay
+    wan_direct_test.go:232: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; occupied optional listeners preserve relay/capture; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW08BinaryLANAndOptionalCollisionRelay (82.17s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	209.898s
+FAIL

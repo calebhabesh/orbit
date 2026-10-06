@@ -1,6 +1,11 @@
 # Orbit WAN design gates
 
-Status: all gates **pending**, 2026-10-05. The owner approved native WAN and hosted
+Status: 2026-10-05: **WG1–WG3 closed for local design composition** by
+[W01 outcomes](implementation/wan-contracts.md) and
+[executed evidence](evidence/wan-w01-20261005/summary.md). W02 executes the manual manager/state-model integration; W03 authenticates the
+production local directory/profile/control path; W04 records live encrypted relay acceptance. Production W05 routed-enrollment acceptance is recorded in the tracker; ordinary
+CLI/TUI setup acceptance remains with W06/W07; W12 owns qualified status/doctor and privacy-control presentation. WG4 full local composition closed by W09/W10; WG6 pending; WG5 has W01/W02 model/manual integration evidence and
+retains W11 native roaming/timing closure ownership. The owner approved native WAN and hosted
 defaults; these gates resolve implementation compositions inside that direction.
 Execute them in marked disposable environments. Planning/research alone closes
 none. Record canonical fixtures, commands, versions, observed results, decision,
@@ -112,3 +117,128 @@ STUN amplification limits and self-host custom trust. Default release requires
 reachable validated origins; placeholders and overridden localhost profiles are
 explicitly development-only. Failure to arrange an operator leaves hosted-default
 release incomplete, not an excuse to claim effortless self-host setup.
+
+### WG6 W13 outcome — open, 2026-10-06
+
+Local composition is closed: packaged `orbit-net`, operator key/profile tooling,
+two-epoch rotation overlap, reviewed custom self-host trust, certificate reload,
+sanitized monitoring, finite budgets, STUN/overload limits, restart/disable and
+rollback behavior pass the [W13 rehearsal](evidence/wan-w13-20261006/summary.md).
+The owner then deployed the release service on their Oracle VPS
+(`https://connect.calebhabesh.com:8443`, Let's Encrypt with automatic renewal,
+release profile epoch 1, finite budgets) and a live laptop↔Pi pairing synced
+through it ([deployment](evidence/wan-w13-20261006/deployment.md)). The gate stays
+**open** only for a second offline authority-key copy and a configured
+alert/on-call destination. The
+[operator runbook](orbit-net-operator.md#hosted-default-readiness-wg6) lists the
+exact records that close it. W14 default distribution and W16 hosted-default
+tests stay blocked on them; self-host mode does not depend on them.
+
+
+### WG5 W08 TCP defaults (partial integration, gate remains open)
+
+[W08 architecture](orbit-wan-architecture.md#w08-direct-tcp-and-local-discovery-integration)
+freezes optional `:0` peer-data listener, 64 pre-TLS incoming sockets, eight selected
+interfaces, multicast TTL 1 / UDP 22027, 1,200-byte records, three startup announcements
+at five-second spacing followed by 120–135-second renewal, ten-minute scoped leases,
+20 admitted datagrams/second, 16 aggregate candidates/target, 200-ms family stagger,
+two candidate attempts and existing global 32 raw-dial/64 outgoing-socket bounds.
+Direct-only budget is three seconds; relay-enabled direct budget is 750 ms before
+pinned fallback. Full handshakes and losing workers are joined on shutdown. Actual
+local/race/resource and isolated public-scope evidence is linked from the tracker.
+
+These are supported W08 defaults, not native roaming/Pi timing tuning or full WG5
+closure. Restart-to-relay repetitions still expose route/quota recovery failures;
+W11 owns their measured cooldown/generation repair. Its fair-progress, direct
+reprobe and network-change campaigns remain required. W08 fixture collision
+acceptance instead starts fresh ordinary onboarding with the optional port occupied.
+
+W14 (2026-10-06) embeds this release profile in ordinary builds and verified it
+natively with the owner's laptop and Pi. Because every package is now a
+hosted-default distribution, publishing packages beyond the owner still waits
+for the two open WG6 items (offline authority-key copy, alert destination).
+
+## WG4 transport subgate outcome — 2026-10-06
+
+**Closed for W09 native UDP HTTP3 and the established-pair test adapter.**
+[W09 evidence](evidence/wan-w09-20261006/summary.md) and
+[tagged dependency/API audit](evidence/wan-w09-20261006/dependency.md) select
+quic-go v0.63.0 / qpack v0.6.0 with pinned Pion ICE v4.4.6 packet API compatibility.
+Native HTTP3 passes replication TLS/req.TLS, mandatory certificate/ALPN, current
+borrower pin, per-request authority, size/deadline and no-early-data requirements.
+Real native UDP and one socket/transport behind a synthetic pair listen/dial both
+pull directions with verified chunks/heads/hashes and actual loss/duplicates.
+Packet MTU/truncation/address/deadline/close, session/resource/backpressure and
+real daemon/PTY/package checks pass. The raw stream/inner-TLS alternate is not
+selected. [Architecture](orbit-wan-architecture.md#w09-native-quic-http3-integration)
+freezes exact limits and lifecycle; failed runs stay uncredited.
+
+**WG4 remains incomplete until W10** establishes actual Pion pairs, authenticates
+coordination, resolves ICE role/session conflicts, rebuilds on selected-pair/network
+changes and executes the NAT/MTU/loss/shutdown campaign through the full composition.
+W09's compile-time Pion contract and synthetic pair do not close these conditions.
+W11 remains dependent on full WG4, not only this transport outcome.
+
+
+## WG4 full ICE composition outcome — 2026-10-06
+
+**Closed for W10 production integration and local native/emulator acceptance.**
+[W10 evidence](evidence/wan-w10-20261006/summary.md) supersedes the pending full
+integration statement in the historical W09 outcome. Pion ICE v4.4.6 owns raw UDP;
+one frozen selected-pair adapter feeds one quic-go v0.63.0 transport/HTTP3 endpoint.
+The existing replication TLS/authority/receipt rules remain authoritative. Signed
+identity/purpose/session/generation/expiry and deterministic controlling roles
+coordinate actual agents; concurrent requests coalesce into bounded pairs.
+Supported configured NAT/filtering paths pass two-way sync with heads/hashes and
+chunk reuse; incompatible/double NAT and blocked peer UDP pass separate WSS
+fallback. Actual encrypted loss, MTU/slow-stream/cancellation, consent-loss closure
+and fresh-pair rebuild, directory outage, shared QUIC admission and shutdown pass.
+Native UDP4 ICE and UDP6 STUN execute twice in a new marked isolated namespace.
+
+[Architecture](orbit-wan-architecture.md#w10-authenticated-ice-integration) records
+socket/source/candidate/session/time bounds and runtime ownership; credentials are
+ephemeral, cleared on close and never persisted, without a heap-erasure claim.
+The controlled shutdown/rebuild fixture closes composition recovery, not W11
+interface-detection, native timing/fairness or physical WAN/Pi acceptance. W11 is
+now eligible; WG5 native policy and WG6 operated services remain open, as do
+inherited T13 technical checks and deferred P17 owner use/explanation.
+
+
+## WG5 W11 policy core outcome — partial, 2026-10-06
+
+[W11 evidence](evidence/wan-w11-20261006/summary.md) adds authenticated handshake
+races, shared outgoing admission, demand-driven direct reprobes/exponential
+cooldowns, quota quiet refill, joined actual Linux network observations and
+busy-generation draining. Real native QUIC→TCP→QUIC preserves verified chunks,
+receipt replay, original heads/authors/hashes and working bytes. An isolated
+namespace measures address/default-route detection; queue retry/reload tests
+force bounded selection independent of declared size. Numeric local defaults are
+frozen in [architecture](orbit-wan-architecture.md#w11-route-policy-and-roaming-integration-partial).
+
+**WG5 remains open.** These are partial local evidence. Advanced timing controls,
+Pi/latency/loss tuning, whole-daemon relay/Wi-Fi/membership-polling switches,
+slow-service campaigns and measured mixed-transfer bandwidth/combined-resource
+fairness still require implementation/evidence. No M3 closure or physical WAN/Pi
+performance guarantee is inferred from these tests.
+
+
+## WG5 completion outcome — 2026-10-06
+
+**Closed for W11 production integration, local native/emulator and actual Pi
+acceptance.** The [completion follow-up](evidence/wan-w11-followup-20261006/summary.md)
+supersedes the historical partial WG5 outcome above. Reviewed timing, exact legacy
+policy serialization, bounded authenticated transport races/reprobes/cooldowns,
+network generation rebuilding and queue aging have actual checks. Full daemon
+relay/QUIC and native address/default-route campaigns preserve chunk reuse,
+committed receipt retry, peer pins, identities and heads/authors/hashes/working
+bytes. Production-default timings pass on Raspberry Pi 4B with actual isolated
+25 ms/1% netem impairment. Mixed 16 MiB/continuous-small progress across three peers
+uses actual WSS/TCP/HTTP3 and measures combined socket/RSS/FD/heap/goroutine/CPU
+resources. Thirty-two competing delayed DNS/relay peers cancel/join within bounds.
+
+The initial aggregate integration control-query timeout is retained; minimized
+read-only wait regressions, repeated real pairing, full integration and affected
+CLI race journeys pass after repair. All remaining check targets pass. No failed
+aggregate or fixture receives success credit. This closes WG5/M3 for the declared
+native isolated/local/Pi conditions; it does not close WG6 operated defaults,
+W16 physical WAN or inherited T13 lifecycle requirements.

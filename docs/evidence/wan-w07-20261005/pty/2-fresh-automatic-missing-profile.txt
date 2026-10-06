@@ -1,0 +1,295 @@
+Orbit | Create or join                                                                              
+Create your Orbit [c / Enter]                                                                       
+Join an existing Orbit [j]                                                                          
+Existing folder contents are reviewed before adoption.                                              
+Closing this interface leaves background sync running.                                              
+Esc back  q quit (daemon continues)                                                                 
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+> Device name: owner-desktop                                                                              
+  Folder name: Orbit                                                                                
+  Local root: /home/owner/Orbit                                                                 
+  Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): automatic                                   
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+> Device name: owner-desktop                                                                              
+  Folder name: Orbit                                                                                
+  Local root: /home/owner/Orbit                                                                 
+  Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): automatic                                   
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Confirm adoption                                                                            
+Device: Fresh                                                                                       
+Folder: Local                                                                                       
+Root: <disposable>/Notes界                                                         
+Existing supported local contents become shared; nothing is erased.                                 
+Connection: Automatic                                                                               
+Orbit services help your devices connect. They see device addresses and connection metadata; file   
+contents stay encrypted in transit.                                                                 
+Connection service configuration needs update; local capture remains available.                     
+Measured files=0 directories=0 bytes=0; complete=true                                               
+Unsupported=0 unreadable=0 capacity known=true available=15416774656 bytes                          
+Startup=manual; data=10737418240 metadata=268435456 reserve=536870912 bytes; concurrency=4          
+bandwidth=0                                                                                         
+Enter confirm exact review  Esc edit  arrows scroll  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Confirm adoption                                                                            
+Device: Fresh                                                                                       
+Folder: Local                                                                                       
+Root: <disposable>/Notes界                                                         
+Existing supported local contents become shared; nothing is erased.                                 
+Connection: Automatic                                                                               
+Orbit services help your devices connect. They see device addresses and connection metadata; file   
+contents stay encrypted in transit.                                                                 
+Connection service configuration needs update; local capture remains available.                     
+Measured files=0 directories=0 bytes=0; complete=true                                               
+Unsupported=0 unreadable=0 capacity known=true available=15416774656 bytes                          
+Startup=manual; data=10737418240 metadata=268435456 reserve=536870912 bytes; concurrency=4          
+bandwidth=0                                                                                         
+Enter confirm exact review  Esc edit  arrows scroll  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Setup progress                                                                              
+State: completed | Local readiness observed                                                         
+Approved=true membership current=true root available=true scan complete=true                        
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage blocked=false             
+Locally ready (observed). Other offline devices may remain pending.                                 
+Operation: 03489b98ed608b291b17a33d8cd835707a6cf9412d29dd26a44ddeb53924a971                         
+Root: <disposable>/Notes界                                                         
+Connection observations unavailable; local readiness is reported separately.                        
+r refresh  a add device  N connection  J new join  Esc overview  q quit                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Automatic                                                                               
+Service configuration: PROFILE_MISSING_OR_EXPIRED; ready=false                                      
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Automatic                                                                               
+Service configuration: PROFILE_MISSING_OR_EXPIRED; ready=false                                      
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    

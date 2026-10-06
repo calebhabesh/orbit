@@ -1,0 +1,14 @@
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+2026/10/06 12:57:23 http: TLS handshake error from orbit-relay:0: i/o timeout
+    wan_bandwidth_test.go:278: actual relay: large=16777216 bytes completed=7.634462888s first verified chunk=261.119279ms first small=108.087743ms small versions=17; shared cap=2097152 B/s; peak sampled heap=43676904 goroutines=119 FD=59 process CPU=5370496us; original author=1d7919b9278ee57941c4731da0ebce2b7d907effaa9e534675dd1c52408943f6
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:278: actual direct: large=16777216 bytes completed=7.301337829s first verified chunk=63.658962ms first small=697.987282ms small versions=11; shared cap=2097152 B/s; peak sampled heap=65548320 goroutines=99 FD=53 process CPU=5021441us; original author=1d7919b9278ee57941c4731da0ebce2b7d907effaa9e534675dd1c52408943f6
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:278: actual quic: large=16777216 bytes completed=7.570239945s first verified chunk=78.273137ms first small=776.552207ms small versions=8; shared cap=2097152 B/s; peak sampled heap=42647640 goroutines=106 FD=48 process CPU=5699135us; original author=1d7919b9278ee57941c4731da0ebce2b7d907effaa9e534675dd1c52408943f6
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (90.18s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (20.50s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (7.80s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (8.23s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	91.201s

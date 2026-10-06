@@ -1,0 +1,21 @@
+go test -timeout=30m ./tests/terminal/...
+2026/10/06 11:14:51 http: TLS handshake error from 127.0.0.1:43936: remote error: tls: bad certificate
+2026/10/06 11:14:51 http: TLS handshake error from 192.168.88.171:40294: tls: client didn't provide a certificate
+PASS
+PASS
+PASS
+--- FAIL: TestWANW09BinaryLocalOnlyQUICAfterApproval (31.85s)
+    wan_direct_test.go:184: actual dated route <nil> &{{false local_only  true 2} {false local_only  true 2} false false LOCAL_ONLY   [{bd209ffd05617b9f421724bb102f58351ceac0c10dc0d590907b7ee78a6fd2cb 7a4781edfebf302862bda29c9343a011c7e2d18278f32eea4453f162f9dc27f8 peer_data direct CONNECTED 2026-10-06T15:22:15.724416848Z 3}]}
+    wan_direct_test.go:87: daemon 2026/10/06 11:22:10 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=bd209ffd05617b9f421724bb102f58351ceac0c10dc0d590907b7ee78a6fd2cb schema=13 peer-listener=[::]:35581 key-pin=7a4781edfebf302862bda29c9343a011c7e2d18278f32eea4453f162f9dc27f8 enrollment-listener=disabled control-listener=http://127.0.0.1:46839
+        
+    wan_direct_test.go:87: daemon 2026/10/06 11:22:10 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=02bb740e83ae2a71997ed24385d42b0cf57481bc3c0378b3ac679d772ac498a6 schema=13 peer-listener=[::]:44827 key-pin=e73bc8d5bd758e97a53629031581ada7c5e21afc5dc99dfe3b8274b466dbe5f3 enrollment-listener=disabled control-listener=http://127.0.0.1:46315
+        
+2026/10/06 11:26:02 http: TLS handshake error from orbit-relay:0: i/o timeout
+--- FAIL: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (135.24s)
+    wan_enrollment_test.go:483: replacement join: <nil> &{Code:EXPIRED_ATTEMPT Message:EXPIRED_ATTEMPT: EXPIRED_ATTEMPT (action: inspect state and obtain a fresh review) Retryable:false Action:inspect operation; correct the cause and resume the same operation, or explicitly review a new attempt RetryAfterSeconds:0}
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1044.505s
+FAIL
+make: *** [Makefile:60: test-terminal] Error 1

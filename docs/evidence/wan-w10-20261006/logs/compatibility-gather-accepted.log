@@ -1,0 +1,9 @@
+ok  	github.com/calebhabesh/file-sync/internal/network	88.858s
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.440s
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	42.169s
+ok  	github.com/calebhabesh/file-sync/internal/replication	155.189s
+ok  	github.com/calebhabesh/file-sync/internal/config	2.270s
+ok  	github.com/calebhabesh/file-sync/internal/control	22.833s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.023s
+ok  	github.com/calebhabesh/file-sync/internal/terminal	1.189s
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	2.842s

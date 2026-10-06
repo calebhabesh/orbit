@@ -1,0 +1,10 @@
+=== RUN   TestWANW11IsolatedAddressDefaultRouteDetection
+    roaming_namespace_test.go:91: actual isolated Linux address change detection and manager generation: 3.999473469s
+    roaming_namespace_test.go:106: actual isolated Linux default route detection and manager generation: 5.983391446s
+--- PASS: TestWANW11IsolatedAddressDefaultRouteDetection (10.00s)
+PASS
+=== RUN   TestWANW11NativeQUICToTCPChunkAndReceiptRecovery
+    roaming_test.go:105: native QUIC to TCP after chunk-boundary interruption: 41.542617ms; reused=1 fetched=1
+    roaming_test.go:138: native TCP to QUIC receipt recovery: 51.951787ms; original version/author, heads, manifests and working bytes preserved
+--- PASS: TestWANW11NativeQUICToTCPChunkAndReceiptRecovery (0.78s)
+PASS

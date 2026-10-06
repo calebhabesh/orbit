@@ -1,0 +1,22 @@
+{
+  "command": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "scripts/wan_roaming_namespace_test.py",
+    "--test-binary",
+    "/tmp/orbit-w11-network.test",
+    "--replication-binary",
+    "/tmp/orbit-w11-replication.test",
+    "--root",
+    "/tmp/orbit-w11-disposable-accepted-u1my_l83",
+    "--parent-namespace",
+    "net:[4026531833]"
+  ],
+  "test_binary_sha256": {
+    "/tmp/orbit-w11-network.test": "a6052219343605a11ee67bbb0c3a5b675692c37179be3372abf126a2d203b959",
+    "/tmp/orbit-w11-replication.test": "1e681e4b30faac9eb4edca869e619e5807b6e192e77c20338b516013e1ef1324"
+  }
+}

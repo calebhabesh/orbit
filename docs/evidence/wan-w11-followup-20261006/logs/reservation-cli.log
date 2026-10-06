@@ -1,0 +1,10 @@
+# github.com/calebhabesh/file-sync/internal/replication [github.com/calebhabesh/file-sync/internal/replication.test]
+internal/replication/bandwidth_reservation_test.go:40:13: cannot use client (variable of type *countedChunks) as *Client value in assignment
+FAIL	github.com/calebhabesh/file-sync/internal/replication [build failed]
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+    wan_timing_test.go:56: CLI [network preview --state /tmp/TestWANW11BinaryReviewedTimingAndRestart544243145/001/state --review-file /tmp/TestWANW11BinaryReviewedTimingAndRestart544243145/001/review.json --network-poll 0s --json]: exit status 1
+        orbit: open /tmp/TestWANW11BinaryReviewedTimingAndRestart544243145/001/review.json: file exists
+--- FAIL: TestWANW11BinaryReviewedTimingAndRestart (2.11s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	2.120s
+FAIL

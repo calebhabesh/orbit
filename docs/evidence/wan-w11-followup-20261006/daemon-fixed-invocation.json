@@ -1,0 +1,17 @@
+{
+  "root": "/tmp/orbit-w11-daemon-fixed-ih6pyyl3",
+  "argv": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "scripts/wan_daemon_roaming_namespace_test.py",
+    "--test-binary",
+    "/tmp/orbit-w11-terminal.test",
+    "--root",
+    "/tmp/orbit-w11-daemon-fixed-ih6pyyl3",
+    "--parent-namespace",
+    "net:[4026531833]"
+  ]
+}

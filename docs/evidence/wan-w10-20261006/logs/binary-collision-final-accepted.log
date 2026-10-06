@@ -1,0 +1,8 @@
+=== RUN   TestWANW09BinaryOptionalUDPCollisionRelayOnboarding
+    wan_cli_test.go:270: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW09BinaryOptionalUDPCollisionRelayOnboarding (46.49s)
+=== RUN   TestWANW09BinaryOptionalUDPCollisionRelayOnboarding
+    wan_cli_test.go:270: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW09BinaryOptionalUDPCollisionRelayOnboarding (45.29s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	92.787s

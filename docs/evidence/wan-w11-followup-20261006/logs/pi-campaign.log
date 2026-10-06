@@ -1,0 +1,65 @@
+=== RUN   TestWANW11IsolatedAddressDefaultRouteDetection
+    roaming_namespace_test.go:20: requires marked disposable namespace runner
+--- SKIP: TestWANW11IsolatedAddressDefaultRouteDetection (0.00s)
+=== RUN   TestWANW11RelayDirectReprobeAndGenerationDrain
+    roaming_test.go:97: authenticated relay/direct/relay routing used real TLS/HTTP; addresses/dial outcome and time were injected
+--- PASS: TestWANW11RelayDirectReprobeAndGenerationDrain (0.04s)
+=== RUN   TestWANW11LateLookupCannotPublishIntoNewGeneration
+--- PASS: TestWANW11LateLookupCannotPublishIntoNewGeneration (0.00s)
+=== RUN   TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide
+--- PASS: TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide (0.00s)
+=== RUN   TestWANW11NetworkWatcherCoalescesAndJoins
+--- PASS: TestWANW11NetworkWatcherCoalescesAndJoins (0.03s)
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+=== RUN   TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession
+--- PASS: TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession (5.01s)
+=== RUN   TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt
+--- PASS: TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt (0.00s)
+=== RUN   TestWANW11RepeatedFlappingBoundsBusyGenerations
+    roaming_test.go:360: 200 reordered generations across eight pinned TCP targets retained exactly two pools/requests per target; body drain pruned all old work
+--- PASS: TestWANW11RepeatedFlappingBoundsBusyGenerations (0.29s)
+=== RUN   TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam
+--- PASS: TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam (0.00s)
+=== RUN   TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe
+--- PASS: TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe (0.00s)
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+=== RUN   TestWANW11ReviewedTimingControlsRuntimeDeadlines
+--- PASS: TestWANW11ReviewedTimingControlsRuntimeDeadlines (0.25s)
+PASS
+=== RUN   TestWANW11BandwidthFIFOAndQueuedCancellation
+--- PASS: TestWANW11BandwidthFIFOAndQueuedCancellation (2.00s)
+=== RUN   TestWANW11BandwidthQueueBoundIsRetryable
+--- PASS: TestWANW11BandwidthQueueBoundIsRetryable (0.00s)
+=== RUN   TestBandwidthLimiterRequestLargerThanRateMakesProgress
+--- PASS: TestBandwidthLimiterRequestLargerThanRateMakesProgress (6.00s)
+=== RUN   TestBandwidthLimiterUnlimited
+--- PASS: TestBandwidthLimiterUnlimited (0.00s)
+=== RUN   TestBandwidthLimiterThrottlingAndCancellation
+--- PASS: TestBandwidthLimiterThrottlingAndCancellation (1.05s)
+=== RUN   TestWANW11ContinuousSmallWorkCannotStarveLargeRetry
+    wan_fairness_test.go:67: 1-TiB declared task selected within nine ready dispatches twice, including retry and queue reload; no 1-TiB payload transferred
+--- PASS: TestWANW11ContinuousSmallWorkCannotStarveLargeRetry (2.32s)
+=== RUN   TestWANW11ServiceQuotaRetryAllowsQuietRefill
+--- PASS: TestWANW11ServiceQuotaRetryAllowsQuietRefill (0.00s)
+PASS
+=== RUN   TestWANW11NativeQUICToTCPChunkAndReceiptRecovery
+2026/10/06 12:47:18 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    roaming_test.go:105: native QUIC to TCP after chunk-boundary interruption: 440.860173ms; reused=1 fetched=1
+    roaming_test.go:138: native TCP to QUIC receipt recovery: 639.487567ms; original version/author, heads, manifests and working bytes preserved
+--- PASS: TestWANW11NativeQUICToTCPChunkAndReceiptRecovery (4.71s)
+PASS
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:173: whole daemon route relay after 108.006463ms generation=4
+    wan_roaming_test.go:175: whole daemon route quic after 3.78662206s generation=4
+    wan_roaming_test.go:192: whole daemon address/default-route generation rebuild after 776.112765ms
+    wan_roaming_test.go:206: whole daemon route relay after 19.952825394s generation=5
+    wan_roaming_test.go:212: whole daemon route quic after 3.482673946s generation=5
+    wan_roaming_test.go:240: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="40031"
+--- PASS: TestWANW11WholeDaemonRoamingAndMixedProgress (117.09s)
+PASS

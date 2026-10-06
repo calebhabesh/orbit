@@ -1,0 +1,5 @@
+=== RUN   TestWANW09HTTP3ResponseHeaderAndWriteBounds
+    quic_test.go:287: 16-KiB response header refusal; actual 15-second response-header and 30-second response-write deadlines 30.029492726s
+--- PASS: TestWANW09HTTP3ResponseHeaderAndWriteBounds (45.05s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	46.058s

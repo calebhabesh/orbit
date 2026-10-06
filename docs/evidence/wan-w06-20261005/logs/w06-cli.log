@@ -1,0 +1,8 @@
+=== RUN   TestWANW06BinaryReviewedRelayJourney
+    wan_cli_test.go:188: missing verified bytes /tmp/TestWANW06BinaryReviewedRelayJourney3411917348/001/documents-a/from-b.txt
+--- FAIL: TestWANW06BinaryReviewedRelayJourney (117.55s)
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.03s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	118.582s
+FAIL

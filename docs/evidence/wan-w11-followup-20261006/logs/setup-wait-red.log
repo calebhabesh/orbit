@@ -1,0 +1,9 @@
+=== RUN   TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation
+    terminal_setup_wait_test.go:28: {<nil> [] <nil> <nil> <nil> [] <nil>  [] running <nil> 0xc737f632280 <nil> <nil> <nil> <nil> <nil> <nil> <nil> [] [] [] [] [] <nil>  <nil>} context deadline exceeded 1
+--- FAIL: TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation (0.25s)
+=== RUN   TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal
+    terminal_setup_wait_test.go:42: {<nil> [] <nil> <nil> <nil> [] <nil>  [] running <nil> 0xc737f41e200 <nil> <nil> <nil> <nil> <nil> <nil> <nil> [] [] [] [] [] <nil>  <nil>} context deadline exceeded 1 350.362324ms
+--- FAIL: TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal (0.35s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/cmd/filesync	0.618s
+FAIL

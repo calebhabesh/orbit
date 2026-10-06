@@ -93,7 +93,8 @@ Existing validated disposable-root/process checks remain required for faults.
 
 ## Native WAN verification
 
-Status: planned, 2026-10-05; no W checks executed. [WAN plan](orbit-wan-implementation-plan.md)
+Status: W00/W01 local evidence, W02 manual-manager, W03 directory/profile and W04 encrypted relay checks are recorded in
+[the tracker](implementation/wan-status.md); native WAN acceptance remains pending. [WAN plan](orbit-wan-implementation-plan.md)
 and [W tracker](implementation/wan-status.md) own packet ordering/evidence. I01–I28
 remain required on changed paths; network routing adds these observable invariants.
 
@@ -445,3 +446,248 @@ checks; identities, actual byte/digest and control observations remain the
 acceptance oracles. Packet race uses `GOFLAGS=-race` to instrument built children.
 Native hosts, physical LAN/Tailscale, boot/logout/reset and P17 owner evidence
 remain T12/T13 and are not established by these local processes.
+
+
+## W03 local acceptance evidence
+
+The [W03 record](evidence/wan-w03-20261005/summary.md) covers 24 discovered focused
+checks in `internal/network`, `internal/rendezvous` and `internal/replication`.
+They use production TLS/service/control/client and peer interfaces; disposable
+private roots and a real `orbit-net` process verify restart without retaining
+routes. Separate finite table-saturation fixtures test quota/expiry, and an
+independent admission model checks accepted registration semantics. A 272-socket
+fixture measures the 256 pre-TLS goroutine ceiling; a 1,000-canceled-call fixture
+measures at most four resolver workers with zero active workers/sockets after
+close. These local bounds do not claim Pi peak RSS/FD/egress or native WAN capacity.
+
+The shared-NAT source is synthetic/local, not a physical NAT campaign. Privacy
+checks assert zero DNS/service work for manual/local-only reannouncement and no
+policy activation from a saved profile. Manual capture/verified sync survives an
+actual local directory shutdown. Hosted-default packet capture, full WAN/NAT,
+WSS forwarding and v3 enrollment remain later evidence. A real 25-second WSS
+heartbeat and repeated binary restart cover lifetimes beyond immediate handshakes.
+Inherited T13 login/logout/unattended boot and deferred P17 owner review remain
+separate from these checks.
+
+## W04 local acceptance evidence
+
+Discover with `go test -list '^TestWANW04' ./internal/network
+./internal/rendezvous ./internal/replication ./internal/scheduler`, then run those packages with
+`-race -count=1 -run '^TestWANW04'`. The
+[evidence](evidence/wan-w04-20261005/summary.md) distinguishes full authenticated
+coordination/production engine sync from seeded accepted-reservation capacity tests.
+Actual checks cover both outbound legs, wrong/replayed/expired tokens, restart
+epochs, binary frame bounds, ciphertext inspection, idle/lifetime/byte/rate limits,
+slow readers/cancellation and joined shutdown. Production TLS/HTTP/file tests
+force direct listeners unavailable, verify two-way heads/hashes, folder/pin/control
+isolation, pending unknown enrollment, verified-chunk reuse across service restart
+and lost-receipt replay without false completion. Memory/FD/goroutine samples name
+this single Linux development host; native topology, Pi peak RSS and operated
+hosting remain W13/W15/W16. T13 lifecycle and deferred P17 owner work remain open.
+
+## W06 CLI integration checks
+
+Discover `TestWANW06` in `internal/config`, `internal/control` and `tests/terminal`.
+The controller tests check exact policy/profile reviews, changed-input and stale
+operation rejection, identity preservation, monotone generation writes and recovery
+after accepted-before-effect interruption. Production-binary tests use explicitly
+marked disposable roots and a signed local development rendezvous/relay with
+separately trusted TLS. They assert private invitation permissions/redaction,
+wrong-pin and expired fresh invitation rejection, no non-TTY hidden prompt,
+guided CLI in a real PTY, reviewed script create/join, delayed/relaunched approval,
+second-folder root/authority separation, verified bytes in both directions,
+version author identity, saved inviter certificate and service outage/local capture.
+The local service fixture is not native WAN or an operated default.
+
+`make check` retains the complete terminal campaign. Its package timeout is now
+thirty minutes because the combined serial T/W fixtures exceeded Go's ten-minute
+default before queued parallel checks ran. Individual waits/processes remain finite;
+an aggregate timeout is failed/uncredited evidence, not permission to skip tests.
+W06 evidence records the first timeout separately from the final aggregate result.
+T13 login/logout/unattended evidence and deferred P17 owner use remain independent.
+
+
+## W07 TUI integration checks
+
+Discover `TestWANW07` in `internal/terminal` and `tests/terminal` before executing
+focused race checks. The production-binary `terminal_wan_pty_test.py` runner uses
+an independently signed local-development service/profile and trusted TLS CA,
+private marked roots and no configured direct endpoints. TUI keyboard mutations
+cover measured adoption/Back/Edit/privacy, private v3 invitation transfer,
+expired/wrong-pin rejection, unsupported-root correction, exact cross-device
+approval, second folder, restartable operation/attempt/root and daemon work after
+client exit. CLI queries verify actual bytes, hashes, exact version authors/heads,
+inviter certificate/pin and persistent identities; renderer snapshots alone give
+no milestone credit. Resize/colorless/paste and terminal restoration are checked
+in actual PTYs. The service-outage hook closes only the disposable local service
+and requires the explicit marked test root. Fresh Automatic with missing profile
+and Local-only review retain local capture. Native WAN, hosted profiles and T13
+login/logout/unattended boot remain unexecuted by this local campaign.
+
+
+## W08 direct networking checks
+
+Discover `TestWANW08` in `internal/network`, `internal/protocol`,
+`internal/replication` and `tests/terminal`. Boundary tests execute strict independent
+LAN canonical/signature fixtures; spoofed/unknown pins, oversized/truncated or wrong
+scope inputs; independent interface/generation leases; expiry and 16-candidate bounds;
+complete pinned family races, blocked/wrong-certificate fallback; cached empty leases;
+32 blocked raw dials and 64 pre-TLS incoming sockets; 1,000 spoof/oversized datagrams
+with FD/goroutine/whole-process heap samples and joined close.
+
+Production engine tests exercise actual nonloopback IPv4 multicast discovery,
+known-peer two-way hashes/heads, interrupted verified-chunk reuse and native local
+ULA IPv6 TLS/HTTP transfer. The public fixture normally skips deliberately: run
+`scripts/wan_direct_namespace_test.py` inside a newly created user/network namespace
+with a private `.filesync-disposable` root and the compiled race test binary. The
+script verifies namespace ownership with Linux `NS_GET_USERNS` before creating its
+isolated dummy interface/addresses. Actual signed directory/public-scope IPv4/IPv6
+TCP transfer and directory-outage direct reuse run there; addresses are simulated,
+with no external route. This is not native internet reachability evidence.
+
+Production binaries use invitation/pending denial/exact approval before Local-only
+LAN, assert zero service requests and exact two-way versions/hashes/keys, and keep
+capture after the disposable service closes. A separate fresh ordinary CLI journey
+occupies optional listener ports from startup and verifies relay bytes/approval;
+explicit manual collision still fails startup. Run with `GOFLAGS=-race go test
+-race ./tests/terminal -run '^TestWANW08' -count=2 -v` to instrument launched children.
+Retain failed restart-to-relay experiments for W11 and do not count them as W08
+collision acceptance. [Evidence](evidence/wan-w08-20261006/summary.md) records actual
+commands, source provenance, resource samples and remaining physical/operator limits.
+
+## W09 QUIC checks
+
+Discover `TestWANW09` in network, protocol, replication, config and terminal.
+Focused race checks run actual native UDP HTTP3 and the established-pair test
+adapter through production peer handlers; both listen/dial pull directions verify
+bytes/heads/hashes and interrupted verified-chunk reuse. Packet boundaries, MTU,
+truncation, reversible deadlines, address-change refusal, loss/duplicates, wrong
+ALPN/pins/missing client certificate, unauthorized folder/version/body/header
+inputs, partial chunks/no premature receipt, current borrower pin verification,
+32-session admission, slow-stream heap/backpressure/cancel/join and preserved TCP
+fallback have separate oracles. Pion's actual pinned Conn compiles against the
+packet interface for amd64/arm64; actual ICE/NAT remains W10.
+
+Real race-instrumented binaries use explicit invitation/pending denial/approval
+before Local-only signed LAN QUIC discovery, assert dated `quic` observations,
+two-way versions/hash/identities and zero service requests, and keep capture after
+the local service stops. Occupied optional UDP/TCP sockets separately verify fresh
+relay onboarding. These single-host disposable fixtures do not establish physical
+WAN/Pi/hosted profile or T13 login/logout/boot acceptance. Older direct settings
+and TCP fixtures are explicitly retained. Failed runs stay uncredited in the
+[W09 evidence](evidence/wan-w09-20261006/summary.md).
+
+## W10 ICE verification
+
+Discover `TestWANW10` in network/protocol/rendezvous/replication. Production signed
+coordination, STUN codec, packet adapter, HTTP3/TLS, peer handlers and sync engine
+are exercised through in-process Pion vnet backends with exact configured mapping/
+filtering rules. This is a disposable emulator, not a physical WAN/NAT measurement.
+The native counterpart uses `scripts/wan_ice_namespace_test.py` in a new marked
+private user/network namespace; it checks namespace ownership before any `ip`
+mutation. Running the Go fixture without its explicit environment skips it and
+cannot establish native acceptance.
+
+Oracles include both pull directions, exact heads/hashes/authors, interrupted
+verified-chunk reuse, actual QUIC versus WSS observations, typed fallback failures,
+simultaneous controlling/controlled requests, actual consent-loss retirement/new
+pair establishment, source/check/session/shared-QUIC limits, signed replay/pin/
+role/session/generation/expiry refusal, malformed/rate-bounded STUN, slow streaming
+and cancellation. Legacy protocol goldens and W09 authorization/deadline/native
+binary/PTY checks remain compatibility prerequisites. Full physical WAN/Pi/hosted
+profiles and native T13 lifecycle remain later acceptance, not emulator claims.
+
+
+## W11 partial policy verification
+
+`TestWANW11` spans `internal/control`, `internal/network`, `internal/replication` and
+`internal/scheduler`. Tests execute pinned TCP relay/direct reprobes with injected
+address/time outcomes, late-generation rejection, timed failed ICE reprobes,
+non-sliding quota cooldown, real cold-race quota selection, bounded responder
+retry, exponential cooldown reset, joined/coalesced watcher callbacks and 200
+busy generations across eight targets. Sixteen live responses drain without
+stale observations and prune all old pools. The persistent queue test forces a
+synthetic 1-TiB declared task within nine ready dispatches across retry/reload;
+it does not transfer that payload or measure bandwidth fairness.
+
+The native replication journey interrupts a two-chunk HTTP3 transfer, switches
+to actual pinned TCP, reuses the verified chunk, loses a receipt response and
+switches back to HTTP3. Exact original heads/authors/manifests, working bytes and
+durable receipts remain verified. The namespace-only test requires a private
+`.filesync-disposable` marker and a different parent network namespace.
+`scripts/wan_roaming_namespace_test.py` additionally validates user-namespace
+ownership before any interface/route mutation; it exercises actual Linux address
+and default-route detection and the same native replication test. A simulation or
+isolated dummy interface is not physical Wi-Fi/Pi/native WAN evidence.
+
+[W11 evidence](evidence/wan-w11-20261006/summary.md) retains commands, discovered
+coverage, failed quota/deadlock reproductions and accepted runs. WG5/M3 remain
+incomplete until timing controls, Pi/latency/loss/slow DNS/relay measurements,
+whole-daemon route/interface switch journeys and measured large/small bandwidth
+and combined resource fairness have evidence. Hosted defaults and T13 lifecycle
+checks remain independently outstanding.
+
+The final W11 partial-implementation `make check` passes, including the full
+terminal suite (953.851 s). The initial aggregate failures and their focused
+repairs remain in that evidence; this does not close the pending WG5/M3 campaigns.
+
+## W12 diagnostics and privacy verification
+
+The W12 focused suite covers passive status versus explicit doctor, bounded
+cancellation/admission, actual STUN response validation, pinned direct/relay
+TLS without HTTP or route-observation mutation, typed identity/timeout/quota
+codes, profile-state/next-action rendering and local-only policy behavior.
+Support-export tests scan the complete archive for nested credentials, private
+paths and filenames and verify existing archives are not overwritten.
+
+The real binary journey runs the production CLI and PTY TUI. It exercises a
+healthy service with an offline peer, relay quota/healthy distinctions, keyboard
+doctor cancel/refresh, three local-only doctor calls with no additional service
+requests, reviewed apply/replay/restart, retained device identity/file bytes and
+dedicated-daemon cleanup. It records the service/relay/direct/UDP probe codes;
+`QUOTA_EXCEEDED` is a truthful bounded service result and is not relabeled as a
+successful relay connection. No test reports a NAT or firewall classification.
+
+Commands and outputs are retained under
+[`docs/evidence/wan-w12-20261006/`](evidence/wan-w12-20261006/), including
+initial compile failures, cancellation/probe repairs, support redaction repairs,
+focused pass logs, the owning race run and the final binary/PTY run. The
+disposable fixtures do not establish W13 hosted operator readiness, W16 physical
+WAN/CGNAT behavior or inherited T13 login/logout/boot acceptance.
+
+
+## W11 follow-up production campaigns
+
+[Follow-up evidence](evidence/wan-w11-followup-20261006/summary.md) implements
+reviewed timing and pre-download FIFO bandwidth reservation. Exact legacy policy
+bytes have an independent JSON oracle so adding zero timing cannot change existing
+durable mutation fingerprints. Control/CLI checks prove reviewed ranges, exact
+intent, changed-input refusal, durable replay, restart activation and restoration.
+
+`TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes` uses three real trusted
+replicas plus the signed service to measure simultaneous 16 MiB and continuous
+small-version progress across encrypted WSS, pinned TCP and HTTP3. The limiter
+budgets scheduled pull payload attempts before network IO, including retries and
+fallbacks, with a one-second initial burst. Serving quotas and protocol overhead
+remain separate. Report original versions/heads/authors/manifests/bytes, actual
+route, first/complete progress, combined sampled heap/FD/goroutine peaks and CPU.
+A 25 ms sampling interval can miss shorter peaks; FD totals include non-socket FDs.
+
+`TestWANW11WholeDaemonRoamingAndMixedProgress` ordinarily skips. Run the documented
+marked `wan_daemon_roaming_namespace_test.py` runner under a newly owned remapped
+user/network namespace; it validates marker/root/namespace before mutations.
+Actual production daemon lifecycle, scheduler, owner control, network watchers and
+native transports run in child test binaries. The campaign blocks peer routes,
+recovers WSS→HTTP3, changes an address/default route during a 16 MiB transfer,
+recovers relay and reprobes direct. A typed unexpected EOF after committed receipt
+send exercises loss of caller success; marker checks guard the hook. It is a
+boundary injection, not physical removal of one HTTP receipt response. Exact
+heads/hashes/authors/keys/pins and durable receipt oracles remain required.
+
+The runner can apply real Linux netem packet delay/loss to peer/service traffic,
+exempting loopback owner control, and can use production default timing. Execute
+and record locally under race and on actual Pi hardware; physical topology and
+operated-default service claims remain W13/W16. Daemon process samples every
+250 ms are not guaranteed instantaneous maxima. Thirty-two competing delayed
+DNS/relay peers separately test resolver/admission/cancel/join bounds. No failure
+or skipped ordinary namespace test receives packet acceptance credit.

@@ -2,9 +2,11 @@
 
 Date: 2026-10-05. The owner selected native cross-network connectivity and simple
 Syncthing-like setup, then confirmed **preconfigured Orbit services with optional
-self-hosting**. This authorizes the planning direction. All W packets below are
-unimplemented and their acceptance checks unexecuted. This session produces the
-plan; implementation starts with W00 in a subsequent build task.
+self-hosting**. This authorizes the planning direction. W00 baseline execution is recorded in the
+[tracker](implementation/wan-status.md). W01 additive contracts and local gates are complete in
+[the outcomes](implementation/wan-contracts.md); W02 implements the manual manager and records validation in the tracker;
+W03 authenticated service/profile and W04 encrypted relay validation are recorded in the tracker; W05 production enrollment is recorded in the tracker; W06 CLI controls/local integration and full aggregate validation are complete; W07 keyboard TUI onboarding and local relay milestone pass focused and full aggregate validation; W08 implements scoped LAN discovery and reachable direct TCP/IPv6 with local/isolated fixture evidence; W09 integrates native QUIC HTTP3 with local transport-subgate evidence; W10 integrates authenticated ICE/STUN with full local native/emulator composition evidence; W11 route policy/roaming/fairness is complete with local native/emulator and actual Pi evidence; W12 qualified status/diagnostics/privacy controls are complete for their recorded local acceptance; W13 operator tooling, packaging, rotation and self-host rehearsal pass locally and the hosted service is live while WG6 awaits authority-key backup and alerting; W14 packaged default profile, migration, mixed versions and one-step CLI controls are implemented with final-source validation in progress; W15–W17 remain unimplemented/unexecuted; the packet definitions below
+specify their required work.
 
 ## Start here
 

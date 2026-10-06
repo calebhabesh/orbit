@@ -1,0 +1,4 @@
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+--- PASS: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (83.24s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	83.245s

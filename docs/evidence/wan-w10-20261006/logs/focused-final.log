@@ -1,0 +1,170 @@
+=== RUN   TestWANW10ICEHTTP3NATMatrix
+=== RUN   TestWANW10ICEHTTP3NATMatrix/no_NAT
+    ice_test.go:167: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+2026/10/06 03:24:02 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+=== RUN   TestWANW10ICEHTTP3NATMatrix/endpoint_independent
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:1 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:2 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=true; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEHTTP3NATMatrix (13.24s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/no_NAT (0.09s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/endpoint_independent (1.19s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering (1.21s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering (0.75s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings (5.00s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP (5.00s)
+=== RUN   TestWANW10ICEGatherCancellationAndCredentials
+    ice_test.go:252: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEGatherCancellationAndCredentials (0.00s)
+=== RUN   TestWANW10ICESocketAndSessionAdmission
+--- PASS: TestWANW10ICESocketAndSessionAdmission (0.00s)
+=== RUN   TestWANW10IncompatibleDoubleNAT
+    ice_test.go:331: simulated topology: NAT=&{Mode:0 MappingBehavior:2 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+    ice_test.go:333: two NAT layers per endpoint: inner endpoint-independent; outer address/port-dependent mapping/filtering; bounded check failure
+--- PASS: TestWANW10IncompatibleDoubleNAT (5.00s)
+=== RUN   TestWANW10ICESlowStreamCancellation
+    ice_test.go:337: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+    ice_test.go:392: offered 32 MiB; sent before cancellation 65536 bytes; fixed 32 KiB write buffer and unchanged HTTP3 receive windows
+--- PASS: TestWANW10ICESlowStreamCancellation (1.21s)
+=== RUN   TestWANW10SharedQUICAdmission
+--- PASS: TestWANW10SharedQUICAdmission (0.18s)
+=== RUN   TestWANW10ICEHTTP3NATMatrix
+=== RUN   TestWANW10ICEHTTP3NATMatrix/no_NAT
+    ice_test.go:167: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/endpoint_independent
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:1 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:2 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=true; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEHTTP3NATMatrix (13.21s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/no_NAT (0.13s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/endpoint_independent (1.15s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering (1.19s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering (0.75s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings (5.00s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP (5.00s)
+=== RUN   TestWANW10ICEGatherCancellationAndCredentials
+    ice_test.go:252: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEGatherCancellationAndCredentials (0.00s)
+=== RUN   TestWANW10ICESocketAndSessionAdmission
+--- PASS: TestWANW10ICESocketAndSessionAdmission (0.00s)
+=== RUN   TestWANW10IncompatibleDoubleNAT
+    ice_test.go:331: simulated topology: NAT=&{Mode:0 MappingBehavior:2 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+    ice_test.go:333: two NAT layers per endpoint: inner endpoint-independent; outer address/port-dependent mapping/filtering; bounded check failure
+--- PASS: TestWANW10IncompatibleDoubleNAT (5.00s)
+=== RUN   TestWANW10ICESlowStreamCancellation
+    ice_test.go:337: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+    ice_test.go:392: offered 32 MiB; sent before cancellation 65536 bytes; fixed 32 KiB write buffer and unchanged HTTP3 receive windows
+--- PASS: TestWANW10ICESlowStreamCancellation (1.21s)
+=== RUN   TestWANW10SharedQUICAdmission
+--- PASS: TestWANW10SharedQUICAdmission (0.17s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	40.250s
+=== RUN   TestWANW10ICEContractBoundsAndLegacyEncoding
+--- PASS: TestWANW10ICEContractBoundsAndLegacyEncoding (0.00s)
+=== RUN   TestWANW10ICEDeterministicRoleAndPurpose
+--- PASS: TestWANW10ICEDeterministicRoleAndPurpose (0.00s)
+=== RUN   TestWANW10IndependentSignedICEGolden
+--- PASS: TestWANW10IndependentSignedICEGolden (0.00s)
+=== RUN   TestWANW10ICEContractBoundsAndLegacyEncoding
+--- PASS: TestWANW10ICEContractBoundsAndLegacyEncoding (0.00s)
+=== RUN   TestWANW10ICEDeterministicRoleAndPurpose
+--- PASS: TestWANW10ICEDeterministicRoleAndPurpose (0.00s)
+=== RUN   TestWANW10IndependentSignedICEGolden
+--- PASS: TestWANW10IndependentSignedICEGolden (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.013s
+=== RUN   TestWANW10SignedICESessionReplayAndIsolation
+--- PASS: TestWANW10SignedICESessionReplayAndIsolation (0.14s)
+=== RUN   TestWANW10STUNMappingMalformedAndRateBounds
+    stun_test.go:98: IPv4 binding response 32/20 bytes; 100-request burst responses 10 ; malformed silent; closure joins sole worker
+--- PASS: TestWANW10STUNMappingMalformedAndRateBounds (0.21s)
+=== RUN   TestWANW10SignedICESessionReplayAndIsolation
+--- PASS: TestWANW10SignedICESessionReplayAndIsolation (0.13s)
+=== RUN   TestWANW10STUNMappingMalformedAndRateBounds
+    stun_test.go:98: IPv4 binding response 32/20 bytes; 100-request burst responses 10 ; malformed silent; closure joins sole worker
+--- PASS: TestWANW10STUNMappingMalformedAndRateBounds (0.87s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	2.361s
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/no_NAT
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=true double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+2026/10/06 03:24:04 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_nat_test.go:174: actual ICE consent-loss closure and fresh-pair rebuild; elapsed 6.474034265s unchanged heads/hash/author
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=1 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=true blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10AuthenticatedNATPeerMatrix (50.08s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/no_NAT (1.25s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent (8.95s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering (2.43s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering (2.06s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings (11.85s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT (11.82s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (11.72s)
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+    ice_test.go:27: requires marked disposable user/network namespace runner
+--- SKIP: TestWANW10IsolatedICEPeerSyncAndFallback (0.00s)
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/no_NAT
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=true double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_nat_test.go:174: actual ICE consent-loss closure and fresh-pair rebuild; elapsed 6.477920839s unchanged heads/hash/author
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=1 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=true blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:214: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10AuthenticatedNATPeerMatrix (50.01s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/no_NAT (1.16s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent (8.91s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering (2.43s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering (2.04s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings (11.83s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT (11.81s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (11.83s)
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+    ice_test.go:27: requires marked disposable user/network namespace runner
+--- SKIP: TestWANW10IsolatedICEPeerSyncAndFallback (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	101.103s

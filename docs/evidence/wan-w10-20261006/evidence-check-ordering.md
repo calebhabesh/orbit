@@ -1,0 +1,1 @@
+The initial evidence audit ran before git diff --check created logs/diff-check.log. It reported that linked target missing in commands.md. Creation of the actual diff log and the subsequent audit resolved the ordering error; final audit output is in logs/evidence-check.log. No source or acceptance assertion was weakened.

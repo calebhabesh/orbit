@@ -1,0 +1,9 @@
+=== RUN   TestWANW08IsolatedPublicTCPAndIPv6
+=== RUN   TestWANW08IsolatedPublicTCPAndIPv6/11.23.45.1:46371
+=== RUN   TestWANW08IsolatedPublicTCPAndIPv6/[2606:4700:4700::1111]:46371
+=== NAME  TestWANW08IsolatedPublicTCPAndIPv6
+    public_direct_test.go:163: Actual public-scope numeric IPv4/IPv6 TCP, signed production directory and pinned TLS/engine transfer in a new isolated network namespace. Simulated addresses, no internet/native public reachability claim.
+--- PASS: TestWANW08IsolatedPublicTCPAndIPv6 (0.85s)
+    --- PASS: TestWANW08IsolatedPublicTCPAndIPv6/11.23.45.1:46371 (0.08s)
+    --- PASS: TestWANW08IsolatedPublicTCPAndIPv6/[2606:4700:4700::1111]:46371 (0.18s)
+PASS

@@ -1,0 +1,94 @@
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+2026/10/06 14:53:02 http: TLS handshake error from orbit-relay:0: i/o timeout
+    wan_bandwidth_test.go:304: actual relay: large=16777216 bytes completed=7.629001681s first verified chunk=202.630762ms first small=6.278816ms small versions=29; shared cap=2097152 B/s; peak sampled heap=42610664 goroutines=120 FD=57 unique sockets=36 RSS=87420928 process CPU=899955us; original author=0b01fe7ff73781a53053e213bdcee21fbf5dce0aeb4ac3cdfa89d36e9cef3cf8
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:304: actual direct: large=16777216 bytes completed=7.070912094s first verified chunk=5.895434ms first small=510.090889ms small versions=13; shared cap=2097152 B/s; peak sampled heap=64240256 goroutines=97 FD=52 unique sockets=32 RSS=104726528 process CPU=677156us; original author=0b01fe7ff73781a53053e213bdcee21fbf5dce0aeb4ac3cdfa89d36e9cef3cf8
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:304: actual quic: large=16777216 bytes completed=7.076221483s first verified chunk=7.596995ms first small=516.537485ms small versions=10; shared cap=2097152 B/s; peak sampled heap=69087792 goroutines=103 FD=48 unique sockets=28 RSS=117186560 process CPU=885927us; original author=0b01fe7ff73781a53053e213bdcee21fbf5dce0aeb4ac3cdfa89d36e9cef3cf8
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (86.81s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (20.25s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (7.18s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (7.22s)
+=== RUN   TestWANW06BinaryReviewedRelayJourney
+    wan_cli_test.go:351: Local signed service fixture; production binaries create/invite/join/relaunch/approve and transfer both directions without init/serve/manual peer addresses
+--- PASS: TestWANW06BinaryReviewedRelayJourney (63.24s)
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.00s)
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+--- PASS: TestWANW06BinaryGuidedFirstDevice (0.73s)
+=== RUN   TestWANW12BinaryDoctorPrivacyAndPTY
+    wan_diagnostics_test.go:28: {"scenario": "W12-explicit-doctor-keyboard-cancel", "status": "passed"}
+        
+    wan_diagnostics_test.go:106: actual CLI/PTY doctor, healthy service/offline peer, reviewed local-only/replay/restart, zero service requests, preserved identity/files
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW12BinaryDoctorPrivacyAndPTY (77.12s)
+=== RUN   TestWANW05DaemonChild
+    wan_enrollment_process_test.go:35: child process helper
+--- SKIP: TestWANW05DaemonChild (0.00s)
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+    wan_enrollment_process_test.go:300: SIGKILL membership_received recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+    wan_enrollment_process_test.go:300: SIGKILL approval recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+    wan_enrollment_process_test.go:300: SIGKILL request_accepted recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+    wan_enrollment_process_test.go:300: SIGKILL request_prepared recovered exact attempt/root and two-way heads/hashes
+--- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries (0.00s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received (58.78s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval (59.97s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted (69.76s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared (93.72s)
+=== RUN   TestWANW05RoutedJoinTwoFoldersRestartAndTwoWayData
+2026/10/06 14:58:24 http: TLS handshake error from orbit-relay:0: i/o timeout
+--- PASS: TestWANW05RoutedJoinTwoFoldersRestartAndTwoWayData (120.42s)
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+--- PASS: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (83.30s)
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:33: requires marked disposable namespace runner
+--- SKIP: TestWANW11WholeDaemonRoamingAndMixedProgress (0.00s)
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (1.00s)
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:76: [
+          {
+            "scenario": "W07-keyboard-relay-onboarding",
+            "result": "passed",
+            "assertions": [
+              "production binary real PTY; no manual addresses/listeners/init/serve; relay fixture preserves LAN advertising=false",
+              "reviewed existing contents, Back/Edit, wrong pin, expired v3 paste, unsupported-root correction",
+              "private transfer, independently selected development operator and TLS trust",
+              "exact cross-device verification/approval, delayed exit and actual daemon restart",
+              "exact operation/attempt/request/root/identity retained; byte/hash/version-author oracles",
+              "second folder separate consent/attempt/root, relay observations separate from readiness",
+              "narrow/colorless/resize, masked paste, v3 reveal, deliberate revocation",
+              "termios and alt/bracketed-paste restoration; daemon capture/transfer after client exit",
+              "actual marked service outage retains new-folder drafts and daemon local capture",
+              "fresh Automatic/missing-profile and preannouncement Local-only review; local capture after quit"
+            ]
+          }
+        ]
+        
+--- PASS: TestWANW07RealPTYRelayOnboarding (142.84s)
+=== RUN   TestWANW13PackagedSelfHostRehearsal
+    wan_w13_test.go:299: orbit-net dev (unknown, unknown)
+    wan_w13_test.go:570: overload: baseline fds=21 rss=24360KiB; flood peak fds=265 rss=24532KiB active=256 refused=76; pre-auth 429=118 untrusted=122
+    wan_w13_test.go:605: STUN: 100 binding requests + 2 malformed in 501ms; answers=10 largest=32B; dropped rate=91 invalid=1
+    wan_w13_test.go:719: W13 rehearsal: packaged orbit-net pid lifecycle, private-CA self-hosting via reviewed trust, relay pairing/transfer, SIGHUP certificate rotation, overload/STUN limits, epoch rotation with mixed-epoch devices, rollback refusal, per-epoch expiry, local-only disable and graceful shutdown
+--- PASS: TestWANW13PackagedSelfHostRehearsal (122.18s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	792.361s
+exit=0

@@ -1,0 +1,17 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:71: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 281, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output, args.outage_marker)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 193, in run
+            assert any(bytes(inv['Digest']) == verifier and inv['Revoked'] for inv in invitations), 'revocation not durable'
+                   ^^^
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 193, in <genexpr>
+            assert any(bytes(inv['Digest']) == verifier and inv['Revoked'] for inv in invitations), 'revocation not durable'
+                       ~~~~~^^^^^^^^^^^^^^^
+        TypeError: string argument without an encoding
+--- FAIL: TestWANW07RealPTYRelayOnboarding (137.12s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	137.125s
+FAIL

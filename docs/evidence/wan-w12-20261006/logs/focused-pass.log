@@ -1,0 +1,38 @@
+=== RUN   TestWANW12SupportRedactsNestedErrorsAndCredentials
+--- PASS: TestWANW12SupportRedactsNestedErrorsAndCredentials (0.33s)
+=== RUN   TestWANW12LocalOnlyDoctorIsPassiveAndTyped
+--- PASS: TestWANW12LocalOnlyDoctorIsPassiveAndTyped (0.27s)
+=== RUN   TestWANW12InternetDisableClosesBeforeCompletionAndRetainsIntent
+--- PASS: TestWANW12InternetDisableClosesBeforeCompletionAndRetainsIntent (0.28s)
+=== RUN   TestWANW12RestartRequiredHasNextAction
+--- PASS: TestWANW12RestartRequiredHasNextAction (0.28s)
+=== RUN   TestWANW12SupportRedactsNestedErrorsAndCredentials
+--- PASS: TestWANW12SupportRedactsNestedErrorsAndCredentials (0.34s)
+=== RUN   TestWANW12LocalOnlyDoctorIsPassiveAndTyped
+--- PASS: TestWANW12LocalOnlyDoctorIsPassiveAndTyped (0.30s)
+=== RUN   TestWANW12InternetDisableClosesBeforeCompletionAndRetainsIntent
+--- PASS: TestWANW12InternetDisableClosesBeforeCompletionAndRetainsIntent (0.28s)
+=== RUN   TestWANW12RestartRequiredHasNextAction
+--- PASS: TestWANW12RestartRequiredHasNextAction (0.28s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	3.360s
+=== RUN   TestWANW12DoctorCancellationAndAdmission
+--- PASS: TestWANW12DoctorCancellationAndAdmission (0.05s)
+=== RUN   TestWANW12PassiveCandidateFreshness
+--- PASS: TestWANW12PassiveCandidateFreshness (0.00s)
+=== RUN   TestWANW12UDPProbeUsesActualSTUNResponse
+    diagnostics_test.go:106: UDP response verified; no NAT classification inferred
+--- PASS: TestWANW12UDPProbeUsesActualSTUNResponse (0.00s)
+=== RUN   TestWANW12ProbeCodesDoNotLeakRawErrors
+--- PASS: TestWANW12ProbeCodesDoNotLeakRawErrors (0.00s)
+=== RUN   TestWANW12DoctorCancellationAndAdmission
+--- PASS: TestWANW12DoctorCancellationAndAdmission (0.05s)
+=== RUN   TestWANW12PassiveCandidateFreshness
+--- PASS: TestWANW12PassiveCandidateFreshness (0.00s)
+=== RUN   TestWANW12UDPProbeUsesActualSTUNResponse
+    diagnostics_test.go:106: UDP response verified; no NAT classification inferred
+--- PASS: TestWANW12UDPProbeUsesActualSTUNResponse (0.00s)
+=== RUN   TestWANW12ProbeCodesDoNotLeakRawErrors
+--- PASS: TestWANW12ProbeCodesDoNotLeakRawErrors (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.115s

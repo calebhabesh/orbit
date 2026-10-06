@@ -1,0 +1,51 @@
+{
+  "packet": "W11",
+  "state": "complete",
+  "scope": "Production integration, local native/emulator and actual Raspberry Pi 4B acceptance",
+  "gate": "WG5 closed within recorded scope",
+  "next_packet": "W12 (not started)",
+  "validation": {
+    "original_make_check": {
+      "exit": 2,
+      "log": "logs/make-check-resumed.log",
+      "failed_test": "TestOrbitPairing_CLI_RunningDaemon_Parity",
+      "terminal_suite_seconds": 1038.603
+    },
+    "final_integration": {
+      "exit": 0,
+      "seconds": 96.858,
+      "log": "logs/integration-final.log"
+    },
+    "remaining_check_targets": {
+      "exit": 0,
+      "log": "logs/check-remaining-targets.log"
+    },
+    "coverage": "Composed aggregate stages plus final focused changed-flow checks; no second full make check claimed"
+  },
+  "acceptance_logs": [
+    "logs/compatibility-race.log",
+    "logs/competition-race.log",
+    "logs/final-timing-review.log",
+    "logs/final-serializer-binary.log",
+    "logs/final-socket-bandwidth.log",
+    "logs/pi-sockets-bandwidth.log",
+    "logs/daemon-scoped-fixed.log",
+    "logs/pi-default-final.log",
+    "logs/setup-wait-green.log",
+    "logs/pairing-repair.log",
+    "logs/guided-pty-reap-fixed.log"
+  ],
+  "cleanup_logs": [
+    "logs/pi-cleanup.log",
+    "logs/pi-sockets-cleanup.log"
+  ],
+  "failed_or_interrupted_commands": "Retained uncredited in commands.md and logs; normal namespace skips receive no acceptance credit",
+  "limitations": [
+    "Controlled finite campaigns and sampled process resources, not universal latency/resource guarantees",
+    "Pi existing load/thermal conditions and default socket buffer retained",
+    "Scheduled pull payload cap with one-second burst; not interface-wide or outbound-serving cap",
+    "Physical multi-host WAN/W16 and operated hosted defaults/W13 remain outstanding",
+    "Inherited T13 checks and deferred P17 owner use/explanation remain outstanding",
+    "Initial hash snapshot does not cover tests; no blanket initial-test preservation assertion"
+  ]
+}

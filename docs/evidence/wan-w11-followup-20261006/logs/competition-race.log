@@ -1,0 +1,18 @@
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns
+    roaming_competition_test.go:97: 32 competing peers phase=dns DNS peak=4 relay attempts peak=1; joined cancellation=8.774706ms; active requests/pools/dials/resolvers/relay=0
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay
+    roaming_competition_test.go:97: 32 competing peers phase=relay DNS peak=0 relay attempts peak=29; joined cancellation=1.64343ms; active requests/pools/dials/resolvers/relay=0
+--- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation (0.02s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns (0.01s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay (0.01s)
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns
+    roaming_competition_test.go:97: 32 competing peers phase=dns DNS peak=4 relay attempts peak=7; joined cancellation=8.318283ms; active requests/pools/dials/resolvers/relay=0
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay
+    roaming_competition_test.go:97: 32 competing peers phase=relay DNS peak=0 relay attempts peak=31; joined cancellation=1.263786ms; active requests/pools/dials/resolvers/relay=0
+--- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation (0.02s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns (0.01s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.047s

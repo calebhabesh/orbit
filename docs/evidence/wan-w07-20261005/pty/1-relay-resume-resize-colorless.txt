@@ -1,0 +1,422 @@
+Orbit | Setup progress                  
+State: running | Waiting for approval   
+Approved=false membership current=false 
+root available=false scan complete=false
+Uncaptured=0 download pending=0         
+publication pending=0 conflicts=0       
+storage blocked=false                   
+Local readiness incomplete. Work remains
+pending.                                
+Operation:                              
+38c22ae916f7469d38c016ef1a459ded322126b1
+725f801c9761d8e2559ea750                
+Root: <disposable>/Notes界                        
+r refresh  a add device  N connection  J
+new join  Esc overview  q quit          
+--- frame ---
+Orbit | Setup progress                                                                              
+State: running | Waiting for approval                                                               
+Approved=false membership current=false root available=false scan complete=false                    
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage blocked=false             
+Local readiness incomplete. Work remains pending.                                                   
+Operation: 38c22ae916f7469d38c016ef1a459ded322126b1725f801c9761d8e2559ea750                         
+Root: <disposable>/Notes界                                                           
+Request: f9dd34bc565b2d9c3b15fbe049c681b28bb3894b34b785457b9d6341de79e568                           
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Compare verification code on inviter: b6688-b2f7b-ee636-b8e17                                       
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+r refresh  a add device  N connection  J new join  Esc overview  q quit                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Setup progress                                                                              
+State: completed | Local readiness observed                                                         
+Approved=true membership current=true root available=true scan complete=true                        
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage blocked=false             
+Locally ready (observed). Other offline devices may remain pending.                                 
+Operation: 38c22ae916f7469d38c016ef1a459ded322126b1725f801c9761d8e2559ea750                         
+Root: <disposable>/Notes界                                                           
+Request: f9dd34bc565b2d9c3b15fbe049c681b28bb3894b34b785457b9d6341de79e568                           
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Compare verification code on inviter: b6688-b2f7b-ee636-b8e17                                       
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:51:16.450767558Z; CONNECTED                                                  
+r refresh  a add device  N connection  J new join  Esc overview  q quit                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:51:21.451123521Z; CONNECTED                                                  
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:51:21.451123521Z; CONNECTED                                                  
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Connection details                                                                          
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:51:21.451123521Z; CONNECTED                                                  
+Observed connections are separate from saved/stored/applied/conflict state.                         
+Advanced policy/profile review: orbit network preview; orbit network apply.                         
+r refresh cached observations  arrows scroll  Esc back  q quit                                      
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit                                                                                               
+Daemon: running   Startup: manual (not enabled)                                                     
+[Overview]  Folders  Attention  Devices                                                             
+Search page:                                                                                        
+Devices: Pi, device-6a67dd9e | d: inspect                                                           
+Needs attention, then synced folders (first pages)                                                  
+> Notes  <disposable>/Notes界                                                        
+j/k Enter / ? q | c create J join a add s share w requests u setup N connection                     
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Join invitation                                                                             
+Paste a private v2/v3 invitation or enter an absolute private file path.                            
+The invitation is hidden and never included in status/logs.                                         
+> Private invitation:                                                                               
+Enter verify  Esc back  Ctrl-C close                                                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+> Device name: owner-desktop                                                                              
+  Folder name: Orbit                                                                                
+  Local root: /home/owner/Orbit                                                                 
+  Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): self_hosted                                 
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Confirm adoption                                                                            
+Device: Pi                                                                                          
+Folder: Second                                                                                      
+Root: <disposable>/second                                                            
+Existing supported local contents become shared; nothing is erased.                                 
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Invitation expires: 2026-10-05T23:52:29.735982924Z                                                  
+Invitation folder: 03e61fb6ef4b575fe6b24db4f752140a3c70e98ea5ea286d2374af95e5b52385                 
+Connection: Self-hosted automatic                                                                   
+Orbit services help your devices connect. They see device addresses and connection metadata; file   
+contents stay encrypted in transit.                                                                 
+Inviter operator: Development directory loss fixture                                                
+Profile: 7d56672abd63674d4e93eb2851a9e2f2b34860a947ce2793139c0adc524026bf                           
+Select this operator independently with orbit network preview before joining.                       
+Measured files=0 directories=0 bytes=0; complete=true                                               
+Unsupported=0 unreadable=0 capacity known=true available=15445856256 bytes                          
+Startup=manual; data=10737418240 metadata=268435456 reserve=536870912 bytes; concurrency=4          
+bandwidth=0                                                                                         
+Enter confirm exact review  Esc edit  arrows scroll  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Setup progress                                                                              
+State: running | Waiting for approval                                                               
+Approved=false membership current=false root available=false scan complete=false                    
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage blocked=false             
+Local readiness incomplete. Work remains pending.                                                   
+Operation: dcadda6f1fff5240b510e39aeb16891d8cec56790d3e6df101b57955fd9d4f67                         
+Root: <disposable>/second                                                            
+Request: 1c0e184121a26daec6d48534244c2454df176971db942e0fdd2fe368748796e2                           
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Compare verification code on inviter: a7a49-fda96-f8b16-4eb04                                       
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:52:31.452030608Z; CONNECTED                                                  
+r refresh  a add device  N connection  J new join  Esc overview  q quit                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Setup progress                                                                              
+State: completed | Local readiness observed                                                         
+Approved=true membership current=true root available=true scan complete=true                        
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage blocked=false             
+Locally ready (observed). Other offline devices may remain pending.                                 
+Operation: dcadda6f1fff5240b510e39aeb16891d8cec56790d3e6df101b57955fd9d4f67                         
+Root: <disposable>/second                                                            
+Request: 1c0e184121a26daec6d48534244c2454df176971db942e0fdd2fe368748796e2                           
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Compare verification code on inviter: a7a49-fda96-f8b16-4eb04                                       
+Connection: Self-hosted automatic                                                                   
+Service configuration: SERVICE_READY; ready=true                                                    
+Operator: Development directory loss fixture                                                        
+Metadata: Development only; metadata expires in memory; no logs or folder data.                     
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:52:56.458003726Z; CONNECTED                                                  
+6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004: Connected via relay;              
+observed=2026-10-05T22:52:56.458003726Z; CONNECTED                                                  
+r refresh  a add device  N connection  J new join  Esc overview  q quit                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    

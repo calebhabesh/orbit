@@ -1,0 +1,8 @@
+=== RUN   TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation
+    relay_test.go:351: session 64: QUOTA_EXCEEDED
+--- FAIL: TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation (1.55s)
+=== RUN   TestWANW04RestartEpochAndFreshChallenge
+--- PASS: TestWANW04RestartEpochAndFreshChallenge (0.05s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/rendezvous	1.611s
+FAIL

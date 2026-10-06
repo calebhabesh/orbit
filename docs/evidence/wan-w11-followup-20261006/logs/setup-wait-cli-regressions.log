@@ -1,0 +1,17 @@
+=== RUN   TestWANW06BinaryReviewedRelayJourney
+    wan_cli_test.go:342: Local signed service fixture; production binaries create/invite/join/relaunch/approve and transfer both directions without init/serve/manual peer addresses
+--- PASS: TestWANW06BinaryReviewedRelayJourney (81.49s)
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (11.84s)
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+    wan_cli_test.go:481: guided CLI [setup --state /tmp/TestWANW06BinaryGuidedFirstDevice2765255768/001/state --root /tmp/TestWANW06BinaryGuidedFirstDevice2765255768/001/notes --label Laptop --name Notes --timeout 0 --json]: exit status 1
+        Traceback (most recent call last):
+          File "<string>", line 16, in <module>
+            raise RuntimeError('guided CLI timeout')
+        RuntimeError: guided CLI timeout
+--- FAIL: TestWANW06BinaryGuidedFirstDevice (4.21s)
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (12.48s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	110.043s
+FAIL

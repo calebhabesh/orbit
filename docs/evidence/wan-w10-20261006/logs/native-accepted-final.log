@@ -1,0 +1,30 @@
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 04:00:43 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:221: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:235: native lifecycle samples: FDs live/closed=31/12 goroutines live/closed=85/7; persistent repositories/service fixture remain open
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:221: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:235: native lifecycle samples: FDs live/closed=35/12 goroutines live/closed=71/9; persistent repositories/service fixture remain open
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (17.69s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (2.60s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (15.09s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:283: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+PASS
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 04:01:01 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:221: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:235: native lifecycle samples: FDs live/closed=31/13 goroutines live/closed=85/9; persistent repositories/service fixture remain open
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:221: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:235: native lifecycle samples: FDs live/closed=35/12 goroutines live/closed=71/8; persistent repositories/service fixture remain open
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (15.08s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.22s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (13.86s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:283: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+PASS

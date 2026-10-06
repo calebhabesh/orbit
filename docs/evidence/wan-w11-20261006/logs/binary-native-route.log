@@ -1,0 +1,12 @@
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:184: actual dated route <nil> &{{false local_only  true 2} {false local_only  true 2} false false LOCAL_ONLY   [{0fcdead5e0707e2f129b8d10fd2491b2dba5727275d8a1165f4fbe204ceea620 bbf0d0456d18db0a70101661f4abd284fe2461cff2d0bdb27451ce7af73b84cd peer_data direct CONNECTED 2026-10-06T15:24:47.0882755Z 3}]}
+    wan_direct_test.go:87: daemon 2026/10/06 11:24:41 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=98ee7e2abcbeae8078fa50a32e842a209e3eb4edb488a12fd4cf9c8f23dde063 schema=13 peer-listener=[::]:46157 key-pin=51173af77c3ddcb7a0bab122f38d8e385b6ab267470d923652eb7a6234812f6d enrollment-listener=disabled control-listener=http://127.0.0.1:34007
+        
+    wan_direct_test.go:87: daemon 2026/10/06 11:24:41 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=0fcdead5e0707e2f129b8d10fd2491b2dba5727275d8a1165f4fbe204ceea620 schema=13 peer-listener=[::]:37359 key-pin=bbf0d0456d18db0a70101661f4abd284fe2461cff2d0bdb27451ce7af73b84cd enrollment-listener=disabled control-listener=http://127.0.0.1:45967
+        
+--- FAIL: TestWANW09BinaryLocalOnlyQUICAfterApproval (36.03s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	36.041s
+FAIL

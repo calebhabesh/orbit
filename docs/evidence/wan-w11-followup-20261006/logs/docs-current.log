@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<repo>/docs/evidence/wan-w11-followup-20261006/check_links.py", line 44, in <module>
+    assert anchor in anchors(target), (name, destination, 'missing anchor')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('docs/evidence/orbit-o05/summary.md', '../../implementation/orbit-devices-files.md#o05--enrollment-and-linear-membership-rollout', 'missing anchor')

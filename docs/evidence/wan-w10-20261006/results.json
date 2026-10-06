@@ -1,0 +1,112 @@
+{
+  "packet": "W10",
+  "date": "2026-10-06",
+  "acceptance": "production composition and local native/emulator tests",
+  "focused_tests": 14,
+  "packages": 4,
+  "focused_repetitions": 2,
+  "native_guarded_tests": 2,
+  "native_repetitions": 2,
+  "checks": {
+    "focused_race": "pass",
+    "compatibility_race": "pass",
+    "native_namespace": "pass",
+    "aggregate": "pass",
+    "cross_build": "pass",
+    "binary_pty": "pass",
+    "package_extract": "pass",
+    "fixture_reproducibility": "pass",
+    "binary_collision_repeat": "pass",
+    "evidence_audit": "pass",
+    "preservation": "pass",
+    "diff_check": "pass",
+    "secret_pattern_scan": "pass"
+  },
+  "nat_matrix": {
+    "http3": [
+      "no NAT",
+      "endpoint-independent mapping/filtering",
+      "address-dependent filtering",
+      "address/port-dependent filtering"
+    ],
+    "wss_fallback": [
+      "address/port-dependent mapping/filtering",
+      "incompatible double NAT",
+      "blocked peer UDP"
+    ]
+  },
+  "recovery": [
+    "actual consent-loss retirement and fresh-pair rebuild",
+    "new capture/transfer over live ICE during directory service shutdown"
+  ],
+  "bounds": {
+    "resident_pairs": 8,
+    "simultaneous_establishments": 2,
+    "advertised_candidates": 8,
+    "gathered_addresses": 2,
+    "reviewed_stun_servers": 4,
+    "raw_sockets_per_agent_max": 10,
+    "sources_per_socket": 32,
+    "stun_packets_per_socket_second": 100,
+    "packet_mtu": 1200,
+    "requested_socket_buffer_bytes": 65536,
+    "gather_stun_seconds": 3,
+    "gather_outer_seconds": 4,
+    "check_seconds": 5,
+    "complete_attempt_seconds": 12,
+    "binding_requests_per_pair": 7,
+    "incoming_shared_quic_sessions": 32,
+    "stun_prefixes": 1024,
+    "stun_prefix_rate": 10,
+    "stun_global_rate": 200,
+    "stun_request_response_max_bytes": 128,
+    "stun_amplification_max": 3
+  },
+  "samples": {
+    "slow_stream_offered_bytes": 33554432,
+    "slow_stream_sent_bytes": 65536,
+    "producer_buffer_bytes": 32768,
+    "stun_ipv4_response_request": [
+      32,
+      20
+    ],
+    "stun_ipv6_response_request": [
+      44,
+      20
+    ],
+    "native_lifecycle": [
+      "ice_test.go:263: native lifecycle samples: FDs live/closed=31/11 goroutines live/closed=85/9; persistent repositories/service fixture remain open",
+      "ice_test.go:263: native lifecycle samples: FDs live/closed=35/11 goroutines live/closed=71/8; persistent repositories/service fixture remain open",
+      "ice_test.go:263: native lifecycle samples: FDs live/closed=31/13 goroutines live/closed=85/9; persistent repositories/service fixture remain open",
+      "ice_test.go:263: native lifecycle samples: FDs live/closed=35/12 goroutines live/closed=71/8; persistent repositories/service fixture remain open"
+    ]
+  },
+  "pending": [
+    "W11 interface detection/reprobes/cooldowns/transport races/fairness/combined resource budget",
+    "physical WAN/CGNAT/Pi",
+    "operated hosted defaults and self-hosting deployment",
+    "WG5 native timing and WG6",
+    "T13 login/logout/boot technical checks",
+    "P17 owner use/explanation"
+  ],
+  "next_packet": "W11",
+  "logs": {
+    "focused_race": "logs/focused-final-accepted.log",
+    "compatibility_race": "logs/compatibility-final-accepted.log",
+    "native_namespace": "logs/native-quota-accepted.log",
+    "aggregate": "logs/aggregate-final-accepted.log",
+    "binary_pty": "logs/binary-pty-gather-accepted.log",
+    "binary_collision_repeat": "logs/binary-collision-final-accepted.log",
+    "cross_build": "logs/cross-build-accepted.log",
+    "package_extract": "logs/package-accepted.log"
+  },
+  "native_quota_limitations": {
+    "unchanged_metadata_burst": 10,
+    "refill_tokens_per_second": 1,
+    "fixture_quiet_refill_seconds": 5,
+    "reverse_retry_deadline_seconds": 12,
+    "production_recovery_owner": "W11; one-second retries consume refill; no cooldown/fairness completion claimed"
+  },
+  "status": "complete",
+  "build_limitations": "amd64 native entry checks; arm64 cross-compilation/package structure only, no native arm64/Pi execution"
+}

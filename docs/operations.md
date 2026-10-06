@@ -2,7 +2,7 @@
 
 ## Native WAN operations amendment — 2026-10-05
 
-Status: approved direction; implementation unstarted in [W status](implementation/wan-status.md).
+Status: W00–W08 local implementation/evidence recorded in [W status](implementation/wan-status.md); ordinary reviewed WAN setup is implemented and hosted/native acceptance remains pending.
 [WAN UX](orbit-wan-ux.md), [architecture](orbit-wan-architecture.md) and
 [network protocol](orbit-wan-protocol.md) own automatic routes, profiles,
 infrastructure admission and finite engineering limits. Earlier sections below
@@ -118,8 +118,10 @@ state directory at startup. It contains `format_version: 1` and at most 64
 `peers` entries, each with canonical hex `folder`/`device`, an HTTPS origin
 `url`, and a public `certificate` path (relative to state or absolute).
 Endpoints locate previously approved members; they do not authorize membership.
-Malformed endpoints or unapproved certificate pins refuse startup. Restart
-after changing endpoints. Startup and the configured reconciliation interval
+Malformed endpoints refuse startup; request construction and handlers reject
+unapproved certificate pins. The scheduler reloads endpoint intent each work
+cycle; T05 address refresh retains the reviewed certificate. W02 invalidates
+new requests from superseded pools and lets finite in-flight requests drain. Startup and the configured reconciliation interval
 queue bounded, coalesced pulls from these peers; each participant must configure
 the peers it pulls from. The daemon's identity authenticates those requests.
 Scheduled scans and publications serialize within each folder. Other folders
@@ -564,3 +566,284 @@ captured resolution can remain pending publication; operation effects distinguis
 captured from applied. Restored source identity is provenance, and new ancestry
 is always the reviewed current head set. Unavailable/pending/expired/corrupt bytes
 refuse restore; this interface does not offer an unverified peer-recovery shortcut.
+
+## W03 rendezvous operation
+
+The separately runnable service is `go run ./cmd/orbit-net --listen <address>
+--profile <private-selection.json> --origin <approved-https-origin>
+--tls-cert <certificate.pem> --tls-key <key.pem> --service-key <private-hex-file>`.
+Run from the repository (or build `go build ./cmd/orbit-net`). Profile selection
+and signing-key files live in owner-only directories and are bounded private
+regular files. The hex file contains the 64-byte Ed25519 private key matching the
+signed profile's online `service_key`; TLS certificates are independently loaded.
+No identity, invitation, account or endpoint is generated implicitly. SIGINT/SIGTERM
+close/join controls and expiry work, then drain HTTP for five seconds; expired
+profiles refuse new service admission. HTTP/1.1 and TLS 1.3 are required here.
+
+The [W03 architecture](orbit-wan-architecture.md#w03-directory-and-profile-integration)
+records implemented quotas and ephemeral retention. HTTP/TLS error logging is
+suppressed to avoid default source-address logs; W13 must add bounded sanitized
+operator counters/monitoring and record any front-proxy/infrastructure retention.
+There is no production bundled profile yet. Local evidence selects explicit
+`development` profiles and normal TLS with a fixture CA on private nonloopback
+addresses; this is distinct from operated release endpoints. Merely saving a
+profile does not enable announcements. CLI/TUI policy review and route activation
+remain in their later packets.
+
+## W04 relay operation
+
+The same standalone `orbit-net` process now supplies the opaque WSS broker.
+`--relay-bps` (20 MiB/s), `--relay-device-bps` (5 MiB/s) and
+`--relay-session-bytes` (16 GiB) select positive finite ciphertext ceilings;
+zero/negative CLI limits fail configuration. Each bandwidth bucket has a 32-KiB
+burst, counts both directions and survives reconnects for 60 seconds of inactivity.
+[Architecture](orbit-wan-architecture.md#w04-encrypted-relay-integration) records
+session, socket, frame, timeout and lifetime/drain bounds. These are engineering
+limits, not hosted capacity or an egress-spending commitment. Shutdown closes and
+joins control/relay work before HTTP draining. No relay credentials, application
+bytes, invitation capabilities, filenames or source-address timing are logged.
+
+Daemon virtual peer/enrollment listeners use the existing isolated TLS handlers;
+manual configuration and public-network opt-in remain unchanged. Explicit internal
+relay routes use reviewed profile/device pins and typed overload/offline observations.
+W05–W07 implement durable setup/activation, W11 service/network reconnection policy,
+and W13 operated defaults/monitoring/distribution. Local W04 fixtures do not establish
+native WAN/Pi capacity or production profile/signing custody.
+
+## W06 reviewed CLI networking
+
+`orbit setup` initializes and starts its daemon, reviews names/root/capacity,
+finite limits and startup, and selects Automatic for a fresh installation.
+`--connection local_only` is available before any internet announcement. Existing
+manual installations and explicit legacy `--settings-file` setup retain manual
+policy unless the owner chooses another mode. No hosted profile is bundled:
+Automatic can retain explicit `awaiting_profile` intent, capture locally and report
+`PROFILE_MISSING_OR_EXPIRED`; it does not announce or claim service readiness.
+Local-only currently disables peer/enrollment listeners, outgoing sync and global
+coordination. Its status says `LOCAL_DISCOVERY_NOT_IMPLEMENTED`; W08 still owns
+LAN discovery, rather than claiming that it works today.
+
+`orbit network status` reports cached desired/active policy, required restart,
+service readiness and actual dated relay observations, independently of version
+receipts. It never probes services. `network preview --mode self_hosted
+--profile-file PRIVATE_SELECTION --review-file PRIVATE_REVIEW` reviews a signed
+profile plus independently supplied authority/environment and operator privacy
+text. `network apply --review-file PRIVATE_REVIEW` commits the exact idempotent
+operation and restarts when active policy differs. Profile saving retains the
+W03 authority/epoch rollback checks; neither policy nor profile changes rotate
+identity or folder authority. TLS trust is separate from profile signing trust.
+Examples using disposable development services do not qualify as hosted defaults.
+
+`devices invite --folder NAME --out PRIVATE_FILE` deliberately transfers the
+v2/v3 invitation with owner-only permissions; ordinary output and JSON omit its
+capability. Optional `--preview --review-file` and `--request-file` preserve exact
+invitation operation replay. `join --invitation-file` or `--invitation-stdin`
+accepts a bounded private transfer, including v3 encoded codes. The deprecated
+secret `--invitation` argument is rejected without echoing its value. Setup/join
+scripts retain the root preview/apply/operation pattern. Fresh expired invites
+require a new invitation; accepted durable attempts still use their original job.
+
+`devices requests show --device NAME --review-file PRIVATE_REVIEW` saves the exact
+request/key/folder/transcript/membership/decision. `devices approve --review-file`
+applies that operation. `--decision decline` makes a decline review. A real TTY
+can instead select a request, compare its verification code and explicitly approve
+or decline; non-TTY approval requires the private review. Existing `invite`,
+`requests` subcommands, manual endpoint workflows and `devices add` remain.
+Names select only unambiguous records and never grant authority.
+
+The daemon's default reconciliation interval is five seconds for reviewed
+Automatic/self-hosted mode so new roots/routes and remote edits are discovered
+without a five-minute onboarding delay. Manual retains five minutes; an explicit
+`serve --sync-interval` overrides either. Both use the same bounded durable queue,
+concurrency and retry engine. This is local integration evidence, not W11 timing,
+Pi fairness or real-network capacity acceptance. Service errors leave local
+capture and durable enrollment intent intact.
+
+## W08 direct networking settings
+
+Fresh reviewed Automatic and Local-only setup enables LAN advertising and describes
+its signed device identity/pin and listener-address visibility. Existing policy
+files retain their saved advertising choice; legacy missing policy remains Manual.
+Use shared `orbit network preview --mode local_only --lan-advertising=true
+--review-file /private/review.json` followed by `orbit network apply --review-file
+/private/review.json`, then the reported daemon restart. The corresponding false
+flag disables advertising without changing identities, folders or receipts.
+
+Advanced private `direct-network.json` is optional, for example
+`{"interfaces":["eth0"],"listen":":0","disabled":false}` (owner-only file and
+private state directory). Empty interface selection means up multicast-capable
+nonloopback interfaces, at most eight. `disabled:true` disables the optional peer
+listener. Port collision/unavailable selected interface leaves capture/control and
+reviewed relay available; an explicitly configured manual listener still fails
+startup. Optional data listeners expose no owner control or enrollment handler.
+Local-only filters incoming/outgoing interface/private scope and performs no service
+lookup/announcement/STUN/relay. Configured isolated legacy local enrollment remains
+available; fresh Local-only initial pairing needs those Advanced local settings.
+
+LAN IPv4 multicast uses UDP 22027 / 239.255.79.66, TTL 1, bounded signed records and
+no automatic approval of discovered machines. Permitted IPv4/ULA IPv6 TCP routes
+use existing TLS and folder authority. IPv6-only LAN multicast is not yet supplied;
+public IPv6 candidates can use the directory where an actual global address and
+reachable TCP port exist. Host firewall/router changes are never automatic.
+Native internet/Pi/operator capacity and roaming evidence remain later packets.
+
+## W09 optional UDP direct settings
+
+Automatic/self-hosted/local-only modes add an optional native HTTP3 peer socket on
+an actual ephemeral unprivileged UDP port. Private `direct-network.json` retains
+required `interfaces`, `listen`, `disabled` fields and adds optional `udp_listen`
+(numeric bind address/port) and `udp_disabled`. Missing UDP fields select `:0` /
+false; absent settings preserve automatic defaults. Existing manual mode opens no
+new UDP listener. Bind failures remain route limitations while capture and other
+routes continue. No firewall/router rules change. Local-only UDP binds one selected
+concrete local address and filters private same-prefix sources. HTTP3 serves peer
+data/membership only, with the existing pinned TLS/request authorization. Initial
+enrollment and owner control remain isolated. W10 adds ICE/STUN, W11 network-switch
+recovery and W12 expanded diagnostics; hosted operator profiles remain W13 work.
+
+## W10 ICE and optional STUN service
+
+Reviewed Automatic/self-hosted profiles supply numeric STUN addresses; enabled
+UDP permits bounded ICE attempts for known pinned peer data. Manual, Local-only,
+disabled UDP and initial enrollment retain their existing behavior. Missing
+usable ICE candidates/check failures preserve pinned TCP or encrypted WSS; no NAT
+class is inferred from a timeout. A failed pool does not continuously repeat ICE;
+W11 owns reprobes and roaming policy. Runtime failure reasons are available through
+`ConnectionManager.ICEFailure`; W12 owns user-facing diagnostic presentation.
+
+`orbit-net --stun-listen IP:PORT` activates a separate optional UDP listener only
+when the exact address is in the reviewed profile's STUN list. Its codec, fixed
+response/rate/source/socket limits and close behavior are frozen in
+[architecture](orbit-wan-architecture.md#w10-authenticated-ice-integration).
+Listener failure is explicit service configuration failure; no firewall/router
+changes occur. STUN observes the source address, supplies no file authorization
+and never allocates a relay. W13 retains production endpoints/operator readiness.
+
+
+## W11 roaming and retry defaults (partial)
+
+Nonmanual daemons now observe interface/address/default-route changes using a
+joined two-second watcher. Two stable changed samples and a five-second callback
+quiet period bound flapping. Discovery and reviewed service announcements refresh;
+Local-only UDP binds and listener scope rebuild. Explicit address binds can require
+operator reconfiguration when that address disappears. No router/firewall changes
+or service/policy/identity writes occur. Manual mode retains its explicit behavior.
+
+Peer handshakes race TCP/QUIC with shared 32-global/two-target outgoing admission.
+Relay starts after the 750-ms head start; initial race work has ten seconds plus
+existing finite service cleanup. Demand-driven idle relay reprobes use 60-second
+intervals; failed cycles back off 60/120/240 seconds plus 0–15-second peer jitter.
+Changed candidates/networks clear negative state. Quota refusal uses a five-second
+quiet refill, including one bounded responder retry of refused relay setup phases.
+Submitted HTTP is never replayed by route policy. `ICE_PROBE_DEFERRED` means a
+competing route ended the waiter, not proven UDP failure. Connection observations
+remain separate from content receipts and service readiness.
+
+These numeric values are finite local engineering defaults. Advanced timing
+configuration, Pi/latency/loss tuning and actual mixed-transfer fairness remain
+W11 work; no new throughput, seamless migration or full roaming acceptance claim
+is made. See [W11 handoff](evidence/wan-w11-20261006/summary.md).
+
+
+### W11 reviewed route timing and fair bandwidth reservations
+
+The private `NetworkPolicy.timing` object adds optional decimal-string millisecond
+fields. Missing/zero fields retain finite defaults. `head_start_ms` defaults to
+750 (250–3,000), `cycle_ms` to 10,000 (5,000–30,000), `probe_ms` to 60,000
+(10,000–300,000), `cooldown_ms` to 240,000 (probe interval–900,000), `poll_ms`
+to 2,000 (500–10,000), and `quiet_ms` to 5,000 (2,000–30,000). Cycle must cover
+two head starts; quiet period must cover polling. Cooldown includes the existing
+0–15-second stable peer jitter after its configured cap. Service quota refill,
+ICE establishment, invitation/proof expiry and authentication bounds remain fixed.
+
+`orbit network preview --review-file PRIVATE_FILE` accepts Advanced duration flags
+`--direct-head-start`, `--connection-cycle`, `--direct-probe`, `--direct-cooldown`,
+`--network-poll`, `--network-quiet`. Omit `--mode` to retain current policy. Whole
+nonnegative milliseconds are required; zero restores the corresponding default.
+The existing preview/apply ledger binds exact timing, current policy and generation;
+apply activates changes by daemon restart. Desired/active timing is exposed in
+cached status. TUI network details point to this shared reviewed control flow.
+Timing never supplies remote authority or expands an invitation deadline.
+
+Replication reserves each manifest chunk's bytes before every primary/fallback
+network attempt. Uncertain delivery and retries consume budget. The global/per-peer
+limiter serves at most 128 waiting reservations in arrival order; cancellation
+removes the waiter and wakes the next one. Overflow is retryable `NETWORK_BUSY`.
+This prevents repeated tiny reservations taking every refill ahead of a large
+waiting chunk; one slow peer can delay later reservations until its finite request
+is admitted or canceled. A configured limit governs scheduled pull chunk payload attempts, with
+a one-second initial burst; protocol/control overhead is additional. Serving a
+remote peer remains subject to the existing request/stream quotas rather than
+this local pull limiter. This is not
+a strict interface-wide bandwidth cap. Queue aging and verified-chunk/receipt
+semantics are unchanged. W11 evidence must separately record measured progress
+and combined process resources on the declared host.
+
+
+W11 CLI setup/join waiting retains the last known durable operation after a
+read-only control status timeout and retries observation within the original wait
+deadline. Each query shares that deadline and the existing RPC limits. Authentication
+and non-timeout refusals remain errors. The waiter never resubmits a mutation or
+replaces an operation/invitation/proof; expiration reports pending state without
+claiming Ready. This handles a slow or reconnecting daemon whose background join
+can outlive one control query. Exact wait-deadline and refusal regressions plus
+real legacy/routed CLI journeys are recorded in W11 follow-up evidence.
+
+## W12 diagnostics, privacy and support export
+
+`orbit network status` is a passive read of the daemon's cached policy/profile,
+service readiness and route observations. `orbit network doctor` is an explicit
+bounded action; it tests service DNS/TLS, authenticated directory, pinned direct
+and relay TLS, and reviewed UDP STUN targets. It does not probe on status refresh,
+fan out to every peer, send peer HTTP, or infer a NAT/firewall type. `TIMEOUT`,
+`UNAVAILABLE`, `NOT_TESTED`, `DISABLED_BY_POLICY`, `QUOTA_EXCEEDED` and identity
+failures stay distinct and each has an actionable operator message.
+
+Switching to Local-only or Manual closes WAN service/relay clients, invalidates
+cached public candidates and drains WAN pools before the reviewed mutation
+returns. The daemon remains available to report active policy/restart state.
+Device identity, keys, membership, history, roots and files are retained.
+Existing installations keep their explicit/manual policy until consent is
+reviewed; first setup records the choice. Self-hosted mode requires the signed
+profile and the same TLS/pin checks as hosted mode.
+
+Support archives use an allowlist for configuration and stable support codes for
+diagnostic/task/event failures. Path-like text is pseudonymized consistently;
+invitation, ICE, relay credentials and private filenames are not exported.
+Archive creation is exclusive and cannot overwrite an existing support archive.
+
+## W13 connection service operation
+
+The [operator runbook](orbit-net-operator.md) covers provisioning, key custody,
+profile signing and rotation overlap, certificate reload, budgets, monitoring and
+alerts, restart/patch/rollback/decommission, backups and incidents. Operators
+install `orbit-net` from its separate archive (`make package-orbit-net`); it
+runs as the unprivileged `orbit-net` user under a hardened unit that validates
+the configuration (`serve --check`) before every start.
+
+Device owners self-host with one reviewed step:
+`orbit network preview --mode self_hosted --profile-file <profile> --service-roots <ca.pem>`
+then `orbit network apply`. Custom trust is stored privately with the profile,
+applies only to non-release profiles and is reported as
+`service_trust custom:<sha256>`. A later profile review without
+`--service-roots` removes it. Reviewing a newer epoch keeps existing pairings;
+older epochs are refused.
+
+No hosted default profile exists yet: WG6 needs an actual operator, origin,
+certificate process, authority custody, signed release profile and monitoring
+destination. Automatic mode keeps its `awaiting_profile` behavior until then.
+
+## W14 packaged service profile and upgrades
+
+Ordinary packages embed the hosted service's signed release profile; `orbit
+version` and `release-manifest.json` report its operator, epoch, expiry and
+digest, and packaging fails when it expires within 30 days. New installs select
+Automatic with it in the reviewed first setup. Upgrading keeps every reviewed
+choice: manual installs get a one-time offer (`orbit network automatic`,
+dismiss with `--decline`), Automatic installs that were awaiting a profile adopt
+it at the next daemon start, and a same-operator profile with unchanged privacy
+text is adopted at start while changed text waits for `orbit network update`.
+Operator switches need explicit replacement. `ORBIT_DISABLE_PACKAGED_PROFILE=1`
+runs a process as if no profile were packaged (used by tests and for diagnosing
+a manual-only host); it cannot add trust. Rolling back to a pre-WAN package
+keeps identity, history and manual peers; see persistence for details.

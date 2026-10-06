@@ -1,0 +1,8 @@
+=== RUN   TestWANW12BinaryDoctorPrivacyAndPTY
+    wan_diagnostics_test.go:28: {"scenario": "W12-explicit-doctor-keyboard-cancel", "status": "passed"}
+        
+    wan_diagnostics_test.go:106: actual CLI/PTY doctor, healthy service/offline peer, reviewed local-only/replay/restart, zero service requests, preserved identity/files
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW12BinaryDoctorPrivacyAndPTY (101.70s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	102.710s

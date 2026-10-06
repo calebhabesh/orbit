@@ -1,0 +1,10 @@
+Error: Filter with specified priority/protocol not found.
+We have an error talking to the kernel
+Traceback (most recent call last):
+  File "/tmp/orbit-w11-default-scoped.v0RgHA/wan_daemon_roaming_namespace_test.py", line 68, in <module>
+    main()
+  File "/tmp/orbit-w11-default-scoped.v0RgHA/wan_daemon_roaming_namespace_test.py", line 54, in main
+    subprocess.run(command, check=True, timeout=5)
+  File "/usr/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['tc', 'filter', 'add', 'dev', 'lo', 'protocol', 'ipv6', 'parent', '1:', 'prio', '1', 'u32', 'match', 'ip6', 'dst', '::1/128', 'flowid', '1:1']' returned non-zero exit status 2.

@@ -1,7 +1,9 @@
 # Orbit WAN network protocol contract
 
-Status: 2026-10-05 design baseline; exact wire schemas, golden bytes and executable
-gate evidence are W01/W09 deliverables. Existing [causal protocol](protocol.md),
+Status: 2026-10-05: W01 freezes [strict network/v3 contracts](../schemas/network-v1.md)
+and [local WG1–WG3 outcomes](implementation/wan-contracts.md). W02 manual transport and W03 directory/profile integration are complete; production
+W04 live relay integration is complete; W05 routed-enrollment integration is recorded in the tracker; W06 adds reviewed
+CLI activation without changing signed bytes; WG4 remains W09/W10. Existing [causal protocol](protocol.md),
 membership encoding, version IDs, chunk hashes and receipt boundaries remain
 authoritative. This document owns the new routing protocol, not file causality.
 
@@ -26,8 +28,8 @@ must reach the same checks. Keep enrollment and data destinations distinct.
 
 ## Encoding and signed messages
 
-W01 delivers `schemas/network-v1.md`, additive control schema/capabilities and
-golden fixtures. Use bounded strict JSON with duplicate/unknown-field rejection;
+W01 delivers [network-v1](../schemas/network-v1.md), additive control contracts and
+[independently generated golden fixtures](../schemas/fixtures/network-v1/README.md). Use bounded strict JSON with duplicate/unknown-field rejection;
 canonical unsigned decimal strings for counters, sizes and timestamps; lowercase
 hex fixed-size IDs/pins/nonces/digests. Endpoint types explicitly distinguish
 service origin, TCP candidate, UDP candidate and relay route. Canonical signature
@@ -38,8 +40,8 @@ kind, profile/service origin, sender ID/pin, target ID/pin when applicable, purp
 fresh server challenge, operation/attempt ID, expiration and canonical payload
 digest. Initial authentication includes certificate DER and Ed25519 key-possession
 proof. Subsequent signed peer-coordination messages bind both peers, a unique
-session ID, candidate generation, role and expiration. WG2 freezes exact field
-order/limits, key representation and signature vectors before W03.
+session ID, candidate generation, role and expiration. [W01 contracts](implementation/wan-contracts.md) freeze exact field
+order/limits, profile authority and online service key, and signature vectors for W03.
 
 Replay cache entries expire safely within a bounded window; accepted nonce reuse
 cannot create duplicate reservations or change a signed record. Invalid signatures,
@@ -134,8 +136,9 @@ membership artifact, retired-identity rejection, bootstrap retirement snapshots,
 per-folder sharing and receiving-root preview remain in force. V3 network failure
 cannot replace an identity/attempt, extend authorization or mark setup complete.
 The private receiving setup record persists what is necessary to resume the same
-workflow; ordinary status omits capability bytes. WG3 freezes proof/approval
-canonical bytes and an independent admission model before W05.
+workflow; ordinary status omits capability bytes. [W01 contracts](implementation/wan-contracts.md) freeze proof/approval
+canonical bytes and execute the independent admission model plus local transport
+fixtures; W05 still owns production v3 handlers and durable resumption.
 
 New devices negotiate v3 explicitly. V2 peers continue reachable manual/private
 endpoints. Unsupported automatic routing returns a specific capability error and
@@ -230,3 +233,193 @@ invalidates cached WAN routes and drains their direct pools as well as tunnels.
 Only candidates scoped to permitted local interfaces remain. Mode changes neither
 retire peers nor delete local/captured files. Self-hosting does not weaken TLS
 verification; custom trust/profile choices are explicit reviewed inputs.
+
+## W03 production coordination
+
+W03 implements the frozen HTTPS exchanges, same-host authenticated WSS control
+and independently reviewed profile selection. The
+[control clarification](../schemas/network-v1.md#w03-implemented-service-selection-and-wss-control-behavior)
+records HTTPS-origin challenge binding on WSS, addressed offer events and heartbeat
+without changing canonical bytes. The
+[architecture](orbit-wan-architecture.md#w03-directory-and-profile-integration)
+owns concrete bounds, DNS/socket ownership and ephemeral metadata retention.
+Purpose-scoped lookup verifies the historical signed announcement proof separately
+from its current lease; source address is never a reachability candidate. No relay
+forwarding, directory enumeration, folder admission or automatic daemon migration
+is supplied by this packet.
+
+## W04 live relay attachment
+
+The W01 canonical bytes and strict fixtures are unchanged. W04 implements
+`GET /network/v1/relay` with normal service TLS, no browser Origin/forwarded
+headers/query credentials, disabled compression and the same approved HTTPS/WSS
+host. The first text message is strict `NetworkRelayAttachRequest`, at most
+16 KiB, received within ten seconds. Its fresh proof challenge is issued over
+HTTPS, but its signed origin/intent binds the WSS origin. Live admission checks
+partner acceptance, exact issued credential, service restart epoch, unexpired
+attachment and unused role in addition to the frozen signature/binding checks.
+A bounded `NetworkResult` acknowledges accepted routing; refusals return a bounded
+`NetworkFailure` then close. Following messages are binary ciphertext only,
+at most 32 KiB each. No application invitation is an attachment credential.
+
+A new enrollment requester needs an authenticated addressed control channel but
+need not publish a directory record. Acceptance binds its exact live signed offer;
+this grants routing only. Data offers/acceptances still require current registered
+generations and local known pins. Enrollment and data terminate at separate
+existing TLS HTTP listeners; neither destination exposes owner control.
+
+The [implemented architecture](orbit-wan-architecture.md#w04-encrypted-relay-integration)
+owns finite sessions, bandwidth, byte budgets and shutdown. At the 60-minute
+active lifetime, clients refuse new pooled requests and drain an admitted request
+for its existing finite deadline (at most 30 seconds). The opaque broker closes
+at the hard lifetime-plus-grace ceiling; it does not inspect HTTP boundaries.
+Fault/profile/authorization expiry closes immediately. No routing acknowledgement
+is converted into a file receipt, and a new session cannot extend enrollment expiry.
+
+## W08 local announcement encoding
+
+`LANAnnouncement` is additive and never sent to public services. Strict JSON
+fields, in canonical struct order: `version`, `device`, `pin`, `key`, `generation`,
+`expires`, `capabilities`, `candidates`, `signature`. Version is `"1"`; IDs/pin/raw
+Ed25519 key are lowercase nonzero 32-byte hex; generation and Unix-second expiry
+use the existing decimal-string `NetworkUint`. Capability is exactly
+`["direct_https_v1"]`. There are one through four distinct `tcp`/`lan` candidates
+in existing candidate field order, with signed interface labels and canonical
+private numeric AddrPorts. Loopback, unspecified, multicast, mapped and link-local
+addresses are rejected. Packet size is at most 1,200 bytes, with no fragmentation,
+pagination, response amplification, folder names or capabilities for enrollment.
+
+Signature bytes are Ed25519 over `orbit-lan-v1\n` followed by the compact UTF-8
+JSON encoding in the stated field order with `signature` set to `""` (Go
+`encoding/json` string escaping, including HTML and U+2028/U+2029 escaping).
+The received hex signature has exactly 64 bytes. SHA-256 of the raw key's DER
+SubjectPublicKeyInfo must equal `pin`; the `(device,pin)` must already be a reviewed
+routing identity. This key proves possession rather than granting initial trust.
+Duplicate/unknown JSON keys and trailing documents are rejected. Independent
+Python-generated [canonical bytes](../schemas/fixtures/lan-v1/canonical.hex) and
+[announcement](../schemas/fixtures/lan-v1/announcement.json) are tested in Go.
+
+Expiry is strictly future and at most ten minutes away. Each receiving interface
+has its own bounded generation/expiry lease. A lower generation or altered record
+at the same generation is refused. Source and candidate private prefixes must
+match the actual permitted receiving interface, obtained from socket metadata;
+remote interface names are not compared to local OS names. Reordered/address-change
+records cannot renew another interface's lease. Unknown identities are not cached
+or dialed; owner invitation/approval and per-request folder authority are unchanged.
+
+W08 public TCP uses unchanged signed `NetworkAnnouncement` lookup bindings. Only
+actual eligible global interface addresses and bound listener ports are published
+for peer-data purpose, with `direct_https_v1` when available; enrollment remains
+HTTPS/WSS on its separate handlers. A lookup lease, including an empty candidate
+list, remains routing metadata only. Reusing it for relay allocation does not
+replace fresh live offer/accept/reservation proofs or extend enrollment expiry.
+
+## W09 HTTP3 transport contract
+
+`quic_http3_v1` identifies implemented native direct HTTP3 over ordinary UDP;
+`quic_ice_v1` remains reserved for W10's composed traversal. Public announcements
+accept up to five distinct defined capabilities; UDP direct selection requires
+`quic_http3_v1`. LAN records retain `direct_https_v1` first and may append
+`quic_http3_v1`; UDP LAN candidates require that second capability. Candidate
+identity is the transport/address tuple, so TCP and UDP may use the same numeric
+port. Existing TCP-only canonical/signature fixtures remain byte-identical;
+[UDP fixture](../schemas/fixtures/lan-quic-v1/announcement.json) is independently
+signed. The existing 1,200-byte announcement and four-candidate LAN bounds remain.
+
+HTTP3 serves unchanged `/peer/v1/*` POST encodings with TLS 1.3, h3, mandatory
+client certificates and per-request folder/membership checks. Unknown certificates
+are refused by existing authorization even when the TLS handshake succeeds.
+Initial enrollment stays HTTPS/WSS. Early data is disabled on both roles.
+The [owning limits](orbit-wan-architecture.md#w09-native-quic-http3-integration)
+map header/body/request/idle deadlines and resource caps explicitly. A routing
+observation or successful HTTP3 connection never establishes content readiness or
+creates a stored receipt. Partial streams retain only independently verified chunks.
+
+## W10 ICE offer extension
+
+`NetworkOffer` accepts exactly one optional non-null `ice` object. Every historical
+required key remains required; duplicate, unknown, case-alias and null keys remain
+invalid. Offers without the extension retain their exact canonical/signature bytes.
+ICE-capable peer-data announcements use the previously reserved `quic_ice_v1`.
+Older peers without that capability retain TCP/native QUIC/relay routing.
+
+The object has required `mode`, `ufrag`, `password`, `candidates` keys. Modes are
+`request`, `offer`, `accept`. A request has empty credentials and an empty array;
+offer/accept have 4–256-character username fragments, 22–256-character passwords
+from the ICE alphabet, and 1–8 unique canonical SDP candidates of at most 512 bytes.
+Pion's maintained parser validates numeric UDP component-one host/srflx candidates;
+Orbit excludes prohibited/private/DNS/mDNS/TURN/TCP targets. Related private
+addresses/ports are omitted. Request/offer use the existing initiator proof role;
+accept uses responder. Only the smaller identity/pin pair may send an ICE offer;
+only the larger may send request/accept. Enrollment offers cannot carry ICE.
+
+The inner canonical domain is `ice-v1`, with mode, ufrag, password, candidate count
+and each exact candidate. The outer `ice-offer-v1` contains the historical sender
+and target generations, zero ordinary candidates, and the length-prefixed inner
+canonical bytes as its final field. The existing proof signs its payload digest,
+both identities/pins, purpose, session, role, generation, operation, challenge and
+expiry. The service binds acceptance to the live opposite-leg session and exact
+generation tuple and refuses relay reservations on ICE coordination sessions.
+[Independent synthetic fixture](../schemas/fixtures/ice-v1/offer.json) and its
+Python generator preserve a cross-implementation canonical/signature oracle.
+
+ICE credentials and STUN observations authorize connectivity checks only. Both
+QUIC TLS identities and request-level folder/membership authorization remain
+mandatory. Credentials, offers, pairs, sockets and failure observations remain
+transient. Closing retires the agent and clears Orbit's retained local credential
+record; this is not a guarantee of cryptographic erasure of every Go/library heap
+copy. Existing service records expire under their bounded session/replay policy.
+
+## W12 diagnostic observations and probes
+
+Terminal network status is a read-only projection. `NetworkStatus` carries
+generated time, desired and active `NetworkPolicy`, profile state/expiry,
+service readiness, a bounded action string and dated `NetworkObservation` values.
+Each observation identifies a reviewed device/purpose and records route, typed
+code, freshness, LAN/public/expired candidate counts and the last UDP result.
+These observations never acknowledge file content, stored/applied state or
+membership; a connected route cannot produce an `Everything synced` claim.
+
+`network_doctor` is the only operation that performs probes. Its result contains
+typed `ProbeResult` values with one of the stable kinds `service_dns_tcp`,
+`service_tls`, `directory`, `direct_tls`, `relay_inner_tls` and `udp_stun`.
+Codes include `VERIFIED`, `UNAVAILABLE`, `NOT_TESTED`, `DISABLED_BY_POLICY`,
+`TIMEOUT`, `CANCELLED`, `QUOTA_EXCEEDED`, `IDENTITY_MISMATCH`,
+`TLS_IDENTITY_FAILED` and `PEER_OFFLINE`; unknown transport errors are reduced
+to `UNAVAILABLE`. Probe calls use bounded contexts and are not cached as route
+observations. Direct and relay checks validate the existing peer/service pin and
+stop after TLS; they do not send a peer HTTP request. UDP checks send a bounded
+STUN binding request to a reviewed server and report `VERIFIED` only for a valid
+transaction-matched response. No response is turned into a NAT/firewall label.
+
+The doctor does not fan out: a peer route is tested only for an explicitly
+selected device ID. Passive status, support export and TUI refresh use no
+external network call. Disabling internet policy invalidates cached public
+candidates and stops discovery/STUN/relay before WAN pools drain, while identity,
+keys, history, membership and files remain. Profile/mode changes use the normal
+reviewed mutation ledger and retain the existing generation/restart semantics.
+
+## W13 profile rotation
+
+A service may serve two adjacent epochs from one authority, environment and
+origin. Challenge results echo the requested profile digest; reservations sign
+relay attachments with the requesting epoch's service key and bind its digest;
+attachments verify against that epoch. An unknown digest returns
+`PROFILE_UNTRUSTED`; a known but expired epoch returns `PROFILE_EXPIRED`. Peer
+announcement proofs and offer events from the same origin are accepted under
+either digest, so the proof's `profile` field identifies the sender's reviewed
+epoch rather than requiring equality with the receiver's. Enrollment routes still
+require equal profiles. Devices never accept an older epoch; operators must keep
+serving every epoch devices hold until it expires.
+
+## W14 invitation codes and profile compatibility
+
+Code prefixes are unchanged (`orbit-invitation:v2:` and `orbit-invitation:v3:`,
+unpadded base64url JSON). A v3 code may omit `profile` when its
+`route.profile` equals the inviter's packaged release digest; the receiver fills
+it from its own packaged selection only when the digests match and then runs the
+unchanged v3 validation, so the signature, digest binding and pin checks are the
+same as for a full invitation. Invitation files and stored join mutations always
+hold the full form. Prefixes or `version` values above 3 are rejected as
+`UNSUPPORTED_INVITATION_VERSION` before any network use. Peer, relay, rendezvous
+and enrollment wire messages are unchanged in W14.

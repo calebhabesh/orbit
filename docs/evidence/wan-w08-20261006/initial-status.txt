@@ -1,0 +1,95 @@
+ M Makefile
+ M NOTICE
+ M cmd/filesync/main.go
+ M cmd/filesync/terminal_completion.go
+ M cmd/filesync/terminal_enrollment.go
+ M cmd/filesync/terminal_help.go
+ M cmd/filesync/terminal_setup.go
+ M cmd/filesync/terminal_tui.go
+ M docs/implementation/wan-foundations.md
+ M docs/implementation/wan-relay.md
+ M docs/implementation/wan-status.md
+ M docs/operations.md
+ M docs/orbit-wan-architecture.md
+ M docs/orbit-wan-design-gates.md
+ M docs/orbit-wan-implementation-plan.md
+ M docs/orbit-wan-protocol.md
+ M docs/orbit-wan-ux.md
+ M docs/persistence.md
+ M docs/verification.md
+ M go.mod
+ M go.sum
+ M internal/app/app.go
+ M internal/control/control.go
+ M internal/control/enrollment_compatibility.go
+ M internal/control/orbit_control.go
+ M internal/control/terminal_enrollment.go
+ M internal/control/terminal_lifecycle.go
+ M internal/control/terminal_setup.go
+ M internal/control/terminalcontract/invitation.go
+ M internal/control/terminalcontract/types.go
+ M internal/control/terminalcontract/validate.go
+ M internal/controlclient/client.go
+ M internal/controlclient/onboarding.go
+ M internal/replication/client.go
+ M internal/replication/enrollment.go
+ M internal/replication/transfer_test.go
+ M internal/scheduler/retry.go
+ M internal/terminal/join.go
+ M internal/terminal/keys.go
+ M internal/terminal/library.go
+ M internal/terminal/render.go
+ M internal/terminal/setup.go
+ M internal/terminal/setup_render.go
+ M internal/terminal/share.go
+ M packaging/LICENSES.md
+ M schemas/terminal-control-v1.md
+ M tests/integration/orbit_pairing_test.go
+ M tests/terminal/README.md
+?? cmd/filesync/terminal_network.go
+?? cmd/filesync/terminal_wan_pairing.go
+?? cmd/orbit-net/
+?? docs/evidence/wan-w00-20261005/
+?? docs/evidence/wan-w01-20261005/
+?? docs/evidence/wan-w02-20261005/
+?? docs/evidence/wan-w03-20261005/
+?? docs/evidence/wan-w04-20261005/
+?? docs/evidence/wan-w05-20261005/
+?? docs/evidence/wan-w06-20261005/
+?? docs/evidence/wan-w07-20261005/
+?? docs/evidence/wan-w08-20261006/
+?? docs/implementation/wan-baseline.md
+?? docs/implementation/wan-contracts.md
+?? internal/config/network.go
+?? internal/config/network_profile.go
+?? internal/config/network_test.go
+?? internal/config/peer_routes.go
+?? internal/config/peer_routes_test.go
+?? internal/control/network_clients.go
+?? internal/control/terminal_network.go
+?? internal/control/terminal_network_test.go
+?? internal/control/terminalcontract/network.go
+?? internal/control/terminalcontract/network_test.go
+?? internal/network/
+?? internal/protocol/network.go
+?? internal/protocol/network_test.go
+?? internal/protocol/routed_enrollment.go
+?? internal/rendezvous/
+?? internal/replication/directory_loss_test.go
+?? internal/replication/manager_test.go
+?? internal/replication/relay_test.go
+?? internal/replication/routed_enrollment.go
+?? internal/replication/routed_enrollment_test.go
+?? internal/replication/wan_transport_test.go
+?? internal/scheduler/network_retry_test.go
+?? internal/terminal/wan_test.go
+?? model/network.go
+?? model/network_test.go
+?? schemas/fixtures/network-v1/
+?? schemas/network-v1.md
+?? scripts/terminal_wan_pty_test.py
+?? tests/terminal/wan_baseline_test.go
+?? tests/terminal/wan_cli_test.go
+?? tests/terminal/wan_enrollment_process_test.go
+?? tests/terminal/wan_enrollment_test.go
+?? tests/terminal/wan_tui_test.go

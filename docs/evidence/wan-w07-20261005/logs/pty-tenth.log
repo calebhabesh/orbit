@@ -1,0 +1,15 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:71: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 263, in <module>
+            if p.poll() is None: peer.send_signal(p, signal.SIGTERM); p.wait(timeout=12)
+          File "<repo>/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 174, in run
+            ua.send(b'\r'); ua.wait('Private invitation')
+            
+          File "<repo>/scripts/terminal_onboarding_pty_test.py", line 106, in wait
+            raise AssertionError(f"{self.name}: visible {text!r} absent; frame={self.screen.text()!r}; rawtail={bytes(self.raw[-3500:])!r}")
+        AssertionError: relay-create-back-edit: visible 'orbit-invitation:v3:' absent; deliberate private transfer screen/raw bytes redacted.
+--- FAIL: TestWANW07RealPTYRelayOnboarding (149.30s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	149.306s
+FAIL

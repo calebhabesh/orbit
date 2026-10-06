@@ -1,0 +1,4 @@
+# github.com/calebhabesh/file-sync/internal/control [github.com/calebhabesh/file-sync/internal/control.test]
+internal/control/support_privacy_test.go:41:12: db.PauseRoot undefined (type *repository.DB has no field or method PauseRoot)
+FAIL	github.com/calebhabesh/file-sync/internal/control [build failed]
+FAIL

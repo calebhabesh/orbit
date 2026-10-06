@@ -1,0 +1,10 @@
+=== RUN   TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation
+--- PASS: TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation (0.50s)
+=== RUN   TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal
+--- PASS: TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal (0.60s)
+=== RUN   TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation
+--- PASS: TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation (0.50s)
+=== RUN   TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal
+--- PASS: TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal (0.60s)
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	3.370s

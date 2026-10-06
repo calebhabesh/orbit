@@ -1,0 +1,9 @@
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:182: whole daemon route relay after 207.494079ms generation=4
+    wan_roaming_test.go:184: whole daemon route quic after 20.035155358s generation=4
+    wan_roaming_test.go:201: whole daemon address/default-route generation rebuild after 1.237063478s
+    wan_roaming_test.go:215: whole daemon route relay after 9.546801629s generation=5
+    wan_roaming_test.go:221: whole daemon route quic after 22.058763397s generation=5
+    wan_roaming_test.go:267: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="40955"
+--- PASS: TestWANW11WholeDaemonRoamingAndMixedProgress (190.99s)
+PASS

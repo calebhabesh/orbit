@@ -1,0 +1,13 @@
+{
+  "host": "rpi",
+  "root": "/tmp/orbit-w11.bUWbs7",
+  "files": [
+    "/tmp/orbit-w11-network-arm64.test",
+    "/tmp/orbit-w11-replication-arm64.test",
+    "/tmp/orbit-w11-scheduler-arm64.test",
+    "/tmp/orbit-w11-terminal-arm64.test",
+    "scripts/wan_daemon_roaming_namespace_test.py",
+    "scripts/wan_roaming_namespace_test.py"
+  ],
+  "race": false
+}

@@ -1,0 +1,3 @@
+ok  	github.com/calebhabesh/file-sync/internal/terminal	1.154s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	2.517s

@@ -1,0 +1,55 @@
+=== RUN   TestWANW03RegistrationAndReplay
+--- PASS: TestWANW03RegistrationAndReplay (0.00s)
+=== RUN   TestWANW03AuthenticationBindings
+=== RUN   TestWANW03AuthenticationBindings/signature
+=== RUN   TestWANW03AuthenticationBindings/key
+=== RUN   TestWANW03AuthenticationBindings/origin
+=== RUN   TestWANW03AuthenticationBindings/profile
+=== RUN   TestWANW03AuthenticationBindings/purpose
+=== RUN   TestWANW03AuthenticationBindings/expired
+=== RUN   TestWANW03AuthenticationBindings/path
+=== RUN   TestWANW03AuthenticationBindings/payload
+--- PASS: TestWANW03AuthenticationBindings (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/signature (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/key (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/origin (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/profile (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/purpose (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/expired (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/path (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/payload (0.00s)
+=== RUN   TestWANW03LeaseExpiryAndRestart
+--- PASS: TestWANW03LeaseExpiryAndRestart (0.00s)
+=== RUN   TestWANW03CandidateAndBodyBounds
+=== RUN   TestWANW03CandidateAndBodyBounds/127.0.0.1:1
+=== RUN   TestWANW03CandidateAndBodyBounds/10.0.0.1:443
+=== RUN   TestWANW03CandidateAndBodyBounds/169.254.1.1:80
+=== RUN   TestWANW03CandidateAndBodyBounds/100.64.0.1:80
+=== RUN   TestWANW03CandidateAndBodyBounds/[::1]:443
+=== RUN   TestWANW03CandidateAndBodyBounds/[::ffff:8.8.8.8]:443
+=== RUN   TestWANW03CandidateAndBodyBounds/0.0.0.0:443
+--- PASS: TestWANW03CandidateAndBodyBounds (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/127.0.0.1:1 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/10.0.0.1:443 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/169.254.1.1:80 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/100.64.0.1:80 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/[::1]:443 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/[::ffff:8.8.8.8]:443 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/0.0.0.0:443 (0.00s)
+=== RUN   TestWANW03SharedNATAndCacheAdmission
+--- PASS: TestWANW03SharedNATAndCacheAdmission (0.01s)
+=== RUN   TestWANW03MaximumRoutesAndChallenges
+--- PASS: TestWANW03MaximumRoutesAndChallenges (0.04s)
+=== RUN   TestWANW03ControlOffersAndReservationIntent
+--- PASS: TestWANW03ControlOffersAndReservationIntent (0.01s)
+=== RUN   TestWANW03UnknownEnrollmentIsSeparate
+--- PASS: TestWANW03UnknownEnrollmentIsSeparate (0.01s)
+=== RUN   TestWANW03ControlFloodAndShutdown
+    service_test.go:592: 200 concurrent lookups; 9 admitted completions; client slots <=4, controls=1; shutdown joined
+--- PASS: TestWANW03ControlFloodAndShutdown (0.01s)
+=== RUN   TestWANW03TLSAndHeaderOrigins
+--- PASS: TestWANW03TLSAndHeaderOrigins (0.01s)
+=== RUN   TestWANW03ProfilePersistenceAndRollback
+--- PASS: TestWANW03ProfilePersistenceAndRollback (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	0.092s

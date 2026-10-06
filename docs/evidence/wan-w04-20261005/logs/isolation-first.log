@@ -1,0 +1,22 @@
+=== RUN   TestWANW04ManagerRetiresPooledRelayBeforeNewRequest
+--- PASS: TestWANW04ManagerRetiresPooledRelayBeforeNewRequest (0.00s)
+=== RUN   TestWANW04ManagerRelayIsolationAndPendingCancel
+--- PASS: TestWANW04ManagerRelayIsolationAndPendingCancel (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.010s
+=== RUN   TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse
+--- PASS: TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse (1.28s)
+=== RUN   TestWANW04ProductionRelayFolderAndPinIsolation
+--- PASS: TestWANW04ProductionRelayFolderAndPinIsolation (0.65s)
+=== RUN   TestWANW04ProductionRelayLossPreservesCapture
+--- PASS: TestWANW04ProductionRelayLossPreservesCapture (0.64s)
+=== RUN   TestWANW04ProductionRelayRestartResumesVerifiedChunks
+--- PASS: TestWANW04ProductionRelayRestartResumesVerifiedChunks (1.19s)
+=== RUN   TestWANW04ProductionRelayLostReceiptReplay
+--- PASS: TestWANW04ProductionRelayLostReceiptReplay (0.71s)
+=== RUN   TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl
+    relay_test.go:489: Post "https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid/peer/v1/hello": context deadline exceeded
+--- FAIL: TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl (10.59s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	15.068s
+FAIL

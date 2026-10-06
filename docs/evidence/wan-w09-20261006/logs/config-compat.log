@@ -1,0 +1,4 @@
+=== RUN   TestWANW09DirectSettingsLegacyAndOptionalUDP
+--- PASS: TestWANW09DirectSettingsLegacyAndOptionalUDP (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/config	0.002s

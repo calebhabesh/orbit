@@ -1,0 +1,35 @@
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 04:06:39 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:234: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_test.go:248: native lifecycle samples: FDs live/closed=31/11 goroutines live/closed=85/8; persistent repositories/service fixture remain open
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:126: empty local gather did not fail before coordination ICE_CHECKS_FAILED
+--- FAIL: TestWANW10IsolatedICEPeerSyncAndFallback (13.75s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.14s)
+    --- FAIL: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (12.61s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:296: actual UDP6 STUN codec in isolated namespace: 44/20-byte response/request; simulated public address, no native internet claim
+--- PASS: TestWANW10IsolatedSTUNIPv6 (0.00s)
+FAIL
+Traceback (most recent call last):
+  File "<repo>/scripts/wan_ice_namespace_test.py", line 52, in <module>
+    main()
+    ~~~~^^
+  File "<repo>/scripts/wan_ice_namespace_test.py", line 46, in main
+    subprocess.run([str(Path(args.test_binary).resolve(strict=True)),
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    '-test.run=^TestWANW10Isolated(ICEPeerSyncAndFallback|STUNIPv6)$', '-test.v'],
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                   env=env, check=True, timeout=180)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/tmp/orbit-w10-replication-nogather.test', '-test.run=^TestWANW10Isolated(ICEPeerSyncAndFallback|STUNIPv6)$', '-test.v']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "<stdin>", line 3, in <module>
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['unshare', '--user', '--map-root-user', '--net', 'python3', 'scripts/wan_ice_namespace_test.py', '--test-binary', '/tmp/orbit-w10-replication-nogather.test', '--root', '/tmp/orbit-w10-final-3lpel_xb', '--parent-namespace', 'net:[4026531833]']' returned non-zero exit status 1.

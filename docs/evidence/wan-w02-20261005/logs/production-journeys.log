@@ -1,0 +1,8 @@
+=== RUN   TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== PAUSE TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (85.97s)
+=== CONT  TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+--- PASS: TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits (29.10s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	115.071s

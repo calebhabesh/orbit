@@ -1,0 +1,33 @@
+{
+  "recorded_utc": "2026-10-06T16:07:42.709277+00:00",
+  "initial_files": 2576,
+  "changed_files": [
+    "internal/network/direct.go",
+    "internal/network/lan.go",
+    "internal/network/limits.go",
+    "internal/network/manager.go",
+    "internal/network/quic.go",
+    "internal/network/relay_endpoint.go",
+    "internal/network/relay_runtime.go",
+    "internal/network/transport.go",
+    "docs/implementation/wan-direct.md",
+    "docs/implementation/wan-status.md",
+    "docs/operations.md",
+    "docs/orbit-wan-architecture.md",
+    "docs/orbit-wan-design-gates.md",
+    "docs/orbit-wan-implementation-plan.md",
+    "docs/persistence.md",
+    "docs/verification.md",
+    "internal/app/app.go",
+    "internal/control/terminal_setup.go",
+    "internal/repository/work.go",
+    "internal/scheduler/queue.go",
+    "internal/scheduler/retry.go",
+    "internal/scheduler/scheduler.go"
+  ],
+  "unexpected_changes": [],
+  "missing_files": [],
+  "prior_w00_w10_evidence_files": 381,
+  "prior_evidence_unchanged": true,
+  "terminal_enrollment_fixture_unchanged": true
+}

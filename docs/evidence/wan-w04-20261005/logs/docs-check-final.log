@@ -1,0 +1,1 @@
+PASS: 161 local links/anchors; all 23 discovered W04 tests executed with race; 4936 initial files preserved; frozen Go/go.mod/go.sum/Makefile unchanged

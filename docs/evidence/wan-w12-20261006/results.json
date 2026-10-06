@@ -1,0 +1,33 @@
+{
+  "packet": "W12",
+  "date": "2026-10-06",
+  "state": "complete_for_recorded_local_acceptance",
+  "checks": {
+    "focused_packages": "passed",
+    "owning_race_packages": "passed",
+    "binary_cli_pty": "passed",
+    "full_go_packages": "failed_original_aggregate_TestWANW08BinaryOptionalCollisionFreshRelayOnboarding"
+  },
+  "acceptance": {
+    "qualified_status": "passed",
+    "passive_status_no_probe": "passed",
+    "bounded_doctor": "passed",
+    "pinned_probes_no_http_or_route_mutation": "passed",
+    "actual_stun_response_without_nat_inference": "passed",
+    "privacy_disable_retains_identity_and_files": "passed",
+    "support_export_redaction": "passed",
+    "cli_tui_keyboard_parity": "passed"
+  },
+  "limitations": [
+    "Operated hosted defaults and self-host deployment remain W13.",
+    "Physical WAN/CGNAT and ordinary multi-host setup remain W16.",
+    "T13 login/logout/unattended-boot technical checks remain outstanding.",
+    "P17 owner use/explanation remains deferred."
+  ],
+  "evidence": {
+    "summary": "summary.md",
+    "commands": "commands.md",
+    "logs": "logs/",
+    "source_snapshot": "initial-source.json"
+  }
+}

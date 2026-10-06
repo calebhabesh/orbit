@@ -1,0 +1,8 @@
+=== RUN   TestWANW11BandwidthReservationPrecedesNetworkIO
+--- PASS: TestWANW11BandwidthReservationPrecedesNetworkIO (0.82s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	1.831s
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (1.60s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	2.603s

@@ -1,0 +1,46 @@
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/pin
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/signature
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/expired
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/generation
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/public
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/multicast
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/loopback
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/interface
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/source
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/oversized
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown-field
+--- PASS: TestWANW08ScopedSignedDiscoveryAdmission (0.01s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/pin (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/signature (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/expired (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/generation (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/public (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/multicast (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/loopback (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/interface (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/source (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/oversized (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown-field (0.00s)
+=== RUN   TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool
+--- PASS: TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool (0.21s)
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+2026/10/06 00:46:48 http: TLS handshake error from 127.0.0.1:47608: remote error: tls: bad certificate
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked
+--- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure (0.76s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin (0.01s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked (0.76s)
+=== RUN   TestWANW08CandidateBoundsExpiryAndOptionalListener
+--- PASS: TestWANW08CandidateBoundsExpiryAndOptionalListener (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.987s
+=== RUN   TestWANW08ProductionMulticastKnownPeerTwoWaySync
+    lan_test.go:159: real nonloopback local IPv6 listener availability=true; public IPv6 internet reachability remains unexecuted
+--- PASS: TestWANW08ProductionMulticastKnownPeerTwoWaySync (1.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	2.007s

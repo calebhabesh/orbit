@@ -1,0 +1,33 @@
+=== RUN   TestWANW01PinnedTransport
+=== RUN   TestWANW01PinnedTransport/direct
+=== RUN   TestWANW01PinnedTransport/relay
+    wan_transport_test.go:174: Post "https://peer.filesync.invalid/peer/v1/inventory": net/http: TLS handshake timeout
+--- FAIL: TestWANW01PinnedTransport (10.06s)
+    --- PASS: TestWANW01PinnedTransport/direct (0.03s)
+    --- FAIL: TestWANW01PinnedTransport/relay (10.03s)
+=== RUN   TestWANW01WrongPinAndIsolation
+=== RUN   TestWANW01WrongPinAndIsolation/direct/enrollment
+2026/10/05 11:04:46 http: TLS handshake error from 127.0.0.1:39680: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/direct/peer_data
+2026/10/05 11:04:46 http: TLS handshake error from 127.0.0.1:56794: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/relay/enrollment
+2026/10/05 11:04:46 http: TLS handshake error from websocket/unknown-addr: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/relay/peer_data
+2026/10/05 11:04:46 http: TLS handshake error from websocket/unknown-addr: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/data-missing-cert
+2026/10/05 11:04:46 http: TLS handshake error from websocket/unknown-addr: tls: client didn't provide a certificate
+=== RUN   TestWANW01WrongPinAndIsolation/enrollment-no-data
+=== RUN   TestWANW01WrongPinAndIsolation/enrollment-no-control
+=== RUN   TestWANW01WrongPinAndIsolation/data-no-control
+--- PASS: TestWANW01WrongPinAndIsolation (0.15s)
+    --- PASS: TestWANW01WrongPinAndIsolation/direct/enrollment (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/direct/peer_data (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/relay/enrollment (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/relay/peer_data (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/data-missing-cert (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/enrollment-no-data (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/enrollment-no-control (0.02s)
+    --- PASS: TestWANW01WrongPinAndIsolation/data-no-control (0.02s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	10.211s
+FAIL

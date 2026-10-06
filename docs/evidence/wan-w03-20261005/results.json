@@ -1,0 +1,128 @@
+{
+  "packet": "W03",
+  "state": "complete",
+  "focused_tests": [
+    "TestWANW03DNSAllAnswersAndRebinding",
+    "TestWANW03CanceledResolverFloodIsBounded",
+    "TestWANW03PrivacyPolicyHasNoServiceTraffic",
+    "TestWANW03LookupRejectsSubstitution",
+    "TestWANW03RegistrationAndReplay",
+    "TestWANW03AuthenticationBindings",
+    "TestWANW03LeaseExpiryAndRestart",
+    "TestWANW03CandidateAndBodyBounds",
+    "TestWANW03SharedNATAndCacheAdmission",
+    "TestWANW03MaximumRoutesAndChallenges",
+    "TestWANW03ControlOffersAndReservationIntent",
+    "TestWANW03UnknownEnrollmentIsSeparate",
+    "TestWANW03ControlFloodAndShutdown",
+    "TestWANW03TLSAndHeaderOrigins",
+    "TestWANW03ProfilePersistenceAndRollback",
+    "TestWANW03IdleSocketAdmissionAndClose",
+    "TestWANW03ProfilesRejectRollbackAndAuthority",
+    "TestWANW03NoIdleMetadataRetention",
+    "TestWANW03LocalPinsGateDataOffers",
+    "TestWANW03ReannouncementJitterAndStableRenewal",
+    "TestWANW03ControlHeartbeatPreservesIdleSession",
+    "TestWANW03WSSAdmissionBounds",
+    "TestWANW03ServiceBinaryRestart",
+    "TestWANW03DirectoryLossPreservesManualCaptureAndSync"
+  ],
+  "checks": [
+    {
+      "name": "focused race",
+      "exit_code": 0,
+      "log": "logs/header-final-race.log",
+      "sha256": "75151ee168cdb4c78ef358254f857961e748eea690cf2702457f2bbadf6a8992"
+    },
+    {
+      "name": "binary restart 20 repetitions",
+      "exit_code": 0,
+      "log": "logs/binary-restart-repeat.log",
+      "sha256": "b150e244b3836515cc69ad9c2b74e2de29e82630244c4fc1fe4ca83e146fab4a"
+    },
+    {
+      "name": "uncached compatibility",
+      "exit_code": 0,
+      "log": "logs/final-compatibility.log",
+      "sha256": "d2474463c1048a2026a706326d3de6cd985eb0881d37894458a7cc0e070de991"
+    },
+    {
+      "name": "strict contracts and independent model",
+      "exit_code": 0,
+      "log": "logs/strict-contracts-model.log",
+      "sha256": "8e190b26fb055e740e30514fee97b30d530eeb59d0746ba5fc7a41ae38c0bfee"
+    },
+    {
+      "name": "manual production CLI/forwarding/background journeys",
+      "exit_code": 0,
+      "log": "logs/manual-production.log",
+      "sha256": "cb323670955d8fa345cfb78865ddd69ce57d9d599555478e47405ebb63bc54f5"
+    },
+    {
+      "name": "integrated make check",
+      "exit_code": 0,
+      "log": "logs/header-final-make-check.log",
+      "sha256": "16533de433d2ccca32f5c639443440a60766a03d928bdba496ff8b460a2a9cb6"
+    },
+    {
+      "name": "service amd64 and arm64 builds",
+      "exit_code": 0,
+      "log": "logs/service-builds.log",
+      "sha256": "7c73fc3cf080b00356715c340d4d9902686d0486b5929e9cd5544a077df292f8"
+    },
+    {
+      "name": "duplicate Origin valid-challenge regression",
+      "exit_code": 0,
+      "log": "logs/header-specific-final-race.log",
+      "sha256": "139a7c8869859bfb26af0755d1caa7b7a655629608bef6d4c936b5135c81e457"
+    },
+    {
+      "name": "documentation/discovery/preservation",
+      "exit_code": 0,
+      "log": "logs/final-docs-check.log",
+      "sha256": "43dd5f1346a44001ec86ac255d5ef8c2e6042601bd5b86772e5f161dca498a7f"
+    },
+    {
+      "name": "whitespace",
+      "exit_code": 0,
+      "log": "logs/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "resource_observations": {
+    "canceled_callers": 1000,
+    "resolver_peak": 4,
+    "resolver_workers_after_close": 0,
+    "sockets_after_client_close": 0,
+    "raw_idle_connections_attempted": 272,
+    "idle_tls_goroutine_delta": 256,
+    "shared_source_keys_registered": 20
+  },
+  "earlier_failures": [
+    {
+      "log": "logs/initial-focused.log",
+      "reason": "seeded replay cache included earlier fixture records"
+    },
+    {
+      "log": "logs/focused-2.log",
+      "reason": "real client close-under-lock ownership deadlock; repaired and exact test PID stopped"
+    },
+    {
+      "log": "logs/directory-loss-1.log",
+      "reason": "incorrect test Envelope field"
+    },
+    {
+      "log": "logs/make-check.log",
+      "reason": "binary fixture frozen-client/system-service clock mismatch; repaired and 20 repetitions pass"
+    }
+  ],
+  "unexecuted": [
+    "native WAN/NAT/QUIC/ICE/roaming",
+    "broker relay attachment/forwarding quotas",
+    "v3 durable enrollment and reviewed CLI/TUI activation",
+    "Pi peak RSS/FD/egress",
+    "production operator/profile/signer/infrastructure retention/monitoring",
+    "T13 native lifecycle"
+  ],
+  "next": "W04"
+}

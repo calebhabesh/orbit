@@ -1,0 +1,22 @@
+Final race namespace repetition 1
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 03:09:22 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:188: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:188: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (15.22s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.13s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (14.09s)
+PASS
+Final race namespace repetition 2
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/ICE
+2026/10/06 03:09:39 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:188: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay
+    ice_test.go:188: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10IsolatedICEPeerSyncAndFallback (14.75s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/ICE (1.15s)
+    --- PASS: TestWANW10IsolatedICEPeerSyncAndFallback/failed_ICE_relay (13.60s)
+PASS

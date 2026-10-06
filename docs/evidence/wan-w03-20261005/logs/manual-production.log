@@ -1,0 +1,13 @@
+=== RUN   TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== PAUSE TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (86.02s)
+=== CONT  TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+--- PASS: TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits (28.41s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	114.435s
+=== RUN   TestBackgroundSyncFromPersistedPeerEndpoints
+    background_sync_test.go:131: 16-MiB archive arrived while 8 ordinary small edits were produced
+--- PASS: TestBackgroundSyncFromPersistedPeerEndpoints (1.20s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	1.206s

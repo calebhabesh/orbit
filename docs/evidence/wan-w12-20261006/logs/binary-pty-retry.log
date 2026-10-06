@@ -1,0 +1,24 @@
+=== RUN   TestWANW12BinaryDoctorPrivacyAndPTY
+    wan_diagnostics_test.go:26: W12 PTY: exit status 1
+        Traceback (most recent call last):
+          File "<repo>/tests/terminal/../../scripts/terminal_network_pty_test.py", line 23, in <module>
+            ui = UI(peer, 'W12-connection-doctor', size=(100, 45))
+          File "<repo>/scripts/terminal_onboarding_pty_test.py", line 87, in __init__
+            self.p = peer.spawn(["orbit", "tui", "--state", str(peer.state), "--no-color"] + (extra or []),
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                stdin=self.slave, stdout=self.slave, stderr=self.slave,
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                env=dict(os.environ, TERM="xterm-256color", NO_COLOR="1"))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "<repo>/scripts/terminal_pty_test.py", line 63, in spawn
+            self.checked()
+            ~~~~~~~~~~~~^^
+          File "<repo>/scripts/terminal_pty_test.py", line 52, in checked
+            return validated_root({"root": str(self.root), "token": self.token})
+          File "<repo>/scripts/validation/host_agent.py", line 35, in validated_root
+            raise RuntimeError("disposable marker token mismatch")
+        RuntimeError: disposable marker token mismatch
+--- FAIL: TestWANW12BinaryDoctorPrivacyAndPTY (75.41s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	75.419s
+FAIL

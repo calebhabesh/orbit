@@ -1,0 +1,6 @@
+=== RUN   TestWANW10ICEContractBoundsAndLegacyEncoding
+    ice_test.go:35: case-alias ICE extension accepted
+--- FAIL: TestWANW10ICEContractBoundsAndLegacyEncoding (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/protocol	0.002s
+FAIL

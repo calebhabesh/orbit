@@ -1,0 +1,332 @@
+Orbit | Create or join                                                                              
+Create your Orbit [c / Enter]                                                                       
+Join an existing Orbit [j]                                                                          
+Existing folder contents are reviewed before adoption.                                              
+Closing this interface leaves background sync running.                                              
+Esc back  q quit (daemon continues)                                                                 
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Join invitation                                                                             
+Paste a private v2/v3 invitation or enter an absolute private file path.                            
+The invitation is hidden and never included in status/logs.                                         
+> Private invitation:                                                                               
+Enter verify  Esc back  Ctrl-C close                                                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Join invitation                                                                             
+Error: INVITATION_EXPIRED: Ask the inviter for a new invitation; explicitly review a new join       
+attempt.                                                                                            
+Paste a private v2/v3 invitation or enter an absolute private file path.                            
+The invitation is hidden and never included in status/logs.                                         
+> Private invitation: ************************************************                              
+Enter verify  Esc back  Ctrl-C close                                                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Join invitation                                                                             
+Error: IDENTITY_MISMATCH: Stop and verify the inviter identity; request a new invitation from the   
+intended device.                                                                                    
+Paste a private v2/v3 invitation or enter an absolute private file path.                            
+The invitation is hidden and never included in status/logs.                                         
+> Private invitation: ************************************************                              
+Enter verify  Esc back  Ctrl-C close                                                                
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+> Device name: owner-desktop                                                                              
+  Folder name: Orbit                                                                                
+  Local root: /home/owner/Orbit                                                                 
+  Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): self_hosted                                 
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Review setup inputs                                                                         
+Error: ROOT_REVIEW_INCOMPLETE: correct unsupported/unreadable objects, then review again.           
+Supported existing contents will become shared.                                                     
+Connection choices: Automatic or Local network only; Ctrl-N changes mode.                           
+Startup: login needs user systemd; unattended also needs lingering.                                 
+  Device name: Pi                                                                                   
+  Folder name: Notes                                                                                
+  Local root: <disposable>/blocked                                                   
+> Startup (manual/login/unattended): manual                                                         
+  Data budget (bytes): 10737418240                                                                  
+  Connection (automatic/local_only/manual/self_hosted): self_hosted                                 
+Finite metadata=268435456 reserve=536870912; retention uses per-folder controls.                    
+Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back               
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Confirm adoption                                                                            
+Device: Pi                                                                                          
+Folder: Notes                                                                                       
+Root: <disposable>/Notes界                                                           
+Existing supported local contents become shared; nothing is erased.                                 
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Invitation expires: 2026-10-05T23:50:44.886824214Z                                                  
+Invitation folder: b3aed4b6466c54e5a4b54912c60353f50d1b1fe1d75e785e8f6779d2ac9f72c2                 
+Connection: Self-hosted automatic                                                                   
+Orbit services help your devices connect. They see device addresses and connection metadata; file   
+contents stay encrypted in transit.                                                                 
+Inviter operator: Development directory loss fixture                                                
+Profile: 7d56672abd63674d4e93eb2851a9e2f2b34860a947ce2793139c0adc524026bf                           
+Select this operator independently with orbit network preview before joining.                       
+Measured files=1 directories=0 bytes=28; complete=true                                              
+Unsupported=0 unreadable=0 capacity known=true available=15453290496 bytes                          
+Startup=manual; data=10737418240 metadata=268435456 reserve=536870912 bytes; concurrency=4          
+bandwidth=0                                                                                         
+Enter confirm exact review  Esc edit  arrows scroll  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Confirm adoption                                                                            
+Device: Pi                                                                                          
+Folder: Notes                                                                                       
+Root: <disposable>/Notes界                                                           
+Existing supported local contents become shared; nothing is erased.                                 
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Invitation expires: 2026-10-05T23:50:44.886824214Z                                                  
+Invitation folder: b3aed4b6466c54e5a4b54912c60353f50d1b1fe1d75e785e8f6779d2ac9f72c2                 
+Connection: Self-hosted automatic                                                                   
+Orbit services help your devices connect. They see device addresses and connection metadata; file   
+contents stay encrypted in transit.                                                                 
+Inviter operator: Development directory loss fixture                                                
+Profile: 7d56672abd63674d4e93eb2851a9e2f2b34860a947ce2793139c0adc524026bf                           
+Select this operator independently with orbit network preview before joining.                       
+Measured files=1 directories=0 bytes=28; complete=true                                              
+Unsupported=0 unreadable=0 capacity known=true available=15453290496 bytes                          
+Startup=manual; data=10737418240 metadata=268435456 reserve=536870912 bytes; concurrency=4          
+bandwidth=0                                                                                         
+Enter confirm exact review  Esc edit  arrows scroll  q quit                                         
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+--- frame ---
+Orbit | Setup progress                                                                              
+State: running | Waiting for approval                                                               
+Approved=false membership current=false root available=false scan complete=false                    
+Uncaptured=0 download pending=0 publication pending=0 conflicts=0 storage blocked=false             
+Local readiness incomplete. Work remains pending.                                                   
+Operation: 38c22ae916f7469d38c016ef1a459ded322126b1725f801c9761d8e2559ea750                         
+Root: <disposable>/Notes界                                                           
+Request: f9dd34bc565b2d9c3b15fbe049c681b28bb3894b34b785457b9d6341de79e568                           
+Inviter: 6a67dd9ec097769f9c4f8c011973b6de8d446cbad26365d80334c134c0448004                           
+Key pin: 9cf67c36fb2bc3e71f60f5ca155398e76af6f033ff64e96cb87e530c974e62e8                           
+Compare verification code on inviter: b6688-b2f7b-ee636-b8e17                                       
+Connection observations unavailable; local readiness is reported separately.                        
+r refresh  a add device  N connection  J new join  Esc overview  q quit                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    

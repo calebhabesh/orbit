@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-v",
+    "-timeout=8m",
+    "-run",
+    "^TestWANW14",
+    "./internal/network",
+    "./internal/config",
+    "./internal/control",
+    "./internal/control/terminalcontract",
+    "./tests/terminal"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T20:37:42.761901+00:00",
+  "source_before": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": "-race"
+  },
+  "exit_code": 0,
+  "duration_seconds": 71.032,
+  "finished_at": "2026-10-06T20:38:53.793497+00:00",
+  "source_after": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c"
+}
