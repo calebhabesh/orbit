@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"crypto/rand"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -11,7 +10,6 @@ import (
 	"github.com/calebhabesh/file-sync/internal/launcher"
 	"io"
 	"path/filepath"
-	"strings"
 
 	"github.com/calebhabesh/file-sync/internal/control"
 	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
@@ -20,21 +18,40 @@ import (
 )
 
 func privateEnrollmentInput(path string, out any) error {
+	return privateBoundedInput(path, 16384, out)
+}
+
+// privateBoundedInput reads an owner-only request whose reviewed payload may
+// legitimately exceed the 16-KiB invitation bound (network trust and profile).
+func privateBoundedInput(path string, max int64, out any) error {
+	b, err := privateFile(path, max)
+	if err != nil {
+		return err
+	}
+	return decodeInvitationInput(b, out)
+}
+func privateFile(path string, max int64) ([]byte, error) {
 	dir, name := filepath.Split(path)
 	if dir == "" {
 		dir = "."
 	}
-	b, err := state.ReadPrivate(dir, name, 16384)
+	return state.ReadPrivate(dir, name, max)
+}
+func decodeInvitationInput(b []byte, out any) error {
+	decoded, ok, err := tc.DecodeInvitationCode(string(b))
 	if err != nil {
 		return err
 	}
-	if strings.HasPrefix(strings.TrimSpace(string(b)), "orbit-invitation:v2:") {
-		b, err = base64.RawURLEncoding.DecodeString(strings.TrimPrefix(strings.TrimSpace(string(b)), "orbit-invitation:v2:"))
-		if err != nil {
-			return err
-		}
+	if ok {
+		b = decoded
 	}
-	return tc.Decode(b, out)
+	if err = tc.Decode(b, out); err != nil {
+		return err
+	}
+	if inv, isInvitation := out.(*tc.Invitation); isInvitation {
+		return inv.ExpandPackaged()
+	}
+	return nil
 }
 func reviewedEnrollmentCLI(dir, action, request, alias, path, operation string, asJSON bool, out io.Writer) error {
 	var reviewed tc.ApprovalIntent
@@ -118,12 +135,12 @@ func shareFolderCLI(args []string, out, errOut io.Writer) error {
 	if *asJSON {
 		return json.NewEncoder(out).Encode(r)
 	}
-	b, err := json.Marshal(r.Invitation)
+	code, err := tc.InvitationCode(*r.Invitation)
 	if err != nil {
 		return err
 	}
 	fmt.Fprintln(out, "Folder invitation (receiver must review its local root and request approval):")
-	fmt.Fprintln(out, "orbit-invitation:v2:"+base64.RawURLEncoding.EncodeToString(b))
+	fmt.Fprintln(out, code)
 	return nil
 }
 

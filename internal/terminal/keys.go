@@ -36,6 +36,8 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 		return nil
 	}
 	switch k {
+	case "N":
+		return m.openFlow(&workflow{screen: "network"})
 	case "b":
 		return m.openFlow(&workflow{screen: "pick_folder", kind: "storage"})
 	case "c":

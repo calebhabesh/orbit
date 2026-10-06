@@ -527,6 +527,13 @@ func RenderOrbitStatusHuman(stdout io.Writer, res tc.Result, stateDir string) {
 	}
 	fmt.Fprintf(stdout, "Orbit                                Daemon: %-9s Startup: %s\n", daemonStatus, startupMode)
 
+	if res.Network != nil {
+		fmt.Fprintf(stdout, "Connection mode: %s; services: %s\n", res.Network.Policy.Mode, res.Network.Code)
+		for _, o := range res.Network.Observations {
+			fmt.Fprintf(stdout, "  Device %s: route=%s; %s; observed=%s; freshness=%s\n", o.Device, o.Route, o.Code, o.ObservedAt, o.Freshness)
+		}
+	}
+
 	// Needs attention section
 	if len(res.Attention) > 0 {
 		fmt.Fprintf(stdout, "\nNeeds attention (%d):\n", len(res.Attention))

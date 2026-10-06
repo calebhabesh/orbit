@@ -31,7 +31,9 @@ Setup & Sharing:
   join                     Join an existing Orbit using a private invitation
   folders add <root>       Preview and register an additional synced folder
   folders share            Submit a private reviewed folder/device share request
-  devices add              Create an invitation to enroll a new device
+  devices invite           Show a one-line invitation code (or save a private file)
+  devices approve          Apply an exact reviewed device/folder approval
+  devices add              Retained invitation compatibility command
   devices requests         Review, approve, or decline enrollment requests
 
 Management & Diagnostics:
@@ -40,6 +42,12 @@ Management & Diagnostics:
   folders relocate <name>  Change the local filesystem path for a folder
   service                  Manage background service (status, enable, start, stop, restart)
   storage                  Inspect storage usage, retention, and maintenance
+  network status           Cached policy, service readiness and observed peer routes
+  network doctor           Explicit bounded DNS/TLS/directory/relay/direct/UDP checks
+  network automatic        Turn on Automatic with the packaged service profile (asks once)
+  network update           Review a newer packaged service profile (asks once)
+  network set              Change mode/profile/LAN advertising with one confirmation
+  network preview/apply    Two-step review files for scripting
   doctor                   Actionable diagnostics and safe recovery advice
   legacy-browser           Explicit frozen browser compatibility launcher
   completion [shell]       Generate shell completions (bash, zsh, fish)
@@ -136,6 +144,10 @@ Description:
 Usage:
   orbit devices [options]
   orbit devices list [options]
+  orbit devices invite --folder <name> --code
+  orbit devices invite --folder <name> --out <private-file>
+  orbit devices requests show --device <name> --review-file <private-review>
+  orbit devices approve --review-file <private-review>
   orbit devices add [options]
   orbit devices requests [options]
   orbit devices endpoint [options]
@@ -250,7 +262,11 @@ Options:
   --json           Structured JSON output
 
 Description:
-  Guides first-device setup, existing directory adoption, or joins an existing Orbit.`)
+  Fresh setup reviews Automatic connection; missing services leave local capture usable.
+  Orbit services see addresses and connection metadata; content stays encrypted in transit.
+  Choose --connection local_only before announcing. LAN discovery arrives in W08.
+  Scripts use --preview --review-file FILE, then --request-file FILE.
+  Existing manual installations keep their policy until reviewed opt-in.`)
 
 	case "join":
 		fmt.Fprintln(stdout, `orbit join - Join an existing Orbit using a private invitation
@@ -261,13 +277,44 @@ Usage:
 
 Options:
   --root <path>              Local directory for joined folder
-  --invitation-file <path>   Path to private invitation file
+  --invitation-file <path>   Path to private v2/v3 invitation file
+  --invitation-stdin         Read bounded invitation from stdin
+  --preview --review-file   Save the reviewed root/name/settings operation
+  --request-file <path>     Apply/resume the exact private reviewed operation
   --state <path>             Explicit agent state directory
   --json                     Structured JSON output
 
 Description:
   Authenticates an inviting device and submits an enrollment request to join a synced folder.`)
 
+	case "network":
+		fmt.Fprintln(stdout, `orbit network status [--state PATH] [--json]
+orbit network doctor [--device EXACT_ID] [--timeout 20s] [--state PATH] [--json]
+orbit network automatic [--lan-advertising=BOOL] [--yes] [--decline]
+orbit network update [--yes]
+orbit network set [--mode MODE] [--profile-file PRIVATE_SELECTION] [--service-roots PEM] [--replace-operator] [--yes]
+orbit network preview [--mode MODE] --review-file PRIVATE_FILE [--profile-file PRIVATE_SELECTION]
+orbit network apply --review-file PRIVATE_FILE
+
+Modes: automatic, local_only, manual, self_hosted. Every Orbit build carries a
+signed release profile for the hosted Orbit service; Automatic uses it. automatic,
+update and set show the operator, privacy text and mode change, then ask
+"Apply? [Y/n]" once (--yes for scripts). Upgraded manual installs are offered
+Automatic once; automatic --decline keeps manual and stops the offer.
+A newer packaged profile from the same operator with unchanged privacy text is
+applied when the daemon starts; changed text waits for orbit network update.
+Switching to another operator (for example self-hosting) asks for explicit
+replacement; devices pair and relay through Orbit services only on one operator.
+Profile selection includes an independently reviewed authority, environment and
+signed operator/privacy text. Apply restarts the daemon when required.
+Status uses cached observations; doctor explicitly probes the reviewed active policy.
+Select one exact device ID for separate direct/relay identity checks; no peer fan-out.
+Doctor times out within 20s and never infers NAT type from an unavailable result.
+Advanced timing flags for set/preview: --direct-head-start, --connection-cycle,
+--direct-probe, --direct-cooldown, --network-poll, --network-quiet (Go durations).
+Zero restores a finite default; bounds and the exact intent are reviewed before apply.
+Omit --mode to keep the current connection mode.
+Advanced manual endpoints remain available through settings.`)
 	case "service":
 		fmt.Fprintln(stdout, `orbit service - Manage background daemon service
 

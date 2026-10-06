@@ -30,13 +30,15 @@ type Tool struct {
 }
 
 type Options struct {
-	Editor    string
-	Diff      string
-	Input     *os.File
-	Output    io.Writer
-	Tool      *Tool
-	Colorless bool
-	Refresh   time.Duration
+	// FreshInstall is observed by the launcher before creating the daemon identity.
+	FreshInstall bool
+	Editor       string
+	Diff         string
+	Input        *os.File
+	Output       io.Writer
+	Tool         *Tool
+	Colorless    bool
+	Refresh      time.Duration
 }
 
 func Interactive(input *os.File, output io.Writer) bool {

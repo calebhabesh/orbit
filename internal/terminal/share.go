@@ -169,3 +169,19 @@ func (m *model) manageFolder(action string) tea.Cmd {
 	}
 	return m.invalidate()
 }
+
+// Revocation reuses the existing authenticated compatibility control, scoped by token digest.
+func (m *model) revokeInvitation() tea.Cmd {
+	f := m.flow
+	w, ok := m.client.(interface {
+		RevokeInvitation(context.Context, tc.Invitation) error
+	})
+	if !ok {
+		f.err = "Invitation revocation unavailable; use orbit invite revoke."
+		return nil
+	}
+	inv := f.invitation
+	f.task = "revoke_invitation"
+	f.work = func(ctx context.Context) (tc.Result, error) { return tc.Result{}, w.RevokeInvitation(ctx, inv) }
+	return m.invalidate()
+}

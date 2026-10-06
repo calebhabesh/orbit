@@ -26,6 +26,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/controlclient"
 	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/launcher"
+	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
@@ -135,7 +136,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 		controlListen := flags.String("control-listen", "", "explicit loopback control listener address, for example 127.0.0.1:8080")
 		profile := flags.String("profile", "laptop", "hardware resource profile: laptop or pi")
 		bandwidthLimit := flags.Int64("bandwidth-limit", 0, "token-bucket bandwidth limit in bytes/sec (0 = unlimited)")
-		syncInterval := flags.Duration("sync-interval", 5*time.Minute, "bounded periodic reconciliation scan interval")
+		syncInterval := flags.Duration("sync-interval", 0, "bounded reconciliation interval (default manual 5m; automatic/self-hosted 5s)")
 		fullScanInterval := flags.Duration("full-scan-interval", 24*time.Hour, "bounded full-content verification scan interval")
 		noWatch := flags.Bool("no-watch", false, "disable filesystem inotify watcher hints")
 		allowInit := flags.Bool("allow-init", false, "auto-initialize clean uninitialized state directory")
@@ -335,6 +336,13 @@ func run(args []string, stdout, stderr io.Writer) error {
 			identity, err := replication.LoadOrCreateIdentity(*stateDir, local, time.Now())
 			if err != nil {
 				return err
+			}
+			policy, err := config.LoadNetworkPolicy(db.StateDir())
+			if err != nil {
+				return err
+			}
+			if policy.Mode == "local_only" {
+				return &control.ControlError{Code: "LOCAL_ONLY_ROUTE_UNAVAILABLE", Message: "local-only policy disallows manual WAN sync", Action: "review a different connection mode"}
 			}
 			client, err := replication.NewClient(*peerURL, identity, certificate, peerPin)
 			if err != nil {
@@ -3035,6 +3043,13 @@ func handleWorkSync(args []string, stdout, stderr io.Writer) error {
 			if err != nil {
 				return err
 			}
+			policy, err := config.LoadNetworkPolicy(db.StateDir())
+			if err != nil {
+				return err
+			}
+			if policy.Mode == "local_only" {
+				return &control.ControlError{Code: "LOCAL_ONLY_ROUTE_UNAVAILABLE", Message: "local-only policy disallows manual WAN sync", Action: "review a different connection mode"}
+			}
 			client, err := replication.NewClient(*peerURL, identity, certificate, peerPin)
 			if err != nil {
 				return err
@@ -3302,6 +3317,8 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleOrbitContext(args[1:], stdout, stderr)
 	case "status":
 		return handleOrbitStatus(args[1:], stdout, stderr)
+	case "network":
+		return handleOrbitNetwork(args[1:], stdout, stderr)
 	case "setup":
 		return handleOrbitSetup(args[1:], stdout, stderr)
 	case "init":
@@ -3826,6 +3843,15 @@ func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
 		restArgs = args
 	}
 
+	if action == "invite" {
+		return handleWANInvite(restArgs, stdout, stderr)
+	}
+	if action == "approve" || action == "decline" {
+		return handleWANRequests(action, restArgs, stdout, stderr)
+	}
+	if action == "requests" && (len(restArgs) == 0 || strings.HasPrefix(restArgs[0], "-") || restArgs[0] == "show") {
+		return handleWANRequests("show", restArgs, stdout, stderr)
+	}
 	if action == "add" {
 		return handleOrbitInvite(restArgs, stdout, stderr)
 	}
@@ -4181,6 +4207,12 @@ func handleOrbitVersion(args []string, stdout, stderr io.Writer) error {
 	}
 
 	assetInfo := web.GetAssetInfo()
+	profile := map[string]any{"available": false}
+	if s, err := network.EmbeddedProfile(); err == nil {
+		digest, _ := s.Digest()
+		_, active := network.BuiltinProfile()
+		profile = map[string]any{"available": true, "active": active, "operator": s.Profile.Operator, "authority": s.Authority, "epoch": uint64(s.Profile.Epoch), "digest": digest, "expires": time.Unix(int64(s.Profile.Expires), 0).UTC().Format(time.RFC3339)}
+	}
 	if *jsonOutput {
 		info := map[string]any{
 			"product":               "Orbit",
@@ -4198,6 +4230,7 @@ func handleOrbitVersion(args []string, stdout, stderr io.Writer) error {
 				"pure_go_sqlite":        true,
 				"node_runtime_required": false,
 			},
+			"packaged_profile": profile,
 		}
 		return json.NewEncoder(stdout).Encode(info)
 	}
@@ -4207,6 +4240,14 @@ func handleOrbitVersion(args []string, stdout, stderr io.Writer) error {
 	fmt.Fprintf(stdout, "Runtime: %s/%s (%s, pure-Go SQLite, zero Node runtime)\n", runtime.GOOS, runtime.GOARCH, runtime.Version())
 	fmt.Fprintf(stdout, "Schema: SQLite user_version %d, Config format %d\n", repository.CurrentSchema, config.FormatVersion)
 	fmt.Fprintf(stdout, "Embedded Assets: %d files (SHA-256: %s)\n", assetInfo.TotalFiles, assetInfo.DigestSHA256)
+	if profile["available"] == true {
+		fmt.Fprintf(stdout, "Packaged service profile: %q epoch %d, expires %s (SHA-256: %s)\n", profile["operator"], profile["epoch"], profile["expires"], profile["digest"])
+		if profile["active"] != true {
+			fmt.Fprintf(stdout, "Packaged service profile disabled by %s\n", network.DisablePackagedProfileEnv)
+		}
+	} else {
+		fmt.Fprintln(stdout, "Packaged service profile: none")
+	}
 	return nil
 }
 

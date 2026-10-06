@@ -40,6 +40,8 @@ type workflow struct {
 	focus, selected, scroll                         int
 	advanced, reveal                                bool
 	settings                                        tc.Settings
+	network                                         tc.NetworkPolicy
+	builtin                                         *tc.BuiltinProfile
 	plan                                            tc.SetupIntent
 	invitation                                      tc.Invitation
 	mutation                                        tc.Mutation
@@ -108,7 +110,21 @@ func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, err
 	q := tc.Query{Version: tc.Version, Limit: pageSize, Cursor: f.cursor}
 	switch f.screen {
 	case "load_settings":
-		q.Kind = "settings"
+		return "load_settings", func() (tc.Result, error) {
+			r, err := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "settings"})
+			if err != nil || r.Error != nil {
+				return r, err
+			}
+			n, err := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "network_status"})
+			if err != nil || n.Error != nil {
+				return n, err
+			}
+			r.Network = n.Network
+			return r, nil
+		}
+	case "network":
+		q.Kind = "network_status"
+		q.ID = f.device
 	case "preview":
 		q.Kind = "root_preview"
 		q.Path = f.plan.Root
@@ -130,6 +146,12 @@ func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, err
 				}
 				r.Readiness = current.Readiness
 				r.Attention = current.Attention
+			}
+			if err == nil && r.Error == nil {
+				n, e := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "network_status"})
+				if e == nil && n.Error == nil {
+					r.Network = n.Network
+				}
 			}
 			return r, err
 		}
@@ -183,12 +205,25 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 			return nil
 		}
 		f.settings = *r.Settings
+		f.network = tc.NetworkPolicy{Mode: "manual", Generation: 1}
+		if r.Network != nil {
+			f.network = r.Network.Policy
+			if b := r.Network.Builtin; b != nil && !b.Expired {
+				f.builtin = b
+			}
+		}
+		mode := f.network.Mode
+		if m.opts.FreshInstall && mode == "manual" {
+			mode = "automatic"
+		}
+		f.result.Network = r.Network
 		s := f.settings
 		f.fields = append(f.fields, newField("Startup (manual/login/unattended)", s.Startup, false), newField("Data budget (bytes)", fmt.Sprint(s.DataBudget), false),
 			newField("Peer listen (IP:port)", s.PeerListen, false), newField("Enrollment listen (IP:port)", s.EnrollmentListen, false),
 			newField("Advertised peer (IP:port)", s.AdvertisedPeer, false), newField("Advertised enrollment (IP:port)", s.AdvertisedEnrollment, false),
 			newField("Metadata budget (bytes)", fmt.Sprint(s.MetadataBudget), false), newField("Free space reserve (bytes)", fmt.Sprint(s.ReserveBytes), false),
 			newField("Concurrency (1-32)", fmt.Sprint(s.Concurrency), false), newField("Bandwidth (bytes/sec; 0 unlimited)", fmt.Sprint(s.BandwidthBytesPerSecond), false))
+		f.fields = append(f.fields, newField("Connection (automatic/local_only/manual/self_hosted)", mode, false))
 		if f.kind == "join" {
 			f.screen = "invitation"
 			f.fields = append(f.fields, newField("Private invitation", "", true))
@@ -235,19 +270,40 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 			return nil
 		}
 		f.operation = r.Operation.ID
+		m.opts.FreshInstall = false
 		f.screen = "progress"
 		for i := range f.fields {
 			if f.fields[i].label == "Private invitation" {
 				f.fields[i].input.SetValue("")
 			}
 		}
-	case "progress":
+	case "progress", "network":
 		f.result = r
 	case "pick_folder", "pick_device", "setups":
+		selected := ""
+		if f.selected < len(f.items) {
+			selected = f.items[f.selected].ID
+		}
 		f.items = r.Items
+		for i, it := range f.items {
+			if it.ID == selected {
+				f.selected = i
+				break
+			}
+		}
 		f.result = r
 		f.selected = min(f.selected, max(0, len(f.items)-1))
 	case "requests":
+		selected := ""
+		if f.selected < len(f.result.Requests) {
+			selected = f.result.Requests[f.selected].ID
+		}
+		for i, it := range r.Requests {
+			if it.ID == selected {
+				f.selected = i
+				break
+			}
+		}
 		f.result = r
 		f.selected = min(f.selected, max(0, len(r.Requests)-1))
 	case "approval":
@@ -266,6 +322,11 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.invitation = *r.Invitation
 		f.screen = "invitation_out"
 		f.result = r
+	case "revoke_invitation":
+		f.reveal = false
+		f.invitation.Capability = ""
+		f.screen = "invitation_revoked"
+		f.notice = "Invitation revoked; request a fresh invitation for a new attempt."
 	case "save_invitation":
 		f.screen = "invitation_out"
 		f.notice = "Private invitation saved. Transfer deliberately to the receiving device."
@@ -312,6 +373,18 @@ func workflowError(r tc.Result, err error) string {
 		action = "Keep work pending; use the membership-fork recovery runbook."
 	case "SYSTEMD_UNAVAILABLE", "UNATTENDED_PREREQUISITE", "STARTUP_REVIEW_REQUIRED", "SERVICE_SELECTION_REQUIRED":
 		action = "Inspect startup prerequisites with orbit doctor; manual startup remains available."
+	case "SERVICE_UNAVAILABLE", "UNAVAILABLE", "DEVICE_OFFLINE":
+		action = "Waiting for a connection; saved local work and the reviewed attempt are retained. Retry later or open Connection details."
+	case "PROFILE_MISSING_OR_EXPIRED", "PROFILE_MISMATCH", "NETWORK_REVIEW_REQUIRED":
+		action = "Review connection configuration with orbit network automatic (or orbit network set); keep names, root and existing identity."
+	case "PROFILE_EPOCH_MISMATCH":
+		action = "The two devices carry different service profile versions; update Orbit on the older device, then resume."
+	case "PROFILE_OPERATOR_MISMATCH", "PROFILE_NOT_PACKAGED":
+		action = "The devices use different Orbit service operators or versions; use the same operator on both, or transfer the invitation file."
+	case "UNSUPPORTED_INVITATION_VERSION":
+		action = "The invitation came from a newer Orbit; update Orbit on this device."
+	case "RATE_LIMITED", "CAPACITY", "BUSY":
+		action = "Connection service is busy or at its limit; retry the same operation later."
 	case "NETWORK_RESTART_REQUIRED":
 		action = "Restart the selected daemon, then reopen the durable operation."
 	}
@@ -353,7 +426,28 @@ func (m *model) previewSetup() tea.Cmd {
 		f.err = "Review startup, finite positive budgets and numeric network addresses (advertise a reachable LAN/Tailscale IP)."
 		return nil
 	}
-	f.plan = tc.SetupIntent{DeviceName: get(0), FolderName: get(1), Root: filepath.Clean(get(2)), Settings: s}
+	policy := f.network
+	if len(f.fields) > 13 {
+		policy.Mode = get(13)
+		if policy.Mode != f.network.Mode || m.opts.FreshInstall {
+			policy.LANAdvertising = policy.Mode != "manual"
+		}
+		if policy.Mode == "manual" || policy.Mode == "local_only" {
+			policy.Profile = ""
+		}
+		if policy.Mode == "automatic" && policy.Profile == "" && f.builtin != nil {
+			policy.Profile = f.builtin.Digest // packaged release profile, shown in the review
+		}
+		policy.AwaitingProfile = policy.Mode == "automatic" && policy.Profile == ""
+		if err := policy.Validate(); err != nil {
+			f.err = "Choose a connection mode; automatic/self-hosted profiles require independent network review (orbit network preview)."
+			return m.focusField(13)
+		}
+		if policy != f.network {
+			policy.Generation = f.network.Generation + 1
+		}
+	}
+	f.plan = tc.SetupIntent{Network: &policy, DeviceName: get(0), FolderName: get(1), Root: filepath.Clean(get(2)), Settings: s}
 	q := tc.Query{Version: tc.Version, Kind: "root_preview", Path: f.plan.Root, Name: f.kind, RootPlan: &f.plan}
 	if err := q.Validate(); err != nil {
 		f.err = "Names must fit 256 bytes and the reviewed settings must be finite."
@@ -382,7 +476,7 @@ func (m *model) submitSetup() tea.Cmd {
 				return nil
 			}
 			p := f.plan
-			f.mutation.Join = &tc.JoinIntent{Invitation: f.invitation, Attempt: attempt, DeviceName: p.DeviceName, FolderName: p.FolderName, Root: p.Root, Preview: p.Preview, Settings: p.Settings}
+			f.mutation.Join = &tc.JoinIntent{Invitation: f.invitation, Attempt: attempt, DeviceName: p.DeviceName, FolderName: p.FolderName, Root: p.Root, Preview: p.Preview, Settings: p.Settings, Network: p.Network}
 		} else {
 			p := f.plan
 			f.mutation.Setup = &p
@@ -409,27 +503,38 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 			f.screen = "folder"
 			return m.invalidate()
 		}
+		if f.screen == "form" && f.kind == "join" {
+			f.screen = "invitation"
+			return m.focusField(len(f.fields) - 1)
+		}
 		f.screen = "welcome"
 		return nil
 	case "ctrl+a":
 		f.advanced = !f.advanced
+		if !f.advanced && f.focus >= 5 && f.focus <= 12 {
+			return m.focusField(0)
+		}
+		return nil
+	case "ctrl+n":
+		if f.screen == "form" {
+			return m.cycleConnection()
+		}
 		return nil
 	case "tab", "shift+tab":
-		n := len(f.fields)
+		indices := m.formIndices()
 		if f.screen == "invitation" {
 			return nil
-		}
-		if f.screen == "form" {
-			n = 9
-			if f.advanced {
-				n = 13
-			}
 		}
 		delta := 1
 		if k == "shift+tab" {
 			delta = -1
 		}
-		return m.focusField((f.focus + delta + n) % n)
+		for i, index := range indices {
+			if index == f.focus {
+				return m.focusField(indices[(i+delta+len(indices))%len(indices)])
+			}
+		}
+		return m.focusField(indices[0])
 	case "enter":
 		switch f.screen {
 		case "invitation":
@@ -471,6 +576,10 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 		return m.formKey(msg)
 	}
 	if k == "esc" {
+		if f.screen == "revoke_invitation_review" {
+			f.screen = "invitation_out"
+			return nil
+		}
 		if f.screen == "review" {
 			f.screen = "form"
 			return m.focusField(f.focus)
@@ -510,6 +619,15 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 			return m.submitSetup()
 		}
 	case "progress":
+		if k == "r" && f.err != "" && f.mutation.OperationID != "" && (f.mutation.Kind == "setup" || f.mutation.Kind == "adopt" || f.mutation.Kind == "join") {
+			return m.submitSetup()
+		}
+		if k == "a" {
+			return m.openFlow(&workflow{screen: "pick_folder", kind: "invite"})
+		}
+		if k == "N" {
+			return m.openFlow(&workflow{screen: "network"})
+		}
 		if k == "r" {
 			return m.startQuery()
 		}
@@ -539,13 +657,37 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 		if k == "k" || k == "up" {
 			f.scroll = max(0, f.scroll-1)
 		}
+		if k == "x" {
+			f.screen = "revoke_invitation_review"
+			return nil
+		}
 		if k == "s" {
 			f.fields = []field{newField("Private output file (absolute)", "", false)}
 			f.focus = 0
 			f.screen = "save_invitation"
 			return m.focusField(0)
 		}
+	case "revoke_invitation_review":
+		if k == "enter" {
+			return m.revokeInvitation()
+		}
+	case "network":
+		if k == "d" {
+			f.task = "network"
+			device := f.device
+			f.work = func(ctx context.Context) (tc.Result, error) {
+				w, _ := m.workflows()
+				return w.Query(ctx, tc.Query{Version: tc.Version, Kind: "network_doctor", ID: device})
+			}
+			return m.startQuery()
+		}
+		if k == "r" {
+			return m.startQuery()
+		}
 	case "folder":
+		if k == "N" {
+			return m.openFlow(&workflow{screen: "network", device: f.device})
+		}
 		return m.folderKey(k)
 	case "folder_action":
 		if k == "enter" {
@@ -596,4 +738,33 @@ func (m *model) startFlowQuery() tea.Cmd {
 		r.Observations = r.Observations[:min(len(r.Observations), pageSize)]
 		return queryReply{request: request, generation: generation, result: r, err: err, task: task}
 	}
+}
+
+// Ordinary fields never require numeric addresses. Advanced preserves all legacy settings.
+func (m *model) formIndices() []int {
+	f := m.flow
+	if f.screen != "form" {
+		indices := make([]int, len(f.fields))
+		for i := range indices {
+			indices[i] = i
+		}
+		return indices
+	}
+	indices := []int{0, 1, 2, 3, 4, 13}
+	if f.advanced {
+		indices = append(indices, 5, 6, 7, 8, 9, 10, 11, 12)
+	}
+	return indices
+}
+func (m *model) cycleConnection() tea.Cmd {
+	f := m.flow
+	modes := []string{"automatic", "local_only", "manual", "self_hosted"}
+	for i, mode := range modes {
+		if f.fields[13].input.Value() == mode {
+			f.fields[13].input.SetValue(modes[(i+1)%len(modes)])
+			return nil
+		}
+	}
+	f.fields[13].input.SetValue("automatic")
+	return nil
 }

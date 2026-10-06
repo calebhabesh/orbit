@@ -35,7 +35,7 @@ const bashCompletionScript = `_orbit_completion() {
         cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
     fi
 
-    local commands="tui status context folders devices conflicts history deleted restore setup join service storage doctor completion version help"
+    local commands="tui status context folders devices conflicts history deleted restore setup join network service storage doctor completion version help"
     local common_flags="--state --folder --json --help"
 
     if [[ ${cword} -eq 1 ]]; then
@@ -53,7 +53,7 @@ const bashCompletionScript = `_orbit_completion() {
             ;;
         devices)
             if [[ ${cword} -eq 2 ]]; then
-                COMPREPLY=( $(compgen -W "list add requests endpoint" -- "${cur}") )
+                COMPREPLY=( $(compgen -W "list add invite requests approve decline endpoint" -- "${cur}") )
                 return 0
             fi
             ;;
@@ -72,6 +72,12 @@ const bashCompletionScript = `_orbit_completion() {
         completion)
             if [[ ${cword} -eq 2 ]]; then
                 COMPREPLY=( $(compgen -W "bash zsh fish" -- "${cur}") )
+                return 0
+            fi
+            ;;
+        network)
+            if [[ ${cword} -eq 2 ]]; then
+                COMPREPLY=( $(compgen -W "status doctor automatic update set preview apply" -- "${cur}") )
                 return 0
             fi
             ;;
@@ -99,6 +105,7 @@ _orbit() {
         'history:List known versions and content availability'
         'deleted:Find deleted files available for restore'
         'restore:Restore a historical version of a file'
+        'network:Review connection policy, diagnostics and cached routes'
         'setup:Create or adopt a synced folder'
         'join:Join an existing Orbit using a private invitation'
         'service:Manage background daemon service'
@@ -154,6 +161,11 @@ _orbit() {
             shells=('bash:Bash' 'zsh:Zsh' 'fish:Fish')
             _describe 'shell' shells
             ;;
+        network)
+            local -a subcmds
+            subcmds=('status:Cached status' 'doctor:Bounded explicit probes' 'automatic:Use the packaged service profile' 'update:Review a newer packaged profile' 'set:Change policy with one confirmation' 'preview:Review policy to a file' 'apply:Apply reviewed policy file')
+            _describe 'subcommand' subcmds
+            ;;
         *)
             _arguments \
                 '--state[Agent state directory]:path:_files -/' \
@@ -169,7 +181,7 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i tui status context folders devices conflicts history deleted restore setup join service storage doctor completion version help
+        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network service storage doctor completion version help
             return 1
         end
     end
@@ -187,6 +199,7 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'deleted' -d 'Find deleted 
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'restore' -d 'Restore a historical version'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'setup' -d 'Create or adopt a synced folder'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'join' -d 'Join an existing Orbit'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'network' -d 'Status, diagnostics and policy controls'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'service' -d 'Manage background daemon service'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'storage' -d 'Inspect storage usage and maintenance'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'doctor' -d 'Run actionable diagnostics'
@@ -195,9 +208,10 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'version' -d 'Display versi
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'help' -d 'Show command documentation'
 
 complete -c orbit -n '__fish_seen_subcommand_from folders' -a 'list add share pause resume relocate'
-complete -c orbit -n '__fish_seen_subcommand_from devices' -a 'list add requests endpoint'
+complete -c orbit -n '__fish_seen_subcommand_from devices' -a 'list add invite requests approve decline endpoint'
 complete -c orbit -n '__fish_seen_subcommand_from service' -a 'status start stop restart enable disable'
 complete -c orbit -n '__fish_seen_subcommand_from completion' -a 'bash zsh fish'
+complete -c orbit -n '__fish_seen_subcommand_from network' -a 'status doctor automatic update set preview apply'
 
 complete -c orbit -l state -d 'Agent state directory'
 complete -c orbit -l folder -d 'Target synced folder'

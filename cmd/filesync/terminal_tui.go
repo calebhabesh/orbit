@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -60,6 +61,8 @@ func handleOrbitTUI(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	_, priorErr := os.Stat(filepath.Join(dir, "config.json"))
+	opts.FreshInstall = os.IsNotExist(priorErr)
 	if _, err = launcher.EnsureDaemon(ctx, launcher.LaunchOptions{StateDir: dir, NoBrowser: true}); err != nil {
 		return err
 	}

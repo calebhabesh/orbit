@@ -143,6 +143,13 @@ func (m *model) startQuery() tea.Cmd {
 				}
 			}
 		}
+		if err == nil && r.Error == nil && section == 0 && !detail && r.Network == nil {
+			// Passive cached connection status (never a probe); optional, so an
+			// adapter without it keeps the rest of the overview.
+			if n, e := client.Query(ctx, tc.Query{Version: tc.Version, Kind: "network_status"}); e == nil && n.Error == nil {
+				r.Network = n.Network
+			}
+		}
 		if err == nil && section == 0 && !detail {
 			if _, ok := client.(Workflows); ok {
 				var a tc.Result

@@ -1,8 +1,6 @@
 package terminal
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -40,18 +38,14 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Loading actual finite/network/startup settings…")
 	case "invitation":
 		title = "Orbit | Join invitation"
-		lines = append(lines, "Paste a private v2 invitation or enter an absolute private file path.", "The invitation is hidden and never included in status/logs.")
+		lines = append(lines, "Paste a private v2/v3 invitation or enter an absolute private file path.", "The invitation is hidden and never included in status/logs.")
 		focusLine = len(lines)
 		lines = append(lines, "> Private invitation: "+f.fields[f.focus].input.View())
 		footer = "Enter verify  Esc back  Ctrl-C close"
 	case "form":
 		title = "Orbit | Review setup inputs"
-		lines = append(lines, "Supported existing contents will become shared.", "LAN / existing Tailscale: advertise reachable numeric IP:port.", "Startup: login needs user systemd; unattended also needs lingering.")
-		n := 9
-		if f.advanced {
-			n = 13
-		}
-		for i := 0; i < n; i++ {
+		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.", "Startup: login needs user systemd; unattended also needs lingering.")
+		for _, i := range m.formIndices() {
 			prefix := "  "
 			value := safe(f.fields[i].input.Value())
 			if i == f.focus {
@@ -62,7 +56,7 @@ func (m *model) workflowView() tea.View {
 			lines = append(lines, prefix+f.fields[i].label+": "+value)
 		}
 		lines = append(lines, fmt.Sprintf("Finite metadata=%d reserve=%d; retention uses per-folder controls.", f.settings.MetadataBudget, f.settings.ReserveBytes))
-		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-A advanced  Esc back"
+		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back"
 	case "preview":
 		title = "Orbit | Measuring root"
 		lines = append(lines, "Bounded enumeration continues; adoption has not been confirmed.")
@@ -75,10 +69,26 @@ func (m *model) workflowView() tea.View {
 		s := p.Settings
 		lines = append(lines, "Device: "+safe(p.DeviceName), "Folder: "+safe(p.FolderName), "Root: "+safe(p.Root), "Existing supported local contents become shared; nothing is erased.")
 		if f.kind == "join" {
-			lines = append(lines, "Inviter: "+safe(f.invitation.Inviter), "Key pin: "+safe(f.invitation.KeyPin), "Enrollment: "+safe(f.invitation.EnrollmentEndpoint), "Invitation folder: "+safe(f.invitation.Folder))
+			lines = append(lines, "Inviter: "+safe(f.invitation.Inviter), "Key pin: "+safe(f.invitation.KeyPin), "Invitation expires: "+safe(f.invitation.ExpiresAt), "Invitation folder: "+safe(f.invitation.Folder))
+		}
+		if p.Network != nil {
+			lines = append(lines, policyLines(*p.Network)...)
+			if b := f.builtin; b != nil && p.Network.Profile == b.Digest {
+				lines = append(lines, "Operator: "+safe(b.Operator)+" (packaged profile, expires "+safe(b.Expires)+")", "Privacy: "+safe(b.Privacy))
+			}
+		}
+		if f.invitation.Profile != nil {
+			if p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile {
+				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator)+" (same operator and profile as this device)")
+			} else {
+				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator), "Profile: "+safe(f.invitation.Route.Profile), "Select this operator independently with orbit network set before joining.")
+			}
 		}
 		lines = append(lines, previewLines(f.result.Preview)...)
-		lines = append(lines, fmt.Sprintf("Startup=%s; data=%d metadata=%d reserve=%d bytes; concurrency=%d bandwidth=%d", safe(s.Startup), s.DataBudget, s.MetadataBudget, s.ReserveBytes, s.Concurrency, s.BandwidthBytesPerSecond), "Peer listen: "+safe(s.PeerListen)+"; advertise: "+safe(s.AdvertisedPeer), "Enrollment listen: "+safe(s.EnrollmentListen)+"; advertise: "+safe(s.AdvertisedEnrollment))
+		lines = append(lines, fmt.Sprintf("Startup=%s; data=%d metadata=%d reserve=%d bytes; concurrency=%d bandwidth=%d", safe(s.Startup), s.DataBudget, s.MetadataBudget, s.ReserveBytes, s.Concurrency, s.BandwidthBytesPerSecond))
+		if f.advanced {
+			lines = append(lines, "Peer listen: "+safe(s.PeerListen)+"; advertise: "+safe(s.AdvertisedPeer), "Enrollment listen: "+safe(s.EnrollmentListen)+"; advertise: "+safe(s.AdvertisedEnrollment))
+		}
 		footer = "Enter confirm exact review  Esc edit  arrows scroll  q quit"
 	case "progress":
 		title = "Orbit | Setup progress"
@@ -111,7 +121,8 @@ func (m *model) workflowView() tea.View {
 				lines = append(lines, workflowError(r, nil))
 			}
 		}
-		footer = "r refresh  J new reviewed join  Esc overview  q quit"
+		lines = append(lines, networkLines(r.Network)...)
+		footer = "r refresh  a add device  N connection  J new join  Esc overview  q quit"
 	case "pick_folder", "pick_device", "setups":
 		title = "Orbit | Select " + strings.TrimPrefix(f.screen, "pick_")
 		if f.device != "" {
@@ -166,12 +177,26 @@ func (m *model) workflowView() tea.View {
 		title = "Orbit | Private invitation"
 		lines = append(lines, "Invitation created for selected folder only.", "Paste on receiver, review its root, then approve the exact request here.", "Expires: "+safe(f.invitation.ExpiresAt), "s: save to private transfer file  v: reveal/hide invitation")
 		if f.reveal {
-			b, _ := json.Marshal(f.invitation)
-			lines = append(lines, "orbit-invitation:v2:"+base64.RawURLEncoding.EncodeToString(b))
+			code, _ := tc.InvitationCode(f.invitation)
+			lines = append(lines, code)
 		} else {
 			lines = append(lines, "Capability hidden. Reveal only for deliberate transfer.")
 		}
-		footer = "s save private file  v reveal  arrows scroll  Esc back  q quit"
+		footer = "s save private file  v reveal  x revoke  arrows scroll  Esc back  q quit"
+	case "revoke_invitation_review":
+		title = "Orbit | Revoke invitation"
+		lines = append(lines, "Revoke this exact invitation for folder: "+safe(f.invitation.Folder), "Pending requests using it cannot be approved. Existing approved membership is preserved.")
+		footer = "Enter revoke exact invitation  Esc back  q quit"
+	case "invitation_revoked":
+		title = "Orbit | Invitation revoked"
+	case "network":
+		title = "Orbit | Connection details"
+		if f.err != "" {
+			lines = append(lines, "Last successful observations retained; current connection state unavailable.")
+		}
+		lines = append(lines, networkLines(f.result.Network)...)
+		lines = append(lines, "Observed connections are separate from saved/stored/applied/conflict state.", "Advanced policy/profile/timing review: orbit network preview; orbit network apply.")
+		footer = "r refresh cached observations  d explicit doctor (20s)  Esc cancel/back  arrows scroll  Esc back  q quit"
 	case "save_invitation", "relocate_form":
 		title = "Orbit | " + f.screen
 		focusLine = len(lines)
@@ -202,7 +227,7 @@ func (m *model) workflowView() tea.View {
 			}
 		}
 		lines = append(lines, "v copy status | h path history | D deleted | C conflicts | b storage")
-		footer = "v h D C b | p pause l relocate a add s share x unregister t retire ?"
+		footer = "N connection | v h D C b | p pause l relocate a add s share x unregister t retire ?"
 	case "folder_action":
 		title = "Orbit | Confirm local " + f.task
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
@@ -291,4 +316,76 @@ func joinVerification(r tc.Result) string {
 		}
 	}
 	return "unavailable (waiting for inviter observation)"
+}
+
+func policyLines(p tc.NetworkPolicy) []string {
+	lines := []string{"Connection: " + connectionMode(p.Mode)}
+	if p.Mode != "manual" {
+		lines = append(lines, fmt.Sprintf("LAN advertising: %t; broadcasts signed device identity and listener addresses.", p.LANAdvertising))
+	}
+	if p.Mode == "automatic" || p.Mode == "self_hosted" {
+		lines = append(lines, "Orbit services help your devices connect. They see device addresses and connection metadata; file contents stay encrypted in transit.")
+		if p.AwaitingProfile {
+			lines = append(lines, "Connection service configuration needs update; local capture remains available.")
+		}
+	}
+	if p.Mode == "local_only" {
+		lines = append(lines, "No public announcements or relay use. Only known pinned devices on permitted local interfaces can connect.")
+	}
+	return lines
+}
+func connectionMode(mode string) string {
+	switch mode {
+	case "automatic":
+		return "Automatic"
+	case "local_only":
+		return "Local network only"
+	case "manual":
+		return "Manual/private network"
+	case "self_hosted":
+		return "Self-hosted automatic"
+	}
+	return safe(mode)
+}
+func networkLines(n *tc.NetworkStatus) []string {
+	if n == nil {
+		return []string{"Connection observations unavailable; local readiness is reported separately."}
+	}
+	lines := []string{"Connection: " + connectionMode(n.Policy.Mode), "Service configuration: " + safe(n.Code) + fmt.Sprintf("; ready=%t", n.Ready)}
+	if n.RestartRequired {
+		lines = append(lines, "Active connection: "+connectionMode(n.ActivePolicy.Mode)+"; daemon restart required.")
+	}
+	if n.Operator != "" {
+		lines = append(lines, "Operator: "+safe(n.Operator), "Metadata: "+safe(n.Privacy))
+	}
+	if n.ProfileState != "" {
+		profile := "Profile: " + safe(n.ProfileState)
+		if n.ProfileExpires != "" {
+			profile += "; expires=" + safe(n.ProfileExpires)
+		}
+		lines = append(lines, profile)
+	}
+	lines = append(lines, "Next action: "+safe(n.Action))
+	for _, probe := range n.Probes {
+		lines = append(lines, "Probe "+safe(probe.Kind)+": "+safe(probe.Code)+"; observed="+safe(probe.ObservedAt))
+	}
+	for _, o := range n.Observations {
+		label := "Finding a connection"
+		switch o.Route {
+		case "relay":
+			label = "Connected via relay"
+		case "direct", "quic":
+			label = "Direct connection"
+		case "unavailable":
+			label = "Connection blocked"
+		case "not_tested":
+			label = "Connection not tested"
+		}
+		if o.Freshness == "stale" {
+			label = "Last observed " + label + " (stale)"
+		}
+		lines = append(lines, safe(o.Device)+": "+label+"; observed="+safe(o.ObservedAt)+"; "+safe(o.Code))
+		lines = append(lines, "Freshness: "+safe(o.Freshness)+fmt.Sprintf("; candidates LAN=%d public=%d expired=%d; UDP=%s", o.LANCandidates, o.PublicCandidates, o.ExpiredCandidates, safe(o.UDPCode)), "Next action: "+safe(o.Action))
+	}
+	return lines
 }

@@ -82,6 +82,19 @@ func (m *model) View() tea.View {
 	if m.errText != "" {
 		lines = append(lines, m.errText, "Last successful page retained; current observations unavailable.")
 	}
+	if m.result.Network != nil {
+		lines = append(lines, "Connection: "+connectionMode(m.result.Network.Policy.Mode)+"; services: "+safe(m.result.Network.Code))
+		if n := m.result.Network; n.AutomaticOffer || n.ProfileUpdate == "available" {
+			lines = append(lines, ansi.Truncate(safe(n.Action), m.width, "…"))
+		}
+		for _, o := range m.result.Network.Observations {
+			label := o.Route
+			if o.Route == "relay" {
+				label = "Connected via relay"
+			}
+			lines = append(lines, safe(o.Device[:min(12, len(o.Device))])+": "+safe(label)+"; "+safe(o.Freshness))
+		}
+	}
 	if m.notice != "" {
 		lines = append(lines, m.notice)
 	}
@@ -113,7 +126,7 @@ func (m *model) View() tea.View {
 			lines = append(lines, "More available: ] next page")
 		}
 	}
-	footer := "j/k Enter / ? q | c create J join a add s share w requests u setup"
+	footer := "j/k Enter / ? q | c create J join a add s share w requests u setup N connection"
 	if m.width < 60 {
 		footer = "j/k Enter / ? q"
 	}

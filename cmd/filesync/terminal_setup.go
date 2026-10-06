@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"crypto/rand"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -13,6 +12,7 @@ import (
 	"github.com/calebhabesh/file-sync/internal/app"
 	"github.com/calebhabesh/file-sync/internal/state"
 	"io"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -43,7 +43,9 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 	resume := flags.Bool("resume", false, "inspect/resume the operation in --request-file or --operation")
 	joining := flags.Bool("join", false, "join the folder in a private invitation")
 	invitationFile := flags.String("invitation-file", "", "private transferred invitation")
-	invitationCode := flags.String("invitation", "", "v2 invitation (prefer --invitation-file)")
+	invitationCode := flags.String("invitation", "", "deprecated; use private file or stdin")
+	invitationStdin := flags.Bool("invitation-stdin", false, "read bounded private invitation from stdin")
+	connection := flags.String("connection", "", "automatic, local_only, manual, or self_hosted")
 	remote := flags.String("remote", "", "inviter endpoint (must match invitation)")
 	folder := flags.String("folder", "", "folder identity (must match invitation)")
 	reviewFile := flags.String("review-file", "", "private request output during --preview; reviewed request input otherwise")
@@ -55,6 +57,9 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
+	if *invitationCode != "" {
+		return errors.New("invitation secrets must use a private file, stdin, or prompt")
+	}
 	if flags.NArg() != 0 || *timeout < 0 {
 		return errors.New("invalid setup arguments")
 	}
@@ -62,12 +67,20 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 	if err != nil {
 		return err
 	}
+	_, priorErr := os.Stat(filepath.Join(dir, "config.json"))
+	freshInstall := os.IsNotExist(priorErr)
 	// Daemon owns initialization and work even if the prompt is closed.
 	if _, err = launcher.EnsureDaemon(context.Background(), launcher.LaunchOptions{StateDir: dir, NoBrowser: true}); err != nil {
 		return err
 	}
 	client := &controlclient.Client{StateDir: dir}
 	output := func(r tc.Result) error {
+		if r.Operation != nil {
+			status, e := client.Query(context.Background(), tc.Query{Version: tc.Version, Kind: "network_status"})
+			if e == nil {
+				r.Network = status.Network
+			}
+		}
 		if *jsonOut {
 			if err := json.NewEncoder(stdout).Encode(r); err != nil {
 				return err
@@ -84,8 +97,15 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 			p := r.Preview
 			fmt.Fprintf(stdout, "Root: %q; files=%d; directories=%d; bytes=%d; unsupported=%d; unreadable=%d; complete=%v; capacity known=%v\n", p.Root, p.Files, p.Directories, p.Bytes, p.Unsupported, p.Unreadable, p.Complete, p.CapacityKnown)
 		}
+		if !*jsonOut && r.Network != nil {
+			fmt.Fprintf(stdout, "Networking: %s; code=%s; ready=%v (peer copies are reported separately by status)\n", r.Network.Policy.Mode, r.Network.Code, r.Network.Ready)
+		}
+
 		if r.Error != nil {
-			return &control.ControlError{Code: r.Error.Code, Message: r.Error.Message, Retryable: r.Error.Retryable, Action: r.Error.Action}
+			if !*jsonOut {
+				fmt.Fprintf(stderr, "Error [%s]: %s; action: %s\n", r.Error.Code, EscapeTerminal(r.Error.Message), EscapeTerminal(r.Error.Action))
+			}
+			return &CLIExitError{Code: tc.ExitCode(r)}
 		}
 		return nil
 	}
@@ -161,6 +181,28 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 			return err
 		}
 		desired := *settings.Settings
+		networkResult, err := client.Query(context.Background(), tc.Query{Version: tc.Version, Kind: "network_status"})
+		if err != nil {
+			return err
+		}
+		policy := networkResult.Network.Policy
+		if *connection != "" {
+			policy.Mode = *connection
+			policy.LANAdvertising = policy.Mode != "manual"
+		} else if freshInstall && *runtimeFile == "" {
+			policy.Mode = "automatic"
+			policy.LANAdvertising = true
+		}
+		if policy.Mode == "manual" || policy.Mode == "local_only" {
+			policy.Profile = ""
+		}
+		usePackagedProfile(&policy, networkResult.Network)
+		if policy != networkResult.Network.Policy {
+			policy.Generation++
+		}
+		if err = policy.Validate(); err != nil {
+			return err
+		}
 		if *runtimeFile != "" {
 			if err = privateEnrollmentInput(*runtimeFile, &desired); err != nil {
 				return err
@@ -187,21 +229,41 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				}
 			}
 			if interactive && !*preview {
-				desired.PeerListen, err = ask("Peer listen address (numeric LAN or Tailscale IP:port)", desired.PeerListen)
-				if err != nil {
-					return err
+				choice, e := ask("Connection (automatic/local_only/manual/self_hosted)", policy.Mode)
+				if e != nil {
+					return e
 				}
-				desired.EnrollmentListen, err = ask("Enrollment listen address", desired.EnrollmentListen)
-				if err != nil {
-					return err
+				if choice != policy.Mode {
+					policy.Mode = choice
+					policy.LANAdvertising = choice != "manual"
+					policy.Generation = networkResult.Network.Policy.Generation + 1
 				}
-				desired.AdvertisedPeer, err = ask("Reachable peer address", desired.AdvertisedPeer)
-				if err != nil {
-					return err
+				if policy.Mode == "manual" || policy.Mode == "local_only" {
+					policy.Profile = ""
 				}
-				desired.AdvertisedEnrollment, err = ask("Reachable enrollment address", desired.AdvertisedEnrollment)
-				if err != nil {
-					return err
+				usePackagedProfile(&policy, networkResult.Network)
+				if err = policy.Validate(); err != nil {
+					fmt.Fprintln(stderr, err)
+					continue
+				}
+				fmt.Fprintln(stderr, "Orbit services see device addresses and connection metadata; file contents stay encrypted in transit.")
+				if policy.Mode == "manual" {
+					desired.PeerListen, err = ask("Peer listen address (numeric LAN or Tailscale IP:port)", desired.PeerListen)
+					if err != nil {
+						return err
+					}
+					desired.EnrollmentListen, err = ask("Enrollment listen address", desired.EnrollmentListen)
+					if err != nil {
+						return err
+					}
+					desired.AdvertisedPeer, err = ask("Reachable peer address", desired.AdvertisedPeer)
+					if err != nil {
+						return err
+					}
+					desired.AdvertisedEnrollment, err = ask("Reachable enrollment address", desired.AdvertisedEnrollment)
+					if err != nil {
+						return err
+					}
 				}
 				numeric := func(prompt string, value *tc.Uint) error {
 					for {
@@ -237,42 +299,56 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				}
 				return err
 			}
-			plan := tc.SetupIntent{DeviceName: *label, FolderName: *name, Root: *root, Settings: desired}
+			plan := tc.SetupIntent{DeviceName: *label, FolderName: *name, Root: *root, Settings: desired, Network: &policy}
 			kind := "setup"
 			var inv tc.Invitation
 			if *joining {
 				kind = "join"
-				if interactive && *invitationFile == "" && *invitationCode == "" {
-					input, e := ask("Private invitation file path or pasted v2 code", "")
+				if interactive && *invitationFile == "" && !*invitationStdin {
+					input, e := ask("Private invitation file path or pasted invitation", "")
 					if e != nil {
 						return e
 					}
-					if strings.HasPrefix(input, "orbit-invitation:v2:") {
+					if strings.HasPrefix(input, "orbit-invitation:v") {
 						*invitationCode = input
 					} else {
 						*invitationFile = input
 					}
 				}
 
-				if *invitationFile != "" {
+				if *invitationStdin {
+					b, e := io.ReadAll(io.LimitReader(os.Stdin, 16385))
+					if e != nil {
+						return e
+					}
+					if len(b) > 16384 {
+						return errors.New("invitation exceeds 16 KiB")
+					}
+					if e = decodeInvitationInput(b, &inv); e != nil {
+						return e
+					}
+				} else if *invitationFile != "" {
 					if err = privateEnrollmentInput(*invitationFile, &inv); err != nil {
 						return err
 					}
 				} else {
 					code := strings.TrimSpace(*invitationCode)
-					if !strings.HasPrefix(code, "orbit-invitation:v2:") {
-						return errors.New("join requires a private v2 invitation file")
+					if !strings.HasPrefix(code, "orbit-invitation:v") {
+						return errors.New("join requires a private invitation file, stdin, or prompt")
 					}
-					b, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(code, "orbit-invitation:v2:"))
-					if e != nil {
-						return e
-					}
-					if e = tc.Decode(b, &inv); e != nil {
+					if e := decodeInvitationInput([]byte(code), &inv); e != nil {
 						return e
 					}
 				}
+				if err = inv.ExpandPackaged(); err != nil {
+					return err
+				}
 				if err = inv.Validate(); err != nil {
 					return err
+				}
+				expires, _ := time.Parse(time.RFC3339Nano, inv.ExpiresAt)
+				if !time.Now().Before(expires) {
+					return &control.ControlError{Code: "INVITATION_EXPIRED", Message: "invitation expired", Action: "request a new invitation; retain the reviewed root and device name"}
 				}
 				if (*remote != "" && *remote != inv.EnrollmentEndpoint) || (*folder != "" && *folder != inv.Folder) {
 					return errors.New("invitation identity/scope mismatch")
@@ -322,7 +398,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 					return e
 				}
 				mutation.Setup = nil
-				mutation.Join = &tc.JoinIntent{Invitation: inv, Attempt: attempt, DeviceName: plan.DeviceName, FolderName: plan.FolderName, Root: plan.Root, Preview: plan.Preview, Settings: plan.Settings}
+				mutation.Join = &tc.JoinIntent{Invitation: inv, Attempt: attempt, DeviceName: plan.DeviceName, FolderName: plan.FolderName, Root: plan.Root, Preview: plan.Preview, Settings: plan.Settings, Network: plan.Network}
 			}
 			if *preview {
 				if *reviewFile != "" {
@@ -332,7 +408,11 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				}
 				return output(result)
 			}
-			fmt.Fprintf(stderr, "Review: device=%q; folder=%q; root=%q; files=%d; bytes=%d\nFinite/network/startup settings: %+v\n", plan.DeviceName, plan.FolderName, plan.Root, result.Preview.Files, result.Preview.Bytes, desired)
+			fmt.Fprintf(stderr, "Review: device=%q; folder=%q; root=%q; files=%d; bytes=%d\nFinite/startup settings: %+v\n", plan.DeviceName, plan.FolderName, plan.Root, result.Preview.Files, result.Preview.Bytes, desired)
+			fmt.Fprintf(stderr, "Connection: %s; profile: %s\nLAN advertising: %t (signed device identity and listener addresses).\nOrbit services see device addresses and connection metadata; file contents stay encrypted in transit.\n", policy.Mode, policy.Profile, policy.LANAdvertising)
+			if b := networkResult.Network.Builtin; b != nil && policy.Profile == b.Digest {
+				fmt.Fprintf(stderr, "Operator: %q (packaged profile, expires %s)\nPrivacy: %s\n", b.Operator, b.Expires, b.Privacy)
+			}
 			answer, e := ask("Create/adopt this reviewed folder? (yes/edit)", "edit")
 			if e != nil {
 				return e
@@ -360,12 +440,9 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 		return err
 	}
 	deadline := time.Now().Add(time.Duration(*timeout) * time.Second)
-	for r.State == "running" && time.Now().Before(deadline) {
-		time.Sleep(250 * time.Millisecond)
-		r, err = client.Query(context.Background(), tc.Query{Version: tc.Version, Kind: "operation", ID: mutation.OperationID})
-		if err != nil {
-			return err
-		}
+	r, err = waitSetupOperation(r, mutation.OperationID, deadline, client.Query)
+	if err != nil {
+		return err
 	}
 	return output(r)
 }
@@ -399,4 +476,42 @@ func writeSetupRequest(path string, m tc.Mutation) error {
 	}
 	defer parent.Close()
 	return parent.Sync()
+}
+
+func waitSetupOperation(r tc.Result, id string, deadline time.Time, query func(context.Context, tc.Query) (tc.Result, error)) (tc.Result, error) {
+	ctx, cancel := context.WithDeadline(context.Background(), deadline)
+	defer cancel()
+	for r.State == "running" && time.Now().Before(deadline) {
+		timer := time.NewTimer(250 * time.Millisecond)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return r, nil
+		case <-timer.C:
+		}
+		next, err := query(ctx, tc.Query{Version: tc.Version, Kind: "operation", ID: id})
+		if err != nil {
+			// Queries only observe the original durable operation. A busy/reconnecting
+			// daemon can time out while still completing it; never resubmit here.
+			if ctx.Err() != nil {
+				return r, nil
+			}
+			var networkError net.Error
+			if errors.Is(err, context.DeadlineExceeded) || (errors.As(err, &networkError) && networkError.Timeout()) {
+				continue
+			}
+			return r, err
+		}
+		r = next
+	}
+	return r, nil
+}
+
+// usePackagedProfile makes a reviewed Automatic setup select this build's
+// packaged release profile; without one, Automatic waits for a profile review.
+func usePackagedProfile(policy *tc.NetworkPolicy, status *tc.NetworkStatus) {
+	if policy.Mode == "automatic" && policy.Profile == "" && status != nil && status.Builtin != nil && !status.Builtin.Expired {
+		policy.Profile = status.Builtin.Digest
+	}
+	policy.AwaitingProfile = policy.Mode == "automatic" && policy.Profile == ""
 }
