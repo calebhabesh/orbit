@@ -1,0 +1,61 @@
+# Orbit connection service (rendezvous, encrypted relay and optional STUN).
+# Operator infrastructure only: it never stores folders, history or device keys.
+[Unit]
+Description=Orbit connection service
+Documentation=file:///usr/share/doc/orbit-net/orbit-net-operator.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=orbit-net
+Group=orbit-net
+# /etc/orbit-net holds serve.json, the signed profile, the online service key
+# and the TLS chain/key, all owned by orbit-net with directory mode 0700.
+ConfigurationDirectory=orbit-net
+ConfigurationDirectoryMode=0700
+ExecStartPre=/usr/bin/orbit-net serve --config /etc/orbit-net/serve.json --check
+ExecStart=/usr/bin/orbit-net serve --config /etc/orbit-net/serve.json
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+TimeoutStopSec=15s
+Restart=on-failure
+RestartSec=5s
+
+# Finite process ceilings above the service's own socket/session bounds.
+LimitNOFILE=4096
+TasksMax=512
+MemoryHigh=384M
+MemoryMax=512M
+
+# Bind 443 without root; no other privilege is retained.
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+UMask=0077
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=orbit-net
+
+[Install]
+WantedBy=multi-user.target

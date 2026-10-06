@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "operator": "Example Operator (replace with the legal operator name)",
+  "service_key": "<64 hex characters printed by: orbit-net keygen --out service.key>",
+  "epoch": "1",
+  "origins": ["https://connect.example.net", "wss://connect.example.net"],
+  "stun": ["203.0.113.10:3478"],
+  "privacy": "Example text only. State what the service sees (device IDs, key pins, public addresses, connection timing), how long it keeps it (in memory; directory leases at most 10 minutes), what it never sees (file names or contents), which logs the host keeps and for how long, and how to contact the operator."
+}

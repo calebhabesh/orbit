@@ -1,0 +1,13 @@
+{
+  "listen": ":443",
+  "origin": "https://connect.example.net",
+  "profile": "/etc/orbit-net/profile.json",
+  "service_key": "/etc/orbit-net/service.key",
+  "tls_cert": "/etc/orbit-net/tls/fullchain.pem",
+  "tls_key": "/etc/orbit-net/tls/privkey.pem",
+  "stun_listen": "203.0.113.10:3478",
+  "metrics_listen": "127.0.0.1:9464",
+  "relay_bps": 20971520,
+  "relay_device_bps": 5242880,
+  "relay_session_bytes": 17179869184
+}
