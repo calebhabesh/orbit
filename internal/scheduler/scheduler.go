@@ -18,6 +18,7 @@ type ClientFactory func(folder, peer history.ID) (replication.PeerClient, error)
 type PeerTarget struct{ Folder, Peer history.ID }
 
 type SchedulerOptions struct {
+	TransferHook  func(string) error // deterministic marked-fixture boundary injection
 	PeerTargets   func() ([]PeerTarget, error)
 	Profile       ResourceProfile
 	Limiter       *BandwidthLimiter
@@ -38,6 +39,7 @@ type FolderStatus struct {
 }
 
 type Scheduler struct {
+	transferHook  func(string) error
 	db            *repository.DB
 	ws            *workspace.Workspace
 	clientFactory ClientFactory
@@ -85,6 +87,7 @@ func NewScheduler(db *repository.DB, ws *workspace.Workspace, opts SchedulerOpti
 	}
 
 	return &Scheduler{
+		transferHook:       opts.TransferHook,
 		db:                 db,
 		ws:                 ws,
 		clientFactory:      opts.ClientFactory,
@@ -398,7 +401,7 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 							}
 						}
 					}
-					options := replication.TransferOptions{Workers: s.profile.TransferWorkers}
+					options := replication.TransferOptions{Workers: s.profile.TransferWorkers, Hook: s.transferHook}
 					if s.limiter != nil {
 						options.Limiter = s.limiter
 					}
@@ -443,7 +446,7 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 	attempts := task.Attempts + 1
 
 	if isTransient && attempts < task.MaxAttempts {
-		delay := s.classifier.Backoff(attempts)
+		delay := s.classifier.BackoffFor(execErr, attempts)
 		retryAfterNS := time.Now().Add(delay).UnixNano()
 		_ = s.queue.UpdateState(context.Background(), task.ID, "retry", attempts, execErr.Error(), errorCode, retryAfterNS)
 	} else {

@@ -11,6 +11,8 @@ import (
 	"github.com/calebhabesh/file-sync/internal/repository"
 )
 
+const MaxReadySkips = 8 // force progress independently of file size
+
 const AgeBonusBytes = 64 * 1024 // 64 KiB effective size reduction per age tick
 
 type Queue struct {
@@ -162,6 +164,15 @@ func (q *Queue) NextReadyTask(ctx context.Context, pausedFolders map[history.ID]
 		// score = FileSize - (AgeCounter * AgeBonusBytes)
 		// Smallest score wins (small files first, with aging boost for older tasks)
 		sort.Slice(ready, func(a, b int) bool {
+			// After eight ready skips, prioritize age over size. This also
+			// avoids relying on a huge file's size-derived aging horizon.
+			agedA, agedB := ready[a].AgeCounter >= MaxReadySkips, ready[b].AgeCounter >= MaxReadySkips
+			if agedA != agedB {
+				return agedA
+			}
+			if agedA && ready[a].AgeCounter != ready[b].AgeCounter {
+				return ready[a].AgeCounter > ready[b].AgeCounter
+			}
 			scoreA := int64(ready[a].FileSize) - int64(ready[a].AgeCounter)*AgeBonusBytes
 			scoreB := int64(ready[b].FileSize) - int64(ready[b].AgeCounter)*AgeBonusBytes
 			if scoreA != scoreB {
@@ -182,6 +193,7 @@ func (q *Queue) NextReadyTask(ctx context.Context, pausedFolders map[history.ID]
 			_ = q.db.IncrementDurableTaskAge(ctx, skippedIDs)
 		}
 
+		selected.AgeCounter = 0
 		selected.State = "running"
 		selected.UpdatedNS = nowNS
 		_ = q.db.UpdateDurableTaskState(ctx, selected.ID, "running", selected.Attempts, selected.LastError, selected.ErrorCode, selected.RetryAfterNS)

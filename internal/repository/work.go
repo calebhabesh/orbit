@@ -146,9 +146,10 @@ func (db *DB) UpdateDurableTaskState(ctx context.Context, taskID string, state s
 	db.mu.Lock()
 	defer db.mu.Unlock()
 	_, err := db.db.ExecContext(ctx, `UPDATE durable_work_tasks SET
-		state=?, attempts=?, last_error=?, error_code=?, retry_after_ns=?, updated_ns=?
+		state=?, attempts=?, last_error=?, error_code=?, retry_after_ns=?, updated_ns=?,
+		age_counter=CASE WHEN ?='running' THEN 0 ELSE age_counter END
 		WHERE task_id=?`,
-		state, attempts, lastError, errorCode, retryAfterNS, time.Now().UnixNano(), taskID)
+		state, attempts, lastError, errorCode, retryAfterNS, time.Now().UnixNano(), state, taskID)
 	return err
 }
 

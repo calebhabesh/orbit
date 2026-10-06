@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/calebhabesh/file-sync/internal/network"
+	p "github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
 	"github.com/calebhabesh/file-sync/internal/repository"
 	"github.com/calebhabesh/file-sync/internal/workspace"
@@ -30,9 +32,21 @@ func (rc RetryClassifier) IsTransient(err error) bool {
 	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 		return false
 	}
+	var service *network.ServiceError
+	if errors.As(err, &service) {
+		switch service.Code {
+		case p.NetworkQuota, p.NetworkUnavailable, p.NetworkServiceUnavailable, p.NetworkStaleGeneration:
+			return true
+		default:
+			return false
+		}
+	}
 	var wire *replication.WireError
 	if errors.As(err, &wire) {
 		return wire.Body.Retryable || wire.Body.Code == "MEMBERSHIP_MISMATCH" || wire.Body.Code == "UNAUTHORIZED"
+	}
+	if errors.Is(err, network.ErrBackpressure) || errors.Is(err, network.ErrStale) {
+		return true
 	}
 	if errors.Is(err, repository.ErrMembershipMismatch) {
 		return true
@@ -70,6 +84,16 @@ func (rc RetryClassifier) IsTransient(err error) bool {
 func (rc RetryClassifier) ErrorCode(err error) string {
 	if err == nil {
 		return ""
+	}
+	if errors.Is(err, network.ErrBackpressure) {
+		return "NETWORK_BUSY"
+	}
+	if errors.Is(err, network.ErrStale) {
+		return "STALE_NETWORK_GENERATION"
+	}
+	var service *network.ServiceError
+	if errors.As(err, &service) {
+		return service.Code
 	}
 	var wire *replication.WireError
 	if errors.As(err, &wire) {
@@ -118,5 +142,16 @@ func (rc RetryClassifier) Backoff(attempt int) time.Duration {
 		delay += jitter
 	}
 
+	return delay
+}
+
+// BackoffFor leaves the existing task/operation identity intact while allowing
+// the service metadata bucket to refill before another network attempt.
+func (rc RetryClassifier) BackoffFor(err error, attempt int) time.Duration {
+	delay := rc.Backoff(attempt)
+	var service *network.ServiceError
+	if errors.As(err, &service) && service.Code == p.NetworkQuota && delay < network.ServiceRetryQuietPeriod {
+		return network.ServiceRetryQuietPeriod
+	}
 	return delay
 }

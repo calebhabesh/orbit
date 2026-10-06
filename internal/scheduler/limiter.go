@@ -7,9 +7,13 @@ import (
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/network"
 )
 
+type bandwidthWaiter struct{ ready chan struct{} }
+
 type BandwidthLimiter struct {
+	waiters      []*bandwidthWaiter
 	mu           sync.Mutex
 	globalRate   int64 // bytes per second, 0 = unlimited
 	globalTokens float64
@@ -53,12 +57,49 @@ func (l *BandwidthLimiter) SetPeerRate(peer history.ID, bytesPerSec int64) {
 	l.peerLast[peer] = time.Now()
 }
 
+// Acquire serves reservations in arrival order. A stream of tiny reservations
+// cannot repeatedly steal refilled tokens from an already waiting chunk.
 func (l *BandwidthLimiter) Acquire(ctx context.Context, peer *history.ID, bytes int) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	if bytes <= 0 {
 		return nil
 	}
-
+	w := &bandwidthWaiter{ready: make(chan struct{})}
+	l.mu.Lock()
+	// Bound queued reservations independently of transfer-worker configuration.
+	if len(l.waiters) >= 128 {
+		l.mu.Unlock()
+		return network.ErrBackpressure
+	}
+	l.waiters = append(l.waiters, w)
+	if len(l.waiters) == 1 {
+		close(w.ready)
+	}
+	l.mu.Unlock()
+	defer func() {
+		l.mu.Lock()
+		defer l.mu.Unlock()
+		for i, pending := range l.waiters {
+			if pending == w {
+				l.waiters = append(l.waiters[:i], l.waiters[i+1:]...)
+				if i == 0 && len(l.waiters) > 0 {
+					close(l.waiters[0].ready)
+				}
+				break
+			}
+		}
+	}()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-w.ready:
+	}
 	for {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		l.mu.Lock()
 		now := time.Now()
 

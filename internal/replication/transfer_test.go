@@ -327,7 +327,10 @@ func TestSyncerCorruptionRejected(t *testing.T) {
 }
 
 func TestSyncerInterruptedResume(t *testing.T) {
-	fix := newSyncFixture(t)
+	verifyInterruptedResume(t, newSyncFixture(t))
+}
+func verifyInterruptedResume(t *testing.T, fix *syncFixture) {
+	t.Helper()
 
 	// Create 2-chunk file with distinct chunks
 	chunk1 := bytes.Repeat([]byte("A"), int(history.ChunkSize))

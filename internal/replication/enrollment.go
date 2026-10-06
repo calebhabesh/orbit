@@ -22,6 +22,7 @@ import (
 
 	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/repository"
 )
@@ -37,16 +38,21 @@ type EnrollmentInvitation struct {
 	TargetPin    string        `json:"target_pin,omitempty"`
 }
 type EnrollmentRecord struct {
-	CreatedNS   int64                             `json:"created_ns"`
-	Wire        protocol.TerminalEnrollmentWire   `json:"wire"` // token always empty in durable records
-	Digest      string                            `json:"digest"`
-	TokenDigest string                            `json:"token_digest"`
-	Expires     int64                             `json:"expires"`
-	Result      protocol.TerminalEnrollmentResult `json:"result"`
+	Routed            *protocol.RoutedEnrollmentRequest  `json:"routed,omitempty"`
+	Approval          *protocol.RoutedEnrollmentApproval `json:"approval,omitempty"`
+	ApprovalSignature string                             `json:"approval_signature,omitempty"`
+	CreatedNS         int64                              `json:"created_ns"`
+	Wire              protocol.TerminalEnrollmentWire    `json:"wire"` // token always empty in durable records
+	Digest            string                             `json:"digest"`
+	TokenDigest       string                             `json:"token_digest"`
+	Expires           int64                              `json:"expires"`
+	Result            protocol.TerminalEnrollmentResult  `json:"result"`
 }
 type enrollmentNonce struct {
-	Request protocol.TerminalChallengeRequest `json:"request"` // token is verifier digest
-	Result  protocol.TerminalChallengeResult  `json:"result"`
+	Routed       *protocol.RoutedChallengeRequest  `json:"routed,omitempty"`
+	RoutedStatus *protocol.RoutedEnrollmentStatus  `json:"routed_status,omitempty"`
+	Request      protocol.TerminalChallengeRequest `json:"request"` // token is verifier digest
+	Result       protocol.TerminalChallengeResult  `json:"result"`
 }
 
 func enrollmentError(code string) error { return errors.New(code) }
@@ -221,7 +227,7 @@ func (s *EnrollmentServer) allow(ip string, now time.Time) bool {
 	return true
 }
 func (s *EnrollmentServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/enrollment/v2/challenge" && r.URL.Path != "/enrollment/v2/request" && r.URL.Path != "/enrollment/v2/status" {
+	if r.URL.Path != "/enrollment/v3/challenge" && r.URL.Path != "/enrollment/v3/request" && r.URL.Path != "/enrollment/v3/status" && r.URL.Path != "/enrollment/v2/challenge" && r.URL.Path != "/enrollment/v2/request" && r.URL.Path != "/enrollment/v2/status" {
 		http.NotFound(w, r)
 		return
 	}
@@ -255,6 +261,25 @@ func (s *EnrollmentServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	var result any
 	switch r.URL.Path {
+	case "/enrollment/v3/challenge":
+		var req protocol.RoutedChallengeRequest
+		err = protocol.NetworkDecode(b, &req)
+		if err == nil {
+			result, err = s.routedChallenge(r.Context(), req)
+		}
+	case "/enrollment/v3/request":
+		var req protocol.RoutedEnrollmentRequest
+		err = protocol.NetworkDecode(b, &req)
+		if err == nil {
+			result, err = s.routedSubmit(r.Context(), req)
+		}
+	case "/enrollment/v3/status":
+		var req protocol.RoutedEnrollmentStatus
+		err = protocol.NetworkDecode(b, &req)
+		if err == nil {
+			result, err = s.routedStatus(r.Context(), req)
+		}
+
 	case "/enrollment/v2/challenge":
 		var req protocol.TerminalChallengeRequest
 		err = protocol.DecodeStrict(b, &req)
@@ -325,6 +350,9 @@ func (s *EnrollmentServer) challenge(ctx context.Context, q protocol.TerminalCha
 		if err != nil {
 			return err
 		}
+		if inv.Invitation.Version != tc.Version {
+			return enrollmentError("UNSUPPORTED_CAPABILITY")
+		}
 		if inv.TargetDevice != "" && inv.TargetDevice != q.Requester {
 			return enrollmentError("UNAUTHORIZED")
 		}
@@ -350,7 +378,7 @@ func (s *EnrollmentServer) challenge(ctx context.Context, q protocol.TerminalCha
 			expires = ie
 		}
 		out = protocol.TerminalChallengeResult{Version: "2", Challenge: nonce, ExpiresUnix: strconv.FormatInt(expires.Unix(), 10), PriorMembership: hex.EncodeToString(prior[:])}
-		return t.Put("challenge/"+nonce, enrollmentNonce{q, out})
+		return t.Put("challenge/"+nonce, enrollmentNonce{Request: q, Result: out})
 	})
 	return out, err
 }
@@ -410,6 +438,9 @@ func (s *EnrollmentServer) submit(ctx context.Context, w protocol.TerminalEnroll
 			return err
 		}
 		i := inv.Invitation
+		if i.Version != tc.Version {
+			return enrollmentError("UNSUPPORTED_CAPABILITY")
+		}
 		if inv.TargetDevice != "" && (inv.TargetDevice != w.Requester || inv.TargetPin != w.RequesterPin) {
 			return enrollmentError("UNAUTHORIZED")
 		}
@@ -532,10 +563,13 @@ type EnrollmentClient struct {
 	invitation tc.Invitation
 	identity   Identity
 	http       *http.Client
-	transport  *http.Transport
+	transport  interface{ CloseIdleConnections() }
 }
 
 func NewEnrollmentClient(inv tc.Invitation, id Identity) (*EnrollmentClient, error) {
+	if inv.Version != tc.Version {
+		return nil, enrollmentError("UNSUPPORTED_CAPABILITY")
+	}
 	if err := inv.Validate(); err != nil {
 		return nil, err
 	}
@@ -556,6 +590,40 @@ func NewEnrollmentClient(inv tc.Invitation, id Identity) (*EnrollmentClient, err
 	c := &http.Client{Transport: transport, Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("enrollment redirects forbidden") }}
 	return &EnrollmentClient{inv, id, c, transport}, nil
 }
+func NewRoutedEnrollmentClient(ctx context.Context, inv tc.Invitation, id Identity, manager network.Manager) (*EnrollmentClient, error) {
+	c, err := NewEnrollmentClient(inv, id)
+	if err != nil {
+		return nil, err
+	}
+	c.Close()
+	device, err := enrollmentID(inv.Inviter)
+	if err != nil {
+		return nil, err
+	}
+	pin, err := enrollmentID(inv.KeyPin)
+	if err != nil {
+		return nil, err
+	}
+	der, _ := base64.StdEncoding.DecodeString(inv.CertificateDER)
+	cert, err := x509.ParseCertificate(der)
+	if err != nil {
+		return nil, err
+	}
+	trust, err := id.ClientTLSConfig(cert, history.Digest(pin))
+	if err != nil {
+		return nil, err
+	}
+	target := network.Target{Device: device, Pin: history.Digest(pin), Purpose: network.Enrollment}
+	rt, err := manager.Transport(ctx, target, trust)
+	if err != nil {
+		return nil, err
+	}
+	c.http = network.HTTPClient(rt)
+	c.http.Timeout = 10 * time.Second
+	c.transport = c.http
+	return c, nil
+}
+
 func (c *EnrollmentClient) Close() { c.transport.CloseIdleConnections() }
 func (c *EnrollmentClient) post(ctx context.Context, path string, in, out any) error {
 	b, err := json.Marshal(in)

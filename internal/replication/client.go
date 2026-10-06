@@ -9,11 +9,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 )
 
@@ -36,16 +39,37 @@ func NewClient(baseURL string, identity Identity, peerCertificate *x509.Certific
 	if err != nil {
 		return nil, err
 	}
-	transport := &http.Transport{
-		TLSClientConfig:       tlsConfig,
-		DisableCompression:    true,
-		MaxIdleConns:          4,
-		MaxIdleConnsPerHost:   2,
-		MaxConnsPerHost:       4,
-		IdleConnTimeout:       30 * time.Second,
-		ResponseHeaderTimeout: 15 * time.Second,
+	u, err := url.Parse(baseURL)
+	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || (u.Path != "" && u.Path != "/") {
+		return nil, errors.New("invalid manual peer origin")
 	}
-	return &Client{baseURL: baseURL, http: &http.Client{Transport: transport, Timeout: 30 * time.Second}}, nil
+
+	transport := &http.Transport{
+		TLSClientConfig: tlsConfig, Proxy: nil, DisableCompression: true,
+		DialContext:  (&net.Dialer{Timeout: 3 * time.Second}).DialContext,
+		MaxIdleConns: 4, MaxIdleConnsPerHost: 2, MaxConnsPerHost: 4,
+		IdleConnTimeout: 30 * time.Second, ResponseHeaderTimeout: 15 * time.Second,
+		TLSHandshakeTimeout: 10 * time.Second, MaxResponseHeaderBytes: 16 << 10,
+	}
+
+	return &Client{baseURL: "https://" + u.Host, http: network.HTTPClient(transport)}, nil
+}
+
+// NewRoutedClient borrows a target-bound daemon pool; replication supplies trust
+// and retains all request/chunk/receipt authorization and validation.
+func NewRoutedClient(ctx context.Context, baseURL string, identity Identity, peerCertificate *x509.Certificate, target network.Target, manager network.Manager) (*Client, error) {
+	if target.Purpose != network.PeerData {
+		return nil, errors.New("PURPOSE_MISMATCH")
+	}
+	trust, err := identity.ClientTLSConfig(peerCertificate, target.Pin)
+	if err != nil {
+		return nil, err
+	}
+	rt, err := manager.Transport(ctx, target, trust)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{baseURL: baseURL, http: network.HTTPClient(rt)}, nil
 }
 
 func (client *Client) CloseIdleConnections() { client.http.CloseIdleConnections() }

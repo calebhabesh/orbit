@@ -519,13 +519,15 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 		if err := syncer.waitChunkRetry(ctx); err != nil {
 			return err
 		}
+		// Reserve the verified manifest's bounded chunk length before network IO.
+		// Each retry consumes its own budget, including uncertain/partial delivery.
+		if syncer.limiter != nil {
+			if lErr := syncer.limiter.Acquire(ctx, &syncer.peer, int(chunk.Length)); lErr != nil {
+				return lErr
+			}
+		}
 		data, err := syncer.client.Chunk(ctx, request, chunk)
 		if err == nil {
-			if syncer.limiter != nil {
-				if lErr := syncer.limiter.Acquire(ctx, &syncer.peer, len(data)); lErr != nil {
-					return lErr
-				}
-			}
 			return syncer.repo.InstallChunk(ctx, chunk.Digest, chunk.Length, bytes.NewReader(data))
 		}
 		last = err
@@ -546,6 +548,11 @@ func (syncer *Syncer) fetchChunk(ctx context.Context, id history.VersionID, posi
 	}
 
 	for _, fallback := range syncer.fallbacks {
+		if syncer.limiter != nil {
+			if err := syncer.limiter.Acquire(ctx, &syncer.peer, int(chunk.Length)); err != nil {
+				return err
+			}
+		}
 		data, err := fallback.Chunk(ctx, request, chunk)
 		if err == nil {
 			return syncer.repo.InstallChunk(ctx, chunk.Digest, chunk.Length, bytes.NewReader(data))
