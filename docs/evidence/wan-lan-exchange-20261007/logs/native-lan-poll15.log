@@ -1,0 +1,43 @@
+== versions
+Packaged service profile: "Caleb Habesh" epoch 2, expires 2027-10-07T16:41:45Z (SHA-256: 9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681)
+Packaged service profile: "Caleb Habesh" epoch 2, expires 2027-10-07T16:41:45Z (SHA-256: 9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681)
+== laptop host firewall (unchanged by this run)
+ENABLED=yes
+DEFAULT_INPUT_POLICY="DROP"
+== laptop: fresh setup (packaged profile, Automatic)
+Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+Operator: "Caleb Habesh"
+Profile: verified; expires=2027-10-07T16:41:45Z
+== pairing the Pi with a one-line code
+join-exit=5
+laptop->Pi first file after 22.7 s from join
+laptop Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+laptop Device …: quic; code=CONNECTED; 
+laptop   Freshness: recent; candidates LAN=4 public=0 expired=0; UDP=NOT_TESTED
+pi Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+pi Device …: relay; code=CONNECTED; 
+pi   Freshness: recent; candidates LAN=0 public=0 expired=0; UDP=ICE_PROBE_DEFERRED
+== waiting for LAN candidates on the laptop (exchange runs on a 15 s tick after a reached peer)
+laptop has the Pi's LAN candidates after 15.0 s
+laptop Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+laptop Device …: quic; code=CONNECTED; 
+laptop   Freshness: recent; candidates LAN=4 public=0 expired=0; UDP=NOT_TESTED
+pi Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+pi Device …: quic; code=CONNECTED; 
+pi   Freshness: recent; candidates LAN=4 public=0 expired=0; UDP=ICE_PROBE_DEFERRED
+== transfers after the exchange
+laptop->Pi after 3.2 s
+Pi->laptop after 2.7 s
+laptop Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+laptop Device …: quic; code=CONNECTED; 
+laptop   Freshness: recent; candidates LAN=4 public=0 expired=0; UDP=NOT_TESTED
+pi Connection: automatic; code=SERVICE_READY; ready=true; restart_required=false
+pi Device …: quic; code=CONNECTED; 
+pi   Freshness: recent; candidates LAN=4 public=0 expired=0; UDP=ICE_PROBE_DEFERRED
+61c90c887202618145d08a3fbab72836a9a8b296c96b534754a0279ccdd5b810  LOCAL/notes/from-laptop.txt
+2cfb74a6994b82c353637cd52c5585a1675bd68b3a8e7bc2fca1a72dde175267  LOCAL/notes/from-pi.txt
+e5764312590b7ed1126209c4de3d7a04d1de3444248efb5c3129ba774d4c79d4  LOCAL/notes/second.txt
+61c90c887202618145d08a3fbab72836a9a8b296c96b534754a0279ccdd5b810  REMOTE/notes/from-laptop.txt
+2cfb74a6994b82c353637cd52c5585a1675bd68b3a8e7bc2fca1a72dde175267  REMOTE/notes/from-pi.txt
+e5764312590b7ed1126209c4de3d7a04d1de3444248efb5c3129ba774d4c79d4  REMOTE/notes/second.txt
+exit=0

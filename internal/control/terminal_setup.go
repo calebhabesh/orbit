@@ -488,7 +488,9 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 				return *r, err
 			}
 		}
-		job.NextContact = c.options.Now().Add(25 * time.Second).UTC().Format(time.RFC3339Nano)
+		// Status polls use four of the inviter's five per-source tokens a minute,
+		// shortening the wait after approval while leaving one for a retry.
+		job.NextContact = c.options.Now().Add(15 * time.Second).UTC().Format(time.RFC3339Nano)
 		var status protocol.TerminalEnrollmentResult
 		if recoveredStatus != nil {
 			status = *recoveredStatus
