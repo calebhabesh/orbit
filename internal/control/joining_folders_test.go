@@ -1,0 +1,51 @@
+package control
+
+import (
+	"context"
+	"encoding/hex"
+	"testing"
+
+	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/file-sync/internal/workspace"
+)
+
+// Only joins the setup worker still resumes hold their folder from the scheduler.
+func TestJoiningFoldersNamesResumableJoinsOnly(t *testing.T) {
+	ctx := context.Background()
+	db, err := repository.Open(ctx, t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	save := func(id, kind string, folder byte, state string, code string) history.ID {
+		var f history.ID
+		f[0] = folder
+		r := terminalResult()
+		r.State = state
+		r.Operation = &tc.Operation{ID: id, Kind: kind, State: state, Phase: "publishing", CommittedEffects: []tc.Effect{}}
+		r.Join = &tc.JoinRecord{Operation: *r.Operation, Folder: hex.EncodeToString(f[:])}
+		if code != "" {
+			r.Error = &tc.Error{Code: code}
+		}
+		record := repository.TerminalRecord{Mutation: tc.Mutation{Version: tc.Version, OperationID: id, Kind: kind}, Result: r}
+		if err := db.SaveTerminalRecord(ctx, "operation/"+id, record, true); err != nil {
+			t.Fatal(err)
+		}
+		return f
+	}
+	running := save("join-running", "join", 1, "running", "")
+	blocked := save("join-blocked", "join", 2, "blocked", "SETUP_BLOCKED")
+	save("join-done", "join", 3, "completed", "")
+	save("join-stale", "join", 4, "blocked", "STALE_VIEW")
+	save("join-expired", "join", 5, "blocked", "EXPIRED_OR_DECLINED_ATTEMPT")
+	save("setup-running", "setup", 6, "running", "")
+	joining, err := New(db, workspace.New(db, workspace.Options{})).JoiningFolders(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(joining) != 2 || !joining[running] || !joining[blocked] {
+		t.Fatalf("joining=%v", joining)
+	}
+}

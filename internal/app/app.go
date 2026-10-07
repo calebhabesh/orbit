@@ -629,6 +629,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		LocalDevice:   deviceID,
 		Peers:         targets,
 		PeerTargets:   peerTargets,
+		Joining:       ctrl.JoiningFolders,
 	})
 	if err != nil {
 		return fmt.Errorf("create scheduler: %w", err)
@@ -675,9 +676,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 			case <-setupCtx.Done():
 				return
 			case <-ticker.C:
-				slice, cancel := context.WithTimeout(setupCtx, 8*time.Second)
-				_ = ctrl.ResumeSetupJobs(slice)
-				cancel()
+				_ = ctrl.ResumeSetupJobs(setupCtx)
 			}
 		}
 	}()

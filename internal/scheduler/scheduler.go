@@ -13,6 +13,9 @@ import (
 	"github.com/calebhabesh/file-sync/internal/workspace"
 )
 
+// JoiningRecheckDelay spaces checks of a task deferred behind a folder's join.
+const JoiningRecheckDelay = time.Second
+
 type ClientFactory func(folder, peer history.ID) (replication.PeerClient, error)
 
 type PeerTarget struct{ Folder, Peer history.ID }
@@ -26,6 +29,9 @@ type SchedulerOptions struct {
 	ClientFactory ClientFactory
 	LocalDevice   history.ID
 	Peers         []PeerTarget
+	// Joining names folders whose working tree an unfinished join publishes.
+	// Their scans and syncs wait, so the join remains the only publisher.
+	Joining func(context.Context) (map[history.ID]bool, error)
 }
 
 type FolderStatus struct {
@@ -46,6 +52,7 @@ type Scheduler struct {
 	localDevice   history.ID
 	peers         []PeerTarget
 	peerTargets   func() ([]PeerTarget, error)
+	joining       func(context.Context) (map[history.ID]bool, error)
 	folderWork    map[history.ID]chan struct{}
 	profile       ResourceProfile
 	limiter       *BandwidthLimiter
@@ -94,6 +101,7 @@ func NewScheduler(db *repository.DB, ws *workspace.Workspace, opts SchedulerOpti
 		localDevice:        opts.LocalDevice,
 		peers:              append([]PeerTarget(nil), opts.Peers...),
 		peerTargets:        opts.PeerTargets,
+		joining:            opts.Joining,
 		folderWork:         map[history.ID]chan struct{}{},
 		profile:            opts.Profile,
 		limiter:            opts.Limiter,
@@ -343,6 +351,14 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 	case <-taskCtx.Done():
 		_ = s.queue.UpdateState(context.Background(), task.ID, "queued", task.Attempts, "", "", 0)
 		return
+	}
+	// Checked under the folder gate: a join that started after dispatch still
+	// keeps this task off its working tree. The attempt is not charged.
+	if s.joining != nil {
+		if joining, err := s.joining(taskCtx); err == nil && joining[task.Folder] {
+			_ = s.queue.UpdateState(context.Background(), task.ID, "retry", task.Attempts, "", "", time.Now().Add(JoiningRecheckDelay).UnixNano())
+			return
+		}
 	}
 
 	var execErr error
