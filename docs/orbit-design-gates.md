@@ -1,6 +1,6 @@
 # Orbit Revamp Design Gate Outcomes (G01–G05)
 
-Status: closed by executable models, negative/adversarial tests, and formal specifications on 2026-10-01. Sources are in [`tests/designgates`](file://<repo>/tests/designgates) and [`model/membership.go`](file://<repo>/model/membership.go).
+Status: closed by executable models, negative/adversarial tests, and formal specifications on 2026-10-01. Sources are in [`tests/designgates`](../tests/designgates) and [`model/membership.go`](../model/membership.go).
 
 These decisions freeze the operational, protocol, and persistence contracts for packets O02–O12 without altering the core engine's existing guarantees (I01–I20).
 
@@ -10,7 +10,7 @@ These decisions freeze the operational, protocol, and persistence contracts for 
 
 ### Decisions and Rules
 1. **Singleton and State Directory Ownership**:
-   - The Orbit desktop launcher and daemon enforce exclusive ownership via `.agent.lock` in the state directory using [`state.Acquire`](file://<repo>/internal/state/state.go#L53).
+   - The Orbit desktop launcher and daemon enforce exclusive ownership via `.agent.lock` in the state directory using [`state.Acquire`](../internal/state/state.go#L53).
    - If a daemon is already active, the launcher detects the existing process and opens the UI through its authenticated local control interface; it never spawns a duplicate daemon or silently creates parallel state directories.
    - Initialized state vs uninitialized state is detected at startup. Uninitialized state serves the setup flow; initialized state serves the file manager.
 2. **One-Use Browser Bootstrap Handoff**:
@@ -28,9 +28,9 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - **Invariant I21**: UI session termination does **not** stop the background daemon or interrupt peer synchronization, folder watching, or scheduled transfers. Stopping the daemon requires an explicit, authenticated shutdown control operation.
 
 ### Executable Fixtures and Oracles
-- [`TestOrbitG01SingletonExclusiveOwnership`](file://<repo>/tests/designgates/orbit_g01_launch_test.go#L100): Confirms dual acquisition of state lock is rejected with `state.ErrLocked`.
-- [`TestOrbitG01OneUseBootstrapHandoff`](file://<repo>/tests/designgates/orbit_g01_launch_test.go#L134): Verifies DNS rebinding rejection, origin checks, one-use replay prevention, and TTL expiration.
-- [`TestOrbitG01SessionAndLogoutKeepsSyncActive`](file://<repo>/tests/designgates/orbit_g01_launch_test.go#L185): Verifies session logout revokes UI access while preserving the daemon lock and engine state.
+- [`TestOrbitG01SingletonExclusiveOwnership`](../tests/designgates/orbit_g01_launch_test.go#L100): Confirms dual acquisition of state lock is rejected with `state.ErrLocked`.
+- [`TestOrbitG01OneUseBootstrapHandoff`](../tests/designgates/orbit_g01_launch_test.go#L134): Verifies DNS rebinding rejection, origin checks, one-use replay prevention, and TTL expiration.
+- [`TestOrbitG01SessionAndLogoutKeepsSyncActive`](../tests/designgates/orbit_g01_launch_test.go#L185): Verifies session logout revokes UI access while preserving the daemon lock and engine state.
 
 ### Rejected Alternatives
 - Passing bootstrap tokens in URL query strings (leaks into proxy/server access logs and browser history).
@@ -62,12 +62,12 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - Once a device is retired in a membership revision, it cannot be readmitted or resurrected under the same Device ID. A replaced or wiped device must generate a fresh cryptographic identity.
 
 ### Executable Fixtures and Oracles
-- [`TestOrbitG02InvitationCreationAndDigestStorage`](file://<repo>/tests/designgates/orbit_g02_enrollment_test.go#L119): Verifies token digest one-way hashing and revocation.
-- [`TestOrbitG02CapabilityGatingAndDosLimits`](file://<repo>/tests/designgates/orbit_g02_enrollment_test.go#L155): Verifies that invitation tokens cannot access chunks/inventory, and verifies 16 KiB body bounds and rate limiting.
-- [`TestOrbitG02KeyPossessionAndOwnerApproval`](file://<repo>/tests/designgates/orbit_g02_enrollment_test.go#L236): Verifies Ed25519 signature proof of possession, rejection of forged signatures, single-use enforcement, and pending approval quarantine.
-- [`TestOrbitG02OfflineRolloutAndCompetingFork`](file://<repo>/tests/designgates/orbit_g02_enrollment_test.go#L295): Models concurrent partitioned approvals, demonstrates fork detection, and verifies explicit owner reconciliation.
-- [`TestOrbitG02RetiredDeviceCannotRejoin`](file://<repo>/tests/designgates/orbit_g02_enrollment_test.go#L372): Verifies rejection of retired device revival.
-- [`model.MembershipChain`](file://<repo>/model/membership.go#L76): Independent formal test oracle for linear revisions, signatures, and fork detection.
+- [`TestOrbitG02InvitationCreationAndDigestStorage`](../tests/designgates/orbit_g02_enrollment_test.go#L119): Verifies token digest one-way hashing and revocation.
+- [`TestOrbitG02CapabilityGatingAndDosLimits`](../tests/designgates/orbit_g02_enrollment_test.go#L155): Verifies that invitation tokens cannot access chunks/inventory, and verifies 16 KiB body bounds and rate limiting.
+- [`TestOrbitG02KeyPossessionAndOwnerApproval`](../tests/designgates/orbit_g02_enrollment_test.go#L236): Verifies Ed25519 signature proof of possession, rejection of forged signatures, single-use enforcement, and pending approval quarantine.
+- [`TestOrbitG02OfflineRolloutAndCompetingFork`](../tests/designgates/orbit_g02_enrollment_test.go#L295): Models concurrent partitioned approvals, demonstrates fork detection, and verifies explicit owner reconciliation.
+- [`TestOrbitG02RetiredDeviceCannotRejoin`](../tests/designgates/orbit_g02_enrollment_test.go#L372): Verifies rejection of retired device revival.
+- [`model.MembershipChain`](../model/membership.go#L76): Independent formal test oracle for linear revisions, signatures, and fork detection.
 
 ### Rejected Alternatives
 - Unsigned gossip or distributed voting for membership (violates single-owner trust model and invites partition inconsistency).
@@ -99,10 +99,10 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - Expired or released idle leases permit GC. O07 live responses retain separate stream pins until completion/cancellation; wall-clock expiry cannot revoke an active read. There is no reusable read capability: every content/range request authenticates the exact version again.
 
 ### Executable Fixtures and Oracles
-- [`TestOrbitG03MoveOverwriteAndRecoveryPreservation`](file://<repo>/tests/designgates/orbit_g03_fileactions_test.go#L58): Demonstrates destination displacement to recovery storage upon overwrite.
-- [`TestOrbitG03MoveSourceConcurrentModificationRetainsBoth`](file://<repo>/tests/designgates/orbit_g03_fileactions_test.go#L116): Verifies that concurrent edits to source file during a move prevent source deletion, retaining both copies.
-- [`TestOrbitG03DirectorySubtreeInvalidation`](file://<repo>/tests/designgates/orbit_g03_fileactions_test.go#L166): Verifies subtree token invalidation when new children appear during directory moves.
-- [`TestOrbitG03ReadLeaseProtectsChunksFromGC`](file://<repo>/tests/designgates/orbit_g03_fileactions_test.go#L254): Verifies active read leases protect chunks from GC sweeps and release upon TTL expiry.
+- [`TestOrbitG03MoveOverwriteAndRecoveryPreservation`](../tests/designgates/orbit_g03_fileactions_test.go#L58): Demonstrates destination displacement to recovery storage upon overwrite.
+- [`TestOrbitG03MoveSourceConcurrentModificationRetainsBoth`](../tests/designgates/orbit_g03_fileactions_test.go#L116): Verifies that concurrent edits to source file during a move prevent source deletion, retaining both copies.
+- [`TestOrbitG03DirectorySubtreeInvalidation`](../tests/designgates/orbit_g03_fileactions_test.go#L166): Verifies subtree token invalidation when new children appear during directory moves.
+- [`TestOrbitG03ReadLeaseProtectsChunksFromGC`](../tests/designgates/orbit_g03_fileactions_test.go#L254): Verifies active read leases protect chunks from GC sweeps and release upon TTL expiry.
 
 ### Rejected Alternatives
 - Plain rename overwrite that unlinks existing destination without recovery copy.
@@ -132,10 +132,10 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - **Invariant I18**: The system diagnoses the version as `ContentUnavailable` or `PendingTransfer`. It **never** serves substitute, empty, or corrupt data to users or peers.
 
 ### Executable Fixtures and Oracles
-- [`TestOrbitG04LiveIdentityResetFenced`](file://<repo>/tests/designgates/orbit_g04_recovery_test.go#L60): Verifies live reset is blocked when daemon lock is held.
-- [`TestOrbitG04AtomicTransitionAndRollbackSafety`](file://<repo>/tests/designgates/orbit_g04_recovery_test.go#L81): Verifies key rotation, checked SQLite transaction, atomic config write, and version history preservation.
-- [`TestOrbitG04InterruptedTransitionDetection`](file://<repo>/tests/designgates/orbit_g04_recovery_test.go#L165): Verifies startup consistency check detects crashed partial transitions.
-- [`TestOrbitG04MissingPayloadsAfterMetadataRestore`](file://<repo>/tests/designgates/orbit_g04_recovery_test.go#L208): Verifies missing CAS chunks yield `ErrContentUnavailable`.
+- [`TestOrbitG04LiveIdentityResetFenced`](../tests/designgates/orbit_g04_recovery_test.go#L60): Verifies live reset is blocked when daemon lock is held.
+- [`TestOrbitG04AtomicTransitionAndRollbackSafety`](../tests/designgates/orbit_g04_recovery_test.go#L81): Verifies key rotation, checked SQLite transaction, atomic config write, and version history preservation.
+- [`TestOrbitG04InterruptedTransitionDetection`](../tests/designgates/orbit_g04_recovery_test.go#L165): Verifies startup consistency check detects crashed partial transitions.
+- [`TestOrbitG04MissingPayloadsAfterMetadataRestore`](../tests/designgates/orbit_g04_recovery_test.go#L208): Verifies missing CAS chunks yield `ErrContentUnavailable`.
 
 ### Rejected Alternatives
 - Live identity reset while daemon is actively replicating.
@@ -160,9 +160,9 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - **Invariant I20**: If the database `user_version` is newer than the supported maximum (e.g. rolling back to an older binary after a future upgrade), the daemon refuses to run (`ErrUnsupportedSchemaVersion`) to preserve recoverable state.
 
 ### Executable Fixtures and Oracles
-- [`TestOrbitG05ProductSettingsSeparation`](file://<repo>/tests/designgates/orbit_g05_compat_test.go#L33): Verifies that product settings do not alter or break strict `config.Load` validation.
-- [`TestOrbitG05ProtocolCapabilityNegotiation`](file://<repo>/tests/designgates/orbit_g05_compat_test.go#L116): Verifies capability negotiation between legacy and Orbit nodes, and mandatory capability checks.
-- [`TestOrbitG05LegacyStateAdoptionAndRollbackLimits`](file://<repo>/tests/designgates/orbit_g05_compat_test.go#L163): Verifies clean adoption of schema version 5 and refusal of newer unsupported schemas.
+- [`TestOrbitG05ProductSettingsSeparation`](../tests/designgates/orbit_g05_compat_test.go#L33): Verifies that product settings do not alter or break strict `config.Load` validation.
+- [`TestOrbitG05ProtocolCapabilityNegotiation`](../tests/designgates/orbit_g05_compat_test.go#L116): Verifies capability negotiation between legacy and Orbit nodes, and mandatory capability checks.
+- [`TestOrbitG05LegacyStateAdoptionAndRollbackLimits`](../tests/designgates/orbit_g05_compat_test.go#L163): Verifies clean adoption of schema version 5 and refusal of newer unsupported schemas.
 
 ### Rejected Alternatives
 - In-place modification of `config.json` format version 1 with unversioned UI fields.

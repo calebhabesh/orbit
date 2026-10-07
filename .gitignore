@@ -4,6 +4,8 @@
 !.env.example
 *.key
 *.pem
+*.p12
+*.pfx
 # User content and runtime state
 .runtime/
 .local/

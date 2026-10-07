@@ -1,5 +1,32 @@
 # Orbit
 
+[![CI](https://github.com/calebhabesh/orbit/actions/workflows/ci.yml/badge.svg)](https://github.com/calebhabesh/orbit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Peer-to-peer file sync for Linux, with its own sync engine, a keyboard TUI
+and cross-network connectivity without a VPN.** Written in Go, with SQLite for
+causal history.
+
+- **Own sync engine:** causal version history in SQLite, verified 1 MiB chunk
+  transfer with resume, explicit conflict review (no silent "last writer
+  wins"), and restore of earlier versions.
+- **Secure by construction:** every device has its own key; peers are pinned
+  with mutual TLS and approved with a verification code before they can sync.
+- **Works across networks:** direct LAN, TCP or QUIC-over-ICE paths first, an
+  encrypted relay as fallback that only ever sees ciphertext, and a small
+  operated connection service (`orbit-net`) with signed, expiring profiles.
+  Self-hosting is supported.
+- **Release discipline:** reproducible amd64/arm64 tarball, `.deb` and `.rpm`
+  packages, fault-injection and design-gate suites, and native evidence for
+  each claim, including what was *not* tested.
+
+Read the [case study](docs/case-study.md) for the design and measured
+tradeoffs, or the [networking guide](docs/runbooks/networking.md) for what the
+connection service can and cannot see. Pre-built packages are on the
+[Releases page](https://github.com/calebhabesh/orbit/releases).
+
+## Overview
+
 Orbit is a background Linux file sync daemon with a keyboard interface and
 independent CLI commands. Ordinary files stay in local folders. SQLite records
 causal history and recovery journals; verified content is retained in a private
