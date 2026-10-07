@@ -286,6 +286,7 @@ func (c *Controller) executeTerminal(ctx context.Context, record repository.Term
 		var e *ControlError
 		if errors.As(err, &e) {
 			r.Error.Code = e.Code
+			r.Error.Message = e.Message
 			r.Error.Action = e.Action
 		}
 		r.Operation.Error = r.Error

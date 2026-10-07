@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -271,6 +272,9 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB) (*Ser
 	}
 
 	systemctlPath, _ := exec.LookPath("systemctl")
+	if st.CurrentlyRunning && !serviceOwnsState(ctx, systemctlPath, stateDir) {
+		return nil, manualDaemonError()
+	}
 	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "start", "filesync.service")
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
@@ -278,15 +282,14 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB) (*Ser
 		return nil, fmt.Errorf("systemctl --user start: %w (%s)", err, stderr.String())
 	}
 
-	time.Sleep(300 * time.Millisecond)
-
+	owned := waitServiceOwnsState(ctx, systemctlPath, stateDir)
 	updatedStatus, statusErr := CheckServiceStatus(ctx, stateDir, db)
 	if statusErr != nil {
 		return nil, statusErr
 	}
 	return &ServiceActionResult{
 		Action:  "start",
-		Success: updatedStatus.CurrentlyRunning,
+		Success: owned && updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
 		Message: "filesync user service started successfully",
 	}, nil
@@ -361,6 +364,9 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB) (*S
 	}
 
 	systemctlPath, _ := exec.LookPath("systemctl")
+	if st.CurrentlyRunning && !serviceOwnsState(ctx, systemctlPath, stateDir) {
+		return nil, manualDaemonError()
+	}
 	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "restart", "filesync.service")
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
@@ -368,16 +374,62 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB) (*S
 		return nil, fmt.Errorf("systemctl --user restart: %w (%s)", err, stderr.String())
 	}
 
+	owned := waitServiceOwnsState(ctx, systemctlPath, stateDir)
 	updatedStatus, statusErr := CheckServiceStatus(ctx, stateDir, db)
 	if statusErr != nil {
 		return nil, statusErr
 	}
 	return &ServiceActionResult{
 		Action:  "restart",
-		Success: updatedStatus.CurrentlyRunning,
+		Success: owned && updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
 		Message: "filesync user service restarted successfully",
 	}, nil
+}
+
+// A daemon launched outside systemd keeps the state lock, so the unit would
+// fail and restart in a loop while status still reported a running daemon.
+// Success requires the unit's main process to be the recorded lock owner.
+func manualDaemonError() error {
+	return &ControlError{Code: "MANUAL_DAEMON_RUNNING", Message: "a daemon started outside the user service owns this state", Action: "run 'orbit stop', then 'orbit service start'"}
+}
+
+func serviceOwnsState(ctx context.Context, systemctlPath, stateDir string) bool {
+	if stateDir == "" {
+		stateDir = config.DefaultStateDir()
+	}
+	out, err := exec.CommandContext(ctx, systemctlPath, "--user", "show", "-p", "MainPID", "--value", "filesync.service").Output()
+	if err != nil {
+		return false
+	}
+	data, err := state.ReadPrivate(stateDir, ".agent.pid", 64)
+	if err != nil {
+		return false
+	}
+	return stateOwnedByUnit(string(out), string(data))
+}
+
+func stateOwnedByUnit(mainPID, agentPID string) bool {
+	unit, err := strconv.Atoi(strings.TrimSpace(mainPID))
+	if err != nil || unit <= 1 {
+		return false
+	}
+	owner, err := strconv.Atoi(strings.TrimSpace(agentPID))
+	return err == nil && owner == unit
+}
+
+// The started unit records its PID only after acquiring the state lock.
+func waitServiceOwnsState(ctx context.Context, systemctlPath, stateDir string) bool {
+	deadline := time.Now().Add(15 * time.Second)
+	for {
+		if serviceOwnsState(ctx, systemctlPath, stateDir) {
+			return true
+		}
+		if time.Now().After(deadline) || ctx.Err() != nil {
+			return false
+		}
+		time.Sleep(200 * time.Millisecond)
+	}
 }
 
 // InstallUserUnit writes ~/.config/systemd/user/filesync.service configured for this binary.
@@ -482,10 +534,21 @@ func validateSelectedService(stateDir string) error {
 	if err != nil {
 		return &ControlError{Code: "SERVICE_SELECTION_REQUIRED", Message: "selected state has no verified user unit", Action: "install a user unit for the selected state"}
 	}
-	expected := "--state=" + stateDir + " "
+	// Packaged units name the state with systemd's %h home specifier.
+	expected := filepath.Clean(stateDir)
 	for _, line := range strings.Split(string(data), "\n") {
-		if strings.HasPrefix(line, "ExecStart=") && strings.Contains(line, expected) {
-			return nil
+		if !strings.HasPrefix(line, "ExecStart=") {
+			continue
+		}
+		for _, field := range strings.Fields(line) {
+			if value, ok := strings.CutPrefix(field, "--state="); ok {
+				if rest, ok := strings.CutPrefix(value, "%h/"); ok {
+					value = filepath.Join(home, rest)
+				}
+				if filepath.Clean(value) == expected {
+					return nil
+				}
+			}
 		}
 	}
 	return &ControlError{Code: "SERVICE_SELECTION_REQUIRED", Message: "existing service targets a different state", Action: "preserve the existing service and configure a separate selected unit"}

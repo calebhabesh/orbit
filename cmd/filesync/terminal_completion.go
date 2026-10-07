@@ -35,7 +35,7 @@ const bashCompletionScript = `_orbit_completion() {
         cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
     fi
 
-    local commands="tui status context folders devices conflicts history deleted restore setup join network service storage doctor completion version help"
+    local commands="tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor completion version help"
     local common_flags="--state --folder --json --help"
 
     if [[ ${cword} -eq 1 ]]; then
@@ -109,6 +109,7 @@ _orbit() {
         'setup:Create or adopt a synced folder'
         'join:Join an existing Orbit using a private invitation'
         'service:Manage background daemon service'
+        'stop:Stop a daemon started outside the service'
         'storage:Inspect storage usage and maintenance'
         'doctor:Run actionable diagnostics'
         'completion:Generate shell completion script'
@@ -181,7 +182,7 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network service storage doctor completion version help
+        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor completion version help
             return 1
         end
     end
@@ -201,6 +202,7 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'setup' -d 'Create or adopt
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'join' -d 'Join an existing Orbit'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'network' -d 'Status, diagnostics and policy controls'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'service' -d 'Manage background daemon service'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'stop' -d 'Stop a daemon started outside the service'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'storage' -d 'Inspect storage usage and maintenance'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'doctor' -d 'Run actionable diagnostics'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'completion' -d 'Generate shell completion script'

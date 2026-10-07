@@ -3354,7 +3354,7 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleOrbitOpen(args[1:], stdout, stderr)
 	case "picker":
 		return handleOrbitPicker(args[1:], stdout, stderr)
-	case "serve":
+	case "serve", "stop":
 		return run(args, stdout, stderr)
 	case "help", "-h", "--help":
 		return handleOrbitHelp(args[1:], stdout, stderr)
