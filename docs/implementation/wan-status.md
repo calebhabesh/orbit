@@ -1159,3 +1159,80 @@ Commands and results:
 holding `terminalMu`, so a status query during a slow join can wait several
 seconds. Longer client timeouts hide the error; moving that I/O outside the
 lock is the follow-up.
+
+## Join publication ownership and setup long steps (2026-10-07)
+
+Owner-directed, Claude Code session, after the full suite on tag `v1.0.0`
+(`e902ef6`) failed W16 `tui-three-host` on amd64 and 2 of 12 parallel terminal
+suites failed on arm64. Both failures were in the join's `publishing` phase:
+`structural conflict blocks publication: same bytes at stage and target for
+large` and `READINESS_PENDING`. The `v1.0.0` draft was not published.
+
+**Cause 1: two publishers on one working tree.** After approval the join
+imports, fetches and publishes the folder from the daemon's setup worker. The
+scheduler registered the new folder within 5 s and synced and scanned it too.
+Every `Apply` first runs journal recovery over all of the folder's
+publications, including one another goroutine was executing. Recovery treats a
+journaled publication as interrupted, so it could abort the other publisher's
+live stage, or find identical bytes staged and installed and block the path
+`AMBIGUOUS_PUBLICATION`. `TestConcurrentPublishersOfOneFolderSerialize` pauses
+one publication before its exchange; on the old code the second publisher ran
+straight through it.
+
+Fixes:
+- `internal/workspace`: capture, publication, file actions and recovery of one
+  folder hold a per-folder working-tree lock (re-entrant through the context,
+  cancellable while waiting, taken inside the relocation gate).
+- `internal/scheduler` + `internal/control`: `JoiningFolders` names folders whose
+  join the setup worker still resumes and that have reached
+  `bootstrap_capture`, `content_pending` or `publishing`; scheduled scans and
+  syncs of those folders are deferred 1 s at a time without spending attempts,
+  so the join is the only publisher until it completes. A re-join awaiting
+  approval does not pause an already registered folder.
+
+**Cause 2: setup steps cut by the 8 s slice.** The daemon resumed setup jobs in
+8 s slices because they hold `terminalMu`, which every terminal query also
+takes. Each resume re-ran a full-content scan, adoption revalidation (a full
+walk), content import and publication under that bound. A capture or
+publication longer than the bound failed, and the next slice started over, so a
+folder slower to hash than 8 s never became ready (a 320 MB adopt with a
+150 ms slice stayed in `bootstrap_capture` for 20 slices). Those four steps now
+release `terminalMu` and run under the daemon's lifetime; locked steps keep an
+8 s bound (`Options.SetupStepBound`); one caller advances a job at a time and
+others report its durable record. After one complete capture, resumed jobs
+rescan by observation (quick scan). `TestTerminalSetupLongStepOutlivesStepBoundAndReleasesQueries`
+makes each capture take 3× the bound: one resume completes setup and a query
+during the capture returns promptly; the old code answered after the capture,
+reporting `blocked`.
+
+The owning specification is [persistence](../persistence.md) (publication
+journal and onboarding).
+
+Commands and results (code at `f11c51d`; the first two rows at `4f9a182`):
+
+| Command | Result |
+| --- | --- |
+| `make ci-fast` (local) | passed |
+| `go test -race ./internal/control/... ./internal/workspace/ ./internal/scheduler/ ./tests/faults/... ./tests/designgates/...` | passed |
+| `go test ./tests/terminal -run TestWANW16NativeRunnerRehearsal` (local) | passed: `cli` 62.7 s, `tui-three-host` 223.0 s |
+| `make test-terminal` (local, amd64) | passed, 1,374 s |
+| `ci.yml` on `f11c51d` | passed |
+| `full.yml` `test-terminal` ×6 per arch on `f11c51d` (run 37697296994) | 12/12 passed |
+| Old code + `TestConcurrentPublishersOfOneFolderSerialize` | failed as expected (second publisher ran beside the live one) |
+| Old code + `TestTerminalSetupLongStepOutlivesStepBoundAndReleasesQueries` (100 ms slice) | failed as expected (query waited 298 ms; job `blocked`) |
+
+**Release.** `v1.0.0` (tag on `e902ef6`, draft unpublished) is left in place;
+these fixes ship as `1.0.1` rather than moving a pushed tag in a public
+repository. `orbit-net` is unchanged and stays `1.0.0`.
+
+**Limitations.**
+- A join that stays non-ready, for example on a conflict awaiting review, keeps
+  the scheduler off its folder. The setup worker still rescans it and syncs
+  with the inviter every second, but sync with a third device waits until the
+  join completes.
+- The setup worker still performs enrollment network I/O while holding
+  `terminalMu` (bounded at 8 s per step), as recorded in the previous entry.
+- The folder lock is per process; it does not cover a second daemon, with its
+  own state directory, registered on the same root.
+- No native slow-hardware run with a multi-gigabyte join yet. The long-step
+  fix is shown by the regression test and the 320 MB / 150 ms experiment.

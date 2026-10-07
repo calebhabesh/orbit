@@ -211,7 +211,14 @@ candidate, but no finite retention delay is claimed to prove the writer has
 closed. A path whose type changes or whose result is ambiguous is blocked for
 review.
 
-Journal recovery runs before ordinary scans/sync. On ambiguity, preserve all available variants and block the affected path for review. Good captured content wins over cleanup convenience. A blocked working path must not prevent serving already verified immutable versions elsewhere.
+Journal recovery runs before ordinary scans/sync. On ambiguity, preserve all available variants and block the affected path for review.
+Recovery treats every journaled publication as interrupted, so it never runs
+beside a live one: within the state owner, capture, publication, file actions
+and recovery of one folder hold that folder's working-tree lock. Nested calls
+inherit it; a bounded caller gives up waiting without touching the journal.
+Before this rule, a join's sync and a scheduled sync of the same folder could
+each recover the other's in-flight publication; with identical bytes staged and
+installed, the path was blocked `AMBIGUOUS_PUBLICATION` and the join stalled. Good captured content wins over cleanup convenience. A blocked working path must not prevent serving already verified immutable versions elsewhere.
 
 P04 reserves workspace stage plus the observed regular target's byte count
 against the repository's configured data budget before staging. A committed
@@ -527,7 +534,15 @@ First-device setup follows reviewed/registration/capture/content phases; join ad
 request preparation, awaiting approval and membership receipt. Approved membership
 is installed before local capture so versions use the correct authored revision;
 remote file history and publication follow successful bootstrap capture. This
-membership write does not import remote file history. Capture failures now also
+membership write does not import remote file history. From registering the
+root until the join completes or is abandoned, it is the folder's only
+publisher: scheduled scans and syncs of that folder wait, uncharged, and run
+after it. Steps whose duration grows with
+the folder (root revalidation, capture, content import and publication) run
+outside the terminal-operation lock under the daemon's lifetime, so queries
+proceed and no per-step bound restarts them; locked steps keep an 8 s bound.
+After one complete capture, a resumed job rescans by observation like a
+scheduled quick scan instead of rehashing the folder. Capture failures now also
 prevent the workspace bootstrap-complete flag, alongside traversal failures.
 
 Capacity admission conservatively charges two copies of measured bytes and 4 KiB
