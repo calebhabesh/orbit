@@ -10,6 +10,7 @@ import hashlib
 import io
 import json
 import os
+import platform
 from pathlib import Path
 import shutil
 import subprocess
@@ -105,6 +106,9 @@ def main():
                 run(['docker','rm',cid])
             qemu.chmod(0o700)
             print(run([qemu,'--version']).decode())
+        # Execute the host architecture natively; the other runs under QEMU when
+        # requested and is otherwise checked structurally.
+        host = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine(), platform.machine())
         for arch,rpmarch in [('amd64','x86_64'),('arm64','aarch64')]:
             for kind in ['tar','deb','rpm']:
                 target=root/f'{arch}-{kind}';target.mkdir()
@@ -124,8 +128,8 @@ def main():
                 assert 'Terminal=true' in desktop.read_text() and 'Exec=orbit\n' in desktop.read_text()
                 for name in ['bash-completion/completions/orbit','zsh/site-functions/_orbit','fish/vendor_completions.d/orbit.fish','doc/filesync/runbooks/terminal-operator.md']:
                     assert (share/name).stat().st_size > 0
-                if arch=='amd64' or qemu:
-                    prefix = [] if arch=='amd64' else [qemu]
+                if arch==host or (qemu and arch=='arm64'):
+                    prefix = [] if arch==host else [qemu]
                     state=root/f'state-{arch}-{kind}'
                     run([*prefix,binary,'init','--state',state])
                     original=(state/'config.json').read_bytes()
@@ -134,9 +138,9 @@ def main():
                     run([*prefix,binary,'doctor','--state',state])
                     run([*prefix,binary,'completion','bash'])
                     assert (state/'config.json').read_bytes()==original
-                results.append({'scenario':f'{arch}-{kind}-payload-and-entry','result':'passed','execution':'native amd64' if arch=='amd64' else ('QEMU emulation; not native' if qemu else 'structure only; arm64 execution separate')})
+                results.append({'scenario':f'{arch}-{kind}-payload-and-entry','result':'passed','execution':f'native {arch}' if arch==host else ('QEMU emulation; not native' if qemu and arch=='arm64' else f'structure only; {arch} execution separate')})
         # Real standalone install, repeated upgrade and uninstall with a private HOME.
-        target=root/'amd64-tar';home=root/'home';home.mkdir(mode=0o700)
+        target=root/f'{host}-tar';home=root/'home';home.mkdir(mode=0o700)
         fake=root/'fake-bin';fake.mkdir()
         (fake/'systemctl').write_text('#!/bin/sh\nexit 1\n');(fake/'systemctl').chmod(0o700)
         (fake/'update-desktop-database').write_text('#!/bin/sh\nexit 0\n');(fake/'update-desktop-database').chmod(0o700)

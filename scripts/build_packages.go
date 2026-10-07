@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"time"
@@ -147,7 +148,13 @@ func run() error {
 		return fmt.Errorf("create bin/orbit symlink: %w", err)
 	}
 
-	if err := loadTerminalAssets(repoRoot, filepath.Join(binDir, "filesync")); err != nil {
+	// Completions are architecture-independent; generate them with the binary
+	// this host can execute.
+	completionBinary := filepath.Join(binDir, "filesync")
+	if runtime.GOARCH == "arm64" {
+		completionBinary = filepath.Join(binDir, "filesync-linux-arm64")
+	}
+	if err := loadTerminalAssets(repoRoot, completionBinary); err != nil {
 		return err
 	}
 
