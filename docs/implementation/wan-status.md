@@ -1098,3 +1098,15 @@ only route observation is `quic; code=CONNECTED`. The W14 files are unchanged.
 Not done: no rerun on other routers or with firewalls on both devices (fixed
 ports are documented, not tested natively); the hosted `orbit-net` binary was
 not redeployed; nothing is committed or published.
+
+**Follow-up the same day.** The hosted `orbit-net` was redeployed from original
+commit `f65b623` (public `513a96d`; previous binary kept as a backup):
+`--check` passed with epoch 2 plus epoch 1 overlap, `/healthz` 200. A laptop/Pi
+rerun against it passed. CI had failed since 2026-09-24 on arm64 packaging
+(completions executed the amd64 binary), amd64 `test-race` (10-minute default
+timeout) and one co-located W16 rehearsal wait; all three were fixed. The
+joiner's post-submission status poll moved from 25 s to 15 s: join to first file
+went from 38.2 s to 22.7 s natively
+([log](../evidence/wan-lan-exchange-20261007/logs/native-lan-poll15.log)).
+The repository then became public after the checks in the
+[publication record](../publication-2026-10-07.md).
