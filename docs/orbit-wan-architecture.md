@@ -3,7 +3,7 @@
 Status: 2026-10-05: W01 adds contracts/adapters and local WG1–WG3 experiments;
 [gate outcomes](implementation/wan-contracts.md) qualify that evidence. W02 integrates the daemon-owned manual HTTPS manager; W03 implements authenticated
 rendezvous/profile services. W04 encrypted relay and W05 routed enrollment are implemented; W06 adds CLI
-activation. W07 TUI onboarding and W08 LAN/direct TCP are implemented with qualified local evidence; direct traversal and later integrations remain pending. [Scope](portfolio-scope.md) owns product direction; [plan](orbit-wan-implementation-plan.md)
+activation. W07 TUI onboarding and W08 LAN/direct TCP are implemented with qualified local evidence. W09–W16 add QUIC/ICE traversal, roaming, diagnostics, the operated service, packaged defaults and native WAN evidence; W17 (2026-10-07) reconciles this document with the implementation, and the per-packet sections below record what each integration established. [Scope](portfolio-scope.md) owns product direction; [plan](orbit-wan-implementation-plan.md)
 owns sequence; [network protocol](orbit-wan-protocol.md) owns network encoding,
 identity and admission; [gates](orbit-wan-design-gates.md) identify required proofs.
 

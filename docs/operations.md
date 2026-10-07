@@ -400,7 +400,23 @@ it retries the same ID after the selected endpoint becomes ready, without direct
 database fallback. Service commands refuse a user unit for another/unverified selected state and
 never overwrite an existing unit. `daemon-reload` and action failures are reported;
 a command exit alone cannot substitute for an observed running/enabled state.
-Native login/logout/boot and packaged service aliases remain T12/T13 checks.
+The selected unit is matched by its `ExecStart` `--state=` value after expanding
+systemd's `%h` home specifier, so the packaged per-user unit written by
+`install.sh user` is accepted for `~/.local/state/filesync` and nothing else.
+`start`/`restart` succeed only when the unit's `MainPID` is the recorded state
+owner. If a daemon started outside the unit (for example by setup or the
+terminal) owns the state, they return `MANUAL_DAEMON_RUNNING` with the action
+`orbit stop`, then `orbit service start`, and dispatch nothing; enabling login
+startup is unaffected and takes over at the next login. `orbit stop` is the
+Orbit entry for the existing graceful `filesync stop`.
+
+Native lifecycle (W17, 2026-10-07): `scripts/validation/service_boot_vm.py`
+installs the packaged archive with `install.sh user` in a disposable KVM guest
+and drives real logind sessions. Without lingering, login startup starts the
+unit at login and logout stops it; with the owner step `loginctl enable-linger`,
+the unit survives logout and starts and captures after reboot with no user
+session. This is a virtual-machine result, not physical-hardware boot evidence;
+see the [W17 evidence](evidence/wan-w17-20261007/summary.md).
 
 ## T03 authenticated enrollment operations
 

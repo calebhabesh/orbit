@@ -1,0 +1,149 @@
+{
+  "packet": "W17/T13 native lifecycle",
+  "environment": "disposable KVM guest (virtual machine, not physical hardware)",
+  "image_sha256": "b2aca2bee42c7082fd6aba4a5bb1a89612087a405e99896920f3346f7b23b9d1",
+  "archive": "orbit-v1.0.0-linux-amd64.tar.gz",
+  "archive_sha256": "1193bcde1ee6abca4e8b26a6832655e9fd70e894f78e14b21965949506dfccdc",
+  "started_at": "2026-10-07T11:06:48-0400",
+  "phases": {
+    "install": {
+      "unit_execstart": [
+        "ExecStart=/home/orbit/.local/bin/filesync serve --state=%h/.local/state/filesync --control-listen=127.0.0.1:8080"
+      ]
+    },
+    "unattended_before_linger": {
+      "rc": 1,
+      "stdout": "{\"versions\":[],\"version\":\"1\",\"capabilities\":[\"terminal_control_v1\",\"network_control_v1\",\"network_diagnostics_v1\",\"lifecycle_settings_v1\",\"enrollment_v2\",\"enrollment_v3\",\"packaged_profile_v1\",\"reviewed_setup_v1\",\"folder_sharing_v1\",\"context_v1\",\"reviewed_content_v1\",\"onboarding_management_v1\",\"everyday_management_v1\"],\"state\":\"failed\",\"operation\":{\"id\":\"505f7be7b442caa67b476025585df3744d728496e91d7a1640820426cbd4662d\",\"fingerprint\":\"7c97bbcb5a7966a05852663506948a2486c49d13f4f8b2408b79eee3baed9192\",\"kind\":\"service\",\"state\":\"failed\",\"phase\":\"failed\",\"committed_effects\":[],\"cancel_requested\":false,\"error\":{\"code\":\"UNATTENDED_PREREQUISITE\",\"message\":\"UNATTENDED_PREREQUISITE: lingering is not enabled (action: loginctl enable-linger orbit)\",\"retryable\":false,\"action\":\"loginctl enable-linger orbit\",\"retry_after_seconds\":\"0\"}},\"items\":[],\"requests\":[],\"observations\":[],\"attention\":[],\"effects\":[],\"cursor\":\"\",\"error\":{\"code\":\"UNATTENDED_PREREQUISITE\",\"message\":\"UNATTENDED_PREREQUISITE: lingering is not enabled (action: loginctl enable-linger orbit)\",\"retryable\":false,\"action\":\"loginctl enable-linger orbit\",\"retry_after_seconds\":\"0\"}}\n",
+      "stderr": "orbit: UNATTENDED_PREREQUISITE: UNATTENDED_PREREQUISITE: lingering is not enabled (action: loginctl enable-linger orbit) (action: loginctl enable-linger orbit)\n",
+      "refused": true
+    },
+    "login_enable": {
+      "enable_rc": 0,
+      "enable": "{\"versions\":[],\"version\":\"1\",\"capabilities\":[\"terminal_control_v1\",\"network_control_v1\",\"network_diagnostics_v1\",\"lifecycle_settings_v1\",\"enrollment_v2\",\"enrollment_v3\",\"packaged_profile_v1\",\"reviewed_setup_v1\",\"folder_sharing_v1\",\"context_v1\",\"reviewed_content_v1\",\"onboarding_management_v1\",\"everyday_management_v1\"],\"state\":\"completed\",\"operation\":{\"id\":\"5d097a3dc80bbac36941c44844ed973cbd1532faf233199cfc92659ffc799eca\",\"fingerprint\":\"309899adeb485cd06c8b5ed404559b787d086402324e97b070cc7d67ff0dff78\",\"kind\":\"service\",\"state\":\"completed\",\"phase\":\"completed\",\"committed_effects\":[{\"path\":\"\",\"state\":\"service_enable\"}],\"cancel_requested\":false},\"items\":[],\"requests\":[],\"observations\":[],\"attention\":[],\"effects\":[],\"cursor\":\"\"}\n",
+      "start_with_manual_daemon_rc": 1,
+      "start_with_manual_daemon_refused": true,
+      "observed_before_stop": {
+        "linger": "no",
+        "user_state": "closing",
+        "user_sessions": "",
+        "unit_active": "inactive",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "0",
+        "unit_restarts": "0",
+        "daemon_pids": "1031 ",
+        "agent_pid": "1031"
+      },
+      "stop_rc": 1,
+      "start_rc": 1,
+      "start": "{\"versions\":[],\"version\":\"1\",\"capabilities\":[\"terminal_control_v1\",\"network_control_v1\",\"network_diagnostics_v1\",\"lifecycle_settings_v1\",\"enrollment_v2\",\"enrollment_v3\",\"packaged_profile_v1\",\"reviewed_setup_v1\",\"folder_sharing_v1\",\"context_v1\",\"reviewed_content_v1\",\"onboarding_management_v1\",\"everyday_management_v1\"],\"state\":\"failed\",\"operation\":{\"id\":\"73d8bc6a827c1b551e9a64f359fae0256202a3bc8082db73c29f8cd730ac4d8e\",\"fingerprint\":\"592ee37568f5b1d8ea4c86da0755aba0d26dca7e98ba1c8b90b640c751a2e203\",\"kind\":\"service\",\"state\":\"failed\",\"phase\":\"failed\",\"committed_effects\":[],\"cancel_requested\":false,\"error\":{\"code\":\"MANUAL_DAEMON_RUNNING\",\"message\":\"MANUAL_DAEMON_RUNNING: a daemon started outside the user service owns this state (action: run 'orbit stop', then 'orbit service start')\",\"retryable\":false,\"action\":\"run 'orbit stop', then 'orbit service start'\",\"retry_after_seconds\":\"0\"}},\"items\":[],\"requests\":[],\"observations\":[],\"attention\":[],\"effects\":[],\"cursor\":\"\",\"error\":{\"code\":\"MANUAL_DAEMON_RUNNING\",\"message\":\"MANUAL_DAEMON_RUNNING: a daemon started outside the user service owns this state (action: run 'orbit stop', then 'orbit service start')\",\"retryable\":false,\"action\":\"run 'orbit stop', then 'orbit service start'\",\"retry_after_seconds\":\"0\"}}\norbit: MANUAL_DAEMON_RUNNING: MANUAL_DAEMON_RUNNING: a daemon started outside the user service owns this state (action: run 'orbit stop', then 'orbit service start') (action: run 'orbit stop', then 'orbit service start')\n",
+      "observed": {
+        "linger": "no",
+        "user_state": "closing",
+        "user_sessions": "",
+        "unit_active": "inactive",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "0",
+        "unit_restarts": "0",
+        "daemon_pids": "1031 ",
+        "agent_pid": "1031"
+      },
+      "unit_owns_state": false,
+      "status": "{\"systemd_available\":true,\"unit_installed\":true,\"enabled_on_login\":true,\"currently_running\":true,\"root_verified\":true,\"capture_successful\":true,\"lingering_enabled\":false,\"lingering_instruction\":\"loginctl enable-linger orbit\",\"manual_command\":\"filesync serve --state=/home/orbit/.local/state/filesync --control-listen=127.0.0.1:8080\"}\n",
+      "capture": true,
+      "capture_s": 2.3
+    },
+    "logout_without_linger": {
+      "stopped": false,
+      "stop_s": 61.0,
+      "observed": {
+        "linger": "no",
+        "user_state": "closing",
+        "user_sessions": "",
+        "unit_active": "inactive",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "0",
+        "unit_restarts": "0",
+        "daemon_pids": "1031 ",
+        "agent_pid": "1031"
+      },
+      "admin_write_created_no_session": false
+    },
+    "login_again": {
+      "before": {
+        "linger": "no",
+        "user_state": "closing",
+        "user_sessions": "",
+        "unit_active": "inactive",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "0",
+        "unit_restarts": "0",
+        "daemon_pids": "1031 ",
+        "agent_pid": "1031"
+      },
+      "daemon_pid_in_session": "1031",
+      "offline_edit_captured": true,
+      "capture_s": 1.4
+    },
+    "linger_logout": {
+      "unattended_enable_rc": 0,
+      "unattended_enable": "{\"versions\":[],\"version\":\"1\",\"capabilities\":[\"terminal_control_v1\",\"network_control_v1\",\"network_diagnostics_v1\",\"lifecycle_settings_v1\",\"enrollment_v2\",\"enrollment_v3\",\"packaged_profile_v1\",\"reviewed_setup_v1\",\"folder_sharing_v1\",\"context_v1\",\"reviewed_content_v1\",\"onboarding_management_v1\",\"everyday_management_v1\"],\"state\":\"completed\",\"operation\":{\"id\":\"328a365be459e1857d899ea7d606870cf3e878f14249b197a8ac911c8cd43f2f\",\"fingerprint\":\"45a939a1472fb1f54d9a7f8a46b30cb4fb4a1aeb1301ffa9c6c24c9d9e55c914\",\"kind\":\"service\",\"state\":\"completed\",\"phase\":\"completed\",\"committed_effects\":[{\"path\":\"\",\"state\":\"service_enable\"}],\"cancel_requested\":false},\"items\":[],\"requests\":[],\"observations\":[],\"attention\":[],\"effects\":[],\"cursor\":\"\"}\n",
+      "status": "{\"systemd_available\":true,\"unit_installed\":true,\"enabled_on_login\":true,\"currently_running\":true,\"root_verified\":true,\"capture_successful\":true,\"lingering_enabled\":true,\"lingering_instruction\":\"loginctl enable-linger orbit\",\"manual_command\":\"filesync serve --state=/home/orbit/.local/state/filesync --control-listen=127.0.0.1:8080\"}\n",
+      "observed_after_logout": {
+        "linger": "yes",
+        "user_state": "closing",
+        "user_sessions": "",
+        "unit_active": "inactive",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "0",
+        "unit_restarts": "0",
+        "daemon_pids": "1031 ",
+        "agent_pid": "1031"
+      },
+      "survived_logout": false
+    },
+    "unattended_boot": {
+      "daemon_running": true,
+      "since_boot_ready_s": 0.2,
+      "observed": {
+        "linger": "yes",
+        "user_state": "lingering",
+        "user_sessions": "",
+        "unit_active": "active",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "714",
+        "unit_restarts": "0",
+        "daemon_pids": "714 ",
+        "agent_pid": "714"
+      },
+      "capture": true,
+      "capture_s": 2.3,
+      "final": {
+        "linger": "yes",
+        "user_state": "lingering",
+        "user_sessions": "",
+        "unit_active": "active",
+        "unit_enabled": "enabled",
+        "unit_main_pid": "714",
+        "unit_restarts": "0",
+        "daemon_pids": "714 ",
+        "agent_pid": "714"
+      },
+      "no_user_session": false,
+      "boot_to_capture_s": 13.8,
+      "sessions_raw": "1 1001 orbit    - 705 manager - no -\n3 1000 observer - 732 manager - no -\n9 1000 observer - 884 user    - no -\n",
+      "unit_journal": "[    4.497092] orbit-boot filesync[714]: 2026/10/07 15:08:38 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.\n[    4.501025] orbit-boot filesync[714]: agent ready: device=c1daf25d814ce8f5dcd121a481289b817c4fb9c38c90b95a07b2406dd2b9fbe3 schema=13 peer-listener=[::]:36585 key-pin=0c14d40c1838af8ade4e6bd1d511b4a8db57b51fe67d979884acb7ed9ba5e762 enrollment-listener=disabled control-listener=http://127.0.0.1:8080\n"
+    },
+    "doctor_after_boot": {
+      "rc": 0,
+      "stdout": "{\"overall_status\":\"OK\",\"checks\":[{\"name\":\"daemon_control_addr\",\"category\":\"daemon\",\"status\":\"OK\",\"message\":\"daemon is active on 127.0.0.1:8080\"},{\"name\":\"daemon_control_token\",\"category\":\"daemon\",\"status\":\"OK\",\"message\":\"control credential token permissions are secure (0600)\"},{\"name\":\"identity_key\",\"category\":\"permissions\",\"status\":\"OK\",\"message\":\"identity key permissions are secure (0600)\"},{\"name\":\"state_directory\",\"category\":\"permissions\",\"status\":\"OK\",\"message\":\"state directory permissions are secure (0700)\"},{\"name\":\"metadata_database\",\"category\":\"permissions\",\"status\":\"OK\",\"message\":\"metadata database permissions are secure (0600)\"},{\"name\":\"root_386dabe0\",\"category\":\"roots\",\"status\":\"OK\",\"message\":\"workspace root \\\"/home/orbit/Documents\\\" is mounted and valid\"},{\"name\":\"free_disk_space\",\"category\":\"storage\",\"status\":\"OK\",\"message\":\"state partition has sufficient free space (6806 MiB available)\"},{\"name\":\"wal_file_size\",\"category\":\"storage\",\"status\":\"OK\",\"message\":\"SQLite WAL file is within soft cap (0 MiB)\"},{\"name\":\"data_budget\",\"category\":\"storage\",\"status\":\"OK\",\"message\":\"stored objects (0 MiB) within data budget (10240 MiB)\"},{\"name\":\"network_configuration\",\"category\":\"network\",\"status\":\"OK\",\"message\":\"network configuration is healthy\"},{\"name\":\"membership_revisions\",\"category\":\"membership\",\"status\":\"OK\",\"message\":\"membership revisions and approvals are consistent\"},{\"name\":\"membership_386dabe0\",\"category\":\"membership\",\"status\":\"OK\",\"message\":\"folder 386dabe0 has 1 active members and revision 1\"},{\"name\":\"service_configuration\",\"category\":\"service\",\"status\":\"OK\",\"message\":\"service configuration is normal\"},{\"name\":\"protocol_version\",\"category\":\"protocol\",\"status\":\"OK\",\"message\":\"protocol version 1 is supported\"},{\"name\":\"schema_version\",\"category\":\"protocol\",\"status\":\"OK\",\"message\":\"database schema version 13 matches binary\"},{\"name\":\"exhausted_tasks\",\"category\":\"recovery\",\"status\":\"OK\",\"message\":\"no exhausted durable work tasks\"},{\"name\":\"pending_publications\",\"category\":\"recovery\",\"status\":\"OK\",\"message\":\"zero pending publication journals\"}],\"generated_at\":\"2026-10-07T15:08:47Z\"}\n"
+    }
+  },
+  "success": false,
+  "guest": {
+    "os": "Debian GNU/Linux 13 (trixie)",
+    "kernel": "6.12.111+deb13-cloud-amd64",
+    "systemd": "systemd 257 (257.13-1~deb13u1)",
+    "virt": "kvm"
+  },
+  "ended_at": "2026-10-07T11:08:47-0400"
+}

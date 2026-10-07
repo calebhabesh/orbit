@@ -33,9 +33,9 @@ TG1 transport/rollout, TG2 onboarding, and TG3 command adapter parity are record
 TG3 exact stream/editor adapters and TG4 scoped production proof are recorded;
 TG5 terminal lifetime and packaged entry/adoption are verified; native modes remain T13.
 Reviewed editor-screen and everyday management integration is verified; native/cross-host validation remains T13.
-Next eligible packet: **T13**. Clean release/failure, ordinary LAN and actual-host
-engine validation pass. Existing Tailscale, ordinary native three-host onboarding
-and native login/logout/boot acceptance remain; personal review is deferred.
+**T13 complete for technical acceptance (2026-10-07).** Clean release/failure, ordinary LAN,
+actual-host engine, Tailscale three-host and (in a disposable KVM guest, W17)
+login/logout/boot checks pass; personal use and review remain deferred.
 Existing [P status](status.md) and
 [O status](orbit-status.md) retain their historical evidence and P17 limitations.
 
@@ -61,7 +61,7 @@ by the specifications; this tracker records implementation evidence.
 | T10 | complete | T04, T05, T07, T09 | [Onboarding/device evidence](../evidence/terminal-t10-20261004/summary.md); native/cross-host/owner campaign remains T12/T13 |
 | T11 | complete | T07, T08, T09 | [Everyday TUI evidence](../evidence/terminal-t11-20261004/summary.md); packages/adoption remains T12, cross-host/owner release T13 |
 | T12 | complete | T10, T11 | [Entry/package/adoption evidence](../evidence/terminal-t12-20261004/summary.md); native/cross-host/owner release remains T13 |
-| T13 | in_progress | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | [Release evidence](../evidence/terminal-t13-20261004/summary.md); existing Tailscale, ordinary native third-host and login/logout/boot checks remain; owner review deferred |
+| T13 | complete for technical acceptance (2026-10-07) | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | [Release evidence](../evidence/terminal-t13-20261004/summary.md); login/logout/boot passed in an owner-designated disposable KVM guest ([W17](../evidence/wan-w17-20261007/summary.md)); physical-hardware boot unexecuted; owner use/explanation deferred |
 
 ## Design gate evidence
 
@@ -1210,3 +1210,37 @@ environment. Authenticated Tailscale and ordinary laptop/Pi/VPS private-route
 onboarding/forwarding/retirement/replacement are satisfied. Personal use and unaided owner review remain
 deferred follow-up work, not completion blockers. T13 is still the only open
 packet; there is no T14.
+
+### T13 native lifecycle closeout — 2026-10-07 (W17)
+
+The owner chose a disposable KVM guest as the designated environment for the
+last technical check. `scripts/validation/service_boot_vm.py` boots a Debian 13
+cloud image (SHA-512 checked against Debian's list) on a throwaway overlay,
+installs the packaged amd64 archive with `install.sh user`, and drives real
+logind sessions over SSH. An administrator account observes without creating a
+user session.
+
+The first runs found two product defects. After the packaged install,
+`orbit service enable` refused the packaged unit with `SERVICE_SELECTION_REQUIRED`,
+because the unit's `--state=%h/...` was compared literally. Separately,
+`service start` reported success while setup's manually launched daemon held
+the state lock and the unit crash-looped. `validateSelectedService` now expands
+`%h`. `start`/`restart` require the unit's `MainPID` to be the recorded owner,
+and refuse with `MANUAL_DAEMON_RUNNING` (action: `orbit stop`, then
+`orbit service start`). `orbit stop` now exists as the Orbit entry for the
+graceful stop. Regressions `TestSelectedServiceAcceptsPackagedHomeSpecifier`
+(red before the fix) and `TestStateOwnedByUnitRequiresUnitMainProcess`, plus a
+manual-daemon case in `TestTerminalT02ServiceProcessActionsAndSelection`,
+pass. The duplicated error-code text in service failures was also removed.
+
+Final run ([run5](../evidence/wan-w17-20261007/lifecycle-vm/run5/service-boot-vm.json)):
+unattended enable refused without lingering, naming `loginctl enable-linger orbit`;
+start refused while the setup daemon ran; after `orbit stop` the unit owned the
+state and captured an edit in 2.2 s; logout stopped it in 10.8 s; the next login
+started it and captured an edit made while logged out; with lingering the unit
+survived logout; after a reboot it was active and captured with no user
+session, 13.8 s from guest start. Runs 1–4 retain the failures and harness
+corrections. This is virtual-machine evidence; physical-hardware boot was not
+executed, by the owner's choice. All T13 automatic criteria now have evidence;
+personal use and unaided explanation remain deferred follow-up, and P17 stays
+open on those items.

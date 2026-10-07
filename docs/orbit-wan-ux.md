@@ -1,6 +1,6 @@
 # Orbit automatic-network UX
 
-Status: owner-selected direction, 2026-10-05; W06 implements reviewed CLI setup/pairing and network policy controls; W07 implements the keyboard TUI integration; W12 implements qualified status/doctor and privacy controls; hosted defaults remain later packets. This amends network-related choices in [terminal UX](orbit-terminal-ux.md)
+Status: owner-selected direction, 2026-10-05; W06 implements reviewed CLI setup/pairing and network policy controls; W07 implements the keyboard TUI integration; W12 implements qualified status/doctor and privacy controls; W13/W14 ship the operated hosted default, and W16 records native WAN journeys. User-facing guidance: [connecting across networks](runbooks/networking.md). This amends network-related choices in [terminal UX](orbit-terminal-ux.md)
 and preserves its keyboard, file-management, conflict and recovery contracts.
 [Plan](orbit-wan-implementation-plan.md) and [status](implementation/wan-status.md)
 own delivery. Use the existing Go Bubble Tea/Bubbles/Lip Gloss stack.
@@ -218,8 +218,8 @@ ordinary WAN onboarding remains v3 invitation/approval through reviewed services
 Optional direct listener collision is a route limitation while capture and relay
 remain available. Connection details report dated actual direct/relay observations
 separately from service readiness and stored/applied copies. W11 owns native
-roaming and W12 owns expanded diagnostics/privacy; physical WAN and hosted
-defaults remain later packets.
+roaming and W12 owns expanded diagnostics/privacy; W13/W14/W16 later delivered
+the hosted defaults and physical WAN evidence.
 
 ## W12 qualified status and explicit doctor
 
