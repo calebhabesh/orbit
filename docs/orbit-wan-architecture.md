@@ -501,6 +501,14 @@ ten seconds, then every 120–135 seconds. Oversized/truncated records are disca
 Source and candidates must belong to receiving-interface private prefixes; remote
 interface names are signed labels, rather than assumed local interface names.
 
+Approved peers also exchange these records inside their pinned session, so a
+host firewall that drops inbound multicast and direct traffic on one device no
+longer forces the relay. One sequential worker per daemon refreshes connected
+peers every four minutes. Peer-sent leases are scoped to the local interface
+whose prefix contains them, exclude the receiver's own addresses, are capped at
+four candidates per target and never suppress the public lookup
+([protocol](orbit-wan-protocol.md#peer-lan-exchange-post-w17-2026-10-07)).
+
 The manager holds independent LAN interface leases and public leases, capped at
 16 combined candidates per reviewed target, 128 reviewed routes, and 1,024 LAN
 scope/generation tombstones. Expired candidates cannot initiate a dial; expired

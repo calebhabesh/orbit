@@ -1,0 +1,3 @@
+go test -timeout=45m ./tests/terminal/...
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1510.609s
+EXIT=0

@@ -61,4 +61,4 @@ real devices and networks. Single-run timings are observations, not limits.
 | Failure/recovery, VM resets, storage exhaustion | Passed (virtual ext4) | [T13](../terminal-t13-20261004/summary.md) |
 | TUI/CLI real PTY, packages/adoption | Passed | T13 records; W17 clean reproduction |
 | Native start-at-login, logout, unattended boot | Passed in an owner-designated disposable KVM guest (W17); physical-hardware boot unexecuted | [lifecycle runs](lifecycle-vm/) |
-| Personal use and unaided explanation | Deferred by the 2026-10-04 owner amendment | [P17 record](../../implementation/status.md) |
+| Personal use and unaided explanation | Removed as requirements by the owner, 2026-10-07; not claimed | [P17 record](../../implementation/status.md) |

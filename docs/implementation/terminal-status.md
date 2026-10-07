@@ -35,7 +35,7 @@ TG5 terminal lifetime and packaged entry/adoption are verified; native modes rem
 Reviewed editor-screen and everyday management integration is verified; native/cross-host validation remains T13.
 **T13 complete for technical acceptance (2026-10-07).** Clean release/failure, ordinary LAN,
 actual-host engine, Tailscale three-host and (in a disposable KVM guest, W17)
-login/logout/boot checks pass; personal use and review remain deferred.
+login/logout/boot checks pass; personal use and review are no longer required (owner, 2026-10-07).
 Existing [P status](status.md) and
 [O status](orbit-status.md) retain their historical evidence and P17 limitations.
 
@@ -61,7 +61,7 @@ by the specifications; this tracker records implementation evidence.
 | T10 | complete | T04, T05, T07, T09 | [Onboarding/device evidence](../evidence/terminal-t10-20261004/summary.md); native/cross-host/owner campaign remains T12/T13 |
 | T11 | complete | T07, T08, T09 | [Everyday TUI evidence](../evidence/terminal-t11-20261004/summary.md); packages/adoption remains T12, cross-host/owner release T13 |
 | T12 | complete | T10, T11 | [Entry/package/adoption evidence](../evidence/terminal-t12-20261004/summary.md); native/cross-host/owner release remains T13 |
-| T13 | complete for technical acceptance (2026-10-07) | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | [Release evidence](../evidence/terminal-t13-20261004/summary.md); login/logout/boot passed in an owner-designated disposable KVM guest ([W17](../evidence/wan-w17-20261007/summary.md)); physical-hardware boot unexecuted; owner use/explanation deferred |
+| T13 | complete for technical acceptance (2026-10-07) | T00, T01, T02, T03, T04, T05, T06, T07, T08, T09, T10, T11, T12 | [Release evidence](../evidence/terminal-t13-20261004/summary.md); login/logout/boot passed in an owner-designated disposable KVM guest ([W17](../evidence/wan-w17-20261007/summary.md)); physical-hardware boot unexecuted; owner use/explanation removed as a requirement (2026-10-07) |
 
 ## Design gate evidence
 

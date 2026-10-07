@@ -17,7 +17,15 @@ addresses in normal onboarding. Supporting services remain necessary on networks
 where direct routes fail; their operator, profile, budgets and readiness are
 required delivery evidence. Preserve single-owner trusted replicas, Linux support,
 all causal/durability guarantees and explicit folder approval. P/O/T evidence and
-unfinished technical acceptance remain; personal use/explanation stay deferred.
+unfinished technical acceptance remain; personal use/explanation were removed as requirements on 2026-10-07.
+
+## Owner-directed requirement removal — 2026-10-07
+
+The owner removed the P17 personal-use and unaided learning/explanation
+requirements. They are no longer completion criteria or follow-up work for any
+plan. Historical P17 pilot records and data stay as dated evidence. No
+statement may claim personal adoption or owner understanding, because none was
+measured.
 
 ## Owner-directed delivery amendment — 2026-10-04
 

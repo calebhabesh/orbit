@@ -143,7 +143,8 @@ Acceptance evidence:
 ### W14 outcome — complete for implementation and recorded acceptance, 2026-10-06
 
 Ordinary amd64/arm64 builds embed the live release profile (epoch 1, digest
-`356f0ced…ec165`, expires 2027-01-04) under a frozen authority; fresh setup goes
+`356f0ced…ec165`, expires 2027-01-04; replaced on 2026-10-07 by epoch 2, digest
+`9138a478…ab681`, expires 2027-10-07) under a frozen authority; fresh setup goes
 straight to Automatic with it. Upgrades keep reviewed choices (manual installs get
 a one-time offer; Automatic installs awaiting a profile adopt it at start; same-text
 newer epochs apply at start, changed text needs `orbit network update`). Operator

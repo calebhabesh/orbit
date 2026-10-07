@@ -4,7 +4,8 @@ Active expansion: the owner-selected [native WAN plan](../orbit-wan-implementati
 and [W tracker](wan-status.md), 2026-10-05. W00–W17 are recorded there; the
 [combined W17 release record](../evidence/wan-w17-20261007/summary.md) links all
 WAN and inherited T13 evidence. Existing entries below retain their dated
-P/O/T evidence and limitations, including deferred P17 owner observations.
+P/O/T evidence and limitations. P17 owner use/explanation was removed as a
+requirement by the owner on 2026-10-07 ([scope](../portfolio-scope.md)); its historical records remain.
 
 ## Owner-directed delivery amendment — 2026-10-04
 
@@ -21,7 +22,7 @@ The interface baseline is the owner-approved terminal redesign. Retain the
 [terminal plan](../orbit-terminal-implementation-plan.md) and
 [terminal tracker](terminal-status.md), including incomplete T13 technical checks.
 The W plan above owns the active expansion. P/O evidence below remains historical;
-P17 personal use/explanation is deferred until after delivery.
+P17 personal use/explanation is no longer required (owner removal, 2026-10-07).
 
 Updated: 2026-10-04. P00–P16 have implementation and scoped validation evidence.
 Packaged laptop/Pi/VPS demonstrations pass; current measurements passed 45/45.
@@ -57,7 +58,7 @@ All 10 minimum product scenarios, UI flows, and resource bounds are verified.
 | P14 Web interface | complete | P13 | [evidence](../evidence/p14-20260923/summary.md) |
 | P15 Packaging/lifecycle | complete | P14 | [evidence](../evidence/p15-20260923/summary.md) |
 | P16 Fault campaign | complete | P15 | [clean reproduction](../evidence/release-20261001/release-candidate/reproduction.json); [invariant/scenario map](../evidence/release-20261001/invariant-map.md) |
-| P17 Pilot/release evidence | complete | P16 | [2026-10-04 reconciliation](#p17-delivery-reconciliation--2026-10-04); [historical release](../evidence/release-20261001/summary.md); owner review deferred |
+| P17 Pilot/release evidence | complete | P16 | [2026-10-04 reconciliation](#p17-delivery-reconciliation--2026-10-04); [historical release](../evidence/release-20261001/summary.md); owner use/review removed as a requirement 2026-10-07 |
 
 Packet definitions: [foundations](01-foundations.md), [replication](02-replication.md), [operations](03-operations.md), [delivery](04-delivery.md).
 

@@ -83,8 +83,12 @@ system TLS roots), `self_hosted` (may use private addresses and a reviewed CA) o
 `development` (tests only). Signing refuses a release profile with private
 origins. Keep each signed selection file; later epochs are signed with
 `--previous` so the tool enforces the same authority, environment and a higher
-epoch, exactly as devices do. Recommended validity is 90 days with a new epoch
-signed 30 days before expiry.
+epoch, exactly as devices do. Each epoch needs a new Orbit release, so the hosted
+service uses one-year validity (`--valid-for 8760h`) and signs the next epoch at
+least 30 days before expiry (the expiry alert fires at 30 days). Expiry bounds how
+long a leaked **service key** stays trusted by devices that never update; it does
+not limit a leaked authority key, which can sign any expiry. Shorter validity
+suits a service key held on a shared host if releases are frequent.
 
 ## Configure and start
 
@@ -193,13 +197,16 @@ owner reviews it, so serve old and new side by side:
    owners confirm once with `orbit network update`. Self-hosted: send it to device
    owners. Devices on either epoch keep syncing with each other.
 4. When `orbit_net_refusals_total{reason="expired"}` stays flat after epoch N
-   expires, remove the overlap settings and restart.
+   expires, remove the overlap settings and restart. Current `orbit-net` builds
+   skip an expired overlap epoch at start with a warning; builds before
+   2026-10-07 refuse to start until the overlap settings are removed.
 
 A restart drops ephemeral leases; devices reconnect and reannounce within about
 two minutes and resume synchronization. New invitations require both devices to
 be on the same epoch; a mismatch reports `PROFILE_EPOCH_MISMATCH` naming the
 device to update. Start the overlap and package the new epoch well before the
-current one expires (epoch 1 expires 2027-01-04).
+current one expires. Hosted state on 2026-10-07: epoch 2 (expires 2027-10-07) is
+served and packaged, with epoch 1 as overlap until it expires on 2027-01-04.
 
 **Authority key.** There is no in-band authority change. If the authority key is
 lost or compromised, sign a new profile under a new authority and ask every device

@@ -13,7 +13,10 @@ Automatic mode a device:
 
 1. registers a short-lived signed entry with the Orbit connection service;
 2. tries direct paths first: the local network, a reachable TCP or IPv6
-   address, then a UDP path found with STUN/ICE (QUIC);
+   address, then a UDP path found with STUN/ICE (QUIC). Approved devices also
+   share their local-network addresses with each other over their encrypted
+   link, so two devices at home connect directly even when one of them has a
+   firewall;
 3. falls back to the service's encrypted relay when no direct path works, and
    keeps checking for a direct path while relayed.
 
@@ -35,7 +38,7 @@ not limits. Records: [W16 runs](../evidence/wan-w16-20261006/native-hosted/summa
 
 | Network situation | Result | Evidence |
 | --- | --- | --- |
-| Two devices on the same home LAN | Observed: pairs and syncs (that run used the relay) | W14 laptop/Pi packaged journey |
+| Two devices on the same home LAN | Observed: pairs and syncs. The laptop's firewall blocked Orbit's LAN discovery and direct LAN connections; the last recorded route was direct UDP through the router's public address. The peer LAN exchange (2026-10-07) handles a firewall on one side | W14 laptop/Pi packaged journey; [LAN exchange record](../implementation/wan-status.md#post-w17--same-lan-direct-paths-and-profile-epoch-2-2026-10-07) |
 | LAN discovery and direct LAN paths between approved devices | Local fixtures and namespaces only | W08 |
 | Home router NAT (Raspberry Pi) ↔ cloud VM behind 1:1 NAT (Oracle VPS) | Observed: **direct UDP**; a 4 MiB version in 6–9 s | W16 runs 14–19 |
 | Same pair with UDP blocked on one side | Observed: **relay**, zero direct bytes; 1 MB in 5–8 s each way | W16 forced-relay drill |
@@ -72,8 +75,9 @@ in the [operator runbook](../orbit-net-operator.md).
 
 ## Profile expiry and updates
 
-The release profile (epoch 1) expires on **2027-01-04**. Newer Orbit releases
-carry newer profiles:
+The release profile in current builds (epoch 2) expires on **2027-10-07**.
+Builds that carry epoch 1 keep working until **2027-01-04**; the service accepts
+both until then. Newer Orbit releases carry newer profiles:
 
 - A newer profile from the same operator with the same privacy text is applied
   automatically when the daemon starts.
@@ -132,6 +136,41 @@ survived logout and, after a reboot, was capturing edits 14 s after the guest st
 logged in ([W17 record](../evidence/wan-w17-20261007/summary.md)). That was a
 virtual machine; physical-hardware reboots have not been tested.
 
+## Firewalls on your devices
+
+Orbit never changes firewall settings. Outbound connections are all it needs
+to work, using the relay if necessary. To get a direct connection between two
+devices on the same network:
+
+- **One device accepts inbound connections** (for example a Pi or a desktop
+  with no firewall): nothing to do. Once the devices have reached each other
+  once, they swap local addresses over their encrypted link and the
+  firewalled device connects directly to the open one.
+- **Both devices drop inbound connections** (for example `ufw` or
+  `firewalld` with a deny-incoming policy on both): give Orbit fixed ports on
+  one device and allow them from your local network only. Orbit otherwise
+  picks random ports at each start. Stop the daemon (`orbit stop`), then
+  create `~/.local/state/filesync/direct-network.json`, readable only by you:
+
+  ```json
+  {"interfaces": [], "listen": ":22028", "disabled": false, "udp_listen": ":22028"}
+  ```
+
+  ```sh
+  chmod 600 ~/.local/state/filesync/direct-network.json
+  # ufw example; replace 192.168.1.0/24 with your network
+  sudo ufw allow from 192.168.1.0/24 to any port 22027 proto udp   # discovery
+  sudo ufw allow from 192.168.1.0/24 to any port 22028             # direct TCP and UDP
+  ```
+
+  Then start Orbit again. Only one Orbit daemon per machine can use fixed
+  ports.
+
+`orbit status` on the firewalled device shows **Direct connection** once its
+path to the open device works. The open device may keep showing **Connected
+via relay**, because its own connections toward the firewalled device are
+still blocked. Sync works either way.
+
 ## Troubleshooting
 
 Start with `orbit network status`. Next, run `orbit network doctor`. It checks
@@ -142,6 +181,7 @@ tested. It never changes firewall, router or VPN settings.
 | Message | Meaning and next step |
 | --- | --- |
 | Connected via relay; direct UDP connection unavailable | UDP is filtered somewhere. Sync works; nothing to fix |
+| Connected via relay while both devices are on the same network | A firewall drops inbound connections on both devices. See [Firewalls on your devices](#firewalls-on-your-devices) |
 | Waiting for *device*; your captured changes remain saved here | The other device is off or offline. Changes send when it returns |
 | Cannot reach *device* | No route works. Check both devices' internet access, then open Connection details |
 | Direct connection working; Orbit connection services unavailable | The service is down; existing direct paths continue |

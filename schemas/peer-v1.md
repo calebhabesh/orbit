@@ -28,6 +28,11 @@ boolean `retryable`, and `action`. V1 handler codes are `UNAUTHORIZED`,
 `MEMBERSHIP_MISMATCH`, `INCOMPATIBLE_VERSION`, `INVALID_REQUEST`,
 `SNAPSHOT_EXPIRED`, `CONTENT_UNAVAILABLE`, `RETRY_EXHAUSTED`, and `IO_ERROR`.
 
+`POST /peer/v1/lan` carries `LANExchange` (`version` `"1"`, `records`: at most
+eight signed `orbit-lan-v1` records) in both directions between approved
+peers; see [the WAN protocol](../docs/orbit-wan-protocol.md#peer-lan-exchange-post-w17-2026-10-07).
+Peers without LAN advertising, or that predate it, answer `404 INVALID_REQUEST`.
+
 T05 membership inspection/rollout uses `POST /peer/v1/membership/get` with
 `MembershipGetRequest`/`MembershipGetResponse`. It authenticates the claimed
 member key and denies retired/nonmember clients. Optional `from_revision` is a
