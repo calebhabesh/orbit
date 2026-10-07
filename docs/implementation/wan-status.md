@@ -1110,3 +1110,52 @@ went from 38.2 s to 22.7 s natively
 ([log](../evidence/wan-lan-exchange-20261007/logs/native-lan-poll15.log)).
 The repository then became public after the checks in the
 [publication record](../publication-2026-10-07.md).
+
+## CI split and pre-trial reliability (2026-10-07)
+
+Owner-directed, Claude Code session. CI ran the whole release suite twice per
+push on amd64 and arm64 (25–50 min) and was red on most commits.
+
+**CI tiers** ([verification](../verification.md#test-tiers-and-ci)).
+`ci.yml` runs `make ci-fast` on pushes to `main` and PRs: format, vet, cross
+builds, unit/model and integration tests with `-short`; docs-only changes skip
+it. `full.yml` runs `check-core`, `test-terminal`, `test-terminal-packages` and
+`test-race-core` as parallel jobs on native amd64/arm64 nightly, on `v*` tags and
+on demand (`suites`/`attempts` inputs). `release.yml` drafts a GitHub release
+with the end-user packages on `v*` tags. The eight unit tests over ~10 s skip
+under `-short`.
+
+**Fixes.**
+- `scripts/build_packages.go` overwrote `bin/filesync` with the amd64 build, so
+  arm64 integration tests failed with `exec format error`; per-arch binaries now
+  go to `bin/filesync-linux-<arch>`. This exposed `TestP15VersionAndBuildMetadata`
+  hardcoding `linux/amd64` (now the host platform).
+- `TestWANW04BrokerSeesOnlyInnerTLSCiphertext` wrapped the reserved relay leg
+  before the server installed the stream ("empty broker inspection"); it now
+  waits for the stream (30/30 under `-race`).
+- W16 `tui-three-host` rehearsal failed on 2 of 6 amd64 CI runs. After the
+  harness learned to report the CLI's stderr, 8 parallel runs caught it twice:
+  `Post .../control/terminal/v1/mutate: net/http: timeout awaiting response
+  headers` (join submission) and a failed status query. Cause: terminal control
+  calls share `terminalMu`; the setup worker holds it for up to an 8 s slice and
+  a setup/adopt/join mutation advances its job for up to 30 s before replying,
+  while the client waited 5 s for headers. The control client now waits 12 s
+  (15 s total) for queries and 35 s (40 s) for setup mutations.
+- `TestTerminalT08CLIHistoryReviewRestoreExportAndTools` failed once when the
+  large CLI merge returned durable `pending` (exit 5); it now waits for recovery
+  to complete the operation before checking bytes.
+
+Commands and results:
+
+| Command | Result |
+| --- | --- |
+| `make ci-fast` (local) | passed, 1 min 33 s |
+| `ci.yml` on `2ceece5` | passed, 197 s |
+| `full.yml` on `2ceece5`, every suite ×2 per arch (run 37684226223) | 16/16 passed; `test-terminal` 23–24 min, `test-race-core` 5–7 min, `check-core` 4 min |
+| W16 rehearsal locally, 9 runs (subtest, single CPU, both variants) | 9/9 passed (did not reproduce) |
+| `make demo` | passed |
+
+**Limitation.** The setup worker still performs enrollment network I/O while
+holding `terminalMu`, so a status query during a slow join can wait several
+seconds. Longer client timeouts hide the error; moving that I/O outside the
+lock is the follow-up.
