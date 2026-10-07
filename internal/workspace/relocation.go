@@ -35,6 +35,41 @@ func (w *Workspace) enterIO(ctx context.Context) (context.Context, func()) {
 	return context.WithValue(ctx, ioContextKey{}, w), w.ioGate.RUnlock
 }
 
+type folderContextKey struct {
+	w      *Workspace
+	folder history.ID
+}
+
+// enterFolder makes the caller the folder's only working-tree writer in this
+// process. Recovery treats every journaled publication as interrupted, so it
+// must never run beside a live one. Nested calls inherit the caller's hold.
+// The IO gate is taken first and released last; relocation, which holds that
+// gate exclusively, therefore never waits on a folder hold.
+func (w *Workspace) enterFolder(ctx context.Context, folder history.ID) (context.Context, func(), error) {
+	ctx, release := w.enterIO(ctx)
+	key := folderContextKey{w, folder}
+	if ctx.Value(key) != nil {
+		return ctx, release, nil
+	}
+	w.folderMu.Lock()
+	if w.folderGates == nil {
+		w.folderGates = make(map[history.ID]chan struct{})
+	}
+	gate := w.folderGates[folder]
+	if gate == nil {
+		gate = make(chan struct{}, 1)
+		w.folderGates[folder] = gate
+	}
+	w.folderMu.Unlock()
+	select {
+	case gate <- struct{}{}:
+	case <-ctx.Done():
+		release()
+		return ctx, nil, ctx.Err()
+	}
+	return context.WithValue(ctx, key, true), func() { <-gate; release() }, nil
+}
+
 type RelocationResult struct {
 	Path           string `json:"path"`
 	SourceRetained bool   `json:"source_retained"`

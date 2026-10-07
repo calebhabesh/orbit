@@ -93,6 +93,8 @@ type Options struct {
 type Workspace struct {
 	ioGate         sync.RWMutex
 	relocationMu   sync.Mutex
+	folderMu       sync.Mutex
+	folderGates    map[history.ID]chan struct{}
 	repo           *repository.DB
 	random         io.Reader
 	now            func() time.Time
@@ -361,13 +363,19 @@ type ScanResult struct {
 }
 
 func (workspace *Workspace) Scan(ctx context.Context, folder history.ID) (ScanResult, error) {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, folder)
+	if holdErr != nil {
+		return ScanResult{}, holdErr
+	}
 	defer release()
 	return workspace.ScanWithOptions(ctx, folder, ScanOptions{FullContent: true})
 }
 
 func (workspace *Workspace) ScanWithOptions(ctx context.Context, folder history.ID, opts ScanOptions) (ScanResult, error) {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, folder)
+	if holdErr != nil {
+		return ScanResult{}, holdErr
+	}
 	defer release()
 	if err := workspace.Recover(ctx, folder); err != nil {
 		return ScanResult{}, err
@@ -654,7 +662,10 @@ func (workspace *Workspace) randomToken() (string, error) {
 }
 
 func (workspace *Workspace) ApproveDeletions(ctx context.Context, folder history.ID, token string) ([]history.Envelope, error) {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, folder)
+	if holdErr != nil {
+		return nil, holdErr
+	}
 	defer release()
 	_, paths, err := workspace.repo.DeletionProposal(ctx, folder, token)
 	if err != nil {
@@ -695,13 +706,19 @@ func (workspace *Workspace) ApproveDeletions(ctx context.Context, folder history
 }
 
 func (workspace *Workspace) Apply(ctx context.Context, id history.VersionID) error {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, id.Folder)
+	if holdErr != nil {
+		return holdErr
+	}
 	defer release()
 	return workspace.ApplyWithOperationID(ctx, id, "")
 }
 
 func (workspace *Workspace) ApplyWithOperationID(ctx context.Context, id history.VersionID, opID string) error {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, id.Folder)
+	if holdErr != nil {
+		return holdErr
+	}
 	defer release()
 	if err := workspace.Recover(ctx, id.Folder); err != nil {
 		return err
@@ -1196,7 +1213,10 @@ func parentDir(p string) string {
 }
 
 func (workspace *Workspace) Recover(ctx context.Context, folder history.ID) error {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, folder)
+	if holdErr != nil {
+		return holdErr
+	}
 	defer release()
 	if err := workspace.RecoverFileMutations(ctx, folder); err != nil {
 		return err
@@ -1528,7 +1548,10 @@ func (workspace *Workspace) InspectRecoveryCopies(ctx context.Context, folder hi
 // ReclaimRecoveryCopies safely scans the workspace scratch directory for unreferenced
 // or committed recovery files, releases their storage reservations, and unlinks them.
 func (workspace *Workspace) ReclaimRecoveryCopies(ctx context.Context, folder history.ID) (int, uint64, error) {
-	ctx, release := workspace.enterIO(ctx)
+	ctx, release, holdErr := workspace.enterFolder(ctx, folder)
+	if holdErr != nil {
+		return 0, 0, holdErr
+	}
 	defer release()
 	root, err := workspace.openRoot(ctx, folder)
 	if err != nil {
