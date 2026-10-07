@@ -422,10 +422,17 @@ class WANNode(TerminalNode):
             raise RuntimeError('root review incomplete')
         submitted = self.orbit(args[0], '--request-file',
                                self.root + '/' + relative + '-review.json', '--timeout', '0', '--json', check=False)
-        result = json.loads(submitted['stdout'])
-        if submitted['returncode'] and not (result.get('error', {}).get('retryable') and result.get('operation')):
+        try:
+            result = json.loads(submitted['stdout'])
+        except ValueError:
+            # Transport errors exit nonzero with text on stderr only.
+            result = {}
+        if not result or (submitted['returncode'] and not (result.get('error', {}).get('retryable') and result.get('operation'))):
             self.put('last-cli-failure.json', json.dumps(submitted).encode())
-            raise RuntimeError(self.role + ' setup failed; private output retained on host')
+            detail = ''
+            if self.rehearsal:
+                detail = f": exit {submitted['returncode']}: {submitted.get('stderr', '')[-500:]!r}"
+            raise RuntimeError(self.role + ' setup failed; private output retained on host' + detail)
         self.identify()
         return result
 
