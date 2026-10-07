@@ -932,8 +932,9 @@ rolls it back to the pre-WAN binary. Routed enrollment still requires both
 devices on one profile digest; `profileMismatch` classifies a mismatch by
 authority and epoch. A joiner whose own relay is not yet ready after a daemon
 restart retries in 3 s instead of 25 s, because nothing reached the inviter's
-per-source enrollment budget; status polling keeps the 25 s pace that budget
-(5 requests/minute) requires.
+per-source enrollment budget. Status polling after submission runs every 15 s
+(2026-10-07; previously 25 s), four of the inviter's five per-source requests a
+minute, which shortens the wait after approval.
 
 ## W16 native corrections: service budget and roaming control
 
