@@ -9,6 +9,9 @@ on:
       suites:
         description: 'JSON list of make targets to run'
         default: '["check-core", "test-terminal", "test-terminal-packages", "test-race-core"]'
+      attempts:
+        description: 'JSON list of attempt labels; more entries run parallel copies (flake hunting)'
+        default: '[1]'
   schedule:
     - cron: '17 6 * * *'
   push:
@@ -23,11 +26,12 @@ concurrency:
 
 jobs:
   suite:
-    name: ${{ matrix.suite }} (${{ matrix.arch }})
+    name: "${{ matrix.suite }} (${{ matrix.arch }}) try ${{ matrix.attempt }}"
     strategy:
       fail-fast: false
       matrix:
         arch: [amd64, arm64]
+        attempt: ${{ fromJSON(inputs.attempts || '[1]') }}
         suite: ${{ fromJSON(inputs.suites || '["check-core", "test-terminal", "test-terminal-packages", "test-race-core"]') }}
         include:
           - arch: amd64

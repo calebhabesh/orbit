@@ -213,6 +213,17 @@ SHELL_CLIENT = (
     'code,_,out=data.partition(b"\\n");sys.stdout.buffer.write(out);sys.exit(int(code))\n')
 
 
+def decode_output(text, what, stderr='', rehearsal=False):
+    """JSON from a worker or CLI; name the call when it printed none."""
+    try:
+        return json.loads(text)
+    except ValueError:
+        detail = f'{what}: no JSON output ({len(text)} bytes)'
+        if rehearsal and stderr:
+            detail += f'; stderr {stderr[-500:]!r}'
+        raise RuntimeError(detail) from None
+
+
 class WANNode(TerminalNode):
     def __init__(self, host, role, rehearsal=False, netns=None, shell=None):
         super().__init__(host, role)
@@ -236,7 +247,7 @@ class WANNode(TerminalNode):
                                     capture_output=True, text=True, timeout=320)
             if result.returncode:
                 raise RuntimeError(self.role + ' ' + action + ' failed; private root retained')
-            return json.loads(result.stdout)
+            return decode_output(result.stdout, self.role + ' ' + action + ' (shell)', result.stderr, self.rehearsal)
         if self.host != 'local':
             remote = shlex.join(command)
             if self.netns:
@@ -248,7 +259,7 @@ class WANNode(TerminalNode):
                                 timeout=320 if action == 'wan-tui' else 140)
         if result.returncode:
             raise RuntimeError(self.role + ' ' + action + ' failed; private root retained')
-        return json.loads(result.stdout)
+        return decode_output(result.stdout, self.role + ' ' + action, result.stderr, self.rehearsal)
 
     def daemon_logs(self):
         """Logged daemon output with IPv4 addresses redacted (diagnostics only)."""
@@ -417,7 +428,7 @@ class WANNode(TerminalNode):
         if invitation:
             self.put('invitation.txt', invitation.encode())
             args += ['--invitation-file', self.root + '/invitation.txt']
-        preview = json.loads(self.orbit(*args))
+        preview = decode_output(self.orbit(*args), self.role + ' ' + args[0] + ' preview')
         if not preview['preview']['complete']:
             raise RuntimeError('root review incomplete')
         submitted = self.orbit(args[0], '--request-file',
