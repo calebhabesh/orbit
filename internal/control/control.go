@@ -45,14 +45,19 @@ type Options struct {
 	IdempotencyTTL time.Duration
 	LocalDevice    history.ID
 	RepairPeers    []replication.RepairPeer
+	// SetupStepBound limits each setup step that holds terminalMu; zero uses
+	// DefaultSetupStepBound. Steps that grow with folder size are not bounded.
+	SetupStepBound time.Duration
 }
 
 type Controller struct {
 	contentMu  sync.Mutex
 	terminalMu sync.Mutex
-	db         *repository.DB
-	ws         *workspace.Workspace
-	options    Options
+	// setupActive names setup operations being advanced; guarded by terminalMu.
+	setupActive map[string]bool
+	db          *repository.DB
+	ws          *workspace.Workspace
+	options     Options
 }
 
 func New(db *repository.DB, ws *workspace.Workspace, opts ...Options) *Controller {
@@ -66,10 +71,14 @@ func New(db *repository.DB, ws *workspace.Workspace, opts ...Options) *Controlle
 	if opt.IdempotencyTTL == 0 {
 		opt.IdempotencyTTL = 24 * time.Hour
 	}
+	if opt.SetupStepBound == 0 {
+		opt.SetupStepBound = DefaultSetupStepBound
+	}
 	return &Controller{
-		db:      db,
-		ws:      ws,
-		options: opt,
+		db:          db,
+		ws:          ws,
+		options:     opt,
+		setupActive: map[string]bool{},
 	}
 }
 

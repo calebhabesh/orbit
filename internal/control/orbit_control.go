@@ -391,7 +391,7 @@ func (c *Controller) ResumeSetup(ctx context.Context, req ResumeSetupRequest) (*
 		c.terminalMu.Lock()
 		r := record.Result
 		if r.State != "completed" {
-			r, err = c.advanceSetup(ctx, record)
+			r, err = c.advanceSetup(ctx, context.WithoutCancel(ctx), record)
 		}
 		c.terminalMu.Unlock()
 		if err != nil {
@@ -1405,7 +1405,7 @@ func (c *Controller) CompleteJoinFlow(ctx context.Context, req JoinFlowCompleteR
 	r := record.Result
 	var err error
 	if r.State != "completed" {
-		r, err = c.advanceSetup(ctx, record)
+		r, err = c.advanceSetup(ctx, context.WithoutCancel(ctx), record)
 		if err != nil {
 			return nil, err
 		}

@@ -15,6 +15,7 @@ import (
 
 	"github.com/calebhabesh/file-sync/internal/config"
 	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/calebhabesh/file-sync/internal/history"
 	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/replication"
@@ -168,7 +169,7 @@ func (c *Controller) terminalSetupMutation(ctx context.Context, m tc.Mutation) (
 			return r, err
 		}
 		if old.Result.Operation.State != "completed" {
-			return c.advanceSetup(ctx, old)
+			return c.advanceSetup(ctx, context.WithoutCancel(ctx), old)
 		}
 		return r, nil
 	} else if !errors.Is(err, repository.ErrOperationNotFound) {
@@ -248,7 +249,7 @@ func (c *Controller) terminalSetupMutation(ctx context.Context, m tc.Mutation) (
 	if err = c.callHook("terminal.setup.reviewed"); err != nil {
 		return r, err
 	}
-	return c.advanceSetup(owned, record)
+	return c.advanceSetup(owned, context.WithoutCancel(owned), record)
 }
 func (c *Controller) revalidateAdoption(ctx context.Context, want workspace.AdoptionWalk) error {
 	next, err := c.ws.BeginAdoption(ctx, want.Preview.Root)
@@ -268,11 +269,7 @@ func (c *Controller) revalidateAdoption(ctx context.Context, want workspace.Adop
 func (c *Controller) saveSetupPhase(ctx context.Context, record *repository.TerminalRecord, job setupJob, phase string) error {
 	r := &record.Result
 	r.Operation.Phase = phase
-	r.Join.Operation = *r.Operation
-	if r.Readiness != nil {
-		r.Join.Readiness = *r.Readiness
-	}
-	if err := c.db.SaveOnboarding(ctx, record.Mutation.OperationID, job, *record, false); err != nil {
+	if err := c.saveSetupRecord(ctx, record, job); err != nil {
 		return err
 	}
 	folder := terminalID(job.Folder)
@@ -281,7 +278,42 @@ func (c *Controller) saveSetupPhase(ctx context.Context, record *repository.Term
 	}
 	return c.callHook("terminal.setup." + phase)
 }
-func (c *Controller) advanceSetup(ctx context.Context, record repository.TerminalRecord) (tc.Result, error) {
+func (c *Controller) saveSetupRecord(ctx context.Context, record *repository.TerminalRecord, job setupJob) error {
+	r := &record.Result
+	r.Join.Operation = *r.Operation
+	if r.Readiness != nil {
+		r.Join.Readiness = *r.Readiness
+	}
+	return c.db.SaveOnboarding(ctx, record.Mutation.OperationID, job, *record, false)
+}
+
+// DefaultSetupStepBound limits one setup step that holds terminalMu.
+const DefaultSetupStepBound = 8 * time.Second
+
+// advanceSetup requires terminalMu. ctx bounds the steps that hold it. Steps
+// whose duration grows with the folder (root revalidation, capture, content
+// import and publication) release it and run under work, which no step bound
+// cancels: a bound shorter than one such step would otherwise restart it from
+// the beginning on every attempt.
+func (c *Controller) advanceSetup(ctx, work context.Context, record repository.TerminalRecord) (tc.Result, error) {
+	// A long step of this or another job may have released terminalMu since
+	// the caller read this record. Continue from the durable one, and let only
+	// one caller advance a job; others report its durable progress.
+	id := record.Mutation.OperationID
+	if err := c.db.TerminalRecord(ctx, "operation/"+id, &record); err != nil {
+		return record.Result, err
+	}
+	if c.setupActive[id] || record.Result.Operation.State == "completed" {
+		return record.Result, nil
+	}
+	c.setupActive[id] = true
+	defer delete(c.setupActive, id)
+	var cancels []context.CancelFunc
+	defer func() {
+		for _, cancel := range cancels {
+			cancel()
+		}
+	}()
 	r := &record.Result
 	m := record.Mutation
 	plan := setupPlan(m)
@@ -349,6 +381,21 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		}
 		return *r, nil
 	}
+	long := func(step func(context.Context) error) error {
+		// Queries during the step report this attempt, not a prior block.
+		if err := c.saveSetupRecord(ctx, &record, job); err != nil {
+			return err
+		}
+		c.terminalMu.Unlock()
+		err := func() error {
+			defer c.terminalMu.Lock()
+			return step(work)
+		}()
+		next, cancel := context.WithTimeout(work, c.options.SetupStepBound)
+		cancels = append(cancels, cancel)
+		ctx = next
+		return err
+	}
 	if !job.Configured {
 		if plan.Network != nil {
 			// Reviewed Automatic naming the packaged digest installs that profile
@@ -390,7 +437,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		}
 		defer client.Close()
 		if job.Wire == nil {
-			if err := c.revalidateAdoption(ctx, job.Root); err != nil {
+			if err := long(func(work context.Context) error { return c.revalidateAdoption(work, job.Root) }); err != nil {
 				return block(err)
 			}
 			expiry, _ := time.Parse(time.RFC3339Nano, m.Join.Invitation.ExpiresAt)
@@ -562,7 +609,7 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 				return block(err)
 			}
 		} else if errors.Is(err, repository.ErrRootNotRegistered) || errors.Is(err, repository.ErrFolderUnknown) {
-			if err = c.revalidateAdoption(ctx, job.Root); err != nil {
+			if err = long(func(work context.Context) error { return c.revalidateAdoption(work, job.Root) }); err != nil {
 				return block(err)
 			}
 			if _, err = c.db.AdoptionCapacity(ctx, plan.Root, uint64(job.Root.Preview.Bytes), uint64(job.Root.Preview.Files+job.Root.Preview.Directories), plan.Settings); err != nil {
@@ -605,8 +652,15 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 			return block(err)
 		}
 	}
-	// Local bootstrap precedes remote history import and all publication.
-	scan, err := c.ws.Scan(ctx, folder)
+	// Local bootstrap precedes remote history import and all publication. After
+	// one complete capture, later attempts rescan by observation like scheduled
+	// quick scans, rather than rehashing the whole folder on every retry.
+	var scan workspace.ScanResult
+	err := long(func(work context.Context) error {
+		var e error
+		scan, e = c.ws.ScanWithOptions(work, folder, workspace.ScanOptions{FullContent: !job.Captured})
+		return e
+	})
 	if err != nil {
 		r.Readiness.Uncaptured++
 		return block(err)
@@ -681,13 +735,19 @@ func (c *Controller) advanceSetup(ctx context.Context, record repository.Termina
 		}
 		// First pull imports/fetches without publishing. Capture diagnostics have
 		// already been checked. A second pass publishes through the owning workspace.
-		if _, err = replication.NewSyncer(c.db, nil, client, c.options.LocalDevice, terminalID(inv.Inviter), folder, approved, replication.TransferOptions{}).Sync(ctx); err != nil {
+		if err = long(func(work context.Context) error {
+			_, e := replication.NewSyncer(c.db, nil, client, c.options.LocalDevice, terminalID(inv.Inviter), folder, approved, replication.TransferOptions{}).Sync(work)
+			return e
+		}); err != nil {
 			return block(err)
 		}
 		if err = c.saveSetupPhase(ctx, &record, job, "publishing"); err != nil {
 			return *r, err
 		}
-		if _, err = replication.NewSyncer(c.db, c.ws, client, c.options.LocalDevice, terminalID(inv.Inviter), folder, approved, replication.TransferOptions{}).Sync(ctx); err != nil {
+		if err = long(func(work context.Context) error {
+			_, e := replication.NewSyncer(c.db, c.ws, client, c.options.LocalDevice, terminalID(inv.Inviter), folder, approved, replication.TransferOptions{}).Sync(work)
+			return e
+		}); err != nil {
 			return block(err)
 		}
 	}
@@ -782,31 +842,65 @@ func (c *Controller) onboardingRetirementSnapshots(ctx context.Context, membersh
 }
 
 // ResumeSetupJobs is owned by the daemon; client cancellation only stops waiting.
+// ctx is the daemon's lifetime: it cancels long steps, while each step holding
+// terminalMu has its own bound.
 func (c *Controller) ResumeSetupJobs(ctx context.Context) error {
 	c.terminalMu.Lock()
 	defer c.terminalMu.Unlock()
-	if err := c.recoverApprovedRoutes(ctx); err != nil {
+	locked, cancel := context.WithTimeout(ctx, c.options.SetupStepBound)
+	defer cancel()
+	if err := c.recoverApprovedRoutes(locked); err != nil {
 		return err
 	}
-	records, err := c.db.TerminalOperations(ctx)
+	records, err := c.db.TerminalOperations(locked)
 	if err != nil {
 		return err
 	}
-	for _, record := range records {
-		if record.Mutation.Kind != "setup" && record.Mutation.Kind != "adopt" && record.Mutation.Kind != "join" {
+	for _, listed := range records {
+		if !resumableSetup(listed) {
 			continue
 		}
-		if record.Result.Operation.State == "completed" {
-			continue
+		step, cancel := context.WithTimeout(ctx, c.options.SetupStepBound)
+		// An earlier job's long step released terminalMu; recheck this one.
+		var record repository.TerminalRecord
+		err = c.db.TerminalRecord(step, "operation/"+listed.Mutation.OperationID, &record)
+		if err == nil && resumableSetup(record) {
+			_, err = c.advanceSetup(step, ctx, record)
 		}
-		if record.Result.Error != nil && (record.Result.Error.Code == "STALE_VIEW" || record.Result.Error.Code == "EXPIRED_ATTEMPT" || record.Result.Error.Code == "EXPIRED_OR_DECLINED_ATTEMPT") {
-			continue
-		}
-		if _, err = c.advanceSetup(ctx, record); err != nil {
+		cancel()
+		if err != nil {
 			return fmt.Errorf("resume setup job: %w", err)
 		}
 	}
 	return nil
+}
+
+func resumableSetup(record repository.TerminalRecord) bool {
+	if record.Mutation.Kind != "setup" && record.Mutation.Kind != "adopt" && record.Mutation.Kind != "join" {
+		return false
+	}
+	if record.Result.Operation.State == "completed" {
+		return false
+	}
+	return record.Result.Error == nil || (record.Result.Error.Code != "STALE_VIEW" && record.Result.Error.Code != "EXPIRED_ATTEMPT" && record.Result.Error.Code != "EXPIRED_OR_DECLINED_ATTEMPT")
+}
+
+// JoiningFolders names folders whose join the setup worker is still resuming.
+// That job imports, fetches and publishes the folder itself; scheduled scans and
+// syncs wait so one owner publishes the joining working tree. It reads durable
+// records only, not terminalMu, so the scheduler never waits on a setup slice.
+func (c *Controller) JoiningFolders(ctx context.Context) (map[history.ID]bool, error) {
+	records, err := c.db.TerminalOperations(ctx)
+	if err != nil {
+		return nil, err
+	}
+	joining := make(map[history.ID]bool)
+	for _, record := range records {
+		if record.Mutation.Kind == "join" && record.Result.Join != nil && resumableSetup(record) {
+			joining[terminalID(record.Result.Join.Folder)] = true
+		}
+	}
+	return joining, nil
 }
 
 // The setup review binds startup mode. Its child operation has a deterministic
