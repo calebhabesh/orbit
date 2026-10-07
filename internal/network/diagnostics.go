@@ -162,7 +162,7 @@ func (m *ConnectionManager) ProbeTCP(ctx context.Context, t Target, trust *tls.C
 			return ProbeResult{Kind: kind, Code: "NOT_TESTED"}
 		}
 		r.address = ""
-		conn, err = m.dialTLSCandidates(work, t, r, validated.transport.TLSClientConfig, nil)
+		conn, err = m.dialTLSCandidates(context.WithValue(work, relayProbeKey{}, true), t, r, validated.transport.TLSClientConfig, nil)
 	} else {
 		r.stream = nil
 		conn, err = m.dialTLSCandidates(work, t, r, validated.transport.TLSClientConfig, m.directCandidates(work, t))

@@ -83,6 +83,7 @@ type ConnectionManager struct {
 	observations         map[Target]Observation
 	requests             map[*requestWork]bool
 	connections          map[*ownedConn]bool
+	relaySlots           map[Target]chan struct{}
 	wg                   sync.WaitGroup
 	done                 chan struct{}
 	iceProvider          func(context.Context, Target) (*QUICEndpoint, net.Addr, error)
@@ -104,7 +105,7 @@ func NewManager(opts ManagerOptions) *ConnectionManager {
 	lifetime, cancel := context.WithCancel(context.Background())
 	return &ConnectionManager{timing: (protocol.RouteTiming{}).Effective(), candidateRevisions: map[Target]uint64{}, directCooldowns: map[Target]directCooldown{}, iceFailures: map[Target]error{}, quicSlots: make(chan struct{}, MaxActivePeerSlots), lifetime: lifetime, cancel: cancel, now: opts.Now, dial: opts.DialContext, generation: opts.Generation,
 		lan: map[lanKey]candidateLease{}, public: map[Target]candidateLease{}, sources: map[Target]candidateSource{}, peerDials: map[Target]int{}, routes: map[Target]manualRoute{}, pools: map[poolKey]*managedPool{}, observations: map[Target]Observation{},
-		requests: map[*requestWork]bool{}, connections: map[*ownedConn]bool{}, done: make(chan struct{}), dataListener: NewStreamListener(), enrollmentListener: NewStreamListener()}
+		requests: map[*requestWork]bool{}, connections: map[*ownedConn]bool{}, relaySlots: map[Target]chan struct{}{}, done: make(chan struct{}), dataListener: NewStreamListener(), enrollmentListener: NewStreamListener()}
 }
 
 // SetManual imports reviewed v1 intent; the endpoint never supplies trust. It
@@ -300,14 +301,63 @@ type ownedConn struct {
 	target  Target
 	once    sync.Once
 	route   string
+	release func()
 }
 
 func (c *ownedConn) Close() error {
 	err := c.Conn.Close()
-	c.once.Do(func() { c.manager.connMu.Lock(); delete(c.manager.connections, c); c.manager.connMu.Unlock() })
+	c.once.Do(func() {
+		c.manager.connMu.Lock()
+		delete(c.manager.connections, c)
+		c.manager.connMu.Unlock()
+		if c.release != nil {
+			c.release()
+		}
+	})
 	return err
 }
+
+// relayProbeKey marks an explicit diagnostic relay handshake: it closes at
+// once and must not wait behind the pool's tunnel; pair limits still apply.
+type relayProbeKey struct{}
+
+// relaySlot is this device's single initiator relay tunnel toward a target.
+// The client and service allow two tunnels per device pair, shared by both
+// directions; holding one per direction leaves the peer's direction a slot.
+// A concurrent request waits for the open tunnel (net/http hands it over when
+// idle) rather than dialing another and spending service budget.
+func (m *ConnectionManager) relaySlot(ctx context.Context, target Target) (func(), error) {
+	m.mu.Lock()
+	slot := m.relaySlots[target]
+	if slot == nil {
+		slot = make(chan struct{}, 1)
+		m.relaySlots[target] = slot
+	}
+	m.mu.Unlock()
+	select {
+	case slot <- struct{}{}:
+		var once sync.Once
+		return func() { once.Do(func() { <-slot }) }, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	case <-m.lifetime.Done():
+		return nil, ErrClosed
+	}
+}
 func (m *ConnectionManager) connect(ctx context.Context, target Target, address string, streams ...StreamDialer) (net.Conn, error) {
+	var release func()
+	if len(streams) > 0 && streams[0] != nil && ctx.Value(relayProbeKey{}) == nil {
+		var err error
+		if release, err = m.relaySlot(ctx, target); err != nil {
+			return nil, err
+		}
+	}
+	keep := false
+	defer func() {
+		if release != nil && !keep {
+			release()
+		}
+	}()
 	m.mu.Lock()
 	if m.closed {
 		m.mu.Unlock()
@@ -352,7 +402,7 @@ func (m *ConnectionManager) connect(ctx context.Context, target Target, address 
 	if len(streams) > 0 && streams[0] != nil {
 		route = "relay"
 	}
-	owned := &ownedConn{Conn: c, manager: m, target: target, route: route}
+	owned := &ownedConn{Conn: c, manager: m, target: target, route: route, release: release}
 	m.mu.Lock()
 	if m.closed || ctx.Err() != nil {
 		m.mu.Unlock()
@@ -375,6 +425,7 @@ func (m *ConnectionManager) connect(ctx context.Context, target Target, address 
 	m.connections[owned] = true
 	m.connMu.Unlock()
 	m.mu.Unlock()
+	keep = true
 	return owned, nil
 }
 

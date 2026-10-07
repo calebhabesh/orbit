@@ -37,6 +37,15 @@ const (
 	ControlStaleTimeout            = 75 * time.Second
 	MaxMetadataOperationsPerMinute = 60
 	MetadataBurst                  = 10
-	MaxNetworkHeaderBytes          = 16 << 10
-	MaxDiscoveryDatagramBytes      = 1200
+	// MaxOutstandingChallenges is the service's per-device bound on issued,
+	// unconsumed challenges. Each signed operation holds one until it posts.
+	MaxOutstandingChallenges = 2
+	// ClientMetadataBurst stays below MetadataBurst: a restarted daemon cannot
+	// know how much of the service's bucket its previous instance spent.
+	ClientMetadataBurst = 6
+	// AnnouncementRenewalMargin withdraws readiness this long before an
+	// accepted announcement expires when renewals keep failing transiently.
+	AnnouncementRenewalMargin = time.Minute
+	MaxNetworkHeaderBytes     = 16 << 10
+	MaxDiscoveryDatagramBytes = 1200
 )
