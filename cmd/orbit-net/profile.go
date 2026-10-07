@@ -43,6 +43,43 @@ func keygen(args []string, out, errOut io.Writer) error {
 	return nil
 }
 
+// verifyKey checks restored custody material locally. In addition to matching
+// the stored public half, it proves the private seed can sign for that authority.
+// It produces neither a profile nor a transferable signature.
+func verifyKey(args []string, out, errOut io.Writer) error {
+	flags := flag.NewFlagSet("orbit-net key verify", flag.ContinueOnError)
+	flags.SetOutput(errOut)
+	path := flags.String("file", "", "restored owner-only private key file")
+	authority := flags.String("authority", "", "expected public authority key (hex)")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+	if *path == "" || *authority == "" || flags.NArg() != 0 {
+		return errors.New("key verify requires --file and --authority")
+	}
+	public, err := hex.DecodeString(*authority)
+	if err != nil || len(public) != ed25519.PublicKeySize {
+		return errors.New("authority must be a hex Ed25519 public key")
+	}
+	key, err := readKey(*path)
+	if err != nil {
+		return fmt.Errorf("read restored authority key: %w", err)
+	}
+	if !bytes.Equal(key.Public().(ed25519.PublicKey), public) {
+		return errors.New("restored key differs from the expected authority")
+	}
+	challenge := make([]byte, 32)
+	if _, err := rand.Read(challenge); err != nil {
+		return err
+	}
+	challenge = append([]byte("orbit-net offline backup verification v1\x00"), challenge...)
+	if !ed25519.Verify(public, challenge, ed25519.Sign(key, challenge)) {
+		return errors.New("restored key cannot sign for the expected authority")
+	}
+	fmt.Fprintf(out, "verified authority: %s\n", hex.EncodeToString(public))
+	return nil
+}
+
 // writeExclusive never replaces an existing key, profile or archive.
 func writeExclusive(path string, data []byte) error {
 	if err := state.ValidateDirectory(filepath.Dir(path)); err != nil {

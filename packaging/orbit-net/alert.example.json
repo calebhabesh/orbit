@@ -1,0 +1,5 @@
+{
+  "metrics_url": "http://127.0.0.1:9464",
+  "notify_url": "https://ntfy.sh/REPLACE-WITH-A-LONG-RANDOM-TOPIC",
+  "name": "connect.example.org"
+}
