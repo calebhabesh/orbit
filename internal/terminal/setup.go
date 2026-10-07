@@ -373,6 +373,8 @@ func workflowError(r tc.Result, err error) string {
 		action = "Keep work pending; use the membership-fork recovery runbook."
 	case "SYSTEMD_UNAVAILABLE", "UNATTENDED_PREREQUISITE", "STARTUP_REVIEW_REQUIRED", "SERVICE_SELECTION_REQUIRED":
 		action = "Inspect startup prerequisites with orbit doctor; manual startup remains available."
+	case "MANUAL_DAEMON_RUNNING":
+		action = "Sync keeps running; login startup takes over at next login, or run orbit stop then orbit service start."
 	case "SERVICE_UNAVAILABLE", "UNAVAILABLE", "DEVICE_OFFLINE":
 		action = "Waiting for a connection; saved local work and the reviewed attempt are retained. Retry later or open Connection details."
 	case "PROFILE_MISSING_OR_EXPIRED", "PROFILE_MISMATCH", "NETWORK_REVIEW_REQUIRED":

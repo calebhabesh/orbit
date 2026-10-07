@@ -41,6 +41,7 @@ Management & Diagnostics:
   folders resume <name>    Resume local synchronization for a folder
   folders relocate <name>  Change the local filesystem path for a folder
   service                  Manage background service (status, enable, start, stop, restart)
+  stop                     Stop a background daemon started outside the service
   storage                  Inspect storage usage, retention, and maintenance
   network status           Cached policy, service readiness and observed peer routes
   network doctor           Explicit bounded DNS/TLS/directory/relay/direct/UDP checks
