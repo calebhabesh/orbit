@@ -159,6 +159,7 @@ type LANDiscovery struct {
 	key         ed25519.PrivateKey
 	device, pin string
 	candidates  []p.NetworkCandidate
+	genMu       sync.Mutex
 	generation  uint64
 	ctx         context.Context
 	cancel      context.CancelFunc
@@ -225,6 +226,125 @@ func NewLANDiscovery(ctx context.Context, manager *ConnectionManager, device, pi
 	return d, nil
 }
 func (d *LANDiscovery) Close() error { d.cancel(); d.conn.Close(); d.wg.Wait(); return nil }
+
+// nextGeneration follows the wall clock so records signed for multicast and for
+// peer exchange stay ordered for receivers that hear both.
+func (d *LANDiscovery) nextGeneration() uint64 {
+	d.genMu.Lock()
+	defer d.genMu.Unlock()
+	d.generation = max(d.generation+1, uint64(time.Now().UnixNano()))
+	return d.generation
+}
+
+// sign returns the signed record and its encoding for one interface, or false
+// when the interface has no candidates or the record exceeds a datagram.
+func (d *LANDiscovery) sign(iface LocalInterface, generation uint64) (p.LANAnnouncement, []byte, bool) {
+	var candidates []p.NetworkCandidate
+	for _, c := range d.candidates {
+		if c.Interface == iface.Name && len(candidates) < 4 {
+			candidates = append(candidates, c)
+		}
+	}
+	if len(candidates) == 0 {
+		return p.LANAnnouncement{}, nil, false
+	}
+	a := p.LANAnnouncement{Version: "1", Device: d.device, Pin: d.pin, Key: hex.EncodeToString(d.key.Public().(ed25519.PublicKey)), Generation: p.NetworkUint(generation), Expires: p.NetworkUint(time.Now().Unix() + 600), Capabilities: lanCapabilities(candidates), Candidates: candidates}
+	b, err := a.Canonical()
+	if err != nil {
+		return p.LANAnnouncement{}, nil, false
+	}
+	a.Signature = hex.EncodeToString(ed25519.Sign(d.key, b))
+	b, _ = json.Marshal(a)
+	// Drop complete oversized records; never truncate or fragment metadata.
+	return a, b, len(b) <= MaxDiscoveryDatagramBytes
+}
+
+// Records signs this device's current per-interface LAN records for a peer
+// exchange; they are the same records multicast would carry.
+func (d *LANDiscovery) Records() []p.LANAnnouncement {
+	generation := d.nextGeneration()
+	out := []p.LANAnnouncement{}
+	for _, iface := range d.interfaces {
+		if a, _, ok := d.sign(iface, generation); ok && len(out) < p.LANExchangeMaxRecords {
+			out = append(out, a)
+		}
+	}
+	return out
+}
+
+// AcceptPeer installs LAN records that an approved peer sent over its pinned
+// session. Records must carry that session's pin and a known peer-data
+// identity. Each candidate must fall inside a selected local interface prefix
+// and must not be one of this device's own addresses (identical container
+// bridges on both hosts); the rest are dropped, never dialed.
+func (d *LANDiscovery) AcceptPeer(records []p.LANAnnouncement, pin [32]byte) int {
+	own := map[netip.Addr]bool{}
+	for _, iface := range d.interfaces {
+		for _, prefix := range iface.Prefixes {
+			own[prefix.Addr()] = true
+		}
+	}
+	type scoped struct {
+		candidates []p.NetworkCandidate
+		generation uint64
+		expires    int64
+	}
+	installed := 0
+	now := uint64(time.Now().Unix())
+	byDevice := map[string]map[int]*scoped{}
+	for _, a := range records {
+		if a.Pin != hex.EncodeToString(pin[:]) || a.Device == d.device || a.Verify(now) != nil {
+			continue
+		}
+		for _, c := range a.Candidates {
+			addr, err := netip.ParseAddrPort(c.Address)
+			if err != nil || own[addr.Addr()] {
+				continue
+			}
+			for _, iface := range d.interfaces {
+				inside := false
+				for _, prefix := range iface.Prefixes {
+					inside = inside || prefix.Contains(addr.Addr())
+				}
+				if !inside {
+					continue
+				}
+				if byDevice[a.Device] == nil {
+					byDevice[a.Device] = map[int]*scoped{}
+				}
+				lease := byDevice[a.Device][iface.Index]
+				if lease == nil {
+					lease = &scoped{expires: int64(a.Expires)}
+					byDevice[a.Device][iface.Index] = lease
+				}
+				lease.generation = max(lease.generation, uint64(a.Generation))
+				lease.expires = min(lease.expires, int64(a.Expires))
+				duplicate := false
+				for _, known := range lease.candidates {
+					duplicate = duplicate || (known.Transport == c.Transport && known.Address == c.Address)
+				}
+				if !duplicate && len(lease.candidates) < MaxPeerLANCandidates {
+					local := c
+					local.Interface = iface.Name
+					lease.candidates = append(lease.candidates, local)
+				}
+				break
+			}
+		}
+	}
+	for _, t := range d.known() {
+		if t.Purpose != PeerData || t.Pin != pin {
+			continue
+		}
+		for index, lease := range byDevice[hex.EncodeToString(t.Device[:])] {
+			if d.manager.SetPeerLANCandidates(t, lease.candidates, lease.generation, time.Unix(lease.expires, 0), index) == nil {
+				installed += len(lease.candidates)
+			}
+		}
+	}
+	return installed
+}
+
 func (d *LANDiscovery) announce() {
 	defer d.wg.Done()
 	raw, err := d.conn.SyscallConn()
@@ -233,26 +353,10 @@ func (d *LANDiscovery) announce() {
 	}
 	announcements := 0
 	for d.ctx.Err() == nil {
-		d.generation++
+		generation := d.nextGeneration()
 		for _, iface := range d.interfaces {
-			var candidates []p.NetworkCandidate
-			for _, c := range d.candidates {
-				if c.Interface == iface.Name && len(candidates) < 4 {
-					candidates = append(candidates, c)
-				}
-			}
-			if len(candidates) == 0 {
-				continue
-			}
-			a := p.LANAnnouncement{Version: "1", Device: d.device, Pin: d.pin, Key: hex.EncodeToString(d.key.Public().(ed25519.PublicKey)), Generation: p.NetworkUint(d.generation), Expires: p.NetworkUint(time.Now().Unix() + 600), Capabilities: lanCapabilities(candidates), Candidates: candidates}
-			b, err := a.Canonical()
-			if err != nil {
-				continue
-			}
-			a.Signature = hex.EncodeToString(ed25519.Sign(d.key, b))
-			b, _ = json.Marshal(a)
-			// Drop complete oversized records; never truncate or fragment metadata.
-			if len(b) > MaxDiscoveryDatagramBytes {
+			_, b, ok := d.sign(iface, generation)
+			if !ok {
 				continue
 			}
 			var inner error

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/file-sync/internal/network"
 	"github.com/calebhabesh/file-sync/internal/protocol"
 	"github.com/calebhabesh/file-sync/internal/repository"
 )
@@ -28,10 +29,18 @@ type Server struct {
 	rateMu     sync.Mutex
 	rateLast   time.Time
 	rateTokens float64
+	lan        *network.LANExchange
 }
 
 func NewServer(repo *repository.DB, identity Identity) *Server {
 	return &Server{repo: repo, identity: identity, now: time.Now, admit: make(chan struct{}, 32), rateLast: time.Now(), rateTokens: 128}
+}
+
+// WithLAN serves the peer LAN exchange; without it the endpoint stays unknown,
+// exactly as on peers that predate it.
+func (server *Server) WithLAN(lan *network.LANExchange) *Server {
+	server.lan = lan
+	return server
 }
 
 func (server *Server) HTTPServer() *http.Server {
@@ -111,6 +120,12 @@ func (server *Server) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 		server.handleStatus(writer, request)
 	case "/peer/v1/membership/get":
 		server.handleMembershipGet(writer, request)
+	case network.LANExchangePath:
+		if server.lan == nil {
+			writeWireError(writer, http.StatusNotFound, "INVALID_REQUEST", "unknown peer endpoint", false, "use a versioned peer endpoint")
+			return
+		}
+		server.handleLAN(writer, request)
 	default:
 		writeWireError(writer, http.StatusNotFound, "INVALID_REQUEST", "unknown peer endpoint", false, "use a versioned peer endpoint")
 	}
@@ -184,6 +199,28 @@ func (server *Server) authorize(request *http.Request, deviceText, folderText, r
 		return device, folder, repository.ErrMembershipMismatch
 	}
 	return device, folder, server.repo.AuthorizePeer(request.Context(), folder, device, pin, revision, digest)
+}
+
+func (server *Server) handleLAN(writer http.ResponseWriter, request *http.Request) {
+	data, err := io.ReadAll(http.MaxBytesReader(writer, request.Body, network.MaxPeerLANRequestBytes))
+	if err != nil {
+		writeWireError(writer, http.StatusRequestEntityTooLarge, "INVALID_REQUEST", "LAN exchange body is malformed or too large", false, "send at most one signed record per interface")
+		return
+	}
+	reply, err := server.lan.ExchangePeerLAN(PublicKeyPin(request.TLS.PeerCertificates[0]), data)
+	switch {
+	case errors.Is(err, network.ErrLANExchangeUnavailable):
+		writeWireError(writer, http.StatusNotFound, "INVALID_REQUEST", "unknown peer endpoint", false, "use a versioned peer endpoint")
+	case errors.Is(err, network.ErrLANExchangePeer):
+		writeWireError(writer, http.StatusForbidden, "UNAUTHORIZED", "LAN records are shared only with approved peers", false, "pair this device first")
+	case err != nil:
+		writeWireError(writer, http.StatusBadRequest, "INVALID_REQUEST", "LAN exchange records are invalid", false, "send current signed records")
+	default:
+		writer.Header().Set("Content-Type", "application/json")
+		writer.Header().Set("X-Content-Type-Options", "nosniff")
+		writer.WriteHeader(http.StatusOK)
+		_, _ = writer.Write(reply)
+	}
 }
 
 func (server *Server) handleHello(writer http.ResponseWriter, request *http.Request) {

@@ -219,6 +219,14 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		return err
 	}
 	defer manager.Close() // after setup/scheduler joins, before SQLite closes
+	// Peer LAN exchange shares signed LAN records with approved peers over their
+	// pinned session, so a host firewall on one side does not force the relay.
+	var lanExchange *network.LANExchange
+	if networkPolicy.Mode != "manual" {
+		lanExchange = network.NewLANExchange(manager)
+		defer lanExchange.Close()
+	}
+	peerServer := func() *replication.Server { return replication.NewServer(db, identity).WithLAN(lanExchange) }
 	ws = workspace.New(db, workspace.Options{})
 	var directListener net.Listener
 	var quicEndpoint *network.QUICEndpoint
@@ -242,7 +250,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 				socket, udpErr = network.OptionalQUICSocket(settings)
 			}
 			if udpErr == nil && socket != nil {
-				quicEndpoint, udpErr = manager.NewPeerQUICEndpoint(socket, identity.ServerTLSConfig(), replication.NewServer(db, identity))
+				quicEndpoint, udpErr = manager.NewPeerQUICEndpoint(socket, identity.ServerTLSConfig(), peerServer())
 				if udpErr != nil {
 					_ = socket.Close()
 				} else {
@@ -296,6 +304,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		if lanDiscovery != nil {
 			defer lanDiscovery.Close()
 		}
+		lanExchange.Set(lanDiscovery)
 	}
 
 	var relayRuntime *network.RelayRuntime
@@ -344,7 +353,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 			var iceOptions *network.ICEOptions
 			settings, settingsErr := config.LoadDirectSettings(stateDir)
 			if settingsErr == nil && !settings.UDPDisabled {
-				iceOptions = &network.ICEOptions{TLS: identity.ServerTLSConfig(), Peer: replication.NewServer(db, identity), Interfaces: settings.Interfaces}
+				iceOptions = &network.ICEOptions{TLS: identity.ServerTLSConfig(), Peer: peerServer(), Interfaces: settings.Interfaces}
 			}
 			relayRuntime, e = network.NewRelayRuntime(ctx, serviceClient, manager, uint64(networkPolicy.Generation), digest, iceOptions)
 			if e != nil {
@@ -390,7 +399,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		defer relayRuntime.Close()
 	}
 
-	ctrl = control.New(db, ws, control.Options{LocalDevice: deviceID, Network: manager, Relay: relayRuntime, NetworkPolicy: &networkPolicy, NetworkError: networkError, NetworkService: serviceClient, NetworkSelfPin: hex.EncodeToString(identity.KeyPin[:]), NetworkPeerTLS: func(t network.Target) (*tls.Config, error) {
+	peerTLS := func(t network.Target) (*tls.Config, error) {
 		routes, e := config.LoadPeerRoutes(stateDir)
 		if e != nil {
 			return nil, e
@@ -422,7 +431,8 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 			}
 		}
 		return nil, errors.New("IDENTITY_MISMATCH")
-	}, StopInternet: func() error {
+	}
+	ctrl = control.New(db, ws, control.Options{LocalDevice: deviceID, Network: manager, Relay: relayRuntime, NetworkPolicy: &networkPolicy, NetworkError: networkError, NetworkService: serviceClient, NetworkSelfPin: hex.EncodeToString(identity.KeyPin[:]), NetworkPeerTLS: peerTLS, StopInternet: func() error {
 		if relayRuntime != nil {
 			_ = relayRuntime.Close()
 		}
@@ -720,13 +730,13 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	count := 2
 	virtualData, _ := manager.IncomingListener(network.PeerData)
 	virtualEnrollment, _ := manager.IncomingListener(network.Enrollment)
-	go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, virtualData) }()
+	go func() { networkDone <- peerServer().Serve(networkCtx, virtualData) }()
 	go func() {
 		networkDone <- replication.NewEnrollmentServer(db, identity).Serve(networkCtx, virtualEnrollment)
 	}()
 	if directListener != nil {
 		count++
-		go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, directListener) }()
+		go func() { networkDone <- peerServer().Serve(networkCtx, directListener) }()
 	}
 	if enrollmentListener != nil {
 		count++
@@ -736,8 +746,9 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	}
 	if peerListener != nil {
 		count++
-		go func() { networkDone <- replication.NewServer(db, identity).Serve(networkCtx, peerListener) }()
+		go func() { networkDone <- peerServer().Serve(networkCtx, peerListener) }()
 	}
+	lanExchange.Start(networkCtx, peerTLS)
 	// Interface and default-route observations are transient. One joined watcher
 	// refreshes actual candidates; it never writes policy, trust or sync history.
 	if networkPolicy.Mode != "manual" {
@@ -757,7 +768,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 					// Local UDP is bound to one concrete address; replace it on roaming.
 					var next *network.QUICEndpoint
 					if socket, socketErr := network.OptionalLocalQUICSocket(settings, interfaces); socketErr == nil && socket != nil {
-						next, socketErr = manager.NewPeerQUICEndpoint(socket, identity.ServerTLSConfig(), replication.NewServer(db, identity))
+						next, socketErr = manager.NewPeerQUICEndpoint(socket, identity.ServerTLSConfig(), peerServer())
 						if socketErr != nil {
 							_ = socket.Close()
 						}
@@ -776,6 +787,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 					localCandidates = network.CombineDirectCandidates(localCandidates, network.GatherCandidates(interfaces, quicEndpoint.LocalAddr(), false))
 					publicCandidates = network.CombineDirectCandidates(publicCandidates, network.GatherCandidates(interfaces, quicEndpoint.LocalAddr(), true))
 				}
+				lanExchange.Set(nil)
 				if lanDiscovery != nil {
 					_ = lanDiscovery.Close()
 					lanDiscovery = nil
@@ -783,6 +795,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 				if networkPolicy.LANAdvertising && len(localCandidates) > 0 {
 					lanDiscovery, _ = network.NewLANDiscovery(ctx, manager, cfg.DeviceID, hex.EncodeToString(identity.KeyPin[:]), identity.Certificate, interfaces, localCandidates, manager.KnownTargets)
 				}
+				lanExchange.Set(lanDiscovery)
 				if relayRuntime != nil {
 					_ = relayRuntime.SetPublicCandidates(publicCandidates)
 					relayRuntime.NetworkChanged()
