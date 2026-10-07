@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -58,8 +59,8 @@ func TestP15VersionAndBuildMetadata(t *testing.T) {
 	if !strings.Contains(str, "filesync 1.0.0") {
 		t.Errorf("version output missing 'filesync 1.0.0', got: %s", str)
 	}
-	if !strings.Contains(str, "linux/amd64") {
-		t.Errorf("version output missing 'linux/amd64', got: %s", str)
+	if platform := runtime.GOOS + "/" + runtime.GOARCH; !strings.Contains(str, platform) {
+		t.Errorf("version output missing %q, got: %s", platform, str)
 	}
 	if !strings.Contains(str, "commit=") {
 		t.Errorf("version output missing commit metadata, got: %s", str)
