@@ -540,11 +540,27 @@ func TestWANW04BrokerSeesOnlyInnerTLSCiphertext(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer a.Close()
-	r.f.s.mu.Lock()
-	relay := r.f.s.sessions[r.ta.Session].relay
-	captured := &recordedRelayLeg{Conn: relay.legs["initiator"]}
-	relay.legs["initiator"] = captured
-	r.f.s.mu.Unlock()
+	// Attach returns on the acknowledgement, before the server replaces the
+	// reserved leg with the stream; wrap the stream, not the reservation.
+	var captured *recordedRelayLeg
+	deadline := time.Now().Add(5 * time.Second)
+	for captured == nil {
+		r.f.s.mu.Lock()
+		relay := r.f.s.sessions[r.ta.Session].relay
+		if leg, ok := relay.legs["initiator"]; ok && leg != nil {
+			if _, reserved := leg.(*reservedLeg); !reserved {
+				captured = &recordedRelayLeg{Conn: leg}
+				relay.legs["initiator"] = captured
+			}
+		}
+		r.f.s.mu.Unlock()
+		if captured == nil {
+			if time.Now().After(deadline) {
+				t.Fatal("initiator leg was not installed")
+			}
+			time.Sleep(time.Millisecond)
+		}
+	}
 	b, err := r.cb.Attach(r.ctx, r.tb)
 	if err != nil {
 		t.Fatal(err)
