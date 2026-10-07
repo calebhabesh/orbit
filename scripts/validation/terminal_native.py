@@ -132,7 +132,10 @@ def approve(owner, receiver, pending):
     def done():
         result = receiver.query("operation", id=operation)
         return result if result["state"] == "completed" else False
-    completed = wait("approved durable join", done)
+    # The joiner polls status every 25 s within the inviter's per-source budget
+    # (5 requests/minute); co-located rehearsal hosts share one source address,
+    # so allow several polls on slow shared runners.
+    completed = wait("approved durable join", done, seconds=180)
     if completed["join"]["request"] != request or completed["join"]["attempt"] != pending["join"]["attempt"]:
         raise RuntimeError("join restart changed request/attempt")
     return {"request": request, "attempt": completed["join"]["attempt"], "operation": operation,
