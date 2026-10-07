@@ -891,6 +891,9 @@ func TestWANW03ReannouncementJitterAndStableRenewal(t *testing.T) {
 	}
 }
 func TestWANW03ControlHeartbeatPreservesIdleSession(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	f := newFixture(t, true)
 	d := identity(t, 1, nil)
 	c := f.client(t, d, f.roots)

@@ -136,6 +136,9 @@ func TestWANW16CancelledCallersLeaveNoOutstandingChallenge(t *testing.T) {
 }
 
 func TestWANW16SignedOperationsArePacedToTheServiceBudget(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	f, d, c := quotaFixture(t)
 	refusedBefore := f.s.stats.quota.Load()
 	started := time.Now()

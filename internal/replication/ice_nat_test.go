@@ -20,6 +20,9 @@ import (
 )
 
 func TestWANW10AuthenticatedNATPeerMatrix(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	cases := []struct {
 		name                             string
 		mapping, filtering               vnet.EndpointDependencyType

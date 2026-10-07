@@ -652,6 +652,9 @@ func TestSyncerChunkFallbackTransfer(t *testing.T) {
 }
 
 func TestSyncInventoryLargerThanMemoryQueue(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	fix := newSyncFixture(t)
 	for i := 0; i < MaxQueuedVersions+1; i++ {
 		_, err := fix.senderRepo.CreateLocalVersion(fix.ctx, repository.LocalVersionRequest{Folder: fix.folder, Path: fmt.Sprintf("dir-%04d", i), Kind: history.KindDirectory, AuthoredRevision: 1})

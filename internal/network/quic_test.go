@@ -53,6 +53,9 @@ func testQUICDial(t *testing.T, e *QUICEndpoint, trust *tls.Config) *quic.Conn {
 	return conn
 }
 func TestWANW09HTTP3HeaderAndBodyDeadlines(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	var handled atomic.Int32
 	e, trust := testQUICEndpoint(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handled.Add(1)
@@ -231,6 +234,9 @@ func TestWANW09QUICAdmissionAndALPN(t *testing.T) {
 }
 
 func TestWANW09HTTP3ResponseHeaderAndWriteBounds(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	type writeResult struct {
 		elapsed time.Duration
 		err     error
