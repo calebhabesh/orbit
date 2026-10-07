@@ -1,0 +1,37 @@
+name: Release
+
+# On a v* tag: build the end-user packages and attach them to a DRAFT release.
+# full.yml runs the release suite on the same tag; publish the draft only after
+# it is green. orbit-net (operator-only) is never attached.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  draft:
+    name: Draft release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Check tag matches package version
+        run: |
+          want="v$(sed -n 's/^\tPackageVersion = "\(.*\)"/\1/p' scripts/build_packages.go)"
+          [ "$GITHUB_REF_NAME" = "$want" ] || { echo "tag $GITHUB_REF_NAME != $want"; exit 1; }
+      - run: make package
+      - run: cd dist && sha256sum --check SHA256SUMS
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --draft --verify-tag --generate-notes \
+            --title "Orbit $GITHUB_REF_NAME" \
+            dist/orbit-v*.tar.gz dist/filesync-v*.tar.gz dist/*.deb dist/*.rpm \
+            dist/SHA256SUMS dist/release-manifest.json
