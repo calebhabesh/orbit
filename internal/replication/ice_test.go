@@ -237,12 +237,23 @@ func verifyICEPeerSync(t *testing.T, fallback bool, nets ...transport.Net) *iceP
 		// Neither peer has a selected interface. In either controlling role, fail
 		// gathering before spending the coordination budget waiting for an offer.
 		for n, r := range runtimes {
-			started := time.Now()
-			if _, _, err := r.ICE(f.ctx, peers[n]); !errors.Is(err, network.ErrICEGather) {
-				t.Fatal("empty local gather did not fail before coordination", err)
-			}
-			if time.Since(started) > 2*time.Second {
-				t.Fatal("empty local gather waited for remote offer")
+			deadline := time.Now().Add(12 * time.Second)
+			for {
+				started := time.Now()
+				_, _, err := r.ICE(f.ctx, peers[n])
+				var refusal *network.ServiceError
+				if errors.As(err, &refusal) && refusal.Code == "QUOTA_EXCEEDED" && time.Now().Before(deadline) {
+					t.Log("existing transfer exhausted metadata quota; bounded five-second quiet refill before empty-gather oracle")
+					time.Sleep(5 * time.Second)
+					continue
+				}
+				if !errors.Is(err, network.ErrICEGather) {
+					t.Fatal("empty local gather did not fail before coordination", err)
+				}
+				if time.Since(started) > 2*time.Second {
+					t.Fatal("empty local gather waited for remote offer")
+				}
+				break
 			}
 		}
 	}

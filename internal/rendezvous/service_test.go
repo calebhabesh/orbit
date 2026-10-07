@@ -75,6 +75,12 @@ func identity(t *testing.T, id int, host net.IP) device {
 }
 func newFixture(t *testing.T, live bool) *fixture {
 	t.Helper()
+	return newWrappedFixture(t, live, nil)
+}
+
+// newWrappedFixture optionally wraps the live service handler before serving.
+func newWrappedFixture(t *testing.T, live bool, wrap func(http.Handler) http.Handler) *fixture {
+	t.Helper()
 	f := &fixture{origin: "https://directory.orbit.invalid"}
 	f.now.Store(time.Now().Unix())
 	var listener net.Listener
@@ -125,6 +131,9 @@ func newFixture(t *testing.T, live bool) *fixture {
 	}
 	if live {
 		f.server = f.s.Server()
+		if wrap != nil {
+			f.server.Handler = wrap(f.server.Handler)
+		}
 		f.server.TLSConfig = &tls.Config{MinVersion: tls.VersionTLS13, Certificates: []tls.Certificate{serviceCert.cert}, NextProtos: []string{"http/1.1"}}
 		go func() { _ = f.server.ServeTLS(BoundedListener(listener), "", "") }()
 	}
