@@ -61,3 +61,27 @@ func (a LANAnnouncement) Verify(now uint64) error {
 	}
 	return nil
 }
+
+// LANExchangeMaxRecords bounds one exchange to one record per discovery interface.
+const LANExchangeMaxRecords = 8
+
+// LANExchange carries signed LAN records between approved peers inside their
+// pinned peer session (direct or relayed). A relay forwards only that session's
+// ciphertext, so no public service receives the private addresses. Each record
+// is verified exactly like a multicast announcement.
+type LANExchange struct {
+	Version string            `json:"version"`
+	Records []LANAnnouncement `json:"records"`
+}
+
+func (e LANExchange) Validate(now uint64) error {
+	if e.Version != "1" || e.Records == nil || len(e.Records) > LANExchangeMaxRecords {
+		return errors.New("INVALID_LAN_EXCHANGE")
+	}
+	for _, r := range e.Records {
+		if err := r.Verify(now); err != nil {
+			return err
+		}
+	}
+	return nil
+}

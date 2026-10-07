@@ -48,4 +48,12 @@ const (
 	AnnouncementRenewalMargin = time.Minute
 	MaxNetworkHeaderBytes     = 16 << 10
 	MaxDiscoveryDatagramBytes = 1200
+	// Peer LAN exchange: per-target cap on candidates learned over a peer
+	// session, refresh period while connected, and the back-off for peers that
+	// do not support the exchange or failed it.
+	MaxPeerLANCandidates   = 4
+	PeerLANRefresh         = 4 * time.Minute
+	PeerLANRetry           = time.Minute
+	PeerLANUnsupported     = 30 * time.Minute
+	MaxPeerLANRequestBytes = 16 << 10
 )

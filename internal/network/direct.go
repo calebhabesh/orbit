@@ -18,9 +18,13 @@ type lanKey struct {
 
 type candidateLease struct {
 	invalidated bool
-	candidates  []p.NetworkCandidate
-	generation  uint64
-	expires     time.Time
+	// peer marks LAN candidates received from an approved peer over its pinned
+	// session rather than heard on the local link. They add direct attempts but
+	// prove no locality, so they never suppress the public directory lookup.
+	peer       bool
+	candidates []p.NetworkCandidate
+	generation uint64
+	expires    time.Time
 }
 type candidateSource func(context.Context, Target, uint64) (p.NetworkAnnouncement, error)
 
@@ -62,9 +66,18 @@ func (m *ConnectionManager) RegisterDirect(t Target, source candidateSource) err
 // for a previously reviewed target. It cannot create a route or change a pin.
 func (m *ConnectionManager) SetCandidates(t Target, candidates []p.NetworkCandidate, generation uint64, expires time.Time, public bool, interfaceIndex ...int) error {
 
-	return m.setCandidates(t, candidates, generation, expires, public, 0, interfaceIndex...)
+	return m.setCandidates(t, candidates, generation, expires, public, false, 0, interfaceIndex...)
 }
-func (m *ConnectionManager) setCandidates(t Target, candidates []p.NetworkCandidate, generation uint64, expires time.Time, public bool, localGeneration uint64, interfaceIndex ...int) error {
+
+// SetPeerLANCandidates installs LAN candidates that an approved peer sent over
+// its pinned session, scoped to the local interface whose prefix holds them.
+func (m *ConnectionManager) SetPeerLANCandidates(t Target, candidates []p.NetworkCandidate, generation uint64, expires time.Time, interfaceIndex int) error {
+	if len(candidates) > MaxPeerLANCandidates {
+		return ErrBackpressure
+	}
+	return m.setCandidates(t, candidates, generation, expires, false, true, 0, interfaceIndex)
+}
+func (m *ConnectionManager) setCandidates(t Target, candidates []p.NetworkCandidate, generation uint64, expires time.Time, public, peer bool, localGeneration uint64, interfaceIndex ...int) error {
 	if len(candidates) > p.NetworkMaxCandidates || generation == 0 || !m.now().Before(expires) || expires.After(m.now().Add(CandidateLifetime)) {
 		return errors.New("INVALID_CANDIDATE")
 	}
@@ -92,7 +105,7 @@ func (m *ConnectionManager) setCandidates(t Target, candidates []p.NetworkCandid
 		old = m.public[t]
 		count := len(candidates)
 		for key, lease := range m.lan {
-			if key.target == t && !lease.invalidated && m.now().Before(lease.expires) {
+			if key.target == t && !lease.peer && !lease.invalidated && m.now().Before(lease.expires) {
 				count += len(lease.candidates)
 			}
 		}
@@ -121,13 +134,18 @@ func (m *ConnectionManager) setCandidates(t Target, candidates []p.NetworkCandid
 				lease.candidates = nil
 				m.lan[scoped] = lease
 			}
-			if scoped.target == t && scoped != key {
+			if scoped.target == t && scoped != key && !lease.peer {
 				count += len(lease.candidates)
 			}
 		}
-		if count > p.NetworkMaxCandidates {
+		// Peer-sent leases are separately capped and excluded from this budget.
+		if !peer && count > p.NetworkMaxCandidates {
 			return ErrBackpressure
 		}
+	}
+	// A live lease heard on the link already proves locality; keep it.
+	if peer && !old.peer && !old.invalidated && m.now().Before(old.expires) && len(old.candidates) > 0 {
+		return nil
 	}
 	if generation < old.generation || (generation == old.generation && (!old.expires.Equal(expires) || !reflect.DeepEqual(old.candidates, append([]p.NetworkCandidate(nil), candidates...)))) {
 		return ErrStale
@@ -141,7 +159,7 @@ func (m *ConnectionManager) setCandidates(t Target, candidates []p.NetworkCandid
 			}
 		}
 	}
-	lease := candidateLease{candidates: append([]p.NetworkCandidate(nil), candidates...), generation: generation, expires: expires}
+	lease := candidateLease{peer: peer && !public, candidates: append([]p.NetworkCandidate(nil), candidates...), generation: generation, expires: expires}
 	if public {
 		m.public[t] = lease
 	} else {
@@ -153,9 +171,11 @@ func (m *ConnectionManager) setCandidates(t Target, candidates []p.NetworkCandid
 func (m *ConnectionManager) directCandidates(ctx context.Context, t Target) []p.NetworkCandidate {
 	m.mu.Lock()
 	var out []p.NetworkCandidate
+	linkLocal := false
 	for key, lease := range m.lan {
 		if key.target == t && !lease.invalidated && m.now().Before(lease.expires) {
 			out = append(out, lease.candidates...)
+			linkLocal = linkLocal || !lease.peer
 		}
 	}
 	if lease := m.public[t]; !lease.invalidated && m.now().Before(lease.expires) {
@@ -166,8 +186,10 @@ func (m *ConnectionManager) directCandidates(ctx context.Context, t Target) []p.
 	minimum := m.public[t].generation
 	publicLeaseLive := !m.public[t].invalidated && m.now().Before(m.public[t].expires)
 	m.mu.Unlock()
-	// A live LAN lease needs no directory, including during an outage.
-	if len(out) == 0 && !publicLeaseLive && source != nil {
+	// A live LAN lease heard on the link needs no directory, including during an
+	// outage. Peer-sent LAN candidates may belong to an unrelated network with the
+	// same private prefix, so public candidates are still gathered after them.
+	if !linkLocal && !publicLeaseLive && source != nil {
 		work, cancel := context.WithTimeout(ctx, time.Duration(m.timing.HeadStartMS)*time.Millisecond)
 		defer cancel()
 		a, err := source(work, t, minimum)
@@ -189,7 +211,7 @@ func (m *ConnectionManager) directCandidates(ctx context.Context, t Target) []p.
 					candidates = append(candidates, c)
 				}
 			}
-			if valid && m.setCandidates(t, candidates, uint64(a.Generation), time.Unix(int64(a.Expires), 0), true, localGeneration) == nil {
+			if valid && m.setCandidates(t, candidates, uint64(a.Generation), time.Unix(int64(a.Expires), 0), true, false, localGeneration) == nil {
 				out = append(out, candidates...)
 			}
 		}
