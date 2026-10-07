@@ -1,29 +1,29 @@
 name: CI
 
+# Fast gate for every push and PR. The full release suite lives in full.yml.
 on:
   push:
+    branches: [main]
+    paths-ignore: ['docs/**', '**/*.md', '.github/ISSUE_TEMPLATE/**', 'LICENSE']
   pull_request:
+    paths-ignore: ['docs/**', '**/*.md', '.github/ISSUE_TEMPLATE/**', 'LICENSE']
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  check:
-    name: Go checks (${{ matrix.arch }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: ubuntu-24.04
-            arch: amd64
-          - runner: ubuntu-24.04-arm
-            arch: arm64
-    runs-on: ${{ matrix.runner }}
+  fast:
+    name: Fast checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
           cache: true
-      - run: make check
-      - run: make test-race
+      - run: make ci-fast

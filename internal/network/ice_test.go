@@ -150,6 +150,9 @@ func connectICEPair(t *testing.T, a, b *ICESession, success bool) (*PairPacketCo
 	return pa, pb
 }
 func TestWANW10ICEHTTP3NATMatrix(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	cases := []struct {
 		name             string
 		nat              *vnet.NATType

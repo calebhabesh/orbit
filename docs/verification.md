@@ -194,12 +194,14 @@ Use namespaces/containers or a protocol proxy for partitions/delay/drop behavior
 
 ## Test tiers and CI
 
-- Every change: format, vet/static checks appropriate to pinned tools, compilation, unit/model fixtures, relevant packet tests.
-- Pull request: integration scenarios, Go race detector on supported runner architecture, fixed deterministic seeds, protocol/schema fixtures, frontend checks once present.
+- Every push to `main` and every pull request (`.github/workflows/ci.yml`, `make ci-fast`): format, vet, amd64/arm64 compilation, unit/model tests and integration tests in `-short` mode. Docs-only changes skip CI. A newer push cancels an in-progress run. Target: a few minutes.
+- Nightly, on `v*` tags, and on demand (`.github/workflows/full.yml`, `gh workflow run full.yml`): runs `make check-core`, `make test-terminal`, `make test-terminal-packages` and `make test-race-core` as parallel jobs on native amd64 and arm64 runners. This tier includes the tests skipped by `-short`.
 - Scheduled/manual campaign: broader seeds, fuzzing, real filesystem fault matrices, long-running resource/fairness checks.
-- Release: packaged binaries, local demo from clean checkout, actual three-host workflow, documented abrupt-reset experiments and personal pilot.
+- Release: run the full suite green on the release commit, plus packaged binaries, local demo from clean checkout, actual three-host workflow, documented abrupt-reset experiments and personal pilot.
 
-The Makefile provides these validation targets: `make check`, `make test`, `make test-race`, `make test-integration`, `make test-model`, `make test-faults`, `make test-harness`, `make demo`, `make build`, and `make package`. Integration and race targets build the required binary first. Explicit QEMU abrupt-reset commands are separate from ordinary checks. Publish what each target executes and any privilege requirements. Destructive tests are never a hidden dependency of ordinary checks.
+Tests that take more than about 10 s call `testing.Short()` and skip in the fast tier. Use `make test-short` for the local inner loop.
+
+The Makefile provides these validation targets: `make ci-fast`, `make check`, `make check-core`, `make test`, `make test-short`, `make test-race`, `make test-race-core`, `make test-integration`, `make test-model`, `make test-faults`, `make test-harness`, `make demo`, `make build`, and `make package`. Integration and race targets build the required binary first. Explicit QEMU abrupt-reset commands are separate from ordinary checks. Publish what each target executes and any privilege requirements. Destructive tests are never a hidden dependency of ordinary checks.
 
 ## Benchmark plan
 

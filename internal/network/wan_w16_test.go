@@ -25,6 +25,9 @@ import (
 // device until its heartbeat drops the first. The runtime must rebuild, back
 // off on that refusal and become ready again on a fresh channel.
 func TestWANW16AddressChangeRebuildsControlWithBackoff(t *testing.T) {
+	if testing.Short() {
+		t.Skip("slow; runs in the full suite")
+	}
 	client := clientFixture(t, &testResolver{})
 	client.selection.Profile.Origins = append(client.selection.Profile.Origins, "wss://directory.orbit.invalid")
 	canonical, err := client.selection.Profile.Canonical(false)
