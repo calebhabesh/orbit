@@ -110,7 +110,10 @@ func verifyBinaryLocalOnlyTransport(t *testing.T, quic bool) {
 		t.Cleanup(stop)
 		until := time.Now().Add(15 * time.Second)
 		for time.Now().Before(until) {
-			_, e := (&controlclient.Client{StateDir: n.f.state}).Query(context.Background(), tc.Query{Version: tc.Version, Kind: "capabilities"})
+			var capabilities tc.Result
+			// Startup polling must use live HTTP only: the stopped adapter could
+			// acquire the state lock before this child and make its startup fail.
+			e := (&controlclient.Client{StateDir: n.f.state}).Call(context.Background(), "POST", "/control/terminal/v1/query", tc.Query{Version: tc.Version, Kind: "capabilities"}, &capabilities)
 			if e == nil {
 				return stop
 			}

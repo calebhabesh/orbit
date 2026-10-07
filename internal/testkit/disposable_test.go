@@ -30,3 +30,18 @@ func TestValidateDestructiveTarget(t *testing.T) {
 		t.Fatal("symlink accepted as destructive target")
 	}
 }
+
+func TestWANW15DestructiveTargetRefusesSymlinkedRoot(t *testing.T) {
+	root := NewDisposable(t)
+	target := filepath.Join(root, "target")
+	if err := os.Mkdir(target, 0700); err != nil {
+		t.Fatal(err)
+	}
+	alias := filepath.Join(t.TempDir(), "alias")
+	if err := os.Symlink(root, alias); err != nil {
+		t.Fatal(err)
+	}
+	if err := ValidateDestructiveTarget(alias, filepath.Join(alias, "target")); err == nil {
+		t.Fatal("symlinked disposable root accepted")
+	}
+}

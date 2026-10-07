@@ -263,7 +263,7 @@ func w13Binary(t *testing.T, base string) string {
 			}
 		}
 	}
-	for _, want := range []string{"bin/orbit-net", "lib/systemd/system/orbit-net.service", "lib/sysusers.d/orbit-net.conf", "share/doc/orbit-net/orbit-net-operator.md", "share/doc/orbit-net/serve.example.json", "share/doc/orbit-net/profile-template.example.json", "share/doc/orbit-net/LICENSE", "share/doc/orbit-net/NOTICE"} {
+	for _, want := range []string{"bin/orbit-net", "lib/systemd/system/orbit-net.service", "lib/systemd/system/orbit-net-alert.service", "lib/systemd/system/orbit-net-alert.timer", "share/doc/orbit-net/alert.example.json", "lib/sysusers.d/orbit-net.conf", "share/doc/orbit-net/orbit-net-operator.md", "share/doc/orbit-net/serve.example.json", "share/doc/orbit-net/profile-template.example.json", "share/doc/orbit-net/LICENSE", "share/doc/orbit-net/NOTICE"} {
 		if !seen[want] {
 			t.Fatalf("archive missing %s", want)
 		}

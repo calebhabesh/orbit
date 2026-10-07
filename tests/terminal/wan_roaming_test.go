@@ -29,13 +29,51 @@ import (
 // This child uses the complete production daemon lifecycle, scheduler, listeners
 // and watcher. All firewall/address mutations are restricted to an owned namespace.
 func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
+	wholeDaemonRoaming(t, "")
+}
+
+func TestWANW15WholeDaemonCrashRouteAndReceiptRecovery(t *testing.T) {
+	if os.Getenv("ORBIT_W15_NAMESPACE") != "isolated-marked-namespace" {
+		t.Skip("requires explicit W15 disposable namespace runner")
+	}
+	for _, boundary := range []string{"transfer.chunk.verified", "transfer.receipt.after_send"} {
+		t.Run(boundary, func(t *testing.T) { wholeDaemonRoaming(t, boundary) })
+	}
+}
+
+func wholeDaemonRoaming(t *testing.T, crashBoundary string) {
 	if os.Getenv("ORBIT_W11_NAMESPACE") != "isolated-marked-namespace" {
 		t.Skip("requires marked disposable namespace runner")
 	}
 	if err := testkit.ValidateNetworkNamespace(os.Getenv("TMPDIR"), os.Getenv("ORBIT_W11_PARENT_NETNS")); err != nil {
 		t.Fatal(err)
 	}
-	_, selection, origin, roots, _ := w05Service(t)
+	roamed := false
+	if crashBoundary != "" {
+		t.Cleanup(func() {
+			if !roamed {
+				return
+			}
+			if e := testkit.ValidateNetworkNamespace(os.Getenv("TMPDIR"), os.Getenv("ORBIT_W11_PARENT_NETNS")); e != nil {
+				t.Error(e)
+				return
+			}
+			// Only this fixture's exact mutations are reversed, after its children close.
+			commands := [][]string{
+				{"route", "del", "default", "via", "10.23.45.2", "dev", "orbit-w11", "metric", "20"},
+				{"addr", "del", "10.23.45.9/24", "dev", "orbit-w11"},
+				{"addr", "del", "10.23.45.1/32", "dev", "lo"},
+				{"addr", "replace", "10.23.45.1/24", "dev", "orbit-w11"},
+			}
+			for _, args := range commands {
+				out, e := exec.Command("ip", args...).CombinedOutput()
+				if e != nil {
+					t.Errorf("restore owned namespace %v: %v %s", args, e, out)
+				}
+			}
+		})
+	}
+	service, selection, origin, roots, restartService := w05Service(t)
 	a, b := newW05Node(t, selection, origin, roots), newW05Node(t, selection, origin, roots)
 	folder := w05Create(t, a, "source")
 	inv := w05Invite(t, a, folder, "")
@@ -104,7 +142,9 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 			t.Fatal(command, args, string(out), e)
 		}
 	}
+	firewallBlocked := false
 	block := func() {
+		firewallBlocked = true
 		run("iptables", "-N", "ORBIT_W11")
 		run("iptables", "-A", "ORBIT_W11", "-d", "127.0.0.0/8", "-j", "RETURN")
 		run("iptables", "-A", "ORBIT_W11", "-p", "tcp", "--dport", servicePort, "-j", "RETURN")
@@ -125,9 +165,15 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 			run(cmd, "-F", "ORBIT_W11")
 			run(cmd, "-X", "ORBIT_W11")
 		}
+		firewallBlocked = false
 	}
+	t.Cleanup(func() {
+		if firewallBlocked {
+			unblock()
+		}
+	})
 	block()
-	pa, pb := startW05Process(t, a.f, ca, ""), startW05Process(t, b.f, ca, "")
+	pa, pb := startW05Process(t, a.f, ca, ""), startW05Process(t, b.f, ca, crashBoundary)
 	t.Cleanup(func() {
 		if t.Failed() {
 			for _, p := range []*w05Process{pa, pb} {
@@ -168,11 +214,14 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 		for time.Since(start) < 120*time.Second {
 			data, _ := os.ReadFile(path)
 			if bytes.Equal(data, want) {
+				if crashBoundary != "" {
+					t.Logf("W15 verified working bytes name=%s bytes=%d wait=%s", filepath.Base(path), len(want), time.Since(start))
+				}
 				return
 			}
 			time.Sleep(100 * time.Millisecond)
 		}
-		t.Fatal("missing verified bytes", filepath.Base(path), query(b))
+		t.Fatal("missing verified bytes", filepath.Base(path), query(a), query(b), service.Metrics())
 	}
 	write := func(name string, data []byte) {
 		t.Helper()
@@ -185,13 +234,49 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 	initial := waitRoute("relay")
 	unblock()
 	direct := waitRoute("quic")
+	if crashBoundary != "" {
+		t.Logf("W15 idle interval start_ns=%d", time.Now().UnixNano())
+		time.Sleep(5 * time.Second)
+		t.Logf("W15 idle interval end_ns=%d", time.Now().UnixNano())
+	}
 	// Native address/default-route changes occur while a multi-chunk version is in flight.
 	large := make([]byte, 16*int(history.ChunkSize))
 	for i := range large {
 		large[i] = byte((i/int(history.ChunkSize) + i) % 251)
 	}
+	if crashBoundary != "" {
+		if e := config.WritePrivate(b.f.state, "w15-arm", []byte(crashBoundary)); e != nil {
+			t.Fatal(e)
+		}
+	}
 	write("large.bin", large)
-	time.Sleep(3 * time.Second)
+	if crashBoundary != "" {
+		waitW05Boundary(t, pb, crashBoundary)
+		block()
+		pb.stop(t, true)
+		b.f.open()
+		heads, e := b.f.db.Heads(context.Background(), folder, "large.bin")
+		if e != nil || len(heads) != 1 {
+			t.Fatal("missing immutable head at crash", heads, e)
+		}
+		ready, e := b.f.db.ContentReady(context.Background(), heads[0].ID)
+		if e != nil || ready != (crashBoundary == "transfer.receipt.after_send") {
+			t.Fatal("crash readiness disagrees with durable boundary", ready, e)
+		}
+		if ready && b.f.db.VerifyManifest(heads[0].Manifest) != nil {
+			t.Fatal("receipt precedes verified bytes")
+		}
+		b.f.close()
+		pb = startW05Process(t, b.f, ca, "")
+		waitRoute("relay")
+		waitBytes(filepath.Join(rootB, "large.bin"), large)
+		unblock()
+		waitRoute("quic")
+		t.Logf("W15 SIGKILL at %s: same immutable version and correct durable readiness; relay recovery", crashBoundary)
+	} else {
+		time.Sleep(3 * time.Second)
+	}
+	roamed = true
 	run("ip", "addr", "del", "10.23.45.1/24", "dev", "orbit-w11")
 	// Keep the directory's address alive on another interface so only peer scope roams.
 	run("ip", "addr", "add", "10.23.45.1/32", "dev", "lo")
@@ -222,6 +307,23 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 	}
 	unblock()
 	restored := waitRoute("quic")
+	if crashBoundary != "" {
+		// Directory and relay state disappear while the authenticated direct path remains.
+		t.Logf("W15 service relayed encrypted inner stream bytes=%d", service.Metrics().RelayBytes)
+		if e := service.Close(); e != nil {
+			t.Fatal(e)
+		}
+		write("service-outage.txt", []byte("captured during directory and relay outage"))
+		waitBytes(filepath.Join(rootB, "service-outage.txt"), []byte("captured during directory and relay outage"))
+		service = restartService()
+		block()
+		write("service-restarted.txt", []byte("fresh leases and relay after service restart"))
+		waitBytes(filepath.Join(rootB, "service-restarted.txt"), []byte("fresh leases and relay after service restart"))
+		waitRoute("relay")
+		unblock()
+		restored = waitRoute("quic")
+		t.Logf("W15 direct sync survived service outage; fresh service restarted; relay bytes=%d", service.Metrics().RelayBytes)
+	}
 	if restored.Pin != initial.Pin || restored.Device != initial.Device {
 		t.Fatal("roaming changed peer trust")
 	}
@@ -234,7 +336,11 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 	pb.stop(t, false)
 	a.f.open()
 	b.f.open()
-	for _, name := range []string{"large.bin", "relay-start.txt", "small-00.txt", "small-07.txt"} {
+	names := []string{"large.bin", "relay-start.txt", "small-00.txt", "small-07.txt"}
+	if crashBoundary != "" {
+		names = append(names, "service-outage.txt", "service-restarted.txt")
+	}
+	for _, name := range names {
 		left, e := a.f.db.Heads(context.Background(), folder, name)
 		if e != nil {
 			t.Fatal(e)
@@ -253,9 +359,13 @@ func TestWANW11WholeDaemonRoamingAndMixedProgress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	largeHeads, e := a.f.db.Heads(context.Background(), folder, "large.bin")
+	if e != nil || len(largeHeads) != 1 {
+		t.Fatal(largeHeads, e)
+	}
 	hasReceipt := false
 	for _, p := range progress {
-		if p.Receipt {
+		if p.Receipt && p.Direct && p.Peer == b.id.DeviceID && p.Version == largeHeads[0].ID {
 			hasReceipt = true
 		}
 	}

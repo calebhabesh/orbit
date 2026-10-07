@@ -51,6 +51,9 @@ func ValidateDestructiveTarget(root, target string) error {
 	if err != nil {
 		return fmt.Errorf("resolve disposable root: %w", err)
 	}
+	if canonicalRoot != absoluteRoot {
+		return errors.New("disposable root contains a symlink")
+	}
 	marker, err := os.Lstat(filepath.Join(canonicalRoot, Marker))
 	if err != nil || !marker.Mode().IsRegular() {
 		return errors.New("disposable root marker is missing or invalid")

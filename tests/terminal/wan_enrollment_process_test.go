@@ -52,7 +52,28 @@ func TestWANW05DaemonChild(t *testing.T) {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer stop()
 	var lostReceipt atomic.Bool
+	var armedChunks atomic.Int32
 	err = app.ServeWithOptions(ctx, dir, app.ServeOptions{TransferFaultHook: func(name string) error {
+		if os.Getenv("ORBIT_W15_NAMESPACE") == "isolated-marked-namespace" && boundary != "" {
+			if arm, e := os.ReadFile(filepath.Join(dir, "w15-arm")); e == nil && string(arm) == boundary {
+				if name == replication.HookChunkVerified {
+					armedChunks.Add(1)
+				}
+				if name != boundary || (boundary == replication.HookAfterReceipt && armedChunks.Load() < 16) {
+					return nil
+				}
+				if e = testkit.ValidateNetworkNamespace(os.Getenv("TMPDIR"), os.Getenv("ORBIT_W11_PARENT_NETNS")); e != nil {
+					return e
+				}
+				if e = testkit.ValidateDestructiveTarget(base, dir); e != nil {
+					return e
+				}
+				if e = config.WritePrivate(dir, "w05-boundary", []byte(name)); e != nil {
+					return e
+				}
+				select {} // direct parent owns this exact child and SIGKILLs it
+			}
+		}
 		if os.Getenv("ORBIT_W11_NAMESPACE") == "isolated-marked-namespace" && name == replication.HookAfterReceipt && lostReceipt.CompareAndSwap(false, true) {
 			if err := testkit.ValidateDestructiveTarget(base, dir); err != nil {
 				return err
@@ -102,6 +123,9 @@ func startW05Process(t *testing.T, f *fixture, ca, boundary string) *w05Process 
 		t.Fatal(err)
 	}
 	cmd := exec.Command(binary, "-test.run=^TestWANW05DaemonChild$", "-test.v")
+	if os.Getenv("ORBIT_W15_NAMESPACE") == "isolated-marked-namespace" {
+		cmd.SysProcAttr = &syscall.SysProcAttr{Pdeathsig: syscall.SIGKILL}
+	}
 	cmd.Env = append(os.Environ(), "ORBIT_W05_CHILD_STATE="+f.state, "ORBIT_W05_CHILD_ROOT="+f.root, "ORBIT_W05_CA="+ca, "ORBIT_W05_BOUNDARY="+boundary)
 	cmd.Stdout = out
 	cmd.Stderr = out
