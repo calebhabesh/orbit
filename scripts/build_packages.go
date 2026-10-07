@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	PackageVersion = "1.0.0"
+	PackageVersion = "1.0.1"
 	PackageRelease = "1"
 	PackageName    = "filesync"
 	FixedTimestamp = 1790208000 // 2026-09-23T00:00:00Z for reproducible builds

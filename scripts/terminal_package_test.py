@@ -113,16 +113,16 @@ def main():
             for kind in ['tar','deb','rpm']:
                 target=root/f'{arch}-{kind}';target.mkdir()
                 if kind=='tar':
-                    with tarfile.open(dist/f'orbit-v1.0.0-linux-{arch}.tar.gz') as archive:
+                    with tarfile.open(dist/f'orbit-v1.0.1-linux-{arch}.tar.gz') as archive:
                         archive.extractall(target, filter='data')
                     binary=target/'orbit'; share=target/'share';desktop=target/'desktop/orbit.desktop';unit=target/'systemd/orbit.service'
                 elif kind=='deb':
-                    members=dict(deb_members((dist/f'filesync_1.0.0_{arch}.deb').read_bytes()))
+                    members=dict(deb_members((dist/f'filesync_1.0.1_{arch}.deb').read_bytes()))
                     with tarfile.open(fileobj=io.BytesIO(members['data.tar.gz'])) as archive:
                         archive.extractall(target,filter='data')
                     binary=target/'usr/bin/orbit';share=target/'usr/share';desktop=share/'applications/orbit.desktop';unit=target/'usr/lib/systemd/user/orbit.service'
                 else:
-                    unpack_cpio(rpm_payload((dist/f'filesync-1.0.0-1.{rpmarch}.rpm').read_bytes()),target)
+                    unpack_cpio(rpm_payload((dist/f'filesync-1.0.1-1.{rpmarch}.rpm').read_bytes()),target)
                     binary=target/'usr/bin/orbit';share=target/'usr/share';desktop=share/'applications/orbit.desktop';unit=target/'usr/lib/systemd/user/orbit.service'
                 assert unit.is_symlink() and unit.readlink()==Path('filesync.service'), 'duplicate service unit'
                 assert 'Terminal=true' in desktop.read_text() and 'Exec=orbit\n' in desktop.read_text()
@@ -170,8 +170,8 @@ def main():
         results.append({'scenario':'package-extracted-bare-PTY','result':'passed'})
         if args.containers:
             for image,package,install,remove in [
-                ('debian:bookworm-slim','filesync_1.0.0_amd64.deb','dpkg -i','dpkg -r filesync'),
-                ('fedora:43','filesync-1.0.0-1.x86_64.rpm','rpm -i --nosignature','rpm -e filesync')]:
+                ('debian:bookworm-slim','filesync_1.0.1_amd64.deb','dpkg -i','dpkg -r filesync'),
+                ('fedora:43','filesync-1.0.1-1.x86_64.rpm','rpm -i --nosignature','rpm -e filesync')]:
                 script='''set -eu
 same_bytes() { test "$(sha256sum "$1" | cut -d ' ' -f 1)" = "$(sha256sum "$2" | cut -d ' ' -f 1)"; }
 mkdir -m 700 /tmp/orbit-t12
