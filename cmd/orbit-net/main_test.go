@@ -224,3 +224,37 @@ func TestW13MetricsAreSanitized(t *testing.T) {
 		}
 	}
 }
+
+// A restart after the rotation window must keep serving the current epoch: an
+// overlap epoch that has only expired is skipped with a warning, while any
+// other overlap fault still refuses to start.
+func TestOverlapEpochExpiryDoesNotStopService(t *testing.T) {
+	k := newKit(t)
+	host := "10.20.30.40"
+	if out, err := k.sign(k.template("t1.json", host+":8443", 1, []string{}), "development", "e1.json", "--valid-for", "1h"); err != nil {
+		t.Fatal(err, out)
+	}
+	if out, err := k.sign(k.template("t2.json", host+":8443", 2, []string{}), "development", "e2.json", "--previous", k.path("e1.json")); err != nil {
+		t.Fatal(err, out)
+	}
+	cert, key := k.certificate("tls", host, time.Now().Add(90*24*time.Hour))
+	cfg := serveConfig{Listen: "127.0.0.1:0", Profile: k.path("e2.json"), ServiceKey: k.service, OverlapProfile: k.path("e1.json"), OverlapServiceKey: k.service, TLSCert: cert, TLSKey: key, RelayBPS: 1 << 20, RelayDeviceBPS: 1 << 20, RelaySessionBytes: 1 << 20}
+	p, err := prepare(cfg, time.Now())
+	if err != nil {
+		t.Fatal("overlap during rotation", err)
+	}
+	p.service.Close()
+	p, err = prepare(cfg, time.Now().Add(2*time.Hour))
+	if err != nil {
+		t.Fatal("expired overlap stopped the current epoch", err)
+	}
+	defer p.service.Close()
+	if !strings.Contains(strings.Join(p.warnings, "\n"), "overlap profile epoch 1 expired") {
+		t.Fatal("missing expired-overlap warning", p.warnings)
+	}
+	other, _ := k.keygen("other.key")
+	cfg.OverlapServiceKey = other
+	if _, err = prepare(cfg, time.Now()); err == nil {
+		t.Fatal("overlap with the wrong service key accepted")
+	}
+}
