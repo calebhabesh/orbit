@@ -1,0 +1,44 @@
+# One orbit-net monitoring check; orbit-net-alert.timer runs it every minute.
+# /etc/orbit-net-alert/alert.json names the loopback metrics origin and the
+# notification topic URL (a secret), owned by orbit-net with mode 0600.
+[Unit]
+Description=Orbit connection service alert check
+Documentation=file:///usr/share/doc/orbit-net/orbit-net-operator.md
+After=network-online.target orbit-net.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=orbit-net
+Group=orbit-net
+ConfigurationDirectory=orbit-net-alert
+ConfigurationDirectoryMode=0700
+StateDirectory=orbit-net-alert
+StateDirectoryMode=0700
+ExecStart=/usr/bin/orbit-net alert --config /etc/orbit-net-alert/alert.json --state /var/lib/orbit-net-alert/state.json
+TimeoutStartSec=60s
+
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+MemoryMax=64M
+UMask=0077
+SyslogIdentifier=orbit-net-alert

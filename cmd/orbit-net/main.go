@@ -33,6 +33,11 @@ func run(args []string, out, errOut io.Writer) error {
 		return serve(args[1:], errOut)
 	case "keygen":
 		return keygen(args[1:], out, errOut)
+	case "key":
+		if len(args) < 2 || args[1] != "verify" {
+			return errors.New("key requires verify")
+		}
+		return verifyKey(args[2:], out, errOut)
 	case "profile":
 		if len(args) < 2 {
 			return errors.New("profile requires sign or verify")
@@ -44,6 +49,8 @@ func run(args []string, out, errOut io.Writer) error {
 			return verifyProfile(args[2:], out, errOut)
 		}
 		return errors.New("profile requires sign or verify")
+	case "alert":
+		return alert(args[1:], out, errOut)
 	case "version":
 		fmt.Fprintf(out, "orbit-net %s (%s, %s)\n", version, commit, date)
 		return nil
@@ -59,8 +66,13 @@ const usage = `orbit-net operates Orbit's connection service.
 Commands:
   serve --config FILE [--check]   run rendezvous/relay (and optional STUN)
   keygen --out FILE               create an Ed25519 key; prints its public key
+  key verify --file FILE --authority HEX
+                                 verify a restored authority key without changing it
   profile sign ...                sign a profile template with the authority key
   profile verify --profile FILE   show and validate a signed profile selection
+  alert --config FILE --state FILE
+                                 one monitoring check; notifies on firing/recovery
+  alert --config FILE --test      send one test notification
   version                         print build information
 
 SIGHUP reloads the TLS certificate and key; SIGINT/SIGTERM drain and stop.
