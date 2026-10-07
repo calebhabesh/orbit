@@ -67,7 +67,7 @@ test-legacy-browser: build
 	$(GO) test ./tests/integration -run '^(TestP14|TestP15EmbeddedUI|TestOrbitSession)'
 
 test-terminal:
-	$(GO) test -timeout=30m ./tests/terminal/...
+	$(GO) test -timeout=45m ./tests/terminal/...
 
 test-terminal-release:
 	GOFLAGS=-race $(GO) test -race -count=2 -v ./tests/terminal -run '^TestTerminalT13'

@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -450,6 +451,7 @@ func TestTerminalT02ServiceProcessActionsAndSelection(t *testing.T) {
 	t.Setenv("ORBIT_T02_STATE", dir)
 	t.Setenv("ORBIT_T02_ENABLED", filepath.Join(root, "enabled"))
 	t.Setenv("ORBIT_T02_DISPATCHES", filepath.Join(root, "dispatches"))
+	t.Setenv("ORBIT_T02_MAINPID", filepath.Join(root, "mainpid"))
 	script := `#!/bin/sh
 case "$2" in
  is-system-running) echo running ;;
@@ -461,8 +463,10 @@ case "$2" in
   echo "$2" >> "$ORBIT_T02_DISPATCHES"
   if [ "$2" = restart ]; then "$ORBIT_T02_BIN" stop --state="$ORBIT_T02_STATE" --timeout=3s >/dev/null 2>&1; fi
   "$ORBIT_T02_BIN" serve --state="$ORBIT_T02_STATE" --control-listen=127.0.0.1:0 --no-watch >/dev/null 2>&1 &
+  echo "$!" > "$ORBIT_T02_MAINPID"
   i=0; while [ "$i" -lt 150 ]; do if [ -s "$ORBIT_T02_STATE/control.addr" ]; then exit 0; fi; i=$((i+1)); /bin/sleep .02; done; exit 1 ;;
  stop) "$ORBIT_T02_BIN" stop --state="$ORBIT_T02_STATE" --timeout=3s >/dev/null 2>&1 ;;
+ show) if [ -f "$ORBIT_T02_MAINPID" ] && kill -0 "$(cat "$ORBIT_T02_MAINPID")" 2>/dev/null; then cat "$ORBIT_T02_MAINPID"; else echo 0; fi ;;
  *) exit 1 ;;
 esac
 `
@@ -592,6 +596,34 @@ esac
 		t.Fatalf("explicit enable failure hidden: %v", err)
 	}
 	t.Setenv("ORBIT_T02_REJECT", "")
+	// A daemon launched outside the unit owns the state: start is refused
+	// rather than reported, and no external start is dispatched.
+	manual := exec.Command(binary, "serve", "--state="+dir, "--control-listen=127.0.0.1:0", "--no-watch")
+	if err := manual.Start(); err != nil {
+		t.Fatal(err)
+	}
+	manualDeadline := time.Now().Add(5 * time.Second)
+	for time.Now().Before(manualDeadline) {
+		if pid, _ := os.ReadFile(filepath.Join(dir, ".agent.pid")); strings.TrimSpace(string(pid)) == strconv.Itoa(manual.Process.Pid) {
+			break
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	dispatchesBefore, _ := os.ReadFile(filepath.Join(root, "dispatches"))
+	var manualErr *control.ControlError
+	if _, err := control.StartService(context.Background(), dir, nil); !errors.As(err, &manualErr) || manualErr.Code != "MANUAL_DAEMON_RUNNING" {
+		t.Fatalf("start reported a manually launched daemon as the service: %v", err)
+	}
+	if _, err := control.RestartService(context.Background(), dir, nil); !errors.As(err, &manualErr) || manualErr.Code != "MANUAL_DAEMON_RUNNING" {
+		t.Fatalf("restart reported a manually launched daemon as the service: %v", err)
+	}
+	if dispatchesAfter, _ := os.ReadFile(filepath.Join(root, "dispatches")); string(dispatchesAfter) != string(dispatchesBefore) {
+		t.Fatal("start dispatched while a manual daemon owned the state")
+	}
+	if err := app.StopAgent(dir, 3*time.Second); err != nil {
+		t.Fatal(err)
+	}
+	_ = manual.Wait()
 	// A different selected state cannot replace or operate this user unit.
 	other := filepath.Join(root, "other")
 	os.Mkdir(other, 0700)
