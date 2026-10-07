@@ -129,13 +129,23 @@ def approve(owner, receiver, pending):
     owner.put(path, json.dumps(review).encode())
     owner.orbit("requests", "approve", "--request", request, "--review-file", owner.root + "/" + path, "--json")
     operation = pending["operation"]["id"]
+    last = {}
     def done():
         result = receiver.query("operation", id=operation)
+        last["result"] = result
         return result if result["state"] == "completed" else False
-    # The joiner polls status every 25 s within the inviter's per-source budget
+    # The joiner polls status every 15 s within the inviter's per-source budget
     # (5 requests/minute); co-located rehearsal hosts share one source address,
     # so allow several polls on slow shared runners.
-    completed = wait("approved durable join", done, seconds=180)
+    try:
+        completed = wait("approved durable join", done, seconds=180)
+    except RuntimeError as error:
+        # Phase and error code only: no invitation, pin or path material.
+        r = last.get("result") or {}
+        op, err = r.get("operation") or {}, r.get("error") or (r.get("operation") or {}).get("error") or {}
+        raise RuntimeError(f"{error}: state={r.get('state')} phase={op.get('phase')} "
+                           f"error={err.get('code')} retryable={err.get('retryable')} "
+                           f"message={err.get('message')!r}") from None
     if completed["join"]["request"] != request or completed["join"]["attempt"] != pending["join"]["attempt"]:
         raise RuntimeError("join restart changed request/attempt")
     return {"request": request, "attempt": completed["join"]["attempt"], "operation": operation,
