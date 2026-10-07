@@ -885,10 +885,12 @@ func resumableSetup(record repository.TerminalRecord) bool {
 	return record.Result.Error == nil || (record.Result.Error.Code != "STALE_VIEW" && record.Result.Error.Code != "EXPIRED_ATTEMPT" && record.Result.Error.Code != "EXPIRED_OR_DECLINED_ATTEMPT")
 }
 
-// JoiningFolders names folders whose join the setup worker is still resuming.
-// That job imports, fetches and publishes the folder itself; scheduled scans and
-// syncs wait so one owner publishes the joining working tree. It reads durable
-// records only, not terminalMu, so the scheduler never waits on a setup slice.
+// JoiningFolders names folders whose join the setup worker is still resuming
+// after registering the root. That job captures, imports and publishes the
+// folder itself; scheduled scans and syncs wait so one owner publishes the
+// joining working tree. Before registration (awaiting approval) an already
+// registered folder of the same ID keeps syncing. It reads durable records
+// only, not terminalMu, so the scheduler never waits on a setup step.
 func (c *Controller) JoiningFolders(ctx context.Context) (map[history.ID]bool, error) {
 	records, err := c.db.TerminalOperations(ctx)
 	if err != nil {
@@ -896,7 +898,11 @@ func (c *Controller) JoiningFolders(ctx context.Context) (map[history.ID]bool, e
 	}
 	joining := make(map[history.ID]bool)
 	for _, record := range records {
-		if record.Mutation.Kind == "join" && record.Result.Join != nil && resumableSetup(record) {
+		if record.Mutation.Kind != "join" || record.Result.Join == nil || record.Result.Operation == nil || !resumableSetup(record) {
+			continue
+		}
+		switch record.Result.Operation.Phase {
+		case "bootstrap_capture", "content_pending", "publishing":
 			joining[terminalID(record.Result.Join.Folder)] = true
 		}
 	}
