@@ -115,6 +115,11 @@ func (e *RelayEndpoint) run() {
 			defer func() { <-e.workers }()
 			work, cancel := context.WithTimeout(e.ctx, AttachmentLifetime)
 			defer cancel()
+			// Accept, reserve and attach: refuse locally now rather than midway.
+			work, err := e.client.BeginSetup(work, 3)
+			if err != nil {
+				return
+			}
 			q := p.NetworkProof{Kind: "accept", Target: event.Proof.Sender, TargetPin: event.Proof.SenderPin, Purpose: string(e.purpose), Session: event.Proof.Session, Role: "responder"}
 			offer := p.NetworkOffer{SenderGeneration: p.NetworkUint(generation), TargetGeneration: event.Offer.SenderGeneration, Candidates: []p.NetworkCandidate{}}
 			if e.retryQuota(work, func() error { return e.client.Exchange(work, q, offer) }) != nil {
@@ -129,7 +134,7 @@ func (e *RelayEndpoint) run() {
 				}
 			}()
 			var t p.RelayAttachment
-			err := e.retryQuota(work, func() error {
+			err = e.retryQuota(work, func() error {
 				var reserveErr error
 				t, reserveErr = e.client.Reserve(work, q)
 				return reserveErr
@@ -210,6 +215,10 @@ func (e *RelayEndpoint) dial(ctx context.Context, t Target, cached *p.NetworkAnn
 	generation := e.generation
 	e.mu.Unlock()
 	offer := p.NetworkOffer{SenderGeneration: p.NetworkUint(generation), TargetGeneration: a.Generation, Candidates: []p.NetworkCandidate{}}
+	// Offer, reserve and attach: refuse locally now rather than midway.
+	if work, err = e.client.BeginSetup(work, 3); err != nil {
+		return nil, err
+	}
 	if err = e.client.Exchange(work, q, offer); err != nil {
 		return nil, err
 	}

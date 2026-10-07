@@ -15,6 +15,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/http/httptrace"
 	"net/netip"
 	"net/url"
 	"strings"
@@ -56,6 +57,12 @@ type ServiceClient struct {
 	relayPending                             map[relayKey]int
 	relays                                   map[*relayConn]bool
 	wait                                     func(context.Context, time.Duration) error
+	// signed bounds challenge-holding operations; budget paces them to the
+	// service's per-device metadata rate using wall-clock time.
+	signed       chan struct{}
+	budgetMu     sync.Mutex
+	budgetTokens float64
+	budgetAt     time.Time
 }
 
 // servedProfile admits a peer proof made under this client's profile or an
@@ -120,7 +127,7 @@ func NewServiceClient(opts ServiceClientOptions) (*ServiceClient, error) {
 	opts.Selection.Profile.STUN = append([]string{}, opts.Selection.Profile.STUN...)
 	digest, _ := opts.Selection.Digest()
 	lifetime, cancel := context.WithCancel(context.Background())
-	c := &ServiceClient{relayPending: map[relayKey]int{}, relays: map[*relayConn]bool{}, selection: opts.Selection, origin: opts.Origin, digest: digest, device: opts.Device, pin: hex.EncodeToString(hash[:]), certificate: base64.StdEncoding.EncodeToString(cert.Raw), key: append(ed25519.PrivateKey{}, key...), now: opts.Now, slots: make(chan struct{}, 4), lifetime: lifetime, cancel: cancel, wait: opts.Wait, controls: map[*ServiceControl]bool{}, dialSlots: make(chan struct{}, 4), connections: map[*serviceConn]bool{}}
+	c := &ServiceClient{relayPending: map[relayKey]int{}, relays: map[*relayConn]bool{}, selection: opts.Selection, origin: opts.Origin, digest: digest, device: opts.Device, pin: hex.EncodeToString(hash[:]), certificate: base64.StdEncoding.EncodeToString(cert.Raw), key: append(ed25519.PrivateKey{}, key...), now: opts.Now, slots: make(chan struct{}, 4), lifetime: lifetime, cancel: cancel, wait: opts.Wait, controls: map[*ServiceControl]bool{}, dialSlots: make(chan struct{}, 4), connections: map[*serviceConn]bool{}, signed: make(chan struct{}, MaxOutstandingChallenges), budgetTokens: ClientMetadataBurst, budgetAt: time.Now()}
 	roots := opts.Roots
 	if roots != nil {
 		roots = roots.Clone()
@@ -215,21 +222,28 @@ func randomNetworkID() string {
 	return hex.EncodeToString(b[:])
 }
 func (c *ServiceClient) begin(ctx context.Context) (context.Context, func(), error) {
+	work, _, done, err := c.beginDetachable(ctx)
+	return work, done, err
+}
+
+// beginDetachable also returns detach, which stops the caller's cancellation
+// from reaching work; the operation's own bound and client lifetime remain.
+func (c *ServiceClient) beginDetachable(ctx context.Context) (context.Context, func(), func(), error) {
 	if ctx.Err() != nil {
-		return nil, nil, errors.New(p.NetworkCanceled)
+		return nil, nil, nil, errors.New(p.NetworkCanceled)
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.closed {
-		return nil, nil, ErrClosed
+		return nil, nil, nil, ErrClosed
 	}
 	if err := c.selection.Validate(uint64(c.now().Unix())); err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	select {
 	case c.slots <- struct{}{}:
 	default:
-		return nil, nil, ErrBackpressure
+		return nil, nil, nil, ErrBackpressure
 	}
 	c.wg.Add(1)
 	// Infrastructure TLS must not inherit the peer transport's httptrace: its
@@ -238,7 +252,121 @@ func (c *ServiceClient) begin(ctx context.Context) (context.Context, func(), err
 	work, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	parentStop := context.AfterFunc(ctx, cancel)
 	stop := context.AfterFunc(c.lifetime, cancel)
-	return work, func() { parentStop(); stop(); cancel(); <-c.slots; c.wg.Done() }, nil
+	return work, func() { parentStop() }, func() { parentStop(); stop(); cancel(); <-c.slots; c.wg.Done() }, nil
+}
+
+type detachKey struct{}
+
+// beginSigned admits one challenge-bound operation within the service's
+// per-device bounds: at most MaxOutstandingChallenges issued challenges and its
+// metadata rate. Ordinary operations take a challenge slot without queueing
+// (typed backpressure when both are busy) and wait at most maxBudgetWait for
+// budget, then fail locally with QUOTA_EXCEEDED without contacting the service.
+// One token stays reserved for announcement renewal, the single priority
+// caller per purpose, which may wait for its slot and budget.
+//
+// The caller can cancel while the service connection is being established.
+// Once the challenge request is about to be written, the operation finishes
+// within its own ten-second bound even if the caller gives up, because an
+// issued challenge that is never used blocks this device's metadata for up to
+// a minute.
+func (c *ServiceClient) beginSigned(ctx context.Context) (context.Context, func(), error) {
+	return c.beginSignedPriority(ctx, false)
+}
+
+func (c *ServiceClient) beginSignedPriority(ctx context.Context, priority bool) (context.Context, func(), error) {
+	if ctx.Err() != nil {
+		return nil, nil, errors.New(p.NetworkCanceled)
+	}
+	continuation := ctx.Value(setupKey{}) != nil
+	if priority || continuation {
+		select {
+		case c.signed <- struct{}{}:
+		case <-ctx.Done():
+			return nil, nil, errors.New(p.NetworkCanceled)
+		case <-c.lifetime.Done():
+			return nil, nil, ErrClosed
+		}
+	} else {
+		select {
+		case c.signed <- struct{}{}:
+		default:
+			return nil, nil, ErrBackpressure
+		}
+	}
+	if err := c.spendBudget(ctx, priority, continuation); err != nil {
+		<-c.signed
+		return nil, nil, err
+	}
+	work, detach, done, err := c.beginDetachable(ctx)
+	if err != nil {
+		<-c.signed
+		return nil, nil, err
+	}
+	return context.WithValue(work, detachKey{}, detach), func() { done(); <-c.signed }, nil
+}
+
+const maxBudgetWait = 1500 * time.Millisecond
+
+type setupKey struct{}
+
+// BeginSetup admits a coordination sequence of steps signed operations (offer
+// or accept, reserve, attach) only when the budget covers all of them, waiting
+// at most maxBudgetWait plus the refill time of those steps. Later steps made with the returned context wait for
+// budget and a challenge slot instead of failing locally: abandoning a half-made
+// relay setup wastes both devices' budget and the session.
+func (c *ServiceClient) BeginSetup(ctx context.Context, steps int) (context.Context, error) {
+	limit := maxBudgetWait + time.Duration(steps)*time.Minute/MaxMetadataOperationsPerMinute
+	if err := c.waitBudget(ctx, float64(steps)+1, false, limit); err != nil {
+		return nil, err
+	}
+	return context.WithValue(ctx, setupKey{}, true), nil
+}
+
+func (c *ServiceClient) spendBudget(ctx context.Context, priority, continuation bool) error {
+	reserve := 1.0
+	if priority {
+		reserve = 0
+	}
+	limit := maxBudgetWait
+	if priority || continuation {
+		limit = -1
+	}
+	return c.waitBudget(ctx, 1+reserve, true, limit)
+}
+
+// waitBudget waits until at least need tokens exist, spending one when spend
+// is set. It gives up locally after limit; a negative limit waits for ctx.
+func (c *ServiceClient) waitBudget(ctx context.Context, need float64, spend bool, limit time.Duration) error {
+	deadline := time.Now().Add(limit)
+	for {
+		c.budgetMu.Lock()
+		now := time.Now()
+		c.budgetTokens = min(ClientMetadataBurst, c.budgetTokens+now.Sub(c.budgetAt).Seconds()*MaxMetadataOperationsPerMinute/60)
+		c.budgetAt = now
+		if c.budgetTokens >= need {
+			if spend {
+				c.budgetTokens--
+			}
+			c.budgetMu.Unlock()
+			return nil
+		}
+		delay := time.Duration((need - c.budgetTokens) * float64(time.Minute) / MaxMetadataOperationsPerMinute)
+		c.budgetMu.Unlock()
+		if limit >= 0 && now.Add(delay).After(deadline) {
+			return &ServiceError{Code: p.NetworkQuota}
+		}
+		timer := time.NewTimer(delay)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return errors.New(p.NetworkCanceled)
+		case <-c.lifetime.Done():
+			timer.Stop()
+			return ErrClosed
+		case <-timer.C:
+		}
+	}
 }
 func (c *ServiceClient) post(ctx context.Context, path string, in, out any) error {
 	b, err := json.Marshal(in)
@@ -276,6 +404,11 @@ func (c *ServiceClient) post(ctx context.Context, path string, in, out any) erro
 // across uncertain delivery; fresh authentication does not change its intent.
 func (c *ServiceClient) proof(ctx context.Context, q p.NetworkProof, payload []byte) (p.NetworkProof, error) {
 	var ch p.NetworkChallengeResult
+	if detach, ok := ctx.Value(detachKey{}).(func()); ok {
+		// The connection is ready and the challenge request is about to be
+		// written: from here the caller's cancellation could strand it.
+		ctx = httptrace.WithClientTrace(ctx, &httptrace.ClientTrace{GotConn: func(httptrace.GotConnInfo) { detach() }})
+	}
 	err := c.post(ctx, "challenge", p.NetworkChallengeRequest{Version: "1", Profile: c.digest, Sender: c.device, SenderPin: c.pin, CertificateDER: c.certificate}, &ch)
 	if err != nil {
 		return q, err
@@ -309,7 +442,7 @@ func (c *ServiceClient) proof(ctx context.Context, q p.NetworkProof, payload []b
 	return q, nil
 }
 func (c *ServiceClient) Announce(ctx context.Context, purpose, operation string, a p.NetworkAnnouncement) error {
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSignedPriority(ctx, true)
 	if err != nil {
 		return err
 	}
@@ -338,7 +471,7 @@ func validResult(q p.NetworkProof, r p.NetworkResult) error {
 // Lookup requires the caller's preexisting peer pin. Returned records supply
 // candidates only. Historical challenge expiry is separate from the signed lease.
 func (c *ServiceClient) Lookup(ctx context.Context, device, pin, purpose string, minGeneration uint64) (p.NetworkAnnouncement, bool, error) {
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSigned(ctx)
 	if err != nil {
 		return p.NetworkAnnouncement{}, false, err
 	}
@@ -386,7 +519,7 @@ func (c *ServiceClient) validateLookup(out p.NetworkLookupResult, device, pin, p
 	return a, true, nil
 }
 func (c *ServiceClient) Exchange(ctx context.Context, q p.NetworkProof, offer p.NetworkOffer) error {
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSigned(ctx)
 	if err != nil {
 		return err
 	}
@@ -415,7 +548,7 @@ func (c *ServiceClient) Exchange(ctx context.Context, q p.NetworkProof, offer p.
 	return validResult(q, out)
 }
 func (c *ServiceClient) Reserve(ctx context.Context, q p.NetworkProof) (p.RelayAttachment, error) {
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSigned(ctx)
 	if err != nil {
 		return p.RelayAttachment{}, err
 	}
@@ -447,7 +580,7 @@ func (c *ServiceClient) Reserve(ctx context.Context, q p.NetworkProof) (p.RelayA
 	return t, nil
 }
 func (c *ServiceClient) Release(ctx context.Context, q p.NetworkProof) error {
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSigned(ctx)
 	if err != nil {
 		return err
 	}
@@ -503,7 +636,7 @@ type ServiceControl struct {
 }
 
 func (c *ServiceClient) Control(ctx context.Context, purpose string, known map[string]string, allowUnknown bool) (*ServiceControl, error) {
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSigned(ctx)
 	if err != nil {
 		return nil, err
 	}

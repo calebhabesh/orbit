@@ -786,6 +786,7 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 				if relayRuntime != nil {
 					_ = relayRuntime.SetPublicCandidates(publicCandidates)
 					relayRuntime.NetworkChanged()
+					relayRuntime.ReconnectControl()
 				}
 			}, time.Duration(networkPolicy.Timing.Effective().PollMS)*time.Millisecond, time.Duration(networkPolicy.Timing.Effective().QuietMS)*time.Millisecond)
 			defer func() {

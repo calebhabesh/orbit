@@ -73,6 +73,7 @@ func NewRelayRuntime(ctx context.Context, client *ServiceClient, manager *Connec
 func (r *RelayRuntime) run(purpose Purpose) {
 	defer r.wg.Done()
 	generation := r.generation
+	failures := 0
 	for r.ctx.Err() == nil {
 		generation++
 		listener, _ := r.manager.IncomingListener(purpose)
@@ -84,6 +85,7 @@ func (r *RelayRuntime) run(purpose Purpose) {
 		r.mu.Unlock()
 		endpoint, err := NewRelayEndpoint(r.ctx, r.client, purpose, generation, pins, purpose == Enrollment, listener, r.iceOptions)
 		if err == nil {
+			failures = 0
 			r.mu.Lock()
 			for id, pin := range r.pins[purpose] {
 				_ = endpoint.AddPeer(id, pin)
@@ -94,9 +96,11 @@ func (r *RelayRuntime) run(purpose Purpose) {
 			finished := make(chan struct{})
 			go func() {
 				defer close(finished)
+				// The service keeps an accepted record until it expires; this
+				// endpoint keeps offering its generation until then.
+				var acceptedUntil time.Time
 				for announceCtx.Err() == nil {
 					generation++
-					endpoint.SetGeneration(generation)
 					candidates := r.Candidates(purpose)
 					capabilities := []string{"relay_inner_tls_v1", "enrollment_v3"}
 					if len(candidates) > 0 {
@@ -123,8 +127,16 @@ func (r *RelayRuntime) run(purpose Purpose) {
 						err = r.client.Announce(announceCtx, string(purpose), operation, announcement)
 						r.recordServiceFailure(err)
 					}
+					// Offers must bind the service-accepted generation, never a refused renewal.
+					if err == nil {
+						endpoint.SetGeneration(generation)
+						acceptedUntil = time.Unix(int64(announcement.Expires), 0).Add(-AnnouncementRenewalMargin)
+					}
+					// A deferred or overloaded renewal leaves the previously accepted
+					// record serving; only a cold start, a semantic refusal or an
+					// expiring record withdraws readiness.
 					r.mu.Lock()
-					r.ready[purpose] = err == nil
+					r.ready[purpose] = err == nil || (transientServiceFailure(err) && time.Now().Before(acceptedUntil))
 					r.mu.Unlock()
 					delay := ReannounceInterval
 					if err != nil {
@@ -154,7 +166,22 @@ func (r *RelayRuntime) run(purpose Purpose) {
 			r.ready[purpose] = false
 			r.mu.Unlock()
 		}
-		timer := time.NewTimer(2 * time.Second)
+		// A refused control (the service still holds this device's previous
+		// channel until its heartbeat drops it, and closes the new one without
+		// a typed reason) backs off 2, 4, then 8 seconds instead of spending a
+		// challenge every two seconds; a quota quiet period is also honored.
+		r.recordServiceFailure(err)
+		delay := 2 * time.Second
+		if err != nil {
+			delay <<= min(failures, 2)
+			failures++
+		}
+		r.mu.Lock()
+		if wait := time.Until(r.retryAfter); wait > delay {
+			delay = wait
+		}
+		r.mu.Unlock()
+		timer := time.NewTimer(delay)
 		select {
 		case <-r.ctx.Done():
 			timer.Stop()
@@ -209,8 +236,9 @@ func (r *RelayRuntime) Dial(ctx context.Context, target Target) (net.Conn, error
 	r.mu.Lock()
 	endpoint := r.endpoints[target.Purpose]
 	a, found := r.lookupCache[target]
+	ready := r.ready[target.Purpose]
 	r.mu.Unlock()
-	if endpoint == nil {
+	if endpoint == nil || !ready {
 		return nil, &ServiceError{Code: p.NetworkServiceUnavailable}
 	}
 	var cached *p.NetworkAnnouncement
@@ -288,6 +316,9 @@ func (r *RelayRuntime) Candidates(purpose Purpose) []p.NetworkCandidate {
 	return append([]p.NetworkCandidate{}, r.publicCandidates...)
 }
 func (r *RelayRuntime) LookupCandidates(ctx context.Context, t Target, minimum uint64) (p.NetworkAnnouncement, error) {
+	if !r.purposeReady(t.Purpose) {
+		return p.NetworkAnnouncement{}, &ServiceError{Code: p.NetworkServiceUnavailable}
+	}
 	if err := r.serviceCooldown(); err != nil {
 		return p.NetworkAnnouncement{}, err
 	}
@@ -309,7 +340,7 @@ func (r *RelayRuntime) LookupCandidates(ctx context.Context, t Target, minimum u
 }
 
 func (r *RelayRuntime) ICE(ctx context.Context, t Target) (*QUICEndpoint, net.Addr, error) {
-	if r.ice == nil {
+	if r.ice == nil || !r.purposeReady(PeerData) {
 		return nil, nil, ErrNoRoute
 	}
 	if err := r.serviceCooldown(); err != nil {
@@ -356,4 +387,46 @@ func (r *RelayRuntime) NetworkChanged() {
 		default:
 		}
 	}
+}
+
+// ReconnectControl rebuilds each purpose's endpoint after an actual address
+// change. Its control channel was bound to the old address and fails silently,
+// and both incoming offers and outgoing accepts travel over it. The run loop
+// creates a fresh endpoint and announcement; the service admits the new
+// channel once its heartbeat drops the old one.
+func (r *RelayRuntime) ReconnectControl() {
+	r.mu.Lock()
+	endpoints := make([]*RelayEndpoint, 0, len(r.endpoints))
+	for _, e := range r.endpoints {
+		endpoints = append(endpoints, e)
+	}
+	r.mu.Unlock()
+	for _, e := range endpoints {
+		go e.Close()
+	}
+}
+
+// A cold or refused announcement cannot authorize a matching generation offer.
+func (r *RelayRuntime) purposeReady(purpose Purpose) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.ctx.Err() == nil && r.ready[purpose]
+}
+
+// transientServiceFailure is overload or unavailability, not a refusal of the
+// announcement's identity, profile or generation.
+func transientServiceFailure(err error) bool {
+	if errors.Is(err, ErrBackpressure) {
+		return true
+	}
+	code := err.Error()
+	var service *ServiceError
+	if errors.As(err, &service) {
+		code = service.Code
+	}
+	switch code {
+	case p.NetworkQuota, p.NetworkServiceUnavailable, p.NetworkCanceled:
+		return true
+	}
+	return false
 }

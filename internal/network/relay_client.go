@@ -86,7 +86,7 @@ func (c *ServiceClient) Attach(ctx context.Context, t p.RelayAttachment) (net.Co
 			c.mu.Unlock()
 		}
 	}()
-	work, done, err := c.begin(ctx)
+	work, done, err := c.beginSigned(ctx)
 	if err != nil {
 		return nil, err
 	}
