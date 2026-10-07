@@ -123,10 +123,9 @@ func run() error {
 
 	// 1. Build binaries for amd64 and arm64
 	for _, arch := range supportedArchs {
+		// bin/filesync stays the host binary from `make build`; overwriting it
+		// with amd64 breaks later tests on arm64 hosts.
 		binTarget := filepath.Join(binDir, fmt.Sprintf("filesync-linux-%s", arch.GoArch))
-		if arch.GoArch == "amd64" {
-			binTarget = filepath.Join(binDir, "filesync")
-		}
 
 		fmt.Printf("Building binary for linux/%s -> %s\n", arch.GoArch, binTarget)
 		cmd := exec.Command("go", "build", "-trimpath",
@@ -150,10 +149,7 @@ func run() error {
 
 	// Completions are architecture-independent; generate them with the binary
 	// this host can execute.
-	completionBinary := filepath.Join(binDir, "filesync")
-	if runtime.GOARCH == "arm64" {
-		completionBinary = filepath.Join(binDir, "filesync-linux-arm64")
-	}
+	completionBinary := filepath.Join(binDir, "filesync-linux-"+runtime.GOARCH)
 	if err := loadTerminalAssets(repoRoot, completionBinary); err != nil {
 		return err
 	}
@@ -279,9 +275,6 @@ func run() error {
 
 	for _, arch := range supportedArchs {
 		binPath := filepath.Join(binDir, fmt.Sprintf("filesync-linux-%s", arch.GoArch))
-		if arch.GoArch == "amd64" {
-			binPath = filepath.Join(binDir, "filesync")
-		}
 		binBytes, err := os.ReadFile(binPath)
 		if err != nil {
 			return fmt.Errorf("read binary %s: %w", binPath, err)
