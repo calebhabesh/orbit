@@ -496,7 +496,21 @@ func TestTerminalT08CLIHistoryReviewRestoreExportAndTools(t *testing.T) {
 	if err := json.Unmarshal(staged, &uploaded); err != nil || uploaded.Upload == nil {
 		t.Fatalf("streamed tool upload=%s %v", staged, err)
 	}
-	run("conflicts", "merge", "large", "--folder", "cli", "--state", f.state, "--review-file", largeReview, "--session", uploaded.Upload.Session, "--upload", uploaded.Upload.ID, "--digest", uploaded.Upload.Digest, "--bytes", "6000000", "--json")
+	// A committed merge may report durable "pending" (exit 5) when publication
+	// does not apply on the first attempt; recovery then completes it.
+	merge := exec.Command(binary, "conflicts", "merge", "large", "--folder", "cli", "--state", f.state, "--review-file", largeReview, "--session", uploaded.Upload.Session, "--upload", uploaded.Upload.ID, "--digest", uploaded.Upload.Digest, "--bytes", "6000000", "--json")
+	merge.Dir = filepath.Join(f.root, "cli")
+	merged, err := merge.Output()
+	var mergeResult tc.Result
+	if jsonErr := json.Unmarshal(merged, &mergeResult); jsonErr != nil || mergeResult.Operation == nil {
+		t.Fatalf("CLI merge: %v %v\n%s", err, jsonErr, merged)
+	}
+	if err != nil {
+		if exit, ok := err.(*exec.ExitError); !ok || exit.ExitCode() != 5 || mergeResult.State != "pending" {
+			t.Fatalf("CLI merge: %v\n%s", err, merged)
+		}
+		w06Wait(t, f.state, mergeResult.Operation.ID)
+	}
 	large, err := os.Open(filepath.Join(f.root, "cli", "large"))
 	if err != nil {
 		t.Fatal(err)
