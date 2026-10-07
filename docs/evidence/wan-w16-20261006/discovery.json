@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-list",
+    "^TestWANW16",
+    "./tests/terminal"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T22:39:49.784078+00:00",
+  "source_before": "1e60df207d443eb80953b43f684811f23aab3e08457954a6b2544b4a27bd9366",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.295,
+  "finished_at": "2026-10-06T22:39:50.078857+00:00",
+  "source_after": "1e60df207d443eb80953b43f684811f23aab3e08457954a6b2544b4a27bd9366"
+}

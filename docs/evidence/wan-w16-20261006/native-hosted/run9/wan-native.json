@@ -1,0 +1,3551 @@
+{
+  "packet": "W16",
+  "started_at": "2026-10-07T02:02:46.736574+00:00",
+  "success": true,
+  "rehearsal": false,
+  "hosted_default_acceptance": "unexecuted",
+  "physical_wan_acceptance": "unexecuted",
+  "hosts": [
+    {
+      "declaration": {
+        "host": "rpi",
+        "role": "Pi",
+        "physical_network": "owner-home-router",
+        "netns": "orbit-w16"
+      },
+      "network": {
+        "hostname": "owner-pi",
+        "arch": "aarch64",
+        "kernel": "6.12.93+rpt-rpi-v8",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "ow-w16-n",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "ow-w16-n",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.231.17.2",
+                "prefixlen": 29,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::90f4:97ff:fe73:b1cb",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.231.17.1",
+              "dev": "ow-w16-n",
+              "prefsrc": "10.231.17.2",
+              "flags": [],
+              "uid": 1000,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "isolation": {
+        "uplink": "eth0",
+        "counters": {
+          "egress_accept": {
+            "packets": 35373,
+            "bytes": 30418821
+          },
+          "ingress_established": {
+            "packets": 28585,
+            "bytes": 13615627
+          },
+          "egress_other_rejected": {
+            "packets": 1,
+            "bytes": 84
+          },
+          "nat": {
+            "packets": 511,
+            "bytes": 38364
+          }
+        },
+        "rules": [
+          "-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A FORWARD -i ow-w16-h -o eth0 -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i eth0 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i ow-w16-h ! -o eth0 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A POSTROUTING -s 10.231.17.0/29 -o eth0 -m comment --comment orbit-w16-w16 -j MASQUERADE"
+        ]
+      },
+      "route_preflight": "eligible; physical separation still requires deployment evidence",
+      "root": "/home/owner/filesync-validation-2dei2hg9",
+      "package": {
+        "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+        "package_sha256": "8f5f426f705c969ce5ee7a5d914b571d3fc71d185ff6f51cac88a0c003e198a4",
+        "binary_sha256": "e0b731e999e587390ffd9934685d948ca56bb1f6a431dd5086fd11494a701101"
+      },
+      "version": {
+        "built": "2026-10-01",
+        "commit": "d253825",
+        "config_format_version": 1,
+        "embedded_assets": {
+          "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+          "node_runtime_required": false,
+          "pure_go_sqlite": true,
+          "total_files": 3
+        },
+        "go_version": "go1.27.1-X:nodwarf5",
+        "goarch": "arm64",
+        "goos": "linux",
+        "packaged_profile": {
+          "active": true,
+          "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+          "available": true,
+          "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+          "epoch": 1,
+          "expires": "2027-01-04T19:37:37Z",
+          "operator": "Caleb Habesh"
+        },
+        "product": "Orbit",
+        "schema_version": 13,
+        "version": "1.0.0"
+      },
+      "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+      "pin": "ddb86beae4a13afc3f8230c79ce8aa981262ee8ed880b2842dd3dfc8bca517e0",
+      "final_status": {
+        "network": {
+          "generated_at": "2026-10-07T02:06:26.330599311Z",
+          "profile_expires": "2027-01-04T19:37:37Z",
+          "profile_state": "verified",
+          "service_trust": "system",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "probes": [],
+          "policy": {
+            "mode": "automatic",
+            "profile": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+            "lan_advertising": true,
+            "generation": "2"
+          },
+          "active_policy": {
+            "mode": "automatic",
+            "profile": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+            "lan_advertising": true,
+            "generation": "2"
+          },
+          "restart_required": false,
+          "ready": true,
+          "code": "SERVICE_READY",
+          "operator": "Caleb Habesh",
+          "privacy": "Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.",
+          "observations": [
+            {
+              "freshness": "recent",
+              "action": "No connection action needed; inspect folder copies separately.",
+              "lan_candidates": "0",
+              "public_candidates": "0",
+              "expired_candidates": "0",
+              "udp_code": "UNAVAILABLE",
+              "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "pin": "dc60ca2312f4cb748d0e59bc55872ed52a8828a4959e49ae79cd35ad6156b8a6",
+              "purpose": "peer_data",
+              "route": "relay",
+              "code": "CONNECTED",
+              "observed_at": "2026-10-07T02:06:23.243855591Z",
+              "generation": "5"
+            }
+          ],
+          "builtin": {
+            "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+            "operator": "Caleb Habesh",
+            "privacy": "Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.",
+            "epoch": "1",
+            "expires": "2027-01-04T19:37:37Z",
+            "expired": false
+          }
+        },
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "network_control_v1",
+          "network_diagnostics_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "enrollment_v3",
+          "packaged_profile_v1",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "name": "W16 data",
+            "root": "/home/owner/filesync-validation-2dei2hg9/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:26Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:26Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:26Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:26Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:26Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:26Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "4"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:25Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "5"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:26Z",
+            "last_contact": "2026-10-07T02:06:25Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": ""
+      },
+      "final_network": {
+        "hostname": "owner-pi",
+        "arch": "aarch64",
+        "kernel": "6.12.93+rpt-rpi-v8",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "ow-w16-n",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "ow-w16-n",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.231.17.3",
+                "prefixlen": 29,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::90f4:97ff:fe73:b1cb",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.231.17.1",
+              "dev": "ow-w16-n",
+              "prefsrc": "10.231.17.3",
+              "flags": [],
+              "uid": 1000,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "final_isolation": {
+        "uplink": "eth0",
+        "counters": {
+          "egress_accept": {
+            "packets": 38723,
+            "bytes": 33728231
+          },
+          "ingress_established": {
+            "packets": 31057,
+            "bytes": 14743740
+          },
+          "egress_other_rejected": {
+            "packets": 1,
+            "bytes": 84
+          },
+          "nat": {
+            "packets": 575,
+            "bytes": 43196
+          }
+        },
+        "rules": [
+          "-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A FORWARD -i ow-w16-h -o eth0 -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i eth0 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i ow-w16-h ! -o eth0 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A POSTROUTING -s 10.231.17.0/29 -o eth0 -m comment --comment orbit-w16-w16 -j MASQUERADE"
+        ]
+      }
+    },
+    {
+      "declaration": {
+        "host": "vps",
+        "role": "VPS",
+        "physical_network": "Oracle-ca-toronto-1",
+        "netns": "orbit-w16"
+      },
+      "network": {
+        "hostname": "main-instance-vnic",
+        "arch": "aarch64",
+        "kernel": "6.17.0-1018-oracle",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "ow-w16-n",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "ow-w16-n",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.231.16.3",
+                "prefixlen": 29,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::478:1dff:feea:e546",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.231.16.1",
+              "dev": "ow-w16-n",
+              "prefsrc": "10.231.16.3",
+              "flags": [],
+              "uid": 1001,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "isolation": {
+        "uplink": "enp0s6",
+        "counters": {
+          "egress_accept": {
+            "packets": 28699,
+            "bytes": 14767886
+          },
+          "ingress_established": {
+            "packets": 35409,
+            "bytes": 28445332
+          },
+          "egress_other_rejected": {
+            "packets": 1,
+            "bytes": 84
+          },
+          "nat": {
+            "packets": 543,
+            "bytes": 40972
+          }
+        },
+        "rules": [
+          "-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A FORWARD -i ow-w16-h -o enp0s6 -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i enp0s6 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i ow-w16-h ! -o enp0s6 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A POSTROUTING -s 10.231.16.0/29 -o enp0s6 -m comment --comment orbit-w16-w16 -j MASQUERADE"
+        ]
+      },
+      "route_preflight": "eligible; physical separation still requires deployment evidence",
+      "root": "/home/ubuntu/filesync-validation-81k53zqj",
+      "package": {
+        "package": "orbit-v1.0.0-linux-arm64.tar.gz",
+        "package_sha256": "8f5f426f705c969ce5ee7a5d914b571d3fc71d185ff6f51cac88a0c003e198a4",
+        "binary_sha256": "e0b731e999e587390ffd9934685d948ca56bb1f6a431dd5086fd11494a701101"
+      },
+      "version": {
+        "built": "2026-10-01",
+        "commit": "d253825",
+        "config_format_version": 1,
+        "embedded_assets": {
+          "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+          "node_runtime_required": false,
+          "pure_go_sqlite": true,
+          "total_files": 3
+        },
+        "go_version": "go1.27.1-X:nodwarf5",
+        "goarch": "arm64",
+        "goos": "linux",
+        "packaged_profile": {
+          "active": true,
+          "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+          "available": true,
+          "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+          "epoch": 1,
+          "expires": "2027-01-04T19:37:37Z",
+          "operator": "Caleb Habesh"
+        },
+        "product": "Orbit",
+        "schema_version": 13,
+        "version": "1.0.0"
+      },
+      "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+      "pin": "dc60ca2312f4cb748d0e59bc55872ed52a8828a4959e49ae79cd35ad6156b8a6",
+      "final_status": {
+        "network": {
+          "generated_at": "2026-10-07T02:06:28.252173986Z",
+          "profile_expires": "2027-01-04T19:37:37Z",
+          "profile_state": "verified",
+          "service_trust": "system",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "probes": [],
+          "policy": {
+            "mode": "automatic",
+            "profile": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+            "lan_advertising": true,
+            "generation": "2"
+          },
+          "active_policy": {
+            "mode": "automatic",
+            "profile": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+            "lan_advertising": true,
+            "generation": "2"
+          },
+          "restart_required": false,
+          "ready": true,
+          "code": "SERVICE_READY",
+          "operator": "Caleb Habesh",
+          "privacy": "Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.",
+          "observations": [
+            {
+              "freshness": "recent",
+              "action": "No connection action needed; inspect folder copies separately.",
+              "lan_candidates": "0",
+              "public_candidates": "0",
+              "expired_candidates": "0",
+              "udp_code": "UNAVAILABLE",
+              "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "pin": "ddb86beae4a13afc3f8230c79ce8aa981262ee8ed880b2842dd3dfc8bca517e0",
+              "purpose": "peer_data",
+              "route": "relay",
+              "code": "CONNECTED",
+              "observed_at": "2026-10-07T02:06:28.242692741Z",
+              "generation": "4"
+            }
+          ],
+          "builtin": {
+            "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+            "operator": "Caleb Habesh",
+            "privacy": "Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.",
+            "epoch": "1",
+            "expires": "2027-01-04T19:37:37Z",
+            "expired": false
+          }
+        },
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "network_control_v1",
+          "network_diagnostics_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "enrollment_v3",
+          "packaged_profile_v1",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "name": "W16 data",
+            "root": "/home/ubuntu/filesync-validation-81k53zqj/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:28Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:27Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:28Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:27Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:28Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:27Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "4"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:27Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "version": {
+              "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+              "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+              "counter": "5"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-07T02:06:28Z",
+            "last_contact": "2026-10-07T02:06:27Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": ""
+      },
+      "final_network": {
+        "hostname": "main-instance-vnic",
+        "arch": "aarch64",
+        "kernel": "6.17.0-1018-oracle",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "ow-w16-n",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "ow-w16-n",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.231.16.3",
+                "prefixlen": 29,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::478:1dff:feea:e546",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.231.16.1",
+              "dev": "ow-w16-n",
+              "prefsrc": "10.231.16.3",
+              "flags": [],
+              "uid": 1001,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "final_isolation": {
+        "uplink": "enp0s6",
+        "counters": {
+          "egress_accept": {
+            "packets": 31143,
+            "bytes": 15985047
+          },
+          "ingress_established": {
+            "packets": 38856,
+            "bytes": 31661664
+          },
+          "egress_other_rejected": {
+            "packets": 1,
+            "bytes": 84
+          },
+          "nat": {
+            "packets": 595,
+            "bytes": 44948
+          }
+        },
+        "rules": [
+          "-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A FORWARD -i ow-w16-h -o enp0s6 -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i enp0s6 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i ow-w16-h ! -o enp0s6 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A POSTROUTING -s 10.231.16.0/29 -o enp0s6 -m comment --comment orbit-w16-w16 -j MASQUERADE"
+        ]
+      }
+    }
+  ],
+  "scenarios": {
+    "approval": {
+      "request": "d8af4158b4016ca9cee16e13f7ae95c67b41a30c608aa28bbad0b5c1f5f2c47a",
+      "attempt": "f613742a52af7fc21a35463e65ecd62be963e69938bbe5424c5789e64af0f646",
+      "operation": "44e5c2536075f4b6111bd4ad9a066279daa2ce5b1f65fe192e56ef194eb6c08f",
+      "verification_code": "a3493-20721-0bed9-2fb1b",
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "join_to_approved_seconds": 31.289992914011236
+    },
+    "two_way": [
+      {
+        "head": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "counter": "1"
+        },
+        "sha256": "43847b94d244ea6977f3d3132dccc153cdfd57bdff2795b31d9fe0fb1fe1ff2e",
+        "bytes": 16,
+        "receipt": {
+          "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "version": {
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:03:50Z",
+          "last_contact": "2026-10-07T02:03:48Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 5.410193150048144,
+        "completion_bytes_per_second": 2.9573805511652793,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 57,
+              "bytes": 25465
+            },
+            "ingress_established": {
+              "packets": 54,
+              "bytes": 22785
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 3,
+              "bytes": 220
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 47,
+              "bytes": 21880
+            },
+            "ingress_established": {
+              "packets": 49,
+              "bytes": 20676
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 3,
+              "bytes": 220
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 48,
+              "bytes": 11545
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 25,
+              "bytes": 11520
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 2,
+              "bytes": 160
+            },
+            "out-colocated-udp": {
+              "packets": 20,
+              "bytes": 3736
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 48,
+              "bytes": 11545
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 6,
+              "bytes": 2200
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 17,
+              "bytes": 4263
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 48,
+              "bytes": 10762
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 4,
+              "bytes": 2112
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 17,
+              "bytes": 4263
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 48,
+              "bytes": 10762
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 6,
+              "bytes": 2846
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 18,
+              "bytes": 3504
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 7767,
+          "service_tcp_bytes": 5046,
+          "direct_attempt_bytes": 7999,
+          "dominant": "direct"
+        }
+      },
+      {
+        "head": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "counter": "1"
+        },
+        "sha256": "dc35e4e21c6ceaa4a9d5488636ff86b43979b8ba09d739702bda3b211b73bd3f",
+        "bytes": 18,
+        "receipt": {
+          "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "version": {
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:04:00Z",
+          "last_contact": "2026-10-07T02:03:58Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 7.518014989967924,
+        "completion_bytes_per_second": 2.394249017063585,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 54,
+              "bytes": 13541
+            },
+            "ingress_established": {
+              "packets": 45,
+              "bytes": 12972
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 44,
+              "bytes": 12600
+            },
+            "ingress_established": {
+              "packets": 51,
+              "bytes": 13195
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 74,
+              "bytes": 14869
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 28,
+              "bytes": 8716
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 16,
+              "bytes": 2863
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 74,
+              "bytes": 14869
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 15,
+              "bytes": 4893
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 16,
+              "bytes": 3389
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 74,
+              "bytes": 16409
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 13,
+              "bytes": 4493
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 16,
+              "bytes": 3389
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 74,
+              "bytes": 16409
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 18,
+              "bytes": 5560
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 18,
+              "bytes": 3095
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 6484,
+          "service_tcp_bytes": 10453,
+          "direct_attempt_bytes": 6252,
+          "dominant": "relay_or_control"
+        }
+      }
+    ],
+    "large": {
+      "head": {
+        "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+        "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+        "counter": "2"
+      },
+      "sha256": "2b07811057df887086f06a67edc6ebf911de8b6741156e7a2eb1416a4b8b1b2e",
+      "bytes": 4194304,
+      "receipt": {
+        "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+        "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+        "version": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "counter": "2"
+        },
+        "saved": true,
+        "stored": true,
+        "applied": false,
+        "direct": true,
+        "observed_at": "2026-10-07T02:04:09Z",
+        "last_contact": "2026-10-07T02:04:08Z",
+        "availability": "available",
+        "online": true
+      },
+      "receiver_readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "receiver_working_hash_verified": true,
+      "seconds": 6.2053813689854,
+      "completion_bytes_per_second": 675913.9770140804,
+      "route_counters": {
+        "Pi": {
+          "egress_accept": {
+            "packets": 938,
+            "bytes": 1114454
+          },
+          "ingress_established": {
+            "packets": 171,
+            "bytes": 20513
+          },
+          "egress_other_rejected": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "nat": {
+            "packets": 0,
+            "bytes": 0
+          }
+        },
+        "VPS": {
+          "egress_accept": {
+            "packets": 166,
+            "bytes": 17630
+          },
+          "ingress_established": {
+            "packets": 932,
+            "bytes": 1110807
+          },
+          "egress_other_rejected": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "nat": {
+            "packets": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "paths": {
+        "Pi": {
+          "out-loopback": {
+            "packets": 50,
+            "bytes": 12276
+          },
+          "out-lan-discovery": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-service-tcp": {
+            "packets": 8,
+            "bytes": 4488
+          },
+          "out-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-dns": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-colocated-udp": {
+            "packets": 923,
+            "bytes": 1106291
+          },
+          "out-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-loopback": {
+            "packets": 50,
+            "bytes": 12276
+          },
+          "in-lan-discovery": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-service-tcp": {
+            "packets": 6,
+            "bytes": 3717
+          },
+          "in-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-dns": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-colocated-udp": {
+            "packets": 160,
+            "bytes": 13889
+          },
+          "in-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-direct-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          }
+        },
+        "VPS": {
+          "out-loopback": {
+            "packets": 50,
+            "bytes": 11878
+          },
+          "out-lan-discovery": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-service-tcp": {
+            "packets": 6,
+            "bytes": 3741
+          },
+          "out-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-dns": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-colocated-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-udp": {
+            "packets": 160,
+            "bytes": 13889
+          },
+          "out-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-loopback": {
+            "packets": 50,
+            "bytes": 11878
+          },
+          "in-lan-discovery": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-service-tcp": {
+            "packets": 12,
+            "bytes": 4732
+          },
+          "in-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-dns": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-colocated-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-direct-udp": {
+            "packets": 923,
+            "bytes": 1106291
+          },
+          "in-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "path_class": {
+        "direct_bytes": 1120180,
+        "service_tcp_bytes": 8449,
+        "direct_attempt_bytes": 1120180,
+        "dominant": "direct"
+      }
+    },
+    "reconnect": {
+      "head": {
+        "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+        "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+        "counter": "3"
+      },
+      "sha256": "4704d872d61000420137ff06c007f64d88b77d387b59de82130dec4331da4b53",
+      "bytes": 32,
+      "receipt": {
+        "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+        "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+        "version": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "counter": "3"
+        },
+        "saved": true,
+        "stored": true,
+        "applied": false,
+        "direct": true,
+        "observed_at": "2026-10-07T02:04:22Z",
+        "last_contact": "2026-10-07T02:04:22Z",
+        "availability": "available",
+        "online": true
+      },
+      "receiver_readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "receiver_working_hash_verified": true,
+      "seconds": 7.265630689973477,
+      "completion_bytes_per_second": 4.404297626104199,
+      "route_counters": {
+        "Pi": {
+          "egress_accept": {
+            "packets": 123,
+            "bytes": 64199
+          },
+          "ingress_established": {
+            "packets": 101,
+            "bytes": 55886
+          },
+          "egress_other_rejected": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "nat": {
+            "packets": 6,
+            "bytes": 440
+          }
+        },
+        "VPS": {
+          "egress_accept": {
+            "packets": 87,
+            "bytes": 54741
+          },
+          "ingress_established": {
+            "packets": 103,
+            "bytes": 51244
+          },
+          "egress_other_rejected": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "nat": {
+            "packets": 6,
+            "bytes": 440
+          }
+        }
+      },
+      "paths": {
+        "Pi": {
+          "out-loopback": {
+            "packets": 74,
+            "bytes": 17438
+          },
+          "out-lan-discovery": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-service-tcp": {
+            "packets": 112,
+            "bytes": 57665
+          },
+          "out-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-dns": {
+            "packets": 4,
+            "bytes": 320
+          },
+          "out-colocated-udp": {
+            "packets": 2,
+            "bytes": 194
+          },
+          "out-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-loopback": {
+            "packets": 74,
+            "bytes": 17438
+          },
+          "in-lan-discovery": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-service-tcp": {
+            "packets": 96,
+            "bytes": 57799
+          },
+          "in-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-dns": {
+            "packets": 4,
+            "bytes": 472
+          },
+          "in-colocated-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-direct-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          }
+        },
+        "VPS": {
+          "out-loopback": {
+            "packets": 74,
+            "bytes": 15875
+          },
+          "out-lan-discovery": {
+            "packets": 2,
+            "bytes": 1412
+          },
+          "out-service-tcp": {
+            "packets": 90,
+            "bytes": 59472
+          },
+          "out-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-dns": {
+            "packets": 4,
+            "bytes": 320
+          },
+          "out-colocated-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "out-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-loopback": {
+            "packets": 74,
+            "bytes": 15875
+          },
+          "in-lan-discovery": {
+            "packets": 2,
+            "bytes": 1412
+          },
+          "in-service-tcp": {
+            "packets": 110,
+            "bytes": 55420
+          },
+          "in-stun": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-dns": {
+            "packets": 4,
+            "bytes": 472
+          },
+          "in-colocated-udp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-colocated-tcp": {
+            "packets": 0,
+            "bytes": 0
+          },
+          "in-direct-udp": {
+            "packets": 2,
+            "bytes": 194
+          },
+          "in-direct-tcp": {
+            "packets": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "path_class": {
+        "direct_bytes": 194,
+        "service_tcp_bytes": 113219,
+        "direct_attempt_bytes": 194,
+        "dominant": "relay_or_control"
+      }
+    },
+    "second_folder": {
+      "approval": {
+        "request": "bec8cf47a3dec05959b8a7193b4e5a627e11fa2cb85524ecdbc4c7e97e3b81c4",
+        "attempt": "469ec11df486987f912171ab45881d810e310f5b820c5f2f7c6dbcc92af906c8",
+        "operation": "903cb6d0ce6b8ba1cbfcad09156c9004efcac1657e85e636f6f0ef7c1ac12864",
+        "verification_code": "bd2c3-faa66-179f3-63291",
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        }
+      },
+      "transfer": {
+        "head": {
+          "folder": "9d8f69afdfd9cc9b85e09cb83e9869fc41b50b0890fd18e2fed0644b7855d9a5",
+          "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "counter": "1"
+        },
+        "sha256": "4bc2ac778e0b11c37c81ffe64892a469887545a63550448468e58fa690968602",
+        "bytes": 29,
+        "receipt": {
+          "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "folder": "9d8f69afdfd9cc9b85e09cb83e9869fc41b50b0890fd18e2fed0644b7855d9a5",
+          "version": {
+            "folder": "9d8f69afdfd9cc9b85e09cb83e9869fc41b50b0890fd18e2fed0644b7855d9a5",
+            "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:05:04Z",
+          "last_contact": "2026-10-07T02:05:04Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 6.44352281204192,
+        "completion_bytes_per_second": 4.5006436457093955,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 155,
+              "bytes": 64673
+            },
+            "ingress_established": {
+              "packets": 168,
+              "bytes": 71871
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 172,
+              "bytes": 72457
+            },
+            "ingress_established": {
+              "packets": 171,
+              "bytes": 65509
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 60,
+              "bytes": 12540
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 94,
+              "bytes": 48125
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 39,
+              "bytes": 10155
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 60,
+              "bytes": 12540
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 116,
+              "bytes": 60774
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 35,
+              "bytes": 7739
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 60,
+              "bytes": 13717
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 120,
+              "bytes": 61368
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 35,
+              "bytes": 7739
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 60,
+              "bytes": 13717
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 117,
+              "bytes": 51642
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 35,
+              "bytes": 9136
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 16875,
+          "service_tcp_bytes": 112416,
+          "direct_attempt_bytes": 17894,
+          "dominant": "relay_or_control"
+        }
+      }
+    },
+    "impairments": {
+      "service_before": {
+        "orbit_net_sessions": 4.0,
+        "orbit_net_relay_sessions": 3.0,
+        "orbit_net_refusals_total{reason=\"quota\"}": 339.0,
+        "orbit_net_refusals_total{reason=\"invalid\"}": 85.0,
+        "orbit_net_refusals_total{reason=\"expired\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"untrusted\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"other\"}": 378.0,
+        "orbit_net_relay_bytes_total": 22843838.0,
+        "orbit_net_relay_limit_bytes_per_second": 4194304.0,
+        "orbit_net_relay_device_limit_bytes_per_second": 2097152.0,
+        "orbit_net_stun_answered_total": 74.0,
+        "orbit_net_stun_dropped_total{reason=\"rate\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"invalid\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"table_full\"}": 0.0
+      },
+      "udp_blocked_routes": [
+        "relay"
+      ],
+      "udp_blocked_route_seconds": 1.1865930799976923,
+      "udp_blocked_transfer": {
+        "head": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "counter": "4"
+        },
+        "sha256": "08e33aedf25337c87eb15e08c32a58f6f4caa21fe073d00b53014c57f8d148e0",
+        "bytes": 1028096,
+        "receipt": {
+          "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "version": {
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "counter": "4"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:05:22Z",
+          "last_contact": "2026-10-07T02:05:22Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 12.031648227013648,
+        "timeline": [
+          {
+            "t": 0.6,
+            "Pi": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "unavailable",
+                  "code": "CONNECTION_FAILED",
+                  "udp_code": "NOT_TESTED",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            },
+            "VPS": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "relay",
+                  "code": "CONNECTED",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            }
+          }
+        ],
+        "completion_bytes_per_second": 85449.30674516418,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 368,
+              "bytes": 1169736
+            },
+            "ingress_established": {
+              "packets": 304,
+              "bytes": 126761
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 299,
+              "bytes": 132462
+            },
+            "ingress_established": {
+              "packets": 467,
+              "bytes": 1145700
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 118,
+              "bytes": 25867
+            },
+            "out-lan-discovery": {
+              "packets": 1,
+              "bytes": 706
+            },
+            "out-service-tcp": {
+              "packets": 353,
+              "bytes": 1163507
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 118,
+              "bytes": 25867
+            },
+            "in-lan-discovery": {
+              "packets": 1,
+              "bytes": 706
+            },
+            "in-service-tcp": {
+              "packets": 293,
+              "bytes": 120834
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 118,
+              "bytes": 25390
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 295,
+              "bytes": 129973
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 118,
+              "bytes": 25390
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 458,
+              "bytes": 1142461
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 0,
+          "service_tcp_bytes": 1263295,
+          "direct_attempt_bytes": 0,
+          "dominant": "relay_or_control"
+        }
+      },
+      "service_after_forward": {
+        "orbit_net_sessions": 3.0,
+        "orbit_net_relay_sessions": 3.0,
+        "orbit_net_refusals_total{reason=\"quota\"}": 339.0,
+        "orbit_net_refusals_total{reason=\"invalid\"}": 85.0,
+        "orbit_net_refusals_total{reason=\"expired\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"untrusted\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"other\"}": 384.0,
+        "orbit_net_relay_bytes_total": 24071264.0,
+        "orbit_net_relay_limit_bytes_per_second": 4194304.0,
+        "orbit_net_relay_device_limit_bytes_per_second": 2097152.0,
+        "orbit_net_stun_answered_total": 75.0,
+        "orbit_net_stun_dropped_total{reason=\"rate\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"invalid\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"table_full\"}": 0.0
+      },
+      "udp_blocked_reverse": {
+        "head": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "counter": "2"
+        },
+        "sha256": "2a1eaa6586899f3bfc71c02db55942025bd91c7d73b680cfc765cdce58e9243e",
+        "bytes": 20,
+        "receipt": {
+          "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "version": {
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "counter": "2"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:05:33Z",
+          "last_contact": "2026-10-07T02:05:33Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 7.566587592998985,
+        "timeline": [
+          {
+            "t": 0.3,
+            "Pi": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "unavailable",
+                  "code": "PURPOSE_MISMATCH",
+                  "udp_code": "ICE_PROBE_DEFERRED",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            },
+            "VPS": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "relay",
+                  "code": "CONNECTED",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            }
+          }
+        ],
+        "completion_bytes_per_second": 2.643199428300424,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 139,
+              "bytes": 74509
+            },
+            "ingress_established": {
+              "packets": 129,
+              "bytes": 65705
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 3,
+              "bytes": 220
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 119,
+              "bytes": 68035
+            },
+            "ingress_established": {
+              "packets": 121,
+              "bytes": 58825
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 3,
+              "bytes": 220
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 82,
+              "bytes": 20737
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 122,
+              "bytes": 67828
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 2,
+              "bytes": 160
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 82,
+              "bytes": 20737
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 116,
+              "bytes": 59225
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 2,
+              "bytes": 236
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 82,
+              "bytes": 21869
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 95,
+              "bytes": 51717
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 2,
+              "bytes": 160
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 82,
+              "bytes": 21869
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 89,
+              "bytes": 45750
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 2,
+              "bytes": 236
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 0,
+          "service_tcp_bytes": 104975,
+          "direct_attempt_bytes": 0,
+          "dominant": "relay_or_control"
+        }
+      },
+      "service_after_reverse": {
+        "orbit_net_sessions": 2.0,
+        "orbit_net_relay_sessions": 1.0,
+        "orbit_net_refusals_total{reason=\"quota\"}": 339.0,
+        "orbit_net_refusals_total{reason=\"invalid\"}": 85.0,
+        "orbit_net_refusals_total{reason=\"expired\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"untrusted\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"other\"}": 387.0,
+        "orbit_net_relay_bytes_total": 24149438.0,
+        "orbit_net_relay_limit_bytes_per_second": 4194304.0,
+        "orbit_net_relay_device_limit_bytes_per_second": 2097152.0,
+        "orbit_net_stun_answered_total": 75.0,
+        "orbit_net_stun_dropped_total{reason=\"rate\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"invalid\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"table_full\"}": 0.0
+      },
+      "address_change": {
+        "from": "10.231.17.2",
+        "to": "10.231.17.3",
+        "interface": "ow-w16-n"
+      },
+      "after_change_transfer": {
+        "head": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "counter": "5"
+        },
+        "sha256": "0c04306fa1760503cad841403d7fea9e0e25701098a75f7e1d8349a24660c1af",
+        "bytes": 27,
+        "receipt": {
+          "device": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "version": {
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "author": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+            "counter": "5"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:06:11Z",
+          "last_contact": "2026-10-07T02:06:11Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 32.561220987990964,
+        "timeline": [
+          {
+            "t": 0.5,
+            "Pi": {
+              "ready": false,
+              "code": "SERVICE_UNAVAILABLE",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "not_tested",
+                  "code": "NOT_TESTED",
+                  "udp_code": "NOT_TESTED",
+                  "freshness": "untested",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "5"
+                }
+              ]
+            },
+            "VPS": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "unavailable",
+                  "code": "ROUTE_UNAVAILABLE",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            }
+          },
+          {
+            "t": 16.2,
+            "Pi": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "relay",
+                  "code": "CONNECTED",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "5"
+                }
+              ]
+            },
+            "VPS": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "unavailable",
+                  "code": "QUOTA_EXCEEDED",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            }
+          }
+        ],
+        "completion_bytes_per_second": 0.8292072342728788,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 333,
+              "bytes": 193642
+            },
+            "ingress_established": {
+              "packets": 363,
+              "bytes": 182790
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 24,
+              "bytes": 1760
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 286,
+              "bytes": 190593
+            },
+            "ingress_established": {
+              "packets": 276,
+              "bytes": 158009
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 9,
+              "bytes": 660
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 354,
+              "bytes": 68434
+            },
+            "out-lan-discovery": {
+              "packets": 5,
+              "bytes": 2198
+            },
+            "out-service-tcp": {
+              "packets": 317,
+              "bytes": 192362
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 16,
+              "bytes": 1280
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 354,
+              "bytes": 68434
+            },
+            "in-lan-discovery": {
+              "packets": 3,
+              "bytes": 2118
+            },
+            "in-service-tcp": {
+              "packets": 322,
+              "bytes": 181430
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 16,
+              "bytes": 1888
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 354,
+              "bytes": 63343
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 306,
+              "bytes": 206798
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 6,
+              "bytes": 480
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 354,
+              "bytes": 63343
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 297,
+              "bytes": 174501
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 6,
+              "bytes": 708
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 0,
+          "service_tcp_bytes": 355931,
+          "direct_attempt_bytes": 0,
+          "dominant": "relay_or_control"
+        }
+      },
+      "after_change_reverse": {
+        "head": {
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+          "counter": "3"
+        },
+        "sha256": "c3969d778e262fd5a747fec90f61e51250f8911090e980a0d5ca32e6a2c76615",
+        "bytes": 29,
+        "receipt": {
+          "device": "d5f1785075a15dc17810787c0cd66fcfe9fd59565d2874e9b68f52e791ef2361",
+          "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+          "version": {
+            "folder": "414adfccf308ced2e6de3e8bad7f6b7d45ad47bc0249c60eca06fa35b74b8a63",
+            "author": "99e743cffb6a16a0b0c492e2aa9c95bae62a2fdc8e9d99e050c7a64b534f8183",
+            "counter": "3"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-07T02:06:20Z",
+          "last_contact": "2026-10-07T02:06:18Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 6.480175810982473,
+        "timeline": [
+          {
+            "t": 0.3,
+            "Pi": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "relay",
+                  "code": "CONNECTED",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "5"
+                }
+              ]
+            },
+            "VPS": {
+              "ready": true,
+              "code": "SERVICE_READY",
+              "observations": [
+                {
+                  "purpose": "peer_data",
+                  "route": "relay",
+                  "code": "CONNECTED",
+                  "udp_code": "UNAVAILABLE",
+                  "freshness": "recent",
+                  "lan_candidates": "0",
+                  "public_candidates": "0",
+                  "generation": "4"
+                }
+              ]
+            }
+          }
+        ],
+        "completion_bytes_per_second": 4.475187224218728,
+        "route_counters": {
+          "Pi": {
+            "egress_accept": {
+              "packets": 102,
+              "bytes": 69701
+            },
+            "ingress_established": {
+              "packets": 125,
+              "bytes": 67952
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "egress_accept": {
+              "packets": 125,
+              "bytes": 75918
+            },
+            "ingress_established": {
+              "packets": 109,
+              "bytes": 61246
+            },
+            "egress_other_rejected": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "nat": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "paths": {
+          "Pi": {
+            "out-loopback": {
+              "packets": 70,
+              "bytes": 19942
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 112,
+              "bytes": 79573
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 70,
+              "bytes": 19942
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 127,
+              "bytes": 70725
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          },
+          "VPS": {
+            "out-loopback": {
+              "packets": 70,
+              "bytes": 20727
+            },
+            "out-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-service-tcp": {
+              "packets": 130,
+              "bytes": 83162
+            },
+            "out-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "out-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-loopback": {
+              "packets": 70,
+              "bytes": 20727
+            },
+            "in-lan-discovery": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-service-tcp": {
+              "packets": 136,
+              "bytes": 75684
+            },
+            "in-stun": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-dns": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-colocated-tcp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-udp": {
+              "packets": 0,
+              "bytes": 0
+            },
+            "in-direct-tcp": {
+              "packets": 0,
+              "bytes": 0
+            }
+          }
+        },
+        "path_class": {
+          "direct_bytes": 0,
+          "service_tcp_bytes": 146409,
+          "direct_attempt_bytes": 0,
+          "dominant": "relay_or_control"
+        }
+      },
+      "service_after_change": {
+        "orbit_net_sessions": 2.0,
+        "orbit_net_relay_sessions": 2.0,
+        "orbit_net_refusals_total{reason=\"quota\"}": 341.0,
+        "orbit_net_refusals_total{reason=\"invalid\"}": 85.0,
+        "orbit_net_refusals_total{reason=\"expired\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"untrusted\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"other\"}": 404.0,
+        "orbit_net_relay_bytes_total": 24480808.0,
+        "orbit_net_relay_limit_bytes_per_second": 4194304.0,
+        "orbit_net_relay_device_limit_bytes_per_second": 2097152.0,
+        "orbit_net_stun_answered_total": 75.0,
+        "orbit_net_stun_dropped_total{reason=\"rate\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"invalid\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"table_full\"}": 0.0
+      },
+      "after_change_seconds": 45.373376549978275,
+      "after_change_routes": {
+        "Pi": [
+          "relay"
+        ],
+        "VPS": [
+          "relay"
+        ]
+      }
+    }
+  },
+  "cleanup_errors": [],
+  "package_manifest": {
+    "browser_runtime_required": false,
+    "built": "2026-10-01",
+    "commit": "d253825",
+    "config_format_version": 1,
+    "embedded_assets": {
+      "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+      "total_files": 3
+    },
+    "legacy_browser_entry": "orbit legacy-browser",
+    "license": "MIT",
+    "node_runtime_required": false,
+    "ordinary_entry": "terminal",
+    "packaged_profile": {
+      "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+      "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+      "epoch": 1,
+      "expires": "2027-01-04T19:37:37Z",
+      "operator": "Caleb Habesh"
+    },
+    "product": "Orbit",
+    "pure_go_sqlite": true,
+    "release": "1",
+    "schema_version": 13,
+    "version": "1.0.0"
+  },
+  "retained_roots": {},
+  "ended_at": "2026-10-07T02:06:30.812572+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "bin/orbit",
+    "version"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:00:24.883162+00:00",
+  "source_before": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.018,
+  "finished_at": "2026-10-06T21:00:24.900910+00:00",
+  "source_after": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c"
+}

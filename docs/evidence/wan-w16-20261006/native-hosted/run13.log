@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "<repo>/scripts/validation/wan_native.py", line 711, in <module>
+    run(parser.parse_args())
+    ~~~^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/wan_native.py", line 646, in run
+    impairments(nodes, folder, a, b, ready, report['scenarios']['impairments'], getattr(args, 'service_metrics_host', None))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/wan_native.py", line 529, in impairments
+    out['udp_blocked_transfer'] = transfer(nodes, folder, a, b, 'relay-only', bytes(range(251)) * 4096, timeline_enabled=True)
+                                  ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/wan_native.py", line 466, in transfer
+    result['paths'] = {role: path_delta(paths_before[role], n.paths())
+                                                            ~~~~~~~^^
+  File "<repo>/scripts/validation/wan_native.py", line 284, in paths
+    return parse_paths(''.join(self.netns_run(['iptables', '-w', '-S', chain, '-v'])
+                       ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                               for _, chain in ACCOUNT_CHAINS.values()))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/wan_native.py", line 284, in <genexpr>
+    return parse_paths(''.join(self.netns_run(['iptables', '-w', '-S', chain, '-v'])
+                               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/validation/wan_native.py", line 263, in netns_run
+    result = subprocess.run(['ssh', *SSH_OPTIONS, self.host, remote], capture_output=True, text=True, timeout=60)
+  File "/usr/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 2153, in _communicate
+    ready = selector.select(timeout)
+  File "/usr/lib/python3.14/selectors.py", line 398, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt
+python3 scripts/validation/wan_native.py --dist $R --topology  --route-target  3.15s user 0.65s system 2% cpu 2:37.28 total
+exit=130

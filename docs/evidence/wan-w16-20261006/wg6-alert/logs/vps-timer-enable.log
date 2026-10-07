@@ -1,0 +1,20 @@
+Created symlink /etc/systemd/system/timers.target.wants/orbit-net-alert.timer → /etc/systemd/system/orbit-net-alert.timer.
+○ orbit-net-alert.service - Orbit connection service alert check
+     Loaded: loaded (/etc/systemd/system/orbit-net-alert.service; static)
+     Active: inactive (dead) since Tue 2026-10-06 23:51:35 UTC; 9ms ago
+TriggeredBy: ● orbit-net-alert.timer
+       Docs: file:///usr/share/doc/orbit-net/orbit-net-operator.md
+    Process: 4049059 ExecStart=/usr/local/lib/orbit-net-alert/orbit-net alert --config /etc/orbit-net-alert/alert.json --state /var/lib/orbit-net-alert/state.json (code=exited, status=0/SUCCESS)
+   Main PID: 4049059 (code=exited, status=0/SUCCESS)
+        CPU: 55ms
+
+Oct 06 23:51:35 main-instance-vnic systemd[1]: Starting orbit-net-alert.service - Orbit connection service alert check...
+Oct 06 23:51:35 main-instance-vnic systemd[1]: orbit-net-alert.service: Deactivated successfully.
+Oct 06 23:51:35 main-instance-vnic systemd[1]: Finished orbit-net-alert.service - Orbit connection service alert check.
+NEXT                        LEFT LAST                          PASSED UNIT                  ACTIVATES
+Tue 2026-10-06 23:52:35 UTC  59s Tue 2026-10-06 23:51:35 UTC 86ms ago orbit-net-alert.timer orbit-net-alert.service
+
+1 timers listed.
+Pass --all to see loaded but inactive timers, too.
+firing None counters 13
+active

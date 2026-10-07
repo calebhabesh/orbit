@@ -1,0 +1,8 @@
+2026/10/07 00:48:50 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+agent ready: device=9882e41f38578f96c63723aa713dbb4c77044fe8f38e8ef97128fbe16b0c5ddf schema=13 peer-listener=[::]:44505 key-pin=2da2ac4784ac88774d179bc04951f13cdf8c0244c95ce18a3a02ce119fd997ee enrollment-listener=disabled control-listener=http://<ip>:37345
+2026/10/07 00:48:55 http: TLS handshake error from orbit-relay:0: i/o timeout
+2026/10/07 00:51:09 http: TLS handshake error from orbit-relay:0: i/o timeout
+2026/10/07 00:51:19 http: TLS handshake error from orbit-relay:0: i/o timeout
+2026/10/07 00:53:10 http: TLS handshake error from orbit-relay:0: i/o timeout
+2026/10/07 00:53:15 http: TLS handshake error from orbit-relay:0: i/o timeout
+2026/10/07 00:53:30 http: TLS handshake error from orbit-relay:0: i/o timeout

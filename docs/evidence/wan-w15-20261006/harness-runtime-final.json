@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "python3",
+    "-O",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/validation",
+    "-p",
+    "test_*.py"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:49:11.671653+00:00",
+  "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.078,
+  "finished_at": "2026-10-06T21:49:11.749455+00:00",
+  "source_after": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177"
+}

@@ -1,6 +1,6 @@
 # W14 evidence summary
 
-**Implementation recorded, 2026-10-06; final-source validation in progress. Publication of packages beyond
+**Complete for recorded acceptance, 2026-10-06; final-source validation passed. Publication of packages beyond
 the owner stays gated on WG6** (offline authority-key copy, alert destination).
 Worker: Claude Code session, no delegation. Starting tree: the dirty W00–W13 tree
 on `ee461a7` (W00–W13 source uncommitted), preserved. No pre-edit hash snapshot
@@ -11,8 +11,10 @@ Status entry: [W14 tracker](../../implementation/wan-status.md#w14--packaged-def
 Packet: [release plan](../../implementation/wan-release.md#w14--migration-mixed-versions-and-packaged-defaults).
 Commands and results: the [original aggregate log](logs/make-check.log) records
 an exit-2 W07 PTY failure from a run started before the final rendering edit.
-Fresh final-source checks are recorded in the closeout directory; they must
-finish before final validation is credited.
+Fresh final-source checks pass, including the complete aggregate, affected
+package race tests and all 12 W14 tests under race detection. See the
+[closeout commands](../wan-w14-closeout-20261006/commands.md) and
+[results](../wan-w14-closeout-20261006/results.json).
 
 ## What changed
 

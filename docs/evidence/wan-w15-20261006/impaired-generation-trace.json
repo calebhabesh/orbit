@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "<repo>/scripts/wan_failure_campaign.py",
+    "--root",
+    "/tmp/orbit-w15-60gdfpfp",
+    "--parent-namespace",
+    "net:[4026531833]",
+    "--test-binary",
+    "/tmp/orbit-w15-terminal-trace.test",
+    "--scenario",
+    "impaired",
+    "--suite",
+    "crash"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:45:35.343627+00:00",
+  "source_before": "8479d8405e7ea2dbc3be7568794df836b8ccacbff7597245c7d9e81fff677def",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": null,
+  "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+  "finished_at": "2026-10-06T21:57:00.043967+00:00"
+}

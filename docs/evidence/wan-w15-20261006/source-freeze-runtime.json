@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "snapshot",
+    "final-source"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:56:28.568436+00:00",
+  "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": null,
+  "outcome": "recorder invocation error: snapshot supplied as executable; snapshot not executed; no acceptance credit",
+  "finished_at": "2026-10-06T21:57:00.044011+00:00"
+}

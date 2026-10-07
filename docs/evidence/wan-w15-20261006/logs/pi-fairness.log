@@ -1,0 +1,16 @@
+['unshare', '--user', '--map-root-user', '--net', 'python3', '/tmp/orbit-w15-pi-assets-7qxw5pvw/wan_failure_campaign.py', '--root', '/tmp/orbit-w15-pi-run-xzf_hxap', '--parent-namespace', 'net:[4026531840]', '--test-binary', '/tmp/orbit-w15-pi-assets-7qxw5pvw/input.test', '--scenario', 'recovery', '--suite', 'fairness']
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+2026/10/06 17:35:49 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+    wan_bandwidth_test.go:304: actual relay: large=16777216 bytes completed=15.566722605s first verified chunk=983.912847ms first small=1.839099595s small versions=9; shared cap=2097152 B/s; peak sampled heap=42626552 goroutines=146 FD=61 unique sockets=36 RSS=85286912 process CPU=7250386us; original author=2f8c82fffb13cd4154ba205f3c2ddf2e44a9803ee18d7616a1fe11e6eac806ba
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:304: actual direct: large=16777216 bytes completed=16.10143425s first verified chunk=330.196427ms first small=2.732214185s small versions=4; shared cap=2097152 B/s; peak sampled heap=70794760 goroutines=99 FD=54 unique sockets=32 RSS=102150144 process CPU=5695412us; original author=2f8c82fffb13cd4154ba205f3c2ddf2e44a9803ee18d7616a1fe11e6eac806ba
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:304: actual quic: large=16777216 bytes completed=13.509138494s first verified chunk=713.197536ms first small=2.982770096s small versions=5; shared cap=2097152 B/s; peak sampled heap=70939480 goroutines=124 FD=59 unique sockets=34 RSS=103235584 process CPU=6766391us; original author=2f8c82fffb13cd4154ba205f3c2ddf2e44a9803ee18d7616a1fe11e6eac806ba
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (130.89s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (22.95s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (21.02s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (19.57s)
+PASS
+
+{"scenario": "recovery", "suite": "fairness", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531840]", "namespace": "net:[4026532492]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 0, "seconds": 130.92475630901754}

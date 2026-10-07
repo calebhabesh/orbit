@@ -110,5 +110,10 @@
     "full uncached race campaign (W15/W17)"
   ],
   "test_temp_filesystem": "tmpfs",
-  "historical_evidence_count": 2222
+  "historical_evidence_count": 2222,
+  "completed_at": "2026-10-06T21:02:42.515432+00:00",
+  "final_source_snapshot": "final-source.json",
+  "publication": "not performed; WG6 open",
+  "final_revision": "d2538251d262d9a36804bf3ba6dcecd93ac6ab12",
+  "revision_transition": "Another session committed the inherited tree during validation; runtime/test/build file fingerprints remained identical."
 }

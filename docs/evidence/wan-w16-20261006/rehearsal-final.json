@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "env",
+    "ORBIT_W16_REHEARSAL_REPORT=docs/evidence/wan-w16-20261006/rehearsal-report.json",
+    "go",
+    "test",
+    "-count=1",
+    "-v",
+    "-timeout=10m",
+    "./tests/terminal",
+    "-run",
+    "^TestWANW16NativeRunnerRehearsal$"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T22:35:48.425178+00:00",
+  "source_before": "8bf9a0ace6d0ce102f6c031f2ae5d3c886ffdb6c39ff41526b27e77e2d305f8c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 1,
+  "duration_seconds": 56.827,
+  "finished_at": "2026-10-06T22:36:45.251808+00:00",
+  "source_after": "8bf9a0ace6d0ce102f6c031f2ae5d3c886ffdb6c39ff41526b27e77e2d305f8c"
+}

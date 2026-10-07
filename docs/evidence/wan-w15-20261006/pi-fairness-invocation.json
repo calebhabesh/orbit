@@ -1,0 +1,8 @@
+{
+  "host": "rpi",
+  "assets": "/tmp/orbit-w15-pi-assets-7qxw5pvw",
+  "root": "/tmp/orbit-w15-pi-run-xzf_hxap",
+  "scenario": "recovery",
+  "suite": "fairness",
+  "remote_python": "import os,pathlib,subprocess,sys\nos.environ['PATH']='/usr/sbin:/usr/bin:/sbin:/bin'\nargv=['unshare','--user','--map-root-user','--net','python3',sys.argv[1]+'/wan_failure_campaign.py','--root',sys.argv[2],'--parent-namespace',os.readlink('/proc/self/ns/net'),'--test-binary',sys.argv[1]+'/input.test','--scenario',sys.argv[3],'--suite',sys.argv[4]]\nprint(argv,flush=True)\nsys.exit(subprocess.call(argv))\n"
+}

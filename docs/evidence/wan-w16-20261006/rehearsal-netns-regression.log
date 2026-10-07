@@ -1,0 +1,7 @@
+=== RUN   TestWANW16NativeRunnerRehearsal
+    wan_w16_test.go:152: cleaned private rehearsal root: /home/owner/filesync-validation-cz6cdedv
+    wan_w16_test.go:152: cleaned private rehearsal root: /home/owner/filesync-validation-jlz6sq32
+--- PASS: TestWANW16NativeRunnerRehearsal (107.87s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	107.868s
+exit=0

@@ -1,0 +1,20 @@
+['unshare', '--user', '--map-root-user', '--net', 'python3', '/tmp/orbit-w15-pi-assets-lm2g0ou1/wan_failure_campaign.py', '--root', '/tmp/orbit-w15-pi-run-7x59kps4', '--parent-namespace', 'net:[4026531840]', '--test-binary', '/tmp/orbit-w15-pi-assets-lm2g0ou1/input.test', '--scenario', 'impaired', '--suite', 'crash']
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:200: missing verified bytes relay-start.txt {recent Check device and service availability; a timeout does not identify a NAT or firewall type. 0 0 0 UNAVAILABLE 3f0710ac260cbaefd98ca5847abf1d15cc62f83c5266b378f282730ec6a392b4 40ce97793047de52ea90d0c706e80aa9a519a37fa37381904484069f91e6ac4d peer_data unavailable ROUTE_UNAVAILABLE 2026-10-06T21:26:38.922704985Z 4}
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        2026/10/06 17:24:38 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=3f0710ac260cbaefd98ca5847abf1d15cc62f83c5266b378f282730ec6a392b4 schema=13 peer-listener=[::]:37765 key-pin=40ce97793047de52ea90d0c706e80aa9a519a37fa37381904484069f91e6ac4d enrollment-listener=disabled control-listener=http://127.0.0.1:45463
+
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        2026/10/06 17:24:39 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        agent ready: device=a01f1f144c52055b85294dceb7ea849993d981c93cadd8fd66a47e0b6eedfc0d schema=13 peer-listener=[::]:38245 key-pin=fc04f89f34bf09e05871b040d2c4275deadd06a6c364c78f2af5c6943b5109da enrollment-listener=disabled control-listener=http://127.0.0.1:37869
+
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:52: context deadline exceeded
+--- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (181.20s)
+    --- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (165.63s)
+    --- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (15.57s)
+FAIL
+
+{"scenario": "impaired", "suite": "crash", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531840]", "namespace": "net:[4026532492]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"], ["tc", "qdisc", "add", "dev", "lo", "root", "handle", "1:", "prio", "bands", "3", "priomap", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"], ["tc", "qdisc", "add", "dev", "lo", "parent", "1:3", "handle", "30:", "netem", "delay", "25ms", "5ms", "loss", "1%", "reorder", "5%", "50%", "rate", "20mbit", "limit", "1000"], ["tc", "filter", "add", "dev", "lo", "protocol", "ip", "parent", "1:", "prio", "1", "u32", "match", "ip", "dst", "127.0.0.0/8", "flowid", "1:1"], ["tc", "filter", "add", "dev", "lo", "protocol", "ipv6", "parent", "1:", "prio", "2", "u32", "match", "ip6", "dst", "::1/128", "flowid", "1:1"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 1, "seconds": 181.2312576835975}

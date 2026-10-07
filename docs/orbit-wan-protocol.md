@@ -60,6 +60,25 @@ a relay session, and release. There is no directory enumeration operation.
 
 An announcement contains signed identity/pin, bounded transport capabilities,
 generation, lease expiration, eligible public candidates and relay availability.
+The relay endpoint publishes an offer generation only after the matching
+announcement is accepted. A quota-refused renewal does not advance its offer
+generation. Until its purpose announcement is ready, the runtime performs no
+new lookup, relay offer or ICE dial; established authenticated transports may
+continue. This prevents cold-start retries from spending quota on generations
+the directory has never accepted. Ready means the directory holds an accepted,
+unexpired record: a transiently refused renewal (quota, service unavailable,
+local overload) keeps the accepted generation and readiness until one minute
+before that record expires, while a semantic refusal withdraws readiness at
+once (W16 native evidence: withdrawing on every quota refusal turned overload
+into relay outages).
+
+Each daemon keeps its signed operations inside the service's per-device bounds:
+at most two outstanding challenges, paced to the metadata rate with a smaller
+client burst and one token reserved for announcement renewal. Ordinary callers
+get typed local backpressure or `QUOTA_EXCEEDED` instead of queueing or spending
+service quota. A caller may cancel until the service connection is ready; once
+the challenge request is written, the operation completes within its own bound
+so that no issued challenge is abandoned.
 Lookup returns candidate records with their signature/lease and service-scoped
 relay hints. Stale/invalid records are ignored and diagnosed. A service's observed
 source IP is an observation, not proof that a TCP/UDP peer listener is reachable.

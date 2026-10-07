@@ -1,0 +1,45 @@
+# rootless rehearsal: unshare -rnm bash inner.sh (fake uplink0/inet peer, fake tun9 tunnel peer)
+2026-10-06T23:33:41Z
+--- refusal without marker
+refusing: set ORBIT_W16_DISPOSABLE=1 to confirm a disposable W16 environment
+exit=3
+--- up
+up: orbit-w16t 10.231.16.2/29 -> 10.231.16.1 via uplink0
+--- duplicate
+refusing: orbit-w16t already exists (run down first)
+exit=1
+namespace orbit-w16t
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+ow-w16t-n@if7    UP             10.231.16.2/29 fe80::7cc6:15ff:fe5a:c93/64 
+default via 10.231.16.1 dev ow-w16t-n 
+10.231.16.0/29 dev ow-w16t-n proto kernel scope link src 10.231.16.2 
+-A INPUT -i ow-w16t-h -p tcp -m tcp --dport 8443 -m comment --comment orbit-w16-w16t -j ACCEPT
+-A INPUT -i ow-w16t-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16t -j ACCEPT
+-A INPUT -i ow-w16t-h -m comment --comment orbit-w16-w16t -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -i ow-w16t-h -o uplink0 -m comment --comment orbit-w16-w16t -j ACCEPT
+-A FORWARD -i uplink0 -o ow-w16t-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16t -j ACCEPT
+-A FORWARD -i ow-w16t-h ! -o uplink0 -m comment --comment orbit-w16-w16t -j REJECT --reject-with icmp-port-unreachable
+-A POSTROUTING -s 10.231.16.0/29 -o uplink0 -m comment --comment orbit-w16-w16t -j MASQUERADE
+nameserver 1.1.1.1
+nameserver 9.9.9.9
+--- links inside
+lo               UNKNOWN        02:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+ow-w16t-n@if7    UP             02:00:00:00:00:00 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+--- to internet
+internet-ok
+--- to tunnel peer (must fail)
+tunnel-blocked
+host:8443 open
+host:9464 rejected
+--- NAT source seen by internet
+from 198.51.100.2
+--- counters
+-A FORWARD -i ow-w16t-h -o uplink0 -m comment --comment orbit-w16-w16t -c 2 113 -j ACCEPT
+-A FORWARD -i uplink0 -o ow-w16t-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16t -c 1 84 -j ACCEPT
+-A FORWARD -i ow-w16t-h ! -o uplink0 -m comment --comment orbit-w16-w16t -c 1 84 -j REJECT --reject-with icmp-port-unreachable
+--- down
+down: orbit-w16t removed
+absent
+0
+0
+exit=0

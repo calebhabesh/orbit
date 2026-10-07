@@ -1,0 +1,37 @@
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:198: whole daemon route relay after 11.300872ms generation=4
+    wan_roaming_test.go:200: whole daemon route quic after 20.410876366s generation=4
+    wan_roaming_test.go:230: whole daemon route relay after 47.001888465s generation=4
+    wan_roaming_test.go:233: whole daemon route quic after 26.347280868s generation=4
+    wan_roaming_test.go:234: W15 SIGKILL at transfer.chunk.verified: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:247: whole daemon address/default-route generation rebuild after 768.932559ms
+    wan_roaming_test.go:261: whole daemon route relay after 6.116648464s generation=5
+    wan_roaming_test.go:267: whole daemon route quic after 8.767283986s generation=5
+    wan_roaming_test.go:270: W15 service relayed encrypted inner stream bytes=16718024
+    wan_roaming_test.go:277: W15 direct sync survived service outage; fresh service restarted; relay bytes=0
+    wan_roaming_test.go:332: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="38257"
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:198: whole daemon route relay after 6.289321ms generation=4
+    wan_roaming_test.go:200: whole daemon route quic after 20.970337034s generation=4
+    wan_roaming_test.go:230: whole daemon route relay after 1m2.977285949s generation=4
+    wan_roaming_test.go:233: whole daemon route quic after 6.726714363s generation=4
+    wan_roaming_test.go:234: W15 SIGKILL at transfer.receipt.after_send: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:238: ip [addr del 10.23.45.1/24 dev orbit-w11] Error: ipv4: Address not found.
+         exit status 2
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=13f77c2019207e89dd16f2b377cebf9a5477248cd8918290bdb8aa27d1bfca8c schema=13 peer-listener=[::]:39869 key-pin=e882f6b550c4959b817c7d627fc1c0ac2038bb60408a421efc01e179c0824e98 enrollment-listener=disabled control-listener=http://127.0.0.1:33239
+        2026/10/06 17:27:46 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        2026/10/06 17:29:38 http: TLS handshake error from orbit-relay:0: i/o timeout
+
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=7a1ad768cf1b921eb22eddad2af9f990a550f5f779c5488a0f718e1a53a73c50 schema=13 peer-listener=[::]:39663 key-pin=4a8c3df0d628a657be3f2f4a0362e5c8eb711a071cf9d9b06b45612b1db98038 enrollment-listener=disabled control-listener=http://127.0.0.1:37131
+        --- PASS: TestWANW05DaemonChild (71.30s)
+        PASS
+
+--- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (533.81s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (297.70s)
+    --- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (236.11s)
+FAIL
+
+{"scenario": "impaired", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531833]", "namespace": "net:[4026534342]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"], ["tc", "qdisc", "add", "dev", "lo", "root", "handle", "1:", "prio", "bands", "3", "priomap", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"], ["tc", "qdisc", "add", "dev", "lo", "parent", "1:3", "handle", "30:", "netem", "delay", "25ms", "5ms", "loss", "1%", "reorder", "5%", "50%", "rate", "20mbit", "limit", "1000"], ["tc", "filter", "add", "dev", "lo", "protocol", "ip", "parent", "1:", "prio", "1", "u32", "match", "ip", "dst", "127.0.0.0/8", "flowid", "1:1"], ["tc", "filter", "add", "dev", "lo", "protocol", "ipv6", "parent", "1:", "prio", "2", "u32", "match", "ip6", "dst", "::1/128", "flowid", "1:1"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 1, "seconds": 533.861085245997}

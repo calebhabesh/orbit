@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-v",
+    "./internal/network",
+    "./internal/rendezvous",
+    "./internal/protocol",
+    "./internal/replication",
+    "./cmd/orbit-net"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:49:10.511455+00:00",
+  "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": null,
+  "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+  "finished_at": "2026-10-06T21:57:00.043839+00:00"
+}

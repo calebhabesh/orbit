@@ -1,16 +1,24 @@
 # W14 final-source validation closeout
 
-State: **in progress**. Codex took over the dirty W00–W14 tree after Opus reached
+State: **complete for the final-source validation/evidence closeout slice**. Codex took over the dirty W00–W14 tree after Opus reached
 quota. Runtime code is unchanged from the takeover snapshot. Hosted-default
 publication remains gated on W13/WG6 authority-key backup and working alerting.
 
 ## Validation
 
 Twelve discovered W14 tests pass uncached under race detection, including the
-native CLI/PTy confirmation, invitation-code journey and actual pre-WAN
+native CLI/PTY confirmation, invitation-code journey and actual pre-WAN
 `ef462f2` upgrade/rollback. Affected runtime packages also pass uncached race
 tests. The standalone W07 keyboard relay onboarding regression passes.
-The full aggregate is still running; no passing aggregate result is claimed yet.
+Fresh `make GOFLAGS=-v check` passed with exit 0; the terminal suite took
+1294.436 seconds. Packages, format/vet, CLI/unit, integration, model, fault and
+harness targets passed. Guarded skips stay unexecuted for this run. See
+[results](results.json) and the [aggregate record](aggregate-final.json).
+The tested source fingerprint stayed unchanged across all commands; the final
+[file hashes](final-source.json) and [preservation check](preservation-final.json)
+confirm runtime/test/build source, 2,222 historical P/O/T/W evidence files and
+inherited W14 raw transcripts remain intact. Local package/binary hashes are
+in [package artifacts](package-artifacts.json); no package was published.
 
 Exact argv, exit codes, durations and source fingerprints are in
 [command records](commands.md) and individual JSON records. The
@@ -30,9 +38,11 @@ passes without a further runtime change. The original failure remains intact.
 
 The old W14 summary declared completion before final validation and linked
 missing commands/hash artifacts and an absent tracker anchor. This closeout
-supplies actual command/source records, adds the detailed W14 tracker entry and
-corrects the owning plan/status/outcome text. It does not fabricate the earlier
-unsaved command transcript.
+supplies actual command/source records and corrects the owning plan/status/
+outcome text. Another session added an original-worker command handoff and a
+duplicate W14 tracker entry during validation; the tracker is consolidated around
+the final results, while that prior command handoff retains its historical scope.
+This closeout does not fabricate an earlier unsaved command transcript.
 
 ## Evidence boundary and next work
 
@@ -50,3 +60,8 @@ W15 after its W13/W14 prerequisites are satisfied; begin with the guarded
 harness and transfer-recovery slice, then finish the full security/resource
 matrix before W16 physical WAN acceptance. Inherited T13 technical checks and
 deferred P17 owner use/explanation remain unchanged.
+
+The aggregate [raw stdout/stderr](logs/aggregate-final.raw.gz) is preserved
+losslessly. Its readable `.log` normalizes line endings and trailing whitespace
+to satisfy the repository whitespace check after another session committed the
+in-progress capture. Exit codes and test results are unchanged.

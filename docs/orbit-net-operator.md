@@ -144,6 +144,27 @@ Prometheus text format. No metric carries an address, device ID, pin or session.
 | Egress | `rate(orbit_net_relay_bytes_total)` near `orbit_net_relay_limit_bytes_per_second` |
 | Down | `/healthz` not 200, or the unit not active |
 
+Without a Prometheus stack, `orbit-net alert` implements this table. Each run
+takes one sample and posts to an ntfy-compatible topic only on a firing or
+resolved transition. Down needs two consecutive failed checks; the rising and
+egress (≥ 80% of the aggregate limit) rows need ten minutes of consecutive
+one-minute samples, and a gap over five minutes restarts that streak. A rejected
+reload stays firing until a later successful reload or a restart. If delivery
+fails, the transition is kept pending and retried on the next run, and the unit
+fails visibly in the journal.
+
+```sh
+install -d -m 0700 -o orbit-net -g orbit-net /etc/orbit-net-alert
+# alert.json (see alert.example.json), owned by orbit-net, mode 0600. The topic
+# URL is a secret: anyone who knows it can read and post to the topic.
+sudo -u orbit-net orbit-net alert --config /etc/orbit-net-alert/alert.json --test
+systemctl enable --now orbit-net-alert.timer
+```
+
+To drill firing and recovery without disturbing the service, run the check as
+`orbit-net` with a separate state file and `--metrics-url` pointing at an
+unused loopback port (twice, which fires Down), then once without it (resolved).
+
 The service writes only lifecycle lines to the journal (start, reload, stop,
 configuration errors). Your host, firewall and hosting provider may keep their
 own connection logs; disclose them in the profile's privacy text.
@@ -210,6 +231,27 @@ owner to review it; treat it as a new operator.
 | TLS key and chain | Per your certificate process |
 | Directory leases, sessions, rate buckets, relay state | No; memory only, rebuilt by devices after restart |
 
+### Verify an offline authority backup
+
+Keep the second copy on separate offline media or in the owner's selected
+encrypted vault. A second file on the same laptop does not establish this custody
+condition. Restore the copy into a private directory on the offline machine
+(directory mode `0700`, key mode `0600`), then run:
+
+```sh
+orbit-net key verify --file /private/restore/authority.key \
+  --authority 9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36
+```
+
+This checks both the public identity and actual signing capability without
+creating a profile, modifying the key or printing private material. For
+self-hosting, substitute that operator's public authority. Record the medium or
+vault name, custody owner, restoration date and public verification result;
+never put the private key, passphrase or decrypted backup in repository evidence.
+Remove the temporary restored copy after verification and return the backup to
+offline custody. Successful verification alone does not establish that the
+media was disconnected or that the owner can unlock the vault.
+
 ## Incidents
 
 - **Service key or TLS key exposed:** sign a new epoch with a new service key,
@@ -252,5 +294,10 @@ the host, its addresses, egress plan and budget values; the TLS issuance/renewal
 process; the authority key's custody with a second offline copy; the signed
 release profile and its privacy text; and the monitoring destination with an
 on-call contact. Example origins and private test profiles are development-only.
-As of 2026-10-06 the offline authority-key copy and the alert destination are
-still open.
+As of 2026-10-07 both are recorded: `orbit-net alert` posts to the owner's ntfy
+topic (live receipt confirmed) and the owner holds a Bitwarden copy of the
+authority key (restore check waived). Earlier, both were open. The owner deferred them to allow W15 isolated development under
+[the sequencing amendment](orbit-wan-implementation-plan.md#owner-directed-sequencing-amendment--2026-10-06).
+Both remain required before wider package distribution, W16 hosted-default
+acceptance and combined W17 release. Deferral does not establish backup custody
+or working notification delivery.

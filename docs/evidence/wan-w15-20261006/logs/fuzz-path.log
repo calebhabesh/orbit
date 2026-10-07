@@ -1,0 +1,15 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/10 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 10/10 completed, now fuzzing with 4 workers
+fuzz: elapsed: 3s, execs: 73207 (24397/sec), new interesting: 26 (total: 36)
+fuzz: elapsed: 6s, execs: 204093 (43638/sec), new interesting: 38 (total: 48)
+fuzz: elapsed: 9s, execs: 213959 (3288/sec), new interesting: 39 (total: 49)
+fuzz: elapsed: 12s, execs: 213959 (0/sec), new interesting: 39 (total: 49)
+fuzz: elapsed: 15s, execs: 213959 (0/sec), new interesting: 39 (total: 49)
+fuzz: elapsed: 18s, execs: 363152 (49759/sec), new interesting: 40 (total: 50)
+fuzz: elapsed: 21s, execs: 363152 (0/sec), new interesting: 40 (total: 50)
+fuzz: elapsed: 24s, execs: 363152 (0/sec), new interesting: 40 (total: 50)
+fuzz: elapsed: 27s, execs: 363152 (0/sec), new interesting: 40 (total: 50)
+fuzz: elapsed: 30s, execs: 363152 (0/sec), new interesting: 40 (total: 50)
+fuzz: elapsed: 31s, execs: 363152 (0/sec), new interesting: 40 (total: 50)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/faults	31.008s

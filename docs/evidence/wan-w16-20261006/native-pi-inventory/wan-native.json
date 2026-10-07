@@ -1,0 +1,859 @@
+{
+  "packet": "W16",
+  "started_at": "2026-10-06T22:41:14.460333+00:00",
+  "success": true,
+  "rehearsal": false,
+  "hosted_default_acceptance": "unexecuted",
+  "physical_wan_acceptance": "unexecuted",
+  "hosts": [
+    {
+      "declaration": {
+        "host": "rpi",
+        "role": "Pi",
+        "physical_network": "owner-home-router"
+      },
+      "network": {
+        "hostname": "owner-pi",
+        "arch": "aarch64",
+        "kernel": "6.12.93+rpt-rpi-v8",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "eth0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wlan0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "br-bde881461879",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-c37d9e23a592",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "docker0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "veth822f4b6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth6ef832e",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethdbf0823",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth6d154ba",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1280,
+            "kind": "tun"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "eth0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "192.168.88.63",
+                "prefixlen": 24,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd00:88:1:bed9:c9f1:a1d4:4bed:f739",
+                "prefixlen": 64,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::2a2:bd0e:1830:24c0",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "wlan0",
+            "addresses": []
+          },
+          {
+            "ifname": "br-bde881461879",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::7099:1fff:fe16:717b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-c37d9e23a592",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::b0a5:a7ff:fe7b:279f",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "docker0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "veth822f4b6",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::d825:34ff:fecf:d094",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth6ef832e",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::3c77:2ff:fe20:c3d0",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethdbf0823",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::97:a9ff:feda:3c4b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth6d154ba",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::5ce4:b3ff:fe15:5b4e",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "tailscale0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "100.101.0.14",
+                "prefixlen": 32,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd7a:115c:a1e0::b:14",
+                "prefixlen": 128,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::327a:ab6e:df93:f2e2",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 5210,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "main"
+          },
+          {
+            "priority": 5230,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "default"
+          },
+          {
+            "priority": 5250,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "action": "unreachable"
+          },
+          {
+            "priority": 5270,
+            "src": "all",
+            "table": "52"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "192.168.88.1",
+              "dev": "eth0",
+              "prefsrc": "192.168.88.63",
+              "flags": [],
+              "uid": 1000,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "route_preflight": "active tunnel requires isolated native fixture: tailscale0"
+    },
+    {
+      "declaration": {
+        "host": "vps",
+        "role": "VPS",
+        "physical_network": "Oracle-ca-toronto-1"
+      },
+      "network": {
+        "hostname": "main-instance-vnic",
+        "arch": "aarch64",
+        "kernel": "6.17.0-1018-oracle",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "enp0s6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 9000,
+            "kind": ""
+          },
+          {
+            "ifname": "wg0",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 8920,
+            "kind": "wireguard"
+          },
+          {
+            "ifname": "docker0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-5f4d10805c99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "vethf2ed82c",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethc978376",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethe9c9905",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "br-0dc61c115f47",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "vethc2f9b35",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1280,
+            "kind": "tun"
+          },
+          {
+            "ifname": "vethc9085db",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth6b51172",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethcc90c4a",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth59c472d",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "enp0s6",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.0.0.187",
+                "prefixlen": 24,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::17ff:fe04:66fe",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "wg0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.0.0.1",
+                "prefixlen": 24,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "docker0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::a0a7:9aff:fec8:af45",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-5f4d10805c99",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::f840:8bff:fe3f:c664",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethf2ed82c",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::a817:ecff:fe6b:aff3",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethc978376",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::80b9:5eff:fe84:835d",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethe9c9905",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::d493:86ff:fe44:5ea",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-0dc61c115f47",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::38f0:abff:feb4:9ab2",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethc2f9b35",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::fcce:9ff:fe43:b513",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "tailscale0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "100.101.0.11",
+                "prefixlen": 32,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd7a:115c:a1e0::b:11",
+                "prefixlen": 128,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::981a:ce17:b7e:f0e0",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethc9085db",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::28c3:3bff:fe7d:678f",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth6b51172",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::da:ecff:fee6:7825",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethcc90c4a",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::844e:d1ff:fe08:e588",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth59c472d",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::b8dc:9eff:fec2:2fca",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 5210,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "main"
+          },
+          {
+            "priority": 5230,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "default"
+          },
+          {
+            "priority": 5250,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "action": "unreachable"
+          },
+          {
+            "priority": 5270,
+            "src": "all",
+            "table": "52"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.0.0.1",
+              "dev": "enp0s6",
+              "prefsrc": "10.0.0.187",
+              "flags": [],
+              "uid": 1001,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "route_preflight": "active tunnel requires isolated native fixture: wg0"
+    }
+  ],
+  "scenarios": {},
+  "cleanup_errors": [],
+  "retained_roots": {},
+  "ended_at": "2026-10-06T22:41:15.590626+00:00"
+}

@@ -1,0 +1,12 @@
+2026-10-07T00:28:16Z
+test notification sent
+exit=0
+exit=0
+FIRING down: connect.calebhabesh.com health check failing: no response from the metrics listener (service stopped?)
+exit=0
+2026-10-07T00:28:16Z
+RESOLVED down: cleared: connect.calebhabesh.com health check failing: no response from the metrics listener (service stopped?)
+exit=0
+2026-10-07T00:28:47Z
+active
+active

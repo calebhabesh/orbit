@@ -1,0 +1,32 @@
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212799414755
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.05s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212845592179
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212872960321
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212899795015
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212925603137
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212950848794
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.02s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323212975825037
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323213008801493
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.05s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323213064399534
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:124: quota-rejected renewal retains exact service-accepted offer generation=1791323213088337965
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.02s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.323s

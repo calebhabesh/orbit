@@ -1,0 +1,79 @@
+{
+  "scenario": "mtu",
+  "suite": "crash",
+  "environment": "new isolated user/network namespace; no external route",
+  "parent": "net:[4026531833]",
+  "namespace": "net:[4026534414]",
+  "commands": [
+    [
+      "ip",
+      "link",
+      "set",
+      "lo",
+      "up"
+    ],
+    [
+      "ip",
+      "link",
+      "add",
+      "orbit-w11",
+      "type",
+      "dummy"
+    ],
+    [
+      "ip",
+      "link",
+      "set",
+      "orbit-w11",
+      "up",
+      "multicast",
+      "on"
+    ],
+    [
+      "ip",
+      "addr",
+      "add",
+      "11.23.45.1/24",
+      "dev",
+      "orbit-w11"
+    ],
+    [
+      "ip",
+      "addr",
+      "add",
+      "10.23.45.1/24",
+      "dev",
+      "orbit-w11"
+    ],
+    [
+      "ip",
+      "-6",
+      "addr",
+      "add",
+      "2606:4700:4700::1111/64",
+      "dev",
+      "orbit-w11",
+      "nodad"
+    ],
+    [
+      "ip",
+      "link",
+      "set",
+      "lo",
+      "mtu",
+      "1280"
+    ],
+    [
+      "ip",
+      "link",
+      "set",
+      "orbit-w11",
+      "mtu",
+      "1280"
+    ]
+  ],
+  "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts",
+  "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim",
+  "exit_code": 0,
+  "seconds": 251.81291109599988
+}

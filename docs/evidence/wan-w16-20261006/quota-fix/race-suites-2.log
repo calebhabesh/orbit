@@ -1,0 +1,6 @@
+ok  	github.com/calebhabesh/file-sync/internal/network	96.960s
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	71.402s
+ok  	github.com/calebhabesh/file-sync/internal/replication	177.028s
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	14.547s
+go test -race -count=1 ./internal/network ./internal/rendezvous   2>&1  129.50s user 3.64s system 74% cpu 2:59.77 total
+exit=0

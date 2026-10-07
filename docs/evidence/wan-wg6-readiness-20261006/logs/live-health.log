@@ -1,0 +1,86 @@
+active
+UNIT FILE                                          STATE   PRESET
+unified-monitoring-agent_restarter.path            enabled enabled
+lvm2-monitor.service                               enabled enabled
+mdmonitor-oneshot.service                          static  -
+mdmonitor.service                                  static  -
+unified-monitoring-agent.service                   enabled enabled
+unified-monitoring-agent_config_downloader.service enabled enabled
+unified-monitoring-agent_restarter.service         static  -
+mdmonitor-oneshot.timer                            enabled enabled
+unified-monitoring-agent_config_downloader.timer   enabled enabled
+
+9 unit files listed.
+ok
+# HELP orbit_net_build_info Build version.
+# TYPE orbit_net_build_info gauge
+orbit_net_build_info{version="1.0.0"} 1
+# HELP orbit_net_profile_expiry_seconds Seconds until a served profile epoch expires.
+# TYPE orbit_net_profile_expiry_seconds gauge
+orbit_net_profile_expiry_seconds{epoch="1"} 7770543
+# HELP orbit_net_profile_valid Whether a served profile epoch admits new work.
+# TYPE orbit_net_profile_valid gauge
+orbit_net_profile_valid{epoch="1"} 1
+# HELP orbit_net_certificate_expiry_seconds Seconds until the served TLS certificate expires.
+# TYPE orbit_net_certificate_expiry_seconds gauge
+orbit_net_certificate_expiry_seconds 7767225
+# HELP orbit_net_certificate_reloads_total Successful SIGHUP certificate reloads.
+# TYPE orbit_net_certificate_reloads_total counter
+orbit_net_certificate_reloads_total 1
+# HELP orbit_net_certificate_reload_failures_total Rejected certificate reloads; the previous certificate stays active.
+# TYPE orbit_net_certificate_reload_failures_total counter
+orbit_net_certificate_reload_failures_total 0
+# HELP orbit_net_connections_active Accepted TCP sockets (limit 256).
+# TYPE orbit_net_connections_active gauge
+orbit_net_connections_active 0
+# HELP orbit_net_connections_refused_total Sockets closed before TLS at the connection limit.
+# TYPE orbit_net_connections_refused_total counter
+orbit_net_connections_refused_total 0
+# HELP orbit_net_directory_records Live signed directory leases (limit 128).
+# TYPE orbit_net_directory_records gauge
+orbit_net_directory_records 0
+# HELP orbit_net_sessions Live offers and relay sessions (limit 128).
+# TYPE orbit_net_sessions gauge
+orbit_net_sessions 0
+# HELP orbit_net_relay_sessions Sessions with an attached relay.
+# TYPE orbit_net_relay_sessions gauge
+orbit_net_relay_sessions 0
+# HELP orbit_net_controls Authenticated control channels.
+# TYPE orbit_net_controls gauge
+orbit_net_controls 0
+# HELP orbit_net_websockets_pending Control or relay websockets in handshake or service.
+# TYPE orbit_net_websockets_pending gauge
+orbit_net_websockets_pending 0
+# HELP orbit_net_challenges Outstanding challenges (limit 128).
+# TYPE orbit_net_challenges gauge
+orbit_net_challenges 0
+# HELP orbit_net_rate_keys Per-device metadata rate buckets (limit 1024).
+# TYPE orbit_net_rate_keys gauge
+orbit_net_rate_keys 0
+# HELP orbit_net_source_buckets Pre-auth source buckets (limit 128).
+# TYPE orbit_net_source_buckets gauge
+orbit_net_source_buckets 0
+# HELP orbit_net_refusals_total Refused requests by stable reason class.
+# TYPE orbit_net_refusals_total counter
+orbit_net_refusals_total{reason="quota"} 0
+orbit_net_refusals_total{reason="invalid"} 32
+orbit_net_refusals_total{reason="expired"} 0
+orbit_net_refusals_total{reason="untrusted"} 0
+orbit_net_refusals_total{reason="other"} 4
+# HELP orbit_net_relay_bytes_total Ciphertext bytes forwarded by the relay (both directions).
+# TYPE orbit_net_relay_bytes_total counter
+orbit_net_relay_bytes_total 216875
+# HELP orbit_net_relay_limit_bytes_per_second Configured aggregate relay ceiling.
+# TYPE orbit_net_relay_limit_bytes_per_second gauge
+orbit_net_relay_limit_bytes_per_second 4194304
+# HELP orbit_net_relay_device_limit_bytes_per_second Configured per-device relay ceiling.
+# TYPE orbit_net_relay_device_limit_bytes_per_second gauge
+orbit_net_relay_device_limit_bytes_per_second 2097152
+# HELP orbit_net_stun_answered_total STUN binding responses sent.
+# TYPE orbit_net_stun_answered_total counter
+orbit_net_stun_answered_total 12
+# HELP orbit_net_stun_dropped_total STUN requests dropped without a response.
+# TYPE orbit_net_stun_dropped_total counter
+orbit_net_stun_dropped_total{reason="rate"} 0
+orbit_net_stun_dropped_total{reason="invalid"} 0
+orbit_net_stun_dropped_total{reason="table_full"} 0

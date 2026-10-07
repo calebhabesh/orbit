@@ -1,0 +1,34 @@
+test_missing_and_wrong_marker_refused_before_write (test_safety.SafetyTest.test_missing_and_wrong_marker_refused_before_write) ... ok
+test_network_preflight_rejects_unsafe_addresses_before_commands (test_safety.SafetyTest.test_network_preflight_rejects_unsafe_addresses_before_commands) ... ok
+test_network_probe_requires_disposable_marker (test_safety.SafetyTest.test_network_probe_requires_disposable_marker) ... ok
+test_paths_and_links_refused (test_safety.SafetyTest.test_paths_and_links_refused) ... ok
+test_terminal_daemon_signal_and_pilot_refused (test_safety.SafetyTest.test_terminal_daemon_signal_and_pilot_refused) ... ok
+test_terminal_query_and_campaign_paths_refused (test_safety.SafetyTest.test_terminal_query_and_campaign_paths_refused) ... ok
+test_unrelated_pid_and_reused_pid_refused (test_safety.SafetyTest.test_unrelated_pid_and_reused_pid_refused) ... ok
+test_differential_label_reconstruction (test_terminal_vt.TerminalScreenTests.test_differential_label_reconstruction) ... ok
+test_disabled_autowrap_and_fullwidth_sgr (test_terminal_vt.TerminalScreenTests.test_disabled_autowrap_and_fullwidth_sgr) ... ok
+test_repeat_character (test_terminal_vt.TerminalScreenTests.test_repeat_character) ... ok
+test_scroll_region_preserves_header_footer (test_terminal_vt.TerminalScreenTests.test_scroll_region_preserves_header_footer) ... ok
+test_split_utf8_and_wide_cursor_cells (test_terminal_vt.TerminalScreenTests.test_split_utf8_and_wide_cursor_cells) ... ok
+test_actual_open_gate_cannot_be_bypassed_with_unrelated_closed_text (test_wan_native.NativeSafetyTest.test_actual_open_gate_cannot_be_bypassed_with_unrelated_closed_text) ... ok
+test_closed_gate_checked_before_any_host_operation (test_wan_native.NativeSafetyTest.test_closed_gate_checked_before_any_host_operation) ... ok
+test_custom_trust_and_wrong_profile_cannot_count_as_hosted_default (test_wan_native.NativeSafetyTest.test_custom_trust_and_wrong_profile_cannot_count_as_hosted_default) ... ok
+test_missing_private_and_tunnel_routes_refused (test_wan_native.NativeSafetyTest.test_missing_private_and_tunnel_routes_refused) ... ok
+test_numeric_probe_rejects_shell_and_loopback_before_commands (test_wan_native.NativeSafetyTest.test_numeric_probe_rejects_shell_and_loopback_before_commands) ... ok
+test_private_certificate_input_and_live_root_removal_guard (test_wan_native.NativeSafetyTest.test_private_certificate_input_and_live_root_removal_guard) ... ok
+test_receipt_is_endpoint_stored_and_applied_is_independently_observed (test_wan_native.NativeSafetyTest.test_receipt_is_endpoint_stored_and_applied_is_independently_observed) ... ok
+test_ssh_never_forwards_or_reuses_a_master_and_errors_hide_secrets (test_wan_native.NativeSafetyTest.test_ssh_never_forwards_or_reuses_a_master_and_errors_hide_secrets) ... ok
+test_topology_refuses_shared_network_and_ssh_option_injection (test_wan_native.NativeSafetyTest.test_topology_refuses_shared_network_and_ssh_option_injection) ... ok
+test_vpn_link_kinds_and_obscure_names_refused (test_wan_native.NativeSafetyTest.test_vpn_link_kinds_and_obscure_names_refused) ... ok
+test_zero_matches_skips_failures_are_unexecuted (test_wan_safety.W15ExecutionTest.test_zero_matches_skips_failures_are_unexecuted) ... ok
+test_host_namespace (test_wan_safety.W15SafetyTest.test_host_namespace) ... ok
+test_missing_wrong_linked_public_marker (test_wan_safety.W15SafetyTest.test_missing_wrong_linked_public_marker) ... ok
+test_private_marked_root (test_wan_safety.W15SafetyTest.test_private_marked_root) ... ok
+test_public_root (test_wan_safety.W15SafetyTest.test_public_root) ... ok
+test_symlinks_escapes_personal_roots (test_wan_safety.W15SafetyTest.test_symlinks_escapes_personal_roots) ... ok
+test_unrelated_live_and_exited_process (test_wan_safety.W15SafetyTest.test_unrelated_live_and_exited_process) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.006s
+
+OK

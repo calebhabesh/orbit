@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-c",
+    "-race",
+    "-o",
+    "/tmp/orbit-w15-terminal.test",
+    "./tests/terminal"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:28:38.320551+00:00",
+  "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 1.861,
+  "finished_at": "2026-10-06T21:28:40.181744+00:00",
+  "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582"
+}

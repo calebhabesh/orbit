@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-06T20:42:14.126823+00:00",
+  "captured_at": "2026-10-06T21:05:34.047784+00:00",
   "files": {
     ".gitattributes": "70734c309d8f5dddc875f12dd3e65dd6f59f8a5d8a57c493c32a307d55fbbda8",
     ".github/workflows/ci.yml": "8a6c1ee304ee1814d2ffa3313af130c87a36ff7301fe6ee865eb6d6dbe389f25",
@@ -65,8 +65,8 @@
     "docs/implementation/wan-direct.md": "fcae23f813bfe7a06fdfa2716f163a81caf8cd5475a0a64ea1f129215c76c465",
     "docs/implementation/wan-foundations.md": "8fbd2f00e4bcebbb8dfed2766391055c2482549764c3d279975cafb0a225ae13",
     "docs/implementation/wan-relay.md": "355a38a25744f81a1a78567a4c302cf09c2dfd6c5e0fd5b9ff374eff815a9988",
-    "docs/implementation/wan-release.md": "f2712da711018803f3e3a39c7b7c473f5bbfe015603d40bd7ad5a69c507dbed3",
-    "docs/implementation/wan-status.md": "1e8163f6b6b04c49970f15cbdac378ce97dc05b600eca99b4b6b71f726c88ad6",
+    "docs/implementation/wan-release.md": "b4d206ede12fbc7c2c104e6d35d7f6f4746bc2ed97e119296687c0069fcd0ca9",
+    "docs/implementation/wan-status.md": "fa4cf0e73f31c85f27bb5a8726db8a565d7e5e17c61687d96fc75d71d1f6315d",
     "docs/operations.md": "edd80db75d58e89b5dff60a3b5b59e5df9ce808955d14825cee4f74b91fd7733",
     "docs/orbit-architecture.md": "804db0f80bf0272bec403986cee49921f4c6525c477039fb7ebbe163fbf285d0",
     "docs/orbit-design-gates.md": "202dec44cb6ff7380066a1a7601529abfe842791b8e950c690ab472e3b5ad4ad",
@@ -78,7 +78,7 @@
     "docs/orbit-terminal-ux.md": "2a46a7f0d5bec145eef1fc0c5e36ee8e8f499ed6c1714b1aab041d4628c72511",
     "docs/orbit-wan-architecture.md": "155edc9d7aa0af300d2f00a5d46d7b63cbffdbfe56e4bc6fce7de48ea67537fc",
     "docs/orbit-wan-design-gates.md": "6cb5096210bf51fe50d94a6b29be0d21e7db881872c6b3ed593e31ba6764bbf2",
-    "docs/orbit-wan-implementation-plan.md": "6556bac5bb362b228c04bccee70e2ef0a378dc024ae35ced493a5d68ef7c2579",
+    "docs/orbit-wan-implementation-plan.md": "8d05b9b335d611a851b6351006279ab50352946ed9f5803045b3a87e3b6effcd",
     "docs/orbit-wan-protocol.md": "1e1dd0f2040dab918309075cd90cde4ab46e1f64a25cf8435e2a45f4f724a08b",
     "docs/orbit-wan-ux.md": "e2ba985deb4969204aa26b3c33dd8e9313fed59a042df579b398e47d63fe30cb",
     "docs/persistence.md": "7349369b7a8d39b2b0f98575b5b49c52c42ce96c1d3809ac0e8778932df7b56b",

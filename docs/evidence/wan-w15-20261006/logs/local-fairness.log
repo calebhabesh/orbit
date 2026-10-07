@@ -1,0 +1,15 @@
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+2026/10/06 17:25:30 http: TLS handshake error from orbit-relay:0: i/o timeout
+    wan_bandwidth_test.go:304: actual relay: large=16777216 bytes completed=7.602137753s first verified chunk=264.367781ms first small=114.956973ms small versions=17; shared cap=2097152 B/s; peak sampled heap=44222192 goroutines=115 FD=59 unique sockets=36 RSS=319516672 process CPU=4946459us; original author=aaa4cfb81c8bfb360be4ed467bbee2e9c882d1e04fbc994ac56a2f7ed8f478bd
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:304: actual direct: large=16777216 bytes completed=7.329986295s first verified chunk=60.967084ms first small=693.843433ms small versions=11; shared cap=2097152 B/s; peak sampled heap=66090464 goroutines=97 FD=56 unique sockets=32 RSS=378466304 process CPU=5117211us; original author=aaa4cfb81c8bfb360be4ed467bbee2e9c882d1e04fbc994ac56a2f7ed8f478bd
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:304: actual quic: large=16777216 bytes completed=7.567327567s first verified chunk=78.206936ms first small=776.440728ms small versions=8; shared cap=2097152 B/s; peak sampled heap=43990488 goroutines=106 FD=48 unique sockets=28 RSS=418603008 process CPU=5843187us; original author=aaa4cfb81c8bfb360be4ed467bbee2e9c882d1e04fbc994ac56a2f7ed8f478bd
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (90.62s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (20.57s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (7.81s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (8.21s)
+PASS
+
+{"scenario": "recovery", "suite": "fairness", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531833]", "namespace": "net:[4026534564]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 0, "seconds": 91.65737608200288}

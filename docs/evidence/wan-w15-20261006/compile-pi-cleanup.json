@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "env",
+    "CGO_ENABLED=0",
+    "GOOS=linux",
+    "GOARCH=arm64",
+    "go",
+    "test",
+    "-c",
+    "-o",
+    "/tmp/orbit-w15-terminal-arm64.test",
+    "./tests/terminal"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:28:39.462158+00:00",
+  "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.91,
+  "finished_at": "2026-10-06T21:28:40.372262+00:00",
+  "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582"
+}

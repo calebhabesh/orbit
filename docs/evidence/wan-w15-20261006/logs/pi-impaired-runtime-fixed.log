@@ -1,0 +1,124 @@
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:233: W15 verified working bytes name=relay-start.txt bytes=19 wait=3.724088504s
+    wan_roaming_test.go:234: whole daemon route relay after 7.860612ms generation=4
+    wan_roaming_test.go:236: whole daemon route quic after 7.483622869s generation=4
+    wan_roaming_test.go:238: W15 idle interval start_ns=1791323342521167072
+    wan_roaming_test.go:240: W15 idle interval end_ns=1791323347521881014
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323330912385132/1791323330912385132 target=1791323331096523164/1791323331096523164 code=ROUTE_UNAVAILABLE
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323330912385132/1791323330912385132 target=1791323331096523164/1791323331096523164 code=ROUTE_UNAVAILABLE
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:271: whole daemon route relay after 1.744362376s generation=4
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323361757370579/1791323361757370579 target=1791323330912385132/1791323330912385132 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323361757370579/1791323361757370579 target=1791323330912385132/1791323330912385132 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:272: W15 verified working bytes name=large.bin bytes=16777216 wait=26.887904685s
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/reserve code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:274: whole daemon route quic after 2.685337218s generation=4
+    wan_roaming_test.go:275: W15 SIGKILL at transfer.chunk.verified: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:289: whole daemon address/default-route generation rebuild after 572.95715ms
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323361757370580/1791323361757370580 target=1791323330912385132/1791323330912385133 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/accept code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/reserve code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:303: whole daemon route relay after 21.042292476s generation=5
+    wan_roaming_test.go:304: W15 verified working bytes name=large.bin bytes=16777216 wait=52.525275ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-00.txt bytes=15 wait=4.328538936s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-01.txt bytes=15 wait=100.300993ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-02.txt bytes=15 wait=100.21118ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-03.txt bytes=15 wait=101.010485ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-04.txt bytes=15 wait=100.589008ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-05.txt bytes=15 wait=100.502602ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-06.txt bytes=15 wait=100.653545ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-07.txt bytes=15 wait=301.32216ms
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:309: whole daemon route quic after 6.783149977s generation=5
+    wan_roaming_test.go:312: W15 service relayed encrypted inner stream bytes=16282768
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:317: W15 verified working bytes name=service-outage.txt bytes=42 wait=3.212948967s
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323330912385136/1791323330912385136 target=1791323361757370580/1791323361757370583 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/reserve code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:321: W15 verified working bytes name=service-restarted.txt bytes=44 wait=4.425680779s
+    wan_roaming_test.go:322: whole daemon route relay after 12.685851ms generation=5
+    wan_roaming_test.go:324: whole daemon route quic after 7.216730789s generation=5
+    wan_roaming_test.go:325: W15 direct sync survived service outage; fresh service restarted; relay bytes=104269
+    wan_roaming_test.go:380: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="45795"
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323479914777626/1791323479914777626 target=1791323447518145889/1791323480123364574 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/reserve code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:233: W15 verified working bytes name=relay-start.txt bytes=19 wait=8.741831894s
+    wan_roaming_test.go:234: whole daemon route relay after 14.356795ms generation=4
+    wan_roaming_test.go:236: whole daemon route quic after 17.554500283s generation=4
+    wan_roaming_test.go:238: W15 idle interval start_ns=1791323506744925073
+    wan_roaming_test.go:240: W15 idle interval end_ns=1791323511745441073
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323479914777626/1791323479914777626 target=1791323480123364574/1791323480123364574 code=ROUTE_UNAVAILABLE
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323479914777626/1791323479914777626 target=1791323480123364574/1791323480123364574 code=ROUTE_UNAVAILABLE
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:271: whole daemon route relay after 1.796022683s generation=4
+    wan_roaming_test.go:272: W15 verified working bytes name=large.bin bytes=16777216 wait=4.563067259s
+    wan_roaming_test.go:274: whole daemon route quic after 8.87438126s generation=4
+    wan_roaming_test.go:275: W15 SIGKILL at transfer.receipt.after_send: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:289: whole daemon address/default-route generation rebuild after 592.524491ms
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:303: whole daemon route relay after 16.454329866s generation=5
+    wan_roaming_test.go:304: W15 verified working bytes name=large.bin bytes=16777216 wait=39.01071ms
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:306: W15 verified working bytes name=small-00.txt bytes=15 wait=6.336410997s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-01.txt bytes=15 wait=201.832675ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-02.txt bytes=15 wait=201.442531ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-03.txt bytes=15 wait=100.507916ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-04.txt bytes=15 wait=201.561714ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-05.txt bytes=15 wait=201.254311ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-06.txt bytes=15 wait=502.922594ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-07.txt bytes=15 wait=502.776874ms
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:309: whole daemon route quic after 4.708499662s generation=5
+    wan_roaming_test.go:312: W15 service relayed encrypted inner stream bytes=478463
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:317: W15 verified working bytes name=service-outage.txt bytes=42 wait=2.810880005s
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323479914777630/1791323479914777630 target=1791323558497704663/1791323558497704666 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323558497704666/1791323558497704666 target=1791323479914777627/1791323479914777630 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323558497704666/1791323558497704666 target=1791323479914777630/1791323479914777630 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:321: W15 verified working bytes name=service-restarted.txt bytes=44 wait=24.437288603s
+    wan_roaming_test.go:322: whole daemon route relay after 31.571685ms generation=5
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:324: whole daemon route quic after 15.167954934s generation=5
+    wan_roaming_test.go:325: W15 direct sync survived service outage; fresh service restarted; relay bytes=299834
+    wan_roaming_test.go:380: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="38119"
+--- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (361.36s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (156.70s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (204.66s)
+PASS

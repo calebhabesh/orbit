@@ -1,0 +1,15 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/2 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 2/2 completed, now fuzzing with 4 workers
+fuzz: elapsed: 3s, execs: 2438 (812/sec), new interesting: 3 (total: 5)
+fuzz: elapsed: 6s, execs: 268048 (88585/sec), new interesting: 23 (total: 25)
+fuzz: elapsed: 9s, execs: 1048741 (260259/sec), new interesting: 150 (total: 152)
+fuzz: elapsed: 12s, execs: 1048741 (0/sec), new interesting: 150 (total: 152)
+fuzz: elapsed: 15s, execs: 1683683 (211796/sec), new interesting: 178 (total: 180)
+fuzz: elapsed: 18s, execs: 1979932 (98742/sec), new interesting: 192 (total: 194)
+fuzz: elapsed: 21s, execs: 2465732 (161935/sec), new interesting: 204 (total: 206)
+fuzz: elapsed: 24s, execs: 3036330 (190227/sec), new interesting: 241 (total: 243)
+fuzz: elapsed: 27s, execs: 3312802 (92161/sec), new interesting: 260 (total: 262)
+fuzz: elapsed: 30s, execs: 3529374 (72180/sec), new interesting: 264 (total: 266)
+fuzz: elapsed: 31s, execs: 3529374 (0/sec), new interesting: 264 (total: 266)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	31.006s

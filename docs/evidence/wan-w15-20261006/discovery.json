@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-list",
+    "^(TestWANW|FuzzWANW15)",
+    "./cmd/...",
+    "./internal/...",
+    "./tests/...",
+    "./model/..."
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:23:01.263972+00:00",
+  "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 2.048,
+  "finished_at": "2026-10-06T21:23:03.312293+00:00",
+  "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62"
+}

@@ -1,0 +1,25 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=d253825 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=d253825 -X main.date=2026-10-01' -o bin/filesync-linux-arm64 ./cmd/filesync
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> <repo>/bin/filesync
+Building binary for linux/arm64 -> <repo>/bin/filesync-linux-arm64
+Generating filesync-v1.0.0-linux-amd64.tar.gz...
+Generating filesync_1.0.0_amd64.deb...
+Generating filesync-1.0.0-1.x86_64.rpm...
+Generating filesync-v1.0.0-linux-arm64.tar.gz...
+Generating filesync_1.0.0_arm64.deb...
+Generating filesync-1.0.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - filesync-v1.0.0-linux-amd64.tar.gz (18543576 bytes)
+  - orbit-v1.0.0-linux-amd64.tar.gz (18543576 bytes)
+  - filesync_1.0.0_amd64.deb (18539522 bytes)
+  - filesync-1.0.0-1.x86_64.rpm (18542222 bytes)
+  - filesync-v1.0.0-linux-arm64.tar.gz (17334822 bytes)
+  - orbit-v1.0.0-linux-arm64.tar.gz (17334822 bytes)
+  - filesync_1.0.0_arm64.deb (17348358 bytes)
+  - filesync-1.0.0-1.aarch64.rpm (17349654 bytes)
+  - release-manifest.json (786 bytes)
+  - SHA256SUMS
+exit=0

@@ -16,7 +16,11 @@ with `python3 docs/evidence/wan-w14-closeout-20261006/record_command.py NAME ARG
 | `GOFLAGS=-race go test -race -count=1 -v -timeout=8m -run '^TestWANW14' ./internal/network ./internal/config ./internal/control ./internal/control/terminalcontract ./tests/terminal` | Passed | [record](focused-w14-race.json), [log](logs/focused-w14-race.log) |
 | `go test -count=1 -v -timeout=8m -run '^TestWANW07RealPTYRelayOnboarding$' ./tests/terminal` | Passed | [record](w07-regression.json), [log](logs/w07-regression.log) |
 | `go test -race -count=1 -timeout=8m ./cmd/filesync/... ./internal/app/... ./internal/config/... ./internal/control/... ./internal/controlclient/... ./internal/network/... ./internal/terminal/...` | Passed; app/controlclient have no direct tests | [record](affected-race.json), [log](logs/affected-race.log) |
-| `make GOFLAGS=-v check` | Running; final result pending | Log: `logs/aggregate-final.log`; record written at completion |
+| `make GOFLAGS=-v check` | Passed, exit 0; terminal suite 1294.436 s | [record](aggregate-final.json), [log](logs/aggregate-final.log) |
+| `bin/orbit version` | Reports the signed packaged release profile, epoch 1 | [record](packaged-version.json), [log](logs/packaged-version.log) |
+| `python3 docs/evidence/wan-w14-closeout-20261006/check_links.py` | Passed | [record](docs-links-final.json), [log](logs/docs-links-final.log) |
+| `git diff --check` | Passed after removing four trailing document blank lines | [record](whitespace-final.json), [log](logs/whitespace-final.log) |
+| `python3 docs/evidence/wan-w14-closeout-20261006/verify_preservation.py` | Passed; code and earlier evidence preserved | [record](preservation-final.json), [log](logs/preservation-final.log) |
 
 The inherited `make check` failed (exit 2) after 1,156.361 seconds in the
 terminal package; its production binary predates the final rendering edit.
@@ -29,3 +33,8 @@ Unexecuted here: full uncached race, demo, new physical WAN/Pi runs, native
 expired bundled-profile run and WG6 owner backup/alert operations. W15/W17 own
 the broader release campaigns; existing historical evidence remains scoped to
 its original hosts, source and failure models.
+
+The aggregate [raw stdout/stderr](logs/aggregate-final.raw.gz) is preserved
+losslessly. Its readable `.log` normalizes line endings and trailing whitespace
+to satisfy the repository whitespace check after another session committed the
+in-progress capture. Exit codes and test results are unchanged.

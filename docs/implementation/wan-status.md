@@ -1,7 +1,10 @@
 # Orbit native WAN implementation status
 
-Updated: 2026-10-06. **W00–W12 complete for their recorded acceptance; W14 implementation is recorded and final-source validation is in progress; W13 is partial: the hosted service is live; WG6 awaits authority-key backup and alerting, which also gates publishing W14 packages beyond the owner.** The owner
+Updated: 2026-10-07. **W00–W15 complete for their recorded acceptance. WG6 closed 2026-10-07: live-received ntfy alerting plus owner-attested Bitwarden authority-key copy (restore verification waived by the owner, unexecuted).** The owner
 selected native WAN and confirmed preconfigured services with optional self-hosting.
+Under the owner's 2026-10-06 sequencing amendment, the two WG6 operator tasks
+are deferred; W15 used W13's implemented technical prerequisites and disposable
+fixtures and now passes its recorded acceptance. **W16 complete for its reachable native acceptance (2026-10-07); school/corporate/CGNAT/IPv6 remain unexecuted for lack of access.** Next: **W17**.
 The [master plan](../orbit-wan-implementation-plan.md), [UX](../orbit-wan-ux.md),
 [architecture](../orbit-wan-architecture.md), [network protocol](../orbit-wan-protocol.md)
 and [design gates](../orbit-wan-design-gates.md) form the implementation handoff.
@@ -34,10 +37,10 @@ release W17 requires the inherited relevant technical checks.
 | W10 ICE traversal | complete | W03, W04, W09 | [Direct](wan-direct.md#w10--icestun-coordination-and-traversal) |
 | W11 Roaming/policy | complete | W08, W09, W10 | [Direct](wan-direct.md#w11--route-policy-roaming-and-fair-progress) |
 | W12 Diagnostics/control | complete for CLI/TUI and local privacy/diagnostic acceptance | W06, W07, W11 | [Release](wan-release.md#w12--observations-diagnostics-and-controls) |
-| W13 Operated services | partial: hosted service deployed and live-verified; authority backup and alerting pending | W03, W04, W10 | [Release](wan-release.md#w13--operated-defaults-and-self-hosting) |
-| W14 Compatibility/packages | implementation recorded; final-source validation in progress (publication gated on WG6) | W05, W06, W07, W12, W13 | [Release](wan-release.md#w14--migration-mixed-versions-and-packaged-defaults) |
-| W15 Failure/resource campaign | pending | W11, W12, W13, W14 | [Release](wan-release.md#w15--integrated-failures-security-and-resources) |
-| W16 Native WAN | pending | W07, W11, W13, W14, W15 | [Release](wan-release.md#w16--real-wan-and-ordinary-setup-campaign) |
+| W13 Operated services | complete: hosted service live; alerting received; owner-attested key copy (restore check waived) | W03, W04, W10 | [Release](wan-release.md#w13--operated-defaults-and-self-hosting) |
+| W14 Compatibility/packages | complete for recorded acceptance, final-source validation passed (publication gated on WG6) | W05, W06, W07, W12, W13 | [Release](wan-release.md#w14--migration-mixed-versions-and-packaged-defaults) |
+| W15 Failure/resource campaign | complete for recorded acceptance | W11, W12, W13 technical evidence, W14 | [Release](wan-release.md#w15--integrated-failures-security-and-resources) |
+| W16 Native WAN | complete for reachable networks; school/corporate/CGNAT/IPv6 unexecuted | W07, W11, W13, W14, W15 | [Release](wan-release.md#w16--real-wan-and-ordinary-setup-campaign) |
 | W17 Combined release | pending | W00–W16, relevant T13 technical checks | [Release](wan-release.md#w17--combined-release-and-handoff) |
 
 ## Gate tracker
@@ -774,11 +777,47 @@ is W14. W14 default distribution and W16 hosted tests depend on WG6. Inherited
 T13 technical checks and deferred P17 owner use/explanation are unchanged.
 Next: obtain operator resources to close WG6, or the owner selects other work.
 
+2026-10-06 readiness follow-up: the live service remains healthy. Added
+`orbit-net key verify` and a documented local restore check; all four operator
+package tests pass uncached under race, vet passes and amd64/arm64 operator
+archives build. The existing authority verifies with the packaged amd64 binary.
+Custody correction: its actual observed location is this development
+workstation's `/home/owner/.config/orbit-operator`, not the SSH laptop
+account's home named in the earlier record. The owner has no USB currently;
+an encrypted password-manager backup remains an available approach once a
+vault is identified. No second copy or received alert has been established.
+WG6 stays open. W15 was pending at this follow-up, before the owner-directed
+deferral below. Exact checks and next steps:
+[readiness follow-up](../evidence/wan-wg6-readiness-20261006/summary.md).
+
+Owner-directed deferral, 2026-10-06: the owner requested recording the backup
+and alerting for later and moving to the next major packet. W13 remains partial;
+WG6 remains open. W15 may now use the completed W13 technical work for isolated
+development/validation, without waiting for these operator actions. This changes
+sequencing only; distribution and hosted-default release gates remain in force.
+
+Deferred operator checklist (W13 owner Caleb Habesh; due before wider package
+distribution and W16 hosted-default acceptance):
+
+- Store a second independent authority-key copy in an encrypted vault or offline
+  medium, verify a restored copy against the frozen public authority with
+  `orbit-net key verify`, and record custody and restoration evidence without
+  secrets. Current source key is on the development workstation; no second
+  copy has been verified. The owner currently has no USB.
+- Configure monitoring rules and an alert destination the owner receives;
+  demonstrate actual firing and recovery delivery using synthetic monitoring
+  inputs, and record on-call contact. Live metrics/health alone do not complete
+  alerting. No working destination has been verified.
+
+Next development packet: **W15**. Both tasks remain required to close WG6/W13
+and to complete W17; deferral grants no acceptance credit.
+
 ## W14 — packaged defaults, migration and mixed versions
 
-State: **implementation recorded; final-source validation in progress**. Opus's
+State: **complete for implementation and recorded acceptance; final-source validation passed**. Opus's
 implementation and owner laptop/Pi same-LAN packaged relay journey are retained in
-the [W14 evidence](../evidence/wan-w14-20261006/summary.md). Codex took over final
+the [W14 evidence](../evidence/wan-w14-20261006/summary.md); the original worker's
+[command handoff](../evidence/wan-w14-20261006/commands.md) remains recorded. Codex took over final
 validation without delegation and without changing the inherited runtime code.
 
 The original aggregate exited 2 at `TestWANW07RealPTYRelayOnboarding`: its binary
@@ -789,9 +828,16 @@ is retained and does not validate the final source.
 
 Fresh commands, source fingerprints, dependency/host assumptions and remaining
 conditions are in the [closeout evidence](../evidence/wan-w14-closeout-20261006/manifest.json).
-Twelve discovered W14 tests pass under race detection, including the native PTY
-confirmation/code journey and real pre-WAN upgrade/rollback. The affected package
-race check, W07 keyboard regression and fresh aggregate remain running.
+Twelve discovered W14 tests pass uncached under race detection, including the
+native PTY confirmation/code journey and real pre-WAN upgrade/rollback. The
+affected CLI/config/control/network/TUI packages pass uncached race tests; the
+standalone W07 keyboard relay regression passes. Fresh `make GOFLAGS=-v check`
+exits 0 (terminal suite 1294.436 s) with packages, format/vet, CLI/unit,
+integration, model, fault and harness checks. Runtime/test/build source hashes
+remain identical before and after every command; 2,222 historical P/O/T/W
+evidence files and inherited W14 raw transcripts are unchanged. The closeout
+corrects missing evidence links/status and four trailing document blank lines;
+it makes no additional runtime change.
 
 W13/WG6 authority-key backup and alerting still gate hosted-default publication;
 W15 depends on W13 and W14. Native expired bundled-profile execution remains
@@ -799,19 +845,168 @@ unexecuted (unit boundary coverage exists). W16 physically separate-network
 direct/relay acceptance, inherited T13 technical checks and deferred P17 owner
 use/explanation are unchanged.
 
-## W14 — packaged defaults, migration and mixed versions
+The W14 handoff selected W15 under the owner's sequencing amendment, using
+completed W13 technical prerequisites while retaining deferred WG6 operator
+conditions. The full W15 campaign is now recorded below.
 
-State: **implemented; acceptance evidence recorded except a clean full `make check`
-on final source (unexecuted)**. Worker: Claude Code session, no delegation. Dirty
-W00–W13 tree preserved. Details, acceptance table and limitations:
-[W14 outcome](wan-release.md#w14--migration-mixed-versions-and-packaged-defaults) and
-[evidence](../evidence/wan-w14-20261006/summary.md); commands in
-[commands.md](../evidence/wan-w14-20261006/commands.md).
+## W15 — integrated failures, security and resources
 
-The first `make check` failed in `TestWANW07RealPTYRelayOnboarding` because a W14
-review-text change removed the `Inviter operator:` label; the label is restored and
-that test plus all W14 terminal tests pass. Remaining before marking complete: rerun
-full `make check` on the final source, record `final-source.json`. WG6 (offline
-authority-key copy, alert destination) still gates publishing packages beyond the
-owner. Inherited T13 checks and deferred P17 are unchanged. Next: finish the W14
-`make check`, then **W15**.
+State: **complete for recorded local/native/emulator/Pi acceptance**. The owner
+sequencing amendment authorizes W15 using
+W13's completed technical prerequisites; WG6 authority backup and received
+alert delivery remain deferred. This campaign uses marked disposable local/Pi
+user/network namespaces and in-process emulators. Existing deployed services,
+personal roots, P/O/T evidence, unfinished T13 technical checks and deferred
+P17 owner use/explanation are preserved.
+
+Delivered the guarded [network/process runner](../../scripts/validation/WAN_FAILURES.md),
+independent transfer-boundary model, QUIC→TCP boundary/receipt recovery with GC,
+post-rename publication recovery, conflict preservation and cached transport
+refusal after retirement. A minimized regression exposed a symlinked disposable
+root accepted by the shared destructive-target guard; its repair passes.
+Whole-daemon fixtures combine chunk/receipt SIGKILL, relay recovery, roaming,
+service outage/restart and exact head/hash/identity/pin/receipt oracles.
+
+[Scenario matrix](../evidence/wan-w15-20261006/scenario-matrix.md) identifies the
+named production coverage and explicitly unexecuted external conditions.
+Final native impairment/MTU, Pi recovery/impairment/resources, independent models,
+fuzz, enrollment, focused security and repeated Local-only startup checks pass.
+The campaign also diagnosed and repaired refused announcement generations that
+caused stale offers and quota starvation. [Evidence summary](../evidence/wan-w15-20261006/summary.md)
+records commands, retained failures, resource samples and provenance. Final-source
+`make GOFLAGS=-v check` passes (1,480.961 s), as does uncached full race
+`go test -race -count=1 -timeout=35m -v ./...` (1,391.455 s); both retain source
+digest `7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23`.
+Local repaired impairment/MTU and native ICE, Pi repaired impairment, actual
+CLI/PTY/enrollment, four fuzz targets, demo and client/operator packages pass.
+Sampled Pi impaired daemon peaks are 35.2 MB RSS / 28 FDs / 59 goroutines;
+three-route fairness completes the 16 MiB version while small versions progress.
+All 2,277 historical evidence files and unrelated starting changes are preserved;
+marked native campaign roots are cleaned after copying artifacts. Physical WAN/N10,
+static native bundled-profile expiry and hardware power/lifecycle conditions are
+explicitly unexecuted. Next packet is **W16**. W16
+hosted-default acceptance and wider distribution still require closing WG6.
+
+## W16 — real WAN and ordinary setup campaign
+
+State: **partial; safe runner preparation and read-only host inventory**.
+W07/W11/W13–W15 technical evidence was read and preserved. WG6 remains open
+for verified independent authority backup and received firing/recovery alerts;
+W16 hosted-default tests and wider distribution remain gated. T13 technical
+checks and deferred P17 owner use/explanation retain their states.
+
+The owner confirmed that only the VPS is remotely located. The laptop/Pi behind
+the home router plus the Oracle VPS can supply the two physical networks;
+replicas do not all need public listener addresses. Read-only SSH inventory
+observed the laptop's route to the VPS public address through `wlp2s0` and the
+home gateway, and the VPS through `enp0s6`. Existing Tailscale/WireGuard links
+remain active. No host VPN, firewall, route, shared service or workload was changed.
+
+Delivered the [native runner guide](../../scripts/validation/WAN_NATIVE.md),
+read-only route/interface/policy inventory, and a fresh checksummed-archive CLI
+journey with ordinary create/invite/join, exact approval, two-way small bytes,
+4 MiB transfer, captured offline version/reconnect and second-folder enrollment.
+The runner checks protected hash/version/author, endpoint stored receipt,
+independent receiver working bytes/readiness, stable identities/SPKI pins and
+operation/attempt continuity. It refuses open WG6 before hosted host actions and
+active/ambiguous tunnel routes before setup. Invitations stay private; no SSH
+forwarding or manual replica endpoint configuration is available. Successful
+cleanup removes only freshly allocated marked roots after owned process checks.
+
+Validation and retained runner experiments are in the
+[W16 evidence](../evidence/wan-w16-20261006/summary.md). The local fixture uses
+production binaries, a disposable self-host service/private CA and a synthetic
+archive. It establishes runner development coverage, not physical WAN, real
+release packaging or bundled hosted-default acceptance. Full W16 completion is
+not claimed.
+
+Actual commands: `GOFLAGS=-race go test -race -count=1 -v -timeout=12m
+./tests/terminal -run '^TestWANW16NativeRunnerRehearsal$'` passes in 119.935 s,
+with an identical before/after source digest. `python3 -O -m unittest discover
+-s scripts/validation -p 'test_*.py' -v` passes 29 tests; `go vet ./tests/terminal`
+and `git diff --check` pass. Read-only laptop/Pi/VPS inventories pass; the hosted
+runner refuses WG6 before any host action. All 2,630 inherited evidence files
+and 553 preexisting non-document source files match their recorded hashes.
+`make check`, full race/fuzz/demo/package campaigns were not repeated for this
+runner-only slice; W15's historical validation remains preserved.
+
+Remaining work: close WG6, prepare isolated replica environments that cannot
+use existing VPN links, then execute actual bundled-profile CLI/TUI direct and
+relay journeys across home/VPS. Record socket/packet route proof, full native
+timing/resources, UDP-blocked relay, interface/address change, a separately
+disposable service restart, and laptop/Pi/VPS forwarding/conflict/restore.
+School/corporate/CGNAT/IPv6 claims require actual access and remain unexecuted.
+
+Follow-up, 2026-10-06 (same day): owner chose ntfy for WG6 alerts and asked
+for read-only inspection plus an exact change list before host changes. Added
+`orbit-net alert` with packaged timer units, validated locally
+([WG6 alert evidence](../evidence/wan-w16-20261006/wg6-alert/summary.md)); not
+deployed and no delivery received. Added `scripts/validation/wan_netns.sh`, an
+isolated replica namespace NATed only to the physical uplink, rehearsed rootless
+(tunnel peer blocked, host ports rejected, cleanup complete). Inspection found
+rootless namespaces blocked on laptop/VPS and no user-space uplink helper on any
+host, so isolation needs sudo. The
+[host-change proposal](../evidence/wan-w16-20261006/host-change-proposal.md)
+awaits approval; WG6 remains open and no host was changed.
+
+The owner approved the proposal. Alerting is deployed on the VPS as a separate
+binary/timer (production service unchanged) and the test/firing/recovery drill
+sent all three notifications; owner receipt is awaited. VPS and Pi isolated
+namespaces are up and verified (only veth inside, tunnel blocked, service via
+the physical uplink). The runner gained `netns` topology support with
+host-rule verification and per-transfer route counters; 32 harness tests and
+the local W16 rehearsal (107.9 s) pass. WG6 still needs confirmed receipt and
+the owner's verified authority backup before hosted-default journeys run.
+Relay restart and laptop participation remain unexecuted.
+
+2026-10-07: WG6 closed (live-received alerts; owner-attested Bitwarden key copy,
+restore check waived). Hosted-default runs between the Pi (home) and VPS
+namespaces, with namespace path accounting
+([evidence](../evidence/wan-w16-20261006/native-hosted/summary.md)): ordinary
+bundled-profile CLI create/invite/join/approve, two-way transfer, 4 MiB,
+reconnect and second folder pass. A real direct cross-network transfer (4 MiB
+over direct UDP) and real relay transfers, including forced relay with
+UDP blocked Pi → VPS (zero direct bytes), are observed. **Open defect:** with
+UDP blocked mid-session, VPS → Pi does not recover within 180 s (relay inner
+TLS handshake timeouts), reproduced twice. TUI, address change, service restart,
+laptop/three-host cases and resources remain unexecuted.
+
+Defect fixed, 2026-10-07 ([fix evidence](../evidence/wan-w16-20261006/quota-fix/summary.md)):
+client-side signed-operation admission (two challenge slots, paced budget with
+renewal reserve, no stranded challenges), whole relay-setup admission, readiness
+kept on transient renewal failure, control rebuild on network change with
+backoff, and one initiator relay tunnel per target (the per-pair limit of two was
+shared by both directions). Protocol/architecture specs updated; the service is
+unchanged. Unit/integration race suites, terminal WAN suites and final
+`make check` pass. Native runs 14–18 (17–18 on the final source) pass the CLI hosted journey plus forced relay
+(~5.5 s each direction, zero direct bytes, zero service quota refusals) and an
+address change (~31 s recovery). Remaining W16: keyboard TUI journey, relay/
+rendezvous restart (needs a disposable public service or owner approval),
+laptop/three-host forwarding/conflict/restore and resources.
+
+W16 closeout, 2026-10-07 ([evidence](../evidence/wan-w16-20261006/native-hosted/summary.md#tui-service-restart-three-hosts-and-resources-2026-10-07)):
+same packages as runs 17–18. Runner gained `--journey tui` (keyboard phases on
+real PTYs), `--service-restart`, `--three-host` (laptop through an owner-started
+namespace and user-owned socket shell, no runner sudo) and per-stage `/proc`
+resource samples. Run 19 (TUI + impairments + restart) and run 20 (three hosts)
+pass: TUI create/invite/join/approve with packaged-profile review and matching
+verification code (join → completed 31.2 s); the owner-approved single
+`orbit-net` restart during forced relay recovered relay in 9.5 s with transfers
+of 11.7/7.7 s and zero direct bytes; laptop forwarding via the Pi (7.8 s, author
+preserved, laptop offline), a two-head conflict identical on all three (13.7 s)
+resolved from the laptop, and a VPS restore as a new identity. Daemons used
+30–36 MiB RSS, orbit-net about 15 MiB. Actual commands: local rehearsal
+`GOFLAGS=-race go test -race -count=1 -v -timeout=20m ./tests/terminal -run
+'^TestWANW16NativeRunnerRehearsal$'` passes (CLI 107 s, TUI + three hosts 196 s);
+`python3 -O -m unittest discover -s scripts/validation -p 'test_*.py'` passes 36
+tests; final `make check` passes ([log](../evidence/wan-w16-20261006/native-hosted/make-check-closeout.log); terminal suite 1501.935s of its 30 min limit).
+
+Limitations: one home network and one VPS; the laptop shares the Pi's home
+network (three-device engine behaviour, not a third network) and has only
+interface totals for path accounting; address-change recovery stays bounded by
+the service's ~30 s heartbeat drop (service-side replacement would need a
+production redeploy); single-run timings are observations, not deadlines.
+School/corporate/CGNAT/IPv6 remain unexecuted. Validation roots on all hosts and
+the Pi/VPS namespaces were removed; pilot roots were untouched.
+
+Next: **W17 — combined release and handoff**.

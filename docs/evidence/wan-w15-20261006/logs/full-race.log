@@ -1,0 +1,2765 @@
+=== RUN   TestOrbitBrowse_CLIStoppedAndLiveParity
+--- PASS: TestOrbitBrowse_CLIStoppedAndLiveParity (0.65s)
+=== RUN   TestRelocationCLIStoppedAndLive
+--- PASS: TestRelocationCLIStoppedAndLive (0.48s)
+=== RUN   TestTerminalT02RuntimeCLIReviewedReplay
+--- PASS: TestTerminalT02RuntimeCLIReviewedReplay (0.56s)
+=== RUN   TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation
+--- PASS: TestWANW11SetupWaitRetriesReadOnlyTimeoutWithSameOperation (0.50s)
+=== RUN   TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal
+--- PASS: TestWANW11SetupWaitDoesNotExtendDeadlineOrRetryRefusal (0.60s)
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	4.005s
+=== RUN   TestW13OfflineAuthorityRestoreVerification
+--- PASS: TestW13OfflineAuthorityRestoreVerification (0.01s)
+=== RUN   TestW13OperatorToolingRefusesUnsafeProfiles
+--- PASS: TestW13OperatorToolingRefusesUnsafeProfiles (0.02s)
+=== RUN   TestW13ServeCheckValidatesOperatorInputs
+--- PASS: TestW13ServeCheckValidatesOperatorInputs (0.03s)
+=== RUN   TestW13MetricsAreSanitized
+--- PASS: TestW13MetricsAreSanitized (0.01s)
+PASS
+ok  	github.com/calebhabesh/file-sync/cmd/orbit-net	1.076s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+=== RUN   TestInitializeIsDeterministicAndIdempotent
+--- PASS: TestInitializeIsDeterministicAndIdempotent (0.00s)
+=== RUN   TestLoadRejectsUnknownAndIncompatibleConfiguration
+=== RUN   TestLoadRejectsUnknownAndIncompatibleConfiguration/unknown_field
+=== RUN   TestLoadRejectsUnknownAndIncompatibleConfiguration/incompatible_version
+--- PASS: TestLoadRejectsUnknownAndIncompatibleConfiguration (0.00s)
+    --- PASS: TestLoadRejectsUnknownAndIncompatibleConfiguration/unknown_field (0.00s)
+    --- PASS: TestLoadRejectsUnknownAndIncompatibleConfiguration/incompatible_version (0.00s)
+=== RUN   TestSaveAndLoadRoundtrip
+--- PASS: TestSaveAndLoadRoundtrip (0.00s)
+=== RUN   TestWANW09DirectSettingsLegacyAndOptionalUDP
+--- PASS: TestWANW09DirectSettingsLegacyAndOptionalUDP (0.00s)
+=== RUN   TestWANW02LegacyNetworkPolicyIsManualWithoutMigration
+--- PASS: TestWANW02LegacyNetworkPolicyIsManualWithoutMigration (0.00s)
+=== RUN   TestWANW06PolicyGenerationCannotRollbackOrChange
+--- PASS: TestWANW06PolicyGenerationCannotRollbackOrChange (0.00s)
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/valid
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/plaintext
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/credentials
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/path
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/query
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/unknown
+=== RUN   TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/public
+--- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/valid (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/plaintext (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/credentials (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/path (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/query (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/unknown (0.00s)
+    --- PASS: TestPeerConfigurationRejectsUnsafeOrAmbiguousEndpoints/public (0.00s)
+=== RUN   TestOrbitPeerEndpoints_SaveAndLoadRoundtrip
+--- PASS: TestOrbitPeerEndpoints_SaveAndLoadRoundtrip (0.00s)
+=== RUN   TestOrbitPeerEndpoints_DuplicateAndInvalidRejection
+--- PASS: TestOrbitPeerEndpoints_DuplicateAndInvalidRejection (0.00s)
+=== RUN   TestWANW13ServiceRootsValidationAndReplacement
+--- PASS: TestWANW13ServiceRootsValidationAndReplacement (0.01s)
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/automatic_awaiting_adopts_once
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/manual_local-only_and_legacy_installs_untouched
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/same_text_newer_epoch_updates_and_rebinds_routes
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/changed_privacy_text_waits_for_review
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/expired_stored_profile_is_replaced_by_current_packaged_one
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/interrupted_update_completes_on_next_start
+=== RUN   TestWANW14PackagedProfileAdoptionMatrix/other_authority_and_expired_packaged_profile_untouched
+--- PASS: TestWANW14PackagedProfileAdoptionMatrix (0.04s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/automatic_awaiting_adopts_once (0.01s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/manual_local-only_and_legacy_installs_untouched (0.00s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/same_text_newer_epoch_updates_and_rebinds_routes (0.01s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/changed_privacy_text_waits_for_review (0.00s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/expired_stored_profile_is_replaced_by_current_packaged_one (0.00s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/interrupted_update_completes_on_next_start (0.00s)
+    --- PASS: TestWANW14PackagedProfileAdoptionMatrix/other_authority_and_expired_packaged_profile_untouched (0.00s)
+=== RUN   TestWANW14OperatorSwitchKeepsRollbackFloors
+--- PASS: TestWANW14OperatorSwitchKeepsRollbackFloors (0.01s)
+=== RUN   TestWANW05DurableRoutesPrivateBoundedAndLegacyPreserved
+--- PASS: TestWANW05DurableRoutesPrivateBoundedAndLegacyPreserved (0.57s)
+=== RUN   TestWANW13RotationRebindsDurableRoutes
+--- PASS: TestWANW13RotationRebindsDurableRoutes (0.00s)
+=== RUN   TestOrbitSettings_LoadAndSaveRoundtrip
+--- PASS: TestOrbitSettings_LoadAndSaveRoundtrip (0.00s)
+=== RUN   TestOrbitSettings_InvalidRejectedWithoutPartialConfig
+--- PASS: TestOrbitSettings_InvalidRejectedWithoutPartialConfig (0.00s)
+=== RUN   TestOrbitSettings_CorruptFallback
+--- PASS: TestOrbitSettings_CorruptFallback (0.00s)
+=== RUN   TestOrbitSettings_LabelChangeDoesNotRotateIdentity
+--- PASS: TestOrbitSettings_LabelChangeDoesNotRotateIdentity (0.00s)
+=== RUN   TestOrbitSettings_DuplicateLabelsAllowed
+--- PASS: TestOrbitSettings_DuplicateLabelsAllowed (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/config	1.657s
+=== RUN   TestResolveSelect
+--- PASS: TestResolveSelect (0.44s)
+=== RUN   TestResolveSelectResponseLossAndReplay
+--- PASS: TestResolveSelectResponseLossAndReplay (0.40s)
+=== RUN   TestResolveSelectReusedKeyWithChangedArguments
+--- PASS: TestResolveSelectReusedKeyWithChangedArguments (0.43s)
+=== RUN   TestResolveSelectStaleViewPreCommit
+--- PASS: TestResolveSelectStaleViewPreCommit (0.47s)
+=== RUN   TestResolveSelectUnseenVersionRemainsConcurrent
+--- PASS: TestResolveSelectUnseenVersionRemainsConcurrent (0.50s)
+=== RUN   TestResolveManualMerge
+--- PASS: TestResolveManualMerge (0.52s)
+=== RUN   TestRestoreHistoricalVersion
+--- PASS: TestRestoreHistoricalVersion (0.49s)
+=== RUN   TestRestoreExecutableStatusFollowsSelectedVersion
+--- PASS: TestRestoreExecutableStatusFollowsSelectedVersion (0.43s)
+=== RUN   TestRestoreExpiredPayloadReturnsContentExpired
+--- PASS: TestRestoreExpiredPayloadReturnsContentExpired (0.46s)
+=== RUN   TestKeepCopiesDestinationCollisionPreservesFiles
+--- PASS: TestKeepCopiesDestinationCollisionPreservesFiles (0.44s)
+=== RUN   TestKeepCopiesPartialResumptionNoDuplicateCopies
+--- PASS: TestKeepCopiesPartialResumptionNoDuplicateCopies (0.57s)
+=== RUN   TestExport
+--- PASS: TestExport (0.40s)
+=== RUN   TestHistoryAvailability
+--- PASS: TestHistoryAvailability (0.39s)
+=== RUN   TestMembershipExportImportPreview
+--- PASS: TestMembershipExportImportPreview (0.44s)
+=== RUN   TestRetireMemberPreviewAndExecute
+--- PASS: TestRetireMemberPreviewAndExecute (0.43s)
+=== RUN   TestEnrollPreviewAndBootstrap
+--- PASS: TestEnrollPreviewAndBootstrap (0.43s)
+=== RUN   TestStorageControlOperations
+--- PASS: TestStorageControlOperations (0.42s)
+=== RUN   TestStorageCheckAndRepairControlOperations
+--- PASS: TestStorageCheckAndRepairControlOperations (0.43s)
+=== RUN   TestDoctorDiagnostics
+--- PASS: TestDoctorDiagnostics (0.38s)
+=== RUN   TestAllFifteenStableErrorCategories
+--- PASS: TestAllFifteenStableErrorCategories (0.00s)
+=== RUN   TestOrbitMutationControl
+--- PASS: TestOrbitMutationControl (0.57s)
+=== RUN   TestRecoveryInspectionUsesOwnedDatabaseAndReportsMismatch
+--- PASS: TestRecoveryInspectionUsesOwnedDatabaseAndReportsMismatch (0.42s)
+=== RUN   TestFolderManagementAndUnregisterEmitsZeroDeletes
+--- PASS: TestFolderManagementAndUnregisterEmitsZeroDeletes (0.36s)
+=== RUN   TestMaintenanceOperations
+--- PASS: TestMaintenanceOperations (0.77s)
+=== RUN   TestWANW14ProfileMismatchIsPrecise
+--- PASS: TestWANW14ProfileMismatchIsPrecise (0.00s)
+=== RUN   TestServerSecurityAndBootstrapFlow
+--- PASS: TestServerSecurityAndBootstrapFlow (0.37s)
+=== RUN   TestWANW12SupportRedactsNestedErrorsAndCredentials
+--- PASS: TestWANW12SupportRedactsNestedErrorsAndCredentials (0.43s)
+=== RUN   TestSupportExport
+--- PASS: TestSupportExport (0.37s)
+=== RUN   TestWANW11PreparedEnrollmentRetryRetainsOriginalExpiry
+--- PASS: TestWANW11PreparedEnrollmentRetryRetainsOriginalExpiry (0.00s)
+=== RUN   TestWorkControlOperations
+--- PASS: TestWorkControlOperations (0.36s)
+=== RUN   TestWANW12LocalOnlyDoctorIsPassiveAndTyped
+--- PASS: TestWANW12LocalOnlyDoctorIsPassiveAndTyped (0.35s)
+=== RUN   TestWANW12InternetDisableClosesBeforeCompletionAndRetainsIntent
+--- PASS: TestWANW12InternetDisableClosesBeforeCompletionAndRetainsIntent (0.35s)
+=== RUN   TestWANW12RestartRequiredHasNextAction
+--- PASS: TestWANW12RestartRequiredHasNextAction (0.38s)
+=== RUN   TestWANW11TimingReviewIsExactDurableAndRestartRequired
+--- PASS: TestWANW11TimingReviewIsExactDurableAndRestartRequired (0.38s)
+=== RUN   TestOrbitSettings_Control_SettingsOperations
+--- PASS: TestOrbitSettings_Control_SettingsOperations (0.39s)
+=== RUN   TestOrbitSettings_Control_PeerEndpointsOperations
+--- PASS: TestOrbitSettings_Control_PeerEndpointsOperations (0.37s)
+=== RUN   TestOrbitSettings_Control_SetupOperations
+--- PASS: TestOrbitSettings_Control_SetupOperations (0.40s)
+=== RUN   TestOrbitSettings_Control_InvitationsAndEnrollment
+--- PASS: TestOrbitSettings_Control_InvitationsAndEnrollment (0.40s)
+=== RUN   TestOrbitSettings_Control_ReadLeasesAndGCProtection
+--- PASS: TestOrbitSettings_Control_ReadLeasesAndGCProtection (0.41s)
+=== RUN   TestOrbitSettings_Control_HTTP_EndpointsAndRecoverySafety
+--- PASS: TestOrbitSettings_Control_HTTP_EndpointsAndRecoverySafety (0.35s)
+=== RUN   TestOrbitShell_DeletedFiles_HTTP
+--- PASS: TestOrbitShell_DeletedFiles_HTTP (0.43s)
+=== RUN   TestOrbitEndpoints_ControlUnit
+--- PASS: TestOrbitEndpoints_ControlUnit (0.35s)
+=== RUN   TestOrbitSetup_InspectSetup
+--- PASS: TestOrbitSetup_InspectSetup (0.35s)
+=== RUN   TestOrbitSetup_PreviewCreateAndJoinRoot
+--- PASS: TestOrbitSetup_PreviewCreateAndJoinRoot (0.35s)
+=== RUN   TestOrbitSetup_StartAndResumeSetup_PreservesPreexistingFiles
+--- PASS: TestOrbitSetup_StartAndResumeSetup_PreservesPreexistingFiles (0.39s)
+=== RUN   TestOrbitSetup_DirectoryPicker
+--- PASS: TestOrbitSetup_DirectoryPicker (0.35s)
+=== RUN   TestOrbitSetup_OpenLocalFolder
+--- PASS: TestOrbitSetup_OpenLocalFolder (0.44s)
+=== RUN   TestOrbitSetup_InterruptedSetupResume
+--- PASS: TestOrbitSetup_InterruptedSetupResume (0.44s)
+=== RUN   TestWANW14PackagedOfferReviewAndOperatorReplacement
+--- PASS: TestWANW14PackagedOfferReviewAndOperatorReplacement (0.43s)
+=== RUN   TestWANW14PackagedUpdateNeedsReviewWhenTextChanges
+--- PASS: TestWANW14PackagedUpdateNeedsReviewWhenTextChanges (0.36s)
+=== RUN   TestWANW14CapabilityAdvertised
+--- PASS: TestWANW14CapabilityAdvertised (0.33s)
+=== RUN   TestTerminalContext_NoFolders
+--- PASS: TestTerminalContext_NoFolders (0.33s)
+=== RUN   TestTerminalContext_ExplicitFolderAndName
+--- PASS: TestTerminalContext_ExplicitFolderAndName (0.43s)
+=== RUN   TestTerminalContext_DuplicateNames
+--- PASS: TestTerminalContext_DuplicateNames (0.46s)
+=== RUN   TestTerminalContext_CwdInference
+--- PASS: TestTerminalContext_CwdInference (0.37s)
+=== RUN   TestTerminalContext_PathValidationAndSymlink
+--- PASS: TestTerminalContext_PathValidationAndSymlink (0.36s)
+=== RUN   TestTerminalFoldersAndDevices
+--- PASS: TestTerminalFoldersAndDevices (0.37s)
+=== RUN   TestWANW06PolicyReviewReplayAndStaleness
+--- PASS: TestWANW06PolicyReviewReplayAndStaleness (0.33s)
+=== RUN   TestWANW06AcceptedPolicyRecoversBeforeActivation
+--- PASS: TestWANW06AcceptedPolicyRecoversBeforeActivation (0.32s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control	24.129s
+=== RUN   TestTerminalT01IntegersAndStrictCodec
+--- PASS: TestTerminalT01IntegersAndStrictCodec (0.00s)
+=== RUN   TestTerminalT01MutationContracts
+--- PASS: TestTerminalT01MutationContracts (0.01s)
+=== RUN   TestTerminalT01Fixtures
+--- PASS: TestTerminalT01Fixtures (0.01s)
+=== RUN   TestTerminalT01QueriesAndExits
+--- PASS: TestTerminalT01QueriesAndExits (0.00s)
+=== RUN   TestTerminalT01FingerprintBindsReview
+--- PASS: TestTerminalT01FingerprintBindsReview (0.00s)
+=== RUN   TestTerminalT01JoinInvitation
+--- PASS: TestTerminalT01JoinInvitation (0.00s)
+=== RUN   TestTerminalT01UploadFingerprint
+--- PASS: TestTerminalT01UploadFingerprint (0.00s)
+=== RUN   TestTerminalT01StateExitCategories
+--- PASS: TestTerminalT01StateExitCategories (0.00s)
+=== RUN   TestWANW01NetworkControlContracts
+--- PASS: TestWANW01NetworkControlContracts (0.00s)
+=== RUN   TestWANW11ZeroTimingPreservesLegacyPolicyBytes
+--- PASS: TestWANW11ZeroTimingPreservesLegacyPolicyBytes (0.00s)
+=== RUN   TestWANW14CompactInvitationCode
+    invitation_code_test.go:78: full v3 code 2336 chars; compact 1683 chars
+--- PASS: TestWANW14CompactInvitationCode (0.01s)
+=== RUN   TestWANW14FutureInvitationVersionIsPrecise
+--- PASS: TestWANW14FutureInvitationVersionIsPrecise (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	1.048s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+=== RUN   TestRequiredCausalFixtures
+--- PASS: TestRequiredCausalFixtures (0.00s)
+=== RUN   TestExecutableOnlyEditAndEmptyFileAreVersions
+--- PASS: TestExecutableOnlyEditAndEmptyFileAreVersions (0.00s)
+=== RUN   TestDuplicateIdentityMissingParentMalformedVectorAndOverflowRejected
+--- PASS: TestDuplicateIdentityMissingParentMalformedVectorAndOverflowRejected (0.00s)
+=== RUN   TestFolderWideCounterGapDoesNotFakeSamePathAncestry
+--- PASS: TestFolderWideCounterGapDoesNotFakeSamePathAncestry (0.00s)
+=== RUN   TestOrdinaryCaptureUsesBasisAndBlocksSameAuthorStaleBasis
+--- PASS: TestOrdinaryCaptureUsesBasisAndBlocksSameAuthorStaleBasis (0.00s)
+=== RUN   TestReviewedResolutionAndStructuralConflict
+--- PASS: TestReviewedResolutionAndStructuralConflict (0.00s)
+=== RUN   TestPathManifestAndRetirementValidation
+--- PASS: TestPathManifestAndRetirementValidation (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/history	1.013s
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+=== RUN   TestWANW12DoctorCancellationAndAdmission
+--- PASS: TestWANW12DoctorCancellationAndAdmission (0.06s)
+=== RUN   TestWANW12PassiveCandidateFreshness
+--- PASS: TestWANW12PassiveCandidateFreshness (0.00s)
+=== RUN   TestWANW12UDPProbeUsesActualSTUNResponse
+    diagnostics_test.go:109: UDP response verified; no NAT classification inferred
+--- PASS: TestWANW12UDPProbeUsesActualSTUNResponse (0.00s)
+=== RUN   TestWANW12ProbeCodesDoNotLeakRawErrors
+--- PASS: TestWANW12ProbeCodesDoNotLeakRawErrors (0.00s)
+=== RUN   TestWANW12PinnedProbesNeverSendHTTPOrAlterObservedRoute
+2026/10/06 17:23:05 http: TLS handshake error from 127.0.0.1:35998: read tcp 127.0.0.1:45741->127.0.0.1:35998: use of closed network connection
+--- PASS: TestWANW12PinnedProbesNeverSendHTTPOrAlterObservedRoute (0.01s)
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/pin
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/signature
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/expired
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/generation
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/public
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/multicast
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/loopback
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/interface
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/source
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/oversized
+=== RUN   TestWANW08ScopedSignedDiscoveryAdmission/unknown-field
+--- PASS: TestWANW08ScopedSignedDiscoveryAdmission (0.01s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/pin (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/signature (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/expired (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/generation (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/public (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/multicast (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/loopback (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/wrong-prefix (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/interface (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/source (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/oversized (0.00s)
+    --- PASS: TestWANW08ScopedSignedDiscoveryAdmission/unknown-field (0.00s)
+=== RUN   TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool
+--- PASS: TestWANW08PinnedFamilyRaceAndDirectoryIndependentPool (0.21s)
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin
+2026/10/06 17:23:05 http: TLS handshake error from 127.0.0.1:53018: remote error: tls: bad certificate
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked
+=== RUN   TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/ipv6-unavailable
+--- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure (0.78s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/wrong-pin (0.01s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/blocked (0.76s)
+    --- PASS: TestWANW08WrongPinBlockedTCPFallsBackWithoutDisclosure/ipv6-unavailable (0.01s)
+=== RUN   TestWANW08CandidateBoundsExpiryAndOptionalListener
+--- PASS: TestWANW08CandidateBoundsExpiryAndOptionalListener (0.00s)
+=== RUN   TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota
+--- PASS: TestWANW08EmptyPublicLeaseDoesNotConsumeRepeatedLookupQuota (0.00s)
+=== RUN   TestWANW08CancellationLimitsAndJoinedResources
+    direct_test.go:368: peak blocked raw TCP dials=32; joined dials/requests/pools/sockets=0
+--- PASS: TestWANW08CancellationLimitsAndJoinedResources (0.01s)
+=== RUN   TestWANW08DatagramFloodFixedWorkersAndSocketCleanup
+    direct_test.go:433: 1000 spoof/oversized datagrams; FD before/during/after=6/8/6, goroutines before/after=2/2, admitted identity callbacks=10, whole-process HeapAlloc before/during/after=1819224/1969344/1978608
+--- PASS: TestWANW08DatagramFloodFixedWorkersAndSocketCleanup (0.11s)
+=== RUN   TestWANW08OptionalIncomingSocketCeiling
+    direct_test.go:497: 64 raw incoming sockets admitted; excess remains in kernel backlog; slots release on close
+--- PASS: TestWANW08OptionalIncomingSocketCeiling (0.04s)
+=== RUN   TestWANW08IndependentInterfaceLeasesAndAggregateCandidates
+--- PASS: TestWANW08IndependentInterfaceLeasesAndAggregateCandidates (0.00s)
+=== RUN   TestWANW10ICEHTTP3NATMatrix
+=== RUN   TestWANW10ICEHTTP3NATMatrix/no_NAT
+    ice_test.go:167: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+2026/10/06 17:23:06 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+=== RUN   TestWANW10ICEHTTP3NATMatrix/endpoint_independent
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:1 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:2 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+=== RUN   TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP
+    ice_test.go:167: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=true; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEHTTP3NATMatrix (13.49s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/no_NAT (0.17s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/endpoint_independent (1.27s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/address_dependent_filtering (1.19s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/address_port_dependent_filtering (0.84s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/incompatible_address_port_mappings (5.00s)
+    --- PASS: TestWANW10ICEHTTP3NATMatrix/blocked_peer_UDP (5.00s)
+=== RUN   TestWANW10ICEGatherCancellationAndCredentials
+    ice_test.go:252: simulated topology: NAT=<nil> blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+--- PASS: TestWANW10ICEGatherCancellationAndCredentials (0.00s)
+=== RUN   TestWANW10ICESocketAndSessionAdmission
+--- PASS: TestWANW10ICESocketAndSessionAdmission (0.00s)
+=== RUN   TestWANW10IncompatibleDoubleNAT
+    ice_test.go:331: simulated topology: NAT=&{Mode:0 MappingBehavior:2 FilteringBehavior:2 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+    ice_test.go:333: two NAT layers per endpoint: inner endpoint-independent; outer address/port-dependent mapping/filtering; bounded check failure
+--- PASS: TestWANW10IncompatibleDoubleNAT (5.00s)
+=== RUN   TestWANW10ICESlowStreamCancellation
+    ice_test.go:337: simulated topology: NAT=&{Mode:0 MappingBehavior:0 FilteringBehavior:0 Hairpinning:false PortPreservation:false MappingLifeTime:0s} blocked-peer-UDP=false; STUN=11.1.1.1:3478; no host network mutations
+    ice_test.go:392: offered 32 MiB; sent before cancellation 65536 bytes; fixed 32 KiB write buffer and unchanged HTTP3 receive windows
+--- PASS: TestWANW10ICESlowStreamCancellation (1.22s)
+=== RUN   TestWANW10SharedQUICAdmission
+--- PASS: TestWANW10SharedQUICAdmission (0.26s)
+=== RUN   TestWANW02ManagerReuseScopeIdentityAndShutdown
+--- PASS: TestWANW02ManagerReuseScopeIdentityAndShutdown (0.01s)
+=== RUN   TestWANW02GenerationMatchesIndependentModel
+--- PASS: TestWANW02GenerationMatchesIndependentModel (0.01s)
+=== RUN   TestWANW02SlowPeerBoundsCancellationAndOtherProgress
+--- PASS: TestWANW02SlowPeerBoundsCancellationAndOtherProgress (0.02s)
+=== RUN   TestWANW02PoolLRUAndManualCandidateBounds
+--- PASS: TestWANW02PoolLRUAndManualCandidateBounds (0.65s)
+=== RUN   TestWANW02ShutdownJoinsPendingDial
+--- PASS: TestWANW02ShutdownJoinsPendingDial (0.00s)
+=== RUN   TestWANW02PurposePoolsAndDrainingGenerationBound
+--- PASS: TestWANW02PurposePoolsAndDrainingGenerationBound (0.02s)
+=== RUN   TestWANW02DialAdmissionSurvivesGenerationFlapping
+--- PASS: TestWANW02DialAdmissionSurvivesGenerationFlapping (0.00s)
+=== RUN   TestWANW02OwnedSocketAdmissionAcrossPools
+--- PASS: TestWANW02OwnedSocketAdmissionAcrossPools (0.00s)
+=== RUN   TestWANW09PacketBoundariesMTUAddressesAndPairChange
+--- PASS: TestWANW09PacketBoundariesMTUAddressesAndPairChange (0.00s)
+=== RUN   TestWANW09PacketDeadlineCancelClose
+--- PASS: TestWANW09PacketDeadlineCancelClose (0.02s)
+=== RUN   TestWANW09HTTP3HeaderAndBodyDeadlines
+    quic_test.go:92: actual header and body bounds 5s 15s
+--- PASS: TestWANW09HTTP3HeaderAndBodyDeadlines (20.02s)
+=== RUN   TestWANW09HTTP3StreamingMemoryCancelAndJoinedClose
+    quic_test.go:149: 32-MiB offered; sent before cancel=196608; heap before/during=1426000/2079336; goroutines=8
+--- PASS: TestWANW09HTTP3StreamingMemoryCancelAndJoinedClose (0.11s)
+=== RUN   TestWANW09OptionalUDPDisabledAndCollision
+--- PASS: TestWANW09OptionalUDPDisabledAndCollision (0.00s)
+=== RUN   TestWANW09QUICAdmissionAndALPN
+    quic_test.go:227: incoming cap=32; goroutines before/after=2/3
+--- PASS: TestWANW09QUICAdmissionAndALPN (0.17s)
+=== RUN   TestWANW09HTTP3ResponseHeaderAndWriteBounds
+    quic_test.go:287: 16-KiB response header refusal; actual 15-second response-header and 30-second response-write deadlines 30.029685784s
+--- PASS: TestWANW09HTTP3ResponseHeaderAndWriteBounds (45.05s)
+=== RUN   TestWANW04ManagerRetiresPooledRelayBeforeNewRequest
+--- PASS: TestWANW04ManagerRetiresPooledRelayBeforeNewRequest (0.01s)
+=== RUN   TestWANW04ManagerRelayIsolationAndPendingCancel
+--- PASS: TestWANW04ManagerRelayIsolationAndPendingCancel (0.00s)
+=== RUN   TestWANW14PackagedReleaseProfile
+--- PASS: TestWANW14PackagedReleaseProfile (0.01s)
+=== RUN   TestWANW14ReviewOperatorChange
+--- PASS: TestWANW14ReviewOperatorChange (0.00s)
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns
+    roaming_competition_test.go:97: 32 competing peers phase=dns DNS peak=4 relay attempts peak=0; joined cancellation=9.899202ms; active requests/pools/dials/resolvers/relay=0
+=== RUN   TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay
+    roaming_competition_test.go:97: 32 competing peers phase=relay DNS peak=0 relay attempts peak=24; joined cancellation=2.06633ms; active requests/pools/dials/resolvers/relay=0
+--- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation (0.03s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/dns (0.02s)
+    --- PASS: TestWANW11CompetingPeersSlowDNSRelayAndCancellation/relay (0.01s)
+=== RUN   TestWANW11IsolatedAddressDefaultRouteDetection
+    roaming_namespace_test.go:20: requires marked disposable namespace runner
+--- SKIP: TestWANW11IsolatedAddressDefaultRouteDetection (0.00s)
+=== RUN   TestWANW11RelayDirectReprobeAndGenerationDrain
+    roaming_test.go:97: authenticated relay/direct/relay routing used real TLS/HTTP; addresses/dial outcome and time were injected
+--- PASS: TestWANW11RelayDirectReprobeAndGenerationDrain (0.02s)
+=== RUN   TestWANW11LateLookupCannotPublishIntoNewGeneration
+--- PASS: TestWANW11LateLookupCannotPublishIntoNewGeneration (0.00s)
+=== RUN   TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide
+--- PASS: TestWANW11FailedICERetryIsTimedAndQuotaQuietPeriodDoesNotSlide (0.00s)
+=== RUN   TestWANW11NetworkWatcherCoalescesAndJoins
+--- PASS: TestWANW11NetworkWatcherCoalescesAndJoins (0.03s)
+=== RUN   TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter
+--- PASS: TestWANW11ColdRaceRetainsQuotaAfterCanceledICEWaiter (0.75s)
+=== RUN   TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession
+--- PASS: TestWANW11ResponderQuotaRetryIsBoundedAndKeepsSession (5.01s)
+=== RUN   TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt
+--- PASS: TestWANW11DirectCooldownGrowsAndFreshNetworkClearsIt (0.00s)
+=== RUN   TestWANW11RepeatedFlappingBoundsBusyGenerations
+    roaming_test.go:360: 200 reordered generations across eight pinned TCP targets retained exactly two pools/requests per target; body drain pruned all old work
+--- PASS: TestWANW11RepeatedFlappingBoundsBusyGenerations (0.10s)
+=== RUN   TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam
+--- PASS: TestWANW11FreshLookupRevalidatesUnchangedRemoteLeaseAfterRoam (0.00s)
+=== RUN   TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe
+--- PASS: TestWANW11CandidateArrivalInvalidatesEarlyEmptyProbe (0.00s)
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/lookup
+=== RUN   TestWANW11SlowLookupAndRelayShutdownJoin/relay
+--- PASS: TestWANW11SlowLookupAndRelayShutdownJoin (0.75s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/lookup (0.00s)
+    --- PASS: TestWANW11SlowLookupAndRelayShutdownJoin/relay (0.75s)
+=== RUN   TestWANW03DNSAllAnswersAndRebinding
+--- PASS: TestWANW03DNSAllAnswersAndRebinding (0.00s)
+=== RUN   TestWANW03CanceledResolverFloodIsBounded
+    service_client_test.go:144: 1,000 canceled callers: resolver peak=4; after close active=0 sockets=0
+--- PASS: TestWANW03CanceledResolverFloodIsBounded (0.50s)
+=== RUN   TestWANW03PrivacyPolicyHasNoServiceTraffic
+--- PASS: TestWANW03PrivacyPolicyHasNoServiceTraffic (0.00s)
+=== RUN   TestWANW03LookupRejectsSubstitution
+--- PASS: TestWANW03LookupRejectsSubstitution (0.00s)
+=== RUN   TestWANW01StreamBoundsAndDeadlines
+--- PASS: TestWANW01StreamBoundsAndDeadlines (0.01s)
+=== RUN   TestWANW01StreamInvalidFrames
+=== RUN   TestWANW01StreamInvalidFrames/maximum
+=== RUN   TestWANW01StreamInvalidFrames/one-over
+=== RUN   TestWANW01StreamInvalidFrames/text
+--- PASS: TestWANW01StreamInvalidFrames (0.02s)
+    --- PASS: TestWANW01StreamInvalidFrames/maximum (0.01s)
+    --- PASS: TestWANW01StreamInvalidFrames/one-over (0.01s)
+    --- PASS: TestWANW01StreamInvalidFrames/text (0.01s)
+=== RUN   TestWANW01WSSSlowReceiverCancellation
+    stream_test.go:116: slow receiver blocked after 106 bounded frames; cancellation joined writer
+--- PASS: TestWANW01WSSSlowReceiverCancellation (0.11s)
+=== RUN   TestWANW01ForwardBackpressureCleanup
+--- PASS: TestWANW01ForwardBackpressureCleanup (0.03s)
+=== RUN   TestWANW01ListenerCancel
+--- PASS: TestWANW01ListenerCancel (0.00s)
+=== RUN   TestWANW01BrokerBrowserOrigin
+--- PASS: TestWANW01BrokerBrowserOrigin (0.01s)
+=== RUN   TestWANW11ReviewedTimingControlsRuntimeDeadlines
+--- PASS: TestWANW11ReviewedTimingControlsRuntimeDeadlines (0.25s)
+=== RUN   TestWANW01TransportTrustAndPlaintext
+--- PASS: TestWANW01TransportTrustAndPlaintext (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	95.941s
+=== RUN   TestGoldenEnvelopeDecodesAndValidates
+--- PASS: TestGoldenEnvelopeDecodesAndValidates (0.00s)
+=== RUN   TestEnvelopeDecoderRejectsUnknownDuplicateAndNoncanonicalFields
+--- PASS: TestEnvelopeDecoderRejectsUnknownDuplicateAndNoncanonicalFields (0.00s)
+=== RUN   TestWANW10ICEContractBoundsAndLegacyEncoding
+--- PASS: TestWANW10ICEContractBoundsAndLegacyEncoding (0.00s)
+=== RUN   TestWANW10ICEDeterministicRoleAndPurpose
+--- PASS: TestWANW10ICEDeterministicRoleAndPurpose (0.00s)
+=== RUN   TestWANW10IndependentSignedICEGolden
+--- PASS: TestWANW10IndependentSignedICEGolden (0.00s)
+=== RUN   TestWANW08LANIndependentGoldenAndStrictCodec
+--- PASS: TestWANW08LANIndependentGoldenAndStrictCodec (0.00s)
+=== RUN   TestWANW09LANQUICIndependentGoldenAndCapabilities
+--- PASS: TestWANW09LANQUICIndependentGoldenAndCapabilities (0.00s)
+=== RUN   TestTerminalT03MembershipDecoder
+--- PASS: TestTerminalT03MembershipDecoder (0.00s)
+=== RUN   TestMembershipEncodingMatchesP01GoldenFixture
+--- PASS: TestMembershipEncodingMatchesP01GoldenFixture (0.00s)
+=== RUN   TestRetirementSnapshotEncodingMatchesP01GoldenFixture
+--- PASS: TestRetirementSnapshotEncodingMatchesP01GoldenFixture (0.00s)
+=== RUN   TestWANW01CanonicalGoldens
+--- PASS: TestWANW01CanonicalGoldens (0.01s)
+=== RUN   TestWANW01StrictNetworkCodec
+--- PASS: TestWANW01StrictNetworkCodec (0.00s)
+=== RUN   TestWANW01MaximumMessages
+--- PASS: TestWANW01MaximumMessages (0.00s)
+=== RUN   TestWANW01ProofSubstitution
+--- PASS: TestWANW01ProofSubstitution (0.01s)
+=== RUN   TestWANW01URLScope
+--- PASS: TestWANW01URLScope (0.00s)
+=== RUN   TestWANW01RoutedBindingsAndV2Coexistence
+--- PASS: TestWANW01RoutedBindingsAndV2Coexistence (0.01s)
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/expired
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/rollback
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/missing-authority
+=== RUN   TestWANW01ProfileAuthorityExpiryAndRotation/self-supplied-authority
+--- PASS: TestWANW01ProfileAuthorityExpiryAndRotation (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/expired (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/rollback (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/missing-authority (0.00s)
+    --- PASS: TestWANW01ProfileAuthorityExpiryAndRotation/self-supplied-authority (0.00s)
+=== RUN   TestWANW01OfferMaximum
+--- PASS: TestWANW01OfferMaximum (0.00s)
+=== RUN   TestWANW01CertificateMaximum
+--- PASS: TestWANW01CertificateMaximum (0.18s)
+=== RUN   TestWANW01CrossEnvelopeBindings
+--- PASS: TestWANW01CrossEnvelopeBindings (0.00s)
+=== RUN   TestWANW01InvitationSizeBound
+--- PASS: TestWANW01InvitationSizeBound (0.00s)
+=== RUN   TestWANW01MaximumGoldenAndOneOver
+--- PASS: TestWANW01MaximumGoldenAndOneOver (0.00s)
+=== RUN   TestWANW01IntentGoldenAndFreshChallenge
+--- PASS: TestWANW01IntentGoldenAndFreshChallenge (0.00s)
+=== RUN   TestWANW11RouteTimingBoundsAndLegacyDefaults
+--- PASS: TestWANW11RouteTimingBoundsAndLegacyDefaults (0.00s)
+=== RUN   TestTerminalT01EnrollmentWire
+--- PASS: TestTerminalT01EnrollmentWire (0.00s)
+=== RUN   TestTerminalT01StatusProofDomain
+--- PASS: TestTerminalT01StatusProofDomain (0.00s)
+=== RUN   FuzzWANW15SignedProfile
+=== RUN   FuzzWANW15SignedProfile/seed#0
+=== RUN   FuzzWANW15SignedProfile/seed#1
+--- PASS: FuzzWANW15SignedProfile (0.00s)
+    --- PASS: FuzzWANW15SignedProfile/seed#0 (0.00s)
+    --- PASS: FuzzWANW15SignedProfile/seed#1 (0.00s)
+=== RUN   FuzzWANW15NetworkCodec
+=== RUN   FuzzWANW15NetworkCodec/seed#0
+=== RUN   FuzzWANW15NetworkCodec/seed#1
+=== RUN   FuzzWANW15NetworkCodec/seed#2
+=== RUN   FuzzWANW15NetworkCodec/seed#3
+=== RUN   FuzzWANW15NetworkCodec/seed#4
+=== RUN   FuzzWANW15NetworkCodec/seed#5
+=== RUN   FuzzWANW15NetworkCodec/seed#6
+--- PASS: FuzzWANW15NetworkCodec (0.01s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#0 (0.00s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#1 (0.00s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#2 (0.00s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#3 (0.00s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#4 (0.00s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#5 (0.00s)
+    --- PASS: FuzzWANW15NetworkCodec/seed#6 (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/protocol	1.257s
+=== RUN   TestWANW10SignedICESessionReplayAndIsolation
+--- PASS: TestWANW10SignedICESessionReplayAndIsolation (0.21s)
+=== RUN   TestWANW04OutboundLegsAndBidirectionalBytes
+--- PASS: TestWANW04OutboundLegsAndBidirectionalBytes (0.19s)
+=== RUN   TestWANW04WrongAttachmentsAndReplay
+=== RUN   TestWANW04WrongAttachmentsAndReplay/role
+=== RUN   TestWANW04WrongAttachmentsAndReplay/pin
+=== RUN   TestWANW04WrongAttachmentsAndReplay/purpose
+=== RUN   TestWANW04WrongAttachmentsAndReplay/epoch
+=== RUN   TestWANW04WrongAttachmentsAndReplay/signature
+=== RUN   TestWANW04WrongAttachmentsAndReplay/expired
+=== RUN   TestWANW04WrongAttachmentsAndReplay/released
+=== RUN   TestWANW04WrongAttachmentsAndReplay/duplicate
+--- PASS: TestWANW04WrongAttachmentsAndReplay (0.65s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/role (0.08s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/pin (0.08s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/purpose (0.08s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/epoch (0.07s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/signature (0.07s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/expired (0.07s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/released (0.09s)
+    --- PASS: TestWANW04WrongAttachmentsAndReplay/duplicate (0.10s)
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/expiry
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/close
+=== RUN   TestWANW04UnpairedExpiryAndAbruptLoss/service
+--- PASS: TestWANW04UnpairedExpiryAndAbruptLoss (0.35s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/expiry (0.11s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/close (0.11s)
+    --- PASS: TestWANW04UnpairedExpiryAndAbruptLoss/service (0.12s)
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/idle
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/lifetime
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/bytes
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/cancel
+=== RUN   TestWANW04IdleLifetimeByteQuotaAndCancel/slow
+--- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel (0.90s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/idle (0.17s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/lifetime (0.18s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/bytes (0.15s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/cancel (0.13s)
+    --- PASS: TestWANW04IdleLifetimeByteQuotaAndCancel/slow (0.28s)
+=== RUN   TestWANW04BandwidthCeilingAndCancellation
+--- PASS: TestWANW04BandwidthCeilingAndCancellation (0.10s)
+=== RUN   TestWANW04ConcurrentDuplicateLegAdmission
+--- PASS: TestWANW04ConcurrentDuplicateLegAdmission (0.13s)
+=== RUN   TestWANW04PurposeListenerIsolation
+--- PASS: TestWANW04PurposeListenerIsolation (0.15s)
+=== RUN   TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation
+    relay_test.go:380: 66 live tunnels: heap=35552072 delta=34012096 FDs=271 delta=264 goroutines=664 delta=660
+    relay_test.go:423: streamed 8388608 bytes in 1.663097431s; heap=43661728 FDs=279 goroutines=676
+    relay_test.go:452: joined: FDs=6 goroutines=2
+--- PASS: TestWANW04ServiceCapacityResourcesAndEnrollmentIsolation (10.38s)
+=== RUN   TestWANW04RestartEpochAndFreshChallenge
+--- PASS: TestWANW04RestartEpochAndFreshChallenge (0.11s)
+=== RUN   TestWANW04BandwidthReconnectRetention
+--- PASS: TestWANW04BandwidthReconnectRetention (0.13s)
+=== RUN   TestWANW04BrokerSeesOnlyInnerTLSCiphertext
+    relay_test.go:589: inspected 2144 inner-TLS bytes at decrypted outer-WSS boundary
+--- PASS: TestWANW04BrokerSeesOnlyInnerTLSCiphertext (0.12s)
+=== RUN   TestWANW04PostAuthenticationFrameBounds
+=== RUN   TestWANW04PostAuthenticationFrameBounds/maximum
+=== RUN   TestWANW04PostAuthenticationFrameBounds/one-over
+=== RUN   TestWANW04PostAuthenticationFrameBounds/text
+--- PASS: TestWANW04PostAuthenticationFrameBounds (0.34s)
+    --- PASS: TestWANW04PostAuthenticationFrameBounds/maximum (0.11s)
+    --- PASS: TestWANW04PostAuthenticationFrameBounds/one-over (0.11s)
+    --- PASS: TestWANW04PostAuthenticationFrameBounds/text (0.12s)
+=== RUN   TestWANW04PerPairAdmissionCannotBeBypassedByNewClient
+--- PASS: TestWANW04PerPairAdmissionCannotBeBypassedByNewClient (0.14s)
+=== RUN   TestWANW13RotationOverlapAndSanitizedMetrics
+--- PASS: TestWANW13RotationOverlapAndSanitizedMetrics (0.01s)
+=== RUN   TestWANW05QuotaProofDoesNotStrandChallengeSlots
+--- PASS: TestWANW05QuotaProofDoesNotStrandChallengeSlots (0.04s)
+=== RUN   TestWANW03RegistrationAndReplay
+--- PASS: TestWANW03RegistrationAndReplay (0.02s)
+=== RUN   TestWANW03AuthenticationBindings
+=== RUN   TestWANW03AuthenticationBindings/signature
+=== RUN   TestWANW03AuthenticationBindings/key
+=== RUN   TestWANW03AuthenticationBindings/origin
+=== RUN   TestWANW03AuthenticationBindings/profile
+=== RUN   TestWANW03AuthenticationBindings/purpose
+=== RUN   TestWANW03AuthenticationBindings/expired
+=== RUN   TestWANW03AuthenticationBindings/path
+=== RUN   TestWANW03AuthenticationBindings/payload
+--- PASS: TestWANW03AuthenticationBindings (0.04s)
+    --- PASS: TestWANW03AuthenticationBindings/signature (0.01s)
+    --- PASS: TestWANW03AuthenticationBindings/key (0.01s)
+    --- PASS: TestWANW03AuthenticationBindings/origin (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/profile (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/purpose (0.01s)
+    --- PASS: TestWANW03AuthenticationBindings/expired (0.00s)
+    --- PASS: TestWANW03AuthenticationBindings/path (0.01s)
+    --- PASS: TestWANW03AuthenticationBindings/payload (0.01s)
+=== RUN   TestWANW03LeaseExpiryAndRestart
+--- PASS: TestWANW03LeaseExpiryAndRestart (0.04s)
+=== RUN   TestWANW03CandidateAndBodyBounds
+=== RUN   TestWANW03CandidateAndBodyBounds/127.0.0.1:1
+=== RUN   TestWANW03CandidateAndBodyBounds/10.0.0.1:443
+=== RUN   TestWANW03CandidateAndBodyBounds/169.254.1.1:80
+=== RUN   TestWANW03CandidateAndBodyBounds/100.64.0.1:80
+=== RUN   TestWANW03CandidateAndBodyBounds/[::1]:443
+=== RUN   TestWANW03CandidateAndBodyBounds/[::ffff:8.8.8.8]:443
+=== RUN   TestWANW03CandidateAndBodyBounds/0.0.0.0:443
+--- PASS: TestWANW03CandidateAndBodyBounds (0.05s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/127.0.0.1:1 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/10.0.0.1:443 (0.01s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/169.254.1.1:80 (0.01s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/100.64.0.1:80 (0.00s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/[::1]:443 (0.01s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/[::ffff:8.8.8.8]:443 (0.01s)
+    --- PASS: TestWANW03CandidateAndBodyBounds/0.0.0.0:443 (0.00s)
+=== RUN   TestWANW03SharedNATAndCacheAdmission
+--- PASS: TestWANW03SharedNATAndCacheAdmission (0.27s)
+=== RUN   TestWANW03MaximumRoutesAndChallenges
+--- PASS: TestWANW03MaximumRoutesAndChallenges (6.04s)
+=== RUN   TestWANW03ControlOffersAndReservationIntent
+--- PASS: TestWANW03ControlOffersAndReservationIntent (0.12s)
+=== RUN   TestWANW03UnknownEnrollmentIsSeparate
+--- PASS: TestWANW03UnknownEnrollmentIsSeparate (0.07s)
+=== RUN   TestWANW03ControlFloodAndShutdown
+    service_test.go:599: 200 concurrent lookups; 9 admitted completions; client slots <=4, controls=1; shutdown joined
+--- PASS: TestWANW03ControlFloodAndShutdown (0.11s)
+=== RUN   TestWANW03TLSAndHeaderOrigins
+--- PASS: TestWANW03TLSAndHeaderOrigins (0.13s)
+=== RUN   TestWANW03ProfilePersistenceAndRollback
+--- PASS: TestWANW03ProfilePersistenceAndRollback (0.01s)
+=== RUN   TestWANW03IdleSocketAdmissionAndClose
+    service_test.go:730: 272 raw sockets; goroutine delta=256 (ceiling 256); server close joins idle TLS work
+--- PASS: TestWANW03IdleSocketAdmissionAndClose (0.08s)
+=== RUN   TestWANW03ProfilesRejectRollbackAndAuthority
+--- PASS: TestWANW03ProfilesRejectRollbackAndAuthority (0.01s)
+=== RUN   TestWANW03NoIdleMetadataRetention
+--- PASS: TestWANW03NoIdleMetadataRetention (1.01s)
+=== RUN   TestWANW03LocalPinsGateDataOffers
+--- PASS: TestWANW03LocalPinsGateDataOffers (0.14s)
+=== RUN   TestWANW03ReannouncementJitterAndStableRenewal
+--- PASS: TestWANW03ReannouncementJitterAndStableRenewal (0.02s)
+=== RUN   TestWANW03ControlHeartbeatPreservesIdleSession
+--- PASS: TestWANW03ControlHeartbeatPreservesIdleSession (26.12s)
+=== RUN   TestWANW03WSSAdmissionBounds
+--- PASS: TestWANW03WSSAdmissionBounds (0.02s)
+=== RUN   TestWANW03ServiceBinaryRestart
+--- PASS: TestWANW03ServiceBinaryRestart (0.25s)
+=== RUN   TestWANW10STUNMappingMalformedAndRateBounds
+    stun_test.go:98: IPv4 binding response 32/20 bytes; 100-request burst responses 10 ; malformed silent; closure joins sole worker
+--- PASS: TestWANW10STUNMappingMalformedAndRateBounds (0.23s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	49.758s
+=== RUN   TestWANW11BandwidthReservationPrecedesNetworkIO
+--- PASS: TestWANW11BandwidthReservationPrecedesNetworkIO (0.78s)
+=== RUN   TestChunkBackpressureCancellationStopsSync
+--- PASS: TestChunkBackpressureCancellationStopsSync (0.90s)
+=== RUN   TestParallelChunksWaitForPeerBackpressureRecovery
+--- PASS: TestParallelChunksWaitForPeerBackpressureRecovery (1.45s)
+=== RUN   TestMetadataBackpressureRetry
+=== RUN   TestMetadataBackpressureRetry/transient
+=== RUN   TestMetadataBackpressureRetry/bounded
+=== RUN   TestMetadataBackpressureRetry/unauthorized
+--- PASS: TestMetadataBackpressureRetry (0.91s)
+    --- PASS: TestMetadataBackpressureRetry/transient (0.15s)
+    --- PASS: TestMetadataBackpressureRetry/bounded (0.75s)
+    --- PASS: TestMetadataBackpressureRetry/unauthorized (0.00s)
+=== RUN   TestWANW03DirectoryLossPreservesManualCaptureAndSync
+--- PASS: TestWANW03DirectoryLossPreservesManualCaptureAndSync (1.02s)
+=== RUN   TestTerminalT03AdmissionLimiterBounds
+--- PASS: TestTerminalT03AdmissionLimiterBounds (0.03s)
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/no_NAT
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=true double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+2026/10/06 17:23:11 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+    ice_nat_test.go:174: actual ICE consent-loss closure and fresh-pair rebuild; elapsed 6.329440189s unchanged heads/hash/author
+    ice_nat_test.go:200: actual directory/control shutdown preserves existing authenticated ICE peer sync
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=1 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected quic two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT
+    ice_nat_test.go:120: simulated NAT mapping=2 filtering=2 noNAT=false double=true blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+=== RUN   TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP
+    ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=true; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+    ice_test.go:249: actual Pion path; selected relay two-way verified heads/hashes and interrupted chunk reuse
+--- PASS: TestWANW10AuthenticatedNATPeerMatrix (41.21s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/no_NAT (1.62s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent (9.38s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering (2.93s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering (2.47s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/incompatible_mappings (8.38s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/incompatible_double_NAT (8.26s)
+    --- PASS: TestWANW10AuthenticatedNATPeerMatrix/blocked_peer_UDP (8.17s)
+=== RUN   TestWANW10IsolatedICEPeerSyncAndFallback
+    ice_test.go:31: requires marked disposable user/network namespace runner
+--- SKIP: TestWANW10IsolatedICEPeerSyncAndFallback (0.00s)
+=== RUN   TestWANW10IsolatedSTUNIPv6
+    ice_test.go:270: requires marked disposable user/network namespace runner
+--- SKIP: TestWANW10IsolatedSTUNIPv6 (0.00s)
+=== RUN   TestLoadOrCreateIdentityReusesExistingKey
+--- PASS: TestLoadOrCreateIdentityReusesExistingKey (0.00s)
+=== RUN   TestRotateIdentityGeneratesFreshKeyAndChangesPin
+--- PASS: TestRotateIdentityGeneratesFreshKeyAndChangesPin (0.00s)
+=== RUN   TestWANW08ProductionMulticastKnownPeerTwoWaySync
+    lan_test.go:160: real nonloopback local IPv6 listener availability=true; public IPv6 internet reachability remains unexecuted
+--- PASS: TestWANW08ProductionMulticastKnownPeerTwoWaySync (0.91s)
+=== RUN   TestWANW08NativeLocalIPv6PinnedTransfer
+    lan_test.go:228: Native nonloopback local ULA IPv6 TCP/mTLS/HTTP/verified engine bytes executed; global/public IPv6 routing remains unexecuted.
+--- PASS: TestWANW08NativeLocalIPv6PinnedTransfer (0.65s)
+=== RUN   TestWANW02TwoWaySyncInterruptedChunkReuse
+--- PASS: TestWANW02TwoWaySyncInterruptedChunkReuse (0.83s)
+=== RUN   TestWANW02RoutedPeerWrongPinAndUnknownRequester
+--- PASS: TestWANW02RoutedPeerWrongPinAndUnknownRequester (0.60s)
+=== RUN   TestWANW08IsolatedPublicTCPAndIPv6
+    public_direct_test.go:26: requires scripts/wan_direct_namespace_test.py; public addresses are simulated only inside an isolated namespace
+--- SKIP: TestWANW08IsolatedPublicTCPAndIPv6 (0.00s)
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/native
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+=== RUN   TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter
+    quic_test.go:179: native UDP on https://5353535353535353535353535353535353535353535353535353535353535353.peer.orbit.invalid both endpoints listen/dial; verified chunk reuse and exact heads/hashes
+    quic_test.go:65: adapter lost and duplicated one encrypted short-header packet in each direction
+--- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume (1.77s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/native (0.88s)
+    --- PASS: TestWANW09NativeQUICBothPullDirectionsAndResume/pair_adapter (0.89s)
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds/missing
+=== RUN   TestWANW09HTTP3AuthenticationAuthorizationAndBounds/wrong_pin
+--- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds (0.79s)
+    --- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds/missing (0.00s)
+    --- PASS: TestWANW09HTTP3AuthenticationAuthorizationAndBounds/wrong_pin (0.00s)
+=== RUN   TestWANW09PartialChunkNoReceiptAndBorrowerPin
+--- PASS: TestWANW09PartialChunkNoReceiptAndBorrowerPin (1.40s)
+=== RUN   TestWANW09UnavailableUDPUsesPreservedPinnedTCP
+--- PASS: TestWANW09UnavailableUDPUsesPreservedPinnedTCP (0.65s)
+=== RUN   TestReconciliationOfflineEditEdit
+=== RUN   TestReconciliationOfflineEditEdit/A-then-B
+=== RUN   TestReconciliationOfflineEditEdit/B-then-A
+--- PASS: TestReconciliationOfflineEditEdit (1.47s)
+    --- PASS: TestReconciliationOfflineEditEdit/A-then-B (0.74s)
+    --- PASS: TestReconciliationOfflineEditEdit/B-then-A (0.73s)
+=== RUN   TestReconciliationOfflineEditDelete
+--- PASS: TestReconciliationOfflineEditDelete (0.81s)
+=== RUN   TestReconciliationRepeatedDelete
+--- PASS: TestReconciliationRepeatedDelete (0.78s)
+=== RUN   TestReconciliationEqualByteConflict
+--- PASS: TestReconciliationEqualByteConflict (0.70s)
+=== RUN   TestReconciliationExecutableOnlyChange
+--- PASS: TestReconciliationExecutableOnlyChange (0.72s)
+=== RUN   TestReconciliationProtectedFallbackWhileRemotePending
+--- PASS: TestReconciliationProtectedFallbackWhileRemotePending (0.61s)
+=== RUN   TestReconciliationWorkingBasisNotAdvancedByUnreviewedHeads
+--- PASS: TestReconciliationWorkingBasisNotAdvancedByUnreviewedHeads (0.70s)
+=== RUN   TestReconciliationStructuralConflictPreservesChildren
+--- PASS: TestReconciliationStructuralConflictPreservesChildren (0.76s)
+=== RUN   TestReconciliationRestartPreservesConflictAndZeroExtraVersions
+--- PASS: TestReconciliationRestartPreservesConflictAndZeroExtraVersions (0.81s)
+=== RUN   TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse
+--- PASS: TestWANW04ProductionRelayTwoWaySyncAndInterruptedReuse (1.33s)
+=== RUN   TestWANW04ProductionRelayFolderAndPinIsolation
+--- PASS: TestWANW04ProductionRelayFolderAndPinIsolation (0.67s)
+=== RUN   TestWANW04ProductionRelayLossPreservesCapture
+--- PASS: TestWANW04ProductionRelayLossPreservesCapture (0.65s)
+=== RUN   TestWANW04ProductionRelayRestartResumesVerifiedChunks
+--- PASS: TestWANW04ProductionRelayRestartResumesVerifiedChunks (1.27s)
+=== RUN   TestWANW04ProductionRelayLostReceiptReplay
+--- PASS: TestWANW04ProductionRelayLostReceiptReplay (0.74s)
+=== RUN   TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl
+--- PASS: TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl (0.66s)
+=== RUN   TestWANW04ProductionRelayRequestCancellationJoins
+--- PASS: TestWANW04ProductionRelayRequestCancellationJoins (0.64s)
+=== RUN   TestRepairCorruptVersionFromAuthorizedPeer
+--- PASS: TestRepairCorruptVersionFromAuthorizedPeer (0.65s)
+=== RUN   TestRepairSharedChunkRestoresBothVersions
+--- PASS: TestRepairSharedChunkRestoresBothVersions (0.70s)
+=== RUN   TestRepairNoRemainingCopyYieldsUnavailable
+--- PASS: TestRepairNoRemainingCopyYieldsUnavailable (1.24s)
+=== RUN   TestRepairUnauthorizedFolderRejected
+--- PASS: TestRepairUnauthorizedFolderRejected (0.73s)
+=== RUN   TestRepairCorruptPeerResponseDiagnosedNoInfiniteRetry
+--- PASS: TestRepairCorruptPeerResponseDiagnosedNoInfiniteRetry (0.74s)
+=== RUN   TestWANW11NativeQUICToTCPChunkAndReceiptRecovery
+    roaming_test.go:105: native QUIC to TCP after chunk-boundary interruption: 45.214207ms; reused=1 fetched=1
+    roaming_test.go:138: native TCP to QUIC receipt recovery: 56.854036ms; original version/author, heads, manifests and working bytes preserved
+--- PASS: TestWANW11NativeQUICToTCPChunkAndReceiptRecovery (0.89s)
+=== RUN   TestWANW05RoutedAdmissionExactReplayRevocationAndExpiry
+--- PASS: TestWANW05RoutedAdmissionExactReplayRevocationAndExpiry (0.70s)
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/folder
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/inviter
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/requester
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/profile
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/signature
+=== RUN   TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/v2
+--- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade (3.79s)
+    --- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/folder (0.66s)
+    --- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/inviter (0.63s)
+    --- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/requester (0.66s)
+    --- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/profile (0.62s)
+    --- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/signature (0.61s)
+    --- PASS: TestWANW05RoutedWrongFolderRouteSignatureAndV2Downgrade/v2 (0.61s)
+=== RUN   TestWANW05RoutedStatusPossessionNonceAndDigest
+--- PASS: TestWANW05RoutedStatusPossessionNonceAndDigest (0.64s)
+=== RUN   TestWANW05RoutedWrongInviterTLSBeforeDisclosure
+2026/10/06 17:24:23 http: TLS handshake error from 127.0.0.1:44472: remote error: tls: bad certificate
+--- PASS: TestWANW05RoutedWrongInviterTLSBeforeDisclosure (0.62s)
+=== RUN   TestWANW05RoutedUnsentExpiryAndSingleUse
+--- PASS: TestWANW05RoutedUnsentExpiryAndSingleUse (0.60s)
+=== RUN   TestWANW05RoutedRetiredIdentityCannotReenroll
+--- PASS: TestWANW05RoutedRetiredIdentityCannotReenroll (0.64s)
+=== RUN   TestWANW05RoutedApprovalArtifactBinding
+=== RUN   TestWANW05RoutedApprovalArtifactBinding/signature
+=== RUN   TestWANW05RoutedApprovalArtifactBinding/request
+=== RUN   TestWANW05RoutedApprovalArtifactBinding/transcript
+=== RUN   TestWANW05RoutedApprovalArtifactBinding/prior
+=== RUN   TestWANW05RoutedApprovalArtifactBinding/membership
+--- PASS: TestWANW05RoutedApprovalArtifactBinding (0.61s)
+    --- PASS: TestWANW05RoutedApprovalArtifactBinding/signature (0.00s)
+    --- PASS: TestWANW05RoutedApprovalArtifactBinding/request (0.00s)
+    --- PASS: TestWANW05RoutedApprovalArtifactBinding/transcript (0.00s)
+    --- PASS: TestWANW05RoutedApprovalArtifactBinding/prior (0.00s)
+    --- PASS: TestWANW05RoutedApprovalArtifactBinding/membership (0.00s)
+=== RUN   TestWANW05RoutedPendingRequesterDataAndControlIsolation
+--- PASS: TestWANW05RoutedPendingRequesterDataAndControlIsolation (0.62s)
+=== RUN   TestIdentityPersistsAndPrivateMaterialIsProtected
+--- PASS: TestIdentityPersistsAndPrivateMaterialIsProtected (0.00s)
+=== RUN   TestRequestTokenBucketIsBoundedAndRefills
+--- PASS: TestRequestTokenBucketIsBoundedAndRefills (0.00s)
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly/hello
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly/inventory_request
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly/inventory_response
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly/versions_request
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly/chunk_request
+=== RUN   TestGoldenEndpointFixturesDecodeStrictly/error
+--- PASS: TestGoldenEndpointFixturesDecodeStrictly (0.00s)
+    --- PASS: TestGoldenEndpointFixturesDecodeStrictly/hello (0.00s)
+    --- PASS: TestGoldenEndpointFixturesDecodeStrictly/inventory_request (0.00s)
+    --- PASS: TestGoldenEndpointFixturesDecodeStrictly/inventory_response (0.00s)
+    --- PASS: TestGoldenEndpointFixturesDecodeStrictly/versions_request (0.00s)
+    --- PASS: TestGoldenEndpointFixturesDecodeStrictly/chunk_request (0.00s)
+    --- PASS: TestGoldenEndpointFixturesDecodeStrictly/error (0.00s)
+=== RUN   TestRealTLSHelloInventorySnapshotAndEnvelopeFetch
+--- PASS: TestRealTLSHelloInventorySnapshotAndEnvelopeFetch (1.14s)
+=== RUN   TestAuthenticationAuthorizationAndCompatibilityMatrix
+=== RUN   TestAuthenticationAuthorizationAndCompatibilityMatrix/wrong_key_for_claimed_paired_device
+=== RUN   TestAuthenticationAuthorizationAndCompatibilityMatrix/unpaired_device
+=== RUN   TestAuthenticationAuthorizationAndCompatibilityMatrix/wrong_folder
+=== RUN   TestAuthenticationAuthorizationAndCompatibilityMatrix/membership_mismatch
+=== RUN   TestAuthenticationAuthorizationAndCompatibilityMatrix/protocol_mismatch
+--- PASS: TestAuthenticationAuthorizationAndCompatibilityMatrix (0.31s)
+    --- PASS: TestAuthenticationAuthorizationAndCompatibilityMatrix/wrong_key_for_claimed_paired_device (0.00s)
+    --- PASS: TestAuthenticationAuthorizationAndCompatibilityMatrix/unpaired_device (0.00s)
+    --- PASS: TestAuthenticationAuthorizationAndCompatibilityMatrix/wrong_folder (0.00s)
+    --- PASS: TestAuthenticationAuthorizationAndCompatibilityMatrix/membership_mismatch (0.00s)
+    --- PASS: TestAuthenticationAuthorizationAndCompatibilityMatrix/protocol_mismatch (0.00s)
+=== RUN   TestRevokedPeerFailsCurrentMembership
+--- PASS: TestRevokedPeerFailsCurrentMembership (0.32s)
+=== RUN   TestSnapshotExpiryRequiresSafeRestart
+--- PASS: TestSnapshotExpiryRequiresSafeRestart (0.33s)
+=== RUN   TestChunkServingRequiresAuthorizedManifestVersion
+--- PASS: TestChunkServingRequiresAuthorizedManifestVersion (0.35s)
+=== RUN   TestMalformedAndOverLimitInputsAreBounded
+=== RUN   TestMalformedAndOverLimitInputsAreBounded/duplicate_key
+=== RUN   TestMalformedAndOverLimitInputsAreBounded/oversized_body
+--- PASS: TestMalformedAndOverLimitInputsAreBounded (0.37s)
+    --- PASS: TestMalformedAndOverLimitInputsAreBounded/duplicate_key (0.00s)
+    --- PASS: TestMalformedAndOverLimitInputsAreBounded/oversized_body (0.08s)
+=== RUN   TestReceiptsEndpoint
+--- PASS: TestReceiptsEndpoint (0.33s)
+=== RUN   TestStatusEndpoint
+--- PASS: TestStatusEndpoint (0.32s)
+=== RUN   TestOrbitMembership_ReplicationGet
+--- PASS: TestOrbitMembership_ReplicationGet (0.32s)
+=== RUN   TestSyncerEmptyFile
+--- PASS: TestSyncerEmptyFile (0.68s)
+=== RUN   TestSyncerSmallAndMultiChunkWithRepeatedChunks
+--- PASS: TestSyncerSmallAndMultiChunkWithRepeatedChunks (0.82s)
+=== RUN   TestSyncerCorruptionRejected
+--- PASS: TestSyncerCorruptionRejected (0.78s)
+=== RUN   TestSyncerInterruptedResume
+--- PASS: TestSyncerInterruptedResume (0.95s)
+=== RUN   TestSyncerLostReceiptReplaySafe
+--- PASS: TestSyncerLostReceiptReplaySafe (0.93s)
+=== RUN   TestSyncerStatusDifferentiatesStoredFromApplied
+--- PASS: TestSyncerStatusDifferentiatesStoredFromApplied (0.89s)
+=== RUN   TestSyncerSenderDisappearsAfterStoreBeforeApply
+--- PASS: TestSyncerSenderDisappearsAfterStoreBeforeApply (0.87s)
+=== RUN   TestSyncerChunkFallbackTransfer
+--- PASS: TestSyncerChunkFallbackTransfer (0.81s)
+=== RUN   TestSyncInventoryLargerThanMemoryQueue
+--- PASS: TestSyncInventoryLargerThanMemoryQueue (42.89s)
+=== RUN   TestWANW01PinnedTransport
+=== RUN   TestWANW01PinnedTransport/direct
+=== RUN   TestWANW01PinnedTransport/relay
+--- PASS: TestWANW01PinnedTransport (1.59s)
+    --- PASS: TestWANW01PinnedTransport/direct (0.78s)
+    --- PASS: TestWANW01PinnedTransport/relay (0.81s)
+=== RUN   TestWANW01WrongPinAndIsolation
+=== RUN   TestWANW01WrongPinAndIsolation/direct/enrollment
+2026/10/06 17:25:21 http: TLS handshake error from 127.0.0.1:34050: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/direct/peer_data
+2026/10/06 17:25:22 http: TLS handshake error from 127.0.0.1:57370: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/relay/enrollment
+2026/10/06 17:25:22 http: TLS handshake error from orbit-relay:0: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/relay/peer_data
+2026/10/06 17:25:23 http: TLS handshake error from orbit-relay:0: remote error: tls: bad certificate
+=== RUN   TestWANW01WrongPinAndIsolation/data-missing-cert
+2026/10/06 17:25:24 http: TLS handshake error from orbit-relay:0: tls: client didn't provide a certificate
+=== RUN   TestWANW01WrongPinAndIsolation/enrollment-no-data
+=== RUN   TestWANW01WrongPinAndIsolation/enrollment-no-control
+=== RUN   TestWANW01WrongPinAndIsolation/data-no-control
+--- PASS: TestWANW01WrongPinAndIsolation (5.53s)
+    --- PASS: TestWANW01WrongPinAndIsolation/direct/enrollment (0.67s)
+    --- PASS: TestWANW01WrongPinAndIsolation/direct/peer_data (0.71s)
+    --- PASS: TestWANW01WrongPinAndIsolation/relay/enrollment (0.67s)
+    --- PASS: TestWANW01WrongPinAndIsolation/relay/peer_data (0.66s)
+    --- PASS: TestWANW01WrongPinAndIsolation/data-missing-cert (0.73s)
+    --- PASS: TestWANW01WrongPinAndIsolation/enrollment-no-data (0.69s)
+    --- PASS: TestWANW01WrongPinAndIsolation/enrollment-no-control (0.69s)
+    --- PASS: TestWANW01WrongPinAndIsolation/data-no-control (0.71s)
+=== RUN   TestWANW01EnrollmentHandlerThroughRelay
+--- PASS: TestWANW01EnrollmentHandlerThroughRelay (0.74s)
+=== RUN   TestWANW01V3EnrollmentTransportAndMembership
+=== RUN   TestWANW01V3EnrollmentTransportAndMembership/direct
+=== RUN   TestWANW01V3EnrollmentTransportAndMembership/relay
+--- PASS: TestWANW01V3EnrollmentTransportAndMembership (1.42s)
+    --- PASS: TestWANW01V3EnrollmentTransportAndMembership/direct (0.70s)
+    --- PASS: TestWANW01V3EnrollmentTransportAndMembership/relay (0.72s)
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/direct/cancel
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/direct/redirect
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/direct/target-pin
+2026/10/06 17:25:30 http: TLS handshake error from 127.0.0.1:50384: remote error: tls: bad certificate
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/relay/cancel
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/relay/redirect
+=== RUN   TestWANW01TransportCancellationRedirectAndBinding/relay/target-pin
+2026/10/06 17:25:32 http: TLS handshake error from orbit-relay:0: remote error: tls: bad certificate
+--- PASS: TestWANW01TransportCancellationRedirectAndBinding (4.00s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/direct/cancel (0.66s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/direct/redirect (0.65s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/direct/target-pin (0.69s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/relay/cancel (0.66s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/relay/redirect (0.66s)
+    --- PASS: TestWANW01TransportCancellationRedirectAndBinding/relay/target-pin (0.67s)
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.chunk.verified
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified aggressive GC while transfer/ready state remains protected generation retired]; reused=1 fetched=1; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.before
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before aggressive GC while transfer/ready state remains protected generation retired]; reused=2 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.after
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.before_send
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after transfer.receipt.before_send aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.after_send
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after transfer.receipt.before_send transfer.receipt.after_send aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+--- PASS: TestWANW15DurableBoundariesMatchIndependentModel (3.79s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.chunk.verified (0.83s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.before (0.82s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.after (0.72s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.before_send (0.71s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.after_send (0.72s)
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement/publication
+    wan_w15_test.go:232: QUIC publication interrupted after filesystem transition → protected aggressive GC → TCP recovery; exact bytes/heads/authors/hash and no scan feedback
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement/conflict_and_retirement
+    wan_w15_test.go:316: offline conflicts converge through QUIC/TCP with two exact heads and both working candidates; GC preserves bytes; cached authenticated TCP denies retired device
+--- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement (1.49s)
+    --- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement/publication (0.73s)
+    --- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement/conflict_and_retirement (0.76s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	153.338s
+=== RUN   TestRetentionPolicyGetSet
+--- PASS: TestRetentionPolicyGetSet (0.38s)
+=== RUN   TestGCPreservesHeadsFallbackAndPins
+--- PASS: TestGCPreservesHeadsFallbackAndPins (0.39s)
+=== RUN   TestGCPreservesFallbackContentWhileHeadPending
+--- PASS: TestGCPreservesFallbackContentWhileHeadPending (0.46s)
+=== RUN   TestGCServeLeaseExclusion
+--- PASS: TestGCServeLeaseExclusion (0.48s)
+=== RUN   TestGCSuspendedDuringMaintenance
+--- PASS: TestGCSuspendedDuringMaintenance (0.48s)
+=== RUN   TestGCInterruptedCrashRecovery
+--- PASS: TestGCInterruptedCrashRecovery (0.55s)
+=== RUN   TestMetadataBudgetExceeded
+--- PASS: TestMetadataBudgetExceeded (0.42s)
+=== RUN   TestDetailedStorageUsage
+--- PASS: TestDetailedStorageUsage (0.39s)
+=== RUN   TestImmutableIDCannotMoveToAnotherPath
+--- PASS: TestImmutableIDCannotMoveToAnotherPath (0.42s)
+=== RUN   TestQuarantineCorruptChunkAndAffectedVersions
+--- PASS: TestQuarantineCorruptChunkAndAffectedVersions (0.47s)
+=== RUN   TestCheckIntegrityAutoQuarantineAndReporting
+--- PASS: TestCheckIntegrityAutoQuarantineAndReporting (0.51s)
+=== RUN   TestCheckIntegrityCancelable
+--- PASS: TestCheckIntegrityCancelable (0.40s)
+=== RUN   TestDiagnoseAllStates
+--- PASS: TestDiagnoseAllStates (0.50s)
+=== RUN   TestPeerIntegrityIncidents
+--- PASS: TestPeerIntegrityIncidents (0.44s)
+=== RUN   TestInventorySpoolBudgetAndCleanup
+--- PASS: TestInventorySpoolBudgetAndCleanup (0.41s)
+=== RUN   TestOrbitBrowse_HierarchicalDirectoryQueries
+--- PASS: TestOrbitBrowse_HierarchicalDirectoryQueries (0.87s)
+=== RUN   TestOrbitSearch_BoundedWorkspaceSearch
+--- PASS: TestOrbitSearch_BoundedWorkspaceSearch (0.53s)
+=== RUN   TestOrbitBrowse_FileDetailsAndHistory
+--- PASS: TestOrbitBrowse_FileDetailsAndHistory (0.42s)
+=== RUN   TestOrbitBrowse_ScalingTenThousandFiles
+    orbit_browse_test.go:458: Generating 10,000 files across 100 directories...
+    orbit_browse_test.go:510: Generated 10,000 files in 24.818607868s
+    orbit_browse_test.go:527: Root first-page browse (50 items) on 10,000 files took: 5.664513629s (items: 50, total: 100)
+    orbit_browse_test.go:543: Deep subdir browse (50 items) took: 7.753293624s (items: 50, total: 100)
+    orbit_browse_test.go:559: Workspace search for 'file_42' on 10,000 files took: 5.469033745s (matched: 50, total found: 100)
+    orbit_browse_test.go:569: Root page JSON bytes: 8754
+    orbit_browse_test.go:570: Memory allocated during scaling queries: 0.62 MB
+--- PASS: TestOrbitBrowse_ScalingTenThousandFiles (44.13s)
+=== RUN   TestOrbitBrowse_PendingStructuralAndStrictPaths
+--- PASS: TestOrbitBrowse_PendingStructuralAndStrictPaths (0.43s)
+=== RUN   TestOrbitBrowse_CursorValidationAndStableTies
+--- PASS: TestOrbitBrowse_CursorValidationAndStableTies (0.70s)
+=== RUN   TestOrbitReadLease_GCStreamingExpiryReleaseAndRestart
+    orbit_content_test.go:168: 32 MiB repeated-chunk read+GC total allocations: 1203224 bytes
+--- PASS: TestOrbitReadLease_GCStreamingExpiryReleaseAndRestart (0.54s)
+=== RUN   TestOrbitContent_CorruptionCancellationAndIntent
+--- PASS: TestOrbitContent_CorruptionCancellationAndIntent (0.31s)
+=== RUN   TestOrbitBrowse_HistoryPaginationAndConditionalDeletedAvailability
+--- PASS: TestOrbitBrowse_HistoryPaginationAndConditionalDeletedAvailability (0.36s)
+=== RUN   TestStreamingManifestRepeatedChunksZeroByteAndWholeVerification
+--- PASS: TestStreamingManifestRepeatedChunksZeroByteAndWholeVerification (0.31s)
+=== RUN   TestDuplicateObjectIsVerifiedAndNeverOverwritten
+--- PASS: TestDuplicateObjectIsVerifiedAndNeverOverwritten (0.30s)
+=== RUN   TestLocalCounterVersionReadinessAndReferencesCommitAtomically
+--- PASS: TestLocalCounterVersionReadinessAndReferencesCommitAtomically (0.31s)
+=== RUN   TestRemoteMetadataRemainsPendingUntilWholeFileReady
+--- PASS: TestRemoteMetadataRemainsPendingUntilWholeFileReady (0.34s)
+=== RUN   TestOrphansPinsReservationsBudgetAndBackup
+--- PASS: TestOrphansPinsReservationsBudgetAndBackup (0.37s)
+=== RUN   TestDiskFullFaultLeavesNoInstalledObject
+--- PASS: TestDiskFullFaultLeavesNoInstalledObject (0.29s)
+=== RUN   TestMalformedManifestAndBudgetAreRejected
+--- PASS: TestMalformedManifestAndBudgetAreRejected (0.60s)
+=== RUN   TestKnownLocalIdentityCounterIsNeverReusedAfterRollbackSignal
+--- PASS: TestKnownLocalIdentityCounterIsNeverReusedAfterRollbackSignal (0.31s)
+=== RUN   TestPersistentStorageBudgetSurvivesReopenAndPreservesCapturedVersion
+--- PASS: TestPersistentStorageBudgetSurvivesReopenAndPreservesCapturedVersion (0.34s)
+=== RUN   TestSQLitePersistsAcrossRestart
+--- PASS: TestSQLitePersistsAcrossRestart (0.32s)
+=== RUN   TestOpenRefusesNewerSchema
+--- PASS: TestOpenRefusesNewerSchema (0.00s)
+=== RUN   TestOpenPinsRequiredPragmas
+--- PASS: TestOpenPinsRequiredPragmas (0.29s)
+=== RUN   TestExclusiveWALUsesPrivateIndexAndPreservesReopen
+--- PASS: TestExclusiveWALUsesPrivateIndexAndPreservesReopen (0.32s)
+=== RUN   TestPublicationCannotCommitBeforeFilesystemPublished
+--- PASS: TestPublicationCannotCommitBeforeFilesystemPublished (0.30s)
+=== RUN   TestConflictsAndStructuralConflicts
+--- PASS: TestConflictsAndStructuralConflicts (0.40s)
+=== RUN   TestScaffoldRepositoryMethods
+--- PASS: TestScaffoldRepositoryMethods (0.32s)
+=== RUN   TestOrbitMutationJournal
+--- PASS: TestOrbitMutationJournal (0.28s)
+=== RUN   TestMembershipApprovalAndRetrieval
+--- PASS: TestMembershipApprovalAndRetrieval (0.29s)
+=== RUN   TestRetirementSnapshotStorageAndAdmission
+--- PASS: TestRetirementSnapshotStorageAndAdmission (0.30s)
+=== RUN   TestResumableMaintenanceLifecycle
+--- PASS: TestResumableMaintenanceLifecycle (0.29s)
+=== RUN   TestPeerProgressDirectVsIndirect
+--- PASS: TestPeerProgressDirectVsIndirect (0.32s)
+=== RUN   TestOrbitMembership_RepositoryForksAndRevivals
+--- PASS: TestOrbitMembership_RepositoryForksAndRevivals (0.29s)
+=== RUN   TestOrbitEnrollment_RepositoryInvitations
+--- PASS: TestOrbitEnrollment_RepositoryInvitations (0.30s)
+=== RUN   TestOrbitMigration_Schema11MigrationAndOperations
+--- PASS: TestOrbitMigration_Schema11MigrationAndOperations (0.33s)
+=== RUN   TestOrbitMigration_LegacyAdoptionAndRollbackLimit
+--- PASS: TestOrbitMigration_LegacyAdoptionAndRollbackLimit (0.30s)
+=== RUN   TestApprovedMembershipHydratesOnlyHashBoundRetirementSnapshot
+--- PASS: TestApprovedMembershipHydratesOnlyHashBoundRetirementSnapshot (0.32s)
+=== RUN   TestDurableWorkTasksLifecycleAndCoalescing
+--- PASS: TestDurableWorkTasksLifecycleAndCoalescing (0.30s)
+=== RUN   TestDurableWorkQueueBounds
+--- PASS: TestDurableWorkQueueBounds (2.48s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/repository	66.930s
+=== RUN   TestWANW11BandwidthFIFOAndQueuedCancellation
+--- PASS: TestWANW11BandwidthFIFOAndQueuedCancellation (2.00s)
+=== RUN   TestWANW11BandwidthQueueBoundIsRetryable
+--- PASS: TestWANW11BandwidthQueueBoundIsRetryable (0.00s)
+=== RUN   TestWANW02NetworkBackpressureUsesExistingRetryBudget
+--- PASS: TestWANW02NetworkBackpressureUsesExistingRetryBudget (0.00s)
+=== RUN   TestWANW04TypedRelayFailuresUseExistingRetryBudget
+--- PASS: TestWANW04TypedRelayFailuresUseExistingRetryBudget (0.00s)
+=== RUN   TestCoalescingCannotRedispatchRunningPeerSync
+--- PASS: TestCoalescingCannotRedispatchRunningPeerSync (0.41s)
+=== RUN   TestQueueRestartLoadsActiveWorkBeyondCompletedHistory
+--- PASS: TestQueueRestartLoadsActiveWorkBeyondCompletedHistory (3.44s)
+=== RUN   TestBandwidthLimiterRequestLargerThanRateMakesProgress
+--- PASS: TestBandwidthLimiterRequestLargerThanRateMakesProgress (6.00s)
+=== RUN   TestBandwidthLimiterUnlimited
+--- PASS: TestBandwidthLimiterUnlimited (0.00s)
+=== RUN   TestBandwidthLimiterThrottlingAndCancellation
+--- PASS: TestBandwidthLimiterThrottlingAndCancellation (1.05s)
+=== RUN   TestThrottledReaderAndWriter
+--- PASS: TestThrottledReaderAndWriter (0.00s)
+=== RUN   TestHardwareProfiles
+--- PASS: TestHardwareProfiles (0.00s)
+=== RUN   TestQueueFairSchedulingAndLargeFileProgressWithAging
+--- PASS: TestQueueFairSchedulingAndLargeFileProgressWithAging (0.43s)
+=== RUN   TestRetryClassification
+--- PASS: TestRetryClassification (0.00s)
+=== RUN   TestRetryBackoffCapping
+--- PASS: TestRetryBackoffCapping (0.00s)
+=== RUN   TestSchedulerStartStopAndScanExecution
+--- PASS: TestSchedulerStartStopAndScanExecution (0.41s)
+=== RUN   TestSchedulerRootUnavailablePausesFolder
+--- PASS: TestSchedulerRootUnavailablePausesFolder (0.42s)
+=== RUN   TestWANW11ContinuousSmallWorkCannotStarveLargeRetry
+    wan_fairness_test.go:67: 1-TiB declared task selected within nine ready dispatches twice, including retry and queue reload; no 1-TiB payload transferred
+--- PASS: TestWANW11ContinuousSmallWorkCannotStarveLargeRetry (0.46s)
+=== RUN   TestWANW11ServiceQuotaRetryAllowsQuietRefill
+--- PASS: TestWANW11ServiceQuotaRetryAllowsQuietRefill (0.00s)
+=== RUN   TestWatcherFileEventsAndDebouncing
+--- PASS: TestWatcherFileEventsAndDebouncing (0.16s)
+=== RUN   TestWatcherSubdirectoryCreation
+--- PASS: TestWatcherSubdirectoryCreation (0.10s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	15.904s
+=== RUN   TestValidateDirectoryRejectsBroadPermissions
+--- PASS: TestValidateDirectoryRejectsBroadPermissions (0.00s)
+=== RUN   TestExclusiveLockAcrossProcesses
+--- PASS: TestExclusiveLockAcrossProcesses (0.01s)
+=== RUN   TestLockHelper
+--- PASS: TestLockHelper (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/state	1.014s
+=== RUN   TestTerminalT09FocusedInputAndKeyboard
+--- PASS: TestTerminalT09FocusedInputAndKeyboard (0.00s)
+=== RUN   TestTerminalT09CorrelatedCancellationAndBoundedPolling
+--- PASS: TestTerminalT09CorrelatedCancellationAndBoundedPolling (0.00s)
+=== RUN   TestTerminalT09RefreshPreservesSelectionAndDraft
+--- PASS: TestTerminalT09RefreshPreservesSelectionAndDraft (0.00s)
+=== RUN   TestTerminalT09UnicodeEscapingAndLayout
+--- PASS: TestTerminalT09UnicodeEscapingAndLayout (0.01s)
+=== RUN   TestTerminalT09ToolAdapterAndNonTTY
+--- PASS: TestTerminalT09ToolAdapterAndNonTTY (0.00s)
+=== RUN   TestTerminalT13PendingContentUsesTickAndExactExplicitRetry
+--- PASS: TestTerminalT13PendingContentUsesTickAndExactExplicitRetry (0.00s)
+=== RUN   TestTerminalT11FrozenReviewAndExactRetry
+--- PASS: TestTerminalT11FrozenReviewAndExactRetry (0.00s)
+=== RUN   TestTerminalT11PathDraftPollingAndSelection
+--- PASS: TestTerminalT11PathDraftPollingAndSelection (0.00s)
+=== RUN   TestTerminalT11UnavailableContentAndNarrowHelp
+--- PASS: TestTerminalT11UnavailableContentAndNarrowHelp (0.01s)
+=== RUN   TestTerminalT11QualifiedObservationsAndPartialEffects
+--- PASS: TestTerminalT11QualifiedObservationsAndPartialEffects (0.00s)
+=== RUN   TestTerminalT10FormKeyboardReviewAndErrors
+--- PASS: TestTerminalT10FormKeyboardReviewAndErrors (0.00s)
+=== RUN   TestTerminalT10ExactApprovalAndScopedSharing
+--- PASS: TestTerminalT10ExactApprovalAndScopedSharing (0.00s)
+=== RUN   TestTerminalT10LateRepliesAndResumeReadiness
+--- PASS: TestTerminalT10LateRepliesAndResumeReadiness (0.00s)
+=== RUN   TestTerminalT10WrappedInvitationPaste
+--- PASS: TestTerminalT10WrappedInvitationPaste (0.00s)
+=== RUN   TestTerminalT10PrivateNarrowViewsAndErrorActions
+--- PASS: TestTerminalT10PrivateNarrowViewsAndErrorActions (0.00s)
+=== RUN   TestWANW07ReviewedPrivacyAndAdvancedFocus
+--- PASS: TestWANW07ReviewedPrivacyAndAdvancedFocus (0.00s)
+=== RUN   TestWANW07ExistingPolicyAndExactJoinRetry
+--- PASS: TestWANW07ExistingPolicyAndExactJoinRetry (0.00s)
+=== RUN   TestWANW07PollingPreservesSelectionAndLateContexts
+--- PASS: TestWANW07PollingPreservesSelectionAndLateContexts (0.00s)
+=== RUN   TestWANW07ObservedRelaySeparateFromReadiness
+--- PASS: TestWANW07ObservedRelaySeparateFromReadiness (0.00s)
+=== RUN   TestWANW07ExpiredV3PasteRetainsInput
+--- PASS: TestWANW07ExpiredV3PasteRetainsInput (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/terminal	1.201s
+=== RUN   TestValidateDestructiveTarget
+--- PASS: TestValidateDestructiveTarget (0.00s)
+=== RUN   TestWANW15DestructiveTargetRefusesSymlinkedRoot
+--- PASS: TestWANW15DestructiveTargetRefusesSymlinkedRoot (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/testkit	1.011s
+=== RUN   TestOrbitMutationWorkspace
+--- PASS: TestOrbitMutationWorkspace (0.52s)
+=== RUN   TestRelocationPreservesHistoryAndRecovery
+=== RUN   TestRelocationPreservesHistoryAndRecovery/#00
+=== RUN   TestRelocationPreservesHistoryAndRecovery/relocation.prepared
+=== RUN   TestRelocationPreservesHistoryAndRecovery/relocation.moved
+=== RUN   TestRelocationPreservesHistoryAndRecovery/relocation.committed
+--- PASS: TestRelocationPreservesHistoryAndRecovery (1.91s)
+    --- PASS: TestRelocationPreservesHistoryAndRecovery/#00 (0.44s)
+    --- PASS: TestRelocationPreservesHistoryAndRecovery/relocation.prepared (0.51s)
+    --- PASS: TestRelocationPreservesHistoryAndRecovery/relocation.moved (0.47s)
+    --- PASS: TestRelocationPreservesHistoryAndRecovery/relocation.committed (0.49s)
+=== RUN   TestRelocationDestinationRefusalsAndPausedState
+--- PASS: TestRelocationDestinationRefusalsAndPausedState (0.42s)
+=== RUN   TestRelocationWaitsForCapture
+--- PASS: TestRelocationWaitsForCapture (0.44s)
+=== RUN   TestRelocationAcrossFilesystems
+--- PASS: TestRelocationAcrossFilesystems (0.48s)
+=== RUN   TestRelocationCrossFilesystemRecoveryAndCopyRefusal
+=== RUN   TestRelocationCrossFilesystemRecoveryAndCopyRefusal/relocation.prepared
+=== RUN   TestRelocationCrossFilesystemRecoveryAndCopyRefusal/relocation.moved
+=== RUN   TestRelocationCrossFilesystemRecoveryAndCopyRefusal/relocation.committed
+=== RUN   TestRelocationCrossFilesystemRecoveryAndCopyRefusal/editor-change
+=== RUN   TestRelocationCrossFilesystemRecoveryAndCopyRefusal/symlink
+--- PASS: TestRelocationCrossFilesystemRecoveryAndCopyRefusal (2.23s)
+    --- PASS: TestRelocationCrossFilesystemRecoveryAndCopyRefusal/relocation.prepared (0.47s)
+    --- PASS: TestRelocationCrossFilesystemRecoveryAndCopyRefusal/relocation.moved (0.46s)
+    --- PASS: TestRelocationCrossFilesystemRecoveryAndCopyRefusal/relocation.committed (0.41s)
+    --- PASS: TestRelocationCrossFilesystemRecoveryAndCopyRefusal/editor-change (0.42s)
+    --- PASS: TestRelocationCrossFilesystemRecoveryAndCopyRefusal/symlink (0.46s)
+=== RUN   TestScaffoldPrunedWhenChildDeleted
+--- PASS: TestScaffoldPrunedWhenChildDeleted (0.47s)
+=== RUN   TestScaffoldNotPrunedIfHasOtherChildren
+--- PASS: TestScaffoldNotPrunedIfHasOtherChildren (0.48s)
+=== RUN   TestScaffoldNotPrunedIfUntrackedFilePresent
+--- PASS: TestScaffoldNotPrunedIfUntrackedFilePresent (0.45s)
+=== RUN   TestCaptureDetectsInPlaceAndSaveByRenameMutation
+=== RUN   TestCaptureDetectsInPlaceAndSaveByRenameMutation/in-place
+=== RUN   TestCaptureDetectsInPlaceAndSaveByRenameMutation/save-by-rename
+--- PASS: TestCaptureDetectsInPlaceAndSaveByRenameMutation (0.79s)
+    --- PASS: TestCaptureDetectsInPlaceAndSaveByRenameMutation/in-place (0.42s)
+    --- PASS: TestCaptureDetectsInPlaceAndSaveByRenameMutation/save-by-rename (0.37s)
+=== RUN   TestApplyRejectsUnobservedLocalContentAndSymlink
+--- PASS: TestApplyRejectsUnobservedLocalContentAndSymlink (0.44s)
+=== RUN   TestExchangePreservesLateSaveByRenameCandidate
+--- PASS: TestExchangePreservesLateSaveByRenameCandidate (0.48s)
+=== RUN   TestParentSymlinkSwapCannotPublishOutsideRoot
+--- PASS: TestParentSymlinkSwapCannotPublishOutsideRoot (0.39s)
+=== RUN   TestOpenDescriptorAfterExchangeWritesRecoveryCandidate
+--- PASS: TestOpenDescriptorAfterExchangeWritesRecoveryCandidate (0.37s)
+=== RUN   TestBootstrapScanCapturesFilesAndDirectoryWithoutDeletion
+--- PASS: TestBootstrapScanCapturesFilesAndDirectoryWithoutDeletion (0.37s)
+=== RUN   TestRootReplacementPausesScan
+--- PASS: TestRootReplacementPausesScan (0.34s)
+=== RUN   TestRootMarkerMismatchPausesScan
+--- PASS: TestRootMarkerMismatchPausesScan (0.37s)
+=== RUN   TestRegistrationRejectsSymlinkedRootAndStateOverlap
+--- PASS: TestRegistrationRejectsSymlinkedRootAndStateOverlap (0.35s)
+=== RUN   TestOverlappingRootRegistrationLeavesNoScratch
+--- PASS: TestOverlappingRootRegistrationLeavesNoScratch (0.33s)
+=== RUN   TestMassDeletionPreviewRequiresApproval
+--- PASS: TestMassDeletionPreviewRequiresApproval (0.40s)
+=== RUN   TestMassDeletionPolicyUsesAbsoluteOrRatio
+--- PASS: TestMassDeletionPolicyUsesAbsoluteOrRatio (0.00s)
+=== RUN   TestLargeFolderAbsoluteDeletionPreview
+--- PASS: TestLargeFolderAbsoluteDeletionPreview (1.81s)
+=== RUN   TestDeletionPreviewIsStaleAfterRescanOrReappearance
+--- PASS: TestDeletionPreviewIsStaleAfterRescanOrReappearance (0.42s)
+=== RUN   TestStructuralFileParentBlocksNestedPublication
+--- PASS: TestStructuralFileParentBlocksNestedPublication (0.40s)
+=== RUN   TestInvalidNestedSymlinkCannotEscapeScan
+--- PASS: TestInvalidNestedSymlinkCannotEscapeScan (0.43s)
+=== RUN   TestHardLinkAndFIFOAreDiagnosedWithoutReading
+--- PASS: TestHardLinkAndFIFOAreDiagnosedWithoutReading (0.37s)
+=== RUN   TestIncompleteSubtreeCannotInferDeletion
+--- PASS: TestIncompleteSubtreeCannotInferDeletion (0.44s)
+=== RUN   TestApplyRemoteAndRestartScanDoesNotAuthorEcho
+--- PASS: TestApplyRemoteAndRestartScanDoesNotAuthorEcho (0.41s)
+=== RUN   TestRemovedScaffoldCanBeRecreatedAsExplicitDirectory
+--- PASS: TestRemovedScaffoldCanBeRecreatedAsExplicitDirectory (0.45s)
+=== RUN   TestExecutableOnlyEditIsCapturedAndAppliedWithSafeMode
+--- PASS: TestExecutableOnlyEditIsCapturedAndAppliedWithSafeMode (0.45s)
+=== RUN   TestStageFailureAndBudgetRefusalPreserveCapturedBytes
+--- PASS: TestStageFailureAndBudgetRefusalPreserveCapturedBytes (0.38s)
+=== RUN   TestStageBudgetRefusalPreservesPriorVersion
+--- PASS: TestStageBudgetRefusalPreservesPriorVersion (0.52s)
+=== RUN   TestReclaimRecoveryCopies
+--- PASS: TestReclaimRecoveryCopies (0.47s)
+=== RUN   TestDualScanCadenceAndEqualSizeTimestampPreservingEdits
+--- PASS: TestDualScanCadenceAndEqualSizeTimestampPreservingEdits (0.48s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/workspace	20.079s
+=== RUN   TestReferenceSetOracleInterleavings
+=== RUN   TestReferenceSetOracleInterleavings/[begin_reference_unlink]
+=== RUN   TestReferenceSetOracleInterleavings/[begin_unlink_reference]
+=== RUN   TestReferenceSetOracleInterleavings/[reference_begin_unlink]
+--- PASS: TestReferenceSetOracleInterleavings (0.00s)
+    --- PASS: TestReferenceSetOracleInterleavings/[begin_reference_unlink] (0.00s)
+    --- PASS: TestReferenceSetOracleInterleavings/[begin_unlink_reference] (0.00s)
+    --- PASS: TestReferenceSetOracleInterleavings/[reference_begin_unlink] (0.00s)
+=== RUN   TestReferenceSetOracleServeLeaseBlocksGCIntent
+--- PASS: TestReferenceSetOracleServeLeaseBlocksGCIntent (0.00s)
+=== RUN   TestReferenceSetOracleSharedChunks
+--- PASS: TestReferenceSetOracleSharedChunks (0.00s)
+=== RUN   TestReferenceSetOraclePendingFallbackPreservation
+--- PASS: TestReferenceSetOraclePendingFallbackPreservation (0.00s)
+=== RUN   TestReferenceSetOracleClockJumps
+--- PASS: TestReferenceSetOracleClockJumps (0.00s)
+=== RUN   TestReferenceSetOracleCrashRecovery
+=== RUN   TestReferenceSetOracleCrashRecovery/crash-after-intent
+=== RUN   TestReferenceSetOracleCrashRecovery/crash-after-unlink
+--- PASS: TestReferenceSetOracleCrashRecovery (0.00s)
+    --- PASS: TestReferenceSetOracleCrashRecovery/crash-after-intent (0.00s)
+    --- PASS: TestReferenceSetOracleCrashRecovery/crash-after-unlink (0.00s)
+=== RUN   TestReferenceSetOracleCorruptionAndRepair
+=== RUN   TestReferenceSetOracleCorruptionAndRepair/shared-chunk-corruption-diagnoses-all-versions
+=== RUN   TestReferenceSetOracleCorruptionAndRepair/pins-during-repair-protect-from-gc
+=== RUN   TestReferenceSetOracleCorruptionAndRepair/distinguish-all-availability-states
+--- PASS: TestReferenceSetOracleCorruptionAndRepair (0.00s)
+    --- PASS: TestReferenceSetOracleCorruptionAndRepair/shared-chunk-corruption-diagnoses-all-versions (0.00s)
+    --- PASS: TestReferenceSetOracleCorruptionAndRepair/pins-during-repair-protect-from-gc (0.00s)
+    --- PASS: TestReferenceSetOracleCorruptionAndRepair/distinguish-all-availability-states (0.00s)
+=== RUN   TestOrbitMembershipSequentialRollout
+--- PASS: TestOrbitMembershipSequentialRollout (0.00s)
+=== RUN   TestOrbitMembershipCompetingAdministrationForks
+--- PASS: TestOrbitMembershipCompetingAdministrationForks (0.00s)
+=== RUN   TestOrbitMembershipUnauthorizedOrForgedSignatures
+--- PASS: TestOrbitMembershipUnauthorizedOrForgedSignatures (0.00s)
+=== RUN   TestWANW01AdmissionReplayIdentityAndRestart
+--- PASS: TestWANW01AdmissionReplayIdentityAndRestart (0.00s)
+=== RUN   TestWANW01AdmissionCapacity
+--- PASS: TestWANW01AdmissionCapacity (0.00s)
+=== RUN   TestWANW01EnrollmentExactApproval
+--- PASS: TestWANW01EnrollmentExactApproval (0.00s)
+=== RUN   TestWANW01ConnectionGenerationAndBounds
+--- PASS: TestWANW01ConnectionGenerationAndBounds (0.01s)
+=== RUN   TestWANW01ReplayCapacityCannotEvictLiveProtection
+--- PASS: TestWANW01ReplayCapacityCannotEvictLiveProtection (0.04s)
+=== RUN   TestWANW01AttachmentExpiryIsNotTunnelExpiry
+--- PASS: TestWANW01AttachmentExpiryIsNotTunnelExpiry (0.00s)
+=== RUN   TestBoundedExhaustiveActorSchedulesAgree
+--- PASS: TestBoundedExhaustiveActorSchedulesAgree (0.01s)
+=== RUN   TestDeterministicGeneratedSchedulesAgree
+--- PASS: TestDeterministicGeneratedSchedulesAgree (1.82s)
+=== RUN   TestOracleCatchesIntentionalDominanceMutation
+--- PASS: TestOracleCatchesIntentionalDominanceMutation (0.00s)
+=== RUN   TestOracleKeepsAvailabilityAndRetirementSeparateFromHeads
+--- PASS: TestOracleKeepsAvailabilityAndRetirementSeparateFromHeads (0.00s)
+=== RUN   TestGoldenHistoryFixture
+--- PASS: TestGoldenHistoryFixture (0.00s)
+=== RUN   TestGoldenWireEnvelopeMapsToDomain
+--- PASS: TestGoldenWireEnvelopeMapsToDomain (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/model	2.898s
+?   	github.com/calebhabesh/file-sync/scripts	[no test files]
+=== RUN   TestD1PreRenameStatCannotCloseSaveByRenameRace
+    d1_publication_linux_test.go:51: counterexample: target passed pre-rename stat, editor atomically saved a new inode, then plain rename removed its only name
+--- PASS: TestD1PreRenameStatCannotCloseSaveByRenameRace (0.00s)
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename/in-place-overwrite-before-exchange
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename/save-by-rename
+=== RUN   TestD1ExchangePreservesObservedOverwriteAndSaveByRename/open-descriptor
+    d1_publication_linux_test.go:112: limit: exchange preserves the displaced inode, but no finite observation proves a long-lived writer has stopped mutating it
+--- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename (0.00s)
+    --- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename/in-place-overwrite-before-exchange (0.00s)
+    --- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename/save-by-rename (0.00s)
+    --- PASS: TestD1ExchangePreservesObservedOverwriteAndSaveByRename/open-descriptor (0.00s)
+=== RUN   TestD1StageMustShareTargetFilesystem
+--- PASS: TestD1StageMustShareTargetFilesystem (0.00s)
+=== RUN   TestD1DescriptorRootedOpenRejectsSymlinkSwap
+    d1_publication_linux_test.go:168: openat2 rejected swapped intermediate symlink: too many levels of symbolic links
+--- PASS: TestD1DescriptorRootedOpenRejectsSymlinkSwap (0.00s)
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants/staged
+    d1_publication_linux_test.go:215: recovery observation: map[stage:new target:old]
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants/exchange-complete
+    d1_publication_linux_test.go:215: recovery observation: map[stage:old target:new]
+=== RUN   TestD1RecoveryAtEveryExchangeGapPreservesVariants/recovery-named
+    d1_publication_linux_test.go:215: recovery observation: map[recovery:old target:new]
+--- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants (0.00s)
+    --- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants/staged (0.00s)
+    --- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants/exchange-complete (0.00s)
+    --- PASS: TestD1RecoveryAtEveryExchangeGapPreservesVariants/recovery-named (0.00s)
+=== RUN   TestD2WorkingBasisDoesNotImplicitlyResolveReceivedHead
+    d2_working_basis_test.go:121: A2 extends the working basis A1, not all known heads; unreviewed B1 remains concurrent
+--- PASS: TestD2WorkingBasisDoesNotImplicitlyResolveReceivedHead (0.00s)
+=== RUN   TestD2SameAuthorStaleBasisBlocksCandidate
+    d2_working_basis_test.go:132: candidate bytes are preserved for review and event creation is blocked: latest same-author event A2 is absent from working basis
+--- PASS: TestD2SameAuthorStaleBasisBlocksCandidate (0.00s)
+=== RUN   TestD2ResolutionCoversOnlyReviewedHeads
+--- PASS: TestD2ResolutionCoversOnlyReviewedHeads (0.00s)
+=== RUN   TestD2EqualBytesDoNotEraseAncestry
+--- PASS: TestD2EqualBytesDoNotEraseAncestry (0.00s)
+=== RUN   TestD3CanonicalMembershipAndRetirementFixtures
+    d3_membership_test.go:178: membership sha256=84560dcb0304c7a7b4d3aa5eb0ed4420577d46b68ef9c40692410e7f30f7987d
+    d3_membership_test.go:179: retirement sha256=09629ab3321e761ac3844c7120784a63e380d417c6d6f9b924bd5ee22a87638d
+--- PASS: TestD3CanonicalMembershipAndRetirementFixtures (0.00s)
+=== RUN   TestD3CanonicalEncodingIgnoresInputOrderAndRejectsDuplicates
+--- PASS: TestD3CanonicalEncodingIgnoresInputOrderAndRejectsDuplicates (0.00s)
+=== RUN   TestD3RetirementRejectsOldEpochResurrection
+    d3_membership_test.go:262: known retired envelopes remain forwardable; unknown old-epoch versions and their successor histories are blocked
+--- PASS: TestD3RetirementRejectsOldEpochResurrection (0.00s)
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:head unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:head]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:head gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:in-flight-fetch unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:in-flight-fetch]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:in-flight-fetch gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:publication unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:publication]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:publication gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:restore unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:restore]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:restore gc-blocked-by-pin unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_reference_unlink]
+    d4_gc_test.go:113: [gc-intent intent-cancelled reference-committed:enrollment unlink-blocked]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_unlink_reference]
+    d4_gc_test.go:113: [gc-intent object-unlinked intent-cancelled verified-object-reinstalled reference-committed:enrollment]
+=== RUN   TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[reference_begin_unlink]
+    d4_gc_test.go:113: [reference-committed:enrollment gc-blocked-by-pin unlink-blocked]
+--- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/head/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/in-flight-fetch/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/publication/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/restore/[reference_begin_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_reference_unlink] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[begin_unlink_reference] (0.00s)
+    --- PASS: TestD4ReferenceCreationInterleavingsNeverCommitMissingProtectedContent/enrollment/[reference_begin_unlink] (0.00s)
+=== RUN   TestD4ActiveServeLeaseExcludesDeletionIntent
+--- PASS: TestD4ActiveServeLeaseExcludesDeletionIntent (0.00s)
+=== RUN   TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence
+=== RUN   TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-intent
+=== RUN   TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-unlink
+--- PASS: TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence (0.00s)
+    --- PASS: TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-intent (0.00s)
+    --- PASS: TestD4CrashRecoveryAllowsOnlyExtraUnreferencedBytesOrRecoverableAbsence/after-unlink (0.00s)
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/offline-peer-only
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/expired-head
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/pending-publication
+=== RUN   TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/active-restore
+--- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/offline-peer-only (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/expired-head (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/pending-publication (0.00s)
+    --- PASS: TestD4ExpiryAndOfflinePeersDoNotOverrideSafetyPins/active-restore (0.00s)
+=== RUN   TestD5CanonicalPathPolicy
+--- PASS: TestD5CanonicalPathPolicy (0.00s)
+=== RUN   TestD5RootIdentityDetectsReplacementAndMarkerMismatch
+--- PASS: TestD5RootIdentityDetectsReplacementAndMarkerMismatch (0.00s)
+=== RUN   TestD5ProjectionScaffoldingDoesNotFabricateDirectoryVersions
+--- PASS: TestD5ProjectionScaffoldingDoesNotFabricateDirectoryVersions (0.00s)
+=== RUN   TestD5ParentDeleteOrFileVsChildIsStructuralConflict
+=== RUN   TestD5ParentDeleteOrFileVsChildIsStructuralConflict/file
+=== RUN   TestD5ParentDeleteOrFileVsChildIsStructuralConflict/tombstone
+--- PASS: TestD5ParentDeleteOrFileVsChildIsStructuralConflict (0.00s)
+    --- PASS: TestD5ParentDeleteOrFileVsChildIsStructuralConflict/file (0.00s)
+    --- PASS: TestD5ParentDeleteOrFileVsChildIsStructuralConflict/tombstone (0.00s)
+=== RUN   TestD5DirectoryDeletePreviewInvalidatedByNewChild
+--- PASS: TestD5DirectoryDeletePreviewInvalidatedByNewChild (0.00s)
+=== RUN   TestD5BootstrapAndIncompleteScansNeverInferDeletion
+--- PASS: TestD5BootstrapAndIncompleteScansNeverInferDeletion (0.00s)
+=== RUN   TestD5DivergentEnrollmentCreatesIndependentHistories
+--- PASS: TestD5DivergentEnrollmentCreatesIndependentHistories (0.00s)
+=== RUN   TestOrbitG01SingletonExclusiveOwnership
+--- PASS: TestOrbitG01SingletonExclusiveOwnership (0.00s)
+=== RUN   TestOrbitG01OneUseBootstrapHandoff
+--- PASS: TestOrbitG01OneUseBootstrapHandoff (0.25s)
+=== RUN   TestOrbitG01SessionAndLogoutKeepsSyncActive
+--- PASS: TestOrbitG01SessionAndLogoutKeepsSyncActive (0.00s)
+=== RUN   TestOrbitG02InvitationCreationAndDigestStorage
+--- PASS: TestOrbitG02InvitationCreationAndDigestStorage (0.00s)
+=== RUN   TestOrbitG02CapabilityGatingAndDosLimits
+--- PASS: TestOrbitG02CapabilityGatingAndDosLimits (0.01s)
+=== RUN   TestOrbitG02KeyPossessionAndOwnerApproval
+--- PASS: TestOrbitG02KeyPossessionAndOwnerApproval (0.00s)
+=== RUN   TestOrbitG02OfflineRolloutAndCompetingFork
+--- PASS: TestOrbitG02OfflineRolloutAndCompetingFork (0.00s)
+=== RUN   TestOrbitG02RetiredDeviceCannotRejoin
+--- PASS: TestOrbitG02RetiredDeviceCannotRejoin (0.00s)
+=== RUN   TestOrbitG03MoveOverwriteAndRecoveryPreservation
+--- PASS: TestOrbitG03MoveOverwriteAndRecoveryPreservation (0.00s)
+=== RUN   TestOrbitG03MoveSourceConcurrentModificationRetainsBoth
+--- PASS: TestOrbitG03MoveSourceConcurrentModificationRetainsBoth (0.00s)
+=== RUN   TestOrbitG03DirectorySubtreeInvalidation
+--- PASS: TestOrbitG03DirectorySubtreeInvalidation (0.00s)
+=== RUN   TestOrbitG03ReadLeaseProtectsChunksFromGC
+--- PASS: TestOrbitG03ReadLeaseProtectsChunksFromGC (0.25s)
+=== RUN   TestOrbitG04LiveIdentityResetFenced
+--- PASS: TestOrbitG04LiveIdentityResetFenced (0.00s)
+=== RUN   TestOrbitG04AtomicTransitionAndRollbackSafety
+--- PASS: TestOrbitG04AtomicTransitionAndRollbackSafety (0.01s)
+=== RUN   TestOrbitG04InterruptedTransitionDetection
+--- PASS: TestOrbitG04InterruptedTransitionDetection (0.01s)
+=== RUN   TestOrbitG04MissingPayloadsAfterMetadataRestore
+--- PASS: TestOrbitG04MissingPayloadsAfterMetadataRestore (0.00s)
+=== RUN   TestOrbitG05ProductSettingsSeparation
+--- PASS: TestOrbitG05ProductSettingsSeparation (0.00s)
+=== RUN   TestOrbitG05ProtocolCapabilityNegotiation
+--- PASS: TestOrbitG05ProtocolCapabilityNegotiation (0.00s)
+=== RUN   TestOrbitG05LegacyStateAdoptionAndRollbackLimits
+--- PASS: TestOrbitG05LegacyStateAdoptionAndRollbackLimits (0.00s)
+=== RUN   TestTerminalT01TG1Transcript
+--- PASS: TestTerminalT01TG1Transcript (0.00s)
+=== RUN   TestTerminalT01TG1TLSIsolation
+2026/10/06 17:23:07 http: TLS handshake error from 127.0.0.1:55766: remote error: tls: bad certificate
+--- PASS: TestTerminalT01TG1TLSIsolation (0.02s)
+=== RUN   TestTerminalT01TG1AtomicAdmission
+--- PASS: TestTerminalT01TG1AtomicAdmission (0.01s)
+=== RUN   TestTerminalT01TG2RestartAndReadiness
+--- PASS: TestTerminalT01TG2RestartAndReadiness (0.00s)
+=== RUN   TestTerminalT01TG3AdaptersAndReplay
+--- PASS: TestTerminalT01TG3AdaptersAndReplay (0.00s)
+=== RUN   TestTerminalT01TG4ReviewedSession
+--- PASS: TestTerminalT01TG4ReviewedSession (0.06s)
+=== RUN   TestTerminalT01TG5Lifecycle
+--- PASS: TestTerminalT01TG5Lifecycle (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/designgates	1.671s
+=== RUN   TestP03KillRestartBoundaries
+=== RUN   TestP03KillRestartBoundaries/object.flushed
+=== RUN   TestP03KillRestartBoundaries/object.installed
+=== RUN   TestP03KillRestartBoundaries/object.recorded
+=== RUN   TestP03KillRestartBoundaries/sql.version.before_commit
+=== RUN   TestP03KillRestartBoundaries/sql.version.after_commit
+=== RUN   TestP03KillRestartBoundaries/sql.readiness.before_commit
+=== RUN   TestP03KillRestartBoundaries/sql.readiness.after_commit
+--- PASS: TestP03KillRestartBoundaries (3.29s)
+    --- PASS: TestP03KillRestartBoundaries/object.flushed (0.47s)
+    --- PASS: TestP03KillRestartBoundaries/object.installed (0.46s)
+    --- PASS: TestP03KillRestartBoundaries/object.recorded (0.44s)
+    --- PASS: TestP03KillRestartBoundaries/sql.version.before_commit (0.52s)
+    --- PASS: TestP03KillRestartBoundaries/sql.version.after_commit (0.46s)
+    --- PASS: TestP03KillRestartBoundaries/sql.readiness.before_commit (0.46s)
+    --- PASS: TestP03KillRestartBoundaries/sql.readiness.after_commit (0.49s)
+=== RUN   TestP03BoundaryHelper
+--- PASS: TestP03BoundaryHelper (0.00s)
+=== RUN   TestP04PublicationKillRestartBoundaries
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.prepared
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.stage.flushed
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.staged
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.intent
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.exchange.before
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.filesystem.transition
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.recovery.named
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.directory.flushed
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.renamed
+=== RUN   TestP04PublicationKillRestartBoundaries/publication.committed
+--- PASS: TestP04PublicationKillRestartBoundaries (5.07s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.prepared (0.60s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.stage.flushed (0.49s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.staged (0.48s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.intent (0.54s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.exchange.before (0.53s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.filesystem.transition (0.53s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.recovery.named (0.47s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.directory.flushed (0.43s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.renamed (0.46s)
+    --- PASS: TestP04PublicationKillRestartBoundaries/publication.committed (0.53s)
+=== RUN   TestP04NewFileKillRestartBoundaries
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.prepared
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.stage.flushed
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.staged
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.intent
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.exchange.before
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.filesystem.transition
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.directory.flushed
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.renamed
+=== RUN   TestP04NewFileKillRestartBoundaries/publication.committed
+--- PASS: TestP04NewFileKillRestartBoundaries (3.73s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.prepared (0.42s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.stage.flushed (0.39s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.staged (0.41s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.intent (0.41s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.exchange.before (0.45s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.filesystem.transition (0.40s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.directory.flushed (0.41s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.renamed (0.39s)
+    --- PASS: TestP04NewFileKillRestartBoundaries/publication.committed (0.44s)
+=== RUN   TestP04ParentCreationKillDoesNotAuthorScaffold
+--- PASS: TestP04ParentCreationKillDoesNotAuthorScaffold (0.52s)
+=== RUN   TestP04BoundaryHelper
+--- PASS: TestP04BoundaryHelper (0.00s)
+=== RUN   TestP04DirectoryTombstoneKillRestart
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.prepared
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.intent
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.filesystem.transition
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.renamed
+=== RUN   TestP04DirectoryTombstoneKillRestart/directory/publication.committed
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.prepared
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.intent
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.filesystem.transition
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.renamed
+=== RUN   TestP04DirectoryTombstoneKillRestart/tombstone/publication.committed
+--- PASS: TestP04DirectoryTombstoneKillRestart (4.37s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.prepared (0.47s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.intent (0.46s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.filesystem.transition (0.41s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.renamed (0.48s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/directory/publication.committed (0.41s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.prepared (0.47s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.intent (0.42s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.filesystem.transition (0.43s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.renamed (0.41s)
+    --- PASS: TestP04DirectoryTombstoneKillRestart/tombstone/publication.committed (0.41s)
+=== RUN   TestP04StructuralHelper
+--- PASS: TestP04StructuralHelper (0.00s)
+=== RUN   TestP06TransferKillRestartBoundaries
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.chunk.verified
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.readiness.before
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.readiness.after
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.receipt.before_send
+=== RUN   TestP06TransferKillRestartBoundaries/transfer.receipt.after_send
+--- PASS: TestP06TransferKillRestartBoundaries (4.89s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.chunk.verified (1.12s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.readiness.before (0.93s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.readiness.after (1.02s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.receipt.before_send (0.97s)
+    --- PASS: TestP06TransferKillRestartBoundaries/transfer.receipt.after_send (0.85s)
+=== RUN   TestP06BoundaryHelper
+--- PASS: TestP06BoundaryHelper (0.00s)
+=== RUN   TestP16StorageBarrierSmoke
+=== RUN   TestP16StorageBarrierSmoke/FlushedFileReadback
+=== RUN   TestP16StorageBarrierSmoke/OrderlySQLiteReopen
+=== RUN   TestP16StorageBarrierSmoke/ScratchIsolationAndOrdinaryCapture
+--- PASS: TestP16StorageBarrierSmoke (0.69s)
+    --- PASS: TestP16StorageBarrierSmoke/FlushedFileReadback (0.00s)
+    --- PASS: TestP16StorageBarrierSmoke/OrderlySQLiteReopen (0.37s)
+    --- PASS: TestP16StorageBarrierSmoke/ScratchIsolationAndOrdinaryCapture (0.32s)
+=== RUN   TestP16CheckpointBoundaries
+=== RUN   TestP16CheckpointBoundaries/sql.checkpoint.before
+=== RUN   TestP16CheckpointBoundaries/sql.checkpoint.after
+--- PASS: TestP16CheckpointBoundaries (0.69s)
+    --- PASS: TestP16CheckpointBoundaries/sql.checkpoint.before (0.34s)
+    --- PASS: TestP16CheckpointBoundaries/sql.checkpoint.after (0.35s)
+=== RUN   TestP16CheckpointHelper
+--- PASS: TestP16CheckpointHelper (0.00s)
+=== RUN   TestP16GCBoundaries
+=== RUN   TestP16GCBoundaries/gc.intent
+=== RUN   TestP16GCBoundaries/gc.unlink
+=== RUN   TestP16GCBoundaries/gc.finalization
+--- PASS: TestP16GCBoundaries (1.05s)
+    --- PASS: TestP16GCBoundaries/gc.intent (0.35s)
+    --- PASS: TestP16GCBoundaries/gc.unlink (0.34s)
+    --- PASS: TestP16GCBoundaries/gc.finalization (0.36s)
+=== RUN   TestP16GCHelper
+--- PASS: TestP16GCHelper (0.00s)
+=== RUN   TestP16ControlResolutionBoundaries
+=== RUN   TestP16ControlResolutionBoundaries/control.select.committed
+=== RUN   TestP16ControlResolutionBoundaries/control.restore.committed
+--- PASS: TestP16ControlResolutionBoundaries (0.79s)
+    --- PASS: TestP16ControlResolutionBoundaries/control.select.committed (0.40s)
+    --- PASS: TestP16ControlResolutionBoundaries/control.restore.committed (0.39s)
+=== RUN   TestP16ControlHelper
+--- PASS: TestP16ControlHelper (0.00s)
+=== RUN   TestP16IntegrityQuarantineRepairBoundaries
+=== RUN   TestP16IntegrityQuarantineRepairBoundaries/integrity.chunk.quarantined
+=== RUN   TestP16IntegrityQuarantineRepairBoundaries/repair.installed
+--- PASS: TestP16IntegrityQuarantineRepairBoundaries (0.67s)
+    --- PASS: TestP16IntegrityQuarantineRepairBoundaries/integrity.chunk.quarantined (0.33s)
+    --- PASS: TestP16IntegrityQuarantineRepairBoundaries/repair.installed (0.34s)
+=== RUN   TestP16IntegrityHelper
+--- PASS: TestP16IntegrityHelper (0.00s)
+=== RUN   TestP16InvariantI01_ImmutableVersionIDOneEnvelope
+--- PASS: TestP16InvariantI01_ImmutableVersionIDOneEnvelope (0.29s)
+=== RUN   TestP16InvariantI02_SameValidHistoryEquivalentHeads
+--- PASS: TestP16InvariantI02_SameValidHistoryEquivalentHeads (0.00s)
+=== RUN   TestP16InvariantI03_ConcurrentHeadsSurviveUntilResolution
+--- PASS: TestP16InvariantI03_ConcurrentHeadsSurviveUntilResolution (0.34s)
+=== RUN   TestP16InvariantI04_OrdinaryCaptureDoesNotResolveReceivedHeads
+--- PASS: TestP16InvariantI04_OrdinaryCaptureDoesNotResolveReceivedHeads (0.00s)
+=== RUN   TestP16InvariantI05_NoStoredReceiptWithoutDurableMetadataAndContent
+--- PASS: TestP16InvariantI05_NoStoredReceiptWithoutDurableMetadataAndContent (0.29s)
+=== RUN   TestP16InvariantI06_PartialOrCorruptContentNeverPublished
+--- PASS: TestP16InvariantI06_PartialOrCorruptContentNeverPublished (0.30s)
+=== RUN   TestP16InvariantI07_RecoveryPreservesProtectedVersionsAndReportsAmbiguity
+--- PASS: TestP16InvariantI07_RecoveryPreservesProtectedVersionsAndReportsAmbiguity (0.32s)
+=== RUN   TestP16InvariantI08_AtomicCounterAndNoIdentityRollbackReuse
+--- PASS: TestP16InvariantI08_AtomicCounterAndNoIdentityRollbackReuse (0.32s)
+=== RUN   TestP16InvariantI09_PeerInputCannotEscapeAuthorizedFolder
+--- PASS: TestP16InvariantI09_PeerInputCannotEscapeAuthorizedFolder (0.00s)
+=== RUN   TestP16InvariantI10_GCNeverRemovesProtectedContent
+--- PASS: TestP16InvariantI10_GCNeverRemovesProtectedContent (0.30s)
+=== RUN   TestP16InvariantI11_UnavailableRootsIncompleteScansNeverDelete
+--- PASS: TestP16InvariantI11_UnavailableRootsIncompleteScansNeverDelete (0.33s)
+=== RUN   TestP16InvariantI12_StructuralOperationsPreserveChildBytes
+--- PASS: TestP16InvariantI12_StructuralOperationsPreserveChildBytes (0.00s)
+=== RUN   TestP16InvariantI13_BoundedWorkAndResourceLimits
+--- PASS: TestP16InvariantI13_BoundedWorkAndResourceLimits (2.57s)
+=== RUN   TestP16InvariantI14_ThirdPartyForwardingPreservesAuthorAncestry
+--- PASS: TestP16InvariantI14_ThirdPartyForwardingPreservesAuthorAncestry (0.00s)
+=== RUN   TestP16InvariantI15_MembershipRetirementRejectionAndStaleRejoin
+--- PASS: TestP16InvariantI15_MembershipRetirementRejectionAndStaleRejoin (0.00s)
+=== RUN   TestP16InvariantI16_RestoreResolutionIdempotentAndStaleRejected
+--- PASS: TestP16InvariantI16_RestoreResolutionIdempotentAndStaleRejected (0.34s)
+=== RUN   TestP16InvariantI17_ScanAfterApplyDoesNotFabricateEdits
+--- PASS: TestP16InvariantI17_ScanAfterApplyDoesNotFabricateEdits (0.31s)
+=== RUN   TestP16InvariantI18_CorruptionYieldsUnavailableOrVerifiedRepair
+--- PASS: TestP16InvariantI18_CorruptionYieldsUnavailableOrVerifiedRepair (0.33s)
+=== RUN   TestP16InvariantI19_UICLIParityAndQualifiedProgress
+--- PASS: TestP16InvariantI19_UICLIParityAndQualifiedProgress (0.31s)
+=== RUN   TestP16InvariantI20_IncompatibleSchemaLimitsPreserveRecoverableState
+--- PASS: TestP16InvariantI20_IncompatibleSchemaLimitsPreserveRecoverableState (0.30s)
+=== RUN   TestP16HarnessRefusesUnsafePaths
+--- PASS: TestP16HarnessRefusesUnsafePaths (0.00s)
+=== RUN   TestP16ScenarioCatalogHasDescriptions
+--- PASS: TestP16ScenarioCatalogHasDescriptions (0.00s)
+=== RUN   FuzzProtocolEnvelopeDecode
+=== RUN   FuzzProtocolEnvelopeDecode/seed#0
+=== RUN   FuzzProtocolEnvelopeDecode/seed#1
+=== RUN   FuzzProtocolEnvelopeDecode/seed#2
+=== RUN   FuzzProtocolEnvelopeDecode/seed#3
+--- PASS: FuzzProtocolEnvelopeDecode (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#0 (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#1 (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#2 (0.00s)
+    --- PASS: FuzzProtocolEnvelopeDecode/seed#3 (0.00s)
+=== RUN   FuzzPathSanitization
+=== RUN   FuzzPathSanitization/seed#0
+=== RUN   FuzzPathSanitization/seed#1
+=== RUN   FuzzPathSanitization/seed#2
+=== RUN   FuzzPathSanitization/seed#3
+=== RUN   FuzzPathSanitization/seed#4
+=== RUN   FuzzPathSanitization/seed#5
+=== RUN   FuzzPathSanitization/seed#6
+=== RUN   FuzzPathSanitization/seed#7
+=== RUN   FuzzPathSanitization/seed#8
+=== RUN   FuzzPathSanitization/seed#9
+--- PASS: FuzzPathSanitization (0.00s)
+    --- PASS: FuzzPathSanitization/seed#0 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#1 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#2 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#3 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#4 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#5 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#6 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#7 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#8 (0.00s)
+    --- PASS: FuzzPathSanitization/seed#9 (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/faults	33.435s
+=== RUN   TestOrbitPackagingArtifacts
+--- PASS: TestOrbitPackagingArtifacts (2.27s)
+=== RUN   TestOrbitTarballContentsAndSymlinks
+--- PASS: TestOrbitTarballContentsAndSymlinks (1.67s)
+=== RUN   TestOrbitVersionAndManifestMetadata
+--- PASS: TestOrbitVersionAndManifestMetadata (0.41s)
+=== RUN   TestOrbitInstallAndUninstallScriptLifecycle
+--- PASS: TestOrbitInstallAndUninstallScriptLifecycle (0.07s)
+=== RUN   TestOrbitLegacyStateAdoption
+--- PASS: TestOrbitLegacyStateAdoption (0.46s)
+=== RUN   TestOrbitSchemaRollbackRefusal
+--- PASS: TestOrbitSchemaRollbackRefusal (0.00s)
+=== RUN   TestOrbitStoppedMetadataRestoreFreshIdentity
+--- PASS: TestOrbitStoppedMetadataRestoreFreshIdentity (0.11s)
+=== RUN   TestP15VersionAndBuildMetadata
+--- PASS: TestP15VersionAndBuildMetadata (0.02s)
+=== RUN   TestP15ReleaseBinaryExcludesDestructiveTestHooks
+--- PASS: TestP15ReleaseBinaryExcludesDestructiveTestHooks (0.02s)
+=== RUN   TestP15EmbeddedUIWithoutNode
+--- PASS: TestP15EmbeddedUIWithoutNode (0.13s)
+=== RUN   TestP15ConfigValidation
+--- PASS: TestP15ConfigValidation (0.08s)
+=== RUN   TestP15AgentStop
+--- PASS: TestP15AgentStop (0.26s)
+=== RUN   TestP15UpgradePreflight
+--- PASS: TestP15UpgradePreflight (0.07s)
+=== RUN   TestP15InterruptedMigrationRollback
+--- PASS: TestP15InterruptedMigrationRollback (0.01s)
+=== RUN   TestP15ConsistentBackupAndRestoreSafety
+--- PASS: TestP15ConsistentBackupAndRestoreSafety (0.11s)
+=== RUN   TestP15PackagingOutputsAndChecksums
+--- PASS: TestP15PackagingOutputsAndChecksums (3.46s)
+=== RUN   TestP15UninstallPreservesUserData
+--- PASS: TestP15UninstallPreservesUserData (0.03s)
+=== RUN   TestBackgroundSyncFromPersistedPeerEndpoints
+    background_sync_test.go:131: 16-MiB archive arrived while 15 ordinary small edits were produced
+--- PASS: TestBackgroundSyncFromPersistedPeerEndpoints (1.32s)
+=== RUN   TestOrbitBrowse_ContentHTTPAuthorizationAndPreviews
+--- PASS: TestOrbitBrowse_ContentHTTPAuthorizationAndPreviews (0.67s)
+=== RUN   TestOrbitContent_HTTPStreamingCancellationConcurrentGC
+    orbit_browse_content_test.go:340: 64 MiB real TLS HTTP download total allocations: 11595088 bytes
+--- PASS: TestOrbitContent_HTTPStreamingCancellationConcurrentGC (1.93s)
+=== RUN   TestOrbitEndpoints_PersistenceAndValidation
+--- PASS: TestOrbitEndpoints_PersistenceAndValidation (0.37s)
+=== RUN   TestOrbitEndpoints_TwoPeerDirectPullSync
+--- PASS: TestOrbitEndpoints_TwoPeerDirectPullSync (0.85s)
+=== RUN   TestOrbitEndpoints_ForwardingSync
+--- PASS: TestOrbitEndpoints_ForwardingSync (1.29s)
+=== RUN   TestOrbitEndpoints_ErrorCategorization
+--- PASS: TestOrbitEndpoints_ErrorCategorization (0.34s)
+=== RUN   TestOrbitEnrollment_InvitationLifecycleAndExclusions
+--- PASS: TestOrbitEnrollment_InvitationLifecycleAndExclusions (0.48s)
+=== RUN   TestOrbitEnrollment_RequestBoundingAndRateLimits
+--- PASS: TestOrbitEnrollment_RequestBoundingAndRateLimits (0.47s)
+=== RUN   TestOrbitEnrollment_KeyPossessionAndApproval
+--- PASS: TestOrbitEnrollment_KeyPossessionAndApproval (0.43s)
+=== RUN   TestOrbitEnrollment_RetiredDeviceRejection
+--- PASS: TestOrbitEnrollment_RetiredDeviceRejection (0.46s)
+=== RUN   TestOrbitLaunch_FirstLaunchUninitialized
+--- PASS: TestOrbitLaunch_FirstLaunchUninitialized (0.40s)
+=== RUN   TestOrbitLaunch_RepeatedLaunchReusesDaemon
+--- PASS: TestOrbitLaunch_RepeatedLaunchReusesDaemon (0.39s)
+=== RUN   TestOrbitLaunch_MultiStateDetectionRefusesSilentChoice
+--- PASS: TestOrbitLaunch_MultiStateDetectionRefusesSilentChoice (0.00s)
+=== RUN   TestOrbitLaunch_InvalidOldStateRefusesOverwrite
+--- PASS: TestOrbitLaunch_InvalidOldStateRefusesOverwrite (0.00s)
+=== RUN   TestOrbitLaunch_TokenExchangeAndSessionSeparation
+--- PASS: TestOrbitLaunch_TokenExchangeAndSessionSeparation (0.41s)
+=== RUN   TestOrbitLaunch_BootstrapSecretNotLeakedInSupportExport
+--- PASS: TestOrbitLaunch_BootstrapSecretNotLeakedInSupportExport (0.54s)
+=== RUN   TestOrbitLaunch_CLI_BinaryAlias
+--- PASS: TestOrbitLaunch_CLI_BinaryAlias (0.04s)
+=== RUN   TestOrbitMembership_SequentialRollout
+--- PASS: TestOrbitMembership_SequentialRollout (0.41s)
+=== RUN   TestOrbitMembership_CompetingAdministrationFork
+--- PASS: TestOrbitMembership_CompetingAdministrationFork (0.37s)
+=== RUN   TestOrbitMembership_OfflineCatchUp
+--- PASS: TestOrbitMembership_OfflineCatchUp (0.69s)
+=== RUN   TestOrbitMembership_RestartPreservesConsentAndRevisions
+--- PASS: TestOrbitMembership_RestartPreservesConsentAndRevisions (0.36s)
+=== RUN   TestOrbitMigration_EndToEnd_LegacyAdoption
+--- PASS: TestOrbitMigration_EndToEnd_LegacyAdoption (0.21s)
+=== RUN   TestOrbitMigration_EndToEnd_NewerSchemaRefused
+--- PASS: TestOrbitMigration_EndToEnd_NewerSchemaRefused (0.31s)
+=== RUN   TestOrbitMigration_EndToEnd_InterruptedRecoveryDetected
+--- PASS: TestOrbitMigration_EndToEnd_InterruptedRecoveryDetected (0.30s)
+=== RUN   TestOrbitImport
+--- PASS: TestOrbitImport (0.38s)
+=== RUN   TestOrbitMkdir
+--- PASS: TestOrbitMkdir (0.35s)
+=== RUN   TestOrbitMove
+--- PASS: TestOrbitMove (0.67s)
+=== RUN   TestOrbitDelete
+--- PASS: TestOrbitDelete (0.44s)
+=== RUN   TestOrbitMutation
+=== RUN   TestOrbitMutation/FaultHooksAndJournalRecovery
+=== RUN   TestOrbitMutation/CLIPartityStoppedAndLiveDaemon
+--- PASS: TestOrbitMutation (0.97s)
+    --- PASS: TestOrbitMutation/FaultHooksAndJournalRecovery (0.39s)
+    --- PASS: TestOrbitMutation/CLIPartityStoppedAndLiveDaemon (0.58s)
+=== RUN   TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot
+--- PASS: TestOrbitO13_Scenario01_FreshInstall_LaunchReuse_Adoption_DisallowedRoot (0.39s)
+=== RUN   TestOrbitO13_Scenario02_Invitation_Approval_Expiry_Rollout_CatchUp
+--- PASS: TestOrbitO13_Scenario02_Invitation_Approval_Expiry_Rollout_CatchUp (1.26s)
+=== RUN   TestOrbitO13_Scenario03_ExistingContentJoin_HubForwarding_ReplicaStatus
+--- PASS: TestOrbitO13_Scenario03_ExistingContentJoin_HubForwarding_ReplicaStatus (1.02s)
+=== RUN   TestOrbitO13_Scenario04_NestedBrowseSearchPreview_JournaledMutations_Races
+--- PASS: TestOrbitO13_Scenario04_NestedBrowseSearchPreview_JournaledMutations_Races (0.55s)
+=== RUN   TestOrbitO13_Scenario05_ThreeOfflineEdits_ReviewedResolution_LateArrival_Restore
+--- PASS: TestOrbitO13_Scenario05_ThreeOfflineEdits_ReviewedResolution_LateArrival_Restore (0.43s)
+=== RUN   TestOrbitO13_Scenario06_SessionSecurity_ServiceRestart_SingletonLock_HeadlessCLI
+--- PASS: TestOrbitO13_Scenario06_SessionSecurity_ServiceRestart_SingletonLock_HeadlessCLI (0.35s)
+=== RUN   TestOrbitO13_Scenario07_MissingChunkDiagnosed_ReadLease_SafePruning
+--- PASS: TestOrbitO13_Scenario07_MissingChunkDiagnosed_ReadLease_SafePruning (0.37s)
+=== RUN   TestOrbitO13_Scenario08_LostDeviceRetirement_ReplacementKey_StoppedBackupRestore
+--- PASS: TestOrbitO13_Scenario08_LostDeviceRetirement_ReplacementKey_StoppedBackupRestore (0.47s)
+=== RUN   TestOrbitO13_Scenario09_LegacySchemaAdoption_RollbackRefusal_UninstallDataPreservation
+--- PASS: TestOrbitO13_Scenario09_LegacySchemaAdoption_RollbackRefusal_UninstallDataPreservation (0.19s)
+=== RUN   TestOrbitO13_Scenario10_KeyboardAccessibility_UnusualFilenames_ResponsiveLayout
+--- PASS: TestOrbitO13_Scenario10_KeyboardAccessibility_UnusualFilenames_ResponsiveLayout (0.54s)
+=== RUN   TestOrbitPairing_FullJoinFlowLifecycle
+--- PASS: TestOrbitPairing_FullJoinFlowLifecycle (25.88s)
+=== RUN   TestOrbitPairing_DeclineJoinFlow
+--- PASS: TestOrbitPairing_DeclineJoinFlow (0.64s)
+=== RUN   TestOrbitPairing_DeviceDetailAndRename
+--- PASS: TestOrbitPairing_DeviceDetailAndRename (0.30s)
+=== RUN   TestOrbitPairing_CLI_Parity
+--- PASS: TestOrbitPairing_CLI_Parity (0.25s)
+=== RUN   TestOrbitPairing_CLI_RunningDaemon_Parity
+--- PASS: TestOrbitPairing_CLI_RunningDaemon_Parity (25.94s)
+=== RUN   TestOrbitPruning_BoundedLifecycleRecords
+--- PASS: TestOrbitPruning_BoundedLifecycleRecords (0.35s)
+=== RUN   TestOrbitPruning_IdempotencyExpiryAndReplaySafety
+--- PASS: TestOrbitPruning_IdempotencyExpiryAndReplaySafety (0.32s)
+=== RUN   TestOrbitRecoveryCandidate1ConfigWriteAndRestart
+--- PASS: TestOrbitRecoveryCandidate1ConfigWriteAndRestart (0.68s)
+=== RUN   TestOrbitRecoveryCandidate2KeyRotation
+--- PASS: TestOrbitRecoveryCandidate2KeyRotation (0.66s)
+=== RUN   TestOrbitRecoveryCandidate3TransactionalAuthorAlignment
+--- PASS: TestOrbitRecoveryCandidate3TransactionalAuthorAlignment (0.80s)
+=== RUN   TestOrbitRecoveryCandidate4InspectionDoesNotMutateState
+--- PASS: TestOrbitRecoveryCandidate4InspectionDoesNotMutateState (0.44s)
+=== RUN   TestOrbitRecoveryCandidate5RunbookWorkflow
+--- PASS: TestOrbitRecoveryCandidate5RunbookWorkflow (0.89s)
+=== RUN   TestOrbitRecoveryLiveResetFenced
+--- PASS: TestOrbitRecoveryLiveResetFenced (0.62s)
+=== RUN   TestOrbitRetirement_LostDeviceAndReplacement
+--- PASS: TestOrbitRetirement_LostDeviceAndReplacement (0.41s)
+=== RUN   TestOrbitRetirement_StoppedMetadataRecovery
+--- PASS: TestOrbitRetirement_StoppedMetadataRecovery (0.44s)
+=== RUN   TestOrbitService_StatusReporting
+--- PASS: TestOrbitService_StatusReporting (0.45s)
+=== RUN   TestOrbitService_ActionAndFallback_HTTP
+--- PASS: TestOrbitService_ActionAndFallback_HTTP (0.37s)
+=== RUN   TestOrbitService_AbsentSystemdGracefulFallback
+--- PASS: TestOrbitService_AbsentSystemdGracefulFallback (0.01s)
+=== RUN   TestOrbitService_LingeringDocumentedNotSilent
+--- PASS: TestOrbitService_LingeringDocumentedNotSilent (0.01s)
+=== RUN   TestOrbitService_InstallUserUnit
+--- PASS: TestOrbitService_InstallUserUnit (0.00s)
+=== RUN   TestOrbitService_CLI_ServiceStatus
+--- PASS: TestOrbitService_CLI_ServiceStatus (0.02s)
+=== RUN   TestOrbitSettings_EndToEnd_SettingsAndRestart
+--- PASS: TestOrbitSettings_EndToEnd_SettingsAndRestart (0.38s)
+=== RUN   TestOrbitSettings_EndToEnd_EndpointsEditing
+--- PASS: TestOrbitSettings_EndToEnd_EndpointsEditing (0.36s)
+=== RUN   TestOrbitSettings_EndToEnd_FolderAuthorizationIsolated
+--- PASS: TestOrbitSettings_EndToEnd_FolderAuthorizationIsolated (0.36s)
+=== RUN   TestOrbitStorage_AccountingCategories
+--- PASS: TestOrbitStorage_AccountingCategories (0.37s)
+=== RUN   TestOrbitStorage_RetentionPreviewVsExplicitGC
+--- PASS: TestOrbitStorage_RetentionPreviewVsExplicitGC (0.38s)
+=== RUN   TestOrbitStorage_ReclaimRecovery
+--- PASS: TestOrbitStorage_ReclaimRecovery (0.34s)
+=== RUN   TestOrbitStorage_UnregisterPreservesFiles
+--- PASS: TestOrbitStorage_UnregisterPreservesFiles (0.44s)
+=== RUN   TestOrbitStorage_PauseResume
+--- PASS: TestOrbitStorage_PauseResume (0.37s)
+=== RUN   TestInitAndVersionFromBuiltCLI
+--- PASS: TestInitAndVersionFromBuiltCLI (0.57s)
+=== RUN   TestP04CLIRegisterScanInspect
+--- PASS: TestP04CLIRegisterScanInspect (0.68s)
+=== RUN   TestP06CLITwoPeerTransfer
+--- PASS: TestP06CLITwoPeerTransfer (0.91s)
+=== RUN   TestP07CLIBidirectionalReconciliation
+--- PASS: TestP07CLIBidirectionalReconciliation (0.94s)
+=== RUN   TestP08CLIResolutionRestoreControlReplay
+--- PASS: TestP08CLIResolutionRestoreControlReplay (1.32s)
+=== RUN   TestP09ThreePeerForwardingAndMembershipLifecycle
+--- PASS: TestP09ThreePeerForwardingAndMembershipLifecycle (1.92s)
+=== RUN   TestP10StorageAccountingAndCLI
+--- PASS: TestP10StorageAccountingAndCLI (0.67s)
+=== RUN   TestP10RetentionExpiryAndCrashSafeGC
+--- PASS: TestP10RetentionExpiryAndCrashSafeGC (1.02s)
+=== RUN   TestP10LongOfflinePeerNoResurrectedDeletions
+--- PASS: TestP10LongOfflinePeerNoResurrectedDeletions (1.06s)
+=== RUN   TestP10InterruptedGCFaultRecovery
+--- PASS: TestP10InterruptedGCFaultRecovery (0.45s)
+=== RUN   TestP10MultiPeerFallbackChunkTransfer
+--- PASS: TestP10MultiPeerFallbackChunkTransfer (1.15s)
+=== RUN   TestP11IntegrityScanAndQuarantineAffectedVersions
+--- PASS: TestP11IntegrityScanAndQuarantineAffectedVersions (0.69s)
+=== RUN   TestP11PeerAssistedRepairAndInvariantPreservation
+--- PASS: TestP11PeerAssistedRepairAndInvariantPreservation (0.95s)
+=== RUN   TestP11NoRemainingCopyYieldsExplicitUnavailable
+--- PASS: TestP11NoRemainingCopyYieldsExplicitUnavailable (0.37s)
+=== RUN   TestP11UnauthorizedFolderRepairRejected
+--- PASS: TestP11UnauthorizedFolderRepairRejected (0.37s)
+=== RUN   TestP11IntegrityScanAndRepairPinningPreservesGCInterleavings
+--- PASS: TestP11IntegrityScanAndRepairPinningPreservesGCInterleavings (0.45s)
+=== RUN   TestP11AvailabilityStateClassification
+--- PASS: TestP11AvailabilityStateClassification (0.44s)
+=== RUN   TestP12BoundedQueueAndFairScheduling
+--- PASS: TestP12BoundedQueueAndFairScheduling (3.74s)
+=== RUN   TestP12EqualSizeTimestampPreservingEdits
+--- PASS: TestP12EqualSizeTimestampPreservingEdits (0.64s)
+=== RUN   TestP12WatcherFeedbackSuppression
+--- PASS: TestP12WatcherFeedbackSuppression (0.72s)
+=== RUN   TestP12RootUnavailablePauseFolderNoDeletions
+--- PASS: TestP12RootUnavailablePauseFolderNoDeletions (0.68s)
+=== RUN   TestP12WorkStatusRetryCancelAndList
+--- PASS: TestP12WorkStatusRetryCancelAndList (0.72s)
+=== RUN   TestP12ContinuousServeProfilesAndShutdown
+--- PASS: TestP12ContinuousServeProfilesAndShutdown (1.84s)
+=== RUN   TestP12BandwidthLimiterDirect
+--- PASS: TestP12BandwidthLimiterDirect (1.00s)
+=== RUN   TestP12NotificationLossRecoveredByReconciliationScan
+--- PASS: TestP12NotificationLossRecoveredByReconciliationScan (1.86s)
+=== RUN   TestP12RetryClassificationAndExhaustion
+--- PASS: TestP12RetryClassificationAndExhaustion (0.00s)
+=== RUN   TestP12CrashRecoveryOfInFlightTasks
+--- PASS: TestP12CrashRecoveryOfInFlightTasks (0.40s)
+=== RUN   TestP12ResourceLimitsValidation
+--- PASS: TestP12ResourceLimitsValidation (0.00s)
+=== RUN   TestP13CLIDiagnosticsAndDoctor
+--- PASS: TestP13CLIDiagnosticsAndDoctor (0.65s)
+=== RUN   TestP13SupportExportSanitizationAndRedaction
+--- PASS: TestP13SupportExportSanitizationAndRedaction (0.63s)
+=== RUN   TestP13FolderLifecycleAndZeroReplicatedDeletes
+--- PASS: TestP13FolderLifecycleAndZeroReplicatedDeletes (0.74s)
+=== RUN   TestP13MaintenanceBackupCheckRecoveryAndReset
+--- PASS: TestP13MaintenanceBackupCheckRecoveryAndReset (0.68s)
+=== RUN   TestP13LoopbackControlSecurityAndBootstrap
+--- PASS: TestP13LoopbackControlSecurityAndBootstrap (0.62s)
+=== RUN   TestP13ErrorCategoriesHaveSafeNextActions
+--- PASS: TestP13ErrorCategoriesHaveSafeNextActions (0.00s)
+=== RUN   TestP14EmbeddedWebInterfaceAndSPARouting
+--- PASS: TestP14EmbeddedWebInterfaceAndSPARouting (0.63s)
+=== RUN   TestP14EndToEndConflictWorkflows
+--- PASS: TestP14EndToEndConflictWorkflows (0.66s)
+=== RUN   TestP14FilesInspectionAndRestoreWorkflow
+--- PASS: TestP14FilesInspectionAndRestoreWorkflow (0.47s)
+=== RUN   TestP14FilenameMarkupEscaping
+--- PASS: TestP14FilenameMarkupEscaping (0.44s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/integration	125.198s
+=== RUN   TestTerminalT00WrongFolderCapability
+    baseline_test.go:184: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00WrongFolderCapability (0.00s)
+=== RUN   TestTerminalT00SameKeySecondFolder
+    baseline_test.go:200: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00SameKeySecondFolder (0.00s)
+=== RUN   TestTerminalT00InviterVerification
+    baseline_test.go:224: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00InviterVerification (0.00s)
+=== RUN   TestTerminalT00JoinPersistence
+    baseline_test.go:253: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00JoinPersistence (0.00s)
+=== RUN   TestTerminalT00RootPreview
+    baseline_test.go:295: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00RootPreview (0.00s)
+=== RUN   TestTerminalT00JoinReadiness
+    baseline_test.go:322: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00JoinReadiness (0.00s)
+=== RUN   TestTerminalT00PeerEnrollmentRoute
+    baseline_test.go:356: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00PeerEnrollmentRoute (0.00s)
+=== RUN   TestTerminalT00InvitationEndpoint
+    baseline_test.go:385: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00InvitationEndpoint (0.00s)
+=== RUN   TestTerminalT00DetailObservation
+    baseline_test.go:405: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00DetailObservation (0.00s)
+=== RUN   TestTerminalT00CLI
+    baseline_test.go:440: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00CLI (0.00s)
+=== RUN   TestTerminalT06ContextResolutionCwdAndName
+=== PAUSE TestTerminalT06ContextResolutionCwdAndName
+=== RUN   TestTerminalT06AmbiguousAndOutsideRootContext
+=== PAUSE TestTerminalT06AmbiguousAndOutsideRootContext
+=== RUN   TestTerminalT06StaleAndUnavailableRoot
+=== PAUSE TestTerminalT06StaleAndUnavailableRoot
+=== RUN   TestTerminalT06PathSafetyAndLiteralPaths
+=== PAUSE TestTerminalT06PathSafetyAndLiteralPaths
+=== RUN   TestTerminalT06OutputEscapingAndControlCharacters
+=== PAUSE TestTerminalT06OutputEscapingAndControlCharacters
+=== RUN   TestTerminalT06LiveAndStoppedAdapterParity
+=== PAUSE TestTerminalT06LiveAndStoppedAdapterParity
+=== RUN   TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== PAUSE TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (1.03s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.71s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.73s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (1.57s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (1.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:434: CLI history peak_rss_kib=304272
+    content_recovery_test.go:441: CLI restore peak_rss_kib=304272
+    content_recovery_test.go:442: CLI restore peak_rss_kib=304272
+    content_recovery_test.go:448: CLI export peak_rss_kib=304272
+    content_recovery_test.go:455: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:459: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:465: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:469: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:469: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:481: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:489: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:494: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:499: CLI conflicts peak_rss_kib=304272
+    content_recovery_test.go:512: CLI conflicts peak_rss_kib=304272
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (1.78s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.73s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.57s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.49s)
+=== RUN   TestTerminalT03NetworkEnrollmentApprovalAndReplay
+--- PASS: TestTerminalT03NetworkEnrollmentApprovalAndReplay (0.76s)
+=== RUN   TestTerminalT03InviterPinBeforeDisclosure
+2026/10/06 17:23:17 http: TLS handshake error from 127.0.0.1:42512: remote error: tls: bad certificate
+--- PASS: TestTerminalT03InviterPinBeforeDisclosure (0.76s)
+=== RUN   TestTerminalT03ScopeAndProofRejections
+=== RUN   TestTerminalT03ScopeAndProofRejections/scope
+=== RUN   TestTerminalT03ScopeAndProofRejections/signature
+=== RUN   TestTerminalT03ScopeAndProofRejections/certificate
+=== RUN   TestTerminalT03ScopeAndProofRejections/inviter
+=== RUN   TestTerminalT03ScopeAndProofRejections/endpoint
+=== RUN   TestTerminalT03ScopeAndProofRejections/expired_nonce
+=== RUN   TestTerminalT03ScopeAndProofRejections/altered_label
+--- PASS: TestTerminalT03ScopeAndProofRejections (5.76s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/scope (0.78s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/signature (0.84s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/certificate (0.88s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/inviter (0.85s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/endpoint (0.79s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/expired_nonce (0.83s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/altered_label (0.78s)
+=== RUN   TestTerminalT03WrongScopeChallengeAndRevocation
+--- PASS: TestTerminalT03WrongScopeChallengeAndRevocation (0.86s)
+=== RUN   TestTerminalT03ConcurrentSingleUse
+--- PASS: TestTerminalT03ConcurrentSingleUse (0.94s)
+=== RUN   TestTerminalT03StatusRequiresPossession
+=== RUN   TestTerminalT03StatusRequiresPossession/wrong_key
+=== RUN   TestTerminalT03StatusRequiresPossession/replay
+=== RUN   TestTerminalT03StatusRequiresPossession/arbitrary_id
+--- PASS: TestTerminalT03StatusRequiresPossession (2.57s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/wrong_key (0.77s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/replay (0.92s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/arbitrary_id (0.88s)
+=== RUN   TestTerminalT03IsolationAndDataAuthorization
+2026/10/06 17:23:28 http: TLS handshake error from 192.168.88.171:51844: tls: client didn't provide a certificate
+--- PASS: TestTerminalT03IsolationAndDataAuthorization (0.76s)
+=== RUN   TestTerminalT03BoundsAndThrottle
+--- PASS: TestTerminalT03BoundsAndThrottle (1.28s)
+=== RUN   TestTerminalT03ReviewedApprovalStaleAndReplay
+--- PASS: TestTerminalT03ReviewedApprovalStaleAndReplay (0.72s)
+=== RUN   TestTerminalT03DaemonProcess
+    enrollment_test.go:505: subprocess helper
+--- SKIP: TestTerminalT03DaemonProcess (0.00s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (3.05s)
+=== RUN   TestTerminalT03ExpiredAndRevokedPending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_invite
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/revoked_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/changed_membership
+--- PASS: TestTerminalT03ExpiredAndRevokedPending (2.78s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_invite (0.67s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_pending (0.68s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/revoked_pending (0.72s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/changed_membership (0.71s)
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/nonces
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/pending
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry
+--- PASS: TestTerminalT03AdmissionCapsAndChangedReplay (2.13s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/nonces (0.72s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/pending (0.74s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry (0.66s)
+=== RUN   TestTerminalT03LegacyBoundaries
+--- PASS: TestTerminalT03LegacyBoundaries (0.67s)
+=== RUN   TestTerminalT11BoundedSearchStorageAndLiveStopped
+--- PASS: TestTerminalT11BoundedSearchStorageAndLiveStopped (1.18s)
+=== RUN   TestTerminalT11SessionResultStreamAndSymlinkRefusal
+--- PASS: TestTerminalT11SessionResultStreamAndSymlinkRefusal (0.45s)
+=== RUN   TestTerminalT11RealPTYEveryday
+    everyday_test.go:135: {"result": "passed", "scenarios": ["real offline/reconnect concurrent heads", "canonical diff/editor failed exit", "stale editor refusal and fresh review", "exact select and keep copies", "delete history restore and separate copy", "storage preview narrow root block", "terminal restoration and daemon transfer after quit"]}
+
+--- PASS: TestTerminalT11RealPTYEveryday (43.61s)
+=== RUN   TestTerminalT02LiveStoppedSettingsReplay
+--- PASS: TestTerminalT02LiveStoppedSettingsReplay (0.38s)
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/stale_endpoint
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/bad_credential
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/public_credential
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/symlink_credential
+--- PASS: TestTerminalT02NoFallbackAfterLiveFailure (0.36s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/stale_endpoint (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/bad_credential (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/public_credential (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/symlink_credential (0.00s)
+=== RUN   TestTerminalT02EndpointAndBounds
+--- PASS: TestTerminalT02EndpointAndBounds (0.32s)
+=== RUN   TestTerminalT02IdentityCancellationAndAuth
+--- PASS: TestTerminalT02IdentityCancellationAndAuth (0.66s)
+=== RUN   TestTerminalT02FiniteInitializerAndPartialRestart
+--- PASS: TestTerminalT02FiniteInitializerAndPartialRestart (0.31s)
+=== RUN   TestTerminalT02LegacyLimitsReview
+--- PASS: TestTerminalT02LegacyLimitsReview (0.37s)
+=== RUN   TestTerminalT02LostResponseRecoveryAndExpiredReplay
+--- PASS: TestTerminalT02LostResponseRecoveryAndExpiredReplay (0.36s)
+=== RUN   TestTerminalT02StaleReviewNetworkSettings
+--- PASS: TestTerminalT02StaleReviewNetworkSettings (0.35s)
+=== RUN   TestTerminalT02DaemonProcess
+    lifecycle_test.go:287: subprocess entry only
+--- SKIP: TestTerminalT02DaemonProcess (0.00s)
+=== RUN   TestTerminalT02ConcurrentProcessLaunchAndLifetime
+--- PASS: TestTerminalT02ConcurrentProcessLaunchAndLifetime (2.64s)
+=== RUN   TestTerminalT02MissingSystemdAndExplicitErrors
+--- PASS: TestTerminalT02MissingSystemdAndExplicitErrors (0.35s)
+=== RUN   TestTerminalT02ServiceProcessActionsAndSelection
+--- PASS: TestTerminalT02ServiceProcessActionsAndSelection (1.90s)
+=== RUN   TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork
+--- PASS: TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork (0.45s)
+=== RUN   TestTerminalT02ConcurrentMutationReplay
+--- PASS: TestTerminalT02ConcurrentMutationReplay (0.45s)
+=== RUN   TestTerminalT02ControlServeShutdown
+--- PASS: TestTerminalT02ControlServeShutdown (0.42s)
+=== RUN   TestTerminalT12BareEntryAndLegacyDiscovery
+--- PASS: TestTerminalT12BareEntryAndLegacyDiscovery (0.78s)
+=== RUN   TestTerminalT12LegacySettingsExactlyOnce
+--- PASS: TestTerminalT12LegacySettingsExactlyOnce (0.59s)
+=== RUN   TestTerminalT12BareRealPTY
+    packages_test.go:127: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+
+--- PASS: TestTerminalT12BareRealPTY (10.89s)
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management
+--- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction (1.66s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control (0.41s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control (0.40s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content (0.40s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management (0.45s)
+=== RUN   TestTerminalT13OperationObservesPublicationWithoutReauthoring
+--- PASS: TestTerminalT13OperationObservesPublicationWithoutReauthoring (0.57s)
+=== RUN   TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause
+--- PASS: TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause (0.47s)
+=== RUN   TestTerminalT13LargeDirectoryAndStreamedMergeResources
+    release_test.go:209: resource command=deleted input_fixture_files=1024 samples=4 interval_ms=5 sampled_peak_rss_kib=25492 child_ru_maxrss_kib=345644 sampled_peak_fds=6 output_bytes=9956 seconds=0.025
+    release_test.go:214: resource command=status input_fixture_files=1024 samples=33 interval_ms=5 sampled_peak_rss_kib=23088 child_ru_maxrss_kib=345644 sampled_peak_fds=7 output_bytes=2772 seconds=0.171
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=4 interval_ms=5 sampled_peak_rss_kib=25532 child_ru_maxrss_kib=345644 sampled_peak_fds=6 output_bytes=2113 seconds=0.026
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=12 interval_ms=5 sampled_peak_rss_kib=25616 child_ru_maxrss_kib=345644 sampled_peak_fds=7 output_bytes=723 seconds=0.065
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=15 interval_ms=5 sampled_peak_rss_kib=25568 child_ru_maxrss_kib=345644 sampled_peak_fds=6 output_bytes=1127 seconds=0.078
+    release_test.go:239: verified streamed merge fixture_bytes=8388608 digest=96283cc9067fda56816d90f9084f9022f9e92e258d4fa5c3b5a84446d63a7965
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=7 interval_ms=5 sampled_peak_rss_kib=23488 child_ru_maxrss_kib=345644 sampled_peak_fds=6 output_bytes=2118 seconds=0.041
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=31 interval_ms=5 sampled_peak_rss_kib=25632 child_ru_maxrss_kib=345644 sampled_peak_fds=7 output_bytes=724 seconds=0.161
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=51 interval_ms=5 sampled_peak_rss_kib=23532 child_ru_maxrss_kib=345644 sampled_peak_fds=6 output_bytes=1129 seconds=0.259
+    release_test.go:239: verified streamed merge fixture_bytes=33554432 digest=faade46d584f4cc4d270161865f1e8db5efafae1e99c5d618ede6303bfaba409
+--- PASS: TestTerminalT13LargeDirectoryAndStreamedMergeResources (24.44s)
+=== RUN   TestTerminalT13NativeHarnessRefusesUnsafeActions
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.07s)
+=== RUN   TestTerminalT13StatusKeepsRunningAndStartupSeparate
+--- PASS: TestTerminalT13StatusKeepsRunningAndStartupSeparate (0.39s)
+=== RUN   TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads
+--- PASS: TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads (0.45s)
+=== RUN   TestTerminalT13RetiredIdentityApprovalHasRecoveryAction
+--- PASS: TestTerminalT13RetiredIdentityApprovalHasRecoveryAction (13.92s)
+=== RUN   TestTerminalT13ReplacementBootstrapsRetiredHistory
+--- PASS: TestTerminalT13ReplacementBootstrapsRetiredHistory (26.02s)
+=== RUN   TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== PAUSE TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== RUN   TestTerminalT04InteractiveReviewRetainsInputs
+--- PASS: TestTerminalT04InteractiveReviewRetainsInputs (0.77s)
+=== RUN   TestTerminalT04RecursiveReviewedAdoption
+--- PASS: TestTerminalT04RecursiveReviewedAdoption (0.35s)
+=== RUN   TestTerminalT04StaleRootAndPlan
+=== RUN   TestTerminalT04StaleRootAndPlan/bytes
+=== RUN   TestTerminalT04StaleRootAndPlan/swap
+=== RUN   TestTerminalT04StaleRootAndPlan/symlink
+=== RUN   TestTerminalT04StaleRootAndPlan/name
+=== RUN   TestTerminalT04StaleRootAndPlan/settings
+--- PASS: TestTerminalT04StaleRootAndPlan (1.52s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/bytes (0.30s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/swap (0.31s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/symlink (0.30s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/name (0.31s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/settings (0.31s)
+=== RUN   TestTerminalT04UnsupportedAndOverlap
+--- PASS: TestTerminalT04UnsupportedAndOverlap (0.30s)
+=== RUN   TestTerminalT04BoundedPreviewContinuation
+--- PASS: TestTerminalT04BoundedPreviewContinuation (0.59s)
+=== RUN   TestTerminalT04CapacityAndExpiredReview
+--- PASS: TestTerminalT04CapacityAndExpiredReview (0.30s)
+=== RUN   TestTerminalT04ResumeAtDurablePhases
+=== RUN   TestTerminalT04ResumeAtDurablePhases/reviewed
+=== RUN   TestTerminalT04ResumeAtDurablePhases/bootstrap_capture
+=== RUN   TestTerminalT04ResumeAtDurablePhases/content_pending
+=== RUN   TestTerminalT04ResumeAtDurablePhases/ready
+--- PASS: TestTerminalT04ResumeAtDurablePhases (1.46s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/reviewed (0.36s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/bootstrap_capture (0.36s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/content_pending (0.38s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/ready (0.36s)
+=== RUN   TestTerminalT04InitialCaptureFailureBlocksBootstrap
+--- PASS: TestTerminalT04InitialCaptureFailureBlocksBootstrap (0.36s)
+=== RUN   TestTerminalT04FatalScanFailurePreservesCapture
+--- PASS: TestTerminalT04FatalScanFailurePreservesCapture (0.34s)
+=== RUN   TestTerminalT04NoBootstrapTombstone
+--- PASS: TestTerminalT04NoBootstrapTombstone (0.34s)
+=== RUN   TestTerminalT04DelayedJoinRestartAndTransfer
+=== PAUSE TestTerminalT04DelayedJoinRestartAndTransfer
+=== RUN   TestTerminalT04DivergentBootstrapRemainsConflict
+=== PAUSE TestTerminalT04DivergentBootstrapRemainsConflict
+=== RUN   TestTerminalT04ExpiredAttemptDoesNotRenew
+--- PASS: TestTerminalT04ExpiredAttemptDoesNotRenew (0.64s)
+=== RUN   TestTerminalT04UnreadablePreviewAndCaptureFault
+--- PASS: TestTerminalT04UnreadablePreviewAndCaptureFault (0.35s)
+=== RUN   TestTerminalT04JoinPhaseRecovery
+=== PAUSE TestTerminalT04JoinPhaseRecovery
+=== RUN   TestTerminalT04StartupFailureAndConsumedReview
+--- PASS: TestTerminalT04StartupFailureAndConsumedReview (0.30s)
+=== RUN   TestTerminalT04IssuePagesAndPreviewFamily
+--- PASS: TestTerminalT04IssuePagesAndPreviewFamily (0.32s)
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/false
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/true
+--- PASS: TestTerminalT04ExpiredPreparedRequestRecovery (1.39s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/false (0.67s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/true (0.72s)
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (85.82s)
+=== RUN   TestTerminalT05ScopedKnownDeviceSharing
+--- PASS: TestTerminalT05ScopedKnownDeviceSharing (14.03s)
+=== RUN   TestTerminalT05MembershipPinAndSequentialGate
+--- PASS: TestTerminalT05MembershipPinAndSequentialGate (1.61s)
+=== RUN   TestTerminalT05ForkRecoveryPreservesOriginalGroup
+--- PASS: TestTerminalT05ForkRecoveryPreservesOriginalGroup (0.37s)
+=== RUN   TestTerminalT05CompetingReviewedApprovals
+--- PASS: TestTerminalT05CompetingReviewedApprovals (0.96s)
+=== RUN   TestTerminalT05TargetedShareRejectsRekey
+--- PASS: TestTerminalT05TargetedShareRejectsRekey (0.96s)
+=== RUN   TestTerminalT07_Status_Observations_MixedState
+=== PAUSE TestTerminalT07_Status_Observations_MixedState
+=== RUN   TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== PAUSE TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== RUN   TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== PAUSE TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== PAUSE TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== RUN   TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== PAUSE TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== RUN   TestTerminalT10BlockedSetupPagesAndFolderManagement
+--- PASS: TestTerminalT10BlockedSetupPagesAndFolderManagement (0.34s)
+=== RUN   TestTerminalT10RealPTYOnboarding
+    tui_onboarding_test.go:88: [
+          {
+            "scenario": "two-process-onboarding",
+            "result": "passed",
+            "assertions": [
+              "nonempty measured review; validation/back/edit",
+              "private expired and wrong-pin refusal",
+              "exact transcript code and approval",
+              "pending client exit/reopen/daemon restart",
+              "actual verified bidirectional file bytes",
+              "local pause/resume, actual relocation and unregister preview",
+              "second folder distinct consent and attempt; device identities retained",
+              "actual startup failure under missing-system-tool fixture",
+              "terminal restoration"
+            ]
+          }
+        ]
+
+--- PASS: TestTerminalT10RealPTYOnboarding (63.31s)
+=== RUN   TestTerminalT10FolderForkLagAndConservativePreview
+--- PASS: TestTerminalT10FolderForkLagAndConservativePreview (0.43s)
+=== RUN   TestTerminalT10SetupRetryRetainsNetworkRestartAndExactIntent
+--- PASS: TestTerminalT10SetupRetryRetainsNetworkRestartAndExactIntent (0.37s)
+=== RUN   TestTerminalT09NamedPages
+--- PASS: TestTerminalT09NamedPages (3.13s)
+=== RUN   TestTerminalT09RealPTYLifetime
+    tui_test.go:88: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+
+--- PASS: TestTerminalT09RealPTYLifetime (10.69s)
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+2026/10/06 17:30:05 http: TLS handshake error from orbit-relay:0: i/o timeout
+    wan_bandwidth_test.go:304: actual relay: large=16777216 bytes completed=7.616718112s first verified chunk=256.925882ms first small=97.894144ms small versions=18; shared cap=2097152 B/s; peak sampled heap=47011688 goroutines=134 FD=59 unique sockets=36 RSS=382681088 process CPU=5200233us; original author=d35307f260227ddeaf496b33c3d316a88f87226bfbcdafc88aac01124ef518cc
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:304: actual direct: large=16777216 bytes completed=7.304570374s first verified chunk=66.968958ms first small=707.394699ms small versions=11; shared cap=2097152 B/s; peak sampled heap=66190536 goroutines=111 FD=53 unique sockets=32 RSS=442249216 process CPU=5209226us; original author=d35307f260227ddeaf496b33c3d316a88f87226bfbcdafc88aac01124ef518cc
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:304: actual quic: large=16777216 bytes completed=7.568221265s first verified chunk=75.954992ms first small=796.15361ms small versions=8; shared cap=2097152 B/s; peak sampled heap=44185152 goroutines=123 FD=48 unique sockets=28 RSS=473034752 process CPU=5903848us; original author=d35307f260227ddeaf496b33c3d316a88f87226bfbcdafc88aac01124ef518cc
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (90.24s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (20.54s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (7.79s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (8.25s)
+=== RUN   TestWANW00ManualInvitationRequiresReachableAddress
+    wan_baseline_test.go:109: missing endpoint refused; unusable endpoint bounded; both identities, protected head/CAS and local bytes preserved
+--- PASS: TestWANW00ManualInvitationRequiresReachableAddress (0.93s)
+=== RUN   TestWANW06BinaryReviewedRelayJourney
+    wan_cli_test.go:351: Local signed service fixture; production binaries create/invite/join/relaunch/approve and transfer both directions without init/serve/manual peer addresses
+--- PASS: TestWANW06BinaryReviewedRelayJourney (63.19s)
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.04s)
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+--- PASS: TestWANW06BinaryGuidedFirstDevice (0.76s)
+=== RUN   TestWANW12BinaryDoctorPrivacyAndPTY
+    wan_diagnostics_test.go:28: {"scenario": "W12-explicit-doctor-keyboard-cancel", "status": "passed"}
+
+    wan_diagnostics_test.go:106: actual CLI/PTY doctor, healthy service/offline peer, reviewed local-only/replay/restart, zero service requests, preserved identity/files
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW12BinaryDoctorPrivacyAndPTY (77.51s)
+=== RUN   TestWANW08BinaryLocalOnlyLANAfterApproval
+    wan_direct_test.go:181: network <nil> {"generated_at":"2026-10-06T21:34:56.118408412Z","profile_expires":"","profile_state":"","action":"Start the daemon to check live connections.","probes":[],"policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"active_policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"restart_required":false,"ready":false,"code":"DAEMON_STOPPED","operator":"","privacy":"","observations":[{"freshness":"untested","action":"Run an explicit network doctor check if needed.","lan_candidates":"0","public_candidates":"0","expired_candidates":"0","udp_code":"NOT_TESTED","device":"44ca16051a1e9448a55019fe57b2bff6a2d0dec31756fd3176484bfc76caee89","pin":"2be5fc747aa7176db45b8babc66bc2fc2f29aa7dbd0eb3b63da872d307f733be","purpose":"peer_data","route":"not_tested","code":"NOT_TESTED","observed_at":"","generation":"0"}]}
+    wan_direct_test.go:181: daemon orbit: state directory is already owned by another agent
+
+    wan_direct_test.go:181: network <nil> {"generated_at":"2026-10-06T21:34:56.135927254Z","profile_expires":"","profile_state":"","action":"Start the daemon to check live connections.","probes":[],"policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"active_policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"restart_required":false,"ready":false,"code":"DAEMON_STOPPED","operator":"","privacy":"","observations":[{"freshness":"untested","action":"Run an explicit network doctor check if needed.","lan_candidates":"0","public_candidates":"0","expired_candidates":"0","udp_code":"NOT_TESTED","device":"7be0a452e212d9ce4871bdb89740d27f2a4d5ffdbe448f919ba68a1a641c0911","pin":"ee0d3b0c20c2607b449856226d02bec5e674d378ed3e45cbf9a624c878c97848","purpose":"peer_data","route":"not_tested","code":"NOT_TESTED","observed_at":"","generation":"0"}]}
+    wan_direct_test.go:181: daemon orbit: state directory is already owned by another agent
+
+    wan_direct_test.go:181: binary verified bytes absent binary-a.txt
+    wan_direct_test.go:104: agent is not running
+    wan_direct_test.go:107: exit status 1
+    wan_direct_test.go:87: daemon orbit: state directory is already owned by another agent
+
+    wan_direct_test.go:104: agent is not running
+    wan_direct_test.go:107: exit status 1
+    wan_direct_test.go:87: daemon orbit: state directory is already owned by another agent
+
+--- FAIL: TestWANW08BinaryLocalOnlyLANAfterApproval (117.53s)
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:181: network <nil> {"generated_at":"2026-10-06T21:36:53.618691989Z","profile_expires":"","profile_state":"","action":"Start the daemon to check live connections.","probes":[],"policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"active_policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"restart_required":false,"ready":false,"code":"DAEMON_STOPPED","operator":"","privacy":"","observations":[{"freshness":"untested","action":"Run an explicit network doctor check if needed.","lan_candidates":"0","public_candidates":"0","expired_candidates":"0","udp_code":"NOT_TESTED","device":"afa5e213a49fc389e6ca5bc70e1b9c7e3d834b8864b1f04c83bb45be4115f59c","pin":"a9cb10b521a6f153df6598e1104729fadb5d52909431cbb699b206afcfac93b5","purpose":"peer_data","route":"not_tested","code":"NOT_TESTED","observed_at":"","generation":"0"}]}
+    wan_direct_test.go:181: daemon orbit: state directory is already owned by another agent
+
+    wan_direct_test.go:181: network <nil> {"generated_at":"2026-10-06T21:36:53.636237961Z","profile_expires":"","profile_state":"","action":"Start the daemon to check live connections.","probes":[],"policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"active_policy":{"mode":"local_only","profile":"","lan_advertising":true,"generation":"2"},"restart_required":false,"ready":false,"code":"DAEMON_STOPPED","operator":"","privacy":"","observations":[{"freshness":"untested","action":"Run an explicit network doctor check if needed.","lan_candidates":"0","public_candidates":"0","expired_candidates":"0","udp_code":"NOT_TESTED","device":"cd876817d757cfdd0f017c707632805603812bb19f830c7f69016365e12c1353","pin":"5265d771dc558fcc2beba20f712a9122ad7465a09d4e0826d5ac1135e4c952b0","purpose":"peer_data","route":"not_tested","code":"NOT_TESTED","observed_at":"","generation":"0"}]}
+    wan_direct_test.go:181: daemon orbit: state directory is already owned by another agent
+
+    wan_direct_test.go:181: binary verified bytes absent binary-a.txt
+    wan_direct_test.go:104: agent is not running
+    wan_direct_test.go:107: exit status 1
+    wan_direct_test.go:87: daemon orbit: state directory is already owned by another agent
+
+    wan_direct_test.go:104: agent is not running
+    wan_direct_test.go:107: exit status 1
+    wan_direct_test.go:87: daemon orbit: state directory is already owned by another agent
+
+--- FAIL: TestWANW09BinaryLocalOnlyQUICAfterApproval (117.50s)
+=== RUN   TestWANW08BinaryOptionalCollisionFreshRelayOnboarding
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW08BinaryOptionalCollisionFreshRelayOnboarding (38.39s)
+=== RUN   TestWANW09BinaryOptionalUDPCollisionRelayOnboarding
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW09BinaryOptionalUDPCollisionRelayOnboarding (37.65s)
+=== RUN   TestWANW05DaemonChild
+    wan_enrollment_process_test.go:35: child process helper
+--- SKIP: TestWANW05DaemonChild (0.00s)
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+    wan_enrollment_process_test.go:324: SIGKILL membership_received recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+    wan_enrollment_process_test.go:324: SIGKILL approval recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+    wan_enrollment_process_test.go:324: SIGKILL request_accepted recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+    wan_enrollment_process_test.go:324: SIGKILL request_prepared recovered exact attempt/root and two-way heads/hashes
+--- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries (0.00s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received (62.07s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval (62.52s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted (72.52s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared (95.94s)
+=== RUN   TestWANW05RoutedJoinTwoFoldersRestartAndTwoWayData
+2026/10/06 17:40:44 http: TLS handshake error from orbit-relay:0: i/o timeout
+--- PASS: TestWANW05RoutedJoinTwoFoldersRestartAndTwoWayData (122.51s)
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+--- PASS: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (85.74s)
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:46: requires marked disposable namespace runner
+--- SKIP: TestWANW11WholeDaemonRoamingAndMixedProgress (0.00s)
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+    wan_roaming_test.go:37: requires explicit W15 disposable namespace runner
+--- SKIP: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (0.00s)
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (1.29s)
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:76: [
+          {
+            "scenario": "W07-keyboard-relay-onboarding",
+            "result": "passed",
+            "assertions": [
+              "production binary real PTY; no manual addresses/listeners/init/serve; relay fixture preserves LAN advertising=false",
+              "reviewed existing contents, Back/Edit, wrong pin, expired v3 paste, unsupported-root correction",
+              "private transfer, independently selected development operator and TLS trust",
+              "exact cross-device verification/approval, delayed exit and actual daemon restart",
+              "exact operation/attempt/request/root/identity retained; byte/hash/version-author oracles",
+              "second folder separate consent/attempt/root, relay observations separate from readiness",
+              "narrow/colorless/resize, masked paste, v3 reveal, deliberate revocation",
+              "termios and alt/bracketed-paste restoration; daemon capture/transfer after client exit",
+              "actual marked service outage retains new-folder drafts and daemon local capture",
+              "fresh Automatic/missing-profile and preannouncement Local-only review; local capture after quit"
+            ]
+          }
+        ]
+
+--- PASS: TestWANW07RealPTYRelayOnboarding (142.84s)
+=== RUN   TestWANW13PackagedSelfHostRehearsal
+    wan_w13_test.go:299: orbit-net dev (unknown, unknown)
+    wan_w13_test.go:570: overload: baseline fds=21 rss=23632KiB; flood peak fds=265 rss=28692KiB active=256 refused=76; pre-auth 429=118 untrusted=122
+    wan_w13_test.go:605: STUN: 100 binding requests + 2 malformed in 501ms; answers=10 largest=32B; dropped rate=91 invalid=1
+    wan_w13_test.go:719: W13 rehearsal: packaged orbit-net pid lifecycle, private-CA self-hosting via reviewed trust, relay pairing/transfer, SIGHUP certificate rotation, overload/STUN limits, epoch rotation with mixed-epoch devices, rollback refusal, per-epoch expiry, local-only disable and graceful shutdown
+--- PASS: TestWANW13PackagedSelfHostRehearsal (128.35s)
+=== RUN   TestWANW14OneStepNetworkAndInvitationCode
+    wan_w14_cli_test.go:123: one-step review transcript:
+        n
+        Connection: Manual -> Automatic
+        Operator: "Caleb Habesh" (profile expires 2027-01-04T19:37:37Z)
+        Privacy: Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.
+        LAN advertising: true (signed device identity and listener addresses on this network)
+        Orbit services see device addresses and connection metadata; file contents stay encrypted in transit.
+        Identity, keys, approvals, history and files are unchanged.
+        Apply? [Y/n] orbit: network change not applied
+--- PASS: TestWANW14OneStepNetworkAndInvitationCode (5.12s)
+=== RUN   TestWANW14MixedVersionUpgradeAndRollback
+    wan_w14_mixed_test.go:197: legacy inviter -> new joiner over v2 manual invitation; both directions transferred
+    wan_w14_mixed_test.go:245: in-place upgrade: identity and exact heads retained; manual policy kept; Automatic offered, not adopted
+    wan_w14_mixed_test.go:259: rollback to pre-WAN binary: state opens and syncs
+--- PASS: TestWANW14MixedVersionUpgradeAndRollback (33.17s)
+=== CONT  TestTerminalT06ContextResolutionCwdAndName
+=== CONT  TestTerminalT04DelayedJoinRestartAndTransfer
+=== CONT  TestTerminalT06LiveAndStoppedAdapterParity
+=== CONT  TestTerminalT06OutputEscapingAndControlCharacters
+=== CONT  TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== CONT  TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== CONT  TestTerminalT04JoinPhaseRecovery
+=== RUN   TestTerminalT04JoinPhaseRecovery/request_prepared
+=== CONT  TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== CONT  TestTerminalT07_Status_Observations_MixedState
+=== CONT  TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== CONT  TestTerminalT06AmbiguousAndOutsideRootContext
+=== CONT  TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT06PathSafetyAndLiteralPaths
+=== CONT  TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== CONT  TestTerminalT06StaleAndUnavailableRoot
+=== CONT  TestTerminalT04DivergentBootstrapRemainsConflict
+=== PAUSE TestTerminalT04JoinPhaseRecovery/request_prepared
+=== RUN   TestTerminalT04JoinPhaseRecovery/membership_received
+=== PAUSE TestTerminalT04JoinPhaseRecovery/membership_received
+=== RUN   TestTerminalT04JoinPhaseRecovery/content_pending
+=== PAUSE TestTerminalT04JoinPhaseRecovery/content_pending
+=== RUN   TestTerminalT04JoinPhaseRecovery/publishing
+=== PAUSE TestTerminalT04JoinPhaseRecovery/publishing
+=== CONT  TestTerminalT04JoinPhaseRecovery/publishing
+--- PASS: TestTerminalT06ShellCompletionsAndHelpWalkthrough (1.90s)
+=== CONT  TestTerminalT04JoinPhaseRecovery/membership_received
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/StoppedAdapter
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/LiveCleanState
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/InsecureToken
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/MissingRoot
+--- PASS: TestTerminalT07_Status_Observations_MixedState (3.73s)
+=== CONT  TestTerminalT04JoinPhaseRecovery/content_pending
+=== CONT  TestTerminalT04JoinPhaseRecovery/request_prepared
+--- PASS: TestTerminalT07_Status_Attention_PersistenceAcrossRestart (3.90s)
+--- PASS: TestTerminalT07_Status_BoundedPaginationAndCancellation (3.91s)
+--- PASS: TestTerminalT06PathSafetyAndLiteralPaths (5.88s)
+--- PASS: TestTerminalT06StaleAndUnavailableRoot (5.92s)
+--- PASS: TestTerminalT06AmbiguousAndOutsideRootContext (5.99s)
+--- PASS: TestTerminalT06OutputEscapingAndControlCharacters (6.01s)
+--- PASS: TestTerminalT06ContextResolutionCwdAndName (6.04s)
+--- PASS: TestTerminalT07_CLI_StatusAndDoctor_Parity (6.17s)
+--- PASS: TestTerminalT06LiveAndStoppedAdapterParity (6.19s)
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/ExhaustedTask
+--- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations (8.37s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/StoppedAdapter (0.04s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/LiveCleanState (0.03s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/InsecureToken (0.03s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/MissingRoot (3.78s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/ExhaustedTask (1.04s)
+--- PASS: TestTerminalT04DivergentBootstrapRemainsConflict (32.41s)
+--- PASS: TestTerminalT04DelayedJoinRestartAndTransfer (32.55s)
+--- PASS: TestTerminalT04JoinPhaseRecovery (0.00s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/publishing (32.46s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/membership_received (31.33s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/content_pending (29.80s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/request_prepared (29.69s)
+--- PASS: TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits (35.54s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1553.104s
+?   	github.com/calebhabesh/file-sync/web	[no test files]
+FAIL

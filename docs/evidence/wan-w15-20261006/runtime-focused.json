@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-v",
+    "./internal/network",
+    "./internal/replication",
+    "-run",
+    "^TestWANW(04|10|11|15)"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:47:20.729287+00:00",
+  "source_before": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 1,
+  "duration_seconds": 63.452,
+  "finished_at": "2026-10-06T21:48:24.181217+00:00",
+  "source_after": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177"
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "ssh",
+    "rpi",
+    "guarded isolated Pi campaign"
+  ],
+  "started_at": null,
+  "exit_code": 0,
+  "duration_seconds": 361.40745244547725,
+  "finished_at": "2026-10-06T21:57:11.031077+00:00",
+  "outcome": "native result and transcript recovered after recorder session interrupted; recorder UTC start not captured",
+  "binary_record": "compile-pi-runtime.json"
+}

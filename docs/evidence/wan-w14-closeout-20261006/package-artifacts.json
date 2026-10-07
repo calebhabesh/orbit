@@ -1,0 +1,55 @@
+{
+  "scope": "end-user make check outputs; existing orbit-net artifacts excluded",
+  "captured_at": "2026-10-06T21:02:42.515432+00:00",
+  "tested_source_digest": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+  "files": {
+    "bin/filesync": {
+      "sha256": "41e15329acf70785a9335501bc8d12bb1025583054416f81dc95d0138160dd02",
+      "bytes": 33497480
+    },
+    "bin/filesync-linux-arm64": {
+      "sha256": "328a42711776fd00df3214a939487a5f5a8fcd8c792848beb35fd16317263902",
+      "bytes": 31450579
+    },
+    "dist/SHA256SUMS": {
+      "sha256": "4679a708133ee64bbd25f798ecdbd34c4a7910f196641eafe45e4a3d4d2416ab",
+      "bytes": 857
+    },
+    "dist/filesync-1.0.0-1.aarch64.rpm": {
+      "sha256": "c1c97a4a0f52d74eda9631b336c65a44c6243f4157682ca004dc8d9c66590429",
+      "bytes": 17331506
+    },
+    "dist/filesync-1.0.0-1.x86_64.rpm": {
+      "sha256": "289f24bd65ff762963f75fc345fc75188a6eca03eefb33d291d9d7e013e82f75",
+      "bytes": 18532457
+    },
+    "dist/filesync-v1.0.0-linux-amd64.tar.gz": {
+      "sha256": "5841cefd3ab1c8287aa6c73d8a625da3bea7e12a996fbbc3db71d04c459ce4de",
+      "bytes": 18532993
+    },
+    "dist/filesync-v1.0.0-linux-arm64.tar.gz": {
+      "sha256": "795bdf2452e054331d85c092ad6fa007e86a3bcc8b331efb2a1fa5ff61e04283",
+      "bytes": 17329290
+    },
+    "dist/filesync_1.0.0_amd64.deb": {
+      "sha256": "98f552899fac5e4c16983fd11d21c7055e49df81e1eee3145edf7447bdabe95b",
+      "bytes": 18546932
+    },
+    "dist/filesync_1.0.0_arm64.deb": {
+      "sha256": "6e6fc69682f645ac4eb07691490650e2d952e9ed1dd9c8177e0d71cd575c35c8",
+      "bytes": 17344272
+    },
+    "dist/orbit-v1.0.0-linux-amd64.tar.gz": {
+      "sha256": "5841cefd3ab1c8287aa6c73d8a625da3bea7e12a996fbbc3db71d04c459ce4de",
+      "bytes": 18532993
+    },
+    "dist/orbit-v1.0.0-linux-arm64.tar.gz": {
+      "sha256": "795bdf2452e054331d85c092ad6fa007e86a3bcc8b331efb2a1fa5ff61e04283",
+      "bytes": 17329290
+    },
+    "dist/release-manifest.json": {
+      "sha256": "377c06563ce6f6ffc9c05d6faec988d1d1b9a551d9ef1bd1f16e789d907742da",
+      "bytes": 786
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "./tests/faults",
+    "-run",
+    "^$",
+    "-fuzz",
+    "^FuzzPathSanitization$",
+    "-fuzztime=30s",
+    "-parallel=4"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:25:02.579270+00:00",
+  "source_before": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 31.325,
+  "finished_at": "2026-10-06T21:25:33.904135+00:00",
+  "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c"
+}

@@ -1,5 +1,10 @@
 # W14 commands and results (2026-10-06)
 
+This table preserves the original worker handoff before final validation. The
+previously unexecuted final-source aggregate subsequently passed in Codex's
+[closeout](../wan-w14-closeout-20261006/commands.md); its
+[record](../wan-w14-closeout-20261006/aggregate-final.json) reports exit 0.
+
 | Command | Result |
 | --- | --- |
 | `go test ./internal/network/ ./internal/config/ ./internal/control/... ./internal/terminal/ ./internal/protocol/ ./internal/rendezvous/` | pass |

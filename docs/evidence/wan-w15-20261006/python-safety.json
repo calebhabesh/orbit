@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/validation",
+    "-p",
+    "test_wan_safety.py"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:16:23.141444+00:00",
+  "source_before": "4882a92d64eca66c805dd093f8529cf099ee3db6909d7b80515d395e5324163d",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.046,
+  "finished_at": "2026-10-06T21:16:23.187614+00:00",
+  "source_after": "4882a92d64eca66c805dd093f8529cf099ee3db6909d7b80515d395e5324163d"
+}

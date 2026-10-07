@@ -1,0 +1,117 @@
+{
+  "packet": "W14",
+  "slice": "final-source validation closeout",
+  "state": "complete_for_closeout_slice",
+  "checks": {
+    "discovery": {
+      "exit_code": 0,
+      "duration_seconds": 0.339,
+      "source_unchanged": true,
+      "record": "discovery.json"
+    },
+    "focused-w14-race": {
+      "exit_code": 0,
+      "duration_seconds": 71.032,
+      "source_unchanged": true,
+      "record": "focused-w14-race.json"
+    },
+    "w07-regression": {
+      "exit_code": 0,
+      "duration_seconds": 143.148,
+      "source_unchanged": true,
+      "record": "w07-regression.json"
+    },
+    "affected-race": {
+      "exit_code": 0,
+      "duration_seconds": 96.363,
+      "source_unchanged": true,
+      "record": "affected-race.json"
+    },
+    "docs-links": {
+      "exit_code": 0,
+      "duration_seconds": 0.024,
+      "source_unchanged": true,
+      "record": "docs-links.json"
+    },
+    "whitespace": {
+      "exit_code": 2,
+      "duration_seconds": 0.012,
+      "source_unchanged": true,
+      "record": "whitespace.json"
+    },
+    "whitespace-final": {
+      "exit_code": 0,
+      "duration_seconds": 0.006,
+      "source_unchanged": true,
+      "record": "whitespace-final.json"
+    },
+    "preservation": {
+      "exit_code": 0,
+      "duration_seconds": 0.042,
+      "source_unchanged": true,
+      "record": "preservation.json"
+    },
+    "aggregate-final": {
+      "exit_code": 0,
+      "duration_seconds": 1488.21,
+      "source_before": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+      "source_after": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c"
+    },
+    "packaged-version": {
+      "exit_code": 0,
+      "duration_seconds": 0.018,
+      "source_unchanged": true,
+      "record": "packaged-version.json"
+    },
+    "preservation-final": {
+      "exit_code": 0,
+      "duration_seconds": 0.043,
+      "source_unchanged": true,
+      "record": "preservation-final.json"
+    },
+    "docs-links-final": {
+      "exit_code": 0,
+      "duration_seconds": 0.026,
+      "source_unchanged": true,
+      "record": "docs-links-final.json"
+    },
+    "whitespace-after-finalization": {
+      "exit_code": 2,
+      "duration_seconds": 0.004,
+      "source_unchanged": true,
+      "record": "whitespace-after-finalization.json",
+      "limitation": "Capture was committed while running by another session; raw log has a whitespace-only line. Raw gzip preserved; readable log normalized; final check passes."
+    }
+  },
+  "aggregate": "passed",
+  "inherited_native_evidence": "../wan-w14-20261006/logs/native-journey.log; not rerun, same LAN only",
+  "limitations": [
+    "W13/WG6 authority-key backup and monitoring/alert destination open",
+    "native expired bundled-profile run unexecuted; unit boundary coverage only",
+    "W15-W17 and inherited relevant T13 technical acceptance remain",
+    "P17 owner use/explanation deferred"
+  ],
+  "completed_at": "2026-10-06T21:02:42.515432+00:00",
+  "terminal_suite_seconds": 1294.436,
+  "aggregate_skips": [
+    "TestTerminalT00WrongFolderCapability",
+    "TestTerminalT00SameKeySecondFolder",
+    "TestTerminalT00InviterVerification",
+    "TestTerminalT00JoinPersistence",
+    "TestTerminalT00RootPreview",
+    "TestTerminalT00JoinReadiness",
+    "TestTerminalT00PeerEnrollmentRoute",
+    "TestTerminalT00InvitationEndpoint",
+    "TestTerminalT00DetailObservation",
+    "TestTerminalT00CLI",
+    "TestTerminalT03DaemonProcess",
+    "TestTerminalT02DaemonProcess",
+    "TestWANW05DaemonChild",
+    "TestWANW11WholeDaemonRoamingAndMixedProgress",
+    "TestWANW11IsolatedAddressDefaultRouteDetection",
+    "TestWANW10IsolatedICEPeerSyncAndFallback",
+    "TestWANW10IsolatedSTUNIPv6",
+    "TestWANW08IsolatedPublicTCPAndIPv6"
+  ],
+  "credential_pattern_scan": "No matches in readable logs or preserved raw aggregate output; limited pattern scan, not a general privacy proof."
+}

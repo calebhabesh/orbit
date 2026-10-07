@@ -1,0 +1,27 @@
++zsh:2> B=/usr/local/lib/orbit-net-alert/orbit-net 
++zsh:2> C=/etc/orbit-net-alert/alert.json 
++zsh:3> sudo install -d -m 0700 -o orbit-net -g orbit-net /var/lib/orbit-net-alert-drill
++zsh:4> date -u +%FT%TZ
+2026-10-06T23:51:09Z
++zsh:5> sudo -u orbit-net /usr/local/lib/orbit-net-alert/orbit-net alert --config /etc/orbit-net-alert/alert.json --test
+test notification sent
+exit=0
++zsh:5> echo 'exit=0'
++zsh:6> date -u +%FT%TZ
+2026-10-06T23:51:09Z
++zsh:7> sudo -u orbit-net /usr/local/lib/orbit-net-alert/orbit-net alert --config /etc/orbit-net-alert/alert.json --state /var/lib/orbit-net-alert-drill/state.json --metrics-url http://127.0.0.1:9
+exit=0
++zsh:7> echo 'exit=0'
++zsh:8> sudo -u orbit-net /usr/local/lib/orbit-net-alert/orbit-net alert --config /etc/orbit-net-alert/alert.json --state /var/lib/orbit-net-alert-drill/state.json --metrics-url http://127.0.0.1:9
+FIRING down: connect.calebhabesh.com health check failing: no response from the metrics listener (service stopped?)
+exit=0
++zsh:8> echo 'exit=0'
++zsh:9> date -u +%FT%TZ
+2026-10-06T23:51:09Z
++zsh:10> sleep 20
++zsh:11> sudo -u orbit-net /usr/local/lib/orbit-net-alert/orbit-net alert --config /etc/orbit-net-alert/alert.json --state /var/lib/orbit-net-alert-drill/state.json
+RESOLVED down: cleared: connect.calebhabesh.com health check failing: no response from the metrics listener (service stopped?)
+exit=0
++zsh:11> echo 'exit=0'
++zsh:12> date -u +%FT%TZ
+2026-10-06T23:51:29Z

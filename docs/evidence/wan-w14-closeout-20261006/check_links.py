@@ -13,6 +13,7 @@ DOCS = [
     'docs/implementation/wan-status.md',
     'docs/implementation/wan-release.md',
     'docs/evidence/wan-w14-20261006/summary.md',
+    'docs/evidence/wan-w14-20261006/commands.md',
 ] + [str(p.relative_to(ROOT)) for p in EVIDENCE.glob('*.md')]
 
 

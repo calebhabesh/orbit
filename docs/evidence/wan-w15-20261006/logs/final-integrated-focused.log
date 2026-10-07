@@ -1,0 +1,58 @@
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.chunk.verified
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified aggressive GC while transfer/ready state remains protected generation retired]; reused=1 fetched=1; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.before
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before aggressive GC while transfer/ready state remains protected generation retired]; reused=2 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.after
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.before_send
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after transfer.receipt.before_send aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.after_send
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after transfer.receipt.before_send transfer.receipt.after_send aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+--- PASS: TestWANW15DurableBoundariesMatchIndependentModel (3.59s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.chunk.verified (0.74s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.before (0.72s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.after (0.70s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.before_send (0.72s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.after_send (0.71s)
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement/publication
+    wan_w15_test.go:232: QUIC publication interrupted after filesystem transition → protected aggressive GC → TCP recovery; exact bytes/heads/authors/hash and no scan feedback
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement/conflict_and_retirement
+    wan_w15_test.go:316: offline conflicts converge through QUIC/TCP with two exact heads and both working candidates; GC preserves bytes; cached authenticated TCP denies retired device
+--- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement (1.47s)
+    --- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement/publication (0.74s)
+    --- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement/conflict_and_retirement (0.73s)
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.chunk.verified
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified aggressive GC while transfer/ready state remains protected generation retired]; reused=1 fetched=1; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.before
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before aggressive GC while transfer/ready state remains protected generation retired]; reused=2 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.after
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.before_send
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after transfer.receipt.before_send aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+=== RUN   TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.after_send
+    wan_w15_test.go:139: trace=[approved metadata authenticated quic transfer.chunk.verified transfer.chunk.verified transfer.readiness.before transfer.readiness.after transfer.receipt.before_send transfer.receipt.after_send aggressive GC while transfer/ready state remains protected generation retired]; reused=0 fetched=0; exact heads/author/manifests/working bytes/receipt
+--- PASS: TestWANW15DurableBoundariesMatchIndependentModel (3.59s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.chunk.verified (0.71s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.before (0.71s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.readiness.after (0.71s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.before_send (0.74s)
+    --- PASS: TestWANW15DurableBoundariesMatchIndependentModel/transfer.receipt.after_send (0.72s)
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement/publication
+    wan_w15_test.go:232: QUIC publication interrupted after filesystem transition → protected aggressive GC → TCP recovery; exact bytes/heads/authors/hash and no scan feedback
+=== RUN   TestWANW15RouteSwitchPublicationGCConflictAndRetirement/conflict_and_retirement
+    wan_w15_test.go:316: offline conflicts converge through QUIC/TCP with two exact heads and both working candidates; GC preserves bytes; cached authenticated TCP denies retired device
+--- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement (1.46s)
+    --- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement/publication (0.74s)
+    --- PASS: TestWANW15RouteSwitchPublicationGCConflictAndRetirement/conflict_and_retirement (0.72s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/replication	11.121s
+=== RUN   TestWANW15DestructiveTargetRefusesSymlinkedRoot
+--- PASS: TestWANW15DestructiveTargetRefusesSymlinkedRoot (0.00s)
+=== RUN   TestWANW15DestructiveTargetRefusesSymlinkedRoot
+--- PASS: TestWANW15DestructiveTargetRefusesSymlinkedRoot (0.00s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/testkit	1.005s
