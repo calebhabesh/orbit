@@ -1,0 +1,75 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=a8ef7e6 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=a8ef7e6 -X main.date=2026-10-01' -o bin/filesync-linux-arm64 ./cmd/filesync
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> <repo>/bin/filesync
+Building binary for linux/arm64 -> <repo>/bin/filesync-linux-arm64
+Generating filesync-v1.0.0-linux-amd64.tar.gz...
+Generating filesync_1.0.0_amd64.deb...
+Generating filesync-1.0.0-1.x86_64.rpm...
+Generating filesync-v1.0.0-linux-arm64.tar.gz...
+Generating filesync_1.0.0_arm64.deb...
+Generating filesync-1.0.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - filesync-v1.0.0-linux-amd64.tar.gz (18548030 bytes)
+  - orbit-v1.0.0-linux-amd64.tar.gz (18548030 bytes)
+  - filesync_1.0.0_amd64.deb (18545360 bytes)
+  - filesync-1.0.0-1.x86_64.rpm (18561674 bytes)
+  - filesync-v1.0.0-linux-arm64.tar.gz (17338246 bytes)
+  - orbit-v1.0.0-linux-arm64.tar.gz (17338246 bytes)
+  - filesync_1.0.0_arm64.deb (17331166 bytes)
+  - filesync-1.0.0-1.aarch64.rpm (17338090 bytes)
+  - release-manifest.json (786 bytes)
+  - SHA256SUMS
+python3 scripts/terminal_package_test.py --dist dist
+[
+  {
+    "scenario": "all-package-checksums",
+    "result": "passed"
+  },
+  {
+    "scenario": "amd64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "arm64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "standalone-install-repeat-upgrade-uninstall",
+    "result": "passed",
+    "assertions": [
+      "custom unit preserved",
+      "legacy identity/state preserved",
+      "ordinary bytes preserved",
+      "no user service changes"
+    ]
+  },
+  {
+    "scenario": "package-extracted-bare-PTY",
+    "result": "passed"
+  }
+]

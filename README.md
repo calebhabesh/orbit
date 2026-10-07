@@ -1,10 +1,5 @@
 # Orbit
 
-The next owner-selected expansion is [native WAN connectivity and simpler setup](docs/orbit-wan-implementation-plan.md),
-with preconfigured Orbit services and optional self-hosting. Its [W tracker](docs/implementation/wan-status.md)
-records planned work; the networking capabilities in that plan are not implemented.
-The existing product and validation evidence below retain their stated scope.
-
 Orbit is a background Linux file sync daemon with a keyboard interface and
 independent CLI commands. Ordinary files stay in local folders. SQLite records
 causal history and recovery journals; verified content is retained in a private
@@ -39,8 +34,17 @@ their vocabulary, identities, wire format and `.filesync-internal` scratch names
 `orbit legacy-browser` (retained alias `orbit launch`) explicitly opens the
 frozen browser compatibility interface; keep its bootstrap URL private.
 
+Devices on different networks pair and sync with no VPN, port forwarding or
+typed address. The default Automatic mode uses a preconfigured Orbit connection
+service to find peers, prefers direct LAN, TCP or QUIC/UDP paths, and falls back
+to an encrypted relay that cannot read your files. Local-only, manual/private
+network (LAN, Tailscale, WireGuard) and self-hosted modes are explicit
+alternatives. The [networking guide](docs/runbooks/networking.md) lists the
+networks tested, who runs the service, what it can see, and when its profile
+expires.
+
 Use the TUI's Create/Join forms to review existing contents, finite budgets and
-reachable LAN or existing Tailscale addresses. On the inviter, Add device creates
+the connection service's operator and privacy text. On the inviter, Add device creates
 a private invitation; the receiver submits a request, and the owner compares the
 exact verification code before approval. Sharing a second folder requires its
 own consent and reuses the device key. Keep invitations in private input/files,
@@ -65,12 +69,16 @@ separate-copy restore without silently choosing a conflict winner.
 - [Terminal operator guide](docs/runbooks/terminal-operator.md)
 - [Keyboard onboarding and sharing](docs/runbooks/terminal-onboarding.md)
 - [Conflicts, editor recovery and restore](docs/runbooks/terminal-recovery.md)
+- [Connecting across networks](docs/runbooks/networking.md)
 - [LAN/Tailscale prerequisites](docs/runbooks/private-network.md)
+- [Running the connection service or self-hosting](docs/orbit-net-operator.md)
 - [Backup and identity recovery](docs/runbooks/database-recovery.md)
 - [Binary rollback](docs/runbooks/rollback.md)
 - [Uninstall preserving files/state](docs/runbooks/uninstall.md)
 
-The [terminal release report](docs/evidence/terminal-t13-20261004/summary.md)
+The [combined release record](docs/evidence/wan-w17-20261007/summary.md)
+links every WAN and terminal acceptance item to its evidence, including what was
+not tested. The [terminal release report](docs/evidence/terminal-t13-20261004/summary.md)
 records native journeys, resource measurements, failures and remaining checks.
 The [case study](docs/case-study.md) explains the design and measured tradeoffs;
 [portfolio bullets](docs/portfolio-bullets.md) link concrete supporting evidence.

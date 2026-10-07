@@ -86,7 +86,13 @@ orbit service start --state /absolute/selected/state
 orbit service status --state /absolute/selected/state
 ```
 
-The shipped unit selects `~/.local/state/filesync`; a legacy/custom state needs
+If setup or the TUI already started a daemon outside systemd, `service start`
+returns `MANUAL_DAEMON_RUNNING` instead of reporting that daemon as the service:
+run `orbit stop`, then `orbit service start`, or let login startup take over at
+the next login.
+
+The shipped unit selects `~/.local/state/filesync` (written as `%h/...`, which
+Orbit expands when matching the selected state); a legacy/custom state needs
 an operator-reviewed unit/drop-in with matching ExecStart and ExecStop paths.
 Keep customized listener flags, profile, resource limits and startup policy.
 Never enable an alias for a second state expecting it to adopt a different daemon.
@@ -97,7 +103,9 @@ your host policy, then `orbit service enable --mode unattended`. Orbit never
 changes that privileged policy. Verify actual logout/login/boot and subsequent
 capture on the intended host; local containers do not establish those behaviors.
 
-Configure reachable LAN/Tailscale peer and enrollment addresses in Setup Advanced
+Ordinary cross-network pairing needs no addresses: see
+[connecting across networks](networking.md). For Manual mode, configure
+reachable LAN/Tailscale peer and enrollment addresses in Setup Advanced
 or reviewed runtime settings, then restart the selected daemon if listeners change.
 Owner control stays on loopback. See [network prerequisites](private-network.md),
 [terminal operator guide](terminal-operator.md) and [safe uninstall](uninstall.md).

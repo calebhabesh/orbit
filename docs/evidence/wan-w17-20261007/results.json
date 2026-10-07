@@ -1,0 +1,100 @@
+{
+  "reproduction": [
+    {
+      "command": "make GOFLAGS=-v check",
+      "rc": 0,
+      "wall_s": 1719,
+      "terminal_suite_s": 1506.284,
+      "note": "terminal timeout raised 30m -> 45m"
+    },
+    {
+      "command": "go test -race -count=1 -timeout=45m -v ./...",
+      "rc": 0,
+      "wall_s": 1615,
+      "packages_ok": 21,
+      "failures": 0
+    },
+    {
+      "command": "make demo",
+      "rc": 0
+    },
+    {
+      "command": "make package (repeat)",
+      "rc": 0,
+      "identical_to_check_build": true
+    },
+    {
+      "command": "make package-orbit-net x2",
+      "rc": 0,
+      "identical": true
+    },
+    {
+      "command": "make test-terminal-release",
+      "rc": 0,
+      "wall_s": 146,
+      "tests": 8,
+      "repetitions": 2
+    },
+    {
+      "command": "python3 -O -m unittest discover -s scripts/validation -p 'test_*.py' -v",
+      "rc": 0,
+      "tests": 36
+    },
+    {
+      "command": "orphaned test daemons after the campaign",
+      "count": 0
+    }
+  ],
+  "final_tree": [
+    {
+      "command": "make test-terminal-packages",
+      "rc": 0,
+      "includes": "share/doc/filesync/runbooks/networking.md"
+    }
+  ],
+  "lifecycle_vm": [
+    {
+      "run": 1,
+      "success": false,
+      "finding": "packaged unit (%h state) refused by service enable: SERVICE_SELECTION_REQUIRED"
+    },
+    {
+      "run": 2,
+      "success": false,
+      "finding": "after %h fix, start reported the setup-launched daemon as the service; unit could not take the lock"
+    },
+    {
+      "run": 3,
+      "success": false,
+      "finding": "MANUAL_DAEMON_RUNNING refusal works; orbit stop missing from the Orbit entry; harness session count wrong for systemd 257 manager sessions"
+    },
+    {
+      "run": 4,
+      "success": true
+    },
+    {
+      "run": 5,
+      "success": true,
+      "final_source": true,
+      "login_capture_s": 2.2,
+      "logout_stop_s": 10.8,
+      "boot_to_capture_s": 13.8,
+      "no_user_session_after_boot": true
+    }
+  ],
+  "focused": [
+    {
+      "command": "go test -count=1 -race ./internal/control/... ./internal/terminal/... ./cmd/filesync/... ./tests/integration/",
+      "rc": 0
+    },
+    {
+      "command": "go test -count=1 -race ./tests/terminal -run TestTerminalT02",
+      "rc": 0
+    },
+    {
+      "command": "TestSelectedServiceAcceptsPackagedHomeSpecifier before fix",
+      "rc": 1,
+      "expected": "red"
+    }
+  ]
+}

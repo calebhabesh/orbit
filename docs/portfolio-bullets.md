@@ -19,6 +19,25 @@ These drafts describe the implemented project and recorded validation.
   negative results; [repeat package hashes](evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reproduction.json)
   and [raw measurements](evidence/release-20261001/benchmark-repeated/benchmarks.json)
   support workload-specific claims.
+- Added native cross-network connectivity with no VPN: signed rendezvous
+  leases, QUIC over ICE/STUN direct paths, and an encrypted WebSocket relay
+  fallback that carries the same pinned device TLS. Deployed the operated
+  service with a signed release profile and alerting. Between a home network
+  and an Oracle VPS, a 4 MiB version arrived over direct UDP in 6–9 s, and
+  with UDP blocked, 1 MB went over the relay in 5–8 s each way with zero
+  direct bytes ([native runs](evidence/wan-w16-20261006/native-hosted/summary.md)).
+- Found and fixed defects that only showed up natively: relay recovery after
+  losing UDP mid-session, which previously never recovered in 180 s and now
+  takes about 5.5 s
+  ([fix evidence](evidence/wan-w16-20261006/quota-fix/summary.md)); profile
+  rotation stranding pairings; and a packaged user service that could not be
+  enabled. A disposable-VM login/logout/reboot drill confirmed the last fix
+  ([W17 record](evidence/wan-w17-20261007/summary.md)).
+
+The relay forwards ciphertext between online devices. The VPS *replica* is a
+separate Orbit device that stores and forwards versions. Describe them as two
+roles. Single-run timings come from one home network and one cloud region;
+school, corporate, CGNAT and IPv6-only networks were not tested.
 
 Optional measured result: a 1-GiB file tail edit fetched one 1-MiB chunk and
 reused 1,023; one full-size sample used 98.31% fewer TLS/TCP stream bytes than
@@ -28,4 +47,5 @@ with its workload and sample count; it is not a general speedup.
 
 Personal use and the owner's comprehensive project review follow delivery.
 Technical release status and remaining native checks are recorded in the
-[terminal release report](evidence/terminal-t13-20261004/summary.md).
+[terminal release report](evidence/terminal-t13-20261004/summary.md) and the
+[combined W17 release record](evidence/wan-w17-20261007/summary.md).

@@ -4,7 +4,7 @@ Status: 2026-10-05: **WG1–WG3 closed for local design composition** by
 [W01 outcomes](implementation/wan-contracts.md) and
 [executed evidence](evidence/wan-w01-20261005/summary.md). W02 executes the manual manager/state-model integration; W03 authenticates the
 production local directory/profile/control path; W04 records live encrypted relay acceptance. Production W05 routed-enrollment acceptance is recorded in the tracker; ordinary
-CLI/TUI setup acceptance remains with W06/W07; W12 owns qualified status/doctor and privacy-control presentation. WG4 full local composition closed by W09/W10; WG6 pending; WG5 has W01/W02 model/manual integration evidence and
+CLI/TUI setup acceptance remains with W06/W07; W12 owns qualified status/doctor and privacy-control presentation. WG4 full local composition closed by W09/W10; WG6 closed 2026-10-07 (see its outcome below); WG5 has W01/W02 model/manual integration evidence and
 retains W11 native roaming/timing closure ownership. The owner approved native WAN and hosted
 defaults; these gates resolve implementation compositions inside that direction.
 Execute them in marked disposable environments. Planning/research alone closes

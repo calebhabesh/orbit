@@ -3,7 +3,7 @@
 Status: 2026-10-05: W01 freezes [strict network/v3 contracts](../schemas/network-v1.md)
 and [local WG1–WG3 outcomes](implementation/wan-contracts.md). W02 manual transport and W03 directory/profile integration are complete; production
 W04 live relay integration is complete; W05 routed-enrollment integration is recorded in the tracker; W06 adds reviewed
-CLI activation without changing signed bytes; WG4 remains W09/W10. Existing [causal protocol](protocol.md),
+CLI activation without changing signed bytes; WG4 closed in W09/W10, and W13/W16 record the operated service and its client-side signed-operation pacing. W17 (2026-10-07) found no protocol contradiction with the implementation. Existing [causal protocol](protocol.md),
 membership encoding, version IDs, chunk hashes and receipt boundaries remain
 authoritative. This document owns the new routing protocol, not file causality.
 

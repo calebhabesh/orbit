@@ -192,7 +192,7 @@ Eligibility amendment, owner-directed 2026-10-06: W13's completed technical
 implementation/rehearsal evidence satisfies this packet's development
 prerequisite while the offline authority backup and actual alert delivery remain
 deferred in W13/WG6. Run W15 against disposable fixtures. Wider distribution,
-W16 hosted-default acceptance and W17 release remain gated on closing WG6.
+W16 hosted-default acceptance and W17 release remain gated on closing WG6 (closed 2026-10-07).
 
 Required work:
 

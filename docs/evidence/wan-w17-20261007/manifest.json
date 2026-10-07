@@ -1,0 +1,26 @@
+{
+  "packet": "W17",
+  "date": "2026-10-07",
+  "worker": "Claude Code session (Opus 5.5), no delegation",
+  "base_revision": "a8ef7e6b65f580ec6805fd970e62835ddd5d7866",
+  "validation_snapshot": {
+    "commit": "0c484297c2d92583bb6c467534053a904413781f",
+    "note": "isolated commit object built from the working tree with a temporary index; not on any branch; runtime/test/build tree hash below",
+    "runtime_tree_listing_sha256": "e737fb87b5042b311ca292eab84010fa4b827d517965f07f2007657ffe3902c2",
+    "changes_after_snapshot": "documentation and evidence only (docs/, README.md); verified with git diff --name-only"
+  },
+  "go": "go1.27.1-X:nodwarf5 linux/amd64",
+  "hosts": {
+    "workstation": "Arch Linux, kernel 7.2.8, 16 CPUs, 60 GiB, /dev/kvm",
+    "lifecycle_guest": "Debian 13 genericcloud amd64 (KVM, 2 vCPU, 2 GiB), kernel 6.12.111+deb13-cloud-amd64, systemd 257.13-1~deb13u1; disposable overlay, deleted after each run"
+  },
+  "network_assumptions": "No new native WAN run in W17: runtime changes touch only user-service management and CLI entry. Native WAN evidence is W16 runs 14-20, whose packages are reproduced byte-for-byte from base_revision.",
+  "w16_package_provenance": {
+    "method": "clone, checkout d253825, apply diff d253825..a8ef7e6 (tree verified equal to a8ef7e6), make package COMMIT=d253825",
+    "orbit-v1.0.0-linux-arm64.tar.gz": "596ceece2498193ecf51b866252b794033f2a3a2bf93f6ec43ab2dcf9cd218fb",
+    "orbit-v1.0.0-linux-amd64.tar.gz": "fa24501b3e7090fc62d0f861bd41c6cff8b3d033ff24d950932dc1ba09cc7546",
+    "matches_w16_runs_17_20": true
+  },
+  "filesystem_assumptions": "marked disposable roots and VM overlays only; no personal folder, pilot root or shared host touched",
+  "secrets": "gitleaks dir docs: 606 generic-entropy matches classified as public key pins, review/head fingerprints, hash-manifest file names and kernel certificate IDs; no credential, private key or ntfy topic URL found"
+}

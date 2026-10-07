@@ -294,10 +294,12 @@ the host, its addresses, egress plan and budget values; the TLS issuance/renewal
 process; the authority key's custody with a second offline copy; the signed
 release profile and its privacy text; and the monitoring destination with an
 on-call contact. Example origins and private test profiles are development-only.
-As of 2026-10-07 both are recorded: `orbit-net alert` posts to the owner's ntfy
-topic (live receipt confirmed) and the owner holds a Bitwarden copy of the
-authority key (restore check waived). Earlier, both were open. The owner deferred them to allow W15 isolated development under
-[the sequencing amendment](orbit-wan-implementation-plan.md#owner-directed-sequencing-amendment--2026-10-06).
-Both remain required before wider package distribution, W16 hosted-default
-acceptance and combined W17 release. Deferral does not establish backup custody
-or working notification delivery.
+As of 2026-10-07 all items are recorded and WG6 is closed: `orbit-net alert`
+posts to the owner's ntfy topic (live receipt confirmed) and the owner holds a
+Bitwarden copy of the authority key. Restoring that copy and checking it with
+`orbit-net key verify` was waived by the owner and remains unexecuted. Both items
+were earlier deferred under
+[the sequencing amendment](orbit-wan-implementation-plan.md#owner-directed-sequencing-amendment--2026-10-06);
+that deferral gave no acceptance credit, and these 2026-10-07 records are what
+close the gate. Any new operator must establish the same items before
+distributing packages that carry its profile.

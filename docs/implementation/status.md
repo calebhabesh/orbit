@@ -1,8 +1,9 @@
 # Implementation status
 
 Active expansion: the owner-selected [native WAN plan](../orbit-wan-implementation-plan.md)
-and [W tracker](wan-status.md), 2026-10-05. W00 is first eligible; all W implementation
-and runtime acceptance are unstarted. Existing entries below retain their dated
+and [W tracker](wan-status.md), 2026-10-05. W00–W17 are recorded there; the
+[combined W17 release record](../evidence/wan-w17-20261007/summary.md) links all
+WAN and inherited T13 evidence. Existing entries below retain their dated
 P/O/T evidence and limitations, including deferred P17 owner observations.
 
 ## Owner-directed delivery amendment — 2026-10-04

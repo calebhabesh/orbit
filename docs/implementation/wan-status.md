@@ -1,10 +1,15 @@
 # Orbit native WAN implementation status
 
-Updated: 2026-10-07. **W00–W15 complete for their recorded acceptance. WG6 closed 2026-10-07: live-received ntfy alerting plus owner-attested Bitwarden authority-key copy (restore verification waived by the owner, unexecuted).** The owner
+Updated: 2026-10-07. **W00–W17 complete for their recorded acceptance; the WAN plan is delivered.**
+The [combined W17 release record](../evidence/wan-w17-20261007/summary.md) and its
+[traceability matrix](../evidence/wan-w17-20261007/traceability.md) link every
+packet, gate and requirement to evidence and list the open conditions. WG6 closed
+2026-10-07 (live-received ntfy alerting; owner-attested Bitwarden authority-key
+copy, restore check waived and unexecuted). W16 covers the reachable networks;
+school/corporate/CGNAT/IPv6 remain unexecuted for lack of access. The owner
 selected native WAN and confirmed preconfigured services with optional self-hosting.
-Under the owner's 2026-10-06 sequencing amendment, the two WG6 operator tasks
-are deferred; W15 used W13's implemented technical prerequisites and disposable
-fixtures and now passes its recorded acceptance. **W16 complete for its reachable native acceptance (2026-10-07); school/corporate/CGNAT/IPv6 remain unexecuted for lack of access.** Next: **W17**.
+The entries below are dated history; earlier "pending"/"open" statements in them
+are superseded by later entries, not rewritten.
 The [master plan](../orbit-wan-implementation-plan.md), [UX](../orbit-wan-ux.md),
 [architecture](../orbit-wan-architecture.md), [network protocol](../orbit-wan-protocol.md)
 and [design gates](../orbit-wan-design-gates.md) form the implementation handoff.
@@ -38,10 +43,10 @@ release W17 requires the inherited relevant technical checks.
 | W11 Roaming/policy | complete | W08, W09, W10 | [Direct](wan-direct.md#w11--route-policy-roaming-and-fair-progress) |
 | W12 Diagnostics/control | complete for CLI/TUI and local privacy/diagnostic acceptance | W06, W07, W11 | [Release](wan-release.md#w12--observations-diagnostics-and-controls) |
 | W13 Operated services | complete: hosted service live; alerting received; owner-attested key copy (restore check waived) | W03, W04, W10 | [Release](wan-release.md#w13--operated-defaults-and-self-hosting) |
-| W14 Compatibility/packages | complete for recorded acceptance, final-source validation passed (publication gated on WG6) | W05, W06, W07, W12, W13 | [Release](wan-release.md#w14--migration-mixed-versions-and-packaged-defaults) |
+| W14 Compatibility/packages | complete for recorded acceptance, final-source validation passed (WG6 publication gate closed 2026-10-07) | W05, W06, W07, W12, W13 | [Release](wan-release.md#w14--migration-mixed-versions-and-packaged-defaults) |
 | W15 Failure/resource campaign | complete for recorded acceptance | W11, W12, W13 technical evidence, W14 | [Release](wan-release.md#w15--integrated-failures-security-and-resources) |
 | W16 Native WAN | complete for reachable networks; school/corporate/CGNAT/IPv6 unexecuted | W07, W11, W13, W14, W15 | [Release](wan-release.md#w16--real-wan-and-ordinary-setup-campaign) |
-| W17 Combined release | pending | W00–W16, relevant T13 technical checks | [Release](wan-release.md#w17--combined-release-and-handoff) |
+| W17 Combined release | complete for recorded release conditions (2026-10-07) | W00–W16, relevant T13 technical checks | [Release](wan-release.md#w17--combined-release-and-handoff) |
 
 ## Gate tracker
 
@@ -52,7 +57,7 @@ release W17 requires the inherited relevant technical checks.
 | WG3 Routed enrollment | closed (local gate) | W01 |
 | WG4 QUIC/ICE composition | closed for local native/emulator composition | W09 transport and W10 full integration evidence |
 | WG5 Connection/roaming policy | closed for production composition, local native/emulator and Pi acceptance | W11 production evidence |
-| WG6 Operated defaults | open: operator, origin, TLS, release profile live; authority backup and alerting pending | W13 |
+| WG6 Operated defaults | closed 2026-10-07: operator, origin, TLS, release profile live; alerting received; owner-attested key copy (restore check waived) | W13 |
 
 ## Requirement coverage
 
@@ -889,7 +894,7 @@ hosted-default acceptance and wider distribution still require closing WG6.
 
 ## W16 — real WAN and ordinary setup campaign
 
-State: **partial; safe runner preparation and read-only host inventory**.
+State: **complete for reachable networks (closeout 2026-10-07, below)**; this entry began as safe runner preparation and read-only host inventory.
 W07/W11/W13–W15 technical evidence was read and preserved. WG6 remains open
 for verified independent authority backup and received firing/recovery alerts;
 W16 hosted-default tests and wider distribution remain gated. T13 technical
@@ -1010,3 +1015,36 @@ School/corporate/CGNAT/IPv6 remain unexecuted. Validation roots on all hosts and
 the Pi/VPS namespaces were removed; pilot roots were untouched.
 
 Next: **W17 — combined release and handoff**.
+
+## W17 — combined release and handoff
+
+State: **complete for the recorded release conditions** (2026-10-07). Worker:
+Claude Code session, no delegation. The W00–W16 records, T13 status and P17
+deferral were read and preserved. The owner chose a disposable KVM guest for
+the last T13 technical check.
+
+Changes: `internal/control/service.go` now expands `%h` when matching the
+packaged unit's state, and requires the unit's `MainPID` to own the state for
+`start`/`restart`; otherwise it returns `MANUAL_DAEMON_RUNNING`.
+`terminal_lifecycle.go` no longer duplicates error codes in service failures.
+The Orbit entry gains `orbit stop` (help and completions). The TUI maps the new
+code. Also: regressions (`internal/control/service_test.go`, T02 lifecycle
+mock), `scripts/validation/service_boot_vm.py`, and a 45-minute `make check`
+terminal timeout. Docs: [networking guide](../runbooks/networking.md),
+operations, install runbook, operator runbook, case study, portfolio bullets,
+README and WAN spec status lines.
+
+Validation ([evidence](../evidence/wan-w17-20261007/summary.md)): the
+committed source rebuilds the W16 field packages byte-for-byte. The VM
+login/logout/unattended-boot drill passes (run 5, final source). On the
+isolated snapshot `0c48429`, all of the following pass: `make GOFLAGS=-v check`
+(1,719 s; terminal 1,506 s); uncached full race (1,615 s, 21 packages); demo;
+byte-identical repeated client and operator packages; T13 release tests twice
+under race; and 36 harness tests. No orphaned test daemons remain. Only
+documentation changed after the snapshot, and the final-tree package test
+passes.
+
+No new native WAN run: the runtime changes do not touch networking, and W16
+remains the native evidence. Open conditions, operator actions and future
+extensions are listed in the release record. P17 personal use and unaided
+explanation remain deferred. There is no further W packet.

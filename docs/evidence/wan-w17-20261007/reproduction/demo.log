@@ -1,0 +1,40 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=0c48429 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+go run ./scripts/local_demo.go --quick
+[1;35m===============================================================[0m
+[1;35m       File Sync: Local Multi-Process Replication Demo         [0m
+[1;35m===============================================================[0m
+
+[1;36m[Step 1] Initializing Node A (Alice) and Node B (Bob) with mutual TLS[0m
+       [0;37mNode A Device: fde270bc576c... (Key Pin: 889ab2a814e4091d...)[0m
+       [0;37mNode B Device: e886e1040e69... (Key Pin: 195baafe10460465...)[0m
+       [1;32m✓ Mutual pairing approved for shared folder: dddddddddddd...[0m
+
+[1;36m[Step 2] Demonstrating normal file creation and verified transfer[0m
+       [0;37mNode A authors 'README.md'[0m
+       [0;37mNode A serving TLS on https://127.0.0.1:42801[0m
+       [1;32m✓ Node B received 'README.md' and verified SHA-256 chunk byte-for-byte[0m
+
+[1;36m[Step 3] Simulating offline partition & concurrent edits on both nodes[0m
+       [0;37mNode A (offline) modifies 'architecture.md' (Proposal: P2P)[0m
+       [0;37mNode B (offline) modifies 'architecture.md' (Proposal: VPS Hub)[0m
+       [1;32m✓ Both nodes captured independent local versions into causal DAG[0m
+
+[1;36m[Step 4] Reconnecting nodes: bidirectional gossip and conflict detection[0m
+       [0;37mDetected Conflict on 'architecture.md':[0m
+       [0;37m   Head 1: Author=e886e104, Counter=1[0m
+       [0;37m   Head 2: Author=fde270bc, Counter=2[0m
+       [1;32m✓ Invariant I03 Preserved: Concurrent edits retained without silent overwrite[0m
+
+[1;36m[Step 5] Operator performs reviewed conflict resolution via CLI[0m
+       [0;37mResolving 'architecture.md' by selecting Head 1 with token 14b22884e5bb...[0m
+       [1;32m✓ Resolution committed atomically to causal version DAG[0m
+       [1;32m✓ Both Node A and Node B converged with 0 remaining conflicts[0m
+
+[1;36m[Step 6] Demonstration complete: Clean process shutdown and disposable teardown[0m
+       [1;32m✓ All invariants verified: authenticated TLS, verified chunk transfer,[0m
+       [1;32m✓ causal concurrency preservation, reviewed resolution, and convergence.[0m
+
+[1;32m[PASS] Local multi-process demo completed successfully.[0m
+
+       [0;37mCleaning up disposable environment: /tmp/filesync-demo-2348066868[0m
