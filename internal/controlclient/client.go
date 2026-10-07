@@ -88,9 +88,20 @@ func (c *Client) Call(ctx context.Context, method, path string, input, output an
 		}
 		body = bytes.NewReader(b)
 	}
-	callTimeout, headerTimeout := 10*time.Second, 5*time.Second
-	if q, ok := input.(tc.Query); ok && q.Kind == "network_doctor" {
-		callTimeout, headerTimeout = 25*time.Second, 25*time.Second
+	// The daemon answers terminal calls under one lock that its setup worker
+	// holds for up to an 8 s slice (app.go), and a setup/adopt/join mutation
+	// advances its job for up to 30 s before replying. Wait past those bounds
+	// so a slow enrollment round trip is not reported as a failure.
+	callTimeout, headerTimeout := 15*time.Second, 12*time.Second
+	switch v := input.(type) {
+	case tc.Query:
+		if v.Kind == "network_doctor" {
+			callTimeout, headerTimeout = 25*time.Second, 25*time.Second
+		}
+	case tc.Mutation:
+		if v.Kind == "setup" || v.Kind == "adopt" || v.Kind == "join" {
+			callTimeout, headerTimeout = 40*time.Second, 35*time.Second
+		}
 	}
 	ctx, cancel := context.WithTimeout(ctx, callTimeout)
 	defer cancel()
