@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-count=1",
+    "-v",
+    "-timeout=8m",
+    "./tests/terminal",
+    "-run",
+    "^TestWANW16NativeRunnerRehearsal$"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T22:34:38.581761+00:00",
+  "source_before": "93aa489fdd6b1e72ff0476acf19668d554522d2c39080f79802a4a498ed5f3fb",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 1,
+  "duration_seconds": 55.92,
+  "finished_at": "2026-10-06T22:35:34.501420+00:00",
+  "source_after": "d8636cb3b0e90c93c43ad6b688f5a4d0214126f585ebcf4a4db19fca6e6719d0"
+}

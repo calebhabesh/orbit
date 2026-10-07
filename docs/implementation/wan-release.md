@@ -140,7 +140,7 @@ Acceptance evidence:
   Automatic mode removes normal IP/port/Tailscale steps. M4 includes operator
   runbooks and package provenance, without claiming unexecuted WAN behavior.
 
-### W14 outcome — implementation recorded; final-source validation in progress, 2026-10-06
+### W14 outcome — complete for implementation and recorded acceptance, 2026-10-06
 
 Ordinary amd64/arm64 builds embed the live release profile (epoch 1, digest
 `356f0ced…ec165`, expires 2027-01-04) under a frozen authority; fresh setup goes
@@ -175,11 +175,24 @@ receiver cannot use an Automatic device's routed invitation (issue v2 from Manua
 mode or upgrade it); short human-typeable codes need a service mailbox (future).
 Evidence: [W14 summary](../evidence/wan-w14-20261006/summary.md).
 
+Final-source validation: the original aggregate failed W07 PTY after starting
+before the final inviter-label edit. The existing correction passes its
+standalone production-binary regression, all 12 W14 tests under race detection,
+affected package race tests and the fresh complete `make check`. Command/source
+records and remaining conditions are in the
+[W14 closeout](../evidence/wan-w14-closeout-20261006/summary.md).
+
 ## W15 — Integrated failures, security and resources
 
 Dependencies: W11–W14. Change: reproducible disposable network/process harness,
 adversarial/fuzz/model campaigns, minimized regressions, measurements and fixes.
 Read existing verification/fault-safety contract. Invariants: I01–I28, N01–N10.
+
+Eligibility amendment, owner-directed 2026-10-06: W13's completed technical
+implementation/rehearsal evidence satisfies this packet's development
+prerequisite while the offline authority backup and actual alert delivery remain
+deferred in W13/WG6. Run W15 against disposable fixtures. Wider distribution,
+W16 hosted-default acceptance and W17 release remain gated on closing WG6.
 
 Required work:
 
@@ -208,6 +221,14 @@ Acceptance evidence:
   under declared limits; protected captured bytes and fair large work survive.
 - Quantitative results name network/host/topology/library versions and limitations;
   no universal NAT success percentage is derived from a small simulated matrix.
+
+W15 implementation outcome: **complete for recorded local/native/emulator/Pi acceptance**. The guarded native/emulator/Pi
+campaign and diagnosed repairs are recorded in the
+[evidence summary](../evidence/wan-w15-20261006/summary.md) and
+[status](wan-status.md#w15--integrated-failures-security-and-resources). Final
+`make GOFLAGS=-v check` and uncached full race pass on the frozen source, with
+actual standalone guarded impairment/MTU/ICE and Pi measurements. Physical
+WAN/N10 remains W16, unexecuted here; WG6, T13 and P17 obligations are retained.
 
 ## W16 — Real WAN and ordinary setup campaign
 
@@ -243,6 +264,25 @@ Acceptance evidence:
   evidence; old manual/SSH-relay campaigns do not establish this new WAN guarantee.
 - No claim of success on an inaccessible school/corporate network. Keep exact
   missing native conditions in status; unavailable hardware is not fabricated.
+
+W16 preparation outcome, 2026-10-06: **partial**. Delivered a
+[safe CLI runner and route inventory](../../scripts/validation/WAN_NATIVE.md)
+with a local production-binary self-host rehearsal. The home laptop/Pi and
+Oracle VPS can provide two physical replica networks, but existing VPN links
+require an isolated fixture and actual route proof. WG6 still gates hosted
+execution. Physical bundled-profile CLI/TUI direct/relay, impairment/roaming,
+disposable service restart and three-host engine cases remain unexecuted.
+See [evidence and handoff](../evidence/wan-w16-20261006/summary.md).
+
+W16 outcome, 2026-10-07: **complete for reachable networks.** Between the Pi
+(home) and the Oracle VPS, each confined to a namespace NATed to its physical
+uplink, packaged bundled-profile CLI and keyboard-TUI onboarding, real direct
+(4 MiB over UDP) and relay sync, forced relay with UDP blocked, an address
+change, an owner-approved service restart during forced relay, a second folder,
+and laptop/Pi/VPS forwarding, conflict and restore pass, with receipts, hashes,
+heads and resource samples recorded
+([native evidence](../evidence/wan-w16-20261006/native-hosted/summary.md)).
+School/corporate/CGNAT/IPv6 are unexecuted (no access) and make no claim.
 
 ## W17 — Combined release and handoff
 

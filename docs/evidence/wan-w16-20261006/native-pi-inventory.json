@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "python3",
+    "scripts/validation/wan_native.py",
+    "--topology",
+    "docs/evidence/wan-w16-20261006/topology-pi.json",
+    "--route-targets",
+    "132.145.111.200",
+    "--inventory-only",
+    "--output",
+    "docs/evidence/wan-w16-20261006/native-pi-inventory"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T22:41:14.429951+00:00",
+  "source_before": "1e60df207d443eb80953b43f684811f23aab3e08457954a6b2544b4a27bd9366",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 1.167,
+  "finished_at": "2026-10-06T22:41:15.596794+00:00",
+  "source_after": "1e60df207d443eb80953b43f684811f23aab3e08457954a6b2544b4a27bd9366"
+}

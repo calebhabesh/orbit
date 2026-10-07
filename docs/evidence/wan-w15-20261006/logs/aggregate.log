@@ -1,0 +1,666 @@
+go test -timeout=30m ./tests/terminal/...
+=== RUN   TestTerminalT00WrongFolderCapability
+    baseline_test.go:184: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00WrongFolderCapability (0.00s)
+=== RUN   TestTerminalT00SameKeySecondFolder
+    baseline_test.go:200: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00SameKeySecondFolder (0.00s)
+=== RUN   TestTerminalT00InviterVerification
+    baseline_test.go:224: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00InviterVerification (0.00s)
+=== RUN   TestTerminalT00JoinPersistence
+    baseline_test.go:253: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00JoinPersistence (0.00s)
+=== RUN   TestTerminalT00RootPreview
+    baseline_test.go:295: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00RootPreview (0.00s)
+=== RUN   TestTerminalT00JoinReadiness
+    baseline_test.go:322: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00JoinReadiness (0.00s)
+=== RUN   TestTerminalT00PeerEnrollmentRoute
+    baseline_test.go:356: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00PeerEnrollmentRoute (0.00s)
+=== RUN   TestTerminalT00InvitationEndpoint
+    baseline_test.go:385: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00InvitationEndpoint (0.00s)
+=== RUN   TestTerminalT00DetailObservation
+    baseline_test.go:405: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00DetailObservation (0.00s)
+=== RUN   TestTerminalT00CLI
+    baseline_test.go:440: deliberately failing baseline; opt in with ORBIT_TERMINAL_BASELINE=1
+--- SKIP: TestTerminalT00CLI (0.00s)
+=== RUN   TestTerminalT06ContextResolutionCwdAndName
+=== PAUSE TestTerminalT06ContextResolutionCwdAndName
+=== RUN   TestTerminalT06AmbiguousAndOutsideRootContext
+=== PAUSE TestTerminalT06AmbiguousAndOutsideRootContext
+=== RUN   TestTerminalT06StaleAndUnavailableRoot
+=== PAUSE TestTerminalT06StaleAndUnavailableRoot
+=== RUN   TestTerminalT06PathSafetyAndLiteralPaths
+=== PAUSE TestTerminalT06PathSafetyAndLiteralPaths
+=== RUN   TestTerminalT06OutputEscapingAndControlCharacters
+=== PAUSE TestTerminalT06OutputEscapingAndControlCharacters
+=== RUN   TestTerminalT06LiveAndStoppedAdapterParity
+=== PAUSE TestTerminalT06LiveAndStoppedAdapterParity
+=== RUN   TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== PAUSE TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== RUN   TestTerminalT08ExactReadsLiveStoppedAndGC
+--- PASS: TestTerminalT08ExactReadsLiveStoppedAndGC (0.07s)
+=== RUN   TestTerminalT08ReviewedSelectReplayAndStale
+--- PASS: TestTerminalT08ReviewedSelectReplayAndStale (0.02s)
+=== RUN   TestTerminalT08RestoreProvenanceCopyAndCollision
+--- PASS: TestTerminalT08RestoreProvenanceCopyAndCollision (0.02s)
+=== RUN   TestTerminalT08SessionStreamedMergeAndStaleArrival
+--- PASS: TestTerminalT08SessionStreamedMergeAndStaleArrival (0.64s)
+=== RUN   TestTerminalT08AtomicReplayAfterCommitAndCopyPartial
+--- PASS: TestTerminalT08AtomicReplayAfterCommitAndCopyPartial (0.03s)
+=== RUN   TestTerminalT08CLIHistoryReviewRestoreExportAndTools
+    content_recovery_test.go:434: CLI history peak_rss_kib=66308
+    content_recovery_test.go:441: CLI restore peak_rss_kib=66308
+    content_recovery_test.go:442: CLI restore peak_rss_kib=66308
+    content_recovery_test.go:448: CLI export peak_rss_kib=66308
+    content_recovery_test.go:455: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:459: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:465: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:469: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:469: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:481: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:489: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:494: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:499: CLI conflicts peak_rss_kib=66308
+    content_recovery_test.go:512: CLI conflicts peak_rss_kib=66308
+--- PASS: TestTerminalT08CLIHistoryReviewRestoreExportAndTools (0.91s)
+=== RUN   TestTerminalT08UnavailableRestoreDeletedAndStructuralPages
+--- PASS: TestTerminalT08UnavailableRestoreDeletedAndStructuralPages (0.02s)
+=== RUN   TestTerminalT08InterruptedUploadSessionRestartAndToolLimit
+--- PASS: TestTerminalT08InterruptedUploadSessionRestartAndToolLimit (0.04s)
+=== RUN   TestTerminalT08RenewExpiryAndReviewedDiscard
+--- PASS: TestTerminalT08RenewExpiryAndReviewedDiscard (0.02s)
+=== RUN   TestTerminalT03NetworkEnrollmentApprovalAndReplay
+--- PASS: TestTerminalT03NetworkEnrollmentApprovalAndReplay (0.02s)
+=== RUN   TestTerminalT03InviterPinBeforeDisclosure
+2026/10/06 17:26:19 http: TLS handshake error from 127.0.0.1:55950: remote error: tls: bad certificate
+--- PASS: TestTerminalT03InviterPinBeforeDisclosure (0.02s)
+=== RUN   TestTerminalT03ScopeAndProofRejections
+=== RUN   TestTerminalT03ScopeAndProofRejections/scope
+=== RUN   TestTerminalT03ScopeAndProofRejections/signature
+=== RUN   TestTerminalT03ScopeAndProofRejections/certificate
+=== RUN   TestTerminalT03ScopeAndProofRejections/inviter
+=== RUN   TestTerminalT03ScopeAndProofRejections/endpoint
+=== RUN   TestTerminalT03ScopeAndProofRejections/expired_nonce
+=== RUN   TestTerminalT03ScopeAndProofRejections/altered_label
+--- PASS: TestTerminalT03ScopeAndProofRejections (0.15s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/scope (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/signature (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/certificate (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/inviter (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/endpoint (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/expired_nonce (0.02s)
+    --- PASS: TestTerminalT03ScopeAndProofRejections/altered_label (0.02s)
+=== RUN   TestTerminalT03WrongScopeChallengeAndRevocation
+--- PASS: TestTerminalT03WrongScopeChallengeAndRevocation (0.02s)
+=== RUN   TestTerminalT03ConcurrentSingleUse
+--- PASS: TestTerminalT03ConcurrentSingleUse (0.02s)
+=== RUN   TestTerminalT03StatusRequiresPossession
+=== RUN   TestTerminalT03StatusRequiresPossession/wrong_key
+=== RUN   TestTerminalT03StatusRequiresPossession/replay
+=== RUN   TestTerminalT03StatusRequiresPossession/arbitrary_id
+--- PASS: TestTerminalT03StatusRequiresPossession (0.07s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/wrong_key (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/replay (0.02s)
+    --- PASS: TestTerminalT03StatusRequiresPossession/arbitrary_id (0.02s)
+=== RUN   TestTerminalT03IsolationAndDataAuthorization
+2026/10/06 17:26:19 http: TLS handshake error from 192.168.88.171:56528: tls: client didn't provide a certificate
+--- PASS: TestTerminalT03IsolationAndDataAuthorization (0.02s)
+=== RUN   TestTerminalT03BoundsAndThrottle
+--- PASS: TestTerminalT03BoundsAndThrottle (0.56s)
+=== RUN   TestTerminalT03ReviewedApprovalStaleAndReplay
+--- PASS: TestTerminalT03ReviewedApprovalStaleAndReplay (0.03s)
+=== RUN   TestTerminalT03DaemonProcess
+    enrollment_test.go:505: subprocess helper
+--- SKIP: TestTerminalT03DaemonProcess (0.00s)
+=== RUN   TestTerminalT03TwoProcessEnrollment
+PASS
+PASS
+PASS
+--- PASS: TestTerminalT03TwoProcessEnrollment (0.21s)
+=== RUN   TestTerminalT03ExpiredAndRevokedPending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_invite
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/expired_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/revoked_pending
+=== RUN   TestTerminalT03ExpiredAndRevokedPending/changed_membership
+--- PASS: TestTerminalT03ExpiredAndRevokedPending (0.08s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_invite (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/expired_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/revoked_pending (0.02s)
+    --- PASS: TestTerminalT03ExpiredAndRevokedPending/changed_membership (0.02s)
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/nonces
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/pending
+=== RUN   TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry
+--- PASS: TestTerminalT03AdmissionCapsAndChangedReplay (0.07s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/nonces (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/pending (0.02s)
+    --- PASS: TestTerminalT03AdmissionCapsAndChangedReplay/changed_retry (0.02s)
+=== RUN   TestTerminalT03LegacyBoundaries
+--- PASS: TestTerminalT03LegacyBoundaries (0.02s)
+=== RUN   TestTerminalT11BoundedSearchStorageAndLiveStopped
+--- PASS: TestTerminalT11BoundedSearchStorageAndLiveStopped (0.05s)
+=== RUN   TestTerminalT11SessionResultStreamAndSymlinkRefusal
+--- PASS: TestTerminalT11SessionResultStreamAndSymlinkRefusal (0.02s)
+=== RUN   TestTerminalT11RealPTYEveryday
+    everyday_test.go:135: {"result": "passed", "scenarios": ["real offline/reconnect concurrent heads", "canonical diff/editor failed exit", "stale editor refusal and fresh review", "exact select and keep copies", "delete history restore and separate copy", "storage preview narrow root block", "terminal restoration and daemon transfer after quit"]}
+
+--- PASS: TestTerminalT11RealPTYEveryday (43.55s)
+=== RUN   TestTerminalT02LiveStoppedSettingsReplay
+--- PASS: TestTerminalT02LiveStoppedSettingsReplay (0.01s)
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/stale_endpoint
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/bad_credential
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/public_credential
+=== RUN   TestTerminalT02NoFallbackAfterLiveFailure/symlink_credential
+--- PASS: TestTerminalT02NoFallbackAfterLiveFailure (0.01s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/stale_endpoint (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/bad_credential (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/public_credential (0.00s)
+    --- PASS: TestTerminalT02NoFallbackAfterLiveFailure/symlink_credential (0.00s)
+=== RUN   TestTerminalT02EndpointAndBounds
+--- PASS: TestTerminalT02EndpointAndBounds (0.01s)
+=== RUN   TestTerminalT02IdentityCancellationAndAuth
+--- PASS: TestTerminalT02IdentityCancellationAndAuth (0.02s)
+=== RUN   TestTerminalT02FiniteInitializerAndPartialRestart
+--- PASS: TestTerminalT02FiniteInitializerAndPartialRestart (0.01s)
+=== RUN   TestTerminalT02LegacyLimitsReview
+--- PASS: TestTerminalT02LegacyLimitsReview (0.01s)
+=== RUN   TestTerminalT02LostResponseRecoveryAndExpiredReplay
+--- PASS: TestTerminalT02LostResponseRecoveryAndExpiredReplay (0.01s)
+=== RUN   TestTerminalT02StaleReviewNetworkSettings
+--- PASS: TestTerminalT02StaleReviewNetworkSettings (0.01s)
+=== RUN   TestTerminalT02DaemonProcess
+    lifecycle_test.go:287: subprocess entry only
+--- SKIP: TestTerminalT02DaemonProcess (0.00s)
+=== RUN   TestTerminalT02ConcurrentProcessLaunchAndLifetime
+--- PASS: TestTerminalT02ConcurrentProcessLaunchAndLifetime (0.39s)
+=== RUN   TestTerminalT02MissingSystemdAndExplicitErrors
+--- PASS: TestTerminalT02MissingSystemdAndExplicitErrors (0.01s)
+=== RUN   TestTerminalT02ServiceProcessActionsAndSelection
+--- PASS: TestTerminalT02ServiceProcessActionsAndSelection (1.15s)
+=== RUN   TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork
+--- PASS: TestTerminalT02CanceledMutationWaitingKeepsAcceptedWork (0.01s)
+=== RUN   TestTerminalT02ConcurrentMutationReplay
+--- PASS: TestTerminalT02ConcurrentMutationReplay (0.01s)
+=== RUN   TestTerminalT02ControlServeShutdown
+--- PASS: TestTerminalT02ControlServeShutdown (0.02s)
+=== RUN   TestTerminalT12BareEntryAndLegacyDiscovery
+--- PASS: TestTerminalT12BareEntryAndLegacyDiscovery (0.54s)
+=== RUN   TestTerminalT12LegacySettingsExactlyOnce
+--- PASS: TestTerminalT12LegacySettingsExactlyOnce (0.02s)
+=== RUN   TestTerminalT12BareRealPTY
+    packages_test.go:127: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+
+--- PASS: TestTerminalT12BareRealPTY (10.68s)
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content
+=== RUN   TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management
+--- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction (0.04s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-control (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/new-control (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-content (0.01s)
+    --- PASS: TestTerminalT12MixedCapabilitiesRefuseBeforeAction/old-management (0.01s)
+=== RUN   TestTerminalT13OperationObservesPublicationWithoutReauthoring
+--- PASS: TestTerminalT13OperationObservesPublicationWithoutReauthoring (0.02s)
+=== RUN   TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause
+--- PASS: TestTerminalT13UnavailableRootKeepsCauseAfterAutomaticPause (0.01s)
+=== RUN   TestTerminalT13LargeDirectoryAndStreamedMergeResources
+    release_test.go:209: resource command=deleted input_fixture_files=1024 samples=4 interval_ms=5 sampled_peak_rss_kib=23444 child_ru_maxrss_kib=103828 sampled_peak_fds=6 output_bytes=9955 seconds=0.026
+    release_test.go:214: resource command=status input_fixture_files=1024 samples=31 interval_ms=5 sampled_peak_rss_kib=25220 child_ru_maxrss_kib=103828 sampled_peak_fds=7 output_bytes=2772 seconds=0.158
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=4 interval_ms=5 sampled_peak_rss_kib=23492 child_ru_maxrss_kib=103828 sampled_peak_fds=6 output_bytes=2113 seconds=0.023
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=11 interval_ms=5 sampled_peak_rss_kib=23612 child_ru_maxrss_kib=103828 sampled_peak_fds=7 output_bytes=723 seconds=0.061
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=15 interval_ms=5 sampled_peak_rss_kib=25592 child_ru_maxrss_kib=103828 sampled_peak_fds=6 output_bytes=1127 seconds=0.078
+    release_test.go:239: verified streamed merge fixture_bytes=8388608 digest=96283cc9067fda56816d90f9084f9022f9e92e258d4fa5c3b5a84446d63a7965
+    release_test.go:222: resource command=conflicts input_fixture_files=1024 samples=7 interval_ms=5 sampled_peak_rss_kib=25508 child_ru_maxrss_kib=103828 sampled_peak_fds=6 output_bytes=2115 seconds=0.040
+    release_test.go:223: resource command=conflicts input_fixture_files=1024 samples=29 interval_ms=5 sampled_peak_rss_kib=25628 child_ru_maxrss_kib=103828 sampled_peak_fds=7 output_bytes=724 seconds=0.149
+    release_test.go:228: resource command=conflicts input_fixture_files=1024 samples=46 interval_ms=5 sampled_peak_rss_kib=25584 child_ru_maxrss_kib=103828 sampled_peak_fds=6 output_bytes=1129 seconds=0.235
+    release_test.go:239: verified streamed merge fixture_bytes=33554432 digest=faade46d584f4cc4d270161865f1e8db5efafae1e99c5d618ede6303bfaba409
+--- PASS: TestTerminalT13LargeDirectoryAndStreamedMergeResources (2.33s)
+=== RUN   TestTerminalT13NativeHarnessRefusesUnsafeActions
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.07s)
+=== RUN   TestTerminalT13StatusKeepsRunningAndStartupSeparate
+--- PASS: TestTerminalT13StatusKeepsRunningAndStartupSeparate (0.01s)
+=== RUN   TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads
+--- PASS: TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads (0.01s)
+=== RUN   TestTerminalT13RetiredIdentityApprovalHasRecoveryAction
+--- PASS: TestTerminalT13RetiredIdentityApprovalHasRecoveryAction (13.04s)
+=== RUN   TestTerminalT13ReplacementBootstrapsRetiredHistory
+--- PASS: TestTerminalT13ReplacementBootstrapsRetiredHistory (25.06s)
+=== RUN   TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== PAUSE TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== RUN   TestTerminalT04InteractiveReviewRetainsInputs
+--- PASS: TestTerminalT04InteractiveReviewRetainsInputs (0.77s)
+=== RUN   TestTerminalT04RecursiveReviewedAdoption
+--- PASS: TestTerminalT04RecursiveReviewedAdoption (0.01s)
+=== RUN   TestTerminalT04StaleRootAndPlan
+=== RUN   TestTerminalT04StaleRootAndPlan/bytes
+=== RUN   TestTerminalT04StaleRootAndPlan/swap
+=== RUN   TestTerminalT04StaleRootAndPlan/symlink
+=== RUN   TestTerminalT04StaleRootAndPlan/name
+=== RUN   TestTerminalT04StaleRootAndPlan/settings
+--- PASS: TestTerminalT04StaleRootAndPlan (0.05s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/bytes (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/swap (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/symlink (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/name (0.01s)
+    --- PASS: TestTerminalT04StaleRootAndPlan/settings (0.01s)
+=== RUN   TestTerminalT04UnsupportedAndOverlap
+--- PASS: TestTerminalT04UnsupportedAndOverlap (0.01s)
+=== RUN   TestTerminalT04BoundedPreviewContinuation
+--- PASS: TestTerminalT04BoundedPreviewContinuation (0.16s)
+=== RUN   TestTerminalT04CapacityAndExpiredReview
+--- PASS: TestTerminalT04CapacityAndExpiredReview (0.01s)
+=== RUN   TestTerminalT04ResumeAtDurablePhases
+=== RUN   TestTerminalT04ResumeAtDurablePhases/reviewed
+=== RUN   TestTerminalT04ResumeAtDurablePhases/bootstrap_capture
+=== RUN   TestTerminalT04ResumeAtDurablePhases/content_pending
+=== RUN   TestTerminalT04ResumeAtDurablePhases/ready
+--- PASS: TestTerminalT04ResumeAtDurablePhases (0.05s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/reviewed (0.01s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/bootstrap_capture (0.01s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/content_pending (0.01s)
+    --- PASS: TestTerminalT04ResumeAtDurablePhases/ready (0.01s)
+=== RUN   TestTerminalT04InitialCaptureFailureBlocksBootstrap
+--- PASS: TestTerminalT04InitialCaptureFailureBlocksBootstrap (0.01s)
+=== RUN   TestTerminalT04FatalScanFailurePreservesCapture
+--- PASS: TestTerminalT04FatalScanFailurePreservesCapture (0.01s)
+=== RUN   TestTerminalT04NoBootstrapTombstone
+--- PASS: TestTerminalT04NoBootstrapTombstone (0.01s)
+=== RUN   TestTerminalT04DelayedJoinRestartAndTransfer
+=== PAUSE TestTerminalT04DelayedJoinRestartAndTransfer
+=== RUN   TestTerminalT04DivergentBootstrapRemainsConflict
+=== PAUSE TestTerminalT04DivergentBootstrapRemainsConflict
+=== RUN   TestTerminalT04ExpiredAttemptDoesNotRenew
+--- PASS: TestTerminalT04ExpiredAttemptDoesNotRenew (0.02s)
+=== RUN   TestTerminalT04UnreadablePreviewAndCaptureFault
+--- PASS: TestTerminalT04UnreadablePreviewAndCaptureFault (0.01s)
+=== RUN   TestTerminalT04JoinPhaseRecovery
+=== PAUSE TestTerminalT04JoinPhaseRecovery
+=== RUN   TestTerminalT04StartupFailureAndConsumedReview
+--- PASS: TestTerminalT04StartupFailureAndConsumedReview (0.01s)
+=== RUN   TestTerminalT04IssuePagesAndPreviewFamily
+--- PASS: TestTerminalT04IssuePagesAndPreviewFamily (0.01s)
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/false
+=== RUN   TestTerminalT04ExpiredPreparedRequestRecovery/true
+--- PASS: TestTerminalT04ExpiredPreparedRequestRecovery (0.04s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/false (0.02s)
+    --- PASS: TestTerminalT04ExpiredPreparedRequestRecovery/true (0.02s)
+=== RUN   TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh
+--- PASS: TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh (85.81s)
+=== RUN   TestTerminalT05ScopedKnownDeviceSharing
+--- PASS: TestTerminalT05ScopedKnownDeviceSharing (13.05s)
+=== RUN   TestTerminalT05MembershipPinAndSequentialGate
+--- PASS: TestTerminalT05MembershipPinAndSequentialGate (0.06s)
+=== RUN   TestTerminalT05ForkRecoveryPreservesOriginalGroup
+--- PASS: TestTerminalT05ForkRecoveryPreservesOriginalGroup (0.02s)
+=== RUN   TestTerminalT05CompetingReviewedApprovals
+--- PASS: TestTerminalT05CompetingReviewedApprovals (0.03s)
+=== RUN   TestTerminalT05TargetedShareRejectsRekey
+--- PASS: TestTerminalT05TargetedShareRejectsRekey (0.03s)
+=== RUN   TestTerminalT07_Status_Observations_MixedState
+=== PAUSE TestTerminalT07_Status_Observations_MixedState
+=== RUN   TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== PAUSE TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== RUN   TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== PAUSE TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== PAUSE TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== RUN   TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== PAUSE TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== RUN   TestTerminalT10BlockedSetupPagesAndFolderManagement
+--- PASS: TestTerminalT10BlockedSetupPagesAndFolderManagement (0.01s)
+=== RUN   TestTerminalT10RealPTYOnboarding
+    tui_onboarding_test.go:88: [
+          {
+            "scenario": "two-process-onboarding",
+            "result": "passed",
+            "assertions": [
+              "nonempty measured review; validation/back/edit",
+              "private expired and wrong-pin refusal",
+              "exact transcript code and approval",
+              "pending client exit/reopen/daemon restart",
+              "actual verified bidirectional file bytes",
+              "local pause/resume, actual relocation and unregister preview",
+              "second folder distinct consent and attempt; device identities retained",
+              "actual startup failure under missing-system-tool fixture",
+              "terminal restoration"
+            ]
+          }
+        ]
+
+--- PASS: TestTerminalT10RealPTYOnboarding (63.31s)
+=== RUN   TestTerminalT10FolderForkLagAndConservativePreview
+--- PASS: TestTerminalT10FolderForkLagAndConservativePreview (0.04s)
+=== RUN   TestTerminalT10SetupRetryRetainsNetworkRestartAndExactIntent
+--- PASS: TestTerminalT10SetupRetryRetainsNetworkRestartAndExactIntent (0.02s)
+=== RUN   TestTerminalT09NamedPages
+--- PASS: TestTerminalT09NamedPages (0.18s)
+=== RUN   TestTerminalT09RealPTYLifetime
+    tui_test.go:88: [
+          {
+            "scenario": "80x24-quit-tool",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "40x16-ctrl-c-tool-failure",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-daemon-reconnect",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "locked unavailable daemon, retry and reconnection"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "80x24-tool-sigterm",
+            "assertions": [
+              "keyboard/search/paste/resize",
+              "no SGR",
+              "exact termios restoration",
+              "daemon alive",
+              "direct argv tool canonical/raw handoff and actual bytes"
+            ],
+            "result": "passed"
+          },
+          {
+            "scenario": "pipe-and-continued-capture",
+            "result": "passed",
+            "assertions": [
+              "no terminal escapes in pipe",
+              "protected working bytes intact",
+              "actual new digest in captured history",
+              "same device identity"
+            ]
+          }
+        ]
+
+--- PASS: TestTerminalT09RealPTYLifetime (10.72s)
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay
+2026/10/06 17:31:50 http: TLS handshake error from orbit-relay:0: i/o timeout
+    wan_bandwidth_test.go:304: actual relay: large=16777216 bytes completed=7.624880104s first verified chunk=201.969566ms first small=4.955592ms small versions=29; shared cap=2097152 B/s; peak sampled heap=57458024 goroutines=133 FD=58 unique sockets=36 RSS=94035968 process CPU=841348us; original author=232c4f6b3711fa5c3f583e4716d5e9c97b8b17982e6e1dc6f9975ef39179630c
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct
+    wan_bandwidth_test.go:304: actual direct: large=16777216 bytes completed=7.062985002s first verified chunk=6.735484ms first small=512.110165ms small versions=13; shared cap=2097152 B/s; peak sampled heap=64570376 goroutines=124 FD=53 unique sockets=32 RSS=125550592 process CPU=690890us; original author=232c4f6b3711fa5c3f583e4716d5e9c97b8b17982e6e1dc6f9975ef39179630c
+=== RUN   TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic
+    wan_bandwidth_test.go:304: actual quic: large=16777216 bytes completed=7.065935344s first verified chunk=8.951569ms first small=515.183667ms small versions=10; shared cap=2097152 B/s; peak sampled heap=69177008 goroutines=123 FD=49 unique sockets=28 RSS=113405952 process CPU=804183us; original author=232c4f6b3711fa5c3f583e4716d5e9c97b8b17982e6e1dc6f9975ef39179630c
+--- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes (86.78s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/relay (20.22s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/direct (7.18s)
+    --- PASS: TestWANW11ActualLargeSmallPeerBandwidthAcrossRoutes/quic (7.21s)
+=== RUN   TestWANW00ManualInvitationRequiresReachableAddress
+    wan_baseline_test.go:109: missing endpoint refused; unusable endpoint bounded; both identities, protected head/CAS and local bytes preserved
+--- PASS: TestWANW00ManualInvitationRequiresReachableAddress (0.32s)
+=== RUN   TestWANW06BinaryReviewedRelayJourney
+    wan_cli_test.go:351: Local signed service fixture; production binaries create/invite/join/relaunch/approve and transfer both directions without init/serve/manual peer addresses
+--- PASS: TestWANW06BinaryReviewedRelayJourney (63.24s)
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.04s)
+=== RUN   TestWANW06BinaryGuidedFirstDevice
+--- PASS: TestWANW06BinaryGuidedFirstDevice (0.77s)
+=== RUN   TestWANW12BinaryDoctorPrivacyAndPTY
+    wan_diagnostics_test.go:28: {"scenario": "W12-explicit-doctor-keyboard-cancel", "status": "passed"}
+
+    wan_diagnostics_test.go:106: actual CLI/PTY doctor, healthy service/offline peer, reviewed local-only/replay/restart, zero service requests, preserved identity/files
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW12BinaryDoctorPrivacyAndPTY (77.10s)
+=== RUN   TestWANW08BinaryLocalOnlyLANAfterApproval
+    wan_direct_test.go:235: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; zero service requests in Local-only; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW08BinaryLocalOnlyLANAfterApproval (31.80s)
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:235: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; zero service requests in Local-only; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW09BinaryLocalOnlyQUICAfterApproval (36.81s)
+=== RUN   TestWANW08BinaryOptionalCollisionFreshRelayOnboarding
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW08BinaryOptionalCollisionFreshRelayOnboarding (38.06s)
+=== RUN   TestWANW09BinaryOptionalUDPCollisionRelayOnboarding
+    wan_cli_test.go:279: W08 occupied optional listeners: actual fresh CLI invitation/request/exact approval and verified two-way bytes through reviewed relay; no manual peer IPs; persistent inviter certificate and author identity
+--- PASS: TestWANW09BinaryOptionalUDPCollisionRelayOnboarding (37.62s)
+=== RUN   TestWANW05DaemonChild
+    wan_enrollment_process_test.go:35: child process helper
+--- SKIP: TestWANW05DaemonChild (0.00s)
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+    wan_enrollment_process_test.go:324: SIGKILL membership_received recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+    wan_enrollment_process_test.go:324: SIGKILL approval recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+    wan_enrollment_process_test.go:324: SIGKILL request_accepted recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+    wan_enrollment_process_test.go:324: SIGKILL request_prepared recovered exact attempt/root and two-way heads/hashes
+--- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries (0.00s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received (58.76s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval (59.97s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted (69.34s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared (92.82s)
+=== RUN   TestWANW05RoutedJoinTwoFoldersRestartAndTwoWayData
+2026/10/06 17:39:35 http: TLS handshake error from orbit-relay:0: i/o timeout
+--- PASS: TestWANW05RoutedJoinTwoFoldersRestartAndTwoWayData (120.40s)
+=== RUN   TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap
+--- PASS: TestWANW05ThirdDeviceOfflineRolloutForkAndRetiredBootstrap (83.27s)
+=== RUN   TestWANW11WholeDaemonRoamingAndMixedProgress
+    wan_roaming_test.go:46: requires marked disposable namespace runner
+--- SKIP: TestWANW11WholeDaemonRoamingAndMixedProgress (0.00s)
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+    wan_roaming_test.go:37: requires explicit W15 disposable namespace runner
+--- SKIP: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (0.00s)
+=== RUN   TestWANW11BinaryReviewedTimingAndRestart
+--- PASS: TestWANW11BinaryReviewedTimingAndRestart (1.00s)
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:76: [
+          {
+            "scenario": "W07-keyboard-relay-onboarding",
+            "result": "passed",
+            "assertions": [
+              "production binary real PTY; no manual addresses/listeners/init/serve; relay fixture preserves LAN advertising=false",
+              "reviewed existing contents, Back/Edit, wrong pin, expired v3 paste, unsupported-root correction",
+              "private transfer, independently selected development operator and TLS trust",
+              "exact cross-device verification/approval, delayed exit and actual daemon restart",
+              "exact operation/attempt/request/root/identity retained; byte/hash/version-author oracles",
+              "second folder separate consent/attempt/root, relay observations separate from readiness",
+              "narrow/colorless/resize, masked paste, v3 reveal, deliberate revocation",
+              "termios and alt/bracketed-paste restoration; daemon capture/transfer after client exit",
+              "actual marked service outage retains new-folder drafts and daemon local capture",
+              "fresh Automatic/missing-profile and preannouncement Local-only review; local capture after quit"
+            ]
+          }
+        ]
+
+--- PASS: TestWANW07RealPTYRelayOnboarding (142.85s)
+=== RUN   TestWANW13PackagedSelfHostRehearsal
+    wan_w13_test.go:299: orbit-net dev (unknown, unknown)
+    wan_w13_test.go:570: overload: baseline fds=21 rss=21608KiB; flood peak fds=265 rss=24584KiB active=256 refused=76; pre-auth 429=118 untrusted=122
+    wan_w13_test.go:605: STUN: 100 binding requests + 2 malformed in 501ms; answers=10 largest=32B; dropped rate=91 invalid=1
+    wan_w13_test.go:646: readiness true not reached: &{GeneratedAt:2026-10-06T21:46:46.229859309Z ProfileExpires:2026-10-06T23:45:10Z ProfileState:verified ServiceTrust:custom:30e4e907168855b5822a968bdb08c31c64f8a58e3bc5206a1d4c88f42c1c4189 Action:Check device and service availability; a timeout does not identify a NAT or firewall type. Probes:[] Policy:{Timing:{HeadStartMS:0 CycleMS:0 ProbeMS:0 CooldownMS:0 PollMS:0 QuietMS:0} AwaitingProfile:false Mode:self_hosted Profile:d56c95eaf27f832692afeab8c4e54bade8c08e8e24ad868c93e7cbfc28db802a LANAdvertising:false Generation:4} ActivePolicy:{Timing:{HeadStartMS:0 CycleMS:0 ProbeMS:0 CooldownMS:0 PollMS:0 QuietMS:0} AwaitingProfile:false Mode:self_hosted Profile:d56c95eaf27f832692afeab8c4e54bade8c08e8e24ad868c93e7cbfc28db802a LANAdvertising:false Generation:4} RestartRequired:false Ready:false Code:SERVICE_UNAVAILABLE Operator:W13 disposable rehearsal operator Privacy:Rehearsal only. The service sees device IDs, key pins, addresses and connection timing, kept in memory for at most ten minutes. It never sees file names or contents. No request logs are kept. Observations:[{Freshness:recent Action:Retry later or review an alternative service profile. LANCandidates:0 PublicCandidates:0 ExpiredCandidates:0 UDPCode:QUOTA_EXCEEDED Device:3bfac99958a5ebf67489e625e4d60388cc83fabcb1884de34f9fe86fdcc9fae5 Pin:0e26ff83f02ebbb2d78a5b7b7c52cf22920a3221a9fb1822daca4d50dc33697b Purpose:peer_data Route:unavailable Code:QUOTA_EXCEEDED ObservedAt:2026-10-06T21:46:43.353967662Z Generation:6}] Builtin:<nil> ProfileUpdate: AutomaticOffer:false}
+--- FAIL: TestWANW13PackagedSelfHostRehearsal (140.90s)
+=== RUN   TestWANW14OneStepNetworkAndInvitationCode
+    wan_w14_cli_test.go:123: one-step review transcript:
+        n
+        Connection: Manual -> Automatic
+        Operator: "Caleb Habesh" (profile expires 2027-01-04T19:37:37Z)
+        Privacy: Operated by Caleb Habesh on an Oracle Cloud server in Canada. Contact: calebhabesh@gmail.com. The service sees device IDs, device key fingerprints, public IP addresses and connection timing. It keeps them in memory only: directory entries expire within 10 minutes and relay sessions end when devices disconnect. It never sees file names, folder names or contents; relayed data stays encrypted end to end between your devices. The service writes no request logs. Oracle Cloud may keep its own network records under its policies.
+        LAN advertising: true (signed device identity and listener addresses on this network)
+        Orbit services see device addresses and connection metadata; file contents stay encrypted in transit.
+        Identity, keys, approvals, history and files are unchanged.
+        Apply? [Y/n] orbit: network change not applied
+--- PASS: TestWANW14OneStepNetworkAndInvitationCode (5.11s)
+=== RUN   TestWANW14MixedVersionUpgradeAndRollback
+    wan_w14_mixed_test.go:197: legacy inviter -> new joiner over v2 manual invitation; both directions transferred
+    wan_w14_mixed_test.go:245: in-place upgrade: identity and exact heads retained; manual policy kept; Automatic offered, not adopted
+    wan_w14_mixed_test.go:259: rollback to pre-WAN binary: state opens and syncs
+--- PASS: TestWANW14MixedVersionUpgradeAndRollback (35.10s)
+=== CONT  TestTerminalT06ContextResolutionCwdAndName
+=== CONT  TestTerminalT04DivergentBootstrapRemainsConflict
+=== CONT  TestTerminalT07_Status_BoundedPaginationAndCancellation
+=== CONT  TestTerminalT06LiveAndStoppedAdapterParity
+=== CONT  TestTerminalT06PathSafetyAndLiteralPaths
+=== CONT  TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits
+=== CONT  TestTerminalT06StaleAndUnavailableRoot
+=== CONT  TestTerminalT04DelayedJoinRestartAndTransfer
+=== CONT  TestTerminalT06OutputEscapingAndControlCharacters
+=== CONT  TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== CONT  TestTerminalT07_CLI_StatusAndDoctor_Parity
+=== CONT  TestTerminalT04JoinPhaseRecovery
+=== CONT  TestTerminalT07_Doctor_DiagnosticsAndRemediations
+=== RUN   TestTerminalT04JoinPhaseRecovery/request_prepared
+=== PAUSE TestTerminalT04JoinPhaseRecovery/request_prepared
+=== RUN   TestTerminalT04JoinPhaseRecovery/membership_received
+=== PAUSE TestTerminalT04JoinPhaseRecovery/membership_received
+=== RUN   TestTerminalT04JoinPhaseRecovery/content_pending
+=== PAUSE TestTerminalT04JoinPhaseRecovery/content_pending
+=== RUN   TestTerminalT04JoinPhaseRecovery/publishing
+=== PAUSE TestTerminalT04JoinPhaseRecovery/publishing
+=== CONT  TestTerminalT04JoinPhaseRecovery/request_prepared
+=== CONT  TestTerminalT07_Status_Observations_MixedState
+=== CONT  TestTerminalT07_Status_Attention_PersistenceAcrossRestart
+=== CONT  TestTerminalT06AmbiguousAndOutsideRootContext
+--- PASS: TestTerminalT07_Status_Observations_MixedState (0.12s)
+=== CONT  TestTerminalT04JoinPhaseRecovery/publishing
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/StoppedAdapter
+--- PASS: TestTerminalT07_Status_Attention_PersistenceAcrossRestart (0.14s)
+=== CONT  TestTerminalT04JoinPhaseRecovery/content_pending
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/LiveCleanState
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/InsecureToken
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/MissingRoot
+--- PASS: TestTerminalT07_Status_BoundedPaginationAndCancellation (0.27s)
+=== CONT  TestTerminalT04JoinPhaseRecovery/membership_received
+=== RUN   TestTerminalT07_Doctor_DiagnosticsAndRemediations/ExhaustedTask
+--- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations (0.32s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/StoppedAdapter (0.02s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/LiveCleanState (0.03s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/InsecureToken (0.02s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/MissingRoot (0.07s)
+    --- PASS: TestTerminalT07_Doctor_DiagnosticsAndRemediations/ExhaustedTask (0.05s)
+--- PASS: TestTerminalT06StaleAndUnavailableRoot (1.02s)
+--- PASS: TestTerminalT06OutputEscapingAndControlCharacters (1.05s)
+--- PASS: TestTerminalT06AmbiguousAndOutsideRootContext (1.09s)
+--- PASS: TestTerminalT06ContextResolutionCwdAndName (1.12s)
+--- PASS: TestTerminalT06PathSafetyAndLiteralPaths (1.15s)
+--- PASS: TestTerminalT07_CLI_StatusAndDoctor_Parity (1.20s)
+--- PASS: TestTerminalT06LiveAndStoppedAdapterParity (1.22s)
+--- PASS: TestTerminalT06ShellCompletionsAndHelpWalkthrough (1.29s)
+--- PASS: TestTerminalT04DivergentBootstrapRemainsConflict (25.19s)
+--- PASS: TestTerminalT04DelayedJoinRestartAndTransfer (25.21s)
+--- PASS: TestTerminalT04JoinPhaseRecovery (0.00s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/request_prepared (25.24s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/publishing (25.16s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/content_pending (25.15s)
+    --- PASS: TestTerminalT04JoinPhaseRecovery/membership_received (25.09s)
+--- PASS: TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits (29.10s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1298.797s
+FAIL
+make: *** [Makefile:70: test-terminal] Error 1

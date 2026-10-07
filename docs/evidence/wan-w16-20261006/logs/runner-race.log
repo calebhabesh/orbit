@@ -1,0 +1,6 @@
+=== RUN   TestWANW16NativeRunnerRehearsal
+    wan_w16_test.go:141: open docs/evidence/wan-w16-20261006/runner-race-report.json: no such file or directory
+--- FAIL: TestWANW16NativeRunnerRehearsal (112.21s)
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	112.221s
+FAIL

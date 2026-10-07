@@ -1,0 +1,14 @@
+{
+  "hosts": [
+    {
+      "host": "rpi",
+      "role": "Pi",
+      "physical_network": "owner-home-router"
+    },
+    {
+      "host": "vps",
+      "role": "VPS",
+      "physical_network": "Oracle-ca-toronto-1"
+    }
+  ]
+}

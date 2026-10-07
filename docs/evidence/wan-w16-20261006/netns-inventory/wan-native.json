@@ -1,0 +1,286 @@
+{
+  "packet": "W16",
+  "started_at": "2026-10-06T23:53:54.311996+00:00",
+  "success": true,
+  "rehearsal": false,
+  "hosted_default_acceptance": "unexecuted",
+  "physical_wan_acceptance": "unexecuted",
+  "hosts": [
+    {
+      "declaration": {
+        "host": "rpi",
+        "role": "Pi",
+        "physical_network": "owner-home-router",
+        "netns": "orbit-w16"
+      },
+      "network": {
+        "hostname": "owner-pi",
+        "arch": "aarch64",
+        "kernel": "6.12.93+rpt-rpi-v8",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "ow-w16-n",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "ow-w16-n",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.231.17.2",
+                "prefixlen": 29,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::90f4:97ff:fe73:b1cb",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.231.17.1",
+              "dev": "ow-w16-n",
+              "prefsrc": "10.231.17.2",
+              "flags": [],
+              "uid": 1000,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "isolation": {
+        "uplink": "eth0",
+        "counters": {
+          "egress_accept": {
+            "packets": 30,
+            "bytes": 3082
+          },
+          "ingress_established": {
+            "packets": 22,
+            "bytes": 9140
+          },
+          "egress_other_rejected": {
+            "packets": 1,
+            "bytes": 84
+          },
+          "nat": {
+            "packets": 4,
+            "bytes": 248
+          }
+        },
+        "rules": [
+          "-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A FORWARD -i ow-w16-h -o eth0 -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i eth0 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i ow-w16-h ! -o eth0 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A POSTROUTING -s 10.231.17.0/29 -o eth0 -m comment --comment orbit-w16-w16 -j MASQUERADE"
+        ]
+      },
+      "route_preflight": "eligible; physical separation still requires deployment evidence"
+    },
+    {
+      "declaration": {
+        "host": "vps",
+        "role": "VPS",
+        "physical_network": "Oracle-ca-toronto-1",
+        "netns": "orbit-w16"
+      },
+      "network": {
+        "hostname": "main-instance-vnic",
+        "arch": "aarch64",
+        "kernel": "6.17.0-1018-oracle",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "ow-w16-n",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "ow-w16-n",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.231.16.2",
+                "prefixlen": 29,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::478:1dff:feea:e546",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "132.145.111.200": [
+            {
+              "dst": "132.145.111.200",
+              "gateway": "10.231.16.1",
+              "dev": "ow-w16-n",
+              "prefsrc": "10.231.16.2",
+              "flags": [],
+              "uid": 1001,
+              "cache": []
+            }
+          ]
+        }
+      },
+      "isolation": {
+        "uplink": "enp0s6",
+        "counters": {
+          "egress_accept": {
+            "packets": 24,
+            "bytes": 2829
+          },
+          "ingress_established": {
+            "packets": 20,
+            "bytes": 9036
+          },
+          "egress_other_rejected": {
+            "packets": 1,
+            "bytes": 84
+          },
+          "nat": {
+            "packets": 4,
+            "bytes": 248
+          }
+        },
+        "rules": [
+          "-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A FORWARD -i ow-w16-h -o enp0s6 -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i enp0s6 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT",
+          "-A FORWARD -i ow-w16-h ! -o enp0s6 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable",
+          "-A POSTROUTING -s 10.231.16.0/29 -o enp0s6 -m comment --comment orbit-w16-w16 -j MASQUERADE"
+        ]
+      },
+      "route_preflight": "eligible; physical separation still requires deployment evidence"
+    }
+  ],
+  "scenarios": {},
+  "cleanup_errors": [],
+  "retained_roots": {},
+  "ended_at": "2026-10-06T23:53:55.797033+00:00"
+}

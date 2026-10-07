@@ -691,3 +691,22 @@ operated-default service claims remain W13/W16. Daemon process samples every
 250 ms are not guaranteed instantaneous maxima. Thirty-two competing delayed
 DNS/relay peers separately test resolver/admission/cancel/join bounds. No failure
 or skipped ordinary namespace test receives packet acceptance credit.
+
+
+## W15 integrated WAN failure campaign
+
+The [disposable runner instructions](../scripts/validation/WAN_FAILURES.md)
+define exact commands, privilege prerequisites, root/marker/process/namespace
+refusals and the distinction between emulator topologies and native sockets.
+W15 adds transfer-boundary/model checks across QUIC→TCP with aggressive GC,
+post-rename publication recovery, conflict preservation and cached-route denial
+after retirement. Whole-daemon fixtures combine chunk/receipt SIGKILL with
+relay recovery, address/default-route changes and service outage/restart.
+Fault hooks are test-injected Go callbacks; release operation exposes no fault
+endpoint or environment switch. The ordinary aggregate skips guarded namespace
+cases and never mutates host networking.
+
+The [W15 tracker](implementation/wan-status.md#w15--integrated-failures-security-and-resources)
+owns executed campaign status and remaining limitations. WG6, physical WAN/N10,
+inherited T13 technical checks and deferred P17 owner use/explanation retain
+separate acceptance requirements.

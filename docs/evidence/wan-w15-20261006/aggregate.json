@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "make",
+    "GOFLAGS=-v",
+    "check"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:26:16.916277+00:00",
+  "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 2,
+  "duration_seconds": 1299.082,
+  "finished_at": "2026-10-06T21:47:55.998443+00:00",
+  "source_after": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736"
+}

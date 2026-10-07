@@ -1,0 +1,12 @@
+=== RUN   TestWANW16NativeRunnerRehearsal
+=== RUN   TestWANW16NativeRunnerRehearsal/cli
+    wan_w16_test.go:190: cleaned private rehearsal root: /home/owner/filesync-validation-suye9mwy
+    wan_w16_test.go:190: cleaned private rehearsal root: /home/owner/filesync-validation-9yjh6n90
+=== RUN   TestWANW16NativeRunnerRehearsal/tui-three-host
+    wan_w16_test.go:190: cleaned private rehearsal root: /home/owner/filesync-validation-ky8jl3e2
+    wan_w16_test.go:190: cleaned private rehearsal root: /home/owner/filesync-validation-ufmd8xg4
+--- PASS: TestWANW16NativeRunnerRehearsal (314.09s)
+    --- PASS: TestWANW16NativeRunnerRehearsal/cli (107.33s)
+    --- PASS: TestWANW16NativeRunnerRehearsal/tui-three-host (196.42s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	315.105s

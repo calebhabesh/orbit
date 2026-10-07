@@ -1,0 +1,3 @@
+ok  	github.com/calebhabesh/file-sync/tests/terminal	293.964s
+go test -count=1 -timeout 30m ./tests/terminal -run  2>&1  33.84s user 4.84s system 13% cpu 4:55.97 total
+exit=0

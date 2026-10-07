@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "ssh",
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "ConnectTimeout=5",
+    "rpi",
+    "uname -a; cat /etc/os-release; findmnt -no FSTYPE,OPTIONS -T /tmp; getconf _NPROCESSORS_ONLN"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:25:48.545965+00:00",
+  "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.306,
+  "finished_at": "2026-10-06T21:25:48.852179+00:00",
+  "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c"
+}

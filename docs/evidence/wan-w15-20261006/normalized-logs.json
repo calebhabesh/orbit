@@ -1,0 +1,46 @@
+[
+  {
+    "display_log": "logs/aggregate-final.log",
+    "raw_archive": "logs/aggregate-final.raw.gz"
+  },
+  {
+    "display_log": "logs/aggregate-runtime-fixed.log",
+    "raw_archive": "logs/aggregate-runtime-fixed.raw.gz"
+  },
+  {
+    "display_log": "logs/aggregate.log",
+    "raw_archive": "logs/aggregate.raw.gz"
+  },
+  {
+    "display_log": "logs/full-race-final.log",
+    "raw_archive": "logs/full-race-final.raw.gz"
+  },
+  {
+    "display_log": "logs/full-race.log",
+    "raw_archive": "logs/full-race.raw.gz"
+  },
+  {
+    "display_log": "logs/impaired-fixed.log",
+    "raw_archive": "logs/impaired-fixed.raw.gz"
+  },
+  {
+    "display_log": "logs/impaired.log",
+    "raw_archive": "logs/impaired.raw.gz"
+  },
+  {
+    "display_log": "logs/mtu.log",
+    "raw_archive": "logs/mtu.raw.gz"
+  },
+  {
+    "display_log": "logs/pi-impaired-fixed.log",
+    "raw_archive": "logs/pi-impaired-fixed.raw.gz"
+  },
+  {
+    "display_log": "logs/pi-impaired.log",
+    "raw_archive": "logs/pi-impaired.raw.gz"
+  },
+  {
+    "display_log": "logs/recovery.log",
+    "raw_archive": "logs/recovery.raw.gz"
+  }
+]

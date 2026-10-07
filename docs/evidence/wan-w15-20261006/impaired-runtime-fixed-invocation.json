@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "<repo>/scripts/wan_failure_campaign.py",
+    "--root",
+    "/tmp/orbit-w15-s0s7ih_3",
+    "--parent-namespace",
+    "net:[4026531833]",
+    "--test-binary",
+    "/tmp/orbit-w15-terminal-fixed.test",
+    "--scenario",
+    "impaired",
+    "--suite",
+    "crash"
+  ],
+  "root": "/tmp/orbit-w15-s0s7ih_3"
+}

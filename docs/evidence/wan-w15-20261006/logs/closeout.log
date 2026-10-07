@@ -1,0 +1,8 @@
+{
+  "acceptance": true,
+  "source": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+  "display_whitespace": true,
+  "git_diff_check": true,
+  "native_invocations": 21,
+  "cleanup_record": "cleanup.json"
+}

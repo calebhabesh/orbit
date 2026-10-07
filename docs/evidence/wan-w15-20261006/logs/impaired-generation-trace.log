@@ -1,0 +1,212 @@
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712152/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074786/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074786/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712152/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074786/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712152/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074786/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712152/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712152/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/announce purpose=peer_data attempted=1791323167068712153 accepted=1791323135699372939 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/announce purpose=enrollment attempted=1791323167068712153 accepted=1791323135699372939 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074787/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074787/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712153/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074787/1791323136509718042 target=1791323135699372939/1791323135699372939 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712153/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712153/1791323135699372939 target=1791323136509718042/1791323136509718042 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074788/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074788/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712154/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712154/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712154/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074788/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074788/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/announce purpose=peer_data attempted=1791323167174074789 accepted=1791323136509718042 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712155/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712155/1791323135699372939 target=1791323136509718042/1791323136509718042 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712155/1791323135699372939 target=1791323136509718042/1791323136509718042 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074789/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074789/1791323136509718042 target=1791323135699372939/1791323135699372939 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074789/1791323136509718042 target=1791323135699372939/1791323135699372939 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074790/1791323136509718042 target=1791323167068712156/1791323167068712156 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074790/1791323136509718042 target=1791323167068712156/1791323167068712156 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167174074790/1791323136509718042 target=1791323167068712156/1791323167068712156 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:233: W15 verified working bytes name=relay-start.txt bytes=19 wait=53.358997084s
+    wan_roaming_test.go:234: whole daemon route relay after 6.417089ms generation=4
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:236: whole daemon route quic after 14.828943545s generation=4
+    wan_roaming_test.go:238: W15 idle interval start_ns=1791323235469709112
+    wan_roaming_test.go:240: W15 idle interval end_ns=1791323240470093608
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323248376488963/1791323167174074791 target=1791323167068712156/1791323167068712156 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:271: whole daemon route relay after 2.164001034s generation=4
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/announce purpose=enrollment attempted=1791323248376488966 accepted=1791323167174074789 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323248376488965/1791323248376488965 target=1791323167068712156/1791323167068712156 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:272: W15 verified working bytes name=large.bin bytes=16777216 wait=21.555507467s
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:274: whole daemon route quic after 16.250799523s generation=4
+    wan_roaming_test.go:275: W15 SIGKILL at transfer.chunk.verified: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:289: whole daemon address/default-route generation rebuild after 974.145514ms
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:303: whole daemon route relay after 6.628464358s generation=5
+    wan_roaming_test.go:304: W15 verified working bytes name=large.bin bytes=16777216 wait=65.66708ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-00.txt bytes=15 wait=3.933918963s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-01.txt bytes=15 wait=12.814µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-02.txt bytes=15 wait=8.757µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-03.txt bytes=15 wait=11.231µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-04.txt bytes=15 wait=7.625µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-05.txt bytes=15 wait=101.037021ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-06.txt bytes=15 wait=13.546µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-07.txt bytes=15 wait=9.158µs
+    wan_roaming_test.go:309: whole daemon route quic after 3.672555705s generation=5
+    wan_roaming_test.go:312: W15 service relayed encrypted inner stream bytes=16231071
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=PROFILE_EXPIRED
+    wan_roaming_test.go:317: W15 verified working bytes name=service-outage.txt bytes=42 wait=4.924204959s
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323167068712161/1791323167068712161 target=1791323248376488966/1791323248376488970 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323248376488970/1791323248376488970 target=1791323167068712157/1791323167068712161 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:321: W15 verified working bytes name=service-restarted.txt bytes=44 wait=20.525608721s
+    wan_roaming_test.go:322: whole daemon route relay after 7.126264ms generation=5
+    wan_roaming_test.go:324: whole daemon route quic after 9.027392745s generation=5
+    wan_roaming_test.go:325: W15 direct sync survived service outage; fresh service restarted; relay bytes=340662
+    wan_roaming_test.go:380: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="34543"
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006271/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184978/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006271/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184978/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006271/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184978/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006271/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184978/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006271/1791323341752393366 target=1791323342575309553/1791323342575309553 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184978/1791323342575309553 target=1791323341752393366/1791323341752393366 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006272/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006272/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184979/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184979/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184979/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006273/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006273/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373203006273/1791323341752393366 target=1791323342575309553/1791323342575309553 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/lookup code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184980/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184980/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184980/1791323342575309553 target=1791323341752393366/1791323341752393366 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184980/1791323342575309553 target=1791323341752393366/1791323341752393366 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184981/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184981/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184981/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184981/1791323342575309553 target=1791323373203006274/1791323373203006274 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184982/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184982/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184982/1791323342575309553 target=1791323373203006274/1791323373203006274 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184982/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/challenge code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184982/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184983/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184983/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184983/1791323342575309553 target=1791323373203006274/1791323373203006274 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184984/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184984/1791323342575309553 target=1791323373203006274/1791323373203006274 code=STALE_GENERATION
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/offer purpose=peer_data source=1791323373304184984/1791323342575309553 target=1791323373203006274/1791323373203006274 code=QUOTA_EXCEEDED
+    wan_roaming_test.go:76: W15 service refusal path=/network/v1/release code=PURPOSE_MISMATCH

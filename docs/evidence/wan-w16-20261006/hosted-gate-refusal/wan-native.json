@@ -1,0 +1,14 @@
+{
+  "packet": "W16",
+  "started_at": "2026-10-06T22:40:29.136654+00:00",
+  "success": false,
+  "rehearsal": false,
+  "hosted_default_acceptance": "unexecuted",
+  "physical_wan_acceptance": "unexecuted",
+  "hosts": [],
+  "scenarios": {},
+  "cleanup_errors": [],
+  "failure": "WG6 remains open: authority backup and received alert evidence required",
+  "retained_roots": {},
+  "ended_at": "2026-10-06T22:40:29.136794+00:00"
+}

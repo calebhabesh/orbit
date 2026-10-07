@@ -1,0 +1,6 @@
+{
+  "hosts": [
+    {"host": "laptop", "role": "Laptop", "physical_network": "owner-home-router"},
+    {"host": "vps", "role": "VPS", "physical_network": "Oracle-ca-toronto-1"}
+  ]
+}

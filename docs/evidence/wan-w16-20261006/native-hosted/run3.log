@@ -1,0 +1,3 @@
+timeout: endpoint hash/head/stored/applied receipt relay-only-back
+python3 scripts/validation/wan_native.py --dist $R --topology  --route-target  6.27s user 1.19s system 2% cpu 5:38.16 total
+exit=1

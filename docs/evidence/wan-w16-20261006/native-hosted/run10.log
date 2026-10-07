@@ -1,0 +1,2 @@
+python3 scripts/validation/wan_native.py --dist $R --topology  --route-target  5.55s user 1.05s system 2% cpu 4:41.30 total
+exit=0

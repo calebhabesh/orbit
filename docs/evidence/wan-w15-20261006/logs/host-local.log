@@ -1,0 +1,12 @@
+{
+  "platform": {
+    "system": "Linux",
+    "node": "owner-desktop",
+    "release": "7.2.8-arch1-2",
+    "version": "#1 SMP PREEMPT_DYNAMIC Thu, 01 Oct 2026 17:24:20 +0000",
+    "machine": "x86_64",
+    "processor": ""
+  },
+  "filesystem": "tmpfs rw,nosuid,nodev,size=31700592k,nr_inodes=1048576,inode64,huge=advise,usrquota\n",
+  "cpu_count": 16
+}

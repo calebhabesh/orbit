@@ -5,8 +5,25 @@ Syncthing-like setup, then confirmed **preconfigured Orbit services with optiona
 self-hosting**. This authorizes the planning direction. W00 baseline execution is recorded in the
 [tracker](implementation/wan-status.md). W01 additive contracts and local gates are complete in
 [the outcomes](implementation/wan-contracts.md); W02 implements the manual manager and records validation in the tracker;
-W03 authenticated service/profile and W04 encrypted relay validation are recorded in the tracker; W05 production enrollment is recorded in the tracker; W06 CLI controls/local integration and full aggregate validation are complete; W07 keyboard TUI onboarding and local relay milestone pass focused and full aggregate validation; W08 implements scoped LAN discovery and reachable direct TCP/IPv6 with local/isolated fixture evidence; W09 integrates native QUIC HTTP3 with local transport-subgate evidence; W10 integrates authenticated ICE/STUN with full local native/emulator composition evidence; W11 route policy/roaming/fairness is complete with local native/emulator and actual Pi evidence; W12 qualified status/diagnostics/privacy controls are complete for their recorded local acceptance; W13 operator tooling, packaging, rotation and self-host rehearsal pass locally and the hosted service is live while WG6 awaits authority-key backup and alerting; W14 packaged default profile, migration, mixed versions and one-step CLI controls are implemented with final-source validation in progress; W15–W17 remain unimplemented/unexecuted; the packet definitions below
+W03 authenticated service/profile and W04 encrypted relay validation are recorded in the tracker; W05 production enrollment is recorded in the tracker; W06 CLI controls/local integration and full aggregate validation are complete; W07 keyboard TUI onboarding and local relay milestone pass focused and full aggregate validation; W08 implements scoped LAN discovery and reachable direct TCP/IPv6 with local/isolated fixture evidence; W09 integrates native QUIC HTTP3 with local transport-subgate evidence; W10 integrates authenticated ICE/STUN with full local native/emulator composition evidence; W11 route policy/roaming/fairness is complete with local native/emulator and actual Pi evidence; W12 qualified status/diagnostics/privacy controls are complete for their recorded local acceptance; W13 operator tooling, packaging, rotation and self-host rehearsal pass locally and the hosted service is live while WG6 awaits authority-key backup and alerting; W14 packaged default profile, migration, mixed versions and one-step CLI controls are complete for recorded acceptance with final-source aggregate validation; W15 integrated failure/security/resources are complete for their recorded local/native/emulator/Pi acceptance with final-source aggregate and uncached full race validation; W16 native home/VPS CLI and TUI onboarding, direct/relay, forced relay, address change, service restart, three-host forwarding/conflict/restore and resources pass (school/corporate/CGNAT/IPv6 unexecuted); W17 remains unimplemented/unexecuted; the packet definitions below
 specify their required work.
+
+## Owner-directed sequencing amendment — 2026-10-06
+
+The owner deferred WG6's second offline authority-key copy and working alert
+delivery so development can proceed to **W15 — Integrated failures, security
+and resources**. These remain required operator-readiness work, owned by W13;
+W13 remains partial and WG6 remains open. Track both in
+[the W13 record](implementation/wan-status.md#w13--operated-defaults-and-self-hosting).
+
+For W15 eligibility, W13's implemented service/profile, packaging, rotation,
+limits and disposable self-host rehearsal evidence satisfy the technical
+prerequisite. Finishing the two operator tasks is not a prerequisite for W15's
+isolated development and validation. Use disposable local/emulated services
+and marked host fixtures; do not inject faults into the deployed shared VPS.
+This sequencing exception does not permit wider package distribution, W16
+hosted-default acceptance or combined W17 release before WG6 closes. No
+backup, alert delivery or completed operator readiness is claimed by deferral.
 
 ## Start here
 
@@ -90,7 +107,8 @@ flowchart LR
 ```
 
 The dependency table is authoritative; the diagram abbreviates it. Default work
-is sequential. If parallel execution is explicitly requested, eligible W07 and
+is sequential, subject to the owner-directed W15 eligibility amendment above.
+If parallel execution is explicitly requested, eligible W07 and
 W08 can use separate presentation/network files; W12 and W13 can use separate
 control/operator files. Assign ownership of shared types, app wiring, schemas,
 Makefile and final integration to one worker. Tests and partial screens alone

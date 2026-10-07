@@ -1,0 +1,5 @@
+--- FAIL: TestWANW15DestructiveTargetRefusesSymlinkedRoot (0.00s)
+    disposable_test.go:41: symlinked disposable root accepted
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/testkit	0.001s
+FAIL

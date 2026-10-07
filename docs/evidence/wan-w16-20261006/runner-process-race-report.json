@@ -1,0 +1,3161 @@
+{
+  "packet": "W16",
+  "started_at": "2026-10-06T22:39:16.041826+00:00",
+  "success": true,
+  "rehearsal": true,
+  "hosted_default_acceptance": "unexecuted",
+  "physical_wan_acceptance": "unexecuted",
+  "hosts": [
+    {
+      "declaration": {
+        "host": "local",
+        "role": "Owner",
+        "physical_network": "fixture-a"
+      },
+      "network": {
+        "hostname": "owner-desktop",
+        "arch": "x86_64",
+        "kernel": "7.2.8-arch1-2",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "enp6s0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wlp7s0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1420,
+            "kind": "wireguard"
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "docker0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "veth9b065fb",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth2514416",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth35b8861",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8883eed",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8509d99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth741e987",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1280,
+            "kind": "tun"
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethe5770f6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "enp6s0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "192.168.88.171",
+                "prefixlen": 24,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd00:88:1:bed9:b0d5:4734:553:64f4",
+                "prefixlen": 64,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::de3a:e408:1853:c715",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "wlp7s0",
+            "addresses": []
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.0.0.2",
+                "prefixlen": 24,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.20.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::dc7f:41ff:fed0:540b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "docker0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::6429:54ff:fec8:c444",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::7447:9fff:fea3:7710",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.24.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::60f3:4aff:fec3:44e7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth9b065fb",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::941a:c6ff:fe19:dcc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth2514416",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7cac:8bff:fef4:ccc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth35b8861",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::10ab:2bff:fe80:8c98",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8883eed",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::894:c4ff:fe9e:41a6",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::8ce5:d2ff:fe43:adc3",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c4aa:84ff:fe41:a753",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8509d99",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::a43d:8ff:fea0:334b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth741e987",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c836:5fff:fee6:49f7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "tailscale0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "100.101.0.13",
+                "prefixlen": 32,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd7a:115c:a1e0::b:13",
+                "prefixlen": 128,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::25a0:a299:6e15:8191",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::dcdf:49ff:feb4:b488",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethe5770f6",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::6096:9eff:fe62:c0f4",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7c4e:c3ff:fe8c:a05d",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 5210,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "main"
+          },
+          {
+            "priority": 5230,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "default"
+          },
+          {
+            "priority": 5250,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "action": "unreachable"
+          },
+          {
+            "priority": 5270,
+            "src": "all",
+            "table": "52"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "192.168.88.171": [
+            {
+              "type": "local",
+              "dst": "192.168.88.171",
+              "dev": "lo",
+              "table": "local",
+              "prefsrc": "192.168.88.171",
+              "flags": [],
+              "uid": 1000,
+              "cache": [
+                "local"
+              ]
+            }
+          ]
+        }
+      },
+      "route_preflight": "active tunnel requires isolated native fixture: wg-oracle-vps",
+      "root": "/home/owner/filesync-validation-8obkvx65",
+      "package": {
+        "package": "orbit-rehearsal-linux-amd64.tar.gz",
+        "package_sha256": "48e133a88102b36892d8e5bf42e978136739a72b104ff88318a2dee2907e5bb0",
+        "binary_sha256": "8ee43fe40b9d8785c287586751b5e2591f495e1933114d7bf28faa29424d1a44"
+      },
+      "version": {
+        "built": "unknown",
+        "commit": "none",
+        "config_format_version": 1,
+        "embedded_assets": {
+          "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+          "node_runtime_required": false,
+          "pure_go_sqlite": true,
+          "total_files": 3
+        },
+        "go_version": "go1.27.1-X:nodwarf5",
+        "goarch": "amd64",
+        "goos": "linux",
+        "packaged_profile": {
+          "active": false,
+          "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+          "available": true,
+          "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+          "epoch": 1,
+          "expires": "2027-01-04T19:37:37Z",
+          "operator": "Caleb Habesh"
+        },
+        "product": "Orbit",
+        "schema_version": 13,
+        "version": "dev"
+      },
+      "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+      "pin": "6a458d3a7773e885165dbcbfe0e0ccf7ac4c080c8d0bc07d0f13a1ef9c6a63ff",
+      "final_status": {
+        "network": {
+          "generated_at": "2026-10-06T22:41:00.707652913Z",
+          "profile_expires": "2026-10-07T00:39:07Z",
+          "profile_state": "verified",
+          "service_trust": "custom:6dea5e646a2364659c673a466e57d562a37d901c8c11b57831177e8181d34d9c",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "probes": [],
+          "policy": {
+            "mode": "self_hosted",
+            "profile": "06c7892d8158a59dea1e259d4bf67aa47c32c057db6e0b0b8477ad6adc7e3341",
+            "lan_advertising": false,
+            "generation": "2"
+          },
+          "active_policy": {
+            "mode": "self_hosted",
+            "profile": "06c7892d8158a59dea1e259d4bf67aa47c32c057db6e0b0b8477ad6adc7e3341",
+            "lan_advertising": false,
+            "generation": "2"
+          },
+          "restart_required": false,
+          "ready": true,
+          "code": "SERVICE_READY",
+          "operator": "W13 disposable rehearsal operator",
+          "privacy": "Rehearsal only. The service sees device IDs, key pins, addresses and connection timing, kept in memory for at most ten minutes. It never sees file names or contents. No request logs are kept.",
+          "observations": [
+            {
+              "freshness": "recent",
+              "action": "No connection action needed; inspect folder copies separately.",
+              "lan_candidates": "0",
+              "public_candidates": "0",
+              "expired_candidates": "0",
+              "udp_code": "UNAVAILABLE",
+              "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+              "pin": "447e7e4b09d301f11f14bcb892381347b929a13cd8a5c19ae4712bdf22d619bd",
+              "purpose": "peer_data",
+              "route": "relay",
+              "code": "CONNECTED",
+              "observed_at": "2026-10-06T22:41:00.30339539Z",
+              "generation": "4"
+            }
+          ]
+        },
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "network_control_v1",
+          "network_diagnostics_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "enrollment_v3",
+          "packaged_profile_v1",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "name": "W16 data",
+            "root": "/home/owner/filesync-validation-8obkvx65/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": ""
+      },
+      "final_network": {
+        "hostname": "owner-desktop",
+        "arch": "x86_64",
+        "kernel": "7.2.8-arch1-2",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "enp6s0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wlp7s0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1420,
+            "kind": "wireguard"
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "docker0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "veth9b065fb",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth2514416",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth35b8861",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8883eed",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8509d99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth741e987",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1280,
+            "kind": "tun"
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethe5770f6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "enp6s0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "192.168.88.171",
+                "prefixlen": 24,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd00:88:1:bed9:b0d5:4734:553:64f4",
+                "prefixlen": 64,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::de3a:e408:1853:c715",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "wlp7s0",
+            "addresses": []
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.0.0.2",
+                "prefixlen": 24,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.20.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::dc7f:41ff:fed0:540b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "docker0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::6429:54ff:fec8:c444",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::7447:9fff:fea3:7710",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.24.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::60f3:4aff:fec3:44e7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth9b065fb",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::941a:c6ff:fe19:dcc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth2514416",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7cac:8bff:fef4:ccc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth35b8861",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::10ab:2bff:fe80:8c98",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8883eed",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::894:c4ff:fe9e:41a6",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::8ce5:d2ff:fe43:adc3",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c4aa:84ff:fe41:a753",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8509d99",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::a43d:8ff:fea0:334b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth741e987",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c836:5fff:fee6:49f7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "tailscale0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "100.101.0.13",
+                "prefixlen": 32,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd7a:115c:a1e0::b:13",
+                "prefixlen": 128,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::25a0:a299:6e15:8191",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::dcdf:49ff:feb4:b488",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethe5770f6",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::6096:9eff:fe62:c0f4",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7c4e:c3ff:fe8c:a05d",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 5210,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "main"
+          },
+          {
+            "priority": 5230,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "default"
+          },
+          {
+            "priority": 5250,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "action": "unreachable"
+          },
+          {
+            "priority": 5270,
+            "src": "all",
+            "table": "52"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "192.168.88.171": [
+            {
+              "type": "local",
+              "dst": "192.168.88.171",
+              "dev": "lo",
+              "table": "local",
+              "prefsrc": "192.168.88.171",
+              "flags": [],
+              "uid": 1000,
+              "cache": [
+                "local"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "declaration": {
+        "host": "local",
+        "role": "Joiner",
+        "physical_network": "fixture-b"
+      },
+      "network": {
+        "hostname": "owner-desktop",
+        "arch": "x86_64",
+        "kernel": "7.2.8-arch1-2",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "enp6s0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wlp7s0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1420,
+            "kind": "wireguard"
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "docker0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "veth9b065fb",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth2514416",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth35b8861",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8883eed",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8509d99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth741e987",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1280,
+            "kind": "tun"
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethe5770f6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "enp6s0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "192.168.88.171",
+                "prefixlen": 24,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd00:88:1:bed9:b0d5:4734:553:64f4",
+                "prefixlen": 64,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::de3a:e408:1853:c715",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "wlp7s0",
+            "addresses": []
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.0.0.2",
+                "prefixlen": 24,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.20.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::dc7f:41ff:fed0:540b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "docker0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::6429:54ff:fec8:c444",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::7447:9fff:fea3:7710",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.24.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::60f3:4aff:fec3:44e7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth9b065fb",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::941a:c6ff:fe19:dcc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth2514416",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7cac:8bff:fef4:ccc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth35b8861",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::10ab:2bff:fe80:8c98",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8883eed",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::894:c4ff:fe9e:41a6",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::8ce5:d2ff:fe43:adc3",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c4aa:84ff:fe41:a753",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8509d99",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::a43d:8ff:fea0:334b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth741e987",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c836:5fff:fee6:49f7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "tailscale0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "100.101.0.13",
+                "prefixlen": 32,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd7a:115c:a1e0::b:13",
+                "prefixlen": 128,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::25a0:a299:6e15:8191",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::dcdf:49ff:feb4:b488",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethe5770f6",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::6096:9eff:fe62:c0f4",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7c4e:c3ff:fe8c:a05d",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 5210,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "main"
+          },
+          {
+            "priority": 5230,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "default"
+          },
+          {
+            "priority": 5250,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "action": "unreachable"
+          },
+          {
+            "priority": 5270,
+            "src": "all",
+            "table": "52"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "192.168.88.171": [
+            {
+              "type": "local",
+              "dst": "192.168.88.171",
+              "dev": "lo",
+              "table": "local",
+              "prefsrc": "192.168.88.171",
+              "flags": [],
+              "uid": 1000,
+              "cache": [
+                "local"
+              ]
+            }
+          ]
+        }
+      },
+      "route_preflight": "active tunnel requires isolated native fixture: wg-oracle-vps",
+      "root": "/home/owner/filesync-validation-pmnn9mlz",
+      "package": {
+        "package": "orbit-rehearsal-linux-amd64.tar.gz",
+        "package_sha256": "48e133a88102b36892d8e5bf42e978136739a72b104ff88318a2dee2907e5bb0",
+        "binary_sha256": "8ee43fe40b9d8785c287586751b5e2591f495e1933114d7bf28faa29424d1a44"
+      },
+      "version": {
+        "built": "unknown",
+        "commit": "none",
+        "config_format_version": 1,
+        "embedded_assets": {
+          "digest_sha256": "ec877d8edc79df4ec211ecc95a16de8003eb44dfc587f5e52d06dc3581a5484e",
+          "node_runtime_required": false,
+          "pure_go_sqlite": true,
+          "total_files": 3
+        },
+        "go_version": "go1.27.1-X:nodwarf5",
+        "goarch": "amd64",
+        "goos": "linux",
+        "packaged_profile": {
+          "active": false,
+          "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+          "available": true,
+          "digest": "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165",
+          "epoch": 1,
+          "expires": "2027-01-04T19:37:37Z",
+          "operator": "Caleb Habesh"
+        },
+        "product": "Orbit",
+        "schema_version": 13,
+        "version": "dev"
+      },
+      "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+      "pin": "447e7e4b09d301f11f14bcb892381347b929a13cd8a5c19ae4712bdf22d619bd",
+      "final_status": {
+        "network": {
+          "generated_at": "2026-10-06T22:41:00.917662617Z",
+          "profile_expires": "2026-10-07T00:39:07Z",
+          "profile_state": "verified",
+          "service_trust": "custom:6dea5e646a2364659c673a466e57d562a37d901c8c11b57831177e8181d34d9c",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "probes": [],
+          "policy": {
+            "mode": "self_hosted",
+            "profile": "06c7892d8158a59dea1e259d4bf67aa47c32c057db6e0b0b8477ad6adc7e3341",
+            "lan_advertising": false,
+            "generation": "2"
+          },
+          "active_policy": {
+            "mode": "self_hosted",
+            "profile": "06c7892d8158a59dea1e259d4bf67aa47c32c057db6e0b0b8477ad6adc7e3341",
+            "lan_advertising": false,
+            "generation": "2"
+          },
+          "restart_required": false,
+          "ready": true,
+          "code": "SERVICE_READY",
+          "operator": "W13 disposable rehearsal operator",
+          "privacy": "Rehearsal only. The service sees device IDs, key pins, addresses and connection timing, kept in memory for at most ten minutes. It never sees file names or contents. No request logs are kept.",
+          "observations": [
+            {
+              "freshness": "recent",
+              "action": "No connection action needed; inspect folder copies separately.",
+              "lan_candidates": "0",
+              "public_candidates": "0",
+              "expired_candidates": "0",
+              "udp_code": "UNAVAILABLE",
+              "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "pin": "6a458d3a7773e885165dbcbfe0e0ccf7ac4c080c8d0bc07d0f13a1ef9c6a63ff",
+              "purpose": "peer_data",
+              "route": "relay",
+              "code": "CONNECTED",
+              "observed_at": "2026-10-06T22:41:00.086998161Z",
+              "generation": "4"
+            }
+          ]
+        },
+        "versions": [],
+        "version": "1",
+        "capabilities": [
+          "terminal_control_v1",
+          "network_control_v1",
+          "network_diagnostics_v1",
+          "lifecycle_settings_v1",
+          "enrollment_v2",
+          "enrollment_v3",
+          "packaged_profile_v1",
+          "reviewed_setup_v1",
+          "folder_sharing_v1",
+          "context_v1",
+          "reviewed_content_v1",
+          "onboarding_management_v1",
+          "everyday_management_v1"
+        ],
+        "state": "success",
+        "service": {
+          "running": true,
+          "enabled": false,
+          "mode": "manual",
+          "unattended_verified": false,
+          "root_healthy": true,
+          "capture_healthy": true
+        },
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "items": [
+          {
+            "id": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "name": "W16 data",
+            "root": "/home/owner/filesync-validation-pmnn9mlz/data",
+            "key_pin": ""
+          }
+        ],
+        "requests": [],
+        "observations": [
+          {
+            "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "counter": "1"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "counter": "2"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          },
+          {
+            "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "version": {
+              "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+              "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+              "counter": "3"
+            },
+            "saved": true,
+            "stored": true,
+            "applied": false,
+            "direct": true,
+            "observed_at": "2026-10-06T22:41:00Z",
+            "last_contact": "2026-10-06T22:41:00Z",
+            "availability": "available",
+            "online": true
+          }
+        ],
+        "attention": [],
+        "effects": [],
+        "cursor": ""
+      },
+      "final_network": {
+        "hostname": "owner-desktop",
+        "arch": "x86_64",
+        "kernel": "7.2.8-arch1-2",
+        "links": [
+          {
+            "ifname": "lo",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "loopback",
+            "mtu": 65536,
+            "kind": ""
+          },
+          {
+            "ifname": "enp6s0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wlp7s0",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": ""
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "flags": [
+              "POINTOPOINT",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1420,
+            "kind": "wireguard"
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "flags": [
+              "NO-CARRIER",
+              "BROADCAST",
+              "MULTICAST",
+              "UP"
+            ],
+            "operstate": "DOWN",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "docker0",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "bridge"
+          },
+          {
+            "ifname": "veth9b065fb",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth2514416",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth35b8861",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8883eed",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth8509d99",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "veth741e987",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "tailscale0",
+            "flags": [
+              "POINTOPOINT",
+              "MULTICAST",
+              "NOARP",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UNKNOWN",
+            "link_type": "none",
+            "mtu": 1280,
+            "kind": "tun"
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethe5770f6",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "operstate": "UP",
+            "link_type": "ether",
+            "mtu": 1500,
+            "kind": "veth"
+          }
+        ],
+        "addresses": [
+          {
+            "ifname": "lo",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "127.0.0.1",
+                "prefixlen": 8,
+                "scope": "host"
+              },
+              {
+                "family": "inet6",
+                "local": "::1",
+                "prefixlen": 128,
+                "scope": "host"
+              }
+            ]
+          },
+          {
+            "ifname": "enp6s0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "192.168.88.171",
+                "prefixlen": 24,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd00:88:1:bed9:b0d5:4734:553:64f4",
+                "prefixlen": 64,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::de3a:e408:1853:c715",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "wlp7s0",
+            "addresses": []
+          },
+          {
+            "ifname": "wg-oracle-vps",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "10.0.0.2",
+                "prefixlen": 24,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-1bddba983444",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.18.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              }
+            ]
+          },
+          {
+            "ifname": "br-3113072c7e20",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.20.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::dc7f:41ff:fed0:540b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "docker0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.17.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::6429:54ff:fec8:c444",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-7433a5568ce3",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.19.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::7447:9fff:fea3:7710",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "br-c33b68a59282",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "172.24.0.1",
+                "prefixlen": 16,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::60f3:4aff:fec3:44e7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth9b065fb",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::941a:c6ff:fe19:dcc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth2514416",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7cac:8bff:fef4:ccc5",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth35b8861",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::10ab:2bff:fe80:8c98",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8883eed",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::894:c4ff:fe9e:41a6",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethcfe8c84",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::8ce5:d2ff:fe43:adc3",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth5caf6c1",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c4aa:84ff:fe41:a753",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth8509d99",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::a43d:8ff:fea0:334b",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "veth741e987",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::c836:5fff:fee6:49f7",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "tailscale0",
+            "addresses": [
+              {
+                "family": "inet",
+                "local": "100.101.0.13",
+                "prefixlen": 32,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fd7a:115c:a1e0::b:13",
+                "prefixlen": 128,
+                "scope": "global"
+              },
+              {
+                "family": "inet6",
+                "local": "fe80::25a0:a299:6e15:8191",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethd6d2c00",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::dcdf:49ff:feb4:b488",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethe5770f6",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::6096:9eff:fe62:c0f4",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          },
+          {
+            "ifname": "vethb0b4b53",
+            "addresses": [
+              {
+                "family": "inet6",
+                "local": "fe80::7c4e:c3ff:fe8c:a05d",
+                "prefixlen": 64,
+                "scope": "link"
+              }
+            ]
+          }
+        ],
+        "rules": [
+          {
+            "priority": 0,
+            "src": "all",
+            "table": "local"
+          },
+          {
+            "priority": 5210,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "main"
+          },
+          {
+            "priority": 5230,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "table": "default"
+          },
+          {
+            "priority": 5250,
+            "src": "all",
+            "fwmark": "0x80000",
+            "fwmask": "0xff0000",
+            "action": "unreachable"
+          },
+          {
+            "priority": 5270,
+            "src": "all",
+            "table": "52"
+          },
+          {
+            "priority": 32766,
+            "src": "all",
+            "table": "main"
+          },
+          {
+            "priority": 32767,
+            "src": "all",
+            "table": "default"
+          }
+        ],
+        "routes": {
+          "192.168.88.171": [
+            {
+              "type": "local",
+              "dst": "192.168.88.171",
+              "dev": "lo",
+              "table": "local",
+              "prefsrc": "192.168.88.171",
+              "flags": [],
+              "uid": 1000,
+              "cache": [
+                "local"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "scenarios": {
+    "approval": {
+      "request": "19f10806f8011b9722bee543deec6527928c661e12691fdfb8b205bbc863fcff",
+      "attempt": "8ccaaf59f1e7ff6c1b67ed72f2de45d6c52a901f9a6e8fd0fb5734e8d54f5e51",
+      "operation": "f2ecb1a260937acfde3ae0d26c57f9506844301911fa40f5327394aa4966e9ab",
+      "verification_code": "b6877-14241-9b59b-45a7b",
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "join_to_approved_seconds": 27.929854321002495
+    },
+    "two_way": [
+      {
+        "head": {
+          "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+          "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+          "counter": "1"
+        },
+        "sha256": "43847b94d244ea6977f3d3132dccc153cdfd57bdff2795b31d9fe0fb1fe1ff2e",
+        "bytes": 16,
+        "receipt": {
+          "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+          "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+          "version": {
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-06T22:40:10Z",
+          "last_contact": "2026-10-06T22:40:10Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 9.03673785601859,
+        "completion_bytes_per_second": 1.77055041929138
+      },
+      {
+        "head": {
+          "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+          "author": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+          "counter": "1"
+        },
+        "sha256": "dc35e4e21c6ceaa4a9d5488636ff86b43979b8ba09d739702bda3b211b73bd3f",
+        "bytes": 18,
+        "receipt": {
+          "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+          "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+          "version": {
+            "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+            "author": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-06T22:40:15Z",
+          "last_contact": "2026-10-06T22:40:15Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 4.893047264020424,
+        "completion_bytes_per_second": 3.678689174404195
+      }
+    ],
+    "large": {
+      "head": {
+        "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+        "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+        "counter": "2"
+      },
+      "sha256": "2b07811057df887086f06a67edc6ebf911de8b6741156e7a2eb1416a4b8b1b2e",
+      "bytes": 4194304,
+      "receipt": {
+        "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+        "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+        "version": {
+          "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+          "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+          "counter": "2"
+        },
+        "saved": true,
+        "stored": true,
+        "applied": false,
+        "direct": true,
+        "observed_at": "2026-10-06T22:40:21Z",
+        "last_contact": "2026-10-06T22:40:20Z",
+        "availability": "available",
+        "online": true
+      },
+      "receiver_readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "receiver_working_hash_verified": true,
+      "seconds": 5.688291181984823,
+      "completion_bytes_per_second": 737357.4709543043
+    },
+    "reconnect": {
+      "head": {
+        "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+        "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+        "counter": "3"
+      },
+      "sha256": "4704d872d61000420137ff06c007f64d88b77d387b59de82130dec4331da4b53",
+      "bytes": 32,
+      "receipt": {
+        "device": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+        "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+        "version": {
+          "folder": "cf0b6c31222f74cd0f4b706cc65d8d0fe286450f24ddbe8c20fee4db8ef07780",
+          "author": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+          "counter": "3"
+        },
+        "saved": true,
+        "stored": true,
+        "applied": false,
+        "direct": true,
+        "observed_at": "2026-10-06T22:40:24Z",
+        "last_contact": "2026-10-06T22:40:24Z",
+        "availability": "available",
+        "online": true
+      },
+      "receiver_readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "receiver_working_hash_verified": true,
+      "seconds": 1.0682103740109596,
+      "completion_bytes_per_second": 29.95664597399958
+    },
+    "second_folder": {
+      "approval": {
+        "request": "6d758ec16182431a2ff352458b3f43dfb3e0f456227431dd294cb28de8b813e9",
+        "attempt": "33da906b00a992f0df55f4b61476e1680b2c6f8d524d3faa5d1bf4b33a3dc595",
+        "operation": "18e800bf700a8568331cbe988f9b25f435376615f78b1311c71b074e952b9c34",
+        "verification_code": "5625e-14ded-24853-27a73",
+        "readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        }
+      },
+      "transfer": {
+        "head": {
+          "folder": "af77fe9249ae26426cfd48d797e21dcd827b96fdfad33ca0335108bc603e48c9",
+          "author": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+          "counter": "1"
+        },
+        "sha256": "4bc2ac778e0b11c37c81ffe64892a469887545a63550448468e58fa690968602",
+        "bytes": 29,
+        "receipt": {
+          "device": "52aaf1b97eaa86a48e40afb4522f1d3c24a23829cf759a6c580650edbd374e9f",
+          "folder": "af77fe9249ae26426cfd48d797e21dcd827b96fdfad33ca0335108bc603e48c9",
+          "version": {
+            "folder": "af77fe9249ae26426cfd48d797e21dcd827b96fdfad33ca0335108bc603e48c9",
+            "author": "337218dffac975b14a2ae18f7714d85d4775a580eca411f6c1c7a4335bea6ef7",
+            "counter": "1"
+          },
+          "saved": true,
+          "stored": true,
+          "applied": false,
+          "direct": true,
+          "observed_at": "2026-10-06T22:41:00Z",
+          "last_contact": "2026-10-06T22:41:00Z",
+          "availability": "available",
+          "online": true
+        },
+        "receiver_readiness": {
+          "approved": true,
+          "membership_current": true,
+          "root_available": true,
+          "scan_complete": true,
+          "unsupported": "0",
+          "unreadable": "0",
+          "uncaptured": "0",
+          "missing_content": "0",
+          "pending_publication": "0",
+          "conflicts": "0",
+          "storage_blocked": false
+        },
+        "receiver_working_hash_verified": true,
+        "seconds": 4.267547492025187,
+        "completion_bytes_per_second": 6.795472119336133
+      }
+    }
+  },
+  "cleanup_errors": [],
+  "package_manifest": {
+    "fixture": "W16 local rehearsal; no release acceptance"
+  },
+  "retained_roots": {},
+  "ended_at": "2026-10-06T22:41:03.261185+00:00"
+}

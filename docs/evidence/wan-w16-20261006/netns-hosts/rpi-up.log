@@ -1,0 +1,20 @@
+=== rpi 2026-10-06T23:51:49Z
+32fb91154eed043fe7d707f8b59310482aede967d1fed74e63eb8d3c251c3970  /tmp/wan_netns.sh
+up: orbit-w16 10.231.17.2/29 -> 10.231.17.1 via eth0
+namespace orbit-w16
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+ow-w16-n@if13    UP             10.231.17.2/29 fe80::90f4:97ff:fe73:b1cb/64 
+default via 10.231.17.1 dev ow-w16-n 
+10.231.17.0/29 dev ow-w16-n proto kernel scope link src 10.231.17.2 
+-A INPUT -i ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT
+-A INPUT -i ow-w16-h -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -i ow-w16-h -o eth0 -m comment --comment orbit-w16-w16 -j ACCEPT
+-A FORWARD -i eth0 -o ow-w16-h -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment orbit-w16-w16 -j ACCEPT
+-A FORWARD -i ow-w16-h ! -o eth0 -m comment --comment orbit-w16-w16 -j REJECT --reject-with icmp-port-unreachable
+-A POSTROUTING -s 10.231.17.0/29 -o eth0 -m comment --comment orbit-w16-w16 -j MASQUERADE
+lo               UNKNOWN        02:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+ow-w16-n@if13    UP             02:00:00:00:00:00 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+service 400 via 132.145.111.200
+<home public IPv4 redacted>
+tailscale-blocked
+exit=0

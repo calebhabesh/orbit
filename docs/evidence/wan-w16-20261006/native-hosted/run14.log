@@ -1,0 +1,2 @@
+python3 scripts/validation/wan_native.py --dist $S/release --topology      vp  4.21s user 0.89s system 2% cpu 3:36.20 total
+exit=0

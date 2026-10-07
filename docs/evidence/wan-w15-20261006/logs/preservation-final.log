@@ -1,0 +1,28 @@
+{
+  "historical_evidence_files": 2277,
+  "preserved": true,
+  "changed_inherited_files": [
+    "docs/implementation/wan-release.md",
+    "docs/implementation/wan-status.md",
+    "docs/orbit-wan-implementation-plan.md",
+    "docs/orbit-wan-protocol.md",
+    "docs/verification.md",
+    "internal/network/relay_runtime.go",
+    "internal/replication/ice_test.go",
+    "internal/testkit/disposable.go",
+    "internal/testkit/disposable_test.go",
+    "tests/terminal/wan_direct_test.go",
+    "tests/terminal/wan_enrollment_process_test.go",
+    "tests/terminal/wan_roaming_test.go"
+  ],
+  "added_files": [
+    "internal/network/wan_w15_test.go",
+    "internal/protocol/wan_w15_fuzz_test.go",
+    "internal/replication/wan_w15_test.go",
+    "model/wan_transfer.go",
+    "scripts/validation/WAN_FAILURES.md",
+    "scripts/validation/test_wan_safety.py",
+    "scripts/validation/wan_safety.py",
+    "scripts/wan_failure_campaign.py"
+  ]
+}

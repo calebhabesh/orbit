@@ -1,0 +1,30 @@
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:198: whole daemon route relay after 6.572957ms generation=4
+    wan_roaming_test.go:200: whole daemon route quic after 12.353133768s generation=4
+    wan_roaming_test.go:230: whole daemon route relay after 26.145675294s generation=4
+    wan_roaming_test.go:233: whole daemon route quic after 7.987609587s generation=4
+    wan_roaming_test.go:234: W15 SIGKILL at transfer.chunk.verified: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:247: whole daemon address/default-route generation rebuild after 1.072078408s
+    wan_roaming_test.go:261: whole daemon route relay after 17.256234783s generation=5
+    wan_roaming_test.go:267: whole daemon route quic after 2.509044251s generation=5
+    wan_roaming_test.go:276: W15 direct sync survived service outage; fresh service restarted; relay bytes=0
+    wan_roaming_test.go:323: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="37661"
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:198: whole daemon route relay after 10.010438ms generation=4
+    wan_roaming_test.go:200: whole daemon route quic after 11.402380268s generation=4
+    wan_roaming_test.go:219: missing immutable head at crash [] <nil>
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=5a5c0cc14e676519842d1be2372d88b3139acb82c4af8bc9f19aa3e07f6eeca6 schema=13 peer-listener=[::]:38749 key-pin=cc3b4d7e47cbc7a5484fc5dc59fbae0171de82dfd19971785a31a8d511525ab6 enrollment-listener=disabled control-listener=http://127.0.0.1:33971
+        2026/10/06 17:20:00 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=b64264ba1d971e2d7da5a7b72733a06c8eb5931c597fb2838cb6fb448102b16b schema=13 peer-listener=[::]:38499 key-pin=36fdac9b675e7781e28a1f202ea64b582bc6cf769730c339fb471cb181bd3d49 enrollment-listener=disabled control-listener=http://127.0.0.1:37961
+        2026/10/06 17:20:00 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+
+--- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (175.06s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (122.71s)
+    --- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (52.35s)
+FAIL
+
+{"scenario": "recovery", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531833]", "namespace": "net:[4026534424]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 1, "seconds": 175.08785026299302}

@@ -1,0 +1,37 @@
+{
+  "packet": "W16",
+  "started_at": "2026-10-06T22:29:55.593985+00:00",
+  "revision": "d2538251d262d9a36804bf3ba6dcecd93ac6ab12",
+  "starting_status": " M cmd/orbit-net/main.go\n M cmd/orbit-net/profile.go\n M docs/evidence/wan-w14-20261006/commands.md\n M docs/evidence/wan-w14-20261006/summary.md\n M docs/evidence/wan-w14-closeout-20261006/check_links.py\n M docs/evidence/wan-w14-closeout-20261006/commands.md\n M docs/evidence/wan-w14-closeout-20261006/final-source.json\n M docs/evidence/wan-w14-closeout-20261006/logs/aggregate-final.log\n M docs/evidence/wan-w14-closeout-20261006/manifest.json\n M docs/evidence/wan-w14-closeout-20261006/record_command.py\n M docs/evidence/wan-w14-closeout-20261006/summary.md\n M docs/evidence/wan-w14-closeout-20261006/verify_preservation.py\n M docs/evidence/wan-w14-closeout-20261006/whitespace-final.json\n M docs/implementation/wan-release.md\n M docs/implementation/wan-status.md\n M docs/orbit-net-operator.md\n M docs/orbit-wan-design-gates.md\n M docs/orbit-wan-implementation-plan.md\n M docs/orbit-wan-protocol.md\n M docs/verification.md\n M internal/network/relay_runtime.go\n M internal/replication/ice_test.go\n M internal/testkit/disposable.go\n M internal/testkit/disposable_test.go\n M tests/terminal/wan_direct_test.go\n M tests/terminal/wan_enrollment_process_test.go\n M tests/terminal/wan_roaming_test.go\n?? cmd/orbit-net/key_verify_test.go\n?? docs/evidence/wan-w14-closeout-20261006/aggregate-final.json\n?? docs/evidence/wan-w14-closeout-20261006/docs-links-final.json\n?? docs/evidence/wan-w14-closeout-20261006/logs/aggregate-final.raw.gz\n?? docs/evidence/wan-w14-closeout-20261006/logs/docs-links-final.log\n?? docs/evidence/wan-w14-closeout-20261006/logs/packaged-version.log\n?? docs/evidence/wan-w14-closeout-20261006/logs/preservation-final.log\n?? docs/evidence/wan-w14-closeout-20261006/package-artifacts.json\n?? docs/evidence/wan-w14-closeout-20261006/packaged-version.json\n?? docs/evidence/wan-w14-closeout-20261006/preservation-final.json\n?? docs/evidence/wan-w14-closeout-20261006/results.json\n?? docs/evidence/wan-w14-closeout-20261006/source-after-package.json\n?? docs/evidence/wan-w14-closeout-20261006/whitespace-after-finalization.json\n?? docs/evidence/wan-w15-20261006/\n?? docs/evidence/wan-w16-20261006/\n?? docs/evidence/wan-wg6-readiness-20261006/\n?? internal/network/wan_w15_test.go\n?? internal/protocol/wan_w15_fuzz_test.go\n?? internal/replication/wan_w15_test.go\n?? model/wan_transfer.go\n?? scripts/validation/WAN_FAILURES.md\n?? scripts/validation/test_wan_safety.py\n?? scripts/validation/wan_safety.py\n?? scripts/wan_failure_campaign.py\n",
+  "scope": "safe runner preparation, read-only physical host inventory, isolated self-host rehearsal; hosted acceptance gated on WG6",
+  "prerequisites": [
+    "W07",
+    "W11",
+    "W13 technical implementation (WG6 open)",
+    "W14",
+    "W15"
+  ],
+  "owner_network_access": "VPS plus laptop/Pi on home network; user confirmed no other remote device",
+  "inherited_conditions": [
+    "T13 unfinished technical checks",
+    "P17 deferred owner use/explanation"
+  ],
+  "final_tested_source_digest": "1e60df207d443eb80953b43f684811f23aab3e08457954a6b2544b4a27bd9366",
+  "final_validation": {
+    "runner": "runner-process-race.json",
+    "report": "runner-process-race-report.json",
+    "harness": "harness-final.json",
+    "discovery": "discovery.json",
+    "vet": "vet-final.json"
+  },
+  "native_acceptance": "unexecuted",
+  "WG6": "open; no exception for hosted tests",
+  "scope_complete": false,
+  "preservation": {
+    "historical_evidence_files": 2630,
+    "inherited_non_document_sources": 553,
+    "result": "handoff-verification.json"
+  },
+  "process_audit": "process-audit.json",
+  "handoff_source": "handoff-source.json"
+}

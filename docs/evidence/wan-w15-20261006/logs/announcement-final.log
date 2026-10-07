@@ -1,0 +1,32 @@
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323280871320038; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323280896566829; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323280922092563; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323280947371886; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323280973765358; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.02s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323280998785717; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323281024064920; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323281049790365; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323281074995177; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+=== RUN   TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration
+    wan_w15_test.go:144: quota-rejected renewal retains exact service-accepted offer generation=1791323281100163347; unready dial/lookup do no service work
+--- PASS: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (0.03s)
+PASS
+ok  	github.com/calebhabesh/file-sync/internal/network	1.263s

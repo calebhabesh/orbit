@@ -1,0 +1,14 @@
+=== RUN   TestWANW08BinaryLocalOnlyLANAfterApproval
+    wan_direct_test.go:238: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; zero service requests in Local-only; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW08BinaryLocalOnlyLANAfterApproval (42.85s)
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:238: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; zero service requests in Local-only; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW09BinaryLocalOnlyQUICAfterApproval (43.35s)
+=== RUN   TestWANW08BinaryLocalOnlyLANAfterApproval
+    wan_direct_test.go:238: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; zero service requests in Local-only; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW08BinaryLocalOnlyLANAfterApproval (42.76s)
+=== RUN   TestWANW09BinaryLocalOnlyQUICAfterApproval
+    wan_direct_test.go:238: Actual invitation/pending denial/exact approval; two production binaries discover known peers without configured IPs; two-way LAN bytes/heads/hashes; zero service requests in Local-only; actual service shutdown preserves capture. One host, no physical WAN claim.
+--- PASS: TestWANW09BinaryLocalOnlyQUICAfterApproval (43.06s)
+PASS
+ok  	github.com/calebhabesh/file-sync/tests/terminal	173.035s

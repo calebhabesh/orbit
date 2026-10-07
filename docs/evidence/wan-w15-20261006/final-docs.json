@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "python3",
+    "docs/evidence/wan-w15-20261006/check_links.py"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:37:52.884485+00:00",
+  "source_before": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.022,
+  "finished_at": "2026-10-06T21:37:52.906749+00:00",
+  "source_after": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c"
+}

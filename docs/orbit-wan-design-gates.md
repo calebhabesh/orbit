@@ -118,7 +118,7 @@ reachable validated origins; placeholders and overridden localhost profiles are
 explicitly development-only. Failure to arrange an operator leaves hosted-default
 release incomplete, not an excuse to claim effortless self-host setup.
 
-### WG6 W13 outcome — open, 2026-10-06
+### WG6 W13 interim record — open, 2026-10-06
 
 Local composition is closed: packaged `orbit-net`, operator key/profile tooling,
 two-epoch rotation overlap, reviewed custom self-host trust, certificate reload,
@@ -134,6 +134,34 @@ alert/on-call destination. The
 exact records that close it. W14 default distribution and W16 hosted-default
 tests stay blocked on them; self-host mode does not depend on them.
 
+Owner-directed sequencing amendment, 2026-10-06: the offline backup and working
+alert destination are deferred operator actions. W15 isolated failure/security/
+resource development may proceed on W13's implemented technical evidence.
+WG6 stays open; wider package distribution, W16 hosted-default acceptance and
+W17 release still require both actions with evidence. See
+[the plan amendment](orbit-wan-implementation-plan.md#owner-directed-sequencing-amendment--2026-10-06).
+
+
+### WG6 W13 outcome — closed, 2026-10-07
+
+Both remaining operator records now exist; the interim record above is retained.
+
+- **Alert/on-call destination:** `orbit-net alert` runs every minute on the VPS
+  from a separate binary/timer (the production service was not replaced or
+  restarted) and posts firing/resolved transitions to the owner's private ntfy
+  topic. On-call contact: the owner (Pixel 6a ntfy subscription). A live drill
+  at 2026-10-07T00:28:16Z–00:28:47Z (test, synthetic FIRING down, RESOLVED down)
+  was received as live notifications, confirmed by the owner; the earlier
+  23:51Z drill was received from the ntfy cache
+  ([evidence](evidence/wan-w16-20261006/wg6-alert/summary.md)).
+- **Second authority-key copy:** the owner attests that the authority key,
+  signed release profile and public authority are stored in an encrypted
+  Bitwarden vault item, separate from the workstation copy. The owner waived
+  recording the restored-copy `orbit-net key verify` result, so restore
+  verification is **unexecuted** and owner-attested custody is the evidence.
+
+Hosted-default W16 tests and W14 package distribution are no longer gated by
+WG6. Their own acceptance criteria still apply.
 
 ### WG5 W08 TCP defaults (partial integration, gate remains open)
 

@@ -1,0 +1,66 @@
+['unshare', '--user', '--map-root-user', '--net', 'python3', '/tmp/orbit-w15-pi-assets-9nrgr3g0/wan_failure_campaign.py', '--root', '/tmp/orbit-w15-pi-run-ojpfdn4c', '--parent-namespace', 'net:[4026531840]', '--test-binary', '/tmp/orbit-w15-pi-assets-9nrgr3g0/input.test', '--scenario', 'recovery', '--suite', 'crash']
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:233: W15 verified working bytes name=relay-start.txt bytes=19 wait=7.131591597s
+    wan_roaming_test.go:234: whole daemon route relay after 25.843649ms generation=4
+    wan_roaming_test.go:236: whole daemon route quic after 14.837793451s generation=4
+    wan_roaming_test.go:238: W15 idle interval start_ns=1791322186043320638
+    wan_roaming_test.go:240: W15 idle interval end_ns=1791322191044156338
+    wan_roaming_test.go:271: whole daemon route relay after 1.011821093s generation=4
+    wan_roaming_test.go:272: W15 verified working bytes name=large.bin bytes=16777216 wait=18.337348535s
+    wan_roaming_test.go:274: whole daemon route quic after 2.637911999s generation=4
+    wan_roaming_test.go:275: W15 SIGKILL at transfer.chunk.verified: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:289: whole daemon address/default-route generation rebuild after 879.483176ms
+    wan_roaming_test.go:303: whole daemon route relay after 1.614540602s generation=5
+    wan_roaming_test.go:304: W15 verified working bytes name=large.bin bytes=16777216 wait=65.966094ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-00.txt bytes=15 wait=8.331502329s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-01.txt bytes=15 wait=100.331662ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-02.txt bytes=15 wait=82.943µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-03.txt bytes=15 wait=201.59985ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-04.txt bytes=15 wait=200.729046ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-05.txt bytes=15 wait=201.203281ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-06.txt bytes=15 wait=101.126671ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-07.txt bytes=15 wait=1.610007145s
+    wan_roaming_test.go:309: whole daemon route quic after 9.024234453s generation=5
+    wan_roaming_test.go:312: W15 service relayed encrypted inner stream bytes=16618363
+    wan_roaming_test.go:317: W15 verified working bytes name=service-outage.txt bytes=42 wait=2.811415417s
+    wan_roaming_test.go:321: W15 verified working bytes name=service-restarted.txt bytes=44 wait=21.392673872s
+    wan_roaming_test.go:322: whole daemon route relay after 10.662488ms generation=5
+    wan_roaming_test.go:324: whole daemon route quic after 15.413520694s generation=5
+    wan_roaming_test.go:325: W15 direct sync survived service outage; fresh service restarted; relay bytes=719578
+    wan_roaming_test.go:380: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="38067"
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:233: W15 verified working bytes name=relay-start.txt bytes=19 wait=17.370263022s
+    wan_roaming_test.go:234: whole daemon route relay after 18.828042ms generation=4
+    wan_roaming_test.go:236: whole daemon route quic after 14.352115623s generation=4
+    wan_roaming_test.go:238: W15 idle interval start_ns=1791322352265860302
+    wan_roaming_test.go:240: W15 idle interval end_ns=1791322357266994871
+    wan_roaming_test.go:271: whole daemon route relay after 11.203363728s generation=4
+    wan_roaming_test.go:272: W15 verified working bytes name=large.bin bytes=16777216 wait=5.888078623s
+    wan_roaming_test.go:274: whole daemon route quic after 14.765714526s generation=4
+    wan_roaming_test.go:275: W15 SIGKILL at transfer.receipt.after_send: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:289: whole daemon address/default-route generation rebuild after 1.038289405s
+    wan_roaming_test.go:303: whole daemon route relay after 1.427992289s generation=5
+    wan_roaming_test.go:304: W15 verified working bytes name=large.bin bytes=16777216 wait=36.680798ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-00.txt bytes=15 wait=16.988268609s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-01.txt bytes=15 wait=101.138794ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-02.txt bytes=15 wait=100.441116ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-03.txt bytes=15 wait=100.309581ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-04.txt bytes=15 wait=100.306969ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-05.txt bytes=15 wait=100.461597ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-06.txt bytes=15 wait=1.810734002s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-07.txt bytes=15 wait=100.579578ms
+    wan_roaming_test.go:309: whole daemon route quic after 11.970612989s generation=5
+    wan_roaming_test.go:312: W15 service relayed encrypted inner stream bytes=1028308
+    wan_roaming_test.go:317: W15 verified working bytes name=service-outage.txt bytes=42 wait=2.810373465s
+    wan_roaming_test.go:321: W15 verified working bytes name=service-restarted.txt bytes=44 wait=21.180490348s
+    wan_roaming_test.go:322: whole daemon route relay after 7.915149ms generation=5
+    wan_roaming_test.go:324: whole daemon route quic after 4.874208514s generation=5
+    wan_roaming_test.go:325: W15 direct sync survived service outage; fresh service restarted; relay bytes=259167
+    wan_roaming_test.go:380: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="38623"
+--- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (356.43s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (166.51s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (189.92s)
+PASS
+
+{"scenario": "recovery", "suite": "crash", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531840]", "namespace": "net:[4026532492]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 0, "seconds": 356.48272711224854}

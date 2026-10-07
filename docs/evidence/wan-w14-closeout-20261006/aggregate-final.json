@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "make",
+    "GOFLAGS=-v",
+    "check"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T20:37:43.922154+00:00",
+  "source_before": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 1488.21,
+  "finished_at": "2026-10-06T21:02:32.132343+00:00",
+  "source_after": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
+  "raw_log": "logs/aggregate-final.raw.gz",
+  "raw_log_sha256": "df729fb4f6c98899f80f3ba355d46226a732766037029a8a4d48a93dcd67133b",
+  "log_normalization": "Readable log uses LF line endings and trims trailing horizontal whitespace; original stdout/stderr preserved losslessly in raw_log."
+}

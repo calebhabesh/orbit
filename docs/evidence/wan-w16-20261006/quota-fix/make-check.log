@@ -1,0 +1,16 @@
+go test -timeout=30m ./tests/terminal/...
+2026/10/07 00:23:28 http: TLS handshake error from 127.0.0.1:51132: remote error: tls: bad certificate
+2026/10/07 00:23:28 http: TLS handshake error from 192.168.88.171:37894: tls: client didn't provide a certificate
+PASS
+PASS
+PASS
+--- FAIL: TestWANW12BinaryDoctorPrivacyAndPTY (42.25s)
+    wan_diagnostics_test.go:28: {"scenario": "W12-explicit-doctor-keyboard-cancel", "status": "passed"}
+        
+    wan_diagnostics_test.go:51: map[direct_tls:UNAVAILABLE directory:VERIFIED relay_inner_tls:TIMEOUT service_dns_tcp:VERIFIED service_tls:VERIFIED udp_stun:NOT_TESTED]
+FAIL
+FAIL	github.com/calebhabesh/file-sync/tests/terminal	1292.677s
+FAIL
+make: *** [Makefile:70: test-terminal] Error 1
+make check 2>&1  70.48s user 11.52s system 6% cpu 21:32.99 total
+exit=2

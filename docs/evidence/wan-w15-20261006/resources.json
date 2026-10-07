@@ -1,0 +1,713 @@
+{
+  "sampling": "daemon every 250 ms; combined three-peer fairness every 25 ms; short peaks may be missed",
+  "hosts": {
+    "impaired-final": {
+      "daemons": [
+        {
+          "pid": 275086,
+          "sample_count": 192,
+          "peak": {
+            "fds": 22,
+            "goroutines": 55,
+            "heap_bytes": 11552480,
+            "rss_bytes": 140103680
+          },
+          "sampled_lifetime_seconds": 47.750114486,
+          "cpu_seconds": 4.350031,
+          "idle": [
+            {
+              "seconds": 4.750105519,
+              "cpu_seconds": 0.376472
+            }
+          ]
+        },
+        {
+          "pid": 251453,
+          "sample_count": 358,
+          "peak": {
+            "fds": 23,
+            "goroutines": 53,
+            "heap_bytes": 7016192,
+            "rss_bytes": 132284416
+          },
+          "sampled_lifetime_seconds": 89.250609291,
+          "cpu_seconds": 6.648333,
+          "idle": [
+            {
+              "seconds": 4.749934324,
+              "cpu_seconds": 0.497878
+            }
+          ]
+        },
+        {
+          "pid": 254672,
+          "sample_count": 262,
+          "peak": {
+            "fds": 24,
+            "goroutines": 58,
+            "heap_bytes": 7418576,
+            "rss_bytes": 133111808
+          },
+          "sampled_lifetime_seconds": 65.250580899,
+          "cpu_seconds": 6.253046,
+          "idle": []
+        },
+        {
+          "pid": 251464,
+          "sample_count": 101,
+          "peak": {
+            "fds": 22,
+            "goroutines": 54,
+            "heap_bytes": 6115408,
+            "rss_bytes": 125255680
+          },
+          "sampled_lifetime_seconds": 25.000606814,
+          "cpu_seconds": 2.358778,
+          "idle": [
+            {
+              "seconds": 4.750677654,
+              "cpu_seconds": 0.506245
+            }
+          ]
+        },
+        {
+          "pid": 280878,
+          "sample_count": 153,
+          "peak": {
+            "fds": 23,
+            "goroutines": 57,
+            "heap_bytes": 4991472,
+            "rss_bytes": 124063744
+          },
+          "sampled_lifetime_seconds": 38.000708031,
+          "cpu_seconds": 3.940423,
+          "idle": []
+        },
+        {
+          "pid": 274979,
+          "sample_count": 342,
+          "peak": {
+            "fds": 25,
+            "goroutines": 55,
+            "heap_bytes": 7676136,
+            "rss_bytes": 141709312
+          },
+          "sampled_lifetime_seconds": 85.250473859,
+          "cpu_seconds": 6.843329,
+          "idle": [
+            {
+              "seconds": 4.749871703,
+              "cpu_seconds": 0.382507
+            }
+          ]
+        }
+      ],
+      "relay_forwarded_ciphertext_bytes": [
+        16147575,
+        442566
+      ],
+      "route_waits": [
+        [
+          "relay",
+          "7.403455ms"
+        ],
+        [
+          "quic",
+          "6.00360361s"
+        ],
+        [
+          "relay",
+          "1.95604615s"
+        ],
+        [
+          "quic",
+          "10.362958763s"
+        ],
+        [
+          "relay",
+          "6.187263006s"
+        ],
+        [
+          "quic",
+          "4.779389477s"
+        ],
+        [
+          "relay",
+          "6.685203ms"
+        ],
+        [
+          "quic",
+          "1.826186878s"
+        ],
+        [
+          "relay",
+          "8.715172ms"
+        ],
+        [
+          "quic",
+          "7.279779638s"
+        ],
+        [
+          "relay",
+          "1.710269335s"
+        ],
+        [
+          "quic",
+          "8.558991499s"
+        ],
+        [
+          "relay",
+          "6.201572398s"
+        ],
+        [
+          "quic",
+          "756.686246ms"
+        ],
+        [
+          "relay",
+          "5.508986ms"
+        ],
+        [
+          "quic",
+          "5.123991458s"
+        ]
+      ],
+      "limitations": "callback receipt uncertainty; advanced 500 ms poll / 2 s quiet / 10 s reprobe; 1 MiB/s daemon payload cap; native isolated synthetic addresses"
+    },
+    "mtu-final": {
+      "daemons": [
+        {
+          "pid": 258335,
+          "sample_count": 101,
+          "peak": {
+            "fds": 21,
+            "goroutines": 49,
+            "heap_bytes": 4016848,
+            "rss_bytes": 115957760
+          },
+          "sampled_lifetime_seconds": 25.00020308,
+          "cpu_seconds": 2.761287,
+          "idle": [
+            {
+              "seconds": 4.749880592,
+              "cpu_seconds": 0.382356
+            }
+          ]
+        },
+        {
+          "pid": 267063,
+          "sample_count": 301,
+          "peak": {
+            "fds": 26,
+            "goroutines": 57,
+            "heap_bytes": 7252272,
+            "rss_bytes": 158023680
+          },
+          "sampled_lifetime_seconds": 74.999799317,
+          "cpu_seconds": 12.412702,
+          "idle": []
+        },
+        {
+          "pid": 258318,
+          "sample_count": 398,
+          "peak": {
+            "fds": 25,
+            "goroutines": 70,
+            "heap_bytes": 5605152,
+            "rss_bytes": 155774976
+          },
+          "sampled_lifetime_seconds": 99.250089975,
+          "cpu_seconds": 12.687596,
+          "idle": [
+            {
+              "seconds": 4.74998396,
+              "cpu_seconds": 0.373204
+            }
+          ]
+        },
+        {
+          "pid": 280945,
+          "sample_count": 138,
+          "peak": {
+            "fds": 21,
+            "goroutines": 52,
+            "heap_bytes": 6235528,
+            "rss_bytes": 134860800
+          },
+          "sampled_lifetime_seconds": 34.25033515,
+          "cpu_seconds": 2.906611,
+          "idle": [
+            {
+              "seconds": 4.749931501,
+              "cpu_seconds": 0.318202
+            }
+          ]
+        },
+        {
+          "pid": 280932,
+          "sample_count": 371,
+          "peak": {
+            "fds": 24,
+            "goroutines": 60,
+            "heap_bytes": 5652424,
+            "rss_bytes": 151740416
+          },
+          "sampled_lifetime_seconds": 92.500528271,
+          "cpu_seconds": 10.161684,
+          "idle": [
+            {
+              "seconds": 4.749392942,
+              "cpu_seconds": 0.377338
+            }
+          ]
+        },
+        {
+          "pid": 284819,
+          "sample_count": 237,
+          "peak": {
+            "fds": 24,
+            "goroutines": 63,
+            "heap_bytes": 5121440,
+            "rss_bytes": 146235392
+          },
+          "sampled_lifetime_seconds": 59.000703348,
+          "cpu_seconds": 9.911689,
+          "idle": []
+        }
+      ],
+      "relay_forwarded_ciphertext_bytes": [
+        16836738,
+        639141
+      ],
+      "route_waits": [
+        [
+          "relay",
+          "8.104986ms"
+        ],
+        [
+          "quic",
+          "11.249279465s"
+        ],
+        [
+          "relay",
+          "872.542081ms"
+        ],
+        [
+          "quic",
+          "2.567077988s"
+        ],
+        [
+          "relay",
+          "1.500841369s"
+        ],
+        [
+          "quic",
+          "17.233878471s"
+        ],
+        [
+          "relay",
+          "9.589803ms"
+        ],
+        [
+          "quic",
+          "12.056139291s"
+        ],
+        [
+          "relay",
+          "6.204464ms"
+        ],
+        [
+          "quic",
+          "6.407339462s"
+        ],
+        [
+          "relay",
+          "860.072467ms"
+        ],
+        [
+          "quic",
+          "11.834339108s"
+        ],
+        [
+          "relay",
+          "6.291146957s"
+        ],
+        [
+          "quic",
+          "7.501504074s"
+        ],
+        [
+          "relay",
+          "5.668581ms"
+        ],
+        [
+          "quic",
+          "11.889995382s"
+        ]
+      ],
+      "limitations": "callback receipt uncertainty; advanced 500 ms poll / 2 s quiet / 10 s reprobe; 1 MiB/s daemon payload cap; native isolated synthetic addresses"
+    },
+    "pi-recovery": {
+      "daemons": [
+        {
+          "pid": 4165809,
+          "sample_count": 507,
+          "peak": {
+            "fds": 26,
+            "goroutines": 68,
+            "heap_bytes": 4782384,
+            "rss_bytes": 32325632
+          },
+          "sampled_lifetime_seconds": 129.249042474,
+          "cpu_seconds": 14.27437,
+          "idle": [
+            {
+              "seconds": 4.749850949,
+              "cpu_seconds": 0.666499
+            }
+          ]
+        },
+        {
+          "pid": 4166197,
+          "sample_count": 388,
+          "peak": {
+            "fds": 28,
+            "goroutines": 58,
+            "heap_bytes": 4199416,
+            "rss_bytes": 31477760
+          },
+          "sampled_lifetime_seconds": 96.998155005,
+          "cpu_seconds": 14.575125,
+          "idle": []
+        },
+        {
+          "pid": 4165891,
+          "sample_count": 338,
+          "peak": {
+            "fds": 27,
+            "goroutines": 61,
+            "heap_bytes": 4702400,
+            "rss_bytes": 32743424
+          },
+          "sampled_lifetime_seconds": 86.249507388,
+          "cpu_seconds": 14.824648,
+          "idle": []
+        },
+        {
+          "pid": 4166090,
+          "sample_count": 630,
+          "peak": {
+            "fds": 26,
+            "goroutines": 75,
+            "heap_bytes": 5226720,
+            "rss_bytes": 32739328
+          },
+          "sampled_lifetime_seconds": 157.500191822,
+          "cpu_seconds": 15.425035,
+          "idle": [
+            {
+              "seconds": 4.74889872,
+              "cpu_seconds": 0.423659
+            }
+          ]
+        },
+        {
+          "pid": 4166102,
+          "sample_count": 238,
+          "peak": {
+            "fds": 26,
+            "goroutines": 66,
+            "heap_bytes": 7857432,
+            "rss_bytes": 35659776
+          },
+          "sampled_lifetime_seconds": 59.250041583,
+          "cpu_seconds": 7.32093,
+          "idle": [
+            {
+              "seconds": 4.748818462,
+              "cpu_seconds": 0.41696
+            }
+          ]
+        },
+        {
+          "pid": 4165821,
+          "sample_count": 151,
+          "peak": {
+            "fds": 25,
+            "goroutines": 60,
+            "heap_bytes": 4109320,
+            "rss_bytes": 31825920
+          },
+          "sampled_lifetime_seconds": 37.499847023,
+          "cpu_seconds": 4.225511,
+          "idle": [
+            {
+              "seconds": 4.749924263,
+              "cpu_seconds": 0.672785
+            }
+          ]
+        }
+      ],
+      "relay_forwarded_ciphertext_bytes": [
+        16618363,
+        1028308
+      ],
+      "route_waits": [
+        [
+          "relay",
+          "25.843649ms"
+        ],
+        [
+          "quic",
+          "14.837793451s"
+        ],
+        [
+          "relay",
+          "1.011821093s"
+        ],
+        [
+          "quic",
+          "2.637911999s"
+        ],
+        [
+          "relay",
+          "1.614540602s"
+        ],
+        [
+          "quic",
+          "9.024234453s"
+        ],
+        [
+          "relay",
+          "10.662488ms"
+        ],
+        [
+          "quic",
+          "15.413520694s"
+        ],
+        [
+          "relay",
+          "18.828042ms"
+        ],
+        [
+          "quic",
+          "14.352115623s"
+        ],
+        [
+          "relay",
+          "11.203363728s"
+        ],
+        [
+          "quic",
+          "14.765714526s"
+        ],
+        [
+          "relay",
+          "1.427992289s"
+        ],
+        [
+          "quic",
+          "11.970612989s"
+        ],
+        [
+          "relay",
+          "7.915149ms"
+        ],
+        [
+          "quic",
+          "4.874208514s"
+        ]
+      ],
+      "limitations": "callback receipt uncertainty; advanced 500 ms poll / 2 s quiet / 10 s reprobe; 1 MiB/s daemon payload cap; native isolated synthetic addresses"
+    },
+    "pi-impaired-runtime-fixed": {
+      "daemons": [
+        {
+          "pid": 4167947,
+          "sample_count": 664,
+          "peak": {
+            "fds": 24,
+            "goroutines": 55,
+            "heap_bytes": 6631352,
+            "rss_bytes": 34271232
+          },
+          "sampled_lifetime_seconds": 167.998764192,
+          "cpu_seconds": 16.266464,
+          "idle": [
+            {
+              "seconds": 4.751420694,
+              "cpu_seconds": 0.43862
+            }
+          ]
+        },
+        {
+          "pid": 4168051,
+          "sample_count": 360,
+          "peak": {
+            "fds": 27,
+            "goroutines": 59,
+            "heap_bytes": 4481368,
+            "rss_bytes": 32571392
+          },
+          "sampled_lifetime_seconds": 90.000388482,
+          "cpu_seconds": 13.545613,
+          "idle": []
+        },
+        {
+          "pid": 4167669,
+          "sample_count": 122,
+          "peak": {
+            "fds": 23,
+            "goroutines": 53,
+            "heap_bytes": 4710504,
+            "rss_bytes": 31903744
+          },
+          "sampled_lifetime_seconds": 30.249748502,
+          "cpu_seconds": 3.069945,
+          "idle": [
+            {
+              "seconds": 4.749701729,
+              "cpu_seconds": 0.390789
+            }
+          ]
+        },
+        {
+          "pid": 4167741,
+          "sample_count": 327,
+          "peak": {
+            "fds": 28,
+            "goroutines": 59,
+            "heap_bytes": 5427680,
+            "rss_bytes": 32722944
+          },
+          "sampled_lifetime_seconds": 81.749264947,
+          "cpu_seconds": 12.56788,
+          "idle": []
+        },
+        {
+          "pid": 4167657,
+          "sample_count": 449,
+          "peak": {
+            "fds": 26,
+            "goroutines": 59,
+            "heap_bytes": 6353248,
+            "rss_bytes": 31965184
+          },
+          "sampled_lifetime_seconds": 112.248857732,
+          "cpu_seconds": 9.822679,
+          "idle": [
+            {
+              "seconds": 4.750467295,
+              "cpu_seconds": 0.373267
+            }
+          ]
+        },
+        {
+          "pid": 4167959,
+          "sample_count": 300,
+          "peak": {
+            "fds": 26,
+            "goroutines": 54,
+            "heap_bytes": 7671736,
+            "rss_bytes": 35221504
+          },
+          "sampled_lifetime_seconds": 76.998647689,
+          "cpu_seconds": 9.851902,
+          "idle": [
+            {
+              "seconds": 4.749281312,
+              "cpu_seconds": 0.424606
+            }
+          ]
+        }
+      ],
+      "relay_forwarded_ciphertext_bytes": [
+        16282768,
+        478463
+      ],
+      "route_waits": [
+        [
+          "relay",
+          "7.860612ms"
+        ],
+        [
+          "quic",
+          "7.483622869s"
+        ],
+        [
+          "relay",
+          "1.744362376s"
+        ],
+        [
+          "quic",
+          "2.685337218s"
+        ],
+        [
+          "relay",
+          "21.042292476s"
+        ],
+        [
+          "quic",
+          "6.783149977s"
+        ],
+        [
+          "relay",
+          "12.685851ms"
+        ],
+        [
+          "quic",
+          "7.216730789s"
+        ],
+        [
+          "relay",
+          "14.356795ms"
+        ],
+        [
+          "quic",
+          "17.554500283s"
+        ],
+        [
+          "relay",
+          "1.796022683s"
+        ],
+        [
+          "quic",
+          "8.87438126s"
+        ],
+        [
+          "relay",
+          "16.454329866s"
+        ],
+        [
+          "quic",
+          "4.708499662s"
+        ],
+        [
+          "relay",
+          "31.571685ms"
+        ],
+        [
+          "quic",
+          "15.167954934s"
+        ]
+      ],
+      "limitations": "callback receipt uncertainty; advanced 500 ms poll / 2 s quiet / 10 s reprobe; 1 MiB/s daemon payload cap; native isolated synthetic addresses"
+    },
+    "local-fairness": {
+      "measurements": [
+        "actual relay: large=16777216 bytes completed=7.602137753s first verified chunk=264.367781ms first small=114.956973ms small versions=17; shared cap=2097152 B/s; peak sampled heap=44222192 goroutines=115 FD=59 unique sockets=36 RSS=319516672 process CPU=4946459us; original author=aaa4cfb81c8bfb360be4ed467bbee2e9c882d1e04fbc994ac56a2f7ed8f478bd",
+        "actual direct: large=16777216 bytes completed=7.329986295s first verified chunk=60.967084ms first small=693.843433ms small versions=11; shared cap=2097152 B/s; peak sampled heap=66090464 goroutines=97 FD=56 unique sockets=32 RSS=378466304 process CPU=5117211us; original author=aaa4cfb81c8bfb360be4ed467bbee2e9c882d1e04fbc994ac56a2f7ed8f478bd",
+        "actual quic: large=16777216 bytes completed=7.567327567s first verified chunk=78.206936ms first small=776.440728ms small versions=8; shared cap=2097152 B/s; peak sampled heap=43990488 goroutines=106 FD=48 unique sockets=28 RSS=418603008 process CPU=5843187us; original author=aaa4cfb81c8bfb360be4ed467bbee2e9c882d1e04fbc994ac56a2f7ed8f478bd"
+      ],
+      "scope": "combined fixture process: three peers and local service, 16 MiB + continuous small; shared 2 MiB/s payload cap; warm/cold/initial burst as transcript; local race vs Pi non-race"
+    },
+    "pi-fairness": {
+      "measurements": [
+        "actual relay: large=16777216 bytes completed=15.566722605s first verified chunk=983.912847ms first small=1.839099595s small versions=9; shared cap=2097152 B/s; peak sampled heap=42626552 goroutines=146 FD=61 unique sockets=36 RSS=85286912 process CPU=7250386us; original author=2f8c82fffb13cd4154ba205f3c2ddf2e44a9803ee18d7616a1fe11e6eac806ba",
+        "actual direct: large=16777216 bytes completed=16.10143425s first verified chunk=330.196427ms first small=2.732214185s small versions=4; shared cap=2097152 B/s; peak sampled heap=70794760 goroutines=99 FD=54 unique sockets=32 RSS=102150144 process CPU=5695412us; original author=2f8c82fffb13cd4154ba205f3c2ddf2e44a9803ee18d7616a1fe11e6eac806ba",
+        "actual quic: large=16777216 bytes completed=13.509138494s first verified chunk=713.197536ms first small=2.982770096s small versions=5; shared cap=2097152 B/s; peak sampled heap=70939480 goroutines=124 FD=59 unique sockets=34 RSS=103235584 process CPU=6766391us; original author=2f8c82fffb13cd4154ba205f3c2ddf2e44a9803ee18d7616a1fe11e6eac806ba"
+      ],
+      "scope": "combined fixture process: three peers and local service, 16 MiB + continuous small; shared 2 MiB/s payload cap; warm/cold/initial burst as transcript; local race vs Pi non-race"
+    }
+  }
+}

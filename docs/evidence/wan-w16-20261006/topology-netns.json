@@ -1,0 +1,6 @@
+{
+  "hosts": [
+    {"host": "rpi", "role": "Pi", "physical_network": "owner-home-router", "netns": "orbit-w16"},
+    {"host": "vps", "role": "VPS", "physical_network": "Oracle-ca-toronto-1", "netns": "orbit-w16"}
+  ]
+}

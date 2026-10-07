@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:32:05.436220+00:00",
+  "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 0,
+  "duration_seconds": 0.005,
+  "finished_at": "2026-10-06T21:32:05.441470+00:00",
+  "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582"
+}

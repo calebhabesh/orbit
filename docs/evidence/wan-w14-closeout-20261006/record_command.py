@@ -26,6 +26,7 @@ else:
     before = snapshot()
     start = time.monotonic()
     record = {'argv': argv, 'cwd': str(ROOT), 'started_at': now(), 'source_before': before['tested_source_digest'], 'environment': {'ORBIT_DISABLE_PACKAGED_PROFILE': '1', 'GOFLAGS': os.environ.get('GOFLAGS', '')}}
+    (EVIDENCE / (name+'.json')).write_text(json.dumps(record, indent=2)+'\n')
     env = dict(os.environ, ORBIT_DISABLE_PACKAGED_PROFILE='1')
     with (EVIDENCE / 'logs' / (name+'.log')).open('w') as log:
         result = subprocess.run(argv, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)

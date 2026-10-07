@@ -1,0 +1,3 @@
+direct bytes observed while UDP was blocked
+python3 scripts/validation/wan_native.py --dist $R --topology  --route-target  3.74s user 0.72s system 2% cpu 2:58.26 total
+exit=1

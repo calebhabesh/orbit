@@ -1,0 +1,13 @@
+{
+  "revision": "d2538251d262d9a36804bf3ba6dcecd93ac6ab12",
+  "provenance": "dirty workspace; scoped operator-readiness changes; historical W14 validation retained",
+  "sha256": {
+    "cmd/orbit-net/main.go": "1701a666419d0bd1e65b7c6b47d97bb4fe2c2f58fa624abd44a65f423a45a8cc",
+    "cmd/orbit-net/profile.go": "7bd288cff3197e4754979df4a4cc1cfc9ff4e85a555628e5b642fc057e22448b",
+    "cmd/orbit-net/key_verify_test.go": "8d232e5348f7dda1d95358d7a53ee772ffb925ceed22a39bd58164aa2799dbcf",
+    "docs/orbit-net-operator.md": "a7b60114e4243a943f52f47602130f73a07b680e6098ca68a6c18f12fc655efd",
+    "docs/implementation/wan-status.md": "95001a5791b4313ea9be8ca43798617091e9e9583ede1c1c22e498cd70c412c7",
+    "go.mod": "b269d575d04d5c1270582226e54af283b02ae1fd746c19edc7a60353fcdf0f3e",
+    "go.sum": "3d81afa3cb8cc88296fa87f20219259d26d86ee52573eb0bdc16f918a8e8c4e4"
+  }
+}

@@ -1,0 +1,44 @@
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:233: missing verified bytes relay-start.txt {recent Check device and service availability; a timeout does not identify a NAT or firewall type. 0 0 0 UNAVAILABLE cf70a1d9afbd17c4cf1b059c05b9f551220de5c22b27c8ba5a5c055507d02939 b4e1f2b0d154d2d3b2fe503a8bed82161ca4f9e05b8ee3df6caa758aae25c280 peer_data unavailable ROUTE_UNAVAILABLE 2026-10-06T21:32:58.470766944Z 4} {recent Retry later or review an alternative service profile. 0 0 0 QUOTA_EXCEEDED 7d38e28b0fbba38ceca493d006b2cc3f51378bbdd6b94498f07665acc92cdac7 ab0a25d7d765a43145ee8ed931a3ff74635066106b06d7e0af6efa3047bc854b peer_data unavailable QUOTA_EXCEEDED 2026-10-06T21:32:57.468617234Z 4} {[{1 1791325827 true}] 4 0 0 4 4 0 2 1 39 0 0 96 0 26666 20971520 5242880}
+    wan_roaming_test.go:181: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=7d38e28b0fbba38ceca493d006b2cc3f51378bbdd6b94498f07665acc92cdac7 schema=13 peer-listener=[::]:35843 key-pin=ab0a25d7d765a43145ee8ed931a3ff74635066106b06d7e0af6efa3047bc854b enrollment-listener=disabled control-listener=http://127.0.0.1:43335
+
+    wan_roaming_test.go:181: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=cf70a1d9afbd17c4cf1b059c05b9f551220de5c22b27c8ba5a5c055507d02939 schema=13 peer-listener=[::]:33217 key-pin=b4e1f2b0d154d2d3b2fe503a8bed82161ca4f9e05b8ee3df6caa758aae25c280 enrollment-listener=disabled control-listener=http://127.0.0.1:41747
+
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:233: W15 verified working bytes name=relay-start.txt bytes=19 wait=1m10.605865003s
+    wan_roaming_test.go:234: whole daemon route relay after 5.929042ms generation=4
+    wan_roaming_test.go:236: whole daemon route quic after 13.873720305s generation=4
+    wan_roaming_test.go:238: W15 idle interval start_ns=1791322497208482084
+    wan_roaming_test.go:240: W15 idle interval end_ns=1791322502209033983
+    wan_roaming_test.go:271: whole daemon route relay after 1m3.044508673s generation=4
+    wan_roaming_test.go:272: W15 verified working bytes name=large.bin bytes=16777216 wait=1.745864076s
+    wan_roaming_test.go:274: whole daemon route quic after 7.57164391s generation=4
+    wan_roaming_test.go:275: W15 SIGKILL at transfer.receipt.after_send: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:289: whole daemon address/default-route generation rebuild after 644.988876ms
+    wan_roaming_test.go:303: whole daemon route relay after 6.083434877s generation=5
+    wan_roaming_test.go:304: W15 verified working bytes name=large.bin bytes=16777216 wait=19.888705ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-00.txt bytes=15 wait=3.317094556s
+    wan_roaming_test.go:306: W15 verified working bytes name=small-01.txt bytes=15 wait=8.757µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-02.txt bytes=15 wait=10.61µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-03.txt bytes=15 wait=8.145µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-04.txt bytes=15 wait=100.558346ms
+    wan_roaming_test.go:306: W15 verified working bytes name=small-05.txt bytes=15 wait=7.374µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-06.txt bytes=15 wait=5.29µs
+    wan_roaming_test.go:306: W15 verified working bytes name=small-07.txt bytes=15 wait=8.245µs
+    wan_roaming_test.go:309: whole daemon route quic after 1.816808186s generation=5
+    wan_roaming_test.go:312: W15 service relayed encrypted inner stream bytes=543627
+    wan_roaming_test.go:317: W15 verified working bytes name=service-outage.txt bytes=42 wait=1.803261618s
+    wan_roaming_test.go:321: W15 verified working bytes name=service-restarted.txt bytes=44 wait=9.736509599s
+    wan_roaming_test.go:322: whole daemon route relay after 5.866342ms generation=5
+    wan_roaming_test.go:324: whole daemon route quic after 2.350132353s generation=5
+    wan_roaming_test.go:325: W15 direct sync survived service outage; fresh service restarted; relay bytes=97853
+    wan_roaming_test.go:380: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="45397"
+--- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (424.84s)
+    --- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (153.43s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (271.41s)
+FAIL
+
+{"scenario": "impaired", "suite": "crash", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531833]", "namespace": "net:[4026534414]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"], ["tc", "qdisc", "add", "dev", "lo", "root", "handle", "1:", "prio", "bands", "3", "priomap", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2"], ["tc", "qdisc", "add", "dev", "lo", "parent", "1:3", "handle", "30:", "netem", "delay", "25ms", "5ms", "loss", "1%", "reorder", "5%", "50%", "rate", "20mbit", "limit", "1000"], ["tc", "filter", "add", "dev", "lo", "protocol", "ip", "parent", "1:", "prio", "1", "u32", "match", "ip", "dst", "127.0.0.0/8", "flowid", "1:1"], ["tc", "filter", "add", "dev", "lo", "protocol", "ipv6", "parent", "1:", "prio", "2", "u32", "match", "ip6", "dst", "::1/128", "flowid", "1:1"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 1, "seconds": 424.8580525419966}

@@ -1,0 +1,19 @@
+{
+  "state": "partial",
+  "local_runner": "pass",
+  "python_harness_tests": 29,
+  "new_W16_safety_oracle_tests": 10,
+  "physical_WAN": "unexecuted",
+  "hosted_default": "unexecuted",
+  "TUI_physical": "unexecuted",
+  "forced_relay_UDP_block_physical": "unexecuted",
+  "direct_WAN": "unexecuted",
+  "roaming_physical": "unexecuted",
+  "disposable_service_restart_physical": "unexecuted",
+  "three_host_forwarding_conflict_restore_native": "unexecuted",
+  "native_resources_throughput": "unexecuted",
+  "WG6": "open",
+  "T13": "technical checks remain incomplete",
+  "P17": "owner use/explanation deferred",
+  "local_report": "runner-process-race-report.json"
+}

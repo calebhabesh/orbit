@@ -1,0 +1,815 @@
+{
+  "packet": "W15",
+  "status": "complete for recorded local/native/emulator/Pi acceptance",
+  "commands": [
+    {
+      "record": "aggregate-final.json",
+      "outcome": null,
+      "command": "make GOFLAGS=-v check",
+      "exit_code": 0,
+      "duration_seconds": 1480.961,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/aggregate-final.log"
+    },
+    {
+      "record": "aggregate-runtime-fixed.json",
+      "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+      "command": "make GOFLAGS=-v check",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "source_after": null,
+      "log": "logs/aggregate-runtime-fixed.log"
+    },
+    {
+      "record": "aggregate.json",
+      "outcome": null,
+      "command": "make GOFLAGS=-v check",
+      "exit_code": 2,
+      "duration_seconds": 1299.082,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "log": "logs/aggregate.log"
+    },
+    {
+      "record": "announcement-final.json",
+      "outcome": null,
+      "command": "go test -race -count=10 -v ./internal/network -run '^TestWANW15'",
+      "exit_code": 0,
+      "duration_seconds": 2.429,
+      "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "source_after": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "log": "logs/announcement-final.log"
+    },
+    {
+      "record": "announcement-green.json",
+      "outcome": null,
+      "command": "go test -race -count=10 -v ./internal/network -run '^TestWANW15RejectedAnnouncement'",
+      "exit_code": 0,
+      "duration_seconds": 2.699,
+      "source_before": "67dc8b216df004376e8b5414b7c399665c9cf1e15e72ed4944deaf18226101eb",
+      "source_after": "67dc8b216df004376e8b5414b7c399665c9cf1e15e72ed4944deaf18226101eb",
+      "log": "logs/announcement-green.log"
+    },
+    {
+      "record": "announcement-red.json",
+      "outcome": null,
+      "command": "go test -race -count=1 -v ./internal/network -run '^TestWANW15RejectedAnnouncement'",
+      "exit_code": 1,
+      "duration_seconds": 1.217,
+      "source_before": "bdf99deac7fea61584d30854d85476005bb3cfddf4e88068d3609c6f96ccde2d",
+      "source_after": "bdf99deac7fea61584d30854d85476005bb3cfddf4e88068d3609c6f96ccde2d",
+      "log": "logs/announcement-red.log"
+    },
+    {
+      "record": "cleanup.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/cleanup.py",
+      "exit_code": 0,
+      "duration_seconds": 0.835,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/cleanup.log"
+    },
+    {
+      "record": "closeout.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/check_closeout.py",
+      "exit_code": 0,
+      "duration_seconds": 0.035,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/closeout.log"
+    },
+    {
+      "record": "compile-final-replication.json",
+      "outcome": null,
+      "command": "go test -race -c -o /tmp/orbit-w15-replication-final.test ./internal/replication",
+      "exit_code": 0,
+      "duration_seconds": 0.649,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/compile-final-replication.log"
+    },
+    {
+      "record": "compile-final-terminal.json",
+      "outcome": null,
+      "command": "go test -race -c -o /tmp/orbit-w15-terminal-final.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 0.585,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/compile-final-terminal.log"
+    },
+    {
+      "record": "compile-pi-cleanup.json",
+      "outcome": null,
+      "command": "env CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go test -c -o /tmp/orbit-w15-terminal-arm64.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 0.91,
+      "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "log": "logs/compile-pi-cleanup.log"
+    },
+    {
+      "record": "compile-pi-final.json",
+      "outcome": null,
+      "command": "env CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go test -c -o /tmp/orbit-w15-terminal-arm64.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 0.054,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/compile-pi-final.log"
+    },
+    {
+      "record": "compile-pi-runtime.json",
+      "outcome": null,
+      "command": "env GOOS=linux GOARCH=arm64 go test -c -o /tmp/orbit-w15-terminal-arm64.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 2.3,
+      "source_before": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "source_after": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "log": "logs/compile-pi-runtime.log"
+    },
+    {
+      "record": "compile-pi.json",
+      "outcome": null,
+      "command": "env CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go test -c -o /tmp/orbit-w15-terminal-arm64.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 2.715,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/compile-pi.log"
+    },
+    {
+      "record": "compile-replication-current.json",
+      "outcome": null,
+      "command": "go test -c -race -o /tmp/orbit-w15-replication.test ./internal/replication",
+      "exit_code": 0,
+      "duration_seconds": 1.868,
+      "source_before": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "source_after": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "log": "logs/compile-replication-current.log"
+    },
+    {
+      "record": "compile-replication.json",
+      "outcome": null,
+      "command": "go test -c -race -o /tmp/orbit-w15-replication.test ./internal/replication",
+      "exit_code": 0,
+      "duration_seconds": 0.631,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/compile-replication.log"
+    },
+    {
+      "record": "compile-terminal-cleanup.json",
+      "outcome": null,
+      "command": "go test -c -race -o /tmp/orbit-w15-terminal.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 1.861,
+      "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "log": "logs/compile-terminal-cleanup.log"
+    },
+    {
+      "record": "compile-terminal-current.json",
+      "outcome": null,
+      "command": "go test -c -race -o /tmp/orbit-w15-terminal.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 1.811,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/compile-terminal-current.log"
+    },
+    {
+      "record": "compile-terminal-final.json",
+      "outcome": null,
+      "command": "go test -c -race -o /tmp/orbit-w15-terminal.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 1.789,
+      "source_before": "584e835aa1c5a552b5a36e189b724866833a6b6e4fd08e6e02bac06ada2fa860",
+      "source_after": "584e835aa1c5a552b5a36e189b724866833a6b6e4fd08e6e02bac06ada2fa860",
+      "log": "logs/compile-terminal-final.log"
+    },
+    {
+      "record": "compile-terminal-runtime.json",
+      "outcome": null,
+      "command": "go test -race -c -o /tmp/orbit-w15-terminal-fixed.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 5.025,
+      "source_before": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "source_after": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "log": "logs/compile-terminal-runtime.log"
+    },
+    {
+      "record": "compile-terminal.json",
+      "outcome": null,
+      "command": "go test -c -race -o /tmp/orbit-w15-terminal.test ./tests/terminal",
+      "exit_code": 0,
+      "duration_seconds": 1.769,
+      "source_before": "08d6b90f5dcd9912ac8b7837f5dc4e089ee43d30e5a41bdef5398d5de126f972",
+      "source_after": "08d6b90f5dcd9912ac8b7837f5dc4e089ee43d30e5a41bdef5398d5de126f972",
+      "log": "logs/compile-terminal.log"
+    },
+    {
+      "record": "demo-and-operator-packages.json",
+      "outcome": null,
+      "command": "make demo package-orbit-net",
+      "exit_code": 0,
+      "duration_seconds": 2.04,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/demo-and-operator-packages.log"
+    },
+    {
+      "record": "demo-packages-final.json",
+      "outcome": null,
+      "command": "make demo package-orbit-net",
+      "exit_code": 0,
+      "duration_seconds": 3.799,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/demo-packages-final.log"
+    },
+    {
+      "record": "discovery.json",
+      "outcome": null,
+      "command": "go test -list '^(TestWANW|FuzzWANW15)' ./cmd/... ./internal/... ./tests/... ./model/...",
+      "exit_code": 0,
+      "duration_seconds": 2.048,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/discovery.log"
+    },
+    {
+      "record": "docs-links-closeout.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/check_links.py",
+      "exit_code": 0,
+      "duration_seconds": 0.027,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/docs-links-closeout.log"
+    },
+    {
+      "record": "docs-links-in-progress.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/check_links.py",
+      "exit_code": 0,
+      "duration_seconds": 0.023,
+      "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "log": "logs/docs-links-in-progress.log"
+    },
+    {
+      "record": "docs-links-progress-final.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/check_links.py",
+      "exit_code": 0,
+      "duration_seconds": 0.026,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/docs-links-progress-final.log"
+    },
+    {
+      "record": "final-docs.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/check_links.py",
+      "exit_code": 0,
+      "duration_seconds": 0.022,
+      "source_before": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "source_after": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "log": "logs/final-docs.log"
+    },
+    {
+      "record": "final-focused-source.json",
+      "outcome": null,
+      "command": "go test -race -count=2 -v ./internal/testkit ./internal/replication -run '^TestWANW15'",
+      "exit_code": 0,
+      "duration_seconds": 11.583,
+      "source_before": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "source_after": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "log": "logs/final-focused-source.log"
+    },
+    {
+      "record": "final-integrated-focused.json",
+      "outcome": null,
+      "command": "go test -race ./internal/replication ./internal/testkit -run '^TestWANW15' -count=2 -v",
+      "exit_code": 0,
+      "duration_seconds": 12.521,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/final-integrated-focused.log"
+    },
+    {
+      "record": "final-security-compatibility.json",
+      "outcome": null,
+      "command": "go test -race -count=1 -v ./internal/network ./internal/rendezvous ./internal/protocol ./internal/replication ./cmd/orbit-net",
+      "exit_code": 0,
+      "duration_seconds": 142.014,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "log": "logs/final-security-compatibility.log"
+    },
+    {
+      "record": "full-race-final.json",
+      "outcome": null,
+      "command": "go test -race -count=1 -timeout=35m -v ./...",
+      "exit_code": 0,
+      "duration_seconds": 1391.455,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/full-race-final.log"
+    },
+    {
+      "record": "full-race-runtime-fixed.json",
+      "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+      "command": "go test -race -count=1 -timeout=35m -v ./...",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "source_after": null,
+      "log": "logs/full-race-runtime-fixed.log"
+    },
+    {
+      "record": "full-race.json",
+      "outcome": null,
+      "command": "go test -race -count=1 -timeout=35m -v ./...",
+      "exit_code": 1,
+      "duration_seconds": 1556.844,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "log": "logs/full-race.log"
+    },
+    {
+      "record": "fuzz-codec.json",
+      "outcome": null,
+      "command": "go test ./internal/protocol -run '^$' -fuzz '^FuzzWANW15NetworkCodec$' -fuzztime=30s -parallel=4",
+      "exit_code": 0,
+      "duration_seconds": 39.508,
+      "source_before": "259b300717e3530521b4bf94af52e7f119d3d50588fb7c61c5bb71c280612461",
+      "source_after": "259b300717e3530521b4bf94af52e7f119d3d50588fb7c61c5bb71c280612461",
+      "log": "logs/fuzz-codec.log"
+    },
+    {
+      "record": "fuzz-envelope.json",
+      "outcome": null,
+      "command": "go test ./tests/faults -run '^$' -fuzz '^FuzzProtocolEnvelopeDecode$' -fuzztime=30s -parallel=4",
+      "exit_code": 0,
+      "duration_seconds": 48.505,
+      "source_before": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "source_after": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "log": "logs/fuzz-envelope.log"
+    },
+    {
+      "record": "fuzz-path.json",
+      "outcome": null,
+      "command": "go test ./tests/faults -run '^$' -fuzz '^FuzzPathSanitization$' -fuzztime=30s -parallel=4",
+      "exit_code": 0,
+      "duration_seconds": 31.325,
+      "source_before": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/fuzz-path.log"
+    },
+    {
+      "record": "fuzz-signed-profile.json",
+      "outcome": null,
+      "command": "go test ./internal/protocol -run '^$' -fuzz '^FuzzWANW15SignedProfile$' -fuzztime=30s -parallel=4",
+      "exit_code": 0,
+      "duration_seconds": 31.184,
+      "source_before": "584e835aa1c5a552b5a36e189b724866833a6b6e4fd08e6e02bac06ada2fa860",
+      "source_after": "584e835aa1c5a552b5a36e189b724866833a6b6e4fd08e6e02bac06ada2fa860",
+      "log": "logs/fuzz-signed-profile.log"
+    },
+    {
+      "record": "harness-final.json",
+      "outcome": null,
+      "command": "python3 -O -m unittest discover -s scripts/validation -p 'test_*.py'",
+      "exit_code": 0,
+      "duration_seconds": 0.069,
+      "source_before": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "source_after": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "log": "logs/harness-final.log"
+    },
+    {
+      "record": "harness-runtime-final.json",
+      "outcome": null,
+      "command": "python3 -O -m unittest discover -s scripts/validation -p 'test_*.py'",
+      "exit_code": 0,
+      "duration_seconds": 0.078,
+      "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "source_after": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "log": "logs/harness-runtime-final.log"
+    },
+    {
+      "record": "harness-tests.json",
+      "outcome": null,
+      "command": "python3 -m unittest discover -s scripts/validation -p 'test_*.py'",
+      "exit_code": 0,
+      "duration_seconds": 0.085,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/harness-tests.log"
+    },
+    {
+      "record": "host-local.json",
+      "outcome": null,
+      "command": "python3 -c 'import os,platform,subprocess,json; print(json.dumps({\"platform\":platform.uname()._asdict(),\"filesystem\":subprocess.check_output([\"findmnt\",\"-no\",\"FSTYPE,OPTIONS\",\"-T\",\"/tmp\"],text=True),\"cpu_count\":os.cpu_count()},indent=2))'",
+      "exit_code": 0,
+      "duration_seconds": 0.019,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/host-local.log"
+    },
+    {
+      "record": "host-pi.json",
+      "outcome": null,
+      "command": "ssh -o BatchMode=yes -o ConnectTimeout=5 rpi 'uname -a; cat /etc/os-release; findmnt -no FSTYPE,OPTIONS -T /tmp; getconf _NPROCESSORS_ONLN'",
+      "exit_code": 0,
+      "duration_seconds": 0.306,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/host-pi.log"
+    },
+    {
+      "record": "impaired-final.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-bjmd_dh2 --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal-final.test --scenario impaired --suite crash",
+      "exit_code": 0,
+      "duration_seconds": 245.417,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/impaired-final.log"
+    },
+    {
+      "record": "impaired-fixed.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-3qf1lepx --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario impaired --suite crash",
+      "exit_code": 1,
+      "duration_seconds": 424.914,
+      "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "source_after": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "log": "logs/impaired-fixed.log"
+    },
+    {
+      "record": "impaired-generation-trace.json",
+      "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-60gdfpfp --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal-trace.test --scenario impaired --suite crash",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "8479d8405e7ea2dbc3be7568794df836b8ccacbff7597245c7d9e81fff677def",
+      "source_after": null,
+      "log": "logs/impaired-generation-trace.log"
+    },
+    {
+      "record": "impaired-runtime-fixed.json",
+      "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-s0s7ih_3 --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal-fixed.test --scenario impaired --suite crash",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "source_after": null,
+      "log": "logs/impaired-runtime-fixed.log"
+    },
+    {
+      "record": "impaired-traced.json",
+      "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-7q4x_axw --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario impaired --suite crash",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "4142d2464ee7e20252f3336ab407260e61178d3e0cc5c824ab248046dbf12324",
+      "source_after": null,
+      "log": "logs/impaired-traced.log"
+    },
+    {
+      "record": "impaired.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-4vfe4ou0 --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario impaired",
+      "exit_code": 1,
+      "duration_seconds": 533.922,
+      "source_before": "584e835aa1c5a552b5a36e189b724866833a6b6e4fd08e6e02bac06ada2fa860",
+      "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "log": "logs/impaired.log"
+    },
+    {
+      "record": "integrated-model-gc-publication.json",
+      "outcome": null,
+      "command": "go test -race ./internal/replication -run '^TestWANW15' -count=1 -v",
+      "exit_code": 0,
+      "duration_seconds": 7.425,
+      "source_before": "b739770e56c18957f94c2f1d9c62e66926ce4f32543714946e71ccbdf2c53af0",
+      "source_after": "b739770e56c18957f94c2f1d9c62e66926ce4f32543714946e71ccbdf2c53af0",
+      "log": "logs/integrated-model-gc-publication.log"
+    },
+    {
+      "record": "local-enrollment.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-7zf5bblk --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario recovery --suite enrollment",
+      "exit_code": 0,
+      "duration_seconds": 91.541,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/local-enrollment.log"
+    },
+    {
+      "record": "local-fairness.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-0gfpdm6a --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario recovery --suite fairness",
+      "exit_code": 0,
+      "duration_seconds": 91.707,
+      "source_before": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/local-fairness.log"
+    },
+    {
+      "record": "local-only-startup-final.json",
+      "outcome": null,
+      "command": "go test -race -count=2 -v ./tests/terminal -run '^TestWANW(08BinaryLocalOnlyLANAfterApproval|09BinaryLocalOnlyQUICAfterApproval)$'",
+      "exit_code": 0,
+      "duration_seconds": 174.587,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/local-only-startup-final.log"
+    },
+    {
+      "record": "model-boundaries-fixed.json",
+      "outcome": null,
+      "command": "go test -race ./internal/replication -run '^TestWANW15' -count=2 -v",
+      "exit_code": 0,
+      "duration_seconds": 11.28,
+      "source_before": "259b300717e3530521b4bf94af52e7f119d3d50588fb7c61c5bb71c280612461",
+      "source_after": "259b300717e3530521b4bf94af52e7f119d3d50588fb7c61c5bb71c280612461",
+      "log": "logs/model-boundaries-fixed.log"
+    },
+    {
+      "record": "model-boundaries.json",
+      "outcome": null,
+      "command": "go test -race ./internal/replication -run '^TestWANW15' -count=1 -v",
+      "exit_code": 1,
+      "duration_seconds": 4.761,
+      "source_before": "98c99d230e7d479814653755a17975ffe6ec617e9251d4343071c8d0db93dc2e",
+      "source_after": "98c99d230e7d479814653755a17975ffe6ec617e9251d4343071c8d0db93dc2e",
+      "log": "logs/model-boundaries.log"
+    },
+    {
+      "record": "mtu-final.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-trxit69a --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal-final.test --scenario mtu --suite crash",
+      "exit_code": 0,
+      "duration_seconds": 251.871,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/mtu-final.log"
+    },
+    {
+      "record": "mtu-fixed.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-kpz1qv2u --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario mtu --suite crash",
+      "exit_code": 0,
+      "duration_seconds": 267.294,
+      "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "source_after": "4b3f1f8b83d5b394a8f7a762d0e44a0d21b220969a2940677667af0dbe6b319c",
+      "log": "logs/mtu-fixed.log"
+    },
+    {
+      "record": "mtu.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-h5v20qiw --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario mtu --suite crash",
+      "exit_code": 1,
+      "duration_seconds": 275.787,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/mtu.log"
+    },
+    {
+      "record": "native-ice-final.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-453he4u5 --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-replication-final.test --scenario recovery --suite ice",
+      "exit_code": 0,
+      "duration_seconds": 12.833,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/native-ice-final.log"
+    },
+    {
+      "record": "native-ice-fixed.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-xypwhh2a --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-replication.test --scenario recovery --suite ice",
+      "exit_code": 0,
+      "duration_seconds": 12.814,
+      "source_before": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "source_after": "940a69374a5ce2b0cc6698d958108d9c59928765633b662c1d4b141ffd3feeae",
+      "log": "logs/native-ice-fixed.log"
+    },
+    {
+      "record": "native-ice.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-1xrsehkt --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-replication.test --scenario recovery --suite ice",
+      "exit_code": 1,
+      "duration_seconds": 6.521,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/native-ice.log"
+    },
+    {
+      "record": "native-public.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-5rteyczv --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-replication.test --scenario recovery --suite public",
+      "exit_code": 0,
+      "duration_seconds": 1.91,
+      "source_before": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "source_after": "171017cd96b3cca6f532184a2ddd302707419e266d33a246550610d287e05e62",
+      "log": "logs/native-public.log"
+    },
+    {
+      "record": "pi-fairness.json",
+      "outcome": "exact worker/native result and binary hash retained; recorder UTC start/source digest not captured",
+      "command": "ssh -o BatchMode=yes rpi python3 - /tmp/orbit-w15-pi-assets-7qxw5pvw /tmp/orbit-w15-pi-run-xzf_hxap recovery fairness",
+      "exit_code": 0,
+      "duration_seconds": 132.3014393869962,
+      "source_before": null,
+      "source_after": null,
+      "log": "logs/pi-fairness.log"
+    },
+    {
+      "record": "pi-impaired-fixed.json",
+      "outcome": "exact worker/native result and binary hash retained; recorder UTC start/source digest not captured",
+      "command": "ssh -o BatchMode=yes rpi python3 - /tmp/orbit-w15-pi-assets-g90gq0k_ /tmp/orbit-w15-pi-run-ruj7tbhf impaired crash",
+      "exit_code": 1,
+      "duration_seconds": 400.01469731799443,
+      "source_before": null,
+      "source_after": null,
+      "log": "logs/pi-impaired-fixed.log"
+    },
+    {
+      "record": "pi-impaired-runtime-fixed.json",
+      "outcome": "native result and transcript recovered after recorder session interrupted; recorder UTC start not captured",
+      "command": "ssh rpi 'guarded isolated Pi campaign'",
+      "exit_code": 0,
+      "duration_seconds": 361.40745244547725,
+      "source_before": null,
+      "source_after": null,
+      "log": "logs/pi-impaired-runtime-fixed.log"
+    },
+    {
+      "record": "pi-impaired.json",
+      "outcome": "exact worker/native result and binary hash retained; recorder UTC start/source digest not captured",
+      "command": "ssh -o BatchMode=yes rpi python3 - /tmp/orbit-w15-pi-assets-lm2g0ou1 /tmp/orbit-w15-pi-run-7x59kps4 impaired crash",
+      "exit_code": 1,
+      "duration_seconds": 182.66694204200758,
+      "source_before": null,
+      "source_after": null,
+      "log": "logs/pi-impaired.log"
+    },
+    {
+      "record": "pi-recovery.json",
+      "outcome": "exact worker/native result and binary hash retained; recorder UTC start/source digest not captured",
+      "command": "ssh -o BatchMode=yes rpi python3 - /tmp/orbit-w15-pi-assets-9nrgr3g0 /tmp/orbit-w15-pi-run-ojpfdn4c recovery crash",
+      "exit_code": 0,
+      "duration_seconds": 357.92277923002257,
+      "source_before": null,
+      "source_after": null,
+      "log": "logs/pi-recovery.log"
+    },
+    {
+      "record": "preservation-closeout.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/verify_preservation.py",
+      "exit_code": 0,
+      "duration_seconds": 0.043,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/preservation-closeout.log"
+    },
+    {
+      "record": "preservation-final.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/verify_preservation.py",
+      "exit_code": 0,
+      "duration_seconds": 0.044,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/preservation-final.log"
+    },
+    {
+      "record": "python-optimized-safety.json",
+      "outcome": null,
+      "command": "python3 -O -m unittest discover -s scripts/validation -p test_wan_safety.py",
+      "exit_code": 0,
+      "duration_seconds": 0.083,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/python-optimized-safety.log"
+    },
+    {
+      "record": "python-safety.json",
+      "outcome": null,
+      "command": "python3 -m unittest discover -s scripts/validation -p test_wan_safety.py",
+      "exit_code": 0,
+      "duration_seconds": 0.046,
+      "source_before": "4882a92d64eca66c805dd093f8529cf099ee3db6909d7b80515d395e5324163d",
+      "source_after": "4882a92d64eca66c805dd093f8529cf099ee3db6909d7b80515d395e5324163d",
+      "log": "logs/python-safety.log"
+    },
+    {
+      "record": "recovery.json",
+      "outcome": null,
+      "command": "unshare --user --map-root-user --net python3 <repo>/scripts/wan_failure_campaign.py --root /tmp/orbit-w15-1ho5v6fx --parent-namespace 'net:[4026531833]' --test-binary /tmp/orbit-w15-terminal.test --scenario recovery",
+      "exit_code": 1,
+      "duration_seconds": 175.148,
+      "source_before": "08d6b90f5dcd9912ac8b7837f5dc4e089ee43d30e5a41bdef5398d5de126f972",
+      "source_after": "259b300717e3530521b4bf94af52e7f119d3d50588fb7c61c5bb71c280612461",
+      "log": "logs/recovery.log"
+    },
+    {
+      "record": "runtime-focused.json",
+      "outcome": null,
+      "command": "go test -race -count=1 -v ./internal/network ./internal/replication -run '^TestWANW(04|10|11|15)'",
+      "exit_code": 1,
+      "duration_seconds": 63.452,
+      "source_before": "440d075dc587453bb827a7997eebc149f76d57af7df2f8e4cd9d6ed69ee05736",
+      "source_after": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "log": "logs/runtime-focused.log"
+    },
+    {
+      "record": "runtime-security-final.json",
+      "outcome": "interrupted session; exit status unavailable; no acceptance credit",
+      "command": "go test -race -count=1 -v ./internal/network ./internal/rendezvous ./internal/protocol ./internal/replication ./cmd/orbit-net",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "adbd384f4ea5e3dfe372b0ae2659396c157a59b28f635c6465e845b9afbe2177",
+      "source_after": null,
+      "log": "logs/runtime-security-final.log"
+    },
+    {
+      "record": "safety-green.json",
+      "outcome": null,
+      "command": "go test -race ./internal/testkit -count=1",
+      "exit_code": 0,
+      "duration_seconds": 1.142,
+      "source_before": "4882a92d64eca66c805dd093f8529cf099ee3db6909d7b80515d395e5324163d",
+      "source_after": "4882a92d64eca66c805dd093f8529cf099ee3db6909d7b80515d395e5324163d",
+      "log": "logs/safety-green.log"
+    },
+    {
+      "record": "safety-red.json",
+      "outcome": null,
+      "command": "go test ./internal/testkit -run '^TestWANW15' -count=1",
+      "exit_code": 1,
+      "duration_seconds": 0.091,
+      "source_before": "7cb133230351919305609a9487bcbd1da79499ff125be16d5442a26fe4545b62",
+      "source_after": "7cb133230351919305609a9487bcbd1da79499ff125be16d5442a26fe4545b62",
+      "log": "logs/safety-red.log"
+    },
+    {
+      "record": "security-final.json",
+      "outcome": null,
+      "command": "go test -race -count=1 -v ./internal/network ./internal/rendezvous ./internal/protocol ./internal/replication ./cmd/orbit-net",
+      "exit_code": 0,
+      "duration_seconds": 148.653,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "log": "logs/security-final.log"
+    },
+    {
+      "record": "source-freeze-runtime.json",
+      "outcome": "recorder invocation error: snapshot supplied as executable; snapshot not executed; no acceptance credit",
+      "command": "snapshot final-source",
+      "exit_code": null,
+      "duration_seconds": null,
+      "source_before": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+      "source_after": null,
+      "log": "logs/source-freeze-runtime.log"
+    },
+    {
+      "record": "source-freeze.json",
+      "outcome": null,
+      "command": "python3 docs/evidence/wan-w15-20261006/record_command.py snapshot final-source",
+      "exit_code": 0,
+      "duration_seconds": 0.034,
+      "source_before": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "source_after": "4e3668d8570e65aa62441bb09fea34e0cd078b17bcc3edd6e7e7a0c6b0f6673c",
+      "log": "logs/source-freeze.log"
+    },
+    {
+      "record": "whitespace-in-progress.json",
+      "outcome": null,
+      "command": "git diff --check",
+      "exit_code": 0,
+      "duration_seconds": 0.005,
+      "source_before": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "source_after": "55cb1dc08c056cc3e7ebcf4b98bdbfd3275f3f609f8c9f417353589e264ae582",
+      "log": "logs/whitespace-in-progress.log"
+    }
+  ],
+  "limitations": [
+    "WG6 open: authority backup and working alert delivery deferred; no wider distribution/W16/W17 acceptance",
+    "Physical WAN/N10 is W16, unexecuted here",
+    "Inherited T13 technical lifecycle and P17 owner use/explanation remain incomplete",
+    "Native expired immutable bundled profile unexecuted",
+    "Process SIGKILL does not prove power-loss durability",
+    "Small simulated NAT matrix does not imply universal reachability",
+    "Resource samples may miss peaks; laptop race and Pi non-race results differ"
+  ]
+}

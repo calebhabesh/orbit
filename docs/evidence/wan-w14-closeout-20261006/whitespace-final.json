@@ -5,14 +5,14 @@
     "--check"
   ],
   "cwd": "<repo>",
-  "started_at": "2026-10-06T20:41:50.677687+00:00",
+  "started_at": "2026-10-06T21:05:34.206982+00:00",
   "source_before": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c",
   "environment": {
     "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
     "GOFLAGS": ""
   },
   "exit_code": 0,
-  "duration_seconds": 0.012,
-  "finished_at": "2026-10-06T20:41:50.690162+00:00",
+  "duration_seconds": 0.006,
+  "finished_at": "2026-10-06T21:05:34.213452+00:00",
   "source_after": "f285b6c77278094b7eff46c0f1b9da3e1b129b0c86de2f622bc0d15767379d3c"
 }

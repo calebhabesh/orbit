@@ -926,3 +926,46 @@ authority and epoch. A joiner whose own relay is not yet ready after a daemon
 restart retries in 3 s instead of 25 s, because nothing reached the inviter's
 per-source enrollment budget; status polling keeps the 25 s pace that budget
 (5 requests/minute) requires.
+
+## W16 native corrections: service budget and roaming control
+
+Native home↔VPS runs against the operated service exposed three client defects
+that isolated fixtures had not ([evidence](evidence/wan-w16-20261006/quota-fix/summary.md)).
+The service, its limits and the wire protocol are unchanged.
+
+- **Signed-operation admission.** The service allows two outstanding challenges
+  per device and one metadata operation per second (burst 10); the client allowed
+  four concurrent operations, abandoned issued challenges when callers cancelled,
+  and did not pace itself. `ServiceClient` now holds one of two challenge slots per
+  signed operation (ordinary callers get immediate typed backpressure), paces with a
+  six-token client bucket at the service rate with one token reserved for
+  announcement renewal, and fails locally with `QUOTA_EXCEEDED` after at most 1.5 s
+  instead of spending service quota. Callers can cancel until the service connection
+  is ready; once the challenge request is about to be written the operation completes
+  within its own ten-second bound, so no issued challenge is stranded.
+- **Whole relay setups.** Initiator offer/reserve/attach and responder
+  accept/reserve/attach are admitted only when the budget covers all three steps;
+  admitted steps then wait for budget and a slot rather than failing midway, which
+  wasted both devices' budget and the session.
+- **One relay tunnel per direction.** The client and service allow two relay
+  tunnels per device pair, shared by both directions, while each HTTP pool may
+  open two. Under forced relay, a peer polling every few seconds kept two warm
+  tunnels and locked the other device out of its own direction for minutes. The
+  connection manager now holds one initiator relay tunnel per target; a concurrent
+  request waits for that tunnel (net/http hands it over when idle) rather than
+  dialing another, so no service budget is spent while waiting.
+- **Readiness on renewal failure.** A transiently refused renewal (quota, service
+  unavailable, local overload) keeps the still-live accepted record ready until one
+  minute before it expires; semantic refusals and cold starts stay unready.
+- **Control channel after an address change.** The control websocket was bound to
+  the old address and failed silently, and both incoming offers and outgoing accepts
+  use it, so relay stalled until the 75-second stale timeout. An actual network
+  change now also rebuilds each purpose's endpoint. The service refuses a second
+  channel for the device until its heartbeat drops the old one (and closes it
+  without a typed reason), so endpoint creation backs off 2, 4, then 8 seconds.
+  A service-side replacement of a device's channel on fresh authenticated control
+  would remove that wait but needs a redeployment of the operated service.
+
+Remaining measured cost: racing direct and relay legs still abandons some relay
+setups after both devices spent budget on them; averages stay inside the budget
+in the recorded runs. These are measurements, not reconnect deadlines.

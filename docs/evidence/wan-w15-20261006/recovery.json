@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "unshare",
+    "--user",
+    "--map-root-user",
+    "--net",
+    "python3",
+    "<repo>/scripts/wan_failure_campaign.py",
+    "--root",
+    "/tmp/orbit-w15-1ho5v6fx",
+    "--parent-namespace",
+    "net:[4026531833]",
+    "--test-binary",
+    "/tmp/orbit-w15-terminal.test",
+    "--scenario",
+    "recovery"
+  ],
+  "cwd": "<repo>",
+  "started_at": "2026-10-06T21:17:13.127223+00:00",
+  "source_before": "08d6b90f5dcd9912ac8b7837f5dc4e089ee43d30e5a41bdef5398d5de126f972",
+  "environment": {
+    "ORBIT_DISABLE_PACKAGED_PROFILE": "1",
+    "GOFLAGS": ""
+  },
+  "exit_code": 1,
+  "duration_seconds": 175.148,
+  "finished_at": "2026-10-06T21:20:08.274738+00:00",
+  "source_after": "259b300717e3530521b4bf94af52e7f119d3d50588fb7c61c5bb71c280612461"
+}

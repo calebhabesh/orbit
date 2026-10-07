@@ -1,0 +1,58 @@
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified
+    wan_roaming_test.go:200: W15 verified working bytes name=relay-start.txt bytes=19 wait=11.733457769s
+    wan_roaming_test.go:201: whole daemon route relay after 8.159557ms generation=4
+    wan_roaming_test.go:203: whole daemon route quic after 5.278773067s generation=4
+    wan_roaming_test.go:205: W15 idle interval start_ns=1791321815684555041
+    wan_roaming_test.go:207: W15 idle interval end_ns=1791321820685189026
+    wan_roaming_test.go:238: whole daemon route relay after 863.72629ms generation=4
+    wan_roaming_test.go:239: W15 verified working bytes name=large.bin bytes=16777216 wait=14.480146735s
+    wan_roaming_test.go:241: whole daemon route quic after 1.611490737s generation=4
+    wan_roaming_test.go:242: W15 SIGKILL at transfer.chunk.verified: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:255: whole daemon address/default-route generation rebuild after 967.755531ms
+    wan_roaming_test.go:269: whole daemon route relay after 45.359955478s generation=5
+    wan_roaming_test.go:270: W15 verified working bytes name=large.bin bytes=16777216 wait=23.274228ms
+    wan_roaming_test.go:272: W15 verified working bytes name=small-00.txt bytes=15 wait=303.567039ms
+    wan_roaming_test.go:272: W15 verified working bytes name=small-01.txt bytes=15 wait=14.848µs
+    wan_roaming_test.go:272: W15 verified working bytes name=small-02.txt bytes=15 wait=100.22598ms
+    wan_roaming_test.go:272: W15 verified working bytes name=small-03.txt bytes=15 wait=8.897µs
+    wan_roaming_test.go:272: W15 verified working bytes name=small-04.txt bytes=15 wait=6.543µs
+    wan_roaming_test.go:272: W15 verified working bytes name=small-05.txt bytes=15 wait=5.902µs
+    wan_roaming_test.go:272: W15 verified working bytes name=small-06.txt bytes=15 wait=5.38µs
+    wan_roaming_test.go:272: W15 verified working bytes name=small-07.txt bytes=15 wait=5.561µs
+    wan_roaming_test.go:275: whole daemon route quic after 3.373624219s generation=5
+    wan_roaming_test.go:278: W15 service relayed encrypted inner stream bytes=16324049
+    wan_roaming_test.go:283: W15 verified working bytes name=service-outage.txt bytes=42 wait=1.203095949s
+    wan_roaming_test.go:287: W15 verified working bytes name=service-restarted.txt bytes=44 wait=16.051233967s
+    wan_roaming_test.go:288: whole daemon route relay after 8.835108ms generation=5
+    wan_roaming_test.go:290: whole daemon route quic after 15.671266178s generation=5
+    wan_roaming_test.go:291: W15 direct sync survived service outage; fresh service restarted; relay bytes=1096939
+    wan_roaming_test.go:346: whole production daemons: relay→QUIC→address/default-route change during 16777216-byte transfer→relay→QUIC; exact two-way enrollment and heads/authors/manifests/bytes; finite 1 MiB/s budget; service port="37721"
+=== RUN   TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send
+    wan_roaming_test.go:200: W15 verified working bytes name=relay-start.txt bytes=19 wait=6.614735742s
+    wan_roaming_test.go:201: whole daemon route relay after 6.214269ms generation=4
+    wan_roaming_test.go:203: whole daemon route quic after 13.354788131s generation=4
+    wan_roaming_test.go:205: W15 idle interval start_ns=1791321973495590829
+    wan_roaming_test.go:207: W15 idle interval end_ns=1791321978496020146
+    wan_roaming_test.go:238: whole daemon route relay after 26.09890251s generation=4
+    wan_roaming_test.go:239: W15 verified working bytes name=large.bin bytes=16777216 wait=630.040721ms
+    wan_roaming_test.go:241: whole daemon route quic after 23.286882604s generation=4
+    wan_roaming_test.go:242: W15 SIGKILL at transfer.receipt.after_send: same immutable version and correct durable readiness; relay recovery
+    wan_roaming_test.go:246: ip [addr del 10.23.45.1/24 dev orbit-w11] Error: ipv4: Address not found.
+         exit status 2
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=b09984fc46df9073f316110802a767182752cc6f29e644fa98e7473be006c498 schema=13 peer-listener=[::]:40829 key-pin=0903752f559f142b3cf1936475ce9fb319210afa7529f0e96d90cb7c6ecfe362 enrollment-listener=disabled control-listener=http://127.0.0.1:40687
+        2026/10/06 17:26:06 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+        2026/10/06 17:27:00 http: TLS handshake error from orbit-relay:0: i/o timeout
+
+    wan_roaming_test.go:148: daemon failure transcript === RUN   TestWANW05DaemonChild
+        agent ready: device=3d07bf90c80ed170993d74451cb597c9a7006900c5dad8d40e3b4cca0471dba9 schema=13 peer-listener=[::]:35587 key-pin=523e24c8e5bbb16d4af63f50f53c436fbf161283f75c835d19aa835cdc013975 enrollment-listener=disabled control-listener=http://127.0.0.1:34987
+        --- PASS: TestWANW05DaemonChild (50.18s)
+        PASS
+
+--- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery (275.69s)
+    --- PASS: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.chunk.verified (154.92s)
+    --- FAIL: TestWANW15WholeDaemonCrashRouteAndReceiptRecovery/transfer.receipt.after_send (120.76s)
+FAIL
+
+{"scenario": "mtu", "suite": "crash", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531833]", "namespace": "net:[4026534507]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"], ["ip", "link", "set", "lo", "mtu", "1280"], ["ip", "link", "set", "orbit-w11", "mtu", "1280"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 1, "seconds": 275.73395006600185}

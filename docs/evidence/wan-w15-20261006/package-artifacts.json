@@ -1,0 +1,78 @@
+{
+  "source_digest": "7b5d56630478df744cf379927ed2773add98a5df295170065bad6973741a6a23",
+  "files": {
+    "bin/filesync": {
+      "bytes": 33497721,
+      "sha256": "35ab55621bcf408ca46e649f13c3c2e4f9394a6476aca107a59f70ccc21dfda0"
+    },
+    "bin/filesync-linux-arm64": {
+      "bytes": 31440988,
+      "sha256": "ab230e3f60904a4311561fbb85da5090586d77afb36ab37bf9e56cc4b7f0bb4a"
+    },
+    "bin/orbit-net": {
+      "bytes": 12550770,
+      "sha256": "ad914afdd3babd090439e5a4e9566b68b2f4b255cc5374e335a2a5c60ae75ad6"
+    },
+    "bin/orbit-net-linux-amd64": {
+      "bytes": 12555161,
+      "sha256": "b2231e057940f0a1e6fcc20b63b0a48e9c6a540d366d1b35d8365e9abce27a4e"
+    },
+    "bin/orbit-net-linux-arm64": {
+      "bytes": 11680121,
+      "sha256": "0b23c9a1cb03e8dc802b3e56f17de806f6db47b96bbcc4e596e1938621943611"
+    },
+    "dist/SHA256SUMS": {
+      "bytes": 857,
+      "sha256": "3398f15e96478844b4067a9a5c974bf8751484829168f9c063204f73b3b65229"
+    },
+    "dist/filesync-1.0.0-1.aarch64.rpm": {
+      "bytes": 17317890,
+      "sha256": "495cc5e79831aee9376596333891dd17cf2809cfc2456bba0915f58903f3e8cf"
+    },
+    "dist/filesync-1.0.0-1.x86_64.rpm": {
+      "bytes": 18534038,
+      "sha256": "9401bde4fe75cf1b4ef400b67da70894513e40e5252cc527c36e1b5e81094c87"
+    },
+    "dist/filesync-v1.0.0-linux-amd64.tar.gz": {
+      "bytes": 18533480,
+      "sha256": "387043687362415163392ef6786062826ef418ed1d481cf8f1b9654dbe5182c4"
+    },
+    "dist/filesync-v1.0.0-linux-arm64.tar.gz": {
+      "bytes": 17322893,
+      "sha256": "ebe62d0e1927f63a912b4a9de1d0fd28de372217d18c49a61584f478cc4ce7a2"
+    },
+    "dist/filesync_1.0.0_amd64.deb": {
+      "bytes": 18528796,
+      "sha256": "ea06c736901f671ada3d4eae71ee5abe5b101a3bf14144d7df9291345835574a"
+    },
+    "dist/filesync_1.0.0_arm64.deb": {
+      "bytes": 17321024,
+      "sha256": "43ce200c7fe2a52176a94832a8ff102dd16195783ff2db96f146d8c2bb0c235c"
+    },
+    "dist/orbit-net-SHA256SUMS": {
+      "bytes": 204,
+      "sha256": "c88c4f460190a901ef861bf2a61735a3c5d21a176dbcf79145bc61cbae77bbcc"
+    },
+    "dist/orbit-net-v1.0.0-linux-amd64.tar.gz": {
+      "bytes": 7155227,
+      "sha256": "763bd0fcc3528778f4eee0b6217db27f96ae2cb7d4ea834d9fb9203951429920"
+    },
+    "dist/orbit-net-v1.0.0-linux-arm64.tar.gz": {
+      "bytes": 6592029,
+      "sha256": "e92b9935b78e11a67787b4614923db88f026675ba2688afb30c3bff40b33cba6"
+    },
+    "dist/orbit-v1.0.0-linux-amd64.tar.gz": {
+      "bytes": 18533480,
+      "sha256": "387043687362415163392ef6786062826ef418ed1d481cf8f1b9654dbe5182c4"
+    },
+    "dist/orbit-v1.0.0-linux-arm64.tar.gz": {
+      "bytes": 17322893,
+      "sha256": "ebe62d0e1927f63a912b4a9de1d0fd28de372217d18c49a61584f478cc4ce7a2"
+    },
+    "dist/release-manifest.json": {
+      "bytes": 786,
+      "sha256": "377c06563ce6f6ffc9c05d6faec988d1d1b9a551d9ef1bd1f16e789d907742da"
+    }
+  },
+  "publication": "local build/verification only; WG6 distribution gate unchanged"
+}

@@ -1,0 +1,125 @@
+go test -timeout=30m ./tests/terminal/...
+ok  	github.com/calebhabesh/file-sync/tests/terminal	1339.257s
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=d253825 -X main.date=2026-10-01' -o bin/filesync ./cmd/filesync
+ln -sf filesync bin/orbit
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build  -trimpath -ldflags '-X main.version=1.0.0 -X main.commit=d253825 -X main.date=2026-10-01' -o bin/filesync-linux-arm64 ./cmd/filesync
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> <repo>/bin/filesync
+Building binary for linux/arm64 -> <repo>/bin/filesync-linux-arm64
+Generating filesync-v1.0.0-linux-amd64.tar.gz...
+Generating filesync_1.0.0_amd64.deb...
+Generating filesync-1.0.0-1.x86_64.rpm...
+Generating filesync-v1.0.0-linux-arm64.tar.gz...
+Generating filesync_1.0.0_arm64.deb...
+Generating filesync-1.0.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - filesync-v1.0.0-linux-amd64.tar.gz (18545009 bytes)
+  - orbit-v1.0.0-linux-amd64.tar.gz (18545009 bytes)
+  - filesync_1.0.0_amd64.deb (18560400 bytes)
+  - filesync-1.0.0-1.x86_64.rpm (18546123 bytes)
+  - filesync-v1.0.0-linux-arm64.tar.gz (17335893 bytes)
+  - orbit-v1.0.0-linux-arm64.tar.gz (17335893 bytes)
+  - filesync_1.0.0_arm64.deb (17347670 bytes)
+  - filesync-1.0.0-1.aarch64.rpm (17353273 bytes)
+  - release-manifest.json (786 bytes)
+  - SHA256SUMS
+python3 scripts/terminal_package_test.py --dist dist
+[
+  {
+    "scenario": "all-package-checksums",
+    "result": "passed"
+  },
+  {
+    "scenario": "amd64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "arm64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "standalone-install-repeat-upgrade-uninstall",
+    "result": "passed",
+    "assertions": [
+      "custom unit preserved",
+      "legacy identity/state preserved",
+      "ordinary bytes preserved",
+      "no user service changes"
+    ]
+  },
+  {
+    "scenario": "package-extracted-bare-PTY",
+    "result": "passed"
+  }
+]
+go vet ./...
+go test ./cmd/filesync/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/file-sync/cmd/filesync	1.171s
+?   	github.com/calebhabesh/file-sync/internal/app	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/config	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/control	0.570s
+ok  	github.com/calebhabesh/file-sync/internal/control/terminalcontract	0.007s
+?   	github.com/calebhabesh/file-sync/internal/controlclient	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/history	(cached)
+?   	github.com/calebhabesh/file-sync/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/file-sync/internal/network	112.896s
+ok  	github.com/calebhabesh/file-sync/internal/protocol	0.031s
+ok  	github.com/calebhabesh/file-sync/internal/rendezvous	59.385s
+2026/10/07 01:10:05 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+--- FAIL: TestWANW10AuthenticatedNATPeerMatrix (39.10s)
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/no_NAT (2.77s)
+        ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=true double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+        ice_test.go:132: chunk 0 should be available after partial sync: avail=false err=<nil>
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/endpoint_independent (2.78s)
+        ice_nat_test.go:120: simulated NAT mapping=0 filtering=0 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+        ice_test.go:132: chunk 0 should be available after partial sync: avail=false err=<nil>
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/address_dependent_filtering (2.78s)
+        ice_nat_test.go:120: simulated NAT mapping=0 filtering=1 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+        ice_test.go:132: chunk 0 should be available after partial sync: avail=false err=<nil>
+    --- FAIL: TestWANW10AuthenticatedNATPeerMatrix/address_port_dependent_filtering (2.78s)
+        ice_nat_test.go:120: simulated NAT mapping=0 filtering=2 noNAT=false double=false blocked=false; public 11.2.{1,2}.1 private 10.{1,2}.0.2; inner double 172.16.{1,2}.2; real HTTPS/WSS service uses native private interface
+        ice_test.go:132: chunk 0 should be available after partial sync: avail=false err=<nil>
+2026/10/07 01:10:59 http: TLS handshake error from 127.0.0.1:33898: remote error: tls: bad certificate
+2026/10/07 01:11:31 http: TLS handshake error from 127.0.0.1:59454: remote error: tls: bad certificate
+2026/10/07 01:11:31 http: TLS handshake error from 127.0.0.1:60348: remote error: tls: bad certificate
+2026/10/07 01:11:31 http: TLS handshake error from orbit-relay:0: use of closed network connection
+2026/10/07 01:11:31 http: TLS handshake error from orbit-relay:0: remote error: tls: bad certificate
+2026/10/07 01:11:31 http: TLS handshake error from orbit-relay:0: tls: client didn't provide a certificate
+2026/10/07 01:11:31 http: TLS handshake error from 127.0.0.1:38106: remote error: tls: bad certificate
+2026/10/07 01:11:31 http: TLS handshake error from orbit-relay:0: use of closed network connection
+FAIL
+FAIL	github.com/calebhabesh/file-sync/internal/replication	88.157s
+ok  	github.com/calebhabesh/file-sync/internal/repository	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/scheduler	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/state	(cached)
+ok  	github.com/calebhabesh/file-sync/internal/terminal	0.023s
+ok  	github.com/calebhabesh/file-sync/internal/testkit	0.002s
+ok  	github.com/calebhabesh/file-sync/internal/workspace	0.495s
+ok  	github.com/calebhabesh/file-sync/model	0.281s
+FAIL
+make: *** [Makefile:40: test] Error 1
+make check 2>&1  123.51s user 16.04s system 9% cpu 24:32.53 total
+exit=2

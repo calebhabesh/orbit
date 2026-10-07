@@ -1,0 +1,28 @@
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+=== RUN   TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== PAUSE TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+=== CONT  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval
+    wan_enrollment_process_test.go:324: SIGKILL approval recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted
+    wan_enrollment_process_test.go:324: SIGKILL request_accepted recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received
+    wan_enrollment_process_test.go:324: SIGKILL membership_received recovered exact attempt/root and two-way heads/hashes
+=== NAME  TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared
+    wan_enrollment_process_test.go:324: SIGKILL request_prepared recovered exact attempt/root and two-way heads/hashes
+--- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries (0.00s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/approval (56.28s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_accepted (64.54s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/membership_received (87.39s)
+    --- PASS: TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries/request_prepared (90.48s)
+PASS
+
+{"scenario": "recovery", "suite": "enrollment", "environment": "new isolated user/network namespace; no external route", "parent": "net:[4026531833]", "namespace": "net:[4026534564]", "commands": [["ip", "link", "set", "lo", "up"], ["ip", "link", "add", "orbit-w11", "type", "dummy"], ["ip", "link", "set", "orbit-w11", "up", "multicast", "on"], ["ip", "addr", "add", "11.23.45.1/24", "dev", "orbit-w11"], ["ip", "addr", "add", "10.23.45.1/24", "dev", "orbit-w11"], ["ip", "-6", "addr", "add", "2606:4700:4700::1111/64", "dev", "orbit-w11", "nodad"]], "oracle": "exact immutable heads/authors/manifests/bytes, persistent identity/pin, durable readiness and receipts", "topology": "simulated addresses on dummy interface; native sockets; no physical WAN claim", "exit_code": 0, "seconds": 91.49250463600038}
