@@ -1,9 +1,14 @@
 name: Full suite
 
 # Slow release suite: terminal end-to-end, packages, race detector, native arm64.
-# Runs nightly, on release tags, and on demand (Actions tab or `gh workflow run full.yml`).
+# Runs nightly, on release tags, and on demand (Actions tab or `gh workflow run full.yml`;
+# add `-f suites='["test-terminal"]'` to run a subset).
 on:
   workflow_dispatch:
+    inputs:
+      suites:
+        description: 'JSON list of make targets to run'
+        default: '["check-core", "test-terminal", "test-terminal-packages", "test-race-core"]'
   schedule:
     - cron: '17 6 * * *'
   push:
@@ -23,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         arch: [amd64, arm64]
-        suite: [check-core, test-terminal, test-terminal-packages, test-race-core]
+        suite: ${{ fromJSON(inputs.suites || '["check-core", "test-terminal", "test-terminal-packages", "test-race-core"]') }}
         include:
           - arch: amd64
             runner: ubuntu-24.04
