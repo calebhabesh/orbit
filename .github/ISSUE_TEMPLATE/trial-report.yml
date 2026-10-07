@@ -1,0 +1,57 @@
+name: Trial report
+description: Something went wrong or felt confusing while trying Orbit.
+labels: ["trial"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for trying Orbit. **Never paste invitation codes, `--review-file`
+        contents or private keys.** Invitation codes work like passwords.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Output of `orbit version`
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options: [tarball with install.sh, .deb, .rpm, built from source]
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Linux distribution and architecture (for example "Fedora 43, x86_64")
+    validations:
+      required: true
+  - type: dropdown
+    id: network
+    attributes:
+      label: Where were the two devices?
+      options:
+        - Same home network
+        - Different home networks
+        - School, office or public Wi-Fi
+        - Mobile hotspot or carrier network
+        - Other or not sure
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: Output of `orbit network status` on each device
+      description: Device IDs and key pins are public fingerprints; remove anything else you consider private.
+      render: text
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `orbit doctor` (optional)
+      render: text
