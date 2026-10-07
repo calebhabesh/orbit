@@ -314,6 +314,10 @@ UDP candidates require it. TCP-only canonical bytes are unchanged. Duplicate
 candidates are checked as transport/address tuples; bounds remain four LAN /
 sixteen total candidates and 1,200-byte discovery datagrams.
 
+The same signed records may also travel inside an approved peer session as
+`LANExchange` (`version`, `records`, at most eight records); see
+[peer LAN exchange](../docs/orbit-wan-protocol.md#peer-lan-exchange-post-w17-2026-10-07).
+
 ## Additive ICE extension (W10)
 
 An offer optionally includes a non-null `ice` object, whose exact required keys

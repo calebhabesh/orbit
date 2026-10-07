@@ -701,6 +701,11 @@ no automatic approval of discovered machines. Permitted IPv4/ULA IPv6 TCP routes
 use existing TLS and folder authority. IPv6-only LAN multicast is not yet supplied;
 public IPv6 candidates can use the directory where an actual global address and
 reachable TCP port exist. Host firewall/router changes are never automatic.
+Approved peers also exchange signed LAN records over their pinned session, so a
+direct LAN path forms when either device accepts inbound connections. When both
+devices drop inbound traffic, the owner can set fixed `listen`/`udp_listen`
+ports in `direct-network.json` and allow them plus UDP 22027 on the LAN
+([networking guide](runbooks/networking.md#firewalls-on-your-devices)).
 Native internet/Pi/operator capacity and roaming evidence remain later packets.
 
 ## W09 optional UDP direct settings

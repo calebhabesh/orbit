@@ -82,8 +82,8 @@ not tested. The [terminal release report](docs/evidence/terminal-t13-20261004/su
 records native journeys, resource measurements, failures and remaining checks.
 The [case study](docs/case-study.md) explains the design and measured tradeoffs;
 [portfolio bullets](docs/portfolio-bullets.md) link concrete supporting evidence.
-Historical P/O evidence remains dated. Personal use and comprehensive owner
-review are deferred until after delivery. The [scope](docs/portfolio-scope.md),
+Historical P/O evidence remains dated. Owner personal use and explanation are
+not requirements (removed 2026-10-07) and are not claimed. The [scope](docs/portfolio-scope.md),
 [protocol](docs/protocol.md), [persistence](docs/persistence.md),
 [operations](docs/operations.md) and [verification](docs/verification.md)
 own the guarantees and failure model.

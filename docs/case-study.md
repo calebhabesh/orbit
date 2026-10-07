@@ -50,7 +50,7 @@ rejection, forwarding with the author listener stopped, and historical restore.
 These are scripted checks on the actual laptop, Pi and Oracle VPS using
 binaries extracted from verified packages. The receiving process was actually
 stopped mid-file; restart reused durable chunks and verified the whole hash.
-Owner personal use is deferred until after delivery by the 2026-10-04 scope amendment.
+Owner personal use was not measured; the owner removed it as a requirement on 2026-10-07.
 
 ## Native WAN: two roles that are easy to confuse
 
@@ -274,7 +274,7 @@ does not claim Syncthing compatibility or inherit another project's correctness.
 
 The owner selected the scope and architecture. Implementation and validation
 were AI-assisted; automated campaigns establish their recorded technical
-outcomes. Personal use and the owner's comprehensive review follow delivery.
+outcomes. They do not establish personal adoption or owner review, which are not claimed.
 The [terminal release record](evidence/terminal-t13-20261004/summary.md) and the
 [combined W17 release record](evidence/wan-w17-20261007/summary.md) track
 current native, performance and recovery evidence, including unavailable

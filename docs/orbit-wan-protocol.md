@@ -442,3 +442,32 @@ same as for a full invitation. Invitation files and stored join mutations always
 hold the full form. Prefixes or `version` values above 3 are rejected as
 `UNSUPPORTED_INVITATION_VERSION` before any network use. Peer, relay, rendezvous
 and enrollment wire messages are unchanged in W14.
+
+## Peer LAN exchange (post-W17, 2026-10-07)
+
+Multicast discovery fails when a host firewall drops inbound UDP 22027 and the
+random direct ports, which sent the W14 same-LAN laptop/Pi pair through the
+relay. Approved peers that already share a pinned session (direct or relayed)
+now also exchange LAN records over it with `POST /peer/v1/lan`. Request and
+reply are both `{"version":"1","records":[...]}`: at most eight `orbit-lan-v1`
+records (one per discovery interface), each signed and verified exactly like a
+multicast announcement, with a 16 KiB body limit. A relay forwards only the
+peers' TLS ciphertext, so the service still never receives private addresses.
+
+The responder requires the mutual-TLS client pin to belong to a known
+peer-data target (`403 UNAUTHORIZED` otherwise). Records must carry that
+session's pin. A candidate is installed only when it falls inside a selected
+local interface prefix and is not one of the receiver's own addresses, keyed
+to that local interface, with at most four peer-sent candidates per target.
+Because a matching private prefix does not prove the peers share a network,
+peer-sent leases never suppress the public directory lookup and never replace a
+live lease heard on the link; a wrong-network candidate fails the pinned TLS
+handshake like any other. Record generations follow the sender's clock, so
+multicast and exchanged records stay ordered.
+
+The exchange runs only while LAN advertising is enabled. A daemon exchanges
+with each peer that its last ordinary request reached, at most every four
+minutes (one minute after a failure). A `404` means an older peer or one
+without LAN advertising, and is retried after 30 minutes. One request informs
+both sides, so a direct path appears when either device accepts inbound
+connections.

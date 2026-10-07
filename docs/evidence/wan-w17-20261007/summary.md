@@ -83,7 +83,7 @@ Details and timings are in the [networking guide](../../runbooks/networking.md#t
   (waived by the owner).
 - Physical-hardware login/logout/boot. The owner chose the VM.
 - Physical power loss and Pi media resets (outside the tested fault model).
-- P17 personal use and unaided explanation: deferred by the 2026-10-04 amendment.
+- P17 personal use and unaided explanation: removed as requirements by the owner on 2026-10-07 (not claimed).
 
 ## Operator actions
 

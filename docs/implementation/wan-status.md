@@ -1047,4 +1047,54 @@ passes.
 No new native WAN run: the runtime changes do not touch networking, and W16
 remains the native evidence. Open conditions, operator actions and future
 extensions are listed in the release record. P17 personal use and unaided
-explanation remain deferred. There is no further W packet.
+explanation were then removed as requirements by the owner (2026-10-07,
+[scope](../portfolio-scope.md)). There is no further W packet.
+
+## Post-W17 — same-LAN direct paths and profile epoch 2 (2026-10-07)
+
+Owner-directed pre-trial fixes, Claude Code session. Evidence:
+[summary](../evidence/wan-lan-exchange-20261007/summary.md).
+
+**Same-LAN relay.** Cause: the laptop's `ufw` deny-incoming policy dropped LAN
+multicast and the random direct ports, and LAN addresses never travel through
+the service. Fix: approved peers exchange their signed `orbit-lan-v1` records
+over the established pinned session (`POST /peer/v1/lan`,
+[protocol](../orbit-wan-protocol.md#peer-lan-exchange-post-w17-2026-10-07)).
+Code: `internal/network/lan_exchange.go` (new), `lan.go` (shared signing,
+clock-based generations, `AcceptPeer` scoping), `direct.go` (peer-sent leases
+never suppress the public lookup or replace a link-heard lease), `limits.go`,
+`internal/protocol/lan.go`, `internal/replication/server.go` (route) and
+`internal/app/app.go` (wiring, shared peer TLS). Tests:
+`internal/network/lan_exchange_test.go` (scoping and own-address exclusion,
+lease precedence, relay → direct after an exchange, endpoint authorization).
+Docs: networking guide firewall section, operations, architecture,
+`schemas/peer-v1.md`, `schemas/network-v1.md`.
+
+**Profile epoch 2.** Signed offline 2026-10-07 with one-year validity (expires
+2027-10-07, digest `9138a478…ab681`), same operator, privacy text and service
+key, so updated devices apply it at start. The hosted service now serves epoch 2
+with epoch 1 as overlap (`--check` passed; `/healthz` 200; metrics show both
+epochs valid); `serve.json` was backed up on the host first. Packaged in
+`internal/network/release-profile.json`. `orbit-net serve` now skips an expired
+overlap epoch with a warning instead of refusing to start
+(`TestOverlapEpochExpiryDoesNotStopService`); the deployed binary predates this,
+so remove the overlap settings after 2027-01-04 or deploy a current build first.
+The operator runbook now recommends one-year validity and explains what expiry
+bounds.
+
+Commands and results:
+
+| Command | Result |
+| --- | --- |
+| `go test -race -count=1 ./internal/network/... ./internal/replication/... ./internal/protocol/... ./internal/app/...` | passed |
+| `go test -count=1 ./cmd/... ./internal/... ./model/...` | passed |
+| `make check` | passed, exit 0; terminal stage compiled before the LAN edits ([log](../evidence/wan-lan-exchange-20261007/logs/make-check.log)) |
+| `make test-terminal` on the final source | passed, 1,511 s ([log](../evidence/wan-lan-exchange-20261007/logs/test-terminal.log)) |
+| `lan-native.sh dist` (laptop + Pi, same LAN, hosted service) | passed: Pi relay → both `quic`, LAN candidates 4 each, 1.7 s each way |
+
+Correction to the W14 record: its summary reports a `relay` route, but its log's
+only route observation is `quic; code=CONNECTED`. The W14 files are unchanged.
+
+Not done: no rerun on other routers or with firewalls on both devices (fixed
+ports are documented, not tested natively); the hosted `orbit-net` binary was
+not redeployed; nothing is committed or published.

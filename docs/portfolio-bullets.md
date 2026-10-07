@@ -45,7 +45,7 @@ a verified durable full-file baseline. [Measurement details](evidence/release-20
 also record cases where the baseline performed better. Use that figure only
 with its workload and sample count; it is not a general speedup.
 
-Personal use and the owner's comprehensive project review follow delivery.
+These drafts claim technical results only, not personal adoption.
 Technical release status and remaining native checks are recorded in the
 [terminal release report](evidence/terminal-t13-20261004/summary.md) and the
 [combined W17 release record](evidence/wan-w17-20261007/summary.md).

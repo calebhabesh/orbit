@@ -8,8 +8,8 @@ For the selected **Orbit native WAN expansion**, start with
 Implement its first eligible packet (initially W00) when assigned a build task.
 Planning requests produce the handoff rather than starting implementation.
 Either 6.1 Sol Medium or 3.8 Flash High can implement any eligible W packet.
-Preserve existing P/O/T changes and evidence, unfinished T13 technical checks,
-and deferred P17 owner use/explanation. Preconfigured Orbit services with optional
+Preserve existing P/O/T changes and evidence (T13 technical checks completed 2026-10-07),
+and historical P17 records (owner use/explanation was removed as a requirement on 2026-10-07). Preconfigured Orbit services with optional
 self-hosting are the approved direction; runtime capabilities require evidence.
 
 This repository has a working implementation with release validation in progress. Start at [the implementation plan](docs/implementation-plan.md) and [packet status](docs/implementation/status.md). Work on the first eligible packet unless the user selects another task.
@@ -20,7 +20,7 @@ For terminal baseline work, read
 [terminal status](docs/implementation/terminal-status.md). Start with its first
 eligible packet (initially T00). Either 6.1 Sol Medium or 3.8 Flash High can
 implement any assigned eligible packet under the master architect/designer's
-plan; retain historical P/O evidence and outstanding P17 pilot/explanation work.
+plan; retain historical P/O/P17 evidence; P17 owner use/explanation is no longer required.
 
 - Read [scope](docs/portfolio-scope.md) and [glossary](CONTEXT.md) before changing behavior.
 - For causal state, messages, membership, or acknowledgements, read [protocol](docs/protocol.md).

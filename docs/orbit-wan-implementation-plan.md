@@ -188,8 +188,8 @@ networks. Preserve minimized failures and all unsupported/unexecuted cases.
 Complete a packet only when every acceptance item has evidence. Complete W17
 only when the dependency table, profile/operator readiness, security/resource
 limits, native network cases and inherited release conditions are satisfied.
-Owner personal use and unaided explanation stay deferred under the 2026-10-04
-amendment; retain their historical records.
+Owner personal use and unaided explanation were removed as requirements on
+2026-10-07 ([scope](portfolio-scope.md)); retain their historical records.
 
 ## Scope boundaries
 
