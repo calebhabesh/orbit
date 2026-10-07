@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
-// The deployed release profile (W13 deployment record) is the packaged default.
-const w14ReleaseDigest = "356f0ced2c898e7e6bcdd4913713c797737809ffa27a54e40362168f577ec165"
+// The deployed release profile (epoch 2, signed 2026-10-07) is the packaged default.
+const w14ReleaseDigest = "9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681"
 
 func TestWANW14PackagedReleaseProfile(t *testing.T) {
 	t.Setenv(DisablePackagedProfileEnv, "")

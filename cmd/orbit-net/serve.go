@@ -145,7 +145,7 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 	if (cfg.OverlapProfile == "") != (cfg.OverlapServiceKey == "") {
 		return nil, errors.New("overlap_profile and overlap_service_key must be configured together")
 	}
-	selection, key, err := loadServed(cfg.Profile, cfg.ServiceKey)
+	selection, key, err := loadServed(cfg.Profile, cfg.ServiceKey, now)
 	if err != nil {
 		return nil, err
 	}
@@ -160,12 +160,18 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 		}
 	}
 	var overlap []rendezvous.ServedProfile
+	var warnings []string
 	if cfg.OverlapProfile != "" {
-		s, k, e := loadServed(cfg.OverlapProfile, cfg.OverlapServiceKey)
-		if e != nil {
+		s, k, e := loadServed(cfg.OverlapProfile, cfg.OverlapServiceKey, now)
+		// An overlap epoch that has simply run out is skipped, so a restart after
+		// the rotation window does not take the current epoch down with it.
+		if old, _, oldErr := loadServed(cfg.OverlapProfile, cfg.OverlapServiceKey, time.Unix(0, 0)); e != nil && oldErr == nil && !now.Before(time.Unix(int64(old.Profile.Expires), 0)) {
+			warnings = append(warnings, fmt.Sprintf("overlap profile epoch %d expired; not served (remove overlap_profile and overlap_service_key)", old.Profile.Epoch))
+		} else if e != nil {
 			return nil, fmt.Errorf("overlap profile: %w", e)
+		} else {
+			overlap = append(overlap, rendezvous.ServedProfile{Selection: s, ServiceKey: k})
 		}
-		overlap = append(overlap, rendezvous.ServedProfile{Selection: s, ServiceKey: k})
 	}
 	if cfg.STUNListen != "" {
 		allowed := false
@@ -200,7 +206,7 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 	if err != nil {
 		return nil, fmt.Errorf("profile, origin or service key rejected: %w", err)
 	}
-	p := &prepared{cfg: cfg, selection: selection, service: service, cert: &certificateHolder{}}
+	p := &prepared{cfg: cfg, selection: selection, service: service, cert: &certificateHolder{}, warnings: warnings}
 	p.cert.store(cert)
 	if left := time.Unix(int64(selection.Profile.Expires), 0).Sub(now); left < profileWarning {
 		p.warnings = append(p.warnings, fmt.Sprintf("profile epoch %d expires in %s; sign and distribute the next epoch", selection.Profile.Epoch, left.Round(time.Minute)))
@@ -214,7 +220,7 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 	return p, nil
 }
 
-func loadServed(profilePath, keyPath string) (network.ProfileSelection, ed25519.PrivateKey, error) {
+func loadServed(profilePath, keyPath string, now time.Time) (network.ProfileSelection, ed25519.PrivateKey, error) {
 	var selection network.ProfileSelection
 	data, err := readPrivatePath(profilePath, protocol.NetworkMaxBytes)
 	if err != nil {
@@ -223,7 +229,7 @@ func loadServed(profilePath, keyPath string) (network.ProfileSelection, ed25519.
 	if err = protocol.NetworkDecode(data, &selection); err != nil {
 		return selection, nil, fmt.Errorf("decode profile: %w", err)
 	}
-	if err = selection.Validate(uint64(time.Now().Unix())); err != nil {
+	if err = selection.Validate(uint64(now.Unix())); err != nil {
 		return selection, nil, fmt.Errorf("profile invalid or expired: %w", err)
 	}
 	key, err := readKey(keyPath)
