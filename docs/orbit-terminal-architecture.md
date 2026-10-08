@@ -277,3 +277,18 @@ Completed progress polls refresh current readiness instead of asserting a stored
 completion is current availability. Conservative unregister/retire previews keep
 execution in existing procedures; a known fork cannot be resumed through the
 ordinary folder shortcut. See [onboarding runbook](runbooks/terminal-onboarding.md).
+
+## E01 daemon ownership — 2026-10-08
+
+`launcher.EnsureDaemon` (shared by the TUI, `orbit launch` and the CLI restart
+callbacks) starts the selected state's daemon through `orbit.service` when
+`control.ServiceCanStart` holds, and falls back to a detached `serve
+--started-by=terminal` that logs to `<state>/daemon.log`. Ownership is a
+`control` observation (`ServiceStatusResult.Owner`/`UnitState`, carried into
+`tc.Service`); presentation only renders it. Service start/stop/restart are
+dispatched by `controlclient` after durable admission and claim, with
+`app.StopAgent` injected as the `control.DaemonStopper` for handover, so
+`control` keeps no dependency on `app`. The host-class startup proposal
+(`control.ProbeHostStartup`, `tc.Result.Host`) accompanies the `settings`
+query; the TUI form shows its note and re-checks with Ctrl-R. Rules and
+fallbacks are in [operations](operations.md#daemon-ownership-and-service-defaults-e01-2026-10-08).

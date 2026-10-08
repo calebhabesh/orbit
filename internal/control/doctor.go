@@ -664,13 +664,16 @@ func (c *Controller) checkServiceTooling(ctx context.Context) []DoctorCheck {
 	}
 
 	if settings.Startup == "unattended" {
+		if st.LingeringInstruction == "" {
+			st.LingeringInstruction = "sudo loginctl enable-linger $USER"
+		}
 		if !st.LingeringEnabled {
 			checks = append(checks, DoctorCheck{
 				Name:        "unattended_linger",
 				Category:    "service",
 				Status:      StatusWarn,
 				Message:     "unattended startup configured but systemd user lingering is not enabled (service will stop on logout)",
-				Remediation: "run 'loginctl enable-linger' as root or user to permit background sync after logout",
+				Remediation: "run '" + st.LingeringInstruction + "' to permit background sync after logout (Orbit never runs it)",
 			})
 		} else {
 			checks = append(checks, DoctorCheck{

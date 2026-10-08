@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/control"
 	"github.com/calebhabesh/orbit/internal/controlclient"
 	"github.com/calebhabesh/orbit/internal/state"
 	"golang.org/x/sys/unix"
@@ -57,16 +59,26 @@ func EnsureDaemon(ctx context.Context, opts LaunchOptions) (*LaunchResult, error
 		if err != nil {
 			return nil, err
 		}
-		starter := opts.DaemonStarter
-		if starter == nil {
-			starter = defaultDaemonStarter
-		}
 		address := opts.ControlAddress
 		if address == "" {
 			address = "127.0.0.1:0"
 		}
-		if err = starter(ctx, dir, address); err != nil {
-			return nil, fmt.Errorf("start daemon: %w", err)
+		starter := opts.DaemonStarter
+		started := false
+		if starter == nil {
+			// One daemon owner (F04/F14): prefer the selected state's user unit so
+			// output reaches the journal and orbit service controls it. Otherwise
+			// the detached daemon logs to daemon.log and status names it terminal.
+			started, err = startThroughService(ctx, dir, opts.ControlAddress)
+			if err != nil {
+				return nil, err
+			}
+			starter = defaultDaemonStarter
+		}
+		if !started {
+			if err = starter(ctx, dir, address); err != nil {
+				return nil, fmt.Errorf("start daemon: %w", err)
+			}
 		}
 	} else if !errors.Is(err, state.ErrLocked) {
 		return nil, err
@@ -79,4 +91,25 @@ func EnsureDaemon(ctx context.Context, opts LaunchOptions) (*LaunchResult, error
 		return nil, err
 	}
 	return &LaunchResult{StateDir: dir, DaemonRunning: true, ControlAddress: strings.TrimSpace(string(address))}, nil
+}
+
+// startThroughService starts orbit.service when a user manager is reachable
+// and the effective unit serves this state. A unit that does not take
+// ownership is stopped again so it cannot crash-loop against the detached
+// fallback daemon; the caller then starts that fallback.
+func startThroughService(ctx context.Context, dir, explicitAddress string) (bool, error) {
+	if explicitAddress != "" && explicitAddress != "127.0.0.1:0" {
+		return false, nil
+	}
+	if !control.ServiceCanStart(ctx, dir) {
+		return false, nil
+	}
+	if _, err := os.Stat(filepath.Join(dir, "config.json")); errors.Is(err, os.ErrNotExist) {
+		// Packaged units serve without --allow-init; create the identity here,
+		// under the launch lock, exactly as a detached --allow-init daemon would.
+		if _, err := app.Initialize(ctx, dir, app.SystemDependencies()); err != nil {
+			return false, err
+		}
+	}
+	return control.StartServiceUnit(ctx, dir), nil
 }

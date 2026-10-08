@@ -611,10 +611,10 @@ esac
 	}
 	dispatchesBefore, _ := os.ReadFile(filepath.Join(root, "dispatches"))
 	var manualErr *control.ControlError
-	if _, err := control.StartService(context.Background(), dir, nil); !errors.As(err, &manualErr) || manualErr.Code != "MANUAL_DAEMON_RUNNING" {
+	if _, err := control.StartService(context.Background(), dir, nil, nil); !errors.As(err, &manualErr) || manualErr.Code != "MANUAL_DAEMON_RUNNING" {
 		t.Fatalf("start reported a manually launched daemon as the service: %v", err)
 	}
-	if _, err := control.RestartService(context.Background(), dir, nil); !errors.As(err, &manualErr) || manualErr.Code != "MANUAL_DAEMON_RUNNING" {
+	if _, err := control.RestartService(context.Background(), dir, nil, nil); !errors.As(err, &manualErr) || manualErr.Code != "MANUAL_DAEMON_RUNNING" {
 		t.Fatalf("restart reported a manually launched daemon as the service: %v", err)
 	}
 	if dispatchesAfter, _ := os.ReadFile(filepath.Join(root, "dispatches")); string(dispatchesAfter) != string(dispatchesBefore) {
@@ -628,7 +628,7 @@ esac
 	other := filepath.Join(root, "other")
 	os.Mkdir(other, 0700)
 	before, _ := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "orbit.service"))
-	if _, err := control.StartService(context.Background(), other, nil); err == nil {
+	if _, err := control.StartService(context.Background(), other, nil, nil); err == nil {
 		t.Fatal("unrelated unit started")
 	}
 	if err := control.InstallUserUnit(other, binary); err == nil {

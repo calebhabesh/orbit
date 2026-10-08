@@ -125,15 +125,7 @@ func (m *model) tabs(t theme) string {
 
 // statusLines describe the daemon, connection and transient notices.
 func (m *model) statusLines(counts bool) []string {
-	s := m.result.Service
-	startup := "unknown"
-	if s != nil {
-		startup = safe(s.Mode)
-		if !s.Enabled {
-			startup += " (not enabled)"
-		}
-	}
-	lines := []string{"Daemon: " + running(s), "Startup: " + startup}
+	lines := []string{"Daemon: " + daemonLabel(m.result.Service), "Startup: " + startupLabel(m.result.Service)}
 	if counts && m.section == 0 {
 		lines = append(lines, count(len(m.result.Items), "folder")+" · "+count(len(m.result.Attention), "attention item")+" · "+count(len(m.devices), "device"))
 	}
@@ -297,7 +289,7 @@ func (m *model) panelLines() []string {
 	t := m.theme()
 	right := ""
 	if !t.plain {
-		right = t.pill(running(m.result.Service), m.startup())
+		right = t.pill(daemonLabel(m.result.Service), m.startup())
 	}
 	header := t.header(m.width, m.tabs(t), right)
 	footer := m.footerLines(t)
@@ -361,15 +353,7 @@ func (m *model) panelLines() []string {
 	return append(append([]string{header}, body...), footer...)
 }
 
-func (m *model) startup() string {
-	if s := m.result.Service; s != nil {
-		if !s.Enabled {
-			return safe(s.Mode) + " (not enabled)"
-		}
-		return safe(s.Mode)
-	}
-	return "unknown"
-}
+func (m *model) startup() string { return startupLabel(m.result.Service) }
 
 // compactLines keep small terminals usable: one column, no borders.
 func (m *model) compactLines() []string {
@@ -417,7 +401,7 @@ func (m *model) compactLines() []string {
 	// Never split an escape sequence or a wide/combining grapheme at the edge.
 	output, _ := t.body(lines, m.width, -1)
 	if !t.plain && len(output) > 2 {
-		output[0] = t.header(m.width, "", t.pill(running(m.result.Service), m.startup()))
+		output[0] = t.header(m.width, "", t.pill(daemonLabel(m.result.Service), m.startup()))
 		output[1] = t.tab(sections[m.section], "", true) + " " + t.hints("f n d o")
 	}
 	footerLines := m.footerLines(t)

@@ -199,7 +199,8 @@ func (c *Client) Mutate(ctx context.Context, m tc.Mutation) (r tc.Result, err er
 	}
 	err = c.WithController(ctx, func() error { return c.terminalCall(ctx, "/mutate", m, &r) }, func(ctrl *control.Controller) error { r, err = ctrl.TerminalMutate(ctx, m); return err })
 	if err == nil && m.Kind == "service" && r.Operation != nil && r.Operation.State == "running" {
-		owned, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		// Bounds a graceful handover stop plus the unit's start and ownership wait.
+		owned, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 		defer cancel()
 		claim := struct {
 			Granted bool `json:"granted"`
@@ -216,7 +217,8 @@ func (c *Client) Mutate(ctx context.Context, m tc.Mutation) (r tc.Result, err er
 		if !claim.Granted {
 			return c.Query(owned, tc.Query{Version: tc.Version, Kind: "operation", ID: m.OperationID})
 		}
-		actual, actionErr := control.ExecuteTerminalService(owned, c.StateDir, *m.Service)
+		stop := func(dir string) error { return app.StopAgent(dir, 15*time.Second) }
+		actual, actionErr := control.ExecuteTerminalService(owned, c.StateDir, *m.Service, stop)
 		completion := control.TerminalServiceCompletion{ID: m.OperationID}
 		if actionErr == nil && actual != nil && !actual.Success {
 			actionErr = errors.New("requested service state was not observed")

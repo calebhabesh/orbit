@@ -81,6 +81,12 @@ func ValidateRuntimeSettings(s tc.Settings) error {
 	}
 	return nil
 }
+
+// HasRuntimeSettings reports whether reviewed runtime settings were saved.
+func HasRuntimeSettings(dir string) bool {
+	_, err := os.Lstat(filepath.Join(dir, "runtime.json"))
+	return err == nil
+}
 func LoadRuntimeSettings(dir string) (tc.Settings, error) {
 	s := DefaultRuntimeSettings()
 	b, err := state.ReadPrivate(dir, "runtime.json", tc.MaxMetadata)

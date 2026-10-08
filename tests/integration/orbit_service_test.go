@@ -193,12 +193,12 @@ func TestOrbitService_AbsentSystemdGracefulFallback(t *testing.T) {
 			}
 		}
 
-		_, startErr := control.StartService(ctx, stateDir, nil)
+		_, startErr := control.StartService(ctx, stateDir, nil, nil)
 		if startErr == nil {
 			t.Fatal("expected error from StartService when systemd unavailable")
 		}
 
-		_, stopErr := control.StopService(ctx, stateDir, nil)
+		_, stopErr := control.StopService(ctx, stateDir, nil, nil)
 		if stopErr == nil {
 			t.Fatal("expected error from StopService when systemd unavailable")
 		}
@@ -217,8 +217,8 @@ func TestOrbitService_LingeringDocumentedNotSilent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if !strings.HasPrefix(st.LingeringInstruction, "loginctl enable-linger ") {
-		t.Fatalf("expected instruction format 'loginctl enable-linger <user>', got: %s", st.LingeringInstruction)
+	if !strings.HasPrefix(st.LingeringInstruction, "sudo loginctl enable-linger ") {
+		t.Fatalf("expected instruction format 'sudo loginctl enable-linger <user>' (shown, never run), got: %s", st.LingeringInstruction)
 	}
 
 	// Verify CheckServiceStatus did NOT create any privileged files
@@ -252,7 +252,7 @@ func TestOrbitService_InstallUserUnit(t *testing.T) {
 	content := string(data)
 	expectedTokens := []string{
 		"Description=Orbit Background Engine",
-		"ExecStart=" + binPath + " serve --state=" + stateDir + " --control-listen=127.0.0.1:8080 --allow-init",
+		"ExecStart=" + binPath + " serve --state=" + stateDir + " --control-listen=127.0.0.1:0 --allow-init",
 		"ExecStop=" + binPath + " stop --state=" + stateDir,
 		"Restart=on-failure",
 		"LimitNOFILE=65536",

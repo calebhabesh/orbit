@@ -1,0 +1,9 @@
+=== RUN   TestOnboardingE01F01RealUserManagerTransientUnit
+    onboarding_e01_test.go:473: 127.0.0.1:8080 already held on this host: listen tcp 127.0.0.1:8080: bind: address already in use
+    onboarding_e01_test.go:511: unit orbit-e01-e5fb59e7 is-active=active control.addr=127.0.0.1:38591
+        journal:
+        Started [systemd-run] /tmp/<disposable>/001/orbit serve --state=/tmp/<disposable>/001/state --control-listen=127.0.0.1:0.
+        agent ready: device=2e5877fc047d1c130db5bed037cc2e0e594a15bc4eaf727dfe4d8ca8ea3d92e1 schema=13 peer-listener=disabled key-pin=456ddad716516d7c8eaa3a71319ee3829a2f8e96d4f00c5f6285ed15a7352474 enrollment-listener=disabled control-listener=http://127.0.0.1:38591
+--- PASS: TestOnboardingE01F01RealUserManagerTransientUnit (0.72s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	0.726s

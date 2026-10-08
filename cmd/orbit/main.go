@@ -125,6 +125,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 		fullScanInterval := flags.Duration("full-scan-interval", 24*time.Hour, "bounded full-content verification scan interval")
 		noWatch := flags.Bool("no-watch", false, "disable filesystem inotify watcher hints")
 		allowInit := flags.Bool("allow-init", false, "auto-initialize clean uninitialized state directory")
+		startedBy := flags.String("started-by", "", "internal: records a terminal-launched daemon for status")
 		if err := flags.Parse(args[1:]); err != nil {
 			return err
 		}
@@ -143,6 +144,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 			FullScanInterval:  *fullScanInterval,
 			NoWatch:           *noWatch,
 			AllowInitialize:   *allowInit,
+			StartedBy:         *startedBy,
 		})
 	case "identity":
 		flags := flag.NewFlagSet("identity", flag.ContinueOnError)
@@ -4168,6 +4170,12 @@ func handleOrbitService(args []string, stdout, stderr io.Writer) error {
 		fmt.Fprintf(stdout, "  Unit Installed:    %v\n", st.UnitInstalled)
 		fmt.Fprintf(stdout, "  Enabled on Login:  %v\n", st.EnabledOnLogin)
 		fmt.Fprintf(stdout, "  Currently Running: %v\n", st.CurrentlyRunning)
+		if st.Owner != "" {
+			fmt.Fprintf(stdout, "  Run By:            %s\n", st.Owner)
+		}
+		if st.UnitState != "" {
+			fmt.Fprintf(stdout, "  Unit State:        %s\n", st.UnitState)
+		}
 		fmt.Fprintf(stdout, "  Root Verified:     %v\n", st.RootVerified)
 		fmt.Fprintf(stdout, "  Capture Successful:%v\n", st.CaptureSuccessful)
 		fmt.Fprintf(stdout, "  Lingering Enabled: %v\n", st.LingeringEnabled)

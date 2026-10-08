@@ -932,7 +932,15 @@ func (c *Controller) setupStartup(ctx context.Context, parent repository.Termina
 	if !errors.Is(err, repository.ErrOperationNotFound) {
 		return err
 	}
-	m := tc.Mutation{Version: tc.Version, OperationID: id, Kind: "service", Service: &tc.ServiceIntent{Action: "enable", Mode: plan.Settings.Startup, Review: plan.Preview}}
+	mode := plan.Settings.Startup
+	if mode == "unattended" {
+		// Lingering stayed off: start at login instead of blocking setup. Status
+		// reports login and the host note shows the linger command (EG3).
+		if st, e := CheckServiceStatus(ctx, c.db.StateDir(), c.db); e == nil && !st.LingeringEnabled {
+			mode = "login"
+		}
+	}
+	m := tc.Mutation{Version: tc.Version, OperationID: id, Kind: "service", Service: &tc.ServiceIntent{Action: "enable", Mode: mode, Review: plan.Preview}}
 	fp, err := m.Fingerprint()
 	if err != nil {
 		return err

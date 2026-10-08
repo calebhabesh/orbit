@@ -665,6 +665,8 @@ type ServiceStatusResult struct {
 	UnitInstalled        bool   `json:"unit_installed"`
 	EnabledOnLogin       bool   `json:"enabled_on_login"`
 	CurrentlyRunning     bool   `json:"currently_running"`
+	Owner                string `json:"owner,omitempty"`      // service, terminal, manual
+	UnitState            string `json:"unit_state,omitempty"` // systemd ActiveState of orbit.service
 	RootVerified         bool   `json:"root_verified"`
 	CaptureSuccessful    bool   `json:"capture_successful"`
 	LingeringEnabled     bool   `json:"lingering_enabled"`

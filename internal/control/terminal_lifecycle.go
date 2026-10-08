@@ -44,6 +44,13 @@ func (c *Controller) terminalSnapshot(ctx context.Context, kind string) (tc.Resu
 		return r, "", err
 	}
 	if kind == "settings" {
+		// A fresh device proposes the host-class startup default (EG3); saved
+		// settings keep the owner's reviewed choice.
+		host := HostStartupFor(ctx, c.db.StateDir())
+		r.Host = &host
+		if !config.HasRuntimeSettings(c.db.StateDir()) {
+			settings.Startup = host.Suggested
+		}
 		r.Settings = &settings
 		if settings.DataBudget == 0 || settings.MetadataBudget == 0 || settings.ReserveBytes == 0 {
 			r.State = "blocked"
@@ -61,11 +68,15 @@ func (c *Controller) terminalSnapshot(ctx context.Context, kind string) (tc.Resu
 	mode := "manual"
 	if st.EnabledOnLogin {
 		mode = "login"
-		if settings.Startup == "unattended" {
+		// Unattended without lingering stops at logout, so it is reported as login.
+		if settings.Startup == "unattended" && st.LingeringEnabled {
 			mode = "unattended"
 		}
 	}
-	r.Service = &tc.Service{Running: st.CurrentlyRunning, Enabled: st.EnabledOnLogin, Mode: mode, UnattendedVerified: false, RootHealthy: st.RootVerified, CaptureHealthy: false}
+	r.Service = &tc.Service{Running: st.CurrentlyRunning, Enabled: st.EnabledOnLogin, Mode: mode, UnattendedVerified: false, RootHealthy: st.RootVerified, CaptureHealthy: false, Owner: st.Owner, UnitState: st.UnitState}
+	if c.options.StoppedAdapter {
+		r.Service.Owner = ""
+	}
 	return r, generation(r.Service), nil
 }
 func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (tc.Result, error) {
@@ -244,7 +255,9 @@ func (c *Controller) TerminalMutate(ctx context.Context, m tc.Mutation) (tc.Resu
 	if err := c.callHook("terminal.operation.accepted"); err != nil {
 		return r, err
 	}
-	if m.Kind == "service" && (c.options.StoppedAdapter || m.Service.Action == "stop" || m.Service.Action == "restart") {
+	// Start, stop and restart run in the client: the daemon may be the one a
+	// start hands over to the unit, and it cannot stop itself mid-request.
+	if m.Kind == "service" && (c.options.StoppedAdapter || m.Service.Action == "start" || m.Service.Action == "stop" || m.Service.Action == "restart") {
 		r.State = "running"
 		return r, nil
 	}
@@ -267,7 +280,7 @@ func (c *Controller) executeTerminal(ctx context.Context, record repository.Term
 		}
 	} else {
 		var result *ServiceActionResult
-		result, err = ExecuteTerminalService(ctx, c.db.StateDir(), *m.Service)
+		result, err = ExecuteTerminalService(ctx, c.db.StateDir(), *m.Service, nil)
 		if err == nil && result != nil && result.Success {
 			r.Operation.CommittedEffects = append(r.Operation.CommittedEffects, tc.Effect{State: "service_" + m.Service.Action})
 		} else if err == nil {
@@ -439,7 +452,8 @@ func decodeTerminalBody(w http.ResponseWriter, r *http.Request, out any) error {
 }
 
 // ExecuteTerminalService runs after the stopped adapter has relinquished ownership.
-func ExecuteTerminalService(ctx context.Context, dir string, intent tc.ServiceIntent) (*ServiceActionResult, error) {
+// stop hands a daemon started outside the unit over to it; nil refuses instead.
+func ExecuteTerminalService(ctx context.Context, dir string, intent tc.ServiceIntent, stop DaemonStopper) (*ServiceActionResult, error) {
 	switch intent.Action {
 	case "enable":
 		if intent.Mode == "unattended" {
@@ -456,11 +470,11 @@ func ExecuteTerminalService(ctx context.Context, dir string, intent tc.ServiceIn
 	case "disable":
 		return DisableService(ctx, dir, nil)
 	case "start":
-		return StartService(ctx, dir, nil)
+		return StartService(ctx, dir, nil, stop)
 	case "stop":
-		return StopService(ctx, dir, nil)
+		return StopService(ctx, dir, nil, stop)
 	case "restart":
-		return RestartService(ctx, dir, nil)
+		return RestartService(ctx, dir, nil, stop)
 	}
 	return nil, terminalError("INVALID_REQUEST")
 }

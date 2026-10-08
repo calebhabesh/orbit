@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/orbit serve --state=%h/.local/state/orbit --control-listen=127.0.0.1:8080
+ExecStart=/usr/bin/orbit serve --state=%h/.local/state/orbit --control-listen=127.0.0.1:0
 ExecStop=/usr/bin/orbit stop --state=%h/.local/state/orbit
 Restart=on-failure
 RestartSec=5s

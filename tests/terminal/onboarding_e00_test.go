@@ -3,7 +3,8 @@ package terminal_test
 // E00 onboarding baseline reproductions for the 2026-10-08 owner trial
 // findings that need real processes. Each test asserts approved behavior and
 // deliberately fails on the current implementation; ordinary runs skip them.
-// Opt in with ORBIT_ONBOARDING_BASELINE=1. All state, HOME and service-manager
+// Opt in with ORBIT_ONBOARDING_BASELINE=1. E01 promoted F01 and F04/F14 into
+// ordinary regressions in onboarding_e01_test.go. All state, HOME and service-manager
 // stand-ins live in marked disposable roots; no real user unit, systemd
 // manager, personal folder or deployed service is touched.
 
@@ -13,8 +14,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"encoding/pem"
-	"errors"
-	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -60,57 +59,6 @@ func e00StopOnCleanup(t *testing.T, base, dir string) {
 	})
 }
 
-// F01: the packaged user unit must start while another process holds
-// 127.0.0.1:8080 (the PC and Pi each had an unrelated Java app there).
-func TestOnboardingE00F01PackagedUnitStartsWithPort8080Taken(t *testing.T) {
-	onboardingBaseline(t)
-	base := testkit.NewDisposable(t)
-	_ = os.Chmod(base, 0700)
-	unit, err := os.ReadFile("../../packaging/systemd/orbit.service")
-	if err != nil {
-		t.Fatal(err)
-	}
-	var execStart []string
-	for line := range strings.SplitSeq(string(unit), "\n") {
-		if v, ok := strings.CutPrefix(line, "ExecStart="); ok {
-			execStart = strings.Fields(v)
-		}
-	}
-	if len(execStart) < 2 {
-		t.Fatal("packaged unit has no ExecStart")
-	}
-	t.Logf("packaged ExecStart: %s", strings.Join(execStart, " "))
-	// Hold the port when it is free; when it is already held (as on the dev PC)
-	// the condition exists without this test owning it.
-	if l, e := net.Listen("tcp", "127.0.0.1:8080"); e == nil {
-		defer l.Close()
-		t.Log("test holds 127.0.0.1:8080")
-	} else {
-		t.Logf("127.0.0.1:8080 already held on this host: %v", e)
-	}
-	binary := buildOrbitBinary(t, base)
-	state := filepath.Join(base, "state")
-	if _, err = app.Initialize(context.Background(), state, app.SystemDependencies()); err != nil {
-		t.Fatal(err)
-	}
-	args := []string{}
-	for _, a := range execStart[1:] {
-		args = append(args, strings.ReplaceAll(a, "%h/.local/state/orbit", state))
-	}
-	e00StopOnCleanup(t, base, state)
-	out, err := e00Run(t, []string{"HOME=" + base, "PATH=" + os.Getenv("PATH")}, 4*time.Second, binary, args...)
-	if err == nil || errors.Is(err, context.DeadlineExceeded) || strings.Contains(err.Error(), "killed") {
-		t.Log("daemon stayed up with the packaged arguments")
-	} else {
-		t.Errorf("packaged unit arguments exit while 8080 is taken: %v\n%s", err, strings.TrimSpace(out))
-	}
-	for _, a := range execStart {
-		if strings.HasPrefix(a, "--control-listen=") && a != "--control-listen=127.0.0.1:0" {
-			t.Errorf("packaged unit hardcodes %s (approved: 127.0.0.1:0, clients read control.addr)", a)
-		}
-	}
-}
-
 // F03: the advice printed for exhausted work must run while the daemon runs.
 func TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon(t *testing.T) {
 	onboardingBaseline(t)
@@ -129,108 +77,6 @@ func TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon(t *testing.T) {
 	t.Logf("%s => %v: %s", advice, err, strings.TrimSpace(out))
 	if strings.Contains(out, "already owned by another agent") {
 		t.Errorf("attention advice cannot run while the daemon runs: %s", strings.TrimSpace(out))
-	}
-}
-
-// e00ServiceStub puts systemctl/loginctl stand-ins first on PATH. They model a
-// user manager whose orbit.service is enabled but failing (crash loop on the
-// taken port, as on the trial PC) and record every invocation.
-func e00ServiceStub(t *testing.T, base string) (env []string, calls string) {
-	t.Helper()
-	bin := filepath.Join(base, "stub-bin")
-	if err := os.Mkdir(bin, 0700); err != nil {
-		t.Fatal(err)
-	}
-	calls = filepath.Join(base, "systemctl-calls.log")
-	systemctl := `#!/bin/sh
-echo "$*" >> "` + calls + `"
-case "$*" in
-  "--user is-system-running") echo running; exit 0 ;;
-  "--user is-enabled orbit.service") echo enabled; exit 0 ;;
-  "--user is-active orbit.service") echo failed; exit 3 ;;
-  *"show -p MainPID"*) echo 0; exit 0 ;;
-  *"show"*) echo "ActiveState=failed"; echo "SubState=failed"; echo "Result=exit-code"; exit 0 ;;
-  *) exit 0 ;;
-esac
-`
-	loginctl := "#!/bin/sh\necho Linger=no\n"
-	for name, body := range map[string]string{"systemctl": systemctl, "loginctl": loginctl} {
-		if err := os.WriteFile(filepath.Join(bin, name), []byte(body), 0700); err != nil {
-			t.Fatal(err)
-		}
-	}
-	return []string{"HOME=" + base, "USER=e00-disposable", "PATH=" + bin + ":" + os.Getenv("PATH")}, calls
-}
-
-// F04 + F14: a terminal-spawned daemon with an enabled-but-failing unit.
-// Approved: status names who runs the daemon and shows the failing unit;
-// `orbit service start/stop` hand over or succeed instead of failing; the
-// detached daemon's output is retained somewhere (journal or file).
-func TestOnboardingE00F04F14TerminalDaemonAndFailingUnit(t *testing.T) {
-	onboardingBaseline(t)
-	base := testkit.NewDisposable(t)
-	_ = os.Chmod(base, 0700)
-	binary := buildOrbitBinary(t, base)
-	state := filepath.Join(base, "state")
-	env, calls := e00ServiceStub(t, base)
-	unitDir := filepath.Join(base, ".config", "systemd", "user")
-	if err := os.MkdirAll(unitDir, 0700); err != nil {
-		t.Fatal(err)
-	}
-	unit := "[Service]\nExecStart=" + binary + " serve --state=" + state + " --control-listen=127.0.0.1:8080\n"
-	if err := os.WriteFile(filepath.Join(unitDir, "orbit.service"), []byte(unit), 0600); err != nil {
-		t.Fatal(err)
-	}
-	e00StopOnCleanup(t, base, state)
-	// The TUI and `orbit launch` share launcher.EnsureDaemon (detached serve).
-	if out, err := e00Run(t, env, 30*time.Second, binary, "launch", "--state", state, "--no-browser", "--json"); err != nil {
-		t.Fatalf("launch: %v\n%s", err, out)
-	}
-
-	status, err := e00Run(t, env, 30*time.Second, binary, "service", "status", "--state", state, "--json")
-	if err != nil {
-		t.Fatalf("service status: %v\n%s", err, status)
-	}
-	t.Logf("service status: %s", strings.TrimSpace(status))
-	var st map[string]any
-	if err = json.Unmarshal([]byte(status), &st); err != nil {
-		t.Fatal(err)
-	}
-	if st["currently_running"] == true && st["enabled_on_login"] == true {
-		if _, ok := st["owner"]; !ok {
-			t.Error("F04: status reports running + login-enabled with no daemon owner (approved: service/terminal/manual)")
-		}
-		if !strings.Contains(status, "failed") {
-			t.Error("F04: failing unit not shown as failing")
-		}
-	}
-
-	pid, err := os.ReadFile(filepath.Join(state, ".agent.pid"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	var logs []string
-	for _, fd := range []string{"1", "2"} {
-		target, e := os.Readlink(filepath.Join("/proc", strings.TrimSpace(string(pid)), "fd", fd))
-		if e != nil {
-			t.Fatal(e)
-		}
-		logs = append(logs, target)
-	}
-	t.Logf("F14: detached daemon stdout/stderr: %v", logs)
-	if logs[0] == "/dev/null" && logs[1] == "/dev/null" {
-		t.Error("F14: terminal-spawned daemon output goes to /dev/null (approved: start through orbit.service so output reaches the journal)")
-	}
-
-	for _, action := range []string{"stop", "start"} {
-		out, err := e00Run(t, env, 60*time.Second, binary, "service", action, "--state", state, "--json")
-		t.Logf("F14: orbit service %s => %v: %s", action, err, strings.TrimSpace(out))
-		if err != nil || strings.Contains(out, "MANUAL_DAEMON_RUNNING") || strings.Contains(out, "IO_ERROR") {
-			t.Errorf("F14: orbit service %s failed with a terminal-spawned daemon running", action)
-		}
-	}
-	if b, e := os.ReadFile(calls); e == nil {
-		t.Logf("systemctl stand-in calls:\n%s", strings.TrimSpace(string(b)))
 	}
 }
 

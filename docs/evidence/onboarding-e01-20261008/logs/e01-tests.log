@@ -1,0 +1,302 @@
+=== RUN   TestOnboardingE01F01PackagedUnitStartsWithPort8080Taken
+    onboarding_e01_test.go:68: 127.0.0.1:8080 already held on this host: listen tcp 127.0.0.1:8080: bind: address already in use
+    onboarding_e01_test.go:98: control.addr 127.0.0.1:35581; status connected
+--- PASS: TestOnboardingE01F01PackagedUnitStartsWithPort8080Taken (0.67s)
+=== RUN   TestOnboardingE01F01LegacyUserUnitMigrates
+--- PASS: TestOnboardingE01F01LegacyUserUnitMigrates (0.01s)
+=== RUN   TestOnboardingE01EG3HostClassFixtures
+=== RUN   TestOnboardingE01EG3HostClassFixtures/desktop_local
+    onboarding_e01_test.go:251: {Class:desktop Suggested:login Systemd:true Lingering:false LingerCommand:sudo loginctl enable-linger e01-disposable Note:}
+=== RUN   TestOnboardingE01EG3HostClassFixtures/desktop_over_ssh
+    onboarding_e01_test.go:251: {Class:desktop Suggested:login Systemd:true Lingering:false LingerCommand:sudo loginctl enable-linger e01-disposable Note:}
+=== RUN   TestOnboardingE01EG3HostClassFixtures/desktop_booted_multi-user,_session_active
+    onboarding_e01_test.go:251: {Class:desktop Suggested:login Systemd:true Lingering:false LingerCommand:sudo loginctl enable-linger e01-disposable Note:}
+=== RUN   TestOnboardingE01EG3HostClassFixtures/headless_linger_off
+    onboarding_e01_test.go:251: {Class:headless Suggested:login Systemd:true Lingering:false LingerCommand:sudo loginctl enable-linger e01-disposable Note:Unattended startup keeps Orbit running after you log out. It needs lingering: run sudo loginctl enable-linger e01-disposable, then re-check. Until then startup is login.}
+=== RUN   TestOnboardingE01EG3HostClassFixtures/headless_linger_on
+    onboarding_e01_test.go:251: {Class:headless Suggested:unattended Systemd:true Lingering:true LingerCommand:sudo loginctl enable-linger e01-disposable Note:}
+=== RUN   TestOnboardingE01EG3HostClassFixtures/no_user_manager
+    onboarding_e01_test.go:251: {Class:unknown Suggested:manual Systemd:false Lingering:false LingerCommand:sudo loginctl enable-linger e01-disposable Note:No user service manager is reachable; Orbit runs while a terminal starts it.}
+--- PASS: TestOnboardingE01EG3HostClassFixtures (0.01s)
+    --- PASS: TestOnboardingE01EG3HostClassFixtures/desktop_local (0.00s)
+    --- PASS: TestOnboardingE01EG3HostClassFixtures/desktop_over_ssh (0.00s)
+    --- PASS: TestOnboardingE01EG3HostClassFixtures/desktop_booted_multi-user,_session_active (0.00s)
+    --- PASS: TestOnboardingE01EG3HostClassFixtures/headless_linger_off (0.00s)
+    --- PASS: TestOnboardingE01EG3HostClassFixtures/headless_linger_on (0.00s)
+    --- PASS: TestOnboardingE01EG3HostClassFixtures/no_user_manager (0.00s)
+=== RUN   TestOnboardingE01EG3FreshSettingsUseHostDefault
+--- PASS: TestOnboardingE01EG3FreshSettingsUseHostDefault (0.03s)
+=== RUN   TestOnboardingE01F04F14OwnerAndHandover
+    onboarding_e01_test.go:381: after launch with failing unit: owner="terminal" unit="failed" running=true
+    onboarding_e01_test.go:460: service manager calls:
+        systemctl --user is-system-running
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user start orbit.service
+        systemctl --user stop orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl get-default
+        systemctl --user show -p ExecStart --value orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl get-default
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user start orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user stop orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user start orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user restart orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user stop orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user start orbit.service
+        systemctl --user stop orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user stop orbit.service
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user show -p MainPID --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+        systemctl --user is-system-running
+        systemctl --user is-enabled orbit.service
+        systemctl --user show -p ExecStart --value orbit.service
+        systemctl --user is-active orbit.service
+        loginctl show-user e01-disposable -p Linger
+--- PASS: TestOnboardingE01F04F14OwnerAndHandover (1.50s)
+=== RUN   TestOnboardingE01F01RealUserManagerTransientUnit
+    onboarding_e01_test.go:469: opt in with ORBIT_E01_REAL_USER_MANAGER=1 (runs a transient user unit over disposable state)
+--- SKIP: TestOnboardingE01F01RealUserManagerTransientUnit (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	2.229s
+=== RUN   TestOnboardingE01F04HeaderNamesOwnerAndFailingUnit
+--- PASS: TestOnboardingE01F04HeaderNamesOwnerAndFailingUnit (0.00s)
+=== RUN   TestOnboardingE01F12HostNoteAndLingerRecheck
+--- PASS: TestOnboardingE01F12HostNoteAndLingerRecheck (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/terminal	0.016s

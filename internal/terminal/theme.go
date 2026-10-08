@@ -76,10 +76,10 @@ func (t theme) tab(name, key string, active bool) string {
 // pill summarises daemon state for the header's right edge.
 func (t theme) pill(state, startup string) string {
 	dot, color := "◌", cYellow
-	switch state {
-	case "running":
+	switch {
+	case strings.HasPrefix(state, "running"):
 		dot, color = "●", cGreen
-	case "stopped":
+	case state == "stopped":
 		dot, color = "○", cRed
 	}
 	return t.fg(color, dot+" "+state) + t.muted(" · startup ") + startup
