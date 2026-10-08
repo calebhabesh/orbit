@@ -63,9 +63,13 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 	case "/":
 		m.focus = 1
 		return m.search.Focus()
-	case "tab", "shift+tab":
-		m.focus = 1
-		return m.search.Focus()
+	case "tab":
+		// Tab moves between views, not into search; / searches (E03).
+		return m.changeSection((m.section + 1) % len(sections))
+	case "shift+tab":
+		return m.changeSection((m.section + len(sections) - 1) % len(sections))
+	case "1", "2", "3", "4":
+		return m.changeSection(int(k[0] - '1'))
 	case "j", "down":
 		m.selectRow(1)
 	case "k", "up":

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -33,6 +34,8 @@ type Workflows interface {
 type field struct {
 	label string
 	input textinput.Model
+	// choices makes the field a selector: ←/→ change it, typing is ignored.
+	choices []string
 }
 type workflow struct {
 	daily                                           *dailyState
@@ -44,6 +47,7 @@ type workflow struct {
 	network                                         tc.NetworkPolicy
 	builtin                                         *tc.BuiltinProfile
 	host                                            *tc.HostStartup
+	replaceOnType                                   bool
 	plan                                            tc.SetupIntent
 	invitation                                      tc.Invitation
 	mutation                                        tc.Mutation
@@ -69,7 +73,25 @@ func newField(label, value string, secret bool) field {
 		in.EchoMode = textinput.EchoPassword
 		in.EchoCharacter = '*'
 	}
-	return field{label, in}
+	return field{label: label, input: in}
+}
+
+// newSelector is a fixed-choice field shown as ‹ value › (E03). The value
+// stays in input so existing readers keep working.
+func newSelector(label, value string, choices []string) field {
+	f := newField(label, value, false)
+	f.choices = choices
+	return f
+}
+
+// cycle moves a selector to the next (delta 1) or previous choice.
+func (f *field) cycle(delta int) {
+	i := slices.Index(f.choices, f.input.Value())
+	if i < 0 {
+		i = 0
+		delta = 0
+	}
+	f.input.SetValue(f.choices[(i+delta+len(f.choices))%len(f.choices)])
 }
 func newID() (string, error) {
 	var b [32]byte
@@ -194,6 +216,15 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		}
 		if task == "preview" {
 			f.screen = "form"
+			// A rejected root puts the cursor on the root field (E03).
+			if code := strings.SplitN(f.err, ":", 2)[0]; strings.Contains(code, "ROOT") && len(f.fields) > 2 {
+				return m.focusField(2)
+			}
+		}
+		if task == "parse_invitation" && f.screen == "invitation" {
+			// The failed value stays (W07), but the next typed character starts
+			// a fresh value, so an unbracketed re-paste replaces it (F06).
+			f.replaceOnType = true
 		}
 		return nil
 	}
@@ -221,12 +252,12 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		}
 		f.result.Network = r.Network
 		s := f.settings
-		f.fields = append(f.fields, newField("Startup (manual/login/unattended)", s.Startup, false), newField("Data budget (bytes)", fmt.Sprint(s.DataBudget), false),
+		f.fields = append(f.fields, newSelector("Startup", s.Startup, []string{"manual", "login", "unattended"}), newField("Data budget (bytes)", fmt.Sprint(s.DataBudget), false),
 			newField("Peer listen (IP:port)", s.PeerListen, false), newField("Enrollment listen (IP:port)", s.EnrollmentListen, false),
 			newField("Advertised peer (IP:port)", s.AdvertisedPeer, false), newField("Advertised enrollment (IP:port)", s.AdvertisedEnrollment, false),
 			newField("Metadata budget (bytes)", fmt.Sprint(s.MetadataBudget), false), newField("Free space reserve (bytes)", fmt.Sprint(s.ReserveBytes), false),
 			newField("Concurrency (1-32)", fmt.Sprint(s.Concurrency), false), newField("Bandwidth (bytes/sec; 0 unlimited)", fmt.Sprint(s.BandwidthBytesPerSecond), false))
-		f.fields = append(f.fields, newField("Connection (automatic/local_only/manual/self_hosted)", mode, false))
+		f.fields = append(f.fields, newSelector("Connection", mode, []string{"automatic", "local_only", "manual", "self_hosted"}))
 		if f.kind == "join" {
 			f.screen = "invitation"
 			f.fields = append(f.fields, newField("Private invitation", "", true))
@@ -267,7 +298,7 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		if r.Preview.Unsupported != 0 || r.Preview.Unreadable != 0 {
 			f.screen = "form"
 			f.err = "ROOT_REVIEW_INCOMPLETE: correct unsupported/unreadable objects, then review again."
-			return nil
+			return m.focusField(2)
 		}
 		if r.Review == nil {
 			f.err = "Root review missing."
@@ -465,9 +496,12 @@ func (m *model) previewSetup() tea.Cmd {
 		}
 		*v.n = tc.Uint(n)
 	}
-	if get(0) == "" || get(1) == "" || !filepath.IsAbs(get(2)) {
-		f.err = "Device/folder names and an absolute local root are required."
-		return nil
+	for i := range 3 {
+		if get(i) == "" || (i == 2 && !filepath.IsAbs(get(2))) {
+			f.err = "Device/folder names and an absolute local root are required."
+			// Focus the field with the problem (E03).
+			return m.focusField(i)
+		}
 	}
 	if err := config.ValidateRuntimeSettings(s); err != nil {
 		f.err = "Review startup, finite positive budgets and numeric network addresses (advertise a reachable LAN/Tailscale IP)."
@@ -577,24 +611,27 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 			return m.invalidate()
 		}
 		return nil
-	case "tab", "shift+tab":
-		indices := m.formIndices()
-		if f.screen == "invitation" {
-			return nil
+	case "tab", "down":
+		return m.moveField(1)
+	case "shift+tab", "up":
+		return m.moveField(-1)
+	case "ctrl+u":
+		// Clears the whole field, including a hidden invitation (F06).
+		if f.fields[f.focus].choices == nil {
+			f.fields[f.focus].input.SetValue("")
 		}
-		delta := 1
-		if k == "shift+tab" {
-			delta = -1
-		}
-		for i, index := range indices {
-			if index == f.focus {
-				return m.focusField(indices[(i+delta+len(indices))%len(indices)])
-			}
-		}
-		return m.focusField(indices[0])
+		return nil
 	case "enter":
+		// Enter advances to the next field and confirms on the last (E03).
+		if indices := m.formIndices(); f.screen != "invitation" && len(indices) > 1 && f.focus != indices[len(indices)-1] {
+			return m.moveField(1)
+		}
 		switch f.screen {
 		case "invitation":
+			if strings.TrimSpace(f.fields[f.focus].input.Value()) == "" {
+				f.err = "Paste the invitation code (or type a private file path) first."
+				return nil
+			}
 			return m.parseInvitation()
 		case "form":
 			return m.previewSetup()
@@ -610,9 +647,38 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 			return nil
 		}
 	}
+	if fld := &f.fields[f.focus]; fld.choices != nil {
+		// Selectors ignore typing; j/k still move between fields.
+		switch k {
+		case "left", "h":
+			fld.cycle(-1)
+		case "right", "l", "space":
+			fld.cycle(1)
+		case "j":
+			return m.moveField(1)
+		case "k":
+			return m.moveField(-1)
+		}
+		return nil
+	}
+	if f.replaceOnType && msg.Text != "" {
+		f.fields[f.focus].input.SetValue("")
+	}
+	f.replaceOnType = false
 	var cmd tea.Cmd
 	f.fields[f.focus].input, cmd = f.fields[f.focus].input.Update(msg)
 	return cmd
+}
+
+// moveField focuses the next (delta 1) or previous visible field, wrapping.
+func (m *model) moveField(delta int) tea.Cmd {
+	indices := m.formIndices()
+	for i, index := range indices {
+		if index == m.flow.focus {
+			return m.focusField(indices[(i+delta+len(indices))%len(indices)])
+		}
+	}
+	return m.focusField(indices[0])
 }
 func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 	if m.flow.daily != nil {
@@ -818,14 +884,6 @@ func (m *model) formIndices() []int {
 	return indices
 }
 func (m *model) cycleConnection() tea.Cmd {
-	f := m.flow
-	modes := []string{"automatic", "local_only", "manual", "self_hosted"}
-	for i, mode := range modes {
-		if f.fields[13].input.Value() == mode {
-			f.fields[13].input.SetValue(modes[(i+1)%len(modes)])
-			return nil
-		}
-	}
-	f.fields[13].input.SetValue("automatic")
+	m.flow.fields[13].cycle(1)
 	return nil
 }

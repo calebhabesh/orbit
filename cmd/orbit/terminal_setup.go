@@ -452,7 +452,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 func writeSetupRequest(path string, m tc.Mutation) error {
 	// O_EXCL keeps an existing reviewed request intact; private parent is verified
 	// by the same input path helper before later consumption.
-	if err := state.ValidateDirectory(filepath.Dir(path)); err != nil {
+	if err := state.ValidatePrivateFileDir(filepath.Dir(path)); err != nil {
 		return err
 	}
 	b, err := json.MarshalIndent(m, "", "  ")

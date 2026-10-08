@@ -88,6 +88,17 @@ class UI:
         self.frames.append(self.text())
         raise RuntimeError(f'{self.name}: visible {text!r} absent')
 
+    def submit(self, text, timeout=60, presses=6):
+        # Enter advances field by field and confirms on the last (E03).
+        for _ in range(presses):
+            self.send(b'\r')
+            time.sleep(.2)
+            self.pump(.1)
+            if text in self.text():
+                self.frames.append(self.text())
+                return
+        self.wait(text, timeout)
+
     def replace(self, text):
         # End, delete-before-cursor, then one bracketed paste.
         self.send(b'\x05\x15\x1b[200~' + text.encode() + b'\x1b[201~')
@@ -127,8 +138,7 @@ def root_review(ui, label, name, root):
         ui.send(b'\t')
     if 'Peer listen:' in ui.text():
         raise RuntimeError('ordinary journey showed a manual address prompt')
-    ui.send(b'\r')
-    ui.wait('Confirm adoption', 60)
+    ui.submit('Confirm adoption')
 
 
 def phase_create(host, ui, args, out):

@@ -250,10 +250,21 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					f.err = "Paste exceeds the field limit."
 					return m, nil
 				}
+				fld := &f.fields[f.focus]
+				if fld.choices != nil {
+					return m, nil
+				}
 				if f.screen == "invitation" {
 					text = strings.NewReplacer("\r", "", "\n", "").Replace(text)
 				}
-				f.fields[f.focus].input.SetValue(f.fields[f.focus].input.Value() + safe(strings.TrimSpace(text)))
+				if fld.input.EchoMode == textinput.EchoPassword {
+					// A hidden field cannot be inspected, so each paste replaces
+					// it rather than appending to a failed attempt (F06).
+					fld.input.SetValue(safe(strings.TrimSpace(text)))
+					f.replaceOnType = false
+				} else {
+					fld.input.SetValue(fld.input.Value() + safe(strings.TrimSpace(text)))
+				}
 			}
 			return m, nil
 		}

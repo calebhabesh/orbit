@@ -144,7 +144,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 			}
 			lines = append(lines, m.theme().field(field.label, value, field.input.Value(), i == f.focus))
 		}
-		footer = "Tab next field  Enter preview  Esc review  Ctrl-C close"
+		footer = "↑/↓ or Tab move  Enter next/preview  Esc review  Ctrl-C close"
 	case "day_confirm":
 		title = "Orbit | Confirm reviewed " + safe(d.action)
 		if d.review != nil {

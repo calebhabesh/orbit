@@ -66,8 +66,8 @@ def root_review(ui, label, name, root):
         ui.replace(value)
         ui.send(b'\t')
     assert 'Peer listen:' not in ui.screen.text(), 'ordinary address prompt'
-    ui.send(b'\r')
-    ui.wait('Confirm adoption')
+    # Enter advances field by field and confirms on the last (E03).
+    ui.submit('Confirm adoption')
 
 
 def oracle(peer, folder, name, value, author):
@@ -120,8 +120,9 @@ def run(binary, profile, output, outage_marker):
         root_review_values = ('Pi', 'Notes', str(blocked))
         for value in root_review_values:
             ub.replace(value); ub.send(b'\t')
-        ub.send(b'\r'); ub.wait('ROOT_REVIEW_INCOMPLETE')
-        ub.send(b'\x1b[Z'); ub.replace(str(b.data)); ub.send(b'\r'); ub.wait('Confirm adoption')
+        ub.submit('ROOT_REVIEW_INCOMPLETE')
+        # The rejected root is focused (E03); correct it and confirm.
+        ub.replace(str(b.data)); ub.submit('Confirm adoption')
         ub.wait('Inviter operator:'); ub.send(b'\r'); ub.wait('Waiting for approval', timeout=35)
         operation = b.query('setups', limit='20')['items'][0]['id']
         before = b.query('operation', id=operation); request = before['join']['request']

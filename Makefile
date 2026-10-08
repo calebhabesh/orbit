@@ -5,7 +5,7 @@ DATE ?= 2026-10-01
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
 GOFLAGS ?=
 
-.PHONY: ci-fast check-core test-short test-race-core build build-arm64 build-orbit-net package-orbit-net test-orbit-net-rehearsal check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
+.PHONY: ci-fast check-core test-short test-race-core build build-arm64 build-orbit-net package-orbit-net test-orbit-net-rehearsal check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal-keys-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
 
 build:
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/orbit ./cmd/orbit
@@ -71,6 +71,9 @@ test-terminal-pty: build
 
 test-terminal-onboarding-pty: build
 	python3 scripts/terminal_onboarding_pty_test.py --binary bin/orbit
+
+test-terminal-keys-pty: build
+	python3 scripts/terminal_keys_pty_test.py --binary bin/orbit
 
 test-terminal-everyday-pty: build
 	python3 scripts/terminal_everyday_pty_test.py --binary bin/orbit

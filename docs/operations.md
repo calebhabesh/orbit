@@ -437,6 +437,15 @@ doctor" text is gone. Doctor remediations that still name engine commands
 (peer retirement, `engine config`, `engine work scan`) are diagnostics, not
 attention actions, and are unchanged.
 
+### Private file folders (E03, 2026-10-08)
+
+Setup review files (`--review-file`) and saved invitation files must sit in a
+folder only the owner can read, because they carry reviewed intents or
+capabilities. That rule is unchanged. A refusal now names the file's folder, its mode
+and the fix (for example "…/home can be read by other users (mode 0750) … create
+a private folder with: mkdir -m 700 …/home/orbit-private"), instead of calling
+it a state directory (F15). The terminal reports it as `PRIVATE_FOLDER_REQUIRED`.
+
 ### Daemon ownership and service defaults (E01, 2026-10-08)
 
 **One daemon owner.** The packaged unit and the unit `orbit service enable`

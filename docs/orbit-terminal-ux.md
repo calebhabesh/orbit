@@ -21,6 +21,20 @@ They supersede the conflicting text below.
   between fields or panes; ←/→ change selectors and move through the Files tree;
   Enter selects, advances and confirms; Esc goes back. Fixed choices are selectors
   with defaults, never typed words. Number keys switch views.
+  *As implemented (E03, 2026-10-08):* in lists ↑/↓ or `j`/`k` move rows; in
+  forms ↑/↓, Tab and Shift+Tab move between fields (`j`/`k` type text in text
+  fields and move fields on selectors). On the main screen Tab/Shift+Tab move
+  between views, never into search; `/` searches. ←/→ change a selector shown
+  as `‹ value ›` (typing is ignored there) and otherwise move between views.
+  Enter selects; in a form it advances to the next field and confirms on the
+  last. Esc goes back, `?` opens help, `q` quits outside text fields and Ctrl+C
+  quits anywhere. `1`–`4` pick Overview, Folders, Attention, Devices (`5` joins
+  with the Files view, E08). A hidden invitation field shows how many characters
+  arrived. Each paste replaces its content, Ctrl+U clears it, Enter on an empty
+  field submits nothing, and after a failed attempt the next typed character
+  starts over, so an unbracketed re-paste replaces rather than appends. A failed
+  preview focuses the field with the problem. Footers list only keys the screen
+  handles.
 - **Defaults.** Create and join default to Automatic connection after one privacy
   review; startup defaults to login on desktops and unattended on headless hosts
   (with the lingering step shown, never run implicitly); the service uses an
