@@ -118,7 +118,7 @@ func run() error {
 	}
 	buildDate := os.Getenv("ORBIT_BUILD_DATE")
 	if buildDate == "" {
-		buildDate = "2026-10-01"
+		buildDate = "2026-10-08"
 	}
 
 	// 1. Build binaries for amd64 and arm64
