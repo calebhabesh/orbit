@@ -1,0 +1,55 @@
+=== RUN   TestOnboardingE00F05RevealedInvitationCopiesWhole
+    onboarding_e00_test.go:43: fixture code length 1862
+    onboarding_e00_test.go:72: 80x24: no rendered row copies as the exact 1862-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:75: 80x24: no character count shown with the invitation
+    onboarding_e00_test.go:72: 200x50: no rendered row copies as the exact 1862-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:75: 200x50: no character count shown with the invitation
+--- FAIL: TestOnboardingE00F05RevealedInvitationCopiesWhole (0.01s)
+=== RUN   TestOnboardingE00F06SecretPasteReplacesAndReportsLength
+    onboarding_e00_test.go:91: second paste produced 2663 characters, want exactly the pasted 1863 (approved: paste replaces)
+    onboarding_e00_test.go:95: secret field shows no received-length status line
+--- FAIL: TestOnboardingE00F06SecretPasteReplacesAndReportsLength (0.00s)
+=== RUN   TestOnboardingE00F07TruncatedInvitationIsSpecific
+    onboarding_e00_test.go:112: cut at 1862 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 1862: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 1862: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 1861 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 1861: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 1861: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 931 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 931: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 931: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 300 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 300: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 300: message does not say the code is incomplete/damaged
+--- FAIL: TestOnboardingE00F07TruncatedInvitationIsSpecific (0.00s)
+=== RUN   TestOnboardingE00F08JoinDefaultsToAutomatic
+    onboarding_e00_test.go:153: join connection default "manual", want automatic
+--- FAIL: TestOnboardingE00F08JoinDefaultsToAutomatic (0.00s)
+=== RUN   TestOnboardingE00F09AwaitingApprovalOpensRequests
+    onboarding_e00_test.go:174: Enter on AWAITING_APPROVAL opened "day_operation", want requests review
+--- FAIL: TestOnboardingE00F09AwaitingApprovalOpensRequests (0.00s)
+=== RUN   TestOnboardingE00F12StartupIsSelector
+    onboarding_e00_test.go:184: startup field "Startup (manual/login/unattended)" default "manual"
+    onboarding_e00_test.go:186: startup offered as typed enumeration
+    onboarding_e00_test.go:192: typing changed startup to "manualz" (approved: selector)
+    onboarding_e00_test.go:195: setup default startup is manual (approved: login on desktops, unattended on headless with linger guidance)
+    onboarding_e00_test.go:200: right arrow left startup at "manual" (approved: selector moves to the next choice)
+--- FAIL: TestOnboardingE00F12StartupIsSelector (0.00s)
+=== RUN   TestOnboardingE00F13NoGenericErrorAdvice
+    onboarding_e00_test.go:220: 10 of 11 sampled failures show the generic advice: [INVALID_REQUEST INTERNAL_ERROR IO_ERROR CONTROL_UNAVAILABLE UNAUTHORIZED PAYLOAD_TOO_LARGE SETUP_BLOCKED QUOTA_EXCEEDED SOMETHING_NEW transport error]
+--- FAIL: TestOnboardingE00F13NoGenericErrorAdvice (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/terminal	0.026s
+=== RUN   TestOnboardingE00F02RootUnavailableScanHealsAfterLaterScan
+    onboarding_e00_test.go:118: superseded ROOT_UNAVAILABLE scan still exhausted after a later scan completed
+    onboarding_e00_test.go:127: attention still lists EXHAUSTED_WORK; advice "Retry task with 'orbit engine work retry --task 2c43897cb74a0dc4c7ac3742d006f32e'"
+--- FAIL: TestOnboardingE00F02RootUnavailableScanHealsAfterLaterScan (0.04s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/scheduler	0.047s
+=== RUN   TestOnboardingE00F10StatusPollingFitsInviterSourceBucket
+    onboarding_e00_test.go:34: request 12 at 1m15.2s of the approval wait refused with RATE_LIMITED (per-source 5/min, burst 5; client sends 8/min)
+--- FAIL: TestOnboardingE00F10StatusPollingFitsInviterSourceBucket (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/replication	0.002s
+FAIL

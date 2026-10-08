@@ -1,0 +1,51 @@
+=== RUN   TestOnboardingE00F01PackagedUnitStartsWithPort8080Taken
+    onboarding_e00_test.go:82: packaged ExecStart: /usr/bin/orbit serve --state=%h/.local/state/orbit --control-listen=127.0.0.1:8080
+    onboarding_e00_test.go:89: 127.0.0.1:8080 already held on this host: listen tcp 127.0.0.1:8080: bind: address already in use
+    onboarding_e00_test.go:105: packaged unit arguments exit while 8080 is taken: exit status 1
+        orbit: listen for control: listen tcp 127.0.0.1:8080: bind: address already in use
+    onboarding_e00_test.go:109: packaged unit hardcodes --control-listen=127.0.0.1:8080 (approved: 127.0.0.1:0, clients read control.addr)
+--- FAIL: TestOnboardingE00F01PackagedUnitStartsWithPort8080Taken (0.50s)
+=== RUN   TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon
+    onboarding_e00_test.go:129: orbit engine work retry --task 1011680dc086cb3e4ab83c1b6177ad38 => exit status 1: orbit: state directory is already owned by another agent
+    onboarding_e00_test.go:131: attention advice cannot run while the daemon runs: orbit: state directory is already owned by another agent
+--- FAIL: TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon (0.64s)
+=== RUN   TestOnboardingE00F04F14TerminalDaemonAndFailingUnit
+    onboarding_e00_test.go:194: service status: {"systemd_available":true,"unit_installed":true,"enabled_on_login":true,"currently_running":true,"root_verified":false,"capture_successful":false,"lingering_enabled":false,"lingering_instruction":"loginctl enable-linger e00-disposable","manual_command":"orbit serve --state=/tmp/TestOnboardingE00F04F14TerminalDaemonAndFailingUnit441866653/001/state --control-listen=127.0.0.1:8080"}
+    onboarding_e00_test.go:201: F04: status reports running + login-enabled with no daemon owner (approved: service/terminal/manual)
+    onboarding_e00_test.go:204: F04: failing unit not shown as failing
+    onboarding_e00_test.go:220: F14: detached daemon stdout/stderr: [/dev/null /dev/null]
+    onboarding_e00_test.go:222: F14: terminal-spawned daemon output goes to /dev/null (approved: start through orbit.service so output reaches the journal)
+    onboarding_e00_test.go:227: F14: orbit service stop => exit status 1: {"versions":[],"version":"1","capabilities":["terminal_control_v1","network_control_v1","network_diagnostics_v1","lifecycle_settings_v1","enrollment_v2","enrollment_v3","packaged_profile_v1","reviewed_setup_v1","folder_sharing_v1","context_v1","reviewed_content_v1","onboarding_management_v1","everyday_management_v1"],"state":"failed","operation":{"id":"de79141a3b520add7a6cfcb2e8effa0913c52355ba7dbf868fe417b94393bf1f","fingerprint":"4513f76c4619446a37e50dfdacb3184b5309f1b3cdce0e85c25426466efaaf10","kind":"service","state":"failed","phase":"failed","committed_effects":[],"cancel_requested":false,"error":{"code":"IO_ERROR","message":"requested service state was not observed","retryable":false,"action":"inspect actual service state","retry_after_seconds":"0"}},"items":[],"requests":[],"observations":[],"attention":[],"effects":[],"cursor":"","error":{"code":"IO_ERROR","message":"requested service state was not observed","retryable":false,"action":"inspect actual service state","retry_after_seconds":"0"}}
+        orbit: IO_ERROR: requested service state was not observed (action: inspect actual service state)
+    onboarding_e00_test.go:229: F14: orbit service stop failed with a terminal-spawned daemon running
+    onboarding_e00_test.go:227: F14: orbit service start => exit status 1: {"versions":[],"version":"1","capabilities":["terminal_control_v1","network_control_v1","network_diagnostics_v1","lifecycle_settings_v1","enrollment_v2","enrollment_v3","packaged_profile_v1","reviewed_setup_v1","folder_sharing_v1","context_v1","reviewed_content_v1","onboarding_management_v1","everyday_management_v1"],"state":"failed","operation":{"id":"80aee9d395fa60d9e61e6a43a8a63195c952b38fb187470a757d8ce371693ffe","fingerprint":"4ed856f2c2c73633b21435ea859a1aecbd5dcc08989107efd861ae4fdb99589a","kind":"service","state":"failed","phase":"failed","committed_effects":[],"cancel_requested":false,"error":{"code":"MANUAL_DAEMON_RUNNING","message":"a daemon started outside the user service owns this state","retryable":false,"action":"run 'orbit stop', then 'orbit service start'","retry_after_seconds":"0"}},"items":[],"requests":[],"observations":[],"attention":[],"effects":[],"cursor":"","error":{"code":"MANUAL_DAEMON_RUNNING","message":"a daemon started outside the user service owns this state","retryable":false,"action":"run 'orbit stop', then 'orbit service start'","retry_after_seconds":"0"}}
+        orbit: MANUAL_DAEMON_RUNNING: a daemon started outside the user service owns this state (action: run 'orbit stop', then 'orbit service start')
+    onboarding_e00_test.go:229: F14: orbit service start failed with a terminal-spawned daemon running
+    onboarding_e00_test.go:233: systemctl stand-in calls:
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user stop orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user is-system-running
+        --user is-enabled orbit.service
+        --user show -p MainPID --value orbit.service
+--- FAIL: TestOnboardingE00F04F14TerminalDaemonAndFailingUnit (0.72s)
+=== RUN   TestOnboardingE00F15ReviewFileInGroupReadableHome
+    onboarding_e00_test.go:259: setup --review-file ~/r.json (0750 home) => exit status 1: orbit: state directory "/tmp/TestOnboardingE00F15ReviewFileInGroupReadableHome986633349/001/home" must not be accessible by group or other users (mode 0700)
+    onboarding_e00_test.go:267: review-file failure is described as a state directory problem
+    onboarding_e00_test.go:270: review-file failure does not name the file's directory and the fix
+--- FAIL: TestOnboardingE00F15ReviewFileInGroupReadableHome (0.65s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	2.508s
+FAIL

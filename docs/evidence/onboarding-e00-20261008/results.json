@@ -1,0 +1,33 @@
+{
+  "packet": "E00",
+  "date": "2026-10-08",
+  "revision": "22f4bee",
+  "go": "go1.27.1-X:nodwarf5 linux/amd64",
+  "opt_in": "ORBIT_ONBOARDING_BASELINE=1",
+  "installed": {
+    "pc": {"path": "~/.local/bin/orbit", "sha256": "d86070095e30b99ba873174742bd983b8ed2fd501058208a925b81c2a4c5476d", "commit": "8abd497"},
+    "laptop": {"path": "~/.local/bin/orbit", "sha256": "d86070095e30b99ba873174742bd983b8ed2fd501058208a925b81c2a4c5476d", "commit": "8abd497"},
+    "pi": {"path": "/usr/bin/orbit", "package": "orbit 2.0.0 (deb)", "sha256": "0bc710deb0a8b1ef2932fa7377c88e4e8c2f48e23c04849ad9ea41edefff6c72"},
+    "tarball_amd64_sha256": "48dc4a8acc541d1d421af4e111252808b0b0a6da45442960e4b5be09afeb7d5a"
+  },
+  "findings": {
+    "F01": {"result": "reproduced", "test": "TestOnboardingE00F01PackagedUnitStartsWithPort8080Taken", "observed": "listen tcp 127.0.0.1:8080: bind: address already in use; unit hardcodes :8080; service status manual_command also names :8080"},
+    "F02": {"result": "reproduced", "test": "TestOnboardingE00F02RootUnavailableScanHealsAfterLaterScan", "observed": "ROOT_UNAVAILABLE scan stays exhausted after a later scan completes; attention keeps EXHAUSTED_WORK"},
+    "F03": {"result": "reproduced", "test": "TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon", "observed": "orbit: state directory is already owned by another agent"},
+    "F04": {"result": "reproduced", "test": "TestOnboardingE00F04F14TerminalDaemonAndFailingUnit", "observed": "service status: running + enabled_on_login with no owner field and no failing-unit state"},
+    "F05": {"result": "reproduced (differs from report)", "test": "TestOnboardingE00F05RevealedInvitationCopiesWhole", "observed": "revealed code hard-wrapped into terminal-width rows past one screen; no row copies whole; no character count; the reported ellipsis did not reproduce in the model"},
+    "F06": {"result": "reproduced", "test": "TestOnboardingE00F06SecretPasteReplacesAndReportsLength", "observed": "second paste appends (800 + 1863 = 2663 characters); no length status"},
+    "F07": {"result": "reproduced", "test": "TestOnboardingE00F07TruncatedInvitationIsSpecific", "observed": "truncated code => CONTROL_UNAVAILABLE: Retry; use orbit doctor ...; CLI routed join shows SETUP_BLOCKED: no such file or directory"},
+    "F08": {"result": "reproduced", "tests": ["TestOnboardingE00F08JoinDefaultsToAutomatic", "TestOnboardingE00RelayJoinWaitNamesAndModes"], "observed": "TUI join field defaults to manual when config already exists; CLI fresh join plans automatic with no profile instead of the invitation's operator, then blocks"},
+    "F09": {"result": "reproduced", "test": "TestOnboardingE00F09AwaitingApprovalOpensRequests", "observed": "Enter opens day_operation instead of requests"},
+    "F10": {"result": "reproduced and diagnosed", "tests": ["TestOnboardingE00F10StatusPollingFitsInviterSourceBucket", "TestOnboardingE00RelayJoinWaitNamesAndModes"], "observed": "RATE_LIMITED 23 times in a 150 s unapproved wait, first after 48 s; bucket model refuses request 12 at 75 s of the wait", "cause": "inviter enrollment per-source bucket (5/min, burst 5) vs joiner status poll every 15 s with two POSTs each (8/min); not an orbit-net limit (orbit-net refuses with QUOTA_EXCEEDED)"},
+    "F11": {"result": "reproduced", "test": "TestOnboardingE00RelayJoinWaitNamesAndModes", "observed": "inviter lists joiner as Device b179a9ecd0b3d4af in text and JSON"},
+    "F12": {"result": "reproduced", "test": "TestOnboardingE00F12StartupIsSelector", "observed": "typed field 'Startup (manual/login/unattended)', default manual, accepts 'manualz'"},
+    "F13": {"result": "reproduced", "test": "TestOnboardingE00F13NoGenericErrorAdvice", "observed": "10 of 11 sampled failures show the generic advice"},
+    "F14": {"result": "reproduced", "test": "TestOnboardingE00F04F14TerminalDaemonAndFailingUnit", "observed": "service stop => IO_ERROR requested service state was not observed; start => MANUAL_DAEMON_RUNNING; detached daemon stdout/stderr /dev/null"},
+    "F15": {"result": "reproduced", "test": "TestOnboardingE00F15ReviewFileInGroupReadableHome", "observed": "state directory \"<home>\" must not be accessible by group or other users (mode 0700)"},
+    "F16": {"result": "confirmed by design (passes)", "test": "TestOnboardingE00RelayJoinWaitNamesAndModes", "observed": "0644 source received as 0600"}
+  },
+  "gates": {"EG1": "scoped", "EG2": "scoped", "EG3": "scoped", "EG4": "scoped"},
+  "unexecuted": ["real-PTY capture of F05/F06 (model + process evidence only)", "make check (no production change)"]
+}
