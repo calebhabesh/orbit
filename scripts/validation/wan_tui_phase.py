@@ -173,8 +173,6 @@ def phase_invite(host, ui, args, out):
     ui.wait('> ' + items[0]['name'])
     index = next(i for i, it in enumerate(items) if it['id'] == args.folder)
     ui.send(b'j' * index + b'\r')
-    ui.wait('Reviewed membership revision:')
-    ui.send(b'\r')
     ui.wait('Private invitation', 60)
     ui.send(b's')
     ui.wait('save_invitation')

@@ -217,6 +217,9 @@ func (identity Identity) ServerTLSConfig() *tls.Config {
 	}
 }
 
+// ErrPeerPinMismatch means the peer did not present the approved key.
+var ErrPeerPinMismatch = errors.New("peer public key pin mismatch")
+
 func (identity Identity) ClientTLSConfig(peerCertificate *x509.Certificate, expectedPin history.Digest) (*tls.Config, error) {
 	if peerCertificate == nil || PublicKeyPin(peerCertificate) != expectedPin {
 		return nil, errors.New("peer certificate does not match approved key pin")
@@ -230,7 +233,7 @@ func (identity Identity) ClientTLSConfig(peerCertificate *x509.Certificate, expe
 		ServerName:   certificateServerName,
 		VerifyConnection: func(state tls.ConnectionState) error {
 			if len(state.PeerCertificates) == 0 || PublicKeyPin(state.PeerCertificates[0]) != expectedPin {
-				return errors.New("peer public key pin mismatch")
+				return ErrPeerPinMismatch
 			}
 			return nil
 		},

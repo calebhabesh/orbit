@@ -180,8 +180,8 @@ def run(binary, profile, output, outage_marker):
         ua.send(b'a'); ua.wait('Select folder')
         items = a.query('folders', limit='20')['items']; ua.wait('> ' + items[0]['name'])
         idx = next(i for i, it in enumerate(items) if it['root'] == str(second_a))
-        second = items[idx]['id']; ua.send(b'j' * idx + b'\r'); ua.wait('Reviewed membership revision:')
-        ua.send(b'\r'); ua.wait('Private invitation'); ua.send(b's'); ua.wait('save_invitation')
+        second = items[idx]['id']; ua.send(b'j' * idx + b'\r')
+        ua.wait('Private invitation'); ua.send(b's'); ua.wait('save_invitation')
         transfer = a.root / 'second-invite.json'; ua.replace(str(transfer)); ua.send(b'\r'); ua.wait('Private invitation saved'); ua.back()
         inv2 = json.loads(transfer.read_text()); assert inv2['folder'] == second
         ub.send(b'J'); ub.wait('Join invitation'); ub.invitation(str(transfer))
@@ -202,8 +202,8 @@ def run(binary, profile, output, outage_marker):
         ub.wait('Locally ready', timeout=55)
         # Verify invitation reveal labeling and revoke through existing controller.
         ua.back(); ua.wait('[Overview]')
-        ua.send(b'a'); ua.wait('Select folder'); ua.wait('> ' + a.query('folders', limit='20')['items'][0]['name']); ua.send(b'\r'); ua.wait('Reviewed membership revision:')
-        ua.send(b'\r'); ua.wait('Private invitation')
+        ua.send(b'a'); ua.wait('Select folder'); ua.wait('> ' + a.query('folders', limit='20')['items'][0]['name']); ua.send(b'\r')
+        ua.wait('Private invitation')
         ua.send(b's'); ua.wait('save_invitation')
         revoked_file = a.root / 'revoked-transfer.json'; ua.replace(str(revoked_file)); ua.send(b'\r'); ua.wait('Private invitation saved')
         revoked_inv = json.loads(revoked_file.read_text())

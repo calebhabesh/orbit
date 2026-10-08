@@ -83,7 +83,7 @@ def paste_variants(ub, inv):
 
 def open_invitation(ui):
     ui.send(b"a"); ui.wait("Select folder"); ui.wait("> Notes"); ui.send(ENTER)
-    ui.wait("Reviewed membership revision:"); ui.send(ENTER); ui.wait("characters and stays hidden")
+    ui.wait("characters and stays hidden")
 
 
 def invitation_out_checks(ui, a, columns):

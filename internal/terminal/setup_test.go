@@ -3,6 +3,7 @@ package terminal
 import (
 	"context"
 	"errors"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -232,5 +233,58 @@ func TestTerminalT10PrivateNarrowViewsAndErrorActions(t *testing.T) {
 		if !strings.Contains(s, code) || len(s) < len(code)+20 {
 			t.Fatal("missing corrective action")
 		}
+	}
+}
+
+// Trial finding: "~/OrbitTrial" in Local root was refused as not absolute.
+func TestOnboardingTrialRootAcceptsHomeTilde(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	m, w := loadedForm(t)
+	m.flow.fields[2].input.SetValue("~/OrbitTrial")
+	var root string
+	w.query = func(_ context.Context, q tc.Query) (tc.Result, error) {
+		if q.RootPlan != nil {
+			root = q.RootPlan.Root
+		}
+		return tc.Result{}, &control.ControlError{Code: "INVALID_ROOT"}
+	}
+	m.focusField(13)
+	runReply(m, keyCode(m, tea.KeyEnter))
+	if want := filepath.Join(home, "OrbitTrial"); root != want || m.flow.fields[2].input.Value() != want {
+		t.Fatalf("root %q, field %q; want %q", root, m.flow.fields[2].input.Value(), want)
+	}
+}
+
+// Trial findings: the code screen needed an extra Enter, and showed a UTC
+// RFC 3339 expiry instead of a local time with the time left.
+func TestOnboardingTrialInviteCreatesCodeWithoutSecondEnter(t *testing.T) {
+	m, w := workflowModel()
+	m.flow = &workflow{kind: "invite", screen: "invite_review", folder: e08Folder}
+	m.flow.task = "invite_review"
+	runReply(m, m.acceptFlow("invite_review", tc.Result{FolderManagement: &tc.FolderManagement{MembershipDigest: strings.Repeat("a", 64)}}, nil))
+	if w.mutation.Invite == nil || w.mutation.Invite.Folder != e08Folder {
+		t.Fatalf("invitation not created on load: %+v", w.mutation)
+	}
+	share, w2 := workflowModel()
+	share.flow = &workflow{kind: "share", device: "dev", screen: "invite_review", folder: e08Folder}
+	runReply(share, share.acceptFlow("invite_review", tc.Result{FolderManagement: &tc.FolderManagement{MembershipDigest: strings.Repeat("a", 64)}}, nil))
+	if w2.mutation.Invite != nil {
+		t.Fatal("share to an existing device skipped its review")
+	}
+}
+
+func TestOnboardingTrialExpiryIsLocalWithTimeLeft(t *testing.T) {
+	now := time.Date(2026, 10, 8, 20, 35, 0, 0, time.UTC)
+	at := now.Add(9*time.Minute + 30*time.Second).Format(time.RFC3339)
+	want := now.Add(9*time.Minute+30*time.Second).Local().Format("3:04 PM") + " (9 min left)"
+	if got := expiresIn(at, now); got != want {
+		t.Fatalf("got %q want %q", got, want)
+	}
+	if got := expiresIn(now.Add(-time.Second).Format(time.RFC3339), now); !strings.HasSuffix(got, "(expired)") {
+		t.Fatal(got)
+	}
+	if got := expiresIn(now.Add(90*time.Minute).Format(time.RFC3339), now); !strings.HasSuffix(got, "(1 h 30 min left)") {
+		t.Fatal(got)
 	}
 }
