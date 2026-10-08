@@ -1,0 +1,10 @@
+{
+  "packet": "E05",
+  "date": "2026-10-08",
+  "base_revision": "176da46",
+  "findings": {
+    "F05": {"result": "fixed", "tests": ["TestOnboardingE05F05PanelShowsCountNeverCode", "TestOnboardingE05F05RevealWritesOneLine", "TestOnboardingE05F05CopyAndSaveDefault", "make test-terminal-keys-pty (80 and 200 columns)"], "observed": "panel shows count, never the code; v prints one unbroken line on the ordinary screen then clears screen and scrollback; c sends bounded OSC 52 with the exact code; s saves 0600 in 0700 state folder and shows scp/join; join accepts the file path"}
+  },
+  "checks": {"make_check": "pass (uninterrupted)", "pty_suites": "pass"},
+  "limitations": ["OSC 52 delivery cannot be confirmed by the terminal; the notice says sent and names the fallback", "a selection copying the soft-wrapped line as one line depends on the terminal emulator (standard in xterm-family, GNOME, Konsole, kitty, WezTerm)"]
+}

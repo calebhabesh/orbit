@@ -48,6 +48,7 @@ type workflow struct {
 	builtin                                         *tc.BuiltinProfile
 	host                                            *tc.HostStartup
 	replaceOnType                                   bool
+	saved                                           string
 	// joinPolicy is the connection the invitation proposes (F08).
 	joinPolicy  *tc.NetworkPolicy
 	plan        tc.SetupIntent
@@ -381,6 +382,7 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.notice = "Invitation revoked; request a fresh invitation for a new attempt."
 	case "save_invitation":
 		f.screen = "invitation_out"
+		f.saved = f.fields[0].input.Value()
 		f.notice = "Private invitation saved. Transfer deliberately to the receiving device."
 	case "folder":
 		f.result = r
@@ -784,8 +786,10 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 		}
 	case "invitation_out":
 		if k == "v" {
-			f.reveal = !f.reveal
-			f.scroll = 0
+			return m.revealInvitation()
+		}
+		if k == "c" {
+			return m.copyInvitation()
 		}
 		if k == "j" || k == "down" {
 			f.scroll++
@@ -798,7 +802,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 			return nil
 		}
 		if k == "s" {
-			f.fields = []field{newField("Private output file (absolute)", "", false)}
+			f.fields = []field{newField("Private output file (absolute)", m.defaultInvitationPath(), false)}
 			f.focus = 0
 			f.screen = "save_invitation"
 			return m.focusField(0)

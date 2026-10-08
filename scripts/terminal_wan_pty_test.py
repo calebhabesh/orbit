@@ -49,11 +49,12 @@ def reveal(ui):
 
 
 def hide_transfer(ui):
-    ui.send(b'v')
+    # E05: v shows the code outside the panel; Enter returns and clears it.
+    ui.send(b'\r')
     deadline = time.monotonic() + 12
     while time.monotonic() < deadline:
         ui.pump(.05)
-        if 'Capability hidden.' in ui.screen.text():
+        if 'characters and stays hidden' in ui.screen.text():
             # Raw transfer bytes are deliberately discarded before any helper
             # can include its diagnostic tail in a later error.
             ui.raw = bytearray()

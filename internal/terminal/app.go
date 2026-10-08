@@ -167,6 +167,11 @@ func (m *model) startQuery() tea.Cmd {
 
 func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case revealDone:
+		if m.flow != nil && msg.err != nil {
+			m.flow.err = "Could not show the invitation in this terminal; press s to save it to a file."
+		}
+		return m, nil
 	case tea.WindowSizeMsg:
 		m.width, m.height = max(1, msg.Width), max(1, msg.Height)
 		m.search.SetWidth(max(1, m.width-16))

@@ -63,6 +63,7 @@ func handleOrbitTUI(args []string, stdout, stderr io.Writer) error {
 	}
 	_, priorErr := os.Stat(filepath.Join(dir, "config.json"))
 	opts.FreshInstall = os.IsNotExist(priorErr)
+	opts.StateDir = dir
 	if _, err = launcher.EnsureDaemon(ctx, launcher.LaunchOptions{StateDir: dir, NoBrowser: true}); err != nil {
 		return err
 	}

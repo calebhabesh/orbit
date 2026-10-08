@@ -138,7 +138,7 @@ func shareFolderCLI(args []string, out, errOut io.Writer) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprintln(out, "Folder invitation (receiver must review its local root and request approval):")
+	fmt.Fprintf(out, "Folder invitation, %d characters on one line (receiver must review its local root and request approval):\n", len(code))
 	fmt.Fprintln(out, code)
 	return nil
 }

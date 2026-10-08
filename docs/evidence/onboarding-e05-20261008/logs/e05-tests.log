@@ -1,0 +1,8 @@
+=== RUN   TestOnboardingE05F05PanelShowsCountNeverCode
+--- PASS: TestOnboardingE05F05PanelShowsCountNeverCode (0.00s)
+=== RUN   TestOnboardingE05F05RevealWritesOneLine
+--- PASS: TestOnboardingE05F05RevealWritesOneLine (0.00s)
+=== RUN   TestOnboardingE05F05CopyAndSaveDefault
+--- PASS: TestOnboardingE05F05CopyAndSaveDefault (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/terminal	0.014s

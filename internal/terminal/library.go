@@ -39,6 +39,8 @@ type Options struct {
 	Tool         *Tool
 	Colorless    bool
 	Refresh      time.Duration
+	// StateDir names the selected state; the invitation save default lives there.
+	StateDir string
 }
 
 func Interactive(input *os.File, output io.Writer) bool {

@@ -10,6 +10,8 @@ Run: make test-terminal-keys-pty
 import argparse
 import base64
 import json
+import os
+import shutil as _shutil
 from pathlib import Path
 import shutil
 import signal
@@ -79,6 +81,52 @@ def paste_variants(ub, inv):
     return ["bracketed replace after failure", "unbracketed replace after failure"]
 
 
+def open_invitation(ui):
+    ui.send(b"a"); ui.wait("Select folder"); ui.wait("> Notes"); ui.send(ENTER)
+    ui.wait("Reviewed membership revision:"); ui.send(ENTER); ui.wait("characters and stays hidden")
+
+
+def invitation_out_checks(ui, a, columns):
+    """E05: reveal one exact line, OSC 52 copy, private default save."""
+    open_invitation(ui)
+    start = len(ui.raw)
+    ui.send(b"v"); ui.wait("Press Enter to return")
+    raw = bytes(ui.raw[start:])
+    # Cooked output may translate line ends; the code itself has none.
+    after = raw[raw.index(b"wraps it.") + len(b"wraps it."):].lstrip(b"\r\n")
+    code = after[:min(i for i in (after.find(b"\r"), after.find(b"\n")) if i >= 0)]
+    assert b"\r" not in code and b"\n" not in code and b"\x1b" not in code, "revealed code is not one clean line"
+    assert code.startswith(b"orbit-invitation:v"), "revealed text is not an invitation code"
+    ui.send(ENTER); ui.wait("characters and stays hidden")
+    assert b"\x1b[3J" in bytes(ui.raw[start:]), "screen and scrollback not cleared after reveal"
+    start = len(ui.raw)
+    ui.send(b"c"); ui.wait("to the clipboard (OSC 52)")
+    copied = bytes(ui.raw[start:])
+    osc = copied[copied.index(b"\x1b]52;c;") + 7:]
+    payload = osc[:min(i for i in (osc.find(b"\x07"), osc.find(b"\x1b\\")) if i >= 0)]
+    assert base64.b64decode(payload) == code, "OSC 52 payload is not the exact code"
+    assert len(payload) <= 4 * ((16 << 10) + 2) // 3 + 4, "OSC 52 payload unbounded"
+    ui.send(b"s"); ui.wait("Private output file")
+    ui.send(ENTER); ui.wait("Saved: ")
+    saved = max((p for p in a.state.iterdir() if p.name.startswith("invitation-") and p.suffix == ".json"), key=lambda p: p.stat().st_mtime_ns)
+    assert saved.stat().st_mode & 0o777 == 0o600 and a.state.stat().st_mode & 0o777 == 0o700, "saved file not private"
+    decoded = json.loads(base64.urlsafe_b64decode(code.split(b":", 2)[2] + b"=" * (-len(code.split(b":", 2)[2]) % 4)))
+    file_inv = json.loads(saved.read_text())
+    assert decoded["capability"] == file_inv["capability"] and decoded["folder"] == file_inv["folder"], "reveal and saved file disagree"
+    ui.back(); ui.wait("[Overview]")
+    return saved, f"{columns} columns: exact one-line reveal, OSC 52 payload, private save"
+
+
+def join_with_file(ub, b, saved):
+    """The join prompt accepts a file path (the SSH fallback)."""
+    target = b.root / "orbit-invitation.json"
+    _shutil.copyfile(saved, target); os.chmod(target, 0o600)
+    ub.send(b"J"); ub.wait("Join invitation"); ub.wait("path of a saved invitation file")
+    ub.replace(str(target)); ub.send(ENTER); ub.wait("Review setup inputs")
+    ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
+    target.unlink()
+
+
 def approve_with_arrows(ua, a, request):
     ua.send(b"w"); ua.wait("Enrollment requests")
     requests = a.query("requests", limit="20")["requests"]
@@ -101,9 +149,18 @@ def run(binary, output):
         fill(ua, ENTER, "Laptop", a.data)
         ua.send(ENTER); ua.wait("Locally ready", timeout=25)
         ua.back(); ua.wait("[Overview]")
+        reveals = []
+        for columns, rows in ((80, 24), (200, 50)):
+            ur = UI(a, f"e05-reveal-{columns}", size=(columns, rows)); active.append(ur); ur.wait("[Overview]")
+            saved, note = invitation_out_checks(ur, a, columns); reveals.append(note)
+            ur.finish(); active.remove(ur)
         inv = invite(ua, a, a.root / "invite.json")
         ub = UI(b, "e03-join-paste", size=(100, 32)); active.append(ub); ub.wait("Join an existing Orbit [j]")
         pastes = paste_variants(ub, inv)
+        ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
+        join_with_file(ub, b, saved); pastes.append("join prompt accepts a saved invitation file path")
+        ub.send(b"J"); ub.wait("Join invitation")
+        ub.replace(code_of(inv)); ub.send(ENTER); ub.wait("Review setup inputs")
         fill(ub, ENTER, "Pi", b.data)
         ub.send(ENTER); ub.wait("Waiting for approval", timeout=25)
         request = b.query("setups", limit="20")["items"][0]["id"]
@@ -112,7 +169,7 @@ def run(binary, output):
         ub.wait("Locally ready", timeout=40)
         assert inv["capability"].encode() not in ub.raw, "capability shown"
         results = [dict(scenario="e03-keyboard-paste", result="passed",
-                        assertions=[f"setup form via {v} only" for v in variants] + pastes + ["approval with arrow keys only", "selector ignores typing"])]
+                        assertions=[f"setup form via {v} only" for v in variants] + pastes + reveals + ["approval with arrow keys only", "selector ignores typing"])]
         if output:
             out = Path(output); out.mkdir(mode=0o700, parents=True, exist_ok=True)
             (out / "results.json").write_text(json.dumps(results, indent=2) + "\n")

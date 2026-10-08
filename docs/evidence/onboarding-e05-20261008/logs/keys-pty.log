@@ -1,0 +1,20 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.0.0 -X main.commit=176da46 -X main.date=2026-10-01' -o bin/orbit ./cmd/orbit
+python3 scripts/terminal_keys_pty_test.py --binary bin/orbit
+[
+  {
+    "scenario": "e03-keyboard-paste",
+    "result": "passed",
+    "assertions": [
+      "setup form via arrows only",
+      "setup form via tab only",
+      "setup form via enter only",
+      "bracketed replace after failure",
+      "unbracketed replace after failure",
+      "join prompt accepts a saved invitation file path",
+      "80 columns: exact one-line reveal, OSC 52 payload, private save",
+      "200 columns: exact one-line reveal, OSC 52 payload, private save",
+      "approval with arrow keys only",
+      "selector ignores typing"
+    ]
+  }
+]
