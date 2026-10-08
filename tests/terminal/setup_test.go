@@ -486,7 +486,7 @@ func TestTerminalT04JoinPhaseRecovery(t *testing.T) {
 			os.WriteFile(filepath.Join(root, "local"), []byte("captured local"), 0600)
 			p, _ := setupReview(t, f.joiner, root, "join")
 			m := tc.Mutation{Version: "1", Kind: "join", OperationID: enrollmentRandom(t), Join: &tc.JoinIntent{Invitation: f.inv, Attempt: enrollmentRandom(t), DeviceName: p.DeviceName, FolderName: p.FolderName, Root: p.Root, Preview: p.Preview, Settings: p.Settings}}
-			ctrl := control.New(f.joiner.db, f.joiner.ws, control.Options{LocalDevice: f.joiner.device, FaultHook: func(name string) error {
+			ctrl := control.New(f.joiner.db, f.joiner.ws, control.Options{ApprovalPoll: 15 * time.Second, LocalDevice: f.joiner.device, FaultHook: func(name string) error {
 				if name == "terminal.setup."+phase {
 					return errors.New("persisted phase interrupted")
 				}
@@ -591,7 +591,7 @@ func TestTerminalT04ExpiredPreparedRequestRecovery(t *testing.T) {
 			root := filepath.Join(f.joiner.root, "prepared")
 			p, _ := setupReview(t, f.joiner, root, "join")
 			m := tc.Mutation{Version: "1", Kind: "join", OperationID: enrollmentRandom(t), Join: &tc.JoinIntent{Invitation: f.inv, Attempt: enrollmentRandom(t), DeviceName: p.DeviceName, FolderName: p.FolderName, Root: p.Root, Preview: p.Preview, Settings: p.Settings}}
-			ctrl := control.New(f.joiner.db, f.joiner.ws, control.Options{LocalDevice: f.joiner.device, FaultHook: func(name string) error {
+			ctrl := control.New(f.joiner.db, f.joiner.ws, control.Options{ApprovalPoll: 15 * time.Second, LocalDevice: f.joiner.device, FaultHook: func(name string) error {
 				if name == "terminal.setup.request_prepared" {
 					return errors.New("lost acknowledgement")
 				}
@@ -613,7 +613,7 @@ func TestTerminalT04ExpiredPreparedRequestRecovery(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			resume := control.New(f.joiner.db, f.joiner.ws, control.Options{LocalDevice: f.joiner.device, Now: func() time.Time { return time.Now().Add(2 * time.Minute) }})
+			resume := control.New(f.joiner.db, f.joiner.ws, control.Options{ApprovalPoll: 15 * time.Second, LocalDevice: f.joiner.device, Now: func() time.Time { return time.Now().Add(2 * time.Minute) }})
 			r, err := resume.TerminalMutate(ctx, m)
 			if err != nil {
 				t.Fatal(err)

@@ -161,7 +161,7 @@ func (n *w05Node) start(t *testing.T, hook control.FaultHook) {
 			t.Fatal(err)
 		}
 	}
-	n.f.ctrl = control.New(n.f.db, n.f.ws, control.Options{LocalDevice: n.f.device, Network: n.manager, Relay: n.runtime, FaultHook: hook, Now: time.Now})
+	n.f.ctrl = control.New(n.f.db, n.f.ws, control.Options{ApprovalPoll: 15 * time.Second, LocalDevice: n.f.device, Network: n.manager, Relay: n.runtime, FaultHook: hook, Now: time.Now})
 	var servers []*http.Server
 	var wg sync.WaitGroup
 	for _, purpose := range []network.Purpose{network.Enrollment, network.PeerData} {

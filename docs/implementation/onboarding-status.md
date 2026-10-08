@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E05 complete.** The
+Updated: 2026-10-08. **E00–E05 and E07 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E06 — Short pairing code** (needs gate EG1 closed first); E07 and E09 are also unblocked. The owner's next three-machine trial
+**E09 — Monthly relay egress budget** (E06 waits on the owner's PAKE choice for EG1; E08 needs EG2). The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -17,7 +17,7 @@ Updated: 2026-10-08. **E00–E05 complete.** The
 | E04 Join/setup defaults | complete ([evidence](../evidence/onboarding-e04-20261008/summary.md)) | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
 | E05 Long invitation | complete ([evidence](../evidence/onboarding-e05-20261008/summary.md)) | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
 | E06 Short code | not started | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
-| E07 Approval wait | not started | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
+| E07 Approval wait | complete ([evidence](../evidence/onboarding-e07-20261008/summary.md)) | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
 | E08 Files view | not started | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
 | E09 Relay budget | not started | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
 | E10 Trial readiness | not started | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
@@ -166,10 +166,20 @@ uninterrupted `make check` and all PTY suites pass.
 [Commands](../evidence/onboarding-e05-20261008/commands.md),
 [results](../evidence/onboarding-e05-20261008/results.json).
 
+### E07 — complete (2026-10-08)
+
+Base `8b5a088`. F10: approval status checks are spaced 30–36 s apart (two
+requests each against the inviter's 5/min bucket), and `RATE_LIMITED` during a
+join is a paused `slowed_down` state. A 30-minute two-daemon wait against
+production limits had no refusal; approval was noticed after 8 s. Fixtures
+that sleep a fixed 25 s set `control.Options.ApprovalPoll` to 15 s. Every target
+and all PTY suites pass, but not in one uninterrupted run after the fixture
+change.
+[Commands](../evidence/onboarding-e07-20261008/commands.md),
+[results](../evidence/onboarding-e07-20261008/results.json).
+
 ## Handoff
 
-Next by table order: E06 (short pairing code). Its gate EG1 (code format, PAKE
-construction and Go implementation, mailbox semantics, abuse bounds, privacy
-text) must be closed first, and choosing a PAKE dependency is a material
-security design decision. E07 (approval wait, F10) and E09 (relay budget) are
-unblocked.
+E06 waits on the owner's choice of PAKE construction (EG1). Next eligible: E09
+(relay budget, EG4); E08 (Files view) needs EG2. Unfinished E00 baselines: none
+in ordinary packages (F05/F10 promoted).

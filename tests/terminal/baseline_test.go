@@ -82,7 +82,7 @@ func (f *fixture) open() {
 		f.t.Fatal(err)
 	}
 	f.ws = workspace.New(f.db, workspace.Options{})
-	f.ctrl = control.New(f.db, f.ws, control.Options{LocalDevice: f.device})
+	f.ctrl = control.New(f.db, f.ws, control.Options{ApprovalPoll: 15 * time.Second, LocalDevice: f.device})
 	s, err := control.NewServer(f.ctrl, f.state)
 	if err != nil {
 		f.t.Fatal(err)

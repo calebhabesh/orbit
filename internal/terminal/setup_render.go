@@ -110,6 +110,11 @@ func (m *model) workflowView() tea.View {
 			lines = append(lines, "Loading durable operation…")
 		} else {
 			lines = append(lines, "State: "+safe(r.Operation.State)+" | "+phaseLabel(r.Operation.Phase))
+			for _, e := range r.Effects {
+				if e.State == "slowed_down" {
+					lines = append(lines, "Waiting; the inviting device asked us to slow down, so Orbit checks again a little later.")
+				}
+			}
 			if r.Operation.Phase == "awaiting_approval" && r.Join != nil {
 				// Say what is awaited and where (E04): the inviting device approves.
 				who := "this device"

@@ -74,7 +74,9 @@ func setupNode(t *testing.T, label string, withEnrollment ...bool) (*control.Con
 
 	ws := workspace.New(db, workspace.Options{})
 	ctrl := control.New(db, ws, control.Options{
-		LocalDevice: localDevice,
+		// The pre-E07 15 s spacing: this fixture advances by sleeping 25 s.
+		ApprovalPoll: 15 * time.Second,
+		LocalDevice:  localDevice,
 	})
 
 	srv, err := control.NewServer(ctrl, stateDir)

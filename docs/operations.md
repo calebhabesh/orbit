@@ -437,6 +437,20 @@ doctor" text is gone. Doctor remediations that still name engine commands
 (peer retirement, `engine config`, `engine work scan`) are diagnostics, not
 attention actions, and are unchanged.
 
+### Approval waiting within inviter limits (E07, 2026-10-08)
+
+A joining device checks its request status every 30–36 s (random jitter) while
+it awaits approval. Each check costs two requests (challenge, then signed
+status) from the inviting device's enrollment bucket of 5 per minute per
+source, so waiting averages about 3.6 a minute and leaves room for a retry.
+The old 15 s spacing used 8 a minute and was refused within the first minute
+(F10; the hosted `orbit-net` was not involved). Approval is noticed within one
+interval (27 s in the evidence run). A `RATE_LIMITED` reply during a join is
+part of waiting, not an error: the job keeps its phase, pauses (the earlier
+throttle delay plus up to 10 s of jitter), and the progress screen says "the
+inviting device asked us to slow down". Pushing approval to the waiting device
+as an event is not implemented; the interval bounds the latency.
+
 ### Join defaults and onboarding errors (E04, 2026-10-08)
 
 **Connection from the invitation (F08).** `tc.JoinPolicy` proposes the
