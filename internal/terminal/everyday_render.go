@@ -22,7 +22,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 	title := "Orbit | " + strings.TrimPrefix(f.screen, "day_")
 	lines := []string{}
 	focus := -1
-	footer := "j/k scroll r refresh ? help Esc back q quit"
+	footer := "j/k scroll  r refresh  ? help  Esc back  q quit"
 	if f.advanced {
 		lines = append(lines, "Keyboard help: actions below apply to this screen.", "Text fields receive ordinary j/k/q/? input.", "Esc returns; q/Ctrl-C closes only this interface.", "Reviewed actions require preview then Enter confirm.")
 	}
@@ -50,22 +50,20 @@ func (m *model) dailyLines() (string, []string, string, int) {
 	case "day_storage", "day_maintenance":
 		title = "Orbit | Storage and retention"
 		if s := r.Storage; s != nil {
-			lines = append(lines, fmt.Sprintf("Objects=%d / data budget=%d bytes", s.Objects, s.DataBudget), fmt.Sprintf("Metadata=%d / budget=%d bytes", s.Metadata, s.MetadataBudget), fmt.Sprintf("Staging=%d recovery=%d quarantine=%d bytes", s.Staging, s.Recovery, s.Quarantine), fmt.Sprintf("Free space reserve=%d bytes", s.Reserve))
+			lines = append(lines, "Objects="+hb(s.Objects)+" / data budget="+hb(s.DataBudget), "Metadata="+hb(s.Metadata)+" / budget="+hb(s.MetadataBudget), "Staging="+hb(s.Staging)+" recovery="+hb(s.Recovery)+" quarantine="+hb(s.Quarantine), "Free space reserve="+hb(s.Reserve))
 		}
 		for _, it := range r.Items {
 			lines = append(lines, safe(it.Name), safe(it.Root))
 		}
 		lines = append(lines, "History availability depends on retained verified bytes, not a deletion timer.", "Preview only: inspection never runs cleanup.", "Maintenance: orbit storage --help", "Root/recovery: docs/runbooks/terminal-recovery.md", "Retirement: docs/runbooks/membership-fork.md")
-		footer = "m maintenance preview j/k scroll r refresh ? Esc q"
+		footer = "m maintenance preview  j/k scroll  r refresh  ? help  Esc back  q quit"
 	case "day_paths":
 		title = "Orbit | Find path history"
 		lines = append(lines, "Search known paths; ordinary editing stays in your applications.")
-		prefix := "  "
 		if f.fields[0].input.Focused() {
-			prefix = "> "
 			focus = len(lines)
 		}
-		lines = append(lines, prefix+"Find known path: "+f.fields[0].input.View())
+		lines = append(lines, m.theme().field("Find known path", f.fields[0].input.View(), "", f.fields[0].input.Focused()))
 		fallthrough
 	case "day_history", "day_deleted", "day_conflicts":
 		if f.screen == "day_history" {
@@ -111,9 +109,9 @@ func (m *model) dailyLines() (string, []string, string, int) {
 		if r.Cursor != "" {
 			lines = append(lines, "More available: ] next page")
 		}
-		footer = "j/k select Enter review / search ] next [ first r ? Esc q"
+		footer = "j/k select  Enter review  / search  ] next  [ first  r refresh  ? help  Esc back  q quit"
 		if f.screen == "day_paths" && f.fields[0].input.Focused() {
-			footer = "Type path Enter search Esc navigation Tab focus Ctrl-C close"
+			footer = "Type a path  Enter search  Esc navigation  Tab focus  Ctrl-C close"
 		}
 	case "day_load_review", "day_load_session":
 		lines = append(lines, "Loading exact review; no replacement committed.")
@@ -134,21 +132,19 @@ func (m *model) dailyLines() (string, []string, string, int) {
 			lines = append(lines, "Historical source: "+versionLabel(*d.review.Source))
 		}
 		lines = append(lines, "Unavailable bytes disable content actions; peer fetch unsupported.", "New arrivals require fresh review. Time never selects a winner.")
-		footer = "Enter preview e editor d diff K keep copies c copy h history r fresh ? Esc q"
+		footer = "Enter preview  e editor  d diff  K keep copies  c copy  h history  r fresh review  ? help  Esc back  q quit"
 	case "day_destination", "day_copies":
 		title = "Orbit | Separate copy destinations"
 		lines = append(lines, "Root-relative destinations; existing files cause collision refusal.")
 		for i, field := range f.fields {
-			prefix := "  "
 			value := safe(field.input.Value())
 			if i == f.focus {
-				prefix = "> "
 				value = field.input.View()
 				focus = len(lines)
 			}
-			lines = append(lines, prefix+field.label+": "+value)
+			lines = append(lines, m.theme().field(field.label, value, field.input.Value(), i == f.focus))
 		}
-		footer = "Tab field Enter preview Esc review Ctrl-C close"
+		footer = "Tab next field  Enter preview  Esc review  Ctrl-C close"
 	case "day_confirm":
 		title = "Orbit | Confirm reviewed " + safe(d.action)
 		if d.review != nil {
@@ -164,20 +160,20 @@ func (m *model) dailyLines() (string, []string, string, int) {
 			lines = append(lines, "Source: "+safe(versionKey(d.source)))
 		}
 		if d.upload != nil {
-			lines = append(lines, fmt.Sprintf("Staged result=%d bytes", d.upload.Bytes), "SHA256: "+safe(d.upload.Digest))
+			lines = append(lines, "Staged result="+hb(d.upload.Bytes), "SHA256: "+safe(d.upload.Digest))
 		}
 		lines = append(lines, "Current working bytes are protected by capture/publication checks.", "Each copy is individually durable; publication can remain pending.", "Enter commits only this review. Changed state refuses the action.")
-		footer = "Enter confirm exact result r fresh review j/k scroll ? Esc q"
+		footer = "Enter confirm exact result  r fresh review  j/k scroll  ? help  Esc back  q quit"
 	case "day_editor", "day_recovery":
 		title = "Orbit | Retained editor session"
 		if d.session != nil {
 			lines = append(lines, "State: "+safe(d.session.State), "Result: "+safe(d.session.ResultPath), "Expires: "+safe(d.session.ExpiresAt))
 		}
 		lines = append(lines, "Private result is retained until reviewed cleanup.", "Closing a client does not commit edited bytes.")
-		footer = "e editor d diff u stage result r recovery review ? Esc q"
+		footer = "e editor  d diff  u stage result  r recovery review  ? help  Esc back  q quit"
 		if f.screen == "day_recovery" {
 			lines = append(lines, "Fresh current-head review obtained. e opens new reviewed sources; former result remains retained.", "n extends only an active original review; expiry/stale heads require a new session.", "Discard removes only this session's private artifacts; captured versions remain.")
-			footer = "e new session n renew original x discard reviewed r fresh ? Esc q"
+			footer = "e new session  n renew original  x discard reviewed  r fresh review  ? help  Esc back  q quit"
 		}
 	case "day_operation":
 		title = "Orbit | Durable content operation"
@@ -193,11 +189,11 @@ func (m *model) dailyLines() (string, []string, string, int) {
 		}
 		lines = append(lines, "Durable effects may precede publication; pending/partial work stays visible.")
 		if r.Operation != nil && r.Operation.State == "pending" && d.mutation.Kind == "content" && d.mutation.OperationID == f.operation {
-			footer = "r resume exact operation | j/k scroll ? help Esc back q quit"
+			footer = "r resume exact operation  j/k scroll  ? help  Esc back  q quit"
 		}
 	}
 	return title, lines, footer, focus
 }
 func versionLabel(v tc.VersionSummary) string {
-	return fmt.Sprintf("%s #%d %s %d bytes %s", safe(v.DeviceName), v.Version.Counter, safe(v.Kind), v.Bytes, safe(v.Availability))
+	return fmt.Sprintf("%s #%d %s %s %s", safe(v.DeviceName), v.Version.Counter, safe(v.Kind), hb(v.Bytes), safe(v.Availability))
 }

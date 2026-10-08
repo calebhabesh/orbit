@@ -1244,3 +1244,50 @@ corrections. This is virtual-machine evidence; physical-hardware boot was not
 executed, by the owner's choice. All T13 automatic criteria now have evidence;
 personal use and unaided explanation remain deferred follow-up, and P17 stays
 open on those items.
+
+### Orbit 2.0 rename and TUI theme — 2026-10-07
+
+Owner request: purge the old `file-sync`/`filesync` name and give the TUI a
+readable, coloured layout. The owner chose a clean break (2.0.0) and asked that
+historical evidence and earlier status entries keep the commands as they were
+run.
+
+Rename: module `github.com/calebhabesh/orbit`, `cmd/orbit`, one `orbit` binary
+(no argv[0] dispatch; the former engine surface is `orbit engine <cmd>`),
+packages `orbit_2.0.0_*.deb`/`orbit-2.0.0-1.*.rpm`/`orbit-v2.0.0-*.tar.gz`, a
+single `orbit.service` unit (no alias), state `~/.local/state/orbit` (legacy
+`~/.filesync` discovery removed), scratch `.orbit-internal`, `ORBIT_*` test
+hooks, cookie `orbit_session`, header `X-Orbit-Chunk-SHA256`, TLS name
+`peer.orbit.invalid` and `orbit-*` hash/signature domains. D3 golden fixtures
+were regenerated. 2.0 cannot read 1.x state or sync with 1.x peers; v1.0.1 demo
+installs need a reinstall. The web bundle was patched in place (no
+`node_modules` to rebuild).
+
+TUI: `internal/terminal/theme.go` adds a header bar (brand, section tabs,
+daemon status), rounded titled panels, colors by meaning (muted labels,
+green/yellow/red states, highlighted codes, dimmed explanations), a
+selected-row bar, form fields with a focus marker, human-readable byte sizes
+and `key description` footer hints that wrap as whole pairs. The overview shows
+Status, the folder list (attention items grouped above folders), Devices and a
+Details pane for the selection at ≥100 columns; panels stack at 60–99 columns,
+and below 60 the layout drops borders. Workflow screens use one bordered,
+scrolling panel at ≥60 columns; a revealed invitation is never boxed so it
+copies cleanly. Colors are ANSI palette indexes, so the terminal theme decides
+the shades; `--no-color` keeps the textual markers (`[Overview]`, `> `,
+`Orbit | Title`). `TestRenderedFramesFitTerminal` checks frames fit at four
+sizes in both modes (`ORBIT_TUI_PREVIEW=dir` writes them out). `orbit help`
+and the shell completions list `orbit engine`.
+
+Commands (branch `orbit-v2`, final state): `make fmt-check vet` passed;
+`go test ./cmd/... ./internal/... ./model/... ./tests/designgates/...` passed;
+`go test ./tests/integration/... ./tests/faults/...` passed;
+`make test-harness` passed (36 tests); `make test-terminal-packages` passed;
+the T09/T10/T11 PTY scripts passed against `bin/orbit`; the TUI was also driven
+by hand in tmux against a disposable state (create, overview, folder, copy
+status, storage). Full `go test ./tests/terminal/...` passed once (1290 s); on
+the final run every test passed except `TestWANW16NativeRunnerRehearsal`,
+which then passed alone (241 s) and is treated as load-sensitive (the failing
+output was not retained). Unexecuted: native multi-host validation scripts
+(`scripts/validation/*`; their argv maps through `orbit_argv` in
+`host_agent.py`), the legacy browser Puppeteer suite, and container/QEMU
+package transactions.
