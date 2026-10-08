@@ -124,8 +124,8 @@ func (c *Client) SaveInvitation(ctx context.Context, path string, inv tc.Invitat
 	if !filepath.IsAbs(path) {
 		return errors.New("absolute private transfer path required")
 	}
-	if err := state.ValidateDirectory(filepath.Dir(path)); err != nil {
-		return err
+	if err := state.ValidatePrivateFileDir(filepath.Dir(path)); err != nil {
+		return &control.ControlError{Code: "PRIVATE_FOLDER_REQUIRED", Message: err.Error(), Action: err.Error()}
 	}
 	b, err := json.Marshal(inv)
 	if err != nil {

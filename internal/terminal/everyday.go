@@ -395,13 +395,17 @@ func (m *model) dailyKey(msg tea.KeyPressMsg) tea.Cmd {
 			}
 			f.screen = "day_review"
 			return nil
-		case "tab", "shift+tab":
+		case "tab", "shift+tab", "down", "up":
 			delta := 1
-			if k == "shift+tab" {
+			if k == "shift+tab" || k == "up" {
 				delta = -1
 			}
 			return m.focusField((f.focus + delta + len(f.fields)) % len(f.fields))
 		case "enter":
+			// Enter advances through fields and confirms on the last (E03).
+			if f.screen == "day_copies" && f.focus < len(f.fields)-1 {
+				return m.focusField(f.focus + 1)
+			}
 			if f.screen == "day_destination" {
 				d.destination = f.fields[0].input.Value()
 				return m.loadReview("separate_copy")

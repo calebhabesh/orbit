@@ -72,11 +72,13 @@ func (m *model) View() tea.View {
 }
 
 var helpKeys = [][2]string{
-	{"q / Ctrl-C", "close interface (sync and committed work continue)"},
-	{"j/k arrows", "select"},
-	{"o f n d", "Overview, Folders, Attention, Devices"},
-	{"Tab or /", "search this page"},
-	{"Enter", "inspect"},
+	{"q / Ctrl-C", "close interface (sync and committed work continue); Ctrl-C works anywhere"},
+	{"↑/↓ or j/k", "select rows; in forms, move between fields"},
+	{"1-4 or o f n d", "Overview, Folders, Attention, Devices"},
+	{"Tab / Shift-Tab", "next / previous view; in forms, next / previous field"},
+	{"←/→", "previous / next view; in forms, change a ‹ choice ›"},
+	{"/", "search this page"},
+	{"Enter", "inspect; in forms, next field, then confirm on the last"},
 	{"Esc", "back"},
 	{"r", "refresh"},
 	{"] [", "next page / first page"},

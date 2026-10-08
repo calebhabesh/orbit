@@ -2,7 +2,9 @@ package terminal
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	tea "charm.land/bubbletea/v2"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
@@ -44,7 +46,8 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Paste a private v2/v3 invitation or enter an absolute private file path.", "The invitation is hidden and never included in status/logs.")
 		focusLine = len(lines)
 		lines = append(lines, m.theme().field("Private invitation", f.fields[f.focus].input.View(), "", true))
-		footer = "Enter verify  Esc back  Ctrl-C close"
+		lines = append(lines, receivedLine(f.fields[f.focus].input.Value()))
+		footer = "Enter verify  Ctrl-U clear  Esc back  Ctrl-C close"
 	case "form":
 		title = "Orbit | Review setup inputs"
 		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.")
@@ -55,10 +58,13 @@ func (m *model) workflowView() tea.View {
 				value = f.fields[i].input.View()
 				focusLine = len(lines)
 			}
+			if f.fields[i].choices != nil {
+				value = "‹ " + safe(f.fields[i].input.Value()) + " ›"
+			}
 			lines = append(lines, m.theme().field(f.fields[i].label, value, f.fields[i].input.Value(), i == f.focus))
 		}
 		lines = append(lines, "Metadata budget="+hb(f.settings.MetadataBudget)+" reserve="+hb(f.settings.ReserveBytes)+"; retention uses per-folder controls.")
-		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-R re-check startup  Ctrl-A advanced  Esc back"
+		footer = "↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced  Esc back"
 	case "preview":
 		title = "Orbit | Measuring root"
 		lines = append(lines, "Bounded enumeration continues; adoption has not been confirmed.")
@@ -228,7 +234,7 @@ func (m *model) workflowView() tea.View {
 				lines = append(lines, safe(a.Code)+": "+safe(a.Action))
 			}
 		}
-		footer = "v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  x unregister  t retire  N connection  ? help"
+		footer = "v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  x unregister  t retire  N connection  r refresh  Esc back  q quit"
 	case "folder_action":
 		title = "Orbit | Confirm local " + f.task
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
@@ -455,4 +461,22 @@ func hostStartupLines(h *tc.HostStartup) []string {
 		lines = append(lines, safe(h.Note))
 	}
 	return lines
+}
+
+// receivedLine reports how much of a hidden value arrived without showing it.
+func receivedLine(value string) string {
+	n := utf8.RuneCountInString(value)
+	if n == 0 {
+		return "Nothing received yet. Paste the whole code; a new paste replaces it."
+	}
+	return humanCount(n) + " characters received. A new paste replaces it; Ctrl-U clears."
+}
+
+// humanCount formats n with thousands separators (1,666).
+func humanCount(n int) string {
+	s := strconv.Itoa(n)
+	for i := len(s) - 3; i > 0; i -= 3 {
+		s = s[:i] + "," + s[i:]
+	}
+	return s
 }

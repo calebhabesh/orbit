@@ -55,9 +55,15 @@ func TestTerminalT09FocusedInputAndKeyboard(t *testing.T) {
 		t.Fatal("help")
 	}
 	m.Update(tea.KeyPressMsg{Code: tea.KeyEscape})
+	// E03: Tab moves between views (not into search); number keys pick one.
 	m.Update(tea.KeyPressMsg{Code: tea.KeyTab})
-	if !m.search.Focused() {
-		t.Fatal("tab focus")
+	if m.search.Focused() || m.section != 1 {
+		t.Fatalf("tab: search focused %v, section %d", m.search.Focused(), m.section)
+	}
+	m.Update(tea.KeyPressMsg{Code: tea.KeyTab, Mod: tea.ModShift})
+	press(m, "3")
+	if m.section != 2 {
+		t.Fatalf("3 opened section %d", m.section)
 	}
 }
 

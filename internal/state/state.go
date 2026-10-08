@@ -50,6 +50,27 @@ func ValidateDirectory(path string) error {
 	return nil
 }
 
+// ValidatePrivateFileDir checks the directory chosen for a private Orbit file
+// (a setup review or an invitation) and explains the fix in those terms,
+// rather than calling it a state directory (F15).
+func ValidatePrivateFileDir(dir string) error {
+	if ValidateDirectory(dir) == nil {
+		return nil
+	}
+	info, err := os.Lstat(dir)
+	if err != nil {
+		return fmt.Errorf("the folder for this private file, %s, does not exist; create it with: mkdir -m 700 %s", dir, dir)
+	}
+	if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+		return fmt.Errorf("%s is not a plain folder; put the private file in a folder created with: mkdir -m 700 <folder>", dir)
+	}
+	if perm := info.Mode().Perm(); perm&0o077 != 0 {
+		private := filepath.Join(dir, "orbit-private")
+		return fmt.Errorf("%s can be read by other users (mode %04o), so Orbit will not write a private file there; create a private folder with: mkdir -m 700 %s, and put the file inside it", dir, perm, private)
+	}
+	return fmt.Errorf("%s belongs to another user; put the private file in a folder you own, created with: mkdir -m 700 <folder>", dir)
+}
+
 func Acquire(stateDir string) (*Lock, error) {
 	if err := ValidateDirectory(stateDir); err != nil {
 		return nil, err

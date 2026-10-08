@@ -77,28 +77,6 @@ func TestOnboardingE00F05RevealedInvitationCopiesWhole(t *testing.T) {
 	}
 }
 
-// F06: a paste into the secret invitation field replaces its content and
-// reports how much was received without revealing it.
-func TestOnboardingE00F06SecretPasteReplacesAndReportsLength(t *testing.T) {
-	onboardingBaseline(t)
-	_, code := e00Invitation()
-	m, _ := workflowModel()
-	m.flow = &workflow{screen: "invitation", fields: []field{newField("Private invitation", "", true)}}
-	m.Update(tea.PasteMsg{Content: code[:800]}) // first, incomplete attempt
-	m.Update(tea.PasteMsg{Content: code})       // retry with the whole code
-	got := m.flow.fields[0].input.Value()
-	if got != code {
-		t.Errorf("second paste produced %d characters, want exactly the pasted %d (approved: paste replaces)", len(got), len(code))
-	}
-	view := ansi.Strip(m.View().Content)
-	if !strings.Contains(view, "characters") {
-		t.Error("secret field shows no received-length status line")
-	}
-	if strings.Contains(view, code[20:60]) {
-		t.Fatal("secret revealed")
-	}
-}
-
 // F07: an incomplete (truncated) code reports that it is incomplete, not a
 // generic or INVALID_REQUEST failure.
 func TestOnboardingE00F07TruncatedInvitationIsSpecific(t *testing.T) {
@@ -151,31 +129,5 @@ func TestOnboardingE00F08JoinDefaultsToAutomatic(t *testing.T) {
 	}
 	if got := m.flow.fields[13].input.Value(); got != "automatic" {
 		t.Errorf("join connection default %q, want automatic", got)
-	}
-}
-
-// F12: startup is a selector, not a typed word, and its default is not manual.
-func TestOnboardingE00F12StartupIsSelector(t *testing.T) {
-	onboardingBaseline(t)
-	m, _ := loadedForm(t)
-	f := m.flow
-	label := f.fields[3].label
-	t.Logf("startup field %q default %q", label, f.fields[3].input.Value())
-	if strings.Contains(label, "(manual/login/unattended)") {
-		t.Error("startup offered as typed enumeration")
-	}
-	m.focusField(3)
-	before := f.fields[3].input.Value()
-	press(m, "z")
-	if got := f.fields[3].input.Value(); got != before {
-		t.Errorf("typing changed startup to %q (approved: selector)", got)
-	}
-	if before == "manual" {
-		t.Error("setup default startup is manual (approved: login on desktops, unattended on headless with linger guidance)")
-	}
-	f.fields[3].input.SetValue(before)
-	m.Update(tea.KeyPressMsg{Code: tea.KeyRight})
-	if got := f.fields[3].input.Value(); got == before || (got != "manual" && got != "login" && got != "unattended") {
-		t.Errorf("right arrow left startup at %q (approved: selector moves to the next choice)", got)
 	}
 }

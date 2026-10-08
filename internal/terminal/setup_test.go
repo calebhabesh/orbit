@@ -88,6 +88,8 @@ func TestTerminalT10FormKeyboardReviewAndErrors(t *testing.T) {
 		t.Fatal("paste admission")
 	}
 	f.fields[4].input.SetValue("0")
+	// Enter advances through fields and confirms on the last one (E03).
+	m.focusField(13)
 	keyCode(m, tea.KeyEnter)
 	if f.screen != "form" || f.err == "" || w.calls != 0 {
 		t.Fatal("invalid budgets submitted")
@@ -99,6 +101,7 @@ func TestTerminalT10FormKeyboardReviewAndErrors(t *testing.T) {
 		}
 		return tc.Result{}, &control.ControlError{Code: "INVALID_ROOT", Message: "SECRET"}
 	}
+	m.focusField(13)
 	runReply(m, keyCode(m, tea.KeyEnter))
 	if f.screen != "form" || f.fields[0].input.Value() != "jkq?" || strings.Contains(m.View().Content, "SECRET") {
 		t.Fatal("failed preview lost draft or exposed error")
@@ -107,6 +110,7 @@ func TestTerminalT10FormKeyboardReviewAndErrors(t *testing.T) {
 	w.query = func(context.Context, tc.Query) (tc.Result, error) {
 		return tc.Result{Review: &review, Preview: &tc.RootPreview{Complete: true, Files: 3, Bytes: 123, CapacityKnown: true}}, nil
 	}
+	m.focusField(13)
 	runReply(m, keyCode(m, tea.KeyEnter))
 	if f.screen != "review" || f.plan.Preview != review || w.calls != 0 {
 		t.Fatal("preview auto submitted")
@@ -115,6 +119,7 @@ func TestTerminalT10FormKeyboardReviewAndErrors(t *testing.T) {
 	if f.screen != "form" || f.fields[0].input.Value() != "jkq?" {
 		t.Fatal("back/edit draft")
 	}
+	m.focusField(13)
 	runReply(m, keyCode(m, tea.KeyEnter))
 	cmd := keyCode(m, tea.KeyEnter)
 	if !f.busy {

@@ -1,0 +1,19 @@
+{
+  "packet": "E03",
+  "date": "2026-10-08",
+  "base_revision": "de2230e",
+  "findings": {
+    "F06": {"result": "fixed", "tests": ["TestOnboardingE03F06SecretPasteReplacesAndReportsLength", "TestOnboardingE03F06ClearEmptyEnterAndRetypeReplace", "make test-terminal-keys-pty"], "observed": "paste replaces hidden value; 'N characters received' line; Ctrl-U clears; empty Enter submits nothing; typed re-paste after failure replaces (W07 retained-input rule kept)"},
+    "F12": {"result": "fixed (selector; default was E01)", "tests": ["TestOnboardingE03F12StartupIsSelector", "make test-terminal-keys-pty"], "observed": "Startup and Connection are ‹ › selectors; typing ignored; ←/→ cycle"},
+    "F15": {"result": "fixed", "tests": ["TestOnboardingE03F15ReviewFileInGroupReadableHome"], "observed": "error names the folder, its mode and 'mkdir -m 700 <folder>/orbit-private'; TUI code PRIVATE_FOLDER_REQUIRED"}
+  },
+  "convention": "↑/↓ and Tab move fields; Enter advances and confirms on the last; 1-4 and Tab switch views; / searches; failed preview focuses the field at fault; footers list handled keys only",
+  "checks": {
+    "make_check_run1": "stopped by memory-pressure reaper",
+    "make_check_run2": "tests/terminal: 4 PTY tests failed on old key assumptions; fixed; pass",
+    "remaining_targets": "pass",
+    "pty_suites": "pass (pty, onboarding, everyday, keys)",
+    "e00_remaining_baseline": "5 expected failures owned by E04, E05, E07"
+  },
+  "unexecuted": ["one uninterrupted make check after the harness fixes", "line-mode orbit setup CLI prompts still accept typed words (TUI selectors only)"]
+}

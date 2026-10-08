@@ -113,11 +113,28 @@ class UI:
         # End, delete-before-cursor, and one bounded bracketed paste.
         self.send(b"\x05\x15\x1b[200~" + text.encode() + b"\x1b[201~")
 
+    def choose(self, value):
+        # Startup is a selector (E03): right arrow until the choice shows.
+        for _ in range(4):
+            self.pump(.1)
+            if f"Startup: ‹ {value} ›" in self.screen.text(): return
+            self.send(b"\x1b[C")
+        self.wait(f"Startup: ‹ {value} ›")
+
+    def submit(self, text, presses=6):
+        # Enter advances field by field and confirms on the last (E03).
+        for _ in range(presses):
+            self.send(b"\r"); time.sleep(.2); self.pump(.1)
+            if text in self.screen.text(): return
+        self.wait(text)
+
     def form(self, label, root, startup="manual"):
-        for value in (label, "Notes", str(root), startup):
+        for value in (label, "Notes", str(root)):
             self.replace(value); self.send(b"\t")
-        # Keep loaded finite/network settings; submit from data budget field.
-        self.send(b"\r"); self.wait("Confirm adoption")
+        self.choose(startup); self.send(b"\t")
+        # Keep loaded finite/network settings; Enter advances to the last
+        # field and confirms there (E03).
+        self.submit("Confirm adoption", presses=3)
 
     def invitation(self, code):
         self.replace(code); self.send(b"\r"); self.wait("Review setup inputs")
@@ -197,8 +214,8 @@ def run(binary, output):
         ua=UI(a,"create-nonempty-back-edit");active.append(ua);ua.wait("Join an existing Orbit [j]")
         ua.send(b"c");ua.wait("Review setup inputs")
         # Invalid root retains draft and requires correction.
-        ua.replace("Laptop");ua.send(b"\t");ua.replace("Notes");ua.send(b"\t");ua.replace("relative-root");ua.send(b"\r");ua.wait("absolute local root")
-        ua.replace(str(a.data));ua.send(b"\r");ua.wait("Confirm adoption");ua.wait("files=1")
+        ua.replace("Laptop");ua.send(b"\t");ua.replace("Notes");ua.send(b"\t");ua.replace("relative-root");ua.submit("absolute local root")
+        ua.replace(str(a.data));ua.submit("Confirm adoption");ua.wait("files=1")
         ua.back();ua.wait("Review setup inputs");ua.send(b"\r");ua.wait("Confirm adoption");ua.send(b"\r");ua.wait("Locally ready",timeout=25)
         created=a.query("folders",limit="20")["items"];assert len(created)==1
         folder=created[0]["id"]

@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E02 complete.** The
+Updated: 2026-10-08. **E00–E03 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E03 — Keyboard, form and paste conventions** (E09 is also unblocked; E04 follows E03). The owner's next three-machine trial
+**E04 — Join and setup defaults; actionable onboarding errors** (E05 and E09 are also unblocked). The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -13,7 +13,7 @@ Updated: 2026-10-08. **E00–E02 complete.** The
 | E00 Baseline/reproductions | complete ([evidence](../evidence/onboarding-e00-20261008/summary.md)) | repository | [E00](onboarding-packets.md#e00--baseline-and-reproductions) |
 | E01 Lifecycle/service defaults | complete ([evidence](../evidence/onboarding-e01-20261008/summary.md)) | E00 | [E01](onboarding-packets.md#e01--daemon-lifecycle-and-service-defaults) |
 | E02 Attention/actions | complete ([evidence](../evidence/onboarding-e02-20261008/summary.md)) | E00 | [E02](onboarding-packets.md#e02--self-healing-attention-and-runnable-actions) |
-| E03 Keys/forms/paste | not started | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
+| E03 Keys/forms/paste | complete ([evidence](../evidence/onboarding-e03-20261008/summary.md)) | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
 | E04 Join/setup defaults | not started | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
 | E05 Long invitation | not started | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
 | E06 Short code | not started | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
@@ -123,9 +123,26 @@ daemon as `unknown`.
 [Commands](../evidence/onboarding-e02-20261008/commands.md),
 [results](../evidence/onboarding-e02-20261008/results.json).
 
+### E03 — complete (2026-10-08)
+
+Base `de2230e`. Arrow keys and Tab move between form fields, and Enter advances
+and confirms on the last field. Startup and Connection are `‹ ›` selectors.
+Keys `1`–`4` and Tab switch views, and `/` searches. A failed preview focuses
+the field at fault. F06: a paste replaces the hidden invitation and the field
+shows a character count. Ctrl-U clears it, and after a failed attempt a typed
+re-paste replaces the old value. F15: private-file errors name the folder and
+the `mkdir -m 700` fix. The new `make test-terminal-keys-pty` campaign passes,
+and a negative build shows it catches appending. Four older PTY harnesses
+assumed the old keys and were updated. The first `make check` was killed by host
+memory pressure; every target passed afterwards, but not in one uninterrupted
+run. The line-mode CLI setup prompts still take typed words.
+[Commands](../evidence/onboarding-e03-20261008/commands.md),
+[results](../evidence/onboarding-e03-20261008/results.json).
+
 ## Handoff
 
-Start E03 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
-Promote `TestOnboardingE00F06…`, `…F15…` and the selector part of `…F12…` into
-ordinary regressions. E01 added the host note and Ctrl-R re-check to the setup
-form; E03 turns startup into a selector over the proposed default.
+Start E04 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
+Promote `TestOnboardingE00F07…`, `…F08…` and the F08/F11/F16 parts of
+`…RelayJoinWaitNamesAndModes`. Forms now confirm only on the last field. Harnesses
+use `submit()` helpers (`scripts/terminal_onboarding_pty_test.py`,
+`scripts/validation/wan_tui_phase.py`).
