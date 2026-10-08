@@ -89,6 +89,8 @@ type Options struct {
 }
 
 type Service struct {
+	mailboxes                          map[string]*mailbox
+	pairSources                        map[string]bucket
 	mu                                 sync.Mutex
 	selection                          network.ProfileSelection
 	origin, digest, epoch, relayOrigin string
@@ -260,6 +262,11 @@ func consume(b bucket, now time.Time, burst, rate float64) (bucket, bool) {
 	return b, true
 }
 func (s *Service) expire(now uint64) {
+	for name, m := range s.mailboxes {
+		if now >= m.expires {
+			delete(s.mailboxes, name)
+		}
+	}
 	s.expireBandwidth()
 	for id, v := range s.sessions {
 		if _, code := s.profile(v.proof.Profile, now); code != "" {
@@ -618,6 +625,8 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		request = &p.NetworkChallengeRequest{}
 	case "/network/v1/announce":
 		request = &p.NetworkAnnounceRequest{}
+	case "/network/v1/pairing":
+		request = &p.PairingRequest{}
 	case "/network/v1/offer", "/network/v1/accept":
 		request = &p.NetworkOfferRequest{}
 	case "/network/v1/authenticate", "/network/v1/lookup", "/network/v1/reserve", "/network/v1/release":
@@ -647,6 +656,8 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var out any
 	code := ""
 	switch v := request.(type) {
+	case *p.PairingRequest:
+		out, code = s.pairing(*v, r, now)
 	case *p.NetworkChallengeRequest:
 		host, _, err := net.SplitHostPort(r.RemoteAddr)
 		if err != nil {

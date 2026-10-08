@@ -10,8 +10,27 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 		return m.flowKey(msg)
 	}
 	k := msg.String()
+	// An explicit view selection wins over the asynchronous initial landing.
+	if k == "1" || k == "2" || k == "3" || k == "4" || k == "5" || k == "tab" || k == "shift+tab" {
+		if !m.search.Focused() {
+			m.firstLoad = true
+		}
+	}
 	if k == "ctrl+c" {
 		return m.quit()
+	}
+	if m.search.Focused() && m.section == filesSection {
+		switch k {
+		case "enter":
+			m.search.Blur()
+			m.focus = 0
+			return m.filesSearch()
+		case "esc":
+			m.search.Blur()
+			m.search.SetValue("")
+			m.focus = 0
+			return nil
+		}
 	}
 	if m.search.Focused() {
 		switch k {
@@ -34,6 +53,11 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 			return m.quit()
 		}
 		return nil
+	}
+	if m.section == filesSection {
+		if cmd, handled := m.filesKey(k); handled {
+			return cmd
+		}
 	}
 	switch k {
 	case "N":
@@ -68,7 +92,7 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 		return m.changeSection((m.section + 1) % len(sections))
 	case "shift+tab":
 		return m.changeSection((m.section + len(sections) - 1) % len(sections))
-	case "1", "2", "3", "4":
+	case "1", "2", "3", "4", "5":
 		return m.changeSection(int(k[0] - '1'))
 	case "j", "down":
 		m.selectRow(1)

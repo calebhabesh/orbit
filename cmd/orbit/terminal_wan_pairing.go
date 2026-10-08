@@ -12,6 +12,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -67,6 +68,7 @@ func handleWANInvite(args []string, out, errOut io.Writer) error {
 	folder := flags.String("folder", "", "folder name or identity")
 	transfer := flags.String("out", "", "absolute private invitation transfer file")
 	showCode := flags.Bool("code", false, "print a one-line invitation code to paste on the other device (a secret: share it only with that device)")
+	longCode := flags.Bool("long", false, "use the long invitation for older devices")
 	requestFile := flags.String("request-file", "", "private reviewed invitation mutation")
 	reviewFile := flags.String("review-file", "", "private mutation output during preview")
 	preview := flags.Bool("preview", false, "review folder/membership before issuing invitation")
@@ -145,6 +147,13 @@ func handleWANInvite(args []string, out, errOut io.Writer) error {
 	if *transfer == "" && !*showCode {
 		return errors.New("invite requires --code or --out PRIVATE_FILE; secrets are omitted from normal output")
 	}
+	if *showCode && !*longCode {
+		caps, e := client.Query(ctx, tc.Query{Version: tc.Version, Kind: "capabilities"})
+		if e != nil {
+			return e
+		}
+		m.Invite.ShortCode = slices.Contains(caps.Capabilities, tc.ShortPairingCapability)
+	}
 	r, err := client.Mutate(ctx, m)
 	if err != nil {
 		return err
@@ -153,6 +162,11 @@ func handleWANInvite(args []string, out, errOut io.Writer) error {
 		return errors.New("invitation was not issued")
 	}
 	if *showCode {
+		if r.Pairing != nil && r.Pairing.Code != "" {
+			fmt.Fprintf(errOut, "Pairing code expires %s. On the other device run orbit join; owner approval still follows.\n", r.Pairing.Expires)
+			fmt.Fprintln(out, r.Pairing.Code)
+			return nil
+		}
 		code, e := tc.InvitationCode(*r.Invitation)
 		if e != nil {
 			return e

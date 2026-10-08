@@ -11,6 +11,7 @@ import (
 const NetworkDiagnosticsCapability = "network_diagnostics_v1"
 const NetworkCapability = "network_control_v1"
 const RoutedEnrollmentCapability = "enrollment_v3"
+const ShortPairingCapability = "short_pairing_v1"
 
 // PackagedProfileCapability: the daemon reports its built-in release profile,
 // accepts its digest in reviewed setup/network intents, reviews operator

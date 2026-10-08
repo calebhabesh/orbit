@@ -26,9 +26,9 @@ import (
 )
 
 var (
-	Version = "2.0.0"
+	Version = "2.1.0"
 	Commit  = "release"
-	Date    = "2026-10-01"
+	Date    = "2026-10-08"
 )
 
 type sessionInfo struct {

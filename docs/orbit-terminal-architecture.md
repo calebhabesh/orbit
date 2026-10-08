@@ -304,3 +304,14 @@ folder. A code without a route shows the item's details. `Workflows` gains
 `RetryWork`, implemented by `controlclient` over the authenticated work-retry
 route. A model test covers every entry in `control.AttentionCodes`, and a
 real-PTY test drives Enter → retry review → Enter on a running daemon.
+
+## E08 Files amendment (2026-10-08)
+
+The fifth terminal view reads `files` and `file_details` from terminal control,
+sharing the repository-backed operations with `orbit files`. It maintains a
+bounded directory/search page and previous-cursor stack. Expired views restart
+at the first page. Healthy configured devices initially select Files; attention
+or unfinished setup keeps the existing Overview/setup routing. An explicit view
+selection wins over a late initial response. Local file opening/editing uses
+the existing constrained tool boundary. State labels and aged peer reports are
+defined by EG2, not inferred from connection status.

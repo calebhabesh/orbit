@@ -154,7 +154,14 @@ func (m *ConnectionManager) ProbeTCP(ctx context.Context, t Target, trust *tls.C
 		return probeResult(ctx, kind, err)
 	}
 	defer validated.CloseIdleConnections()
-	work, cancel := context.WithTimeout(ctx, 3*time.Second)
+	bound := 3 * time.Second
+	if relay {
+		// Relay setup includes paced offer/reserve/attach on both devices.
+		// A direct socket's 3 s bound can expire during legitimate budget
+		// refill; use the existing handshake bound inside doctor's 20 s cap.
+		bound = InnerHandshakeTimeout
+	}
+	work, cancel := context.WithTimeout(ctx, bound)
 	defer cancel()
 	var conn net.Conn
 	if relay {

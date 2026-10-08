@@ -12,6 +12,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/pairing"
 )
 
 func validID(s string) bool {
@@ -57,7 +58,7 @@ func (m Mutation) Validate() error {
 		return fmt.Errorf("INVALID_REQUEST: operation identity")
 	}
 	count := 0
-	for _, present := range []bool{m.Network != nil, m.Setup != nil, m.Invite != nil, m.Join != nil, m.Approval != nil, m.Folder != nil, m.Content != nil, m.Session != nil, m.Settings != nil, m.Service != nil, m.Cancel != nil} {
+	for _, present := range []bool{m.Pairing != nil, m.Network != nil, m.Setup != nil, m.Invite != nil, m.Join != nil, m.Approval != nil, m.Folder != nil, m.Content != nil, m.Session != nil, m.Settings != nil, m.Service != nil, m.Cancel != nil} {
 		if present {
 			count++
 		}
@@ -67,6 +68,12 @@ func (m Mutation) Validate() error {
 	}
 	ok := false
 	switch m.Kind {
+	case "pairing":
+		ok = m.Pairing != nil && validID(m.Pairing.Profile)
+		if ok {
+			_, err := pairing.Normalize(m.Pairing.Code)
+			ok = err == nil
+		}
 	case "setup", "adopt":
 		p := m.Setup
 		ok = p != nil && validName(p.DeviceName) && validName(p.FolderName) && filepath.IsAbs(p.Root) && validReview(p.Preview) && validSettings(p.Settings)
@@ -201,11 +208,22 @@ func (q Query) Validate() error {
 		if !validID(q.Folder) || len(q.Name) > 256 {
 			return fmt.Errorf("INVALID_REQUEST: folder/search")
 		}
+	case "files":
+		if !validID(q.Folder) || len(q.Name) > 256 || (q.Name != "" && q.Path != "") {
+			return fmt.Errorf("INVALID_REQUEST: folder/search")
+		}
+	case "file_details":
+		if !validID(q.Folder) {
+			return fmt.Errorf("INVALID_REQUEST: folder required")
+		}
+		if q.Path == "" {
+			return fmt.Errorf("INVALID_PATH")
+		}
 	case "folder_management":
 		if !validID(q.Folder) {
 			return fmt.Errorf("INVALID_REQUEST: folder required")
 		}
-	case "operation", "session":
+	case "operation", "session", "pairing":
 		if !validID(q.ID) {
 			return fmt.Errorf("INVALID_REQUEST: identity")
 		}

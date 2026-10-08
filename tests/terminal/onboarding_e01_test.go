@@ -188,7 +188,9 @@ startunit() {
 case "$1" in
   get-default) echo "` + h.target + `" ;;
   is-system-running) ` + reachable + ` ;;
-  is-enabled) echo disabled; exit 1 ;;
+  is-enabled) if [ -f "$B/enabled" ]; then echo enabled; else echo disabled; exit 1; fi ;;
+  enable) touch "$B/enabled" ;;
+  disable) rm -f "$B/enabled" ;;
   is-active)
     case "$2" in
       graphical-session.target) echo ` + graphical + ` ;;

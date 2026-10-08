@@ -435,3 +435,37 @@ form. A code prefix or invitation `version` above 3 fails
 `PROFILE_OPERATOR_MISMATCH` or `PROFILE_EPOCH_MISMATCH` with an action naming the
 device to change; a manual device given a routed code fails
 `NETWORK_REVIEW_REQUIRED`.
+
+
+## E08 read-only Files queries
+
+`files` takes a locally authorized `folder`, directory `path` (empty for root),
+optional folder-wide substring `name` search (mutually exclusive with `path`),
+`limit` (1–200) and an opaque `cursor`. `files` results contain path/name,
+directory flag, byte size, observed modification time, local state and block
+reason. Generations invalidate cursors; clients restart pagination after
+`STALE_VIEW`. `file_details` requires folder/path and adds current versions,
+last local scan time and version-specific peer observations with report times.
+No query reads arbitrary filesystem paths or changes content. The CLI and TUI
+use these same queries. EG2 owns the labels and their limitations.
+
+## E06 short-code pairing
+
+`InviteIntent.short_code` requests an ephemeral code for a routed invitation.
+The result's optional `pairing` contains code, state, expiry and a safe error.
+This is deliberate private transfer, like the returned full invitation;
+operation/status replay does not persist or reveal the short-code password.
+A `pairing` query with the invitation operation ID returns state without code.
+A `pairing` mutation takes a fresh operation ID and `{code, profile}`: submission
+consents to one exchange through the exact displayed operator/profile. It
+returns the decrypted ordinary v3 invitation; no membership or root is changed.
+The eight-entry ephemeral result cache prevents retrying a claim in one daemon
+lifetime. Restart requires a new code. A service without the pairing endpoint
+returns `UNSUPPORTED_CAPABILITY`; Add device keeps the long invitation/file.
+Older receivers use the explicitly available long invitation/file.
+
+`short_pairing_v1` advertises short-code mutations. Invite adapters omit
+`short_code` when that capability is absent. Unsupported services and local-only
+invitations retain the explicit long-code/private-file transfer. The pairing
+control request has a 45-second operation bound and a 50-second HTTP write
+deadline; ordinary requests retain their existing deadline.

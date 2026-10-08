@@ -136,6 +136,11 @@ func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, err
 	}
 	q := tc.Query{Version: tc.Version, Limit: pageSize, Cursor: f.cursor}
 	switch f.screen {
+	case "invitation_out":
+		if f.result.Pairing == nil || f.result.Pairing.Code == "" {
+			return "", nil
+		}
+		q.Kind, q.ID = "pairing", f.mutation.OperationID
 	case "load_settings":
 		return "load_settings", func() (tc.Result, error) {
 			r, err := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "settings"})
@@ -235,6 +240,12 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.err = ""
 	}
 	switch task {
+	case "invitation_out":
+		if r.Pairing != nil {
+			code := f.result.Pairing.Code
+			f.result.Pairing = r.Pairing
+			f.result.Pairing.Code = code
+		}
 	case "load_settings":
 		if r.Settings == nil {
 			f.err = "Settings unavailable; use orbit doctor."
@@ -785,6 +796,19 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 			return m.makeInvitation()
 		}
 	case "invitation_out":
+		if k == "r" && f.mutation.Invite != nil {
+			id, err := newID()
+			if err != nil {
+				return nil
+			}
+			f.mutation.OperationID = id
+			f.mutation.Invite.ExpiresAt = time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano)
+			mutation := f.mutation
+			w, _ := m.workflows()
+			f.task = "invite"
+			f.work = func(ctx context.Context) (tc.Result, error) { return w.Mutate(ctx, mutation) }
+			return m.invalidate()
+		}
 		if k == "v" {
 			return m.revealInvitation()
 		}
@@ -852,7 +876,11 @@ func (m *model) startFlowQuery() tea.Cmd {
 	if m.pending != 0 || m.quitting || m.toolRunning {
 		return nil
 	}
-	ctx, cancel := context.WithTimeout(m.ctx, 30*time.Second)
+	bound := 30 * time.Second
+	if f.task == "parse_invitation" {
+		bound = 55 * time.Second
+	}
+	ctx, cancel := context.WithTimeout(m.ctx, bound)
 	task, run := m.flowCommand(ctx)
 	if run == nil {
 		cancel()

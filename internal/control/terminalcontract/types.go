@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/calebhabesh/orbit/internal/network"
 	"io"
 	"strconv"
 
@@ -124,10 +125,18 @@ type Invitation struct {
 	ExpiresAt          string                    `json:"expires_at"`
 }
 type InviteIntent struct {
+	ShortCode          bool   `json:"short_code,omitempty"`
 	Folder             string `json:"folder"`
 	ExpectedMembership string `json:"expected_membership"`
 	ExpiresAt          string `json:"expires_at"`
 	Device             string `json:"device"` // empty for a new device; exact known key for sharing
+}
+
+// PairingIntent authorizes one ephemeral short-code claim through the exact
+// operator/profile whose privacy text the client showed before submission.
+type PairingIntent struct {
+	Code    string `json:"code"`
+	Profile string `json:"profile"`
 }
 type JoinIntent struct {
 	Network    *NetworkPolicy `json:"network,omitempty"`
@@ -210,6 +219,7 @@ type ServiceIntent struct {
 // Mutation is a closed tagged union. Exactly one matching intent is required.
 // Operation IDs are random 32-byte lowercase hex, scoped to this state identity.
 type Mutation struct {
+	Pairing     *PairingIntent  `json:"pairing,omitempty"`
 	Network     *NetworkIntent  `json:"network,omitempty"`
 	Version     string          `json:"version"`
 	OperationID string          `json:"operation_id"`
@@ -234,7 +244,7 @@ type Query struct {
 	Version     string         `json:"version"`
 	Kind        string         `json:"kind"` // capabilities, context, root_preview, operation, status,
 	// attention, devices, folders, requests, history, deleted, content_review,
-	// session, settings, service, doctor
+	// session, settings, service, doctor, files, file_details
 	Folder      string     `json:"folder"`
 	Path        string     `json:"path"`
 	Cwd         string     `json:"cwd"`
@@ -373,34 +383,79 @@ type Storage struct {
 }
 
 type Result struct {
-	Network          *NetworkStatus      `json:"network,omitempty"`
-	CopyPlans        []CopyPlan          `json:"copy_plans,omitempty"`
-	Storage          *Storage            `json:"storage,omitempty"`
-	FolderManagement *FolderManagement   `json:"folder_management,omitempty"`
-	Upload           *UploadResult       `json:"upload,omitempty"`
-	Versions         []VersionSummary    `json:"versions"`
-	ContentReview    *ContentReview      `json:"content_review,omitempty"`
-	Version          string              `json:"version"`
-	Capabilities     []string            `json:"capabilities"`
-	State            string              `json:"state"`
-	Context          *Context            `json:"context,omitempty"`
-	Operation        *Operation          `json:"operation,omitempty"`
-	Preview          *RootPreview        `json:"preview,omitempty"`
-	Join             *JoinRecord         `json:"join,omitempty"`
-	Invitation       *Invitation         `json:"invitation,omitempty"`
-	Session          *EditorSession      `json:"session,omitempty"`
-	Settings         *Settings           `json:"settings,omitempty"`
-	Service          *Service            `json:"service,omitempty"`
-	Host             *HostStartup        `json:"host,omitempty"`
-	Readiness        *Readiness          `json:"readiness,omitempty"`
-	Items            []NamedItem         `json:"items"`
-	Requests         []EnrollmentRequest `json:"requests"`
-	Observations     []Observation       `json:"observations"`
-	Attention        []Attention         `json:"attention"`
-	Effects          []Effect            `json:"effects"`
-	Review           *Review             `json:"review,omitempty"`
-	Cursor           string              `json:"cursor"`
-	Error            *Error              `json:"error,omitempty"`
+	Pairing          *network.PairingStatus `json:"pairing,omitempty"`
+	Network          *NetworkStatus         `json:"network,omitempty"`
+	CopyPlans        []CopyPlan             `json:"copy_plans,omitempty"`
+	Storage          *Storage               `json:"storage,omitempty"`
+	FolderManagement *FolderManagement      `json:"folder_management,omitempty"`
+	Upload           *UploadResult          `json:"upload,omitempty"`
+	Versions         []VersionSummary       `json:"versions"`
+	ContentReview    *ContentReview         `json:"content_review,omitempty"`
+	Version          string                 `json:"version"`
+	Capabilities     []string               `json:"capabilities"`
+	State            string                 `json:"state"`
+	Context          *Context               `json:"context,omitempty"`
+	Operation        *Operation             `json:"operation,omitempty"`
+	Preview          *RootPreview           `json:"preview,omitempty"`
+	Join             *JoinRecord            `json:"join,omitempty"`
+	Invitation       *Invitation            `json:"invitation,omitempty"`
+	Session          *EditorSession         `json:"session,omitempty"`
+	Settings         *Settings              `json:"settings,omitempty"`
+	Service          *Service               `json:"service,omitempty"`
+	Host             *HostStartup           `json:"host,omitempty"`
+	Readiness        *Readiness             `json:"readiness,omitempty"`
+	Items            []NamedItem            `json:"items"`
+	Requests         []EnrollmentRequest    `json:"requests"`
+	Observations     []Observation          `json:"observations"`
+	Attention        []Attention            `json:"attention"`
+	Effects          []Effect               `json:"effects"`
+	Review           *Review                `json:"review,omitempty"`
+	Cursor           string                 `json:"cursor"`
+	Error            *Error                 `json:"error,omitempty"`
+	Files            []FileEntry            `json:"files,omitempty"`
+	File             *FileDetail            `json:"file,omitempty"`
+}
+
+// FileEntry is one row of the read-only Files view. State is one of the EG2
+// labels (captured, waiting_capture, waiting_publish, downloading,
+// content_missing, conflict, blocked, deleted) or empty for an implicit
+// directory; it describes this device only.
+type FileEntry struct {
+	Path      string `json:"path"`
+	Name      string `json:"name"`
+	Directory bool   `json:"directory"`
+	Bytes     Uint   `json:"bytes"`
+	Modified  string `json:"modified"` // RFC 3339 UTC from the last scan; empty when not on disk here
+	State     string `json:"state"`
+	Reason    string `json:"reason,omitempty"`
+}
+
+// fileStates are the EG2 labels shared by the Files view and `orbit files`.
+// Each describes this device only.
+var fileStates = map[string][2]string{
+	"captured":        {"Saved here", "This device has recorded this version and it is in the folder."},
+	"waiting_publish": {"Arriving", "A newer version is stored here and is being written to the folder."},
+	"downloading":     {"Downloading", "A newer version is known; its content is still arriving."},
+	"content_missing": {"Content missing", "The content of the newest version is unavailable here; check integrity."},
+	"conflict":        {"Conflict", "Devices changed this path concurrently. Review the conflict."},
+	"blocked":         {"Blocked", "Orbit could not capture or write this entry here. Check Attention."},
+	"deleted":         {"Deleted", "The newest version is a deletion. An earlier version can be restored from history."},
+}
+
+// FileStateLabel names a FileEntry state for people; unknown or empty is "".
+func FileStateLabel(state string) string { return fileStates[state][0] }
+
+// FileStateHelp explains a FileEntry state in one sentence.
+func FileStateHelp(state string) string { return fileStates[state][1] }
+
+// FileDetail adds the current versions and what other devices last reported
+// about the newest one. Each observation's ObservedAt is the time of that
+// report, never the time of this query.
+type FileDetail struct {
+	Entry        FileEntry        `json:"entry"`
+	LastChecked  string           `json:"last_checked"`
+	Heads        []VersionSummary `json:"heads"`
+	Observations []Observation    `json:"observations"`
 }
 
 // Client is an injection seam, not a second engine. Upload is bounded streamed

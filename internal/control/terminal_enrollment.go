@@ -16,6 +16,7 @@ import (
 	"github.com/calebhabesh/orbit/internal/config"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
 	"github.com/calebhabesh/orbit/internal/protocol"
 	"github.com/calebhabesh/orbit/internal/replication"
 	"github.com/calebhabesh/orbit/internal/repository"
@@ -273,6 +274,21 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 		copy := *r.Invitation
 		copy.Capability = capability
 		r.Invitation = &copy
+		if m.Invite != nil && m.Invite.ShortCode && copy.Version == "3" {
+			if client := c.options.NetworkService; client != nil {
+				text, e := tc.InvitationCode(copy)
+				if e != nil {
+					return r, e
+				}
+				expires, _ := time.Parse(time.RFC3339Nano, copy.ExpiresAt)
+				s, e := client.StartPairing(ctx, m.OperationID, []byte(text), expires)
+				if e == nil {
+					r.Pairing = &s
+				} else {
+					r.Pairing = &network.PairingStatus{State: "fallback", Error: "Use the long invitation or file; the service could not create a short code."}
+				}
+			}
+		}
 	}
 	return r, nil
 }

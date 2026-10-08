@@ -323,3 +323,18 @@ were earlier deferred under
 that deferral gave no acceptance credit, and these 2026-10-07 records are what
 close the gate. Any new operator must establish the same items before
 distributing packages that carry its profile.
+
+
+## Short pairing codes (E06)
+
+The pairing mailbox endpoint is enabled by the upgraded binary; no new secret,
+database or profile epoch is needed. It holds only public mailbox/session names,
+device IDs/pins, timing, public PAKE messages and an encrypted invitation in
+memory. It never receives the password or readable invitation. There are at
+most 128 ten-minute mailboxes, four per owner key, with source and device quotas.
+A claim admits one password attempt. Consuming retrieval, failed confirmation,
+expiry or restart removes the mailbox. A restart interrupts codes: users ask
+for a new one. Existing long invitations and approved devices remain usable.
+Older services refuse this endpoint and clients expose the long invitation/file.
+For mixed device versions choose the long invitation or save a private file.
+Pairing metadata is outside the data-relay monthly allowance, like enrollment.

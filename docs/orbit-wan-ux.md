@@ -291,8 +291,9 @@ extension.
 ### Short pairing code amendment 2026-10-08
 
 The owner approved a short pairing code as the default invitation in Automatic
-and self-hosted modes; it is planned as E06 of the
-[onboarding plan](orbit-onboarding-implementation-plan.md) and not implemented.
+and self-hosted modes; it is implemented by E06 of the
+[onboarding plan](orbit-onboarding-implementation-plan.md), with acceptance and
+deployment tracked separately.
 **Add device** shows an eight-character code such as `K7Q4-M9XD` (case and
 dashes ignored). The inviter leaves the encrypted invitation in a short-lived
 mailbox on its operator's service; the joiner's code names the mailbox and

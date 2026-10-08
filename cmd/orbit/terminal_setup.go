@@ -24,6 +24,7 @@ import (
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/calebhabesh/orbit/internal/controlclient"
 	"github.com/calebhabesh/orbit/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/pairing"
 	"golang.org/x/sys/unix"
 )
 
@@ -44,6 +45,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 	joining := flags.Bool("join", false, "join the folder in a private invitation")
 	invitationFile := flags.String("invitation-file", "", "private transferred invitation")
 	invitationCode := flags.String("invitation", "", "deprecated; use private file or stdin")
+	pairingProfile := flags.String("pairing-profile", "", "reviewed operator profile digest for short-code stdin")
 	invitationStdin := flags.Bool("invitation-stdin", false, "read bounded private invitation from stdin")
 	connection := flags.String("connection", "", "automatic, local_only, manual, or self_hosted")
 	remote := flags.String("remote", "", "inviter endpoint (must match invitation)")
@@ -318,7 +320,8 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 					if e != nil {
 						return e
 					}
-					if strings.HasPrefix(input, "orbit-invitation:v") {
+					_, shortErr := pairing.Normalize(input)
+					if strings.HasPrefix(input, "orbit-invitation:v") || shortErr == nil {
 						*invitationCode = input
 					} else {
 						*invitationFile = input
@@ -333,7 +336,12 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 					if len(b) > 16384 {
 						return errors.New("invitation exceeds 16 KiB")
 					}
-					if e = decodeInvitationInput(b, &inv); e != nil {
+					if _, shortErr := pairing.Normalize(strings.TrimSpace(string(b))); shortErr == nil {
+						inv, e = resolvePairingCLI(client, strings.TrimSpace(string(b)), *pairingProfile, networkResult.Network, interactive, ask, stderr)
+					} else {
+						e = decodeInvitationInput(b, &inv)
+					}
+					if e != nil {
 						return e
 					}
 				} else if *invitationFile != "" {
@@ -342,11 +350,18 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 					}
 				} else {
 					code := strings.TrimSpace(*invitationCode)
-					if !strings.HasPrefix(code, "orbit-invitation:v") {
-						return errors.New("join requires a private invitation file, stdin, or prompt")
-					}
-					if e := decodeInvitationInput([]byte(code), &inv); e != nil {
-						return e
+					if _, shortErr := pairing.Normalize(code); shortErr == nil {
+						inv, err = resolvePairingCLI(client, code, *pairingProfile, networkResult.Network, interactive, ask, stderr)
+						if err != nil {
+							return err
+						}
+					} else {
+						if !strings.HasPrefix(code, "orbit-invitation:v") {
+							return errors.New("join requires a private invitation file, stdin, or prompt")
+						}
+						if e := decodeInvitationInput([]byte(code), &inv); e != nil {
+							return e
+						}
 					}
 				}
 				if err = inv.ExpandPackaged(); err != nil {

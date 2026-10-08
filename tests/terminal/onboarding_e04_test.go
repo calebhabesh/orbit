@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync/atomic"
@@ -21,6 +22,14 @@ import (
 // (w05Service; production orbit-net admission limits) and two real daemons.
 // Never run against the deployed VPS.
 func TestOnboardingE04FreshJoinDefaultsNamesAndModes(t *testing.T) {
+	e04JoinDefaults(t, false)
+}
+
+func TestOnboardingE06ShortCodeJoinsAndTransfers(t *testing.T) {
+	e04JoinDefaults(t, true)
+}
+
+func e04JoinDefaults(t *testing.T, short bool) {
 	base := testkit.NewDisposable(t)
 	if err := os.Chmod(base, 0700); err != nil {
 		t.Fatal(err)
@@ -44,6 +53,20 @@ func TestOnboardingE04FreshJoinDefaultsNamesAndModes(t *testing.T) {
 		t.Fatal(err)
 	}
 	stateA, stateB := filepath.Join(base, "a"), filepath.Join(base, "b")
+	if short {
+		// Full headless join with an isolated service-manager fixture. This starts
+		// the real daemon, but never changes this host's units or lingering.
+		home := filepath.Join(base, "home")
+		if err := os.MkdirAll(home, 0700); err != nil {
+			t.Fatal(err)
+		}
+		t.Setenv("HOME", home)
+		stateB = filepath.Join(home, ".local", "state", "orbit")
+		t.Setenv("ORBIT_E01_BIN", cli.binary)
+		t.Setenv("ORBIT_E01_STATE", stateB)
+		e01Stubs(t, base, stubHost{target: "multi-user.target", linger: true})
+	}
+
 	for _, dir := range []string{stateA, stateB} {
 		e00StopOnCleanup(t, base, dir)
 	}
@@ -78,7 +101,30 @@ func TestOnboardingE04FreshJoinDefaultsNamesAndModes(t *testing.T) {
 		t.Fatal("routed invitation unreadable", e)
 	}
 	freshFile := filepath.Join(base, "join-fresh.json")
-	cli.ok("join", "--state", stateB, "--root", rootB, "--label", "Pi", "--name", "Orbit", "--invitation-file", invFile, "--preview", "--review-file", freshFile, "--json")
+	if short {
+		// A self-hosted joiner reviews its operator before using its short code.
+		reviewB := stateB + "-network.json"
+		cli.ok("network", "preview", "--state", stateB, "--mode", "self_hosted", "--profile-file", profile, "--review-file", reviewB, "--json")
+		cli.ok("network", "apply", "--state", stateB, "--review-file", reviewB, "--json")
+		cmd := exec.Command(cli.binary, "devices", "invite", "--state", stateA, "--folder", "Orbit", "--code")
+		cmd.Env = append(os.Environ(), "SSL_CERT_FILE="+ca)
+		output, e := cmd.Output()
+		if e != nil {
+			t.Fatal(e)
+		}
+		code := strings.TrimSpace(string(output))
+		if len(code) != 9 {
+			t.Fatalf("expected short code; got %d characters", len(code))
+		}
+		digest, _ := selection.Digest()
+		_, out, e := cli.call(code, "join", "--state", stateB, "--root", rootB, "--label", "Pi", "--name", "Orbit", "--invitation-stdin", "--pairing-profile", digest, "--preview", "--review-file", freshFile, "--json")
+		if e != nil {
+			t.Fatal(e, out)
+		}
+		t.Log("Short code resolved through production CLI and local service")
+	} else {
+		cli.ok("join", "--state", stateB, "--root", rootB, "--label", "Pi", "--name", "Orbit", "--invitation-file", invFile, "--preview", "--review-file", freshFile, "--json")
+	}
 	var plan tc.Mutation
 	if b, e := os.ReadFile(freshFile); e != nil || json.Unmarshal(b, &plan) != nil || plan.Join == nil {
 		t.Fatal("fresh join review unreadable", e)
@@ -86,6 +132,9 @@ func TestOnboardingE04FreshJoinDefaultsNamesAndModes(t *testing.T) {
 	planned := tc.NetworkPolicy{}
 	if plan.Join.Network != nil {
 		planned = *plan.Join.Network
+	}
+	if short && plan.Join.Settings.Startup != "unattended" {
+		t.Fatalf("headless startup: %q", plan.Join.Settings.Startup)
 	}
 	t.Logf("F08: fresh routed join plan: mode %q, profile set %v, awaiting profile %v; inviter's operator profile preselected %v",
 		planned.Mode, planned.Profile != "", planned.AwaitingProfile, planned.Profile == inv.Route.Profile)

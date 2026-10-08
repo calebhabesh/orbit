@@ -20,6 +20,7 @@ Everyday Commands:
   context [path]           Inspect folder identity, registered root, and current path context
   folders                  List synced folders and registered roots
   devices                  List enrolled devices, connection mode, and last contact
+  files [path]             List files with their sync state here (read-only)
   conflicts                List files requiring version or structure review
   history <path>           List known versions and content availability
   deleted                  Find deleted files and available restore candidates
@@ -147,7 +148,7 @@ Description:
 Usage:
   orbit devices [options]
   orbit devices list [options]
-  orbit devices invite --folder <name> --code
+  orbit devices invite --folder <name> --code [--long]
   orbit devices invite --folder <name> --out <private-file>
   orbit devices requests show --device <name> --review-file <private-review>
   orbit devices approve --review-file <private-review>
@@ -157,12 +158,37 @@ Usage:
 
 Options:
   --folder <name|id>  Folder scope for device actions
+  --code              Print a short XXXX-XXXX pairing code (ten minutes, one
+                      claim) when the Orbit service supports it
+  --long              With --code, print the long invitation instead, for
+                      older devices or services without short codes
   --state <path>      Explicit agent state directory
   --json              Structured JSON output
 
 Description:
   Lists known devices or manages device invitations and approvals.
   'orbit devices' with no subcommand defaults to listing all devices.`)
+
+	case "files":
+		fmt.Fprintln(stdout, `orbit files - List files and their sync state on this device
+
+Usage:
+  orbit files [path] [options]
+
+Options:
+  --folder <name|id>  Target synced folder by name or 64-hex ID
+  --search <text>     List known paths containing this text
+  --limit <n>         Page size, 1-200 (default 50)
+  --cursor <c>        Continue from the cursor printed by the previous page
+  --state <path>      Explicit agent state directory
+  --json              Structured JSON output
+
+Description:
+  Read-only, like the Files view in the terminal interface. A directory path
+  lists its entries; a file path shows its versions and what other devices
+  last reported, with the time of each report. States describe this device:
+  Saved here, Arriving, Downloading, Content missing, Conflict, Blocked,
+  Deleted. Rename, move, delete and edit files with your own tools.`)
 
 	case "history":
 		fmt.Fprintln(stdout, `orbit history - List known versions for a file

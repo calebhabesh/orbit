@@ -101,6 +101,9 @@ func (c *Client) Call(ctx context.Context, method, path string, input, output an
 			callTimeout, headerTimeout = 25*time.Second, 25*time.Second
 		}
 	case tc.Mutation:
+		if v.Kind == "pairing" {
+			callTimeout, headerTimeout = 55*time.Second, 50*time.Second
+		}
 		if v.Kind == "setup" || v.Kind == "adopt" || v.Kind == "join" {
 			callTimeout, headerTimeout = 40*time.Second, 35*time.Second
 		}

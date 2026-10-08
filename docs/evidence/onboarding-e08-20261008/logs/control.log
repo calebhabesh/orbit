@@ -1,0 +1,9 @@
+=== RUN   TestOnboardingE08FileStatesFromProductionPaths
+--- PASS: TestOnboardingE08FileStatesFromProductionPaths (0.02s)
+=== RUN   TestOnboardingE08ObservationKeepsItsAge
+--- PASS: TestOnboardingE08ObservationKeepsItsAge (0.01s)
+=== RUN   TestOnboardingE08PagesTenThousandEntries
+    onboarding_e08_test.go:224: paged 10,000 entries in 50 pages, 199.580525ms per page
+--- PASS: TestOnboardingE08PagesTenThousandEntries (11.74s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/control	11.768s

@@ -54,7 +54,7 @@ def hide_transfer(ui):
     deadline = time.monotonic() + 12
     while time.monotonic() < deadline:
         ui.pump(.05)
-        if 'characters and stays hidden' in ui.screen.text():
+        if 'characters and stays hidden' in ui.screen.text() or 'Pairing code:' in ui.screen.text():
             # Raw transfer bytes are deliberately discarded before any helper
             # can include its diagnostic tail in a later error.
             ui.raw = bytearray()
@@ -114,7 +114,10 @@ def run(binary, profile, output, outage_marker):
         wrong = dict(inv, key_pin='ff' * 32, route=dict(inv['route'], pin='ff' * 32))
         ub.replace(code(wrong)); ub.send(b'\r'); ub.wait('IDENTITY_MISMATCH')
         wrapped = '\n'.join(code(inv)[i:i+50] for i in range(0, len(code(inv)), 50))
-        ub.invitation(wrapped)
+        # E06: the normal Add device screen exposes only the short code;
+        # long invitations above retain expired/wrong-pin compatibility checks.
+        assert ua.pairing_code, 'short pairing code absent'
+        ub.invitation(ua.pairing_code)
         # Root-review error retains names and location before explicit correction.
         blocked = b.root / 'blocked'; blocked.mkdir(mode=0o700)
         (blocked / 'unsupported').symlink_to(b.data / 'local.txt')
@@ -225,7 +228,7 @@ def run(binary, profile, output, outage_marker):
         assert marker.is_file() and not marker.is_symlink(), 'disposable service marker required'
         with outage_path.open('x') as trigger: trigger.write('stop disposable service only')
         ua = UI(a, 'service-outage-local-capture-draft', size=(100, 36)); active.append(ua)
-        ua.wait('[Overview]'); ua.send(b'N'); ua.wait('Connection details'); ua.wait('SERVICE_UNAVAILABLE', timeout=25)
+        ua.overview(); ua.send(b'N'); ua.wait('Connection details'); ua.wait('SERVICE_UNAVAILABLE', timeout=25)
         ua.back(); ua.wait('[Overview]'); ua.send(b'c'); ua.wait('Review setup inputs')
         root_review(ua, 'Laptop', 'OfflineDraft', a.root / 'offline-draft')
         ua.back(); ua.wait('Review setup inputs'); ua.wait('OfflineDraft')

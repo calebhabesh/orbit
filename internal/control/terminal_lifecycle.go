@@ -21,7 +21,7 @@ import (
 )
 
 func terminalResult() tc.Result {
-	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, tc.NetworkCapability, tc.NetworkDiagnosticsCapability, "lifecycle_settings_v1", "enrollment_v2", tc.RoutedEnrollmentCapability, tc.PackagedProfileCapability, "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
+	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, tc.NetworkCapability, tc.NetworkDiagnosticsCapability, "lifecycle_settings_v1", "enrollment_v2", tc.RoutedEnrollmentCapability, tc.ShortPairingCapability, tc.PackagedProfileCapability, "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
 }
 func terminalError(code string) error {
 	return &ControlError{Code: code, Message: code, Action: "inspect state and obtain a fresh review"}
@@ -90,12 +90,23 @@ func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (tc.Result, 
 	}
 	r := terminalResult()
 	switch q.Kind {
+	case "pairing":
+		if c.options.NetworkService == nil {
+			return r, terminalError("PAIRING_UNAVAILABLE")
+		}
+		s := c.options.NetworkService.PairingStatus(q.ID)
+		r.Pairing = &s
+		return r, nil
 	case "network_doctor":
 		return c.terminalNetworkDoctor(ctx, q)
 	case "network_status", "network_preview":
 		return c.terminalNetworkQuery(ctx, q)
 	case "paths", "storage", "maintenance":
 		return c.terminalEveryday(ctx, q)
+	case "files":
+		return c.terminalFiles(ctx, q)
+	case "file_details":
+		return c.terminalFileDetails(ctx, q)
 	case "setups":
 		return c.terminalSetups(ctx, q)
 	case "folder_management":
@@ -182,6 +193,9 @@ func (c *Controller) TerminalMutate(ctx context.Context, m tc.Mutation) (tc.Resu
 	fingerprint, err := m.Fingerprint()
 	if err != nil {
 		return tc.Result{}, err
+	}
+	if m.Kind == "pairing" {
+		return c.terminalPairing(ctx, m, fingerprint)
 	}
 	if m.Kind == "network" {
 		return c.terminalNetworkMutation(ctx, m)
@@ -431,6 +445,11 @@ func (s *Server) registerTerminal(mux *http.ServeMux) {
 		if err := decodeTerminalBody(w, r, &m); err != nil {
 			writeError(w, err)
 			return
+		}
+		if m.Kind == "pairing" {
+			// The bounded PAKE rendezvous may take 45 seconds. Ordinary
+			// control calls retain the server's 30-second write deadline.
+			_ = http.NewResponseController(w).SetWriteDeadline(time.Now().Add(50 * time.Second))
 		}
 		result, err := s.ctrl.TerminalMutate(r.Context(), m)
 		if err != nil {

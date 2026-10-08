@@ -41,6 +41,8 @@ type Options struct {
 	Refresh      time.Duration
 	// StateDir names the selected state; the invitation save default lives there.
 	StateDir string
+	// Open hands a path to the desktop's default application; nil uses xdg-open.
+	Open func(path string) error
 }
 
 func Interactive(input *os.File, output io.Writer) bool {

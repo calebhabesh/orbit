@@ -660,7 +660,8 @@ func managerExecStart() string {
 	if err != nil {
 		return ""
 	}
-	return strings.NewReplacer(";", " ", "{", " ", "}", " ").Replace(string(out))
+	// With no unit loaded the manager prints an empty line, which is no command.
+	return strings.TrimSpace(strings.NewReplacer(";", " ", "{", " ", "}", " ").Replace(string(out)))
 }
 
 // Refuse actions on a unit that belongs to another selected state. Existing

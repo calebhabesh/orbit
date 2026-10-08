@@ -57,8 +57,10 @@ type Options struct {
 }
 
 type Controller struct {
-	contentMu  sync.Mutex
-	terminalMu sync.Mutex
+	pairMu      sync.Mutex
+	pairResults map[string]pairingRecord
+	contentMu   sync.Mutex
+	terminalMu  sync.Mutex
 	// setupActive names setup operations being advanced; guarded by terminalMu.
 	setupActive map[string]bool
 	db          *repository.DB

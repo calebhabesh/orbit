@@ -318,7 +318,7 @@ func (p NetworkProof) Canonical(private bool) ([]byte, error) {
 		}
 	}
 	switch p.Kind {
-	case "authenticate", "announce":
+	case "authenticate", "announce", "pairing":
 		if p.Target != "" || p.TargetPin != "" || p.Session != "" || p.Role != "" {
 			return nil, errors.New("INVALID_PROOF")
 		}

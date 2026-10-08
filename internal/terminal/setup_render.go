@@ -43,7 +43,10 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Loading actual finite/network/startup settings…")
 	case "invitation":
 		title = "Orbit | Join invitation"
-		lines = append(lines, "Paste the invitation code, or type the path of a saved invitation file.", "Over SSH a file is easier: copy it here first (scp), then type its path.", "The invitation is hidden and never included in status/logs.")
+		lines = append(lines, "Type the XXXX-XXXX pairing code, paste a long invitation, or enter a private file path.", "The invitation is hidden and never included in status/logs.")
+		if digest, operator, privacy := m.pairingOperator(); digest != "" {
+			lines = append(lines, "Short codes contact: "+safe(operator), safe(privacy), "Pressing Enter with a short code accepts this one-time service exchange.")
+		}
 		focusLine = len(lines)
 		lines = append(lines, m.theme().field("Private invitation", f.fields[f.focus].input.View(), "", true))
 		lines = append(lines, receivedLine(f.fields[f.focus].input.Value()))
@@ -202,6 +205,14 @@ func (m *model) workflowView() tea.View {
 		footer = "Enter create scoped invitation  Esc back  q quit"
 	case "invitation_out":
 		title = "Orbit | Private invitation"
+		if p := f.result.Pairing; p != nil && p.Code != "" {
+			lines = append(lines, "Pairing code: "+p.Code, "Expires: "+p.Expires, "On the other device choose Join and type this code.", "Pairing: "+safe(p.State), "Owner approval and verification-code comparison still follow.")
+			if p.Error != "" {
+				lines = append(lines, "This code is unavailable or a wrong code was tried. Press r for a new code.")
+			}
+			footer = "c copy code  r new code  v long invitation  s save file  x revoke  Esc back  q quit"
+			break
+		}
 		code, _ := tc.InvitationCode(f.invitation)
 		lines = append(lines, "Invitation created for selected folder only.", "Paste it on the receiving device, review its root there, then approve the exact request here.", "Expires: "+safe(f.invitation.ExpiresAt),
 			"The code is "+humanCount(len(code))+" characters and stays hidden here (F05):",

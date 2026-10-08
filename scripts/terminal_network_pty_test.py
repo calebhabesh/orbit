@@ -31,7 +31,7 @@ peer.output = None
 peer.data = root
 ui = UI(peer, 'W12-connection-doctor', size=(100, 45))
 try:
-    ui.wait('[Overview]')
+    ui.overview()
     ui.send(b'N')
     ui.wait('Connection details')
     ui.wait('Connected via relay')
