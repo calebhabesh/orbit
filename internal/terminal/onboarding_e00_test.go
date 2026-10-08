@@ -6,14 +6,11 @@ package terminal
 // case into an ordinary passing regression when it repairs the behavior.
 
 import (
-	"context"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
-	tea "charm.land/bubbletea/v2"
-	"github.com/calebhabesh/orbit/internal/config"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/charmbracelet/x/ansi"
 )
@@ -74,60 +71,5 @@ func TestOnboardingE00F05RevealedInvitationCopiesWhole(t *testing.T) {
 		if !strings.Contains(joined, "characters") {
 			t.Errorf("%dx%d: no character count shown with the invitation", size[0], size[1])
 		}
-	}
-}
-
-// F07: an incomplete (truncated) code reports that it is incomplete, not a
-// generic or INVALID_REQUEST failure.
-func TestOnboardingE00F07TruncatedInvitationIsSpecific(t *testing.T) {
-	onboardingBaseline(t)
-	_, code := e00Invitation()
-	for _, cut := range []int{len(code) - 1, len(code) - 2, len(code) / 2, 300} {
-		m, w := workflowModel()
-		m.flow = &workflow{screen: "invitation", kind: "join", fields: []field{newField("Private invitation", code[:cut], true)}}
-		runReply(m, keyCode(m, tea.KeyEnter))
-		got := m.flow.err
-		t.Logf("cut at %d of %d: %q", cut, len(code), got)
-		low := strings.ToLower(got)
-		if got == "" {
-			t.Errorf("cut %d: truncated code accepted", cut)
-			continue
-		}
-		if strings.Contains(got, "INVALID_REQUEST") || strings.Contains(got, "CONTROL_UNAVAILABLE") || strings.Contains(got, "orbit doctor") {
-			t.Errorf("cut %d: generic failure %q", cut, got)
-		}
-		if !strings.Contains(low, "incomplete") && !strings.Contains(low, "damaged") {
-			t.Errorf("cut %d: message does not say the code is incomplete/damaged", cut)
-		}
-		if w.calls != 0 {
-			t.Fatal("mutation sent for a rejected code")
-		}
-	}
-}
-
-// F08: a join on a device with no folders preselects Automatic connection even
-// when the daemon already wrote its config (FreshInstall false), as on the
-// trial laptop whose installed service had created the identity first.
-func TestOnboardingE00F08JoinDefaultsToAutomatic(t *testing.T) {
-	onboardingBaseline(t)
-	m, w := workflowModel()
-	m.opts.FreshInstall = false
-	w.query = func(_ context.Context, q tc.Query) (tc.Result, error) {
-		s := config.DefaultRuntimeSettings()
-		switch q.Kind {
-		case "settings":
-			return tc.Result{Settings: &s}, nil
-		case "network_status":
-			return tc.Result{Network: &tc.NetworkStatus{Policy: tc.NetworkPolicy{Mode: "manual", Generation: 1},
-				Builtin: &tc.BuiltinProfile{Digest: strings.Repeat("d", 64), Operator: "Orbit"}}}, nil
-		}
-		return tc.Result{}, nil
-	}
-	runReply(m, m.setupForm("join"))
-	if m.flow == nil || len(m.flow.fields) < 14 {
-		t.Fatal("join form not loaded")
-	}
-	if got := m.flow.fields[13].input.Value(); got != "automatic" {
-		t.Errorf("join connection default %q, want automatic", got)
 	}
 }

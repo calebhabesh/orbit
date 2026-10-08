@@ -187,7 +187,7 @@ func (c *Controller) terminalSetupMutation(ctx context.Context, m tc.Mutation) (
 		if *plan.Network != current && (current.Generation == ^tc.Uint(0) || plan.Network.Generation != current.Generation+1) {
 			return tc.Result{}, terminalError("STALE_VIEW")
 		}
-		if e = c.validateNetworkIntent(tc.NetworkIntent{Policy: *plan.Network}); e != nil {
+		if e = c.validateNetworkIntent(c.planNetworkIntent(m, *plan.Network)); e != nil {
 			return tc.Result{}, e
 		}
 	}
@@ -400,7 +400,7 @@ func (c *Controller) advanceSetup(ctx, work context.Context, record repository.T
 		if plan.Network != nil {
 			// Reviewed Automatic naming the packaged digest installs that profile
 			// first; a retry finds it stored and only saves the policy.
-			if in := c.resolvePackaged(tc.NetworkIntent{Policy: *plan.Network}); in.Profile != nil {
+			if in := c.resolvePackaged(c.planNetworkIntent(m, *plan.Network)); in.Profile != nil {
 				s := network.ProfileSelection{Profile: *in.Profile, Authority: in.Authority, Environment: in.Environment, HighestEpoch: in.Profile.Epoch}
 				if err := config.SaveNetworkProfile(c.db.StateDir(), s, uint64(c.options.Now().Unix())); err != nil {
 					return block(err)
@@ -424,6 +424,23 @@ func (c *Controller) advanceSetup(ctx, work context.Context, record repository.T
 	if plan.Settings.Startup != "manual" {
 		if err := c.setupStartup(ctx, record); err != nil {
 			return block(err)
+		}
+	}
+	if m.Join != nil && job.Membership == nil && m.Join.Invitation.Version == "3" && job.Wire == nil {
+		// The reviewed policy is saved, but this daemon generation still runs
+		// the policy it started with. The client restarts the daemon after this
+		// reply and the resumed job continues; this is a phase, not an error.
+		saved, err := config.LoadNetworkPolicy(c.db.StateDir())
+		if err != nil {
+			return block(err)
+		}
+		if active := c.options.NetworkPolicy; c.options.Network == nil || c.options.Relay == nil || (active != nil && *active != saved) {
+			if r.Operation.Phase != "network_restart" {
+				if err = c.saveSetupPhase(ctx, &record, job, "network_restart"); err != nil {
+					return *r, err
+				}
+			}
+			return *r, nil
 		}
 	}
 	if m.Join != nil && job.Membership == nil {
@@ -988,4 +1005,33 @@ func preparedRequestThrottleDelay(phase, expires string, now time.Time) time.Dur
 		}
 	}
 	return 60 * time.Second
+}
+
+// planNetworkIntent completes a reviewed setup/join policy with the profile it
+// needs (F08). A join whose policy names the routed invitation's operator, and
+// for which neither the packaged profile nor the stored one matches, uses the
+// signed profile carried in the invitation; the owner reviewed it as part of
+// the join, and installing it still passes the ordinary profile review
+// (signature, epoch floors, operator-change refusal).
+func (c *Controller) planNetworkIntent(m tc.Mutation, policy tc.NetworkPolicy) tc.NetworkIntent {
+	in := tc.NetworkIntent{Policy: policy}
+	if m.Join == nil {
+		return in
+	}
+	inv := m.Join.Invitation
+	if inv.Route == nil || inv.Profile == nil || policy.Profile != inv.Route.Profile || c.resolvePackaged(in).Profile != nil {
+		return in
+	}
+	if stored, err := config.LoadNetworkProfile(c.db.StateDir(), 0); err == nil {
+		if d, _ := stored.Digest(); d == policy.Profile {
+			return in
+		}
+	}
+	environment := "self_hosted"
+	if inv.Profile.Authority == network.ReleaseAuthority {
+		environment = "release"
+	}
+	p := *inv.Profile
+	in.Profile, in.Authority, in.Environment = &p, p.Authority, environment
+	return in
 }

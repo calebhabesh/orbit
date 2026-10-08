@@ -186,6 +186,11 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 			return err
 		}
 		policy := networkResult.Network.Policy
+		connectionAnswered := false
+		noFolders := false
+		if folders, e := client.Query(context.Background(), tc.Query{Version: tc.Version, Kind: "folders", Limit: 1}); e == nil {
+			noFolders = len(folders.Items) == 0
+		}
 		if *connection != "" {
 			policy.Mode = *connection
 			policy.LANAdvertising = policy.Mode != "manual"
@@ -233,6 +238,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				if e != nil {
 					return e
 				}
+				connectionAnswered = choice != policy.Mode
 				if choice != policy.Mode {
 					policy.Mode = choice
 					policy.LANAdvertising = choice != "manual"
@@ -346,7 +352,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				if err = inv.ExpandPackaged(); err != nil {
 					return err
 				}
-				if err = inv.Validate(); err != nil {
+				if err = tc.ShapeError(inv.Validate()); err != nil {
 					return err
 				}
 				expires, _ := time.Parse(time.RFC3339Nano, inv.ExpiresAt)
@@ -355,6 +361,14 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				}
 				if (*remote != "" && *remote != inv.EnrollmentEndpoint) || (*folder != "" && *folder != inv.Folder) {
 					return errors.New("invitation identity/scope mismatch")
+				}
+				if *connection == "" && !connectionAnswered {
+					// The invitation decides the operator unless the owner chose (F08).
+					joinPolicy := tc.JoinPolicy(inv, networkResult.Network.Policy, networkResult.Network.Builtin, freshInstall || noFolders)
+					plan.Network = &joinPolicy
+					if inv.Profile != nil {
+						fmt.Fprintf(stderr, "Connection: %s through %s, taken from the invitation. %s\n", joinPolicy.Mode, EscapeTerminal(inv.Profile.Operator), EscapeTerminal(inv.Profile.Privacy))
+					}
 				}
 			}
 			q := tc.Query{Version: tc.Version, Kind: "root_preview", Path: *root, Name: kind, RootPlan: &plan}

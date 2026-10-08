@@ -48,17 +48,19 @@ type workflow struct {
 	builtin                                         *tc.BuiltinProfile
 	host                                            *tc.HostStartup
 	replaceOnType                                   bool
-	plan                                            tc.SetupIntent
-	invitation                                      tc.Invitation
-	mutation                                        tc.Mutation
-	request                                         tc.EnrollmentRequest
-	result                                          tc.Result
-	items                                           []tc.NamedItem
-	retirement                                      *control.RetireDevicePreviewResult
-	err, notice                                     string
-	work                                            func(context.Context) (tc.Result, error)
-	task                                            string
-	busy                                            bool
+	// joinPolicy is the connection the invitation proposes (F08).
+	joinPolicy  *tc.NetworkPolicy
+	plan        tc.SetupIntent
+	invitation  tc.Invitation
+	mutation    tc.Mutation
+	request     tc.EnrollmentRequest
+	result      tc.Result
+	items       []tc.NamedItem
+	retirement  *control.RetireDevicePreviewResult
+	err, notice string
+	work        func(context.Context) (tc.Result, error)
+	task        string
+	busy        bool
 }
 
 func newField(label, value string, secret bool) field {
@@ -247,7 +249,9 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 			}
 		}
 		mode := f.network.Mode
-		if m.opts.FreshInstall && mode == "manual" {
+		// Fresh devices, and devices with no folders yet when a packaged
+		// profile exists, are offered Automatic (F08).
+		if mode == "manual" && (m.opts.FreshInstall || (len(m.result.Items) == 0 && f.builtin != nil)) {
 			mode = "automatic"
 		}
 		f.result.Network = r.Network
@@ -277,6 +281,11 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		}
 	case "parse_invitation":
 		f.invitation = *r.Invitation
+		// The invitation proposes the connection: the inviter's operator for a
+		// routed invitation (F08). The owner can still change it in the form.
+		p := tc.JoinPolicy(f.invitation, f.network, f.builtin, m.opts.FreshInstall || len(m.result.Items) == 0)
+		f.joinPolicy = &p
+		f.fields[13].input.SetValue(p.Mode)
 		f.screen = "form"
 		f.focus = 0
 		return m.focusField(0)
@@ -398,7 +407,7 @@ func workflowError(r tc.Result, err error) string {
 			daemonAction = e.Action
 		} else if err != nil {
 			// Only known categories are displayed; transport errors may contain secrets.
-			for _, c := range []string{"IDENTITY_MISMATCH", "INVALID_REQUEST", "STALE_VIEW", "STORAGE_BLOCKED", "NETWORK_RESTART_REQUIRED", "IDEMPOTENCY_CONFLICT", "INVITATION_EXPIRED"} {
+			for _, c := range []string{"INVITATION_INCOMPLETE", "UNSUPPORTED_INVITATION_VERSION", "PROFILE_NOT_PACKAGED", "IDENTITY_MISMATCH", "INVALID_REQUEST", "STALE_VIEW", "STORAGE_BLOCKED", "NETWORK_RESTART_REQUIRED", "IDEMPOTENCY_CONFLICT", "INVITATION_EXPIRED"} {
 				if strings.Contains(err.Error(), c) {
 					code = c
 					break
@@ -437,6 +446,8 @@ func workflowError(r tc.Result, err error) string {
 		action = "The background daemon could not be handed to the service; run orbit stop, then orbit service start."
 	case "SERVICE_REVIEW_REQUIRED":
 		action = "A service command was interrupted; check orbit service status before trying it again."
+	case "INVITATION_INCOMPLETE":
+		action = "The invitation code is incomplete or damaged; copy the whole line again (or transfer the invitation file instead)."
 	case "IDENTITY_MISMATCH":
 		action = "Stop and verify the inviter identity; request a new invitation from the intended device."
 	case "EXPIRED_ATTEMPT", "INVITATION_EXPIRED", "EXPIRED_OR_DECLINED_ATTEMPT", "EXPIRED_REPLAY", "INVITATION_INVALID":
@@ -508,7 +519,9 @@ func (m *model) previewSetup() tea.Cmd {
 		return nil
 	}
 	policy := f.network
-	if len(f.fields) > 13 {
+	if f.joinPolicy != nil && get(13) == f.joinPolicy.Mode {
+		policy = *f.joinPolicy
+	} else if len(f.fields) > 13 {
 		policy.Mode = get(13)
 		if policy.Mode != f.network.Mode || m.opts.FreshInstall {
 			policy.LANAdvertising = policy.Mode != "manual"

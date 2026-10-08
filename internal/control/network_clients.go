@@ -35,8 +35,14 @@ func (c *Controller) enrollmentClient(ctx context.Context, inv tc.Invitation, id
 	if inv.Version == "3" {
 		selection, err := config.LoadNetworkProfile(c.db.StateDir(), uint64(time.Now().Unix()))
 		if err != nil {
-			if errors.Is(err, os.ErrNotExist) && policy.Mode == "manual" {
-				return nil, &ControlError{Code: "NETWORK_REVIEW_REQUIRED", Message: "this invitation pairs through Orbit services, but this device uses manual connections", Action: "review Automatic with orbit network automatic, then resume the join"}
+			if errors.Is(err, os.ErrNotExist) {
+				// No stored operator profile: say which review is missing (F08),
+				// never a bare "no such file or directory".
+				operator := "Orbit services"
+				if inv.Profile != nil {
+					operator = inv.Profile.Operator
+				}
+				return nil, &ControlError{Code: "NETWORK_REVIEW_REQUIRED", Message: "this invitation pairs through " + operator + ", but this device has not reviewed that operator (connection: " + policy.Mode + ")", Action: "start the join again and accept the inviter's operator in the review, or run orbit network automatic, then resume the join"}
 			}
 			return nil, err
 		}

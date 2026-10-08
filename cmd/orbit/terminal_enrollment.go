@@ -38,6 +38,11 @@ func privateFile(path string, max int64) ([]byte, error) {
 	return state.ReadPrivate(dir, name, max)
 }
 func decodeInvitationInput(b []byte, out any) error {
+	if inv, isInvitation := out.(*tc.Invitation); isInvitation {
+		decoded, _, err := tc.DecodeInvitationText(b)
+		*inv = decoded
+		return err
+	}
 	decoded, ok, err := tc.DecodeInvitationCode(string(b))
 	if err != nil {
 		return err
@@ -45,13 +50,7 @@ func decodeInvitationInput(b []byte, out any) error {
 	if ok {
 		b = decoded
 	}
-	if err = tc.Decode(b, out); err != nil {
-		return err
-	}
-	if inv, isInvitation := out.(*tc.Invitation); isInvitation {
-		return inv.ExpandPackaged()
-	}
-	return nil
+	return tc.Decode(b, out)
 }
 func reviewedEnrollmentCLI(dir, action, request, alias, path, operation string, asJSON bool, out io.Writer) error {
 	var reviewed tc.ApprovalIntent

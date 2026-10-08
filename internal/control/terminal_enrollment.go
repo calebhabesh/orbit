@@ -9,7 +9,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"sort"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/calebhabesh/orbit/internal/config"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
@@ -256,6 +258,16 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 				return r, err
 			}
 		}
+		if label := printableLabel(record.Wire.Label); found && label != "" {
+			// List the joiner by the name it chose (F11), unless the owner
+			// already named that device here.
+			device := history.ID(terminalID(record.Wire.Requester))
+			if name, e := c.db.GetDeviceDisplayName(owned, device); e == nil && name == "" {
+				if err = c.db.SetDeviceDisplayName(owned, device, label); err != nil {
+					return r, err
+				}
+			}
+		}
 	}
 	if r.Invitation != nil {
 		copy := *r.Invitation
@@ -309,4 +321,16 @@ func (c *Controller) terminalRequests(ctx context.Context, q tc.Query) (tc.Resul
 		return nil
 	})
 	return r, err
+}
+
+// printableLabel keeps a remote device's chosen name displayable: the label
+// arrives from the joining device, so control and other non-printable runes
+// are dropped before it is shown in listings.
+func printableLabel(label string) string {
+	return strings.TrimSpace(strings.Map(func(r rune) rune {
+		if !unicode.IsPrint(r) {
+			return -1
+		}
+		return r
+	}, label))
 }

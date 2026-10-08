@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E03 complete.** The
+Updated: 2026-10-08. **E00–E04 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E04 — Join and setup defaults; actionable onboarding errors** (E05 and E09 are also unblocked). The owner's next three-machine trial
+**E05 — Long invitation display, copy and file transfer** (E07 and E09 are also unblocked). The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -14,7 +14,7 @@ Updated: 2026-10-08. **E00–E03 complete.** The
 | E01 Lifecycle/service defaults | complete ([evidence](../evidence/onboarding-e01-20261008/summary.md)) | E00 | [E01](onboarding-packets.md#e01--daemon-lifecycle-and-service-defaults) |
 | E02 Attention/actions | complete ([evidence](../evidence/onboarding-e02-20261008/summary.md)) | E00 | [E02](onboarding-packets.md#e02--self-healing-attention-and-runnable-actions) |
 | E03 Keys/forms/paste | complete ([evidence](../evidence/onboarding-e03-20261008/summary.md)) | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
-| E04 Join/setup defaults | not started | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
+| E04 Join/setup defaults | complete ([evidence](../evidence/onboarding-e04-20261008/summary.md)) | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
 | E05 Long invitation | not started | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
 | E06 Short code | not started | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
 | E07 Approval wait | not started | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
@@ -139,10 +139,24 @@ run. The line-mode CLI setup prompts still take typed words.
 [Commands](../evidence/onboarding-e03-20261008/commands.md),
 [results](../evidence/onboarding-e03-20261008/results.json).
 
+### E04 — complete (2026-10-08)
+
+Base `e292743`. F08: `tc.JoinPolicy` takes the joiner's connection from the
+invitation (the inviter's operator; its profile is installed from the
+invitation after review). A `network_restart` phase replaces the
+`SERVICE_UNAVAILABLE`/"no such file" failures. F07: `INVITATION_INCOMPLETE`
+covers cut-short or damaged codes. F11: on approval the inviter names the device
+with the joiner's label, with non-printable characters removed. F16 is
+documented. A fresh joiner accepting every default joined over a local
+fixture. `make check` found five in-process WAN tests broken by the first
+restart condition; that was fixed, and every target and the WAN/onboarding
+subset pass. Limitations: private-CA self-hosted operators need trust roots
+first; the wait screen cannot name the inviter.
+[Commands](../evidence/onboarding-e04-20261008/commands.md),
+[results](../evidence/onboarding-e04-20261008/results.json).
+
 ## Handoff
 
-Start E04 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
-Promote `TestOnboardingE00F07…`, `…F08…` and the F08/F11/F16 parts of
-`…RelayJoinWaitNamesAndModes`. Forms now confirm only on the last field. Harnesses
-use `submit()` helpers (`scripts/terminal_onboarding_pty_test.py`,
-`scripts/validation/wan_tui_phase.py`).
+Start E05 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
+Promote `TestOnboardingE00F05…`. E07 owns `TestOnboardingE00F10…` (unit and
+the relay-wait process test).

@@ -250,7 +250,7 @@ Lexical path cleaning followed by ordinary path opening is insufficient.
 
 Reject symlinks and special files before reading them. Treat regular files with multiple links as unsupported for automatic mutation until the hard-link policy is proven; diagnostics must distinguish this from a symlink. Never follow a device node or FIFO as though it were a file. Unsupported objects block affected operations without deleting them.
 
-Apply file modes as safe local permissions plus synchronized executable status; do not copy ownership, setuid/setgid, or arbitrary mode bits from peers. A file-to-directory or directory-to-file change is a structural operation with conflict checks, not recursive deletion. Remove a directory only when empty and its intended deletion remains valid. Concurrent child creation must make removal fail/block safely.
+Apply file modes as safe local permissions plus synchronized executable status; do not copy ownership, setuid/setgid, or arbitrary mode bits from peers. Concretely, a received file is created owner-only (`0600`, or `0700` when its executable status is set), whatever mode the source had; a `0644` source arrives as `0600` (trial finding F16, documented in E04 rather than changed). Owners who want group or other access change it themselves. A file-to-directory or directory-to-file change is a structural operation with conflict checks, not recursive deletion. Remove a directory only when empty and its intended deletion remains valid. Concurrent child creation must make removal fail/block safely.
 
 ## 7. Retention and garbage collection
 

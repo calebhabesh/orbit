@@ -24,6 +24,10 @@ const (
 )
 
 // ErrNewerInvitation reports an invitation format from a newer Orbit release.
+// ErrIncompleteInvitation reports a pasted code that does not decode to a
+// whole invitation: usually cut short by copying part of a wrapped line (F07).
+var ErrIncompleteInvitation = errors.New("INVITATION_INCOMPLETE: the invitation code is incomplete or damaged")
+
 var ErrNewerInvitation = errors.New("UNSUPPORTED_INVITATION_VERSION: this invitation was created by a newer Orbit; update Orbit on this device or ask for an invitation from the same version")
 
 // ErrProfileNotPackaged reports a compact code whose service profile this
@@ -60,6 +64,9 @@ func DecodeInvitationCode(text string) (b []byte, ok bool, err error) {
 	for _, prefix := range []string{InvitationCodeV2, InvitationCodeV3} {
 		if strings.HasPrefix(code, prefix) {
 			b, err = base64.RawURLEncoding.DecodeString(strings.TrimPrefix(code, prefix))
+			if err != nil {
+				err = ErrIncompleteInvitation
+			}
 			return b, true, err
 		}
 	}
@@ -148,4 +155,60 @@ func (i Invitation) RoutedInvitation() protocol.RoutedInvitation {
 		r.Profile = *i.Profile
 	}
 	return r
+}
+
+// JoinPolicy proposes the joining device's connection policy (F08). A routed
+// (v3) invitation selects the inviter's operator: Automatic when it is this
+// build's packaged profile, self-hosted otherwise; that profile travels in the
+// invitation and is reviewed with the join. Any other invitation keeps the
+// current policy, except that a device with no folders yet (fresh) is offered
+// Automatic when a current packaged profile exists. The result names the next
+// generation whenever it differs from current.
+func JoinPolicy(inv Invitation, current NetworkPolicy, builtin *BuiltinProfile, fresh bool) NetworkPolicy {
+	p := current
+	switch {
+	case inv.Route != nil:
+		p.Mode = "self_hosted"
+		if builtin != nil && !builtin.Expired && builtin.Digest == inv.Route.Profile {
+			p.Mode = "automatic"
+		}
+		p.Profile, p.LANAdvertising, p.AwaitingProfile = inv.Route.Profile, true, false
+	case fresh && current.Mode == "manual" && builtin != nil && !builtin.Expired:
+		p.Mode, p.Profile, p.LANAdvertising, p.AwaitingProfile = "automatic", builtin.Digest, true, false
+	}
+	if p != current {
+		p.Generation = current.Generation + 1
+	}
+	return p
+}
+
+// DecodeInvitationText decodes a pasted code or invitation JSON and checks its
+// shape. Every failure of a pasted code that is not expiry, a newer version
+// or an unpackaged profile is reported as incomplete or damaged (F07), never
+// as a generic INVALID_REQUEST.
+func DecodeInvitationText(b []byte) (Invitation, bool, error) {
+	var inv Invitation
+	decoded, code, err := DecodeInvitationCode(string(b))
+	if err != nil {
+		return inv, code, err
+	}
+	if code {
+		b = decoded
+	}
+	if err = Decode(b, &inv); err != nil {
+		if code {
+			return inv, code, ErrIncompleteInvitation
+		}
+		return inv, code, err
+	}
+	return inv, code, inv.ExpandPackaged()
+}
+
+// ShapeError maps a structural Validate failure of a decoded invitation to
+// ErrIncompleteInvitation; identity, version and other classes pass through.
+func ShapeError(err error) error {
+	if err != nil && strings.HasPrefix(err.Error(), "INVALID_REQUEST") {
+		return ErrIncompleteInvitation
+	}
+	return err
 }

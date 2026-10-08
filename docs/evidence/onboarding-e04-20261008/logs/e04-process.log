@@ -1,0 +1,11 @@
+=== RUN   TestOnboardingE04FreshJoinDefaultsNamesAndModes
+    onboarding_e04_test.go:90: F08: fresh routed join plan: mode "self_hosted", profile set true, awaiting profile false; inviter's operator profile preselected true
+    onboarding_e04_test.go:97: F08: submitting the fresh plan => err=<nil> 
+    onboarding_e04_test.go:134: F16: source mode 0644, received mode 0600
+    onboarding_e04_test.go:141: F11: inviter `orbit devices`:
+        Workspace Replicas (Membership Revision: 2):
+          [active]  Pi                   device=6d0d126804878fa4e6ac45867f198c119328ac0154c32ac408bf8e4cdf125919 pin=05df64fe00c87e2d1eb54c633ec0e17ad44ca586d0fa2d338f19038d7f1876d2 endpoint=no endpoint
+          [active]  PC                   device=9798e87ce3d25d7d6039ff3878348d838963a16f898873436b6f759b1167771a pin=3d15e002833d0679a65e06cb06722b6449103ccf7ec518f9139ee17e6f456c37 endpoint=no endpoint
+--- PASS: TestOnboardingE04FreshJoinDefaultsNamesAndModes (21.22s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	21.221s

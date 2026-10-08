@@ -50,7 +50,8 @@ func (m *model) workflowView() tea.View {
 		footer = "Enter verify  Ctrl-U clear  Esc back  Ctrl-C close"
 	case "form":
 		title = "Orbit | Review setup inputs"
-		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.")
+		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.",
+			"Files received from other devices are saved owner-only (0600); the executable bit is kept.")
 		lines = append(lines, hostStartupLines(f.host)...)
 		for _, i := range m.formIndices() {
 			value := safe(f.fields[i].input.Value())
@@ -86,8 +87,12 @@ func (m *model) workflowView() tea.View {
 			}
 		}
 		if f.invitation.Profile != nil {
-			if p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile {
+			same := f.network.Profile == f.invitation.Route.Profile || (f.builtin != nil && f.builtin.Digest == f.invitation.Route.Profile)
+			if p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile && same {
 				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator)+" (same operator and profile as this device)")
+			} else if p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile {
+				// Reviewing this screen accepts the inviter's operator (F08).
+				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator)+" — confirming uses this operator on this device too", "Privacy: "+safe(f.invitation.Profile.Privacy))
 			} else {
 				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator), "Profile: "+safe(f.invitation.Route.Profile), "Select this operator independently with orbit network set before joining.")
 			}
@@ -105,6 +110,15 @@ func (m *model) workflowView() tea.View {
 			lines = append(lines, "Loading durable operation…")
 		} else {
 			lines = append(lines, "State: "+safe(r.Operation.State)+" | "+phaseLabel(r.Operation.Phase))
+			if r.Operation.Phase == "awaiting_approval" && r.Join != nil {
+				// Say what is awaited and where (E04): the inviting device approves.
+				who := "this device"
+				if f.plan.DeviceName != "" {
+					who += " (" + safe(f.plan.DeviceName) + ")"
+				}
+				lines = append(lines, "Waiting for the inviting device to approve "+who+".",
+					"On the inviting device: open Attention (or press w), choose the request and compare this code: "+joinVerification(r))
+			}
 
 			if r.Readiness != nil {
 				rd := r.Readiness
@@ -342,6 +356,8 @@ func previewLines(p *tc.RootPreview) []string {
 }
 func phaseLabel(phase string) string {
 	switch phase {
+	case "network_restart":
+		return "Restarting Orbit to use the reviewed connection"
 	case "awaiting_approval":
 		return "Waiting for approval"
 	case "membership_received":

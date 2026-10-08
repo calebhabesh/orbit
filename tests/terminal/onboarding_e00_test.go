@@ -4,7 +4,7 @@ package terminal_test
 // findings that need real processes. Each test asserts approved behavior and
 // deliberately fails on the current implementation; ordinary runs skip them.
 // Opt in with ORBIT_ONBOARDING_BASELINE=1. E01 promoted F01 and F04/F14 into
-// ordinary regressions in onboarding_e01_test.go; E02 promoted F03; E03 promoted F15. All state, HOME and service-manager
+// ordinary regressions in onboarding_e01_test.go; E02 promoted F03; E03 promoted F15; E04 promoted F08, F11 and F16 (onboarding_e04_test.go). All state, HOME and service-manager
 // stand-ins live in marked disposable roots; no real user unit, systemd
 // manager, personal folder or deployed service is touched.
 
@@ -59,10 +59,10 @@ func e00StopOnCleanup(t *testing.T, base, dir string) {
 	})
 }
 
-// F08 (CLI half), F10, F11, F16 over a disposable local routed service
+// F10 (E07) over a disposable local routed service
 // (w05Service; production orbit-net admission limits) and two real daemons.
 // Never run against the deployed VPS.
-func TestOnboardingE00RelayJoinWaitNamesAndModes(t *testing.T) {
+func TestOnboardingE00F10RelayJoinWait(t *testing.T) {
 	onboardingBaseline(t)
 	base := testkit.NewDisposable(t)
 	if err := os.Chmod(base, 0700); err != nil {
@@ -115,33 +115,6 @@ func TestOnboardingE00RelayJoinWaitNamesAndModes(t *testing.T) {
 		t.Fatal(e, out)
 	}
 
-	// F08 (CLI half): a fresh joiner's reviewed plan for a routed invitation.
-	var inv tc.Invitation
-	if b, e := os.ReadFile(invFile); e != nil || json.Unmarshal(b, &inv) != nil || inv.Route == nil {
-		t.Fatal("routed invitation unreadable", e)
-	}
-	freshFile := filepath.Join(base, "join-fresh.json")
-	cli.ok("join", "--state", stateB, "--root", rootB, "--label", "Pi", "--name", "Orbit", "--invitation-file", invFile, "--preview", "--review-file", freshFile, "--json")
-	var plan tc.Mutation
-	if b, e := os.ReadFile(freshFile); e != nil || json.Unmarshal(b, &plan) != nil || plan.Join == nil {
-		t.Fatal("fresh join review unreadable", e)
-	}
-	planned := tc.NetworkPolicy{}
-	if plan.Join.Network != nil {
-		planned = *plan.Join.Network
-	}
-	t.Logf("F08: fresh routed join plan: mode %q, profile set %v, awaiting profile %v; inviter's operator profile preselected %v",
-		planned.Mode, planned.Profile != "", planned.AwaitingProfile, planned.Profile == inv.Route.Profile)
-	fresh, freshOut, e := cli.call("", "join", "--state", stateB, "--request-file", freshFile, "--timeout", "0", "--json")
-	freshCode := ""
-	if fresh.Error != nil {
-		freshCode = fresh.Error.Code + ": " + fresh.Error.Message
-	}
-	t.Logf("F08: submitting the fresh plan => err=%v %s", e, freshCode)
-	_ = freshOut
-	if planned.Profile != inv.Route.Profile || e != nil {
-		t.Errorf("F08: fresh join does not preselect the routed invitation's operator (approved: Automatic/inviter operator offered for review, then the join proceeds)")
-	}
 	// Continue the journey with an explicitly reviewed policy on the joiner.
 	reviewB := stateB + "-network.json"
 	cli.ok("network", "preview", "--state", stateB, "--mode", "self_hosted", "--profile-file", profile, "--review-file", reviewB, "--json")
@@ -172,43 +145,4 @@ func TestOnboardingE00RelayJoinWaitNamesAndModes(t *testing.T) {
 		t.Errorf("F10: waiting joiner shown RATE_LIMITED %d times", codes["RATE_LIMITED"])
 	}
 
-	approvalFile := filepath.Join(base, "approve.json")
-	var pending tc.Result
-	for deadline := time.Now().Add(90 * time.Second); time.Now().Before(deadline); time.Sleep(time.Second) {
-		if pending = cli.ok("devices", "requests", "--state", stateA, "--json"); len(pending.Requests) == 1 {
-			break
-		}
-	}
-	if len(pending.Requests) != 1 {
-		t.Fatalf("request never reached the inviter: %+v", pending.Requests)
-	}
-	cli.ok("devices", "requests", "show", "--state", stateA, "--device", "Pi", "--review-file", approvalFile, "--json")
-	cli.ok("devices", "approve", "--state", stateA, "--review-file", approvalFile, "--json")
-	w06Wait(t, stateB, joined.Operation.ID)
-	received := filepath.Join(rootB, "shared.txt")
-	for deadline := time.Now().Add(90 * time.Second); time.Now().Before(deadline); time.Sleep(250 * time.Millisecond) {
-		if b, _ := os.ReadFile(received); string(b) == "ordinary 0644 source" {
-			break
-		}
-	}
-	fi, err := os.Stat(received)
-	if err != nil {
-		t.Fatal("F16: file never received", err)
-	}
-	// By design (persistence: safe local permissions); E04 documents it.
-	t.Logf("F16: source mode 0644, received mode %#o", fi.Mode().Perm())
-	if fi.Mode().Perm() != 0600 {
-		t.Errorf("F16: received mode %#o, documented safe local permission is 0600", fi.Mode().Perm())
-	}
-
-	// F11: the inviter lists the joiner by the name it chose ("Pi").
-	text, err := e00Run(t, append(os.Environ(), "SSL_CERT_FILE="+ca), 30*time.Second, cli.binary, "devices", "--state", stateA)
-	t.Logf("F11: inviter `orbit devices`:\n%s", strings.TrimSpace(text))
-	if err != nil || !strings.Contains(text, "Pi") || strings.Contains(text, "Device ") {
-		t.Errorf("F11: inviter's device list does not show the joiner's chosen name")
-	}
-	asJSON, _ := e00Run(t, append(os.Environ(), "SSL_CERT_FILE="+ca), 30*time.Second, cli.binary, "devices", "--state", stateA, "--json")
-	if !strings.Contains(asJSON, `"Pi"`) {
-		t.Errorf("F11: inviter's JSON device list lacks the joiner's chosen name")
-	}
 }
