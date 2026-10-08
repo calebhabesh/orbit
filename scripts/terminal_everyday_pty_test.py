@@ -151,7 +151,7 @@ input()
         folder_ui(ua);ua.send(b"v");ua.wait("Qualified copy status");ua.wait("stored=")
         ua.finish();active.remove(ua)
         # Narrow colorless keyboard screens and authoritative unavailable root.
-        ua=UI(a,"narrow-storage-root-recovery",size=(40,16),extra=extra);active.append(ua);ua.wait("Overview")
+        ua=UI(a,"narrow-storage-root-recovery",size=(40,16),extra=extra);active.append(ua);ua.overview()
         folder_ui(ua);ua.send(b"b");ua.wait("Storage and retention");ua.wait("budget=");ua.send(b"m");ua.wait("Cleanup candidates=")
         folder_ui(ua);ua.send(b"p");ua.wait("Confirm local pause");ua.send(b"\r");ua.wait("Local pause=true")
         assert a.query("folder_management",folder=folder)["folder_management"]["paused"]

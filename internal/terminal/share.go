@@ -3,6 +3,7 @@ package terminal
 import (
 	"context"
 	"fmt"
+	"slices"
 	"time"
 
 	tea "charm.land/bubbletea/v2"
@@ -77,7 +78,7 @@ func (m *model) makeInvitation() tea.Cmd {
 		if f.device != "" {
 			kind = "share"
 		}
-		f.mutation = tc.Mutation{Version: tc.Version, OperationID: id, Kind: kind, Invite: &tc.InviteIntent{Folder: f.folder, Device: f.device, ExpectedMembership: info.MembershipDigest, ExpiresAt: time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano)}}
+		f.mutation = tc.Mutation{Version: tc.Version, OperationID: id, Kind: kind, Invite: &tc.InviteIntent{ShortCode: slices.Contains(f.result.Capabilities, tc.ShortPairingCapability), Folder: f.folder, Device: f.device, ExpectedMembership: info.MembershipDigest, ExpiresAt: time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano)}}
 	}
 	mutation := f.mutation
 	f.task = "invite"

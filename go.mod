@@ -12,6 +12,7 @@ require (
 	github.com/charmbracelet/x/ansi v0.11.8
 	github.com/charmbracelet/x/term v0.2.2
 	github.com/coder/websocket v1.8.15
+	github.com/gtank/ristretto255 v0.2.0
 	github.com/pion/ice/v4 v4.4.6
 	github.com/pion/logging v0.2.4
 	github.com/pion/stun/v4 v4.0.1
@@ -22,6 +23,7 @@ require (
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20260811164956-006e29f97886 // indirect
 	github.com/charmbracelet/x/termios v0.1.1 // indirect

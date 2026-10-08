@@ -158,8 +158,15 @@ def phase_create(host, ui, args, out):
     ui.wait('[Overview]')
 
 
-def phase_invite(host, ui, args, out):
+def overview(ui):
+    # E08: a configured device with nothing needing attention opens on Files.
+    ui.wait('Orbit', 30)
+    ui.send(b'1')
     ui.wait('[Overview]', 30)
+
+
+def phase_invite(host, ui, args, out):
+    overview(ui)
     ui.send(b'a')
     ui.wait('Select folder')
     items = host.query('folders', limit='20')['items']
@@ -213,7 +220,7 @@ def phase_join(host, ui, args, out):
 
 
 def phase_approve(host, ui, args, out):
-    ui.wait('[Overview]', 30)
+    overview(ui)
     ui.send(b'w')
     ui.wait('Enrollment requests')
     requests = host.query('requests', limit='20')['requests']
@@ -231,7 +238,7 @@ def phase_approve(host, ui, args, out):
 
 
 def phase_observe(host, ui, args, out):
-    ui.wait('[Overview]', 30)
+    overview(ui)
     ui.send(b'N')
     ui.wait('Connection details')
     deadline = time.monotonic() + 60

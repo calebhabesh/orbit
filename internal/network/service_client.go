@@ -39,6 +39,8 @@ type ServiceClientOptions struct {
 }
 
 type ServiceClient struct {
+	pairMu                                   sync.Mutex
+	pairOffers                               map[string]*pairingOffer
 	selection                                ProfileSelection
 	origin, digest, device, pin, certificate string
 	key                                      ed25519.PrivateKey

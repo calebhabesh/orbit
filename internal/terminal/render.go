@@ -24,6 +24,9 @@ func safe(s string) string {
 }
 
 func (m *model) rows() []row {
+	if m.section == filesSection {
+		return m.fileRows()
+	}
 	rows := make([]row, 0, 2*pageSize)
 	if m.section == 0 || m.section == 2 {
 		for _, a := range m.result.Attention {
@@ -74,7 +77,8 @@ func (m *model) View() tea.View {
 var helpKeys = [][2]string{
 	{"q / Ctrl-C", "close interface (sync and committed work continue); Ctrl-C works anywhere"},
 	{"↑/↓ or j/k", "select rows; in forms, move between fields"},
-	{"1-4 or o f n d", "Overview, Folders, Attention, Devices"},
+	{"1-5 or o f n d", "Overview, Folders, Attention, Devices, Files"},
+	{"Files", "Enter/→ open · ←/Backspace up · o open · e edit · h history · c conflicts · D deleted · y copy path · / search folder"},
 	{"Tab / Shift-Tab", "next / previous view; in forms, next / previous field"},
 	{"←/→", "previous / next view; in forms, change a ‹ choice ›"},
 	{"/", "search this page"},
@@ -96,6 +100,12 @@ var helpKeys = [][2]string{
 }
 
 func (m *model) footer() string {
+	if m.section == filesSection && !m.search.Focused() {
+		if m.width < 60 {
+			return "j/k Enter ← o e h ? q"
+		}
+		return "↑/↓ select  Enter open  ← up  / search  o open  e edit  h history  c conflicts  y copy path  ] more  Tab views  ? help  q quit"
+	}
 	footer := "j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests  u setup  N connection"
 	if m.width < 60 {
 		footer = "j/k Enter / ? q"
@@ -114,7 +124,7 @@ func (m *model) footerLines(t theme) []string {
 }
 
 func (m *model) tabs(t theme) string {
-	keys := []string{"o", "f", "n", "d"}
+	keys := []string{"o", "f", "n", "d", "5"}
 	nav := make([]string, len(sections))
 	for i, name := range sections {
 		nav[i] = t.tab(name, keys[i], i == m.section)
@@ -128,7 +138,7 @@ func (m *model) tabs(t theme) string {
 // statusLines describe the daemon, connection and transient notices.
 func (m *model) statusLines(counts bool) []string {
 	lines := []string{"Daemon: " + daemonLabel(m.result.Service), "Startup: " + startupLabel(m.result.Service)}
-	if counts && m.section == 0 {
+	if counts && (m.section == 0 || m.section == filesSection) {
 		lines = append(lines, count(len(m.result.Items), "folder")+" · "+count(len(m.result.Attention), "attention item")+" · "+count(len(m.devices), "device"))
 	}
 	if m.errText != "" {
@@ -157,6 +167,9 @@ func (m *model) searchLine() string {
 	if m.search.Focused() {
 		return "> " + m.search.View()
 	}
+	if m.section == filesSection {
+		return "Search folder: " + safe(m.files.query)
+	}
 	return "Search page: " + safe(m.search.Value())
 }
 
@@ -165,6 +178,12 @@ func (m *model) searchLine() string {
 func (m *model) rowLines(t theme, width, height int) ([]string, string) {
 	rows := m.rows()
 	if len(rows) == 0 {
+		if m.section == filesSection && m.files.query != "" {
+			return []string{"No known path contains that text.", "Esc clears the search."}, ""
+		}
+		if m.section == filesSection && m.files.folder != "" {
+			return []string{"Nothing here yet."}, ""
+		}
 		return []string{"No items on this page.", "Create or join a folder: c create, J join."}, ""
 	}
 	type entry struct {
@@ -209,6 +228,9 @@ func (m *model) rowLines(t theme, width, height int) ([]string, string) {
 			continue
 		}
 		r := rows[e.row]
+		if r.cols != nil {
+			r.name, r.subtitle = fileColumns(r, width), ""
+		}
 		if t.plain {
 			prefix := "  "
 			if e.row == m.selected {
@@ -241,6 +263,9 @@ func (m *model) rowLines(t theme, width, height int) ([]string, string) {
 func (m *model) detailLines() (string, []string) {
 	if m.help {
 		return "Keyboard help", m.theme().keyRows(helpKeys)
+	}
+	if m.section == filesSection {
+		return m.fileDetailLines()
 	}
 	if m.detail {
 		lines := []string{"Next action: " + m.detailRow.action, m.detailRow.name, m.detailRow.subtitle}
@@ -277,6 +302,8 @@ func (m *model) detailLines() (string, []string) {
 
 func (m *model) listTitle() string {
 	switch m.section {
+	case filesSection:
+		return m.filesTitle()
 	case 0, 1:
 		return "Folders"
 	case 2:
@@ -300,6 +327,10 @@ func (m *model) panelLines() []string {
 	leftWidth := m.width
 	if wide {
 		leftWidth = max(40, m.width*2/5)
+		if m.section == filesSection {
+			// Files is the main content: name, size, modified and state.
+			leftWidth = max(40, m.width*3/5)
+		}
 	}
 	statusText := m.statusLines(true)
 	if t.plain {
@@ -360,11 +391,11 @@ func (m *model) startup() string { return startupLabel(m.result.Service) }
 // compactLines keep small terminals usable: one column, no borders.
 func (m *model) compactLines() []string {
 	t := m.theme()
-	lines := []string{"Orbit", m.summary(), sections[m.section] + " | f n d o"}
+	lines := []string{"Orbit", m.summary(), sections[m.section] + " | 1–5 views"}
 	if m.search.Focused() {
 		lines = append(lines, "> "+m.search.View())
 	} else {
-		lines = append(lines, "Search page: "+safe(m.search.Value()))
+		lines = append(lines, m.searchLine())
 	}
 	for i, line := range lines {
 		lines[i] = ansi.Truncate(line, m.width, "…")
@@ -433,4 +464,18 @@ func homePath(path string) string {
 		return "~" + strings.TrimPrefix(path, home)
 	}
 	return path
+}
+
+// fileColumns lays out a Files row as name, size, modified and state columns;
+// the name gives way first on narrow terminals.
+func fileColumns(r row, width int) string {
+	state := r.subtitle
+	tail := fmt.Sprintf(" %9s  %-16s  %-15s", r.cols[0], r.cols[1], state)
+	if width < 70 {
+		tail = "  " + state
+	}
+	// The row renderer adds a two-cell mark and a two-space separator.
+	nameWidth := max(8, width-4-ansi.StringWidth(tail))
+	name := ansi.Truncate(r.name, nameWidth, "…")
+	return name + strings.Repeat(" ", max(0, nameWidth-ansi.StringWidth(name))) + tail
 }

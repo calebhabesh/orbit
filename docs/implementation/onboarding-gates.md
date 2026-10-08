@@ -61,6 +61,16 @@ invoked with `enable-linger`); linger re-check after the owner runs the command.
 
 ## EG1 — Short-code security (E06)
 
+Owner selected CPace on 2026-10-08. Implementation under validation uses
+CPaceRistretto255/SHA-512, initiator/responder variant pinned to
+[draft-irtf-cfrg-cpace-21](https://www.ietf.org/archive/id/draft-irtf-cfrg-cpace-21.txt),
+with `github.com/gtank/ristretto255 v0.2.0` (BSD-3-Clause) and its
+`filippo.io/edwards25519 v1.1.0` arithmetic dependency. This is a source-reviewed
+library choice, not a claim of an independent audit of Orbit's integration.
+Published Appendix B.3 generator, public-message and ISK vectors pass.
+The gate remains open until the full production acceptance set is recorded.
+
+
 Facts: the WAN service already authenticates devices by key with signed proofs,
 one-use challenges (`MaxOutstandingChallenges` 2, `ChallengeLifetime` 60 s),
 per-device metadata buckets (1/s, burst 10) and a 1,024-entry rate table; it
@@ -88,6 +98,45 @@ service capture showing no readable invitation; a review of the profile privacy
 text against what the mailbox holds (decides whether the profile epoch changes).
 
 ## EG2 — Files-view truthfulness (E08)
+
+**Closed 2026-10-08 by E08.** Each listed entry gets at most one label, derived
+from this replica's own records with the folder-readiness rules
+(`internal/repository/file_state.go`), in this order:
+
+| Label (`state`) | Shown as | Derived from |
+| --- | --- | --- |
+| `blocked` | Blocked | the path's projection has a block reason (capture failed, unstable file, publication refused) |
+| `conflict` | Conflict | more than one head, or a structural conflict on the path or an ancestor |
+| `content_missing` | Content missing | the newest file head's content is `unavailable` or has an unrepaired quarantined chunk |
+| `downloading` | Downloading | the newest file head's content is `pending` |
+| `waiting_publish` | Arriving | one ready head that the projection has not applied (`applied_author/counter` ≠ head) |
+| `captured` | Saved here | one ready head applied to this working copy |
+| `deleted` | Deleted | the head is a tombstone (file details and the deleted list; deleted paths are not listed in the tree) |
+
+Implicit parent directories with no version get no label. Two candidates were
+dropped: **waiting to capture** (an edit made since the last scan leaves no
+record until the scanner sees it; details show "Last checked here" instead),
+and **unsupported entries** (symlinks, hard links, nested mounts are scan
+issues only, never stored; they stay in Attention/readiness). The listing now
+includes never-captured entries that carry a block reason, which it previously
+hid, and never lists `.orbit-internal`.
+
+**On other devices** appears only in a file's details: one line per device from
+`peer_progress` for the newest head, as `stored` (durable receipt or remote
+`STORED`/`APPLIED`) and `in its folder` (remote `APPLIED`), each with the time
+of that device's report ("reported 3 h ago"); no report reads "No report from
+another device about this version yet". There is no "synced everywhere" mark.
+
+Evidence: `TestOnboardingE08FileStatesFromProductionPaths` (each state from scan,
+import, `MarkContentReady`, `QuarantineChunk`, a two-head conflict, a refused
+publication over an uncaptured edit, a remote tombstone, then `Apply`),
+`TestOnboardingE08ObservationKeepsItsAge`, `TestOnboardingE08PagesTenThousandEntries`
+(control); model and PTY tests in `internal/terminal` and `tests/terminal`
+([E08 evidence](../evidence/onboarding-e08-20261008/summary.md)). Owning
+specs: [terminal UX amendment](../orbit-terminal-ux.md#owner-amendment-2026-10-08)
+and the `files`/`file_details` queries in `internal/control/terminalcontract`.
+
+Scoping record (E00):
 
 Facts: repository already offers `BrowseWorkspaceDirectory`, `SearchWorkspace`,
 `FileDetails`, `FilePathHistory`/`BrowsePathHistory`, `BlockedPaths`,

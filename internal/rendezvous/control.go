@@ -142,6 +142,8 @@ func (s *Service) Close() error {
 	s.deviceBandwidth = map[actor]*byteLimiter{}
 	s.rates = map[actor]bucket{}
 	s.sources = map[string]bucket{}
+	s.mailboxes = nil
+	s.pairSources = nil
 	s.mu.Unlock()
 	s.controlWG.Wait()
 	s.sweepWG.Wait()

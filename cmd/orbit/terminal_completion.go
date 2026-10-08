@@ -35,7 +35,7 @@ const bashCompletionScript = `_orbit_completion() {
         cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
     fi
 
-    local commands="tui status context folders devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help"
+    local commands="tui status context folders files devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help"
     local common_flags="--state --folder --json --help"
 
     if [[ ${cword} -eq 1 ]]; then
@@ -102,6 +102,7 @@ _orbit() {
         'folders:Manage synced folders and local roots'
         'devices:Manage enrolled devices and requests'
         'conflicts:List files requiring version or structure review'
+        'files:List files and their sync state here'
         'history:List known versions and content availability'
         'deleted:Find deleted files available for restore'
         'restore:Restore a historical version of a file'
@@ -184,7 +185,7 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help
+        if contains -- $i tui status context folders files devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help
             return 1
         end
     end
@@ -197,6 +198,7 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'context' -d 'Inspect folde
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'folders' -d 'Manage synced folders'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'devices' -d 'Manage enrolled devices'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'conflicts' -d 'List files requiring version review'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'files' -d 'List files and sync state'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'history' -d 'List known versions'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'deleted' -d 'Find deleted files available for restore'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'restore' -d 'Restore a historical version'

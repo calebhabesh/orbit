@@ -142,6 +142,18 @@ class UI:
     def back(self):
         self.send(b"\x1b"); time.sleep(.1); self.pump()
 
+    def overview(self):
+        # E08 lands healthy, configured devices on Files. Wait for the
+        # initial query before selecting Overview; 'o' opens a file there.
+        end = time.monotonic() + 12
+        while time.monotonic() < end:
+            self.pump(.05)
+            if "Search folder:" in self.screen.text() or "Search page:" in self.screen.text():
+                self.send(b"1")
+                self.wait("Overview")
+                return
+        raise AssertionError(f"{self.name}: initial view absent: {self.screen.text()!r}")
+
     def finish(self):
         if self.p.poll() is None: self.send(b"\x03")
         until = time.monotonic()+12
@@ -181,6 +193,8 @@ def invite(ui, peer, path, device=None):
         index=next(i for i,it in enumerate(items) if it["id"]==device)
         ui.send(b"j"*index+b"\r")
     ui.wait("Add device / share folder"); ui.wait("Reviewed membership revision:"); ui.send(b"\r"); ui.wait("Private invitation")
+    short = re.search(r'Pairing code: ([0-9A-Z]{4}-[0-9A-Z]{4})', ui.screen.text())
+    ui.pairing_code = short.group(1) if short else None
     ui.send(b"s"); ui.wait("save_invitation")
     ui.replace(str(path)); ui.send(b"\r"); ui.wait("Private invitation saved")
     invitation=json.loads(path.read_text())

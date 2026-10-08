@@ -371,7 +371,10 @@ class WANNode(TerminalNode):
         self.last_resources = result.get('resources')
         if check and result['returncode']:
             self.put('last-cli-failure.json', json.dumps(result).encode())
-            raise RuntimeError(self.role + ' CLI failed; private output retained on host')
+            detail = ''
+            if self.rehearsal:
+                detail = f": {list(args[:3])} exit {result['returncode']}: {result.get('stderr', '')[-500:]!r}"
+            raise RuntimeError(self.role + ' CLI failed; private output retained on host' + detail)
         return result['stdout'] if check else result
 
     def prepare(self, dist, profile=None, roots=None):
@@ -747,7 +750,7 @@ def three_host(nodes, c, folder, out):
     """
     a, b = nodes
     everyone = [a, b, c]
-    code = a.orbit('devices', 'invite', '--folder', folder, '--code').strip()
+    code = a.orbit('devices', 'invite', '--folder', folder, '--code', '--long').strip()
     started = time.monotonic()
     pending = c.setup(invitation=code)
     pending = wait('third durable routed request', lambda: request_record(c, pending), 180)
@@ -938,7 +941,7 @@ def run(args):
             if rehearsal:
                 digest = first['policy']['profile']
             network_check(first, digest, rehearsal)
-            code = a.orbit('devices', 'invite', '--code').strip()
+            code = a.orbit('devices', 'invite', '--code', '--long').strip()
             if not code.startswith('orbit-invitation:v3:'):
                 raise RuntimeError('ordinary journey must use routed v3 invitation')
             started = time.monotonic()
@@ -971,7 +974,7 @@ def run(args):
         second_folder = second['join']['folder']
         wait('second local create', lambda: a.query('operation', id=second['operation']['id'])['state'] == 'completed', 60)
         wait('second inviter service ready', lambda: ready(a), 60)
-        second_code = a.orbit('devices', 'invite', '--folder', second_folder, '--code').strip()
+        second_code = a.orbit('devices', 'invite', '--folder', second_folder, '--code', '--long').strip()
         second_pending = b.setup('second', second_code)
         second_pending = wait('second durable routed request', lambda: request_record(b, second_pending), 180)
         wait('second exact approval', lambda: any(v['id'] == second_pending['join']['request']

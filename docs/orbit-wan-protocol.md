@@ -471,3 +471,52 @@ minutes (one minute after a failure). A `404` means an older peer or one
 without LAN advertising, and is retried after 30 minutes. One request informs
 both sides, so a direct path appears when either device accepts inbound
 connections.
+
+
+## E06 short-code invitation mailbox (2026-10-08)
+
+The owner selected CPace. Code format is eight random Crockford base32 digits,
+shown `XXXX-XXXX`; case, ASCII whitespace and dashes are ignored and O→0,
+I/L→1. The public mailbox name is 20 bits and the password is 20 bits; the code
+has 40 random bits, but its online password-guess bound is **one in 2^20 per
+claimed code**, not 2^40. A guessed mailbox can be claimed to deny service;
+this is diagnosed by expiry/failure and requesting a new random code.
+
+CPaceRistretto255/SHA-512 uses the initiator/responder variant of
+[draft21](https://www.ietf.org/archive/id/draft-irtf-cfrg-cpace-21.txt).
+The inviter creates a random 32-byte session ID and first CPace element.
+Context binds the suite, canonical service origin and mailbox name; ordered
+associated data binds inviter and joiner device IDs/SPKI pins. Invalid points
+and identity elements abort; the private scalar is consumed once. The joiner
+sends its element plus HMAC-SHA256 key confirmation. Only after verification
+does the inviter encrypt the ordinary v3 invitation with AES-256-GCM (fresh
+96-bit nonce, suite-associated data). Separate HMAC labels derive confirmation
+and encryption keys from CPace's ISK. AEAD authenticates the inviter's response.
+The decrypted invitation must match the CPace inviter identity/pin and the
+selected profile. Ordinary pinned enrollment, root review and approval follow.
+
+`POST /network/v1/pairing` uses existing strict JSON, TLS and challenge-bound
+Ed25519 device proofs (`kind=pairing`, `purpose=enrollment`). Its payload
+canonicalization binds action, mailbox, session, expiry and hex data. Actions:
+create → claim → respond → deliver → consuming poll. Owner poll reads the
+joiner's proof; owner burn removes failed attempts. Poll never changes a claim
+back to open, and respond/deliver are single-use. Service bounds: 128 mailboxes,
+4 per owner key, 5 create/claim requests per source burst with 1/10 s refill,
+128 source buckets, plus existing authenticated/global limits. Nonexistent
+claims also spend source quota. All state is in memory and expires after at
+most ten minutes. Successful consumption, burn and shutdown remove it; a
+restart reports unavailable and requires a fresh code. Clients poll every
+three seconds through the existing signed-operation pacing.
+
+The service sees mailbox name, device IDs/pins, timing, public PAKE elements,
+confirmation tag and invitation ciphertext. It receives no password, readable
+invitation, folder name or contents. The existing profile privacy statement
+remains accurate; no epoch bump is required. A malicious service can deny
+service or make an online guess; CPace prevents passive offline enumeration,
+and the inviter's single-use exchange enforces one attempt even if the service
+replays messages. This adds no availability guarantee.
+
+E10 diagnostic amendment: relay TLS probes allow ten seconds for paced
+coordination plus the handshake, within the existing twenty-second total
+doctor deadline. Direct TLS probes retain three seconds. Probes still send no
+peer HTTP request and do not alter observed routes.

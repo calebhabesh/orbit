@@ -201,6 +201,10 @@ print('TOOL_DONE',flush=True)
             raise AssertionError(f"{name}: visible {needle!r} absent; frame={screen.text()!r}")
 
         try:
+            # E08 lands on Files when nothing needs attention; this campaign
+            # exercises Overview, so pick it explicitly once the header is up.
+            read_until(b"views")
+            os.write(master, b"1")
             read_until("Notes界".encode())
             assert b"\x1b[?1049h" in transcript, "not an actual alternate-screen client"
             assert b"\x1b[?2004h" in transcript, "paste mode not enabled"

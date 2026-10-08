@@ -1,0 +1,10 @@
+=== RUN   TestOnboardingE08LandsOnFilesWhenNothingNeedsAttention
+--- PASS: TestOnboardingE08LandsOnFilesWhenNothingNeedsAttention (0.00s)
+=== RUN   TestOnboardingE08NavigationPagingAndSearch
+--- PASS: TestOnboardingE08NavigationPagingAndSearch (3.94s)
+=== RUN   TestOnboardingE08DetailsShowReportAge
+--- PASS: TestOnboardingE08DetailsShowReportAge (0.00s)
+=== RUN   TestOnboardingE08OpenCopyAndReadOnlyKeys
+--- PASS: TestOnboardingE08OpenCopyAndReadOnlyKeys (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/terminal	3.961s

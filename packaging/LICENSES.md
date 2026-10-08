@@ -79,3 +79,13 @@ Pion is imported by the adapter compatibility tests; production ICE establishmen
 | `golang.org/x/net` | `v0.56.0` | BSD-3-Clause |
 | `golang.org/x/text` | `v0.40.0` | BSD-3-Clause |
 | `golang.org/x/time` | `v0.14.0` | BSD-3-Clause |
+
+## E06 CPace curve arithmetic
+
+| Module | Version | License |
+| --- | --- | --- |
+| `github.com/gtank/ristretto255` | `v0.2.0` | BSD-3-Clause |
+| `filippo.io/edwards25519` | `v1.1.0` | BSD-3-Clause |
+
+Orbit pins CPace to draft-irtf-cfrg-cpace-21 and tests the published vectors.
+These dependency licenses are reproduced in NOTICE.

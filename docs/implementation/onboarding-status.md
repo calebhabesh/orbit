@@ -3,7 +3,7 @@
 Updated: 2026-10-08. **E00–E05, E07 and E09 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E08 — Files view** (EG2 first). E06 waits on the owner's PAKE choice for EG1. The owner's next three-machine trial
+**E06 and E08 — implementation and validation in progress.** The owner selected CPace on 2026-10-08; the interrupted E08 work has been resumed. The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -16,11 +16,11 @@ Updated: 2026-10-08. **E00–E05, E07 and E09 complete.** The
 | E03 Keys/forms/paste | complete ([evidence](../evidence/onboarding-e03-20261008/summary.md)) | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
 | E04 Join/setup defaults | complete ([evidence](../evidence/onboarding-e04-20261008/summary.md)) | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
 | E05 Long invitation | complete ([evidence](../evidence/onboarding-e05-20261008/summary.md)) | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
-| E06 Short code | not started | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
+| E06 Short code | in progress; CPace selected by owner | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
 | E07 Approval wait | complete ([evidence](../evidence/onboarding-e07-20261008/summary.md)) | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
-| E08 Files view | not started | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
+| E08 Files view | in progress; EG2 defined, integration checks running | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
 | E09 Relay budget | complete; VPS deployment pending owner at E10 ([evidence](../evidence/onboarding-e09-20261008/summary.md)) | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
-| E10 Trial readiness | not started | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
+| E10 Trial readiness | preparatory checks in progress; deployment pending | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
 
 | Gate | State | Owning packet |
 | --- | --- | --- |
@@ -195,6 +195,6 @@ targets, PTY suites and the orbit-net rehearsal pass. The VPS deployment and its
 
 ## Handoff
 
-E06 waits on the owner's PAKE choice (EG1). E08 (Files view) is next once
-EG2 is closed. E10 must also investigate the intermittent
+The owner selected CPace on 2026-10-08. E06 and E08 are being validated;
+neither has final acceptance evidence yet. E10 must also investigate the intermittent
 `TestWANW12BinaryDoctorPrivacyAndPTY` relay-probe timeout, which predates E09.

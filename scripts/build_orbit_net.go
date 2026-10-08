@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	version        = "1.0.0"
+	version        = "1.1.0"
 	fixedTimestamp = 1790208000 // 2026-09-23T00:00:00Z for reproducible archives
 )
 
@@ -52,7 +52,7 @@ func run() error {
 	}
 	date := os.Getenv("ORBIT_BUILD_DATE")
 	if date == "" {
-		date = "2026-10-01"
+		date = "2026-10-08"
 	}
 	assets := map[string]string{
 		"lib/systemd/system/orbit-net.service":              "packaging/systemd/orbit-net.service",

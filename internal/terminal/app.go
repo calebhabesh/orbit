@@ -14,7 +14,7 @@ import (
 
 const pageSize = 20
 
-var sections = []string{"Overview", "Folders", "Attention", "Devices"}
+var sections = []string{"Overview", "Folders", "Attention", "Devices", "Files"}
 
 type queryReply struct {
 	request, generation uint64
@@ -23,6 +23,7 @@ type queryReply struct {
 	err                 error
 	task                string
 	setups              []tc.NamedItem
+	files               *filesState
 }
 type refreshMsg struct{}
 type toolReply struct {
@@ -30,7 +31,11 @@ type toolReply struct {
 	generation uint64
 	err        error
 }
-type row struct{ key, name, subtitle, folder, path, action string }
+type row struct {
+	key, name, subtitle, folder, path, action string
+	cols                                      []string // Files view: size, modified
+	dir                                       bool
+}
 
 type model struct {
 	ctx                                     context.Context
@@ -49,6 +54,7 @@ type model struct {
 	flow                                    *workflow
 	firstLoad                               bool
 	unfinished                              []tc.NamedItem
+	files                                   filesState
 }
 
 func newModel(ctx context.Context, client Queries, opts Options) *model {
@@ -99,6 +105,14 @@ func (m *model) startQuery() tea.Cmd {
 	ctx, cancel := context.WithTimeout(m.ctx, 5*time.Second)
 	m.cancel = cancel
 	client := m.client
+	if section == filesSection && !m.quitting {
+		fs := m.files
+		return func() tea.Msg {
+			defer cancel()
+			r, devices, next, err := filesQuery(ctx, client, fs, detail)
+			return queryReply{request: request, generation: generation, result: r, devices: devices, err: err, files: &next}
+		}
+	}
 	return func() tea.Msg {
 		defer cancel()
 		q := tc.Query{Version: tc.Version, Kind: "folders", Limit: pageSize, Cursor: cursor}
@@ -201,6 +215,9 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.result = msg.result
 				m.devices = msg.devices
+				if msg.files != nil {
+					m.files = *msg.files
+				}
 				m.restoreSelection()
 				m.unfinished = msg.setups
 				if !m.firstLoad {
@@ -213,6 +230,13 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 							return m, m.openFlow(&workflow{screen: "welcome"})
 						}
 					}
+					// Landing rule (E08): a set-up device with nothing
+					// needing the owner opens on Files; Overview otherwise.
+					// A screen already in use is never switched away.
+					inUse := m.selected != 0 || m.search.Focused() || m.search.Value() != ""
+					if m.section == 0 && !inUse && len(m.result.Items) > 0 && len(m.result.Attention) == 0 {
+						return m, m.changeSection(filesSection)
+					}
 				}
 			}
 		}
@@ -221,6 +245,15 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case refreshMsg:
 		return m, tea.Batch(m.startQuery(), m.tick())
+	case filesDone:
+		m.toolRunning = false
+		if msg.generation == m.generation {
+			m.notice = "Editor closed. Orbit records the saved file on its next scan."
+			if msg.err != nil {
+				m.notice = "The editor exited with an error; the file is as the editor left it."
+			}
+		}
+		return m, m.startQuery()
 	case toolReply:
 		m.toolRunning = false
 		if msg.session && msg.generation == m.generation && m.flow != nil && m.flow.daily != nil {

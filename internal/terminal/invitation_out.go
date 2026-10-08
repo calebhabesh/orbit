@@ -68,6 +68,9 @@ func clipboardSupported() bool {
 func (m *model) copyInvitation() tea.Cmd {
 	f := m.flow
 	code, err := tc.InvitationCode(f.invitation)
+	if p := f.result.Pairing; p != nil && p.Code != "" {
+		code, err = p.Code, nil
+	}
 	switch {
 	case err != nil:
 		f.err = "Invitation unavailable for copying."

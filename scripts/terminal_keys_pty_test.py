@@ -121,7 +121,7 @@ def join_with_file(ub, b, saved):
     """The join prompt accepts a file path (the SSH fallback)."""
     target = b.root / "orbit-invitation.json"
     _shutil.copyfile(saved, target); os.chmod(target, 0o600)
-    ub.send(b"J"); ub.wait("Join invitation"); ub.wait("path of a saved invitation file")
+    ub.send(b"J"); ub.wait("Join invitation"); ub.wait("private file path")
     ub.replace(str(target)); ub.send(ENTER); ub.wait("Review setup inputs")
     ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
     target.unlink()
@@ -151,7 +151,7 @@ def run(binary, output):
         ua.back(); ua.wait("[Overview]")
         reveals = []
         for columns, rows in ((80, 24), (200, 50)):
-            ur = UI(a, f"e05-reveal-{columns}", size=(columns, rows)); active.append(ur); ur.wait("[Overview]")
+            ur = UI(a, f"e05-reveal-{columns}", size=(columns, rows)); active.append(ur); ur.overview()
             saved, note = invitation_out_checks(ur, a, columns); reveals.append(note)
             ur.finish(); active.remove(ur)
         inv = invite(ua, a, a.root / "invite.json")

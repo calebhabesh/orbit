@@ -3283,6 +3283,8 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleOrbitLaunch(args[1:], stdout, stderr)
 	case "tui":
 		return handleOrbitTUI(args[1:], stdout, stderr)
+	case "files":
+		return handleOrbitFiles(args[1:], stdout, stderr)
 	case "browse", "search", "details":
 		return handleOrbitBrowse(args[0], args[1:], stdout, stderr)
 	case "mkdir", "import", "move", "rename", "delete":

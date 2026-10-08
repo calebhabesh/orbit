@@ -17,6 +17,20 @@ They supersede the conflicting text below.
   is complete and nothing needs attention; Overview remains the default otherwise.
   Renaming, moving, deleting and editing still happen in the owner's tools. This
   replaces the decision that ordinary browsing is outside the terminal.
+  *As implemented (E08, 2026-10-08):* Files is view `5` (tab `5 Files`). With
+  several folders it first lists them; with one it opens that folder. Columns
+  are name, size, modified and the state here: Saved here, Arriving,
+  Downloading, Content missing, Conflict or Blocked ([EG2](implementation/onboarding-gates.md#eg2--files-view-truthfulness-e08)).
+  Enter or → opens a directory, ← / Backspace / Esc go up; Enter on a file shows
+  its versions and each other device's last report with its age. `o` opens with
+  the desktop default (`xdg-open`; without a desktop session it says to use `e`),
+  `e` opens the working copy in `$EDITOR` with the interface suspended, `h`
+  history and restore, `c` conflict review, `D` deleted files, `y` copies the
+  local path (OSC 52), `/` searches known paths in the folder, `]`/`[` next and
+  previous page. The status panel shows attention count, devices and connection.
+  The first screen is Files when a folder exists, no setup is unfinished and no
+  attention item is open; a screen already in use is never switched. `orbit
+  files [path] [--search text] [--json]` lists the same entries and states.
 - **Keys.** ↑/↓ (and `j`/`k`) move rows and form fields; Tab/Shift+Tab move
   between fields or panes; ←/→ change selectors and move through the Files tree;
   Enter selects, advances and confirms; Esc goes back. Fixed choices are selectors
@@ -28,10 +42,9 @@ They supersede the conflicting text below.
   as `‹ value ›` (typing is ignored there) and otherwise move between views.
   Enter selects; in a form it advances to the next field and confirms on the
   last. Esc goes back, `?` opens help, `q` quits outside text fields and Ctrl+C
-  quits anywhere. `1`–`4` pick Overview, Folders, Attention, Devices (`5` joins
-  with the Files view, E08). A hidden invitation field shows how many characters
-  arrived. Each paste replaces its content, Ctrl+U clears it, Enter on an empty
-  field submits nothing, and after a failed attempt the next typed character
+  quits anywhere. `1`–`5` pick Overview, Folders, Attention, Devices and Files.
+  A hidden invitation field shows how many characters arrived. Each paste
+  replaces its content, Ctrl+U clears it, Enter on an empty field submits nothing, and after a failed attempt the next typed character
   starts over, so an unbracketed re-paste replaces rather than appends. A failed
   preview focuses the field with the problem. Footers list only keys the screen
   handles.

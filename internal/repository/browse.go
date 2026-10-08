@@ -42,6 +42,7 @@ type BrowseItem struct {
 	ContentState       string       `json:"content_state,omitempty"` // ready, pending, unavailable, corrupt
 	HasConflict        bool         `json:"has_conflict,omitempty"`
 	StructuralConflict string       `json:"structural_conflict,omitempty"`
+	SyncState          string       `json:"sync_state,omitempty"` // EG2 label; see fileSyncState
 }
 
 // BrowseOptions specifies directory query and pagination options.
@@ -116,7 +117,7 @@ raw(path,kind,sizehex,mtime,inode,executable,block,state) AS (
  SELECT path,kind,COALESCE(hex(file_size),'0000000000000000'),0,0,COALESCE(executable,0),'',content_state FROM heads WHERE kind!=3
  UNION ALL
  SELECT path,COALESCE(observed_kind,1),printf('%016X',COALESCE(observed_size,0)),COALESCE(observed_mtime_ns,0),COALESCE(observed_inode,0),COALESCE(observed_executable,0),COALESCE(block_reason,''),'unknown'
- FROM path_projections WHERE folder_id=? AND observed_kind!=3
+ FROM path_projections WHERE folder_id=? AND (observed_kind!=3 OR (observed_kind IS NULL AND block_reason IS NOT NULL AND block_reason!=''))
  AND (NOT EXISTS(SELECT 1 FROM heads WHERE heads.path=path_projections.path) OR EXISTS(SELECT 1 FROM heads WHERE heads.path=path_projections.path AND kind!=3))
  UNION ALL SELECT path,2,'0000000000000000',0,0,0,'','unknown' FROM workspace_scaffolds WHERE folder_id=?
 ),
@@ -128,7 +129,8 @@ ancestors(path,rest) AS (
 entries AS (
  SELECT path,MAX(kind=2) AS isdir,MAX(sizehex) AS sizehex,MAX(mtime) AS mtime,MAX(inode) AS inode,MAX(executable) AS executable,MAX(block) AS block,
  CASE WHEN MAX(state='unavailable') THEN 'unavailable' WHEN MAX(state='pending') THEN 'pending' WHEN MAX(state='ready') THEN 'ready' ELSE 'unknown' END AS state
- FROM (SELECT * FROM raw UNION ALL SELECT path,2,'0000000000000000',0,0,0,'','unknown' FROM ancestors WHERE path!='') GROUP BY path
+ FROM (SELECT * FROM raw UNION ALL SELECT path,2,'0000000000000000',0,0,0,'','unknown' FROM ancestors WHERE path!='')
+ WHERE path!='.orbit-internal' AND path NOT GLOB '.orbit-internal/*' GROUP BY path
 )
 `
 
@@ -213,6 +215,9 @@ func (db *DB) queryKnown(ctx context.Context, folder history.ID, where, order st
 			items[i].WorkingState = "blocked"
 		}
 		if err != nil {
+			return nil, 0, err
+		}
+		if items[i].SyncState, err = db.fileSyncState(ctx, folder, items[i]); err != nil {
 			return nil, 0, err
 		}
 	}
@@ -420,6 +425,8 @@ type FileDetails struct {
 	HasConflict        bool                  `json:"has_conflict"`
 	StructuralConflict string                `json:"structural_conflict,omitempty"`
 	Peers              []PeerProgressSummary `json:"peers,omitempty"`
+	SyncState          string                `json:"sync_state,omitempty"`
+	LastScannedNS      int64                 `json:"last_scanned_ns,omitempty"`
 }
 
 // FileDetails reports technical metadata, DAG heads, CAS chunk availability, and working copy state.
@@ -536,6 +543,10 @@ func (db *DB) FileDetails(ctx context.Context, folder history.ID, path string) (
 	if !hasProj && len(items) > 0 {
 		p.ObservedSize = items[0].Size
 	}
+	syncState := SyncDeleted
+	if len(items) > 0 {
+		syncState = items[0].SyncState
+	}
 	// 6. Peers progress
 	var peers []PeerProgressSummary
 	if len(heads) > 0 {
@@ -586,6 +597,8 @@ func (db *DB) FileDetails(ctx context.Context, folder history.ID, path string) (
 		HasConflict:        hasConflict,
 		StructuralConflict: structConflict,
 		Peers:              peers,
+		SyncState:          syncState,
+		LastScannedNS:      p.LastScannedNS,
 	}, nil
 }
 

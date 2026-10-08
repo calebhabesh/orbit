@@ -7,12 +7,41 @@ import (
 	"net"
 	"net/http"
 	"net/netip"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
 
 	p "github.com/calebhabesh/orbit/internal/protocol"
 )
+
+func TestOnboardingE10RelayProbeAllowsPacedSetup(t *testing.T) {
+	var handled atomic.Int64
+	server, trust, target := managerServer(t, func(http.ResponseWriter, *http.Request) { handled.Add(1) })
+	target.Profile[0] = 1
+	m := NewManager(ManagerOptions{})
+	defer m.Close()
+	if e := m.SetRelay(target, func(ctx context.Context, _ Target) (net.Conn, error) {
+		// Production BeginSetup can legitimately need >3 s to refill the
+		// three signed operations after other diagnostics spend tokens.
+		timer := time.NewTimer(3200 * time.Millisecond)
+		defer timer.Stop()
+		select {
+		case <-timer.C:
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+		return (&net.Dialer{}).DialContext(ctx, "tcp", strings.TrimPrefix(server.URL, "https://"))
+	}); e != nil {
+		t.Fatal(e)
+	}
+	if got := m.ProbeTCP(context.Background(), target, trust, true); got.Code != "VERIFIED" {
+		t.Fatal(got)
+	}
+	if handled.Load() != 0 || m.Observe(target).Code != "NOT_TESTED" {
+		t.Fatal("probe sent HTTP or changed route")
+	}
+}
 
 func TestWANW12DoctorCancellationAndAdmission(t *testing.T) {
 	resolver := &testResolver{block: true}
