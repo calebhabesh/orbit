@@ -9,9 +9,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -154,6 +156,12 @@ func (c *Client) Call(ctx context.Context, method, path string, input, output an
 
 // WithController never interprets a live HTTP error as permission to open SQLite.
 func (c *Client) WithController(ctx context.Context, live func() error, stopped func(*control.Controller) error) error {
+	if c.StateDir != "" {
+		if _, err := os.Lstat(c.StateDir); errors.Is(err, fs.ErrNotExist) {
+			return &control.ControlError{Code: "NOT_SET_UP", Message: "Orbit is not set up on this device yet",
+				Action: "run orbit in a terminal to create or join an Orbit (or orbit setup / orbit join)"}
+		}
+	}
 	entered := false
 	err := app.WithWorkspace(ctx, c.StateDir, func(cfg config.Config, db *repository.DB, ws *workspace.Workspace) error {
 		entered = true
