@@ -1,0 +1,6 @@
+=== RUN   TestOnboardingE07F10RelayJoinWait
+    onboarding_e07_test.go:114: F10: joiner errors during 30m1s unapproved wait: map[]; first RATE_LIMITED after 0s; local service requests 900
+    onboarding_e07_test.go:129: F10: approval noticed after 8s (phase content_pending)
+--- PASS: TestOnboardingE07F10RelayJoinWait (1810.67s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	1810.674s

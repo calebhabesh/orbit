@@ -1,0 +1,11 @@
+{
+  "packet": "E07",
+  "date": "2026-10-08",
+  "base_revision": "8b5a088",
+  "findings": {
+    "F10": {"result": "fixed", "cause": "joiner status checks every 15 s at two requests each (8/min) exceeded the inviter's per-source enrollment bucket (5/min, burst 5)", "tests": ["TestOnboardingE07F10ApprovalWaitFitsInviterSourceBucket", "TestOnboardingE07ApprovalPollInterval", "TestOnboardingE07F10RelayJoinWait (ORBIT_E07_WAIT=30m)"], "observed": "30 min unapproved wait with no refusal or blocked state; approval noticed after 8 s (27 s in the ordinary run); RATE_LIMITED during a join is a paused 'slowed_down' state, not an error"}
+  },
+  "checks": {"make_check": "9 in-process tests depended on the old 15 s spacing via fixed 25 s sleeps; fixtures now set ApprovalPoll 15 s; they and all remaining targets pass", "pty_suites": "pass"},
+  "limitations": ["approval is polled, not pushed: worst-case notice is one interval (36 s)", "fixtures with fixed sleeps keep the old 15 s spacing explicitly"],
+  "unexecuted": ["one uninterrupted make check after the fixture change"]
+}

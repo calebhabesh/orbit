@@ -8,6 +8,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	mrand "math/rand/v2"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -334,6 +335,21 @@ func (c *Controller) advanceSetup(ctx, work context.Context, record repository.T
 	r.Operation.Error = nil
 	r.Readiness = &tc.Readiness{}
 	block := func(err error) (tc.Result, error) {
+		if err.Error() == "RATE_LIMITED" && m.Join != nil {
+			// The inviter asked this device to slow down (F10). That is part of
+			// waiting, not a failure: keep the phase, pause and say so.
+			expires := ""
+			if job.Wire != nil {
+				expires = job.Wire.ExpiresUnix
+			}
+			delay := preparedRequestThrottleDelay(r.Operation.Phase, expires, c.options.Now()) + mrand.N(10*time.Second)
+			job.NextContact = c.options.Now().Add(delay).UTC().Format(time.RFC3339Nano)
+			r.Effects = append(r.Effects, tc.Effect{State: "slowed_down"})
+			if e := c.saveSetupPhase(context.WithoutCancel(ctx), &record, job, r.Operation.Phase); e != nil {
+				return *r, e
+			}
+			return *r, nil
+		}
 		code := "SETUP_BLOCKED"
 		if m.Join != nil && !job.Registered {
 			job.NextContact = c.options.Now().Add(25 * time.Second).UTC().Format(time.RFC3339Nano)
@@ -552,9 +568,11 @@ func (c *Controller) advanceSetup(ctx, work context.Context, record repository.T
 				return *r, err
 			}
 		}
-		// Status polls use four of the inviter's five per-source tokens a minute,
-		// shortening the wait after approval while leaving one for a retry.
-		job.NextContact = c.options.Now().Add(15 * time.Second).UTC().Format(time.RFC3339Nano)
+		poll := approvalPollInterval()
+		if c.options.ApprovalPoll > 0 {
+			poll = c.options.ApprovalPoll
+		}
+		job.NextContact = c.options.Now().Add(poll).UTC().Format(time.RFC3339Nano)
 		var status protocol.TerminalEnrollmentResult
 		if recoveredStatus != nil {
 			status = *recoveredStatus
@@ -992,6 +1010,15 @@ func setupEnrollmentSubmit(ctx context.Context, client *replication.EnrollmentCl
 	}
 	out, err := client.SubmitV3(ctx, *job.Routed)
 	return protocol.TerminalEnrollmentResult{Version: out.Version, Request: out.Request, State: out.State, TranscriptDigest: out.TranscriptDigest, VerificationCode: out.VerificationCode, MembershipHex: out.MembershipHex}, err
+}
+
+// approvalPollInterval spaces status checks while a join awaits approval (F10).
+// Each check costs two requests (challenge, then signed status) from the
+// inviter's per-source bucket of 5 a minute; 30–36 s averages 3.6 a minute and
+// leaves room for a retry, so a waiting joiner is not refused. Approval is
+// noticed within one interval.
+func approvalPollInterval() time.Duration {
+	return 30*time.Second + mrand.N(6*time.Second)
 }
 
 // Two source-admission tokens refill in 25 seconds. Waiting a full minute after

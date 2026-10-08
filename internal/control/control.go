@@ -48,6 +48,9 @@ type Options struct {
 	// SetupStepBound limits each setup step that holds terminalMu; zero uses
 	// DefaultSetupStepBound. Steps that grow with folder size are not bounded.
 	SetupStepBound time.Duration
+	// ApprovalPoll overrides the 30–36 s status spacing while a join awaits
+	// approval; zero uses it. In-process fixtures that advance by sleeping set it.
+	ApprovalPoll time.Duration
 	// WorkChanged tells the running scheduler that durable work was re-queued
 	// through control (F03); nil in a stopped adapter, which has no scheduler.
 	WorkChanged func()

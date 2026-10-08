@@ -1,0 +1,8 @@
+=== RUN   TestOnboardingE07F10ApprovalWaitFitsInviterSourceBucket
+--- PASS: TestOnboardingE07F10ApprovalWaitFitsInviterSourceBucket (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/replication	0.002s
+=== RUN   TestOnboardingE07ApprovalPollInterval
+--- PASS: TestOnboardingE07ApprovalPollInterval (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/control	0.002s
