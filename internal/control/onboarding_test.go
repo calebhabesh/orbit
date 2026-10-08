@@ -1,6 +1,7 @@
 package control
 
 import (
+	"strings"
 	"testing"
 	"time"
 )
@@ -21,5 +22,14 @@ func TestOnboardingE07ApprovalPollInterval(t *testing.T) {
 		if d := approvalPollInterval(); d < 30*time.Second || d >= 36*time.Second {
 			t.Fatalf("interval %s outside [30s, 36s)", d)
 		}
+	}
+}
+
+// E09: a device refused by a spent relay budget says until when, and that
+// direct connections still work.
+func TestOnboardingE09RelayBudgetWording(t *testing.T) {
+	got := networkAction("RELAY_BUDGET")
+	if !strings.Contains(got, "Relay unavailable until ") || !strings.Contains(got, "direct connections still work") {
+		t.Fatalf("wording %q", got)
 	}
 }

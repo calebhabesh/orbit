@@ -145,6 +145,9 @@ func (s *Service) Close() error {
 	s.mu.Unlock()
 	s.controlWG.Wait()
 	s.sweepWG.Wait()
+	if s.budget != nil {
+		return s.budget.Flush()
+	}
 	return nil
 }
 

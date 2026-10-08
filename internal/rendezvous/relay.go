@@ -92,6 +92,12 @@ func (s *Service) attach(req p.NetworkRelayAttachRequest, now uint64) (*session,
 	if v.relay != nil && v.relay.legs[req.Proof.Role] != nil {
 		return nil, p.NetworkReplay
 	}
+	if v.relay == nil && v.proof.Purpose == "peer_data" && s.budget != nil && s.budget.Exhausted() {
+		// Pairing (enrollment) relays stay available: they are small and a
+		// spent data budget must not block adding a device.
+		s.dropSession(req.Proof.Session)
+		return nil, p.NetworkRelayBudget
+	}
 	if v.relay == nil {
 		data, unknown, perSender, perTarget, perPair := 0, 0, 0, 0, 0
 		for _, old := range s.sessions {
@@ -230,7 +236,11 @@ func (s *Service) serveRelay(w http.ResponseWriter, r *http.Request) {
 		defer finish()
 		stopLife := context.AfterFunc(lifetime, relay.cancel)
 		defer stopLife()
-		_ = network.Forward(lifetime, &quotaConn{Conn: a, relay: relay, ctx: lifetime, bytes: &s.stats.relayBytes}, &quotaConn{Conn: bleg, relay: relay, ctx: lifetime, bytes: &s.stats.relayBytes}, s.relayLimits.Idle)
+		var budget *RelayBudget
+		if v.proof.Purpose == "peer_data" {
+			budget = s.budget
+		}
+		_ = network.Forward(lifetime, &quotaConn{Conn: a, relay: relay, ctx: lifetime, bytes: &s.stats.relayBytes, budget: budget}, &quotaConn{Conn: bleg, relay: relay, ctx: lifetime, bytes: &s.stats.relayBytes, budget: budget}, s.relayLimits.Idle)
 		return
 	}
 	select {
@@ -285,9 +295,15 @@ type quotaConn struct {
 	ctx      context.Context
 	deadline time.Time
 	bytes    *atomic.Uint64
+	// budget is the monthly allowance for data relays; nil for pairing.
+	budget *RelayBudget
 }
 
 func (c *quotaConn) Write(b []byte) (int, error) {
+	// A spent monthly budget ends the session at this chunk boundary (E09).
+	if c.budget != nil && c.budget.Exhausted() {
+		return 0, errors.New(p.NetworkRelayBudget)
+	}
 	c.relay.bytesMu.Lock()
 	if int64(len(b)) > c.relay.remaining {
 		c.relay.bytesMu.Unlock()
@@ -308,6 +324,9 @@ func (c *quotaConn) Write(b []byte) (int, error) {
 	}
 	n, err := c.Conn.Write(b)
 	c.bytes.Add(uint64(n))
+	if c.budget != nil {
+		c.budget.Add(uint64(n))
+	}
 	return n, err
 }
 

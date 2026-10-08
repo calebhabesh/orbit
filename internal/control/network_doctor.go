@@ -3,6 +3,7 @@ package control
 import (
 	"context"
 	"encoding/hex"
+	"github.com/calebhabesh/orbit/internal/rendezvous"
 	"time"
 
 	"github.com/calebhabesh/orbit/internal/config"
@@ -22,6 +23,9 @@ func networkAction(code string) string {
 		return "Stop and inspect the reviewed device or service identity; do not bypass verification."
 	case "QUOTA_EXCEEDED":
 		return "Retry later or review an alternative service profile."
+	case "RELAY_BUDGET":
+		// The operator's monthly relay allowance is spent (E09).
+		return "Relay unavailable until " + rendezvous.NextMonth(time.Now()).Format("2 January 2006") + " (the service's monthly relay limit); direct connections still work and Orbit keeps trying them."
 	case "PEER_OFFLINE":
 		return "Wait for the device to come online; captured changes remain saved locally."
 	case "NETWORK_RESTART_REQUIRED":

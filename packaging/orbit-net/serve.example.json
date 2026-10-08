@@ -9,5 +9,7 @@
   "metrics_listen": "127.0.0.1:9464",
   "relay_bps": 20971520,
   "relay_device_bps": 5242880,
-  "relay_session_bytes": 17179869184
+  "relay_session_bytes": 17179869184,
+  "relay_month_bytes": 2199023255552,
+  "relay_state": "/var/lib/orbit-net/relay-month.json"
 }

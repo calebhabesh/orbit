@@ -110,6 +110,22 @@ on the same folder; 10,000-entry paging.
 
 ## EG4 — Relay egress accounting (E09)
 
+**Closed 2026-10-08 by E09.** `orbit_net_relay_bytes_total` counts relay
+payload once, when written to the receiving device, in both forwarding
+directions: it is relay **egress** payload. The monthly budget uses the same
+count. It is kept in a private `relay-month.json` (written at most every 30 s
+and on stop, so a crash forgets at most 30 s of counting) and reset at each UTC
+month start. Measured TLS/WebSocket framing overhead was 0.22% for a 4 MiB
+bulk transfer, so the deployed budget leaves a few percent of headroom. At the
+budget, new data relays are refused with `RELAY_BUDGET` and live ones end at
+the next chunk; pairing relays stay available. Devices say "relay unavailable
+until <next month>; direct connections still work" and retry the relay hourly.
+Evidence: `TestOnboardingE09…` in `internal/rendezvous`, `cmd/orbit-net` and
+`internal/control` ([E09 evidence](../evidence/onboarding-e09-20261008/summary.md)).
+Owning specs: [operator guide](../orbit-net-operator.md#budgets-and-capacity).
+
+Scoping record (E00):
+
 Facts: `orbit_net_relay_bytes_total` is incremented in `quotaConn.Write`
 (`internal/rendezvous/relay.go`) on both legs, so each forwarded byte is counted
 once, when it is written to the receiving device: it measures relay payload

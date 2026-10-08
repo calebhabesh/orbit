@@ -1,0 +1,12 @@
+{
+  "packet": "E09",
+  "date": "2026-10-08",
+  "base_revision": "4f8ea36",
+  "gate": {"EG4": "closed", "counter": "relay payload written to the receiving device, both forwarding directions (egress payload)", "framing_overhead": "0.22% for a 4 MiB bulk transfer", "crash_loss_bound": "30 s of counting"},
+  "tests": ["TestOnboardingE09RelayBudgetPersistsAndResets", "TestOnboardingE09RelayRefusesAndEndsAtBudget", "TestOnboardingE09RelayFramingOverhead", "TestOnboardingE09RelayBudgetAlerts", "TestOnboardingE09ServeBudgetConfigAndRestart", "TestOnboardingE09RelayBudgetWording", "TestOnboardingE09RouteShare"],
+  "observed": {"budget_end": "session ended after exactly 65536 bytes at a 64 KiB budget", "refusal": "RELAY_BUDGET, refusals{reason=budget}=1", "pairing_exempt": true, "alerts": "80% and 100% transitions, resolve at month reset", "restart": "count restored", "month_reset": "simulated 2026-10 -> 2026-11 resets to 0"},
+  "checks": {"make_check": "one failure: TestWANW12BinaryDoctorPrivacyAndPTY (pre-existing intermittent; reproduced 3/4 on unmodified 4f8ea36)", "remaining_targets": "pass", "pty_suites": "pass", "orbit_net_rehearsal": "pass"},
+  "deployment": "not done; VPS deployment and the deployed relay_month_bytes need the owner's confirmation at E10",
+  "decisions": ["pairing (enrollment) relays stay available when the data budget is spent", "default relay_month_bytes 2 TiB; zero in prepare means default, negative refused"],
+  "unexecuted": ["VPS deployment", "W12 relay probe root cause"]
+}

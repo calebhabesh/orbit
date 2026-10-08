@@ -45,6 +45,9 @@ type fixture struct {
 	roots     *x509.CertPool
 	server    *http.Server
 	origin    string
+	// wireOut counts raw (TLS) bytes the service wrote to all clients; E09
+	// compares it with the relay payload counter to measure framing overhead.
+	wireOut atomic.Uint64
 }
 type device struct {
 	id, pin, der string
@@ -135,7 +138,7 @@ func newWrappedFixture(t *testing.T, live bool, wrap func(http.Handler) http.Han
 			f.server.Handler = wrap(f.server.Handler)
 		}
 		f.server.TLSConfig = &tls.Config{MinVersion: tls.VersionTLS13, Certificates: []tls.Certificate{serviceCert.cert}, NextProtos: []string{"http/1.1"}}
-		go func() { _ = f.server.ServeTLS(BoundedListener(listener), "", "") }()
+		go func() { _ = f.server.ServeTLS(BoundedListener(countingListener{listener, &f.wireOut}), "", "") }()
 	}
 	t.Cleanup(func() {
 		_ = f.s.Close()
@@ -1050,4 +1053,29 @@ func TestWANW03ServiceBinaryRestart(t *testing.T) {
 	if err := c.Announce(context.Background(), "peer_data", nonce(), announcement(f, 1)); err != nil {
 		t.Fatal("binary reannouncement after restart", err)
 	}
+}
+
+// countingListener counts bytes written by accepted connections.
+type countingListener struct {
+	net.Listener
+	out *atomic.Uint64
+}
+
+func (l countingListener) Accept() (net.Conn, error) {
+	c, err := l.Listener.Accept()
+	if err != nil {
+		return nil, err
+	}
+	return countingConn{c, l.out}, nil
+}
+
+type countingConn struct {
+	net.Conn
+	out *atomic.Uint64
+}
+
+func (c countingConn) Write(b []byte) (int, error) {
+	n, err := c.Conn.Write(b)
+	c.out.Add(uint64(n))
+	return n, err
 }

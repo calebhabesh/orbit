@@ -75,10 +75,14 @@ func (p *prepared) metricsText(listener *rendezvous.CappedListener, stun *rendez
 	metric("orbit_net_challenges", "gauge", "Outstanding challenges (limit 128).", m.Challenges)
 	metric("orbit_net_rate_keys", "gauge", "Per-device metadata rate buckets (limit 1024).", m.RateKeys)
 	metric("orbit_net_source_buckets", "gauge", "Pre-auth source buckets (limit 128).", m.SourceBuckets)
-	for _, r := range []reasonValue{{"quota", m.RefusedQuota}, {"invalid", m.RefusedInvalid}, {"expired", m.RefusedExpired}, {"untrusted", m.RefusedUntrusted}, {"other", m.RefusedOther}} {
+	for _, r := range []reasonValue{{"quota", m.RefusedQuota}, {"invalid", m.RefusedInvalid}, {"expired", m.RefusedExpired}, {"untrusted", m.RefusedUntrusted}, {"budget", m.RefusedBudget}, {"other", m.RefusedOther}} {
 		metric("orbit_net_refusals_total", "counter", "Refused requests by stable reason class.", r.value, fmt.Sprintf("reason=%q", r.reason))
 	}
-	metric("orbit_net_relay_bytes_total", "counter", "Ciphertext bytes forwarded by the relay (both directions).", m.RelayBytes)
+	metric("orbit_net_relay_bytes_total", "counter", "Relay payload bytes written to receiving devices, both forwarding directions; excludes TLS/WebSocket framing.", m.RelayBytes)
+	if m.RelayMonthLimit > 0 {
+		metric("orbit_net_relay_month_bytes", "gauge", "Relay payload bytes forwarded this UTC month (the monthly budget's count).", m.RelayMonthBytes)
+		metric("orbit_net_relay_month_limit_bytes", "gauge", "Configured monthly relay allowance (relay_month_bytes).", m.RelayMonthLimit)
+	}
 	metric("orbit_net_relay_limit_bytes_per_second", "gauge", "Configured aggregate relay ceiling.", m.ServiceBytesPerSecond)
 	metric("orbit_net_relay_device_limit_bytes_per_second", "gauge", "Configured per-device relay ceiling.", m.DeviceBytesPerSecond)
 	if stun != nil {

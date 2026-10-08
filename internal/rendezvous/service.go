@@ -84,6 +84,8 @@ type Options struct {
 	Overlap []ServedProfile
 	Now     func() time.Time
 	Relay   RelayLimits
+	// RelayBudget, when set, is the monthly relay egress allowance (E09).
+	RelayBudget *RelayBudget
 }
 
 type Service struct {
@@ -113,6 +115,7 @@ type Service struct {
 	deviceBandwidth                    map[actor]*byteLimiter
 	served                             map[string]*servedProfile
 	stats                              counters
+	budget                             *RelayBudget
 }
 
 func New(opts Options) (*Service, error) {
@@ -141,7 +144,7 @@ func New(opts Options) (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	service := &Service{served: served, relaySlots: make(chan struct{}, 2*(network.MaxServiceDataTunnels+MaxUnknownOffers)), relayLimits: limits, bandwidth: newByteLimiter(limits.ServiceBytesPerSecond), deviceBandwidth: map[actor]*byteLimiter{}, selection: opts.Selection, origin: opts.Origin, digest: digest, epoch: nonce(), relayOrigin: relay, key: append(ed25519.PrivateKey{}, opts.ServiceKey...), now: opts.Now,
+	service := &Service{served: served, relaySlots: make(chan struct{}, 2*(network.MaxServiceDataTunnels+MaxUnknownOffers)), relayLimits: limits, bandwidth: newByteLimiter(limits.ServiceBytesPerSecond), deviceBandwidth: map[actor]*byteLimiter{}, selection: opts.Selection, origin: opts.Origin, digest: digest, epoch: nonce(), relayOrigin: relay, key: append(ed25519.PrivateKey{}, opts.ServiceKey...), now: opts.Now, budget: opts.RelayBudget,
 		challenges: map[string]challenge{}, records: map[routeKey]record{}, operations: map[string]replay{}, sessions: map[string]*session{}, controls: map[routeKey]*control{}, rates: map[actor]bucket{}, sources: map[string]bucket{}, active: make(chan struct{}, network.MaxServiceControls), pending: map[controlConn]bool{}, controlSlots: make(chan struct{}, network.MaxServiceControls)}
 	lifetime, cancel := context.WithCancel(context.Background())
 	service.cancel = cancel

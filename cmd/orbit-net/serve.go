@@ -50,7 +50,17 @@ type serveConfig struct {
 	RelayBPS          int64  `json:"relay_bps"`
 	RelayDeviceBPS    int64  `json:"relay_device_bps"`
 	RelaySessionBytes int64  `json:"relay_session_bytes"`
+	// RelayMonthBytes is the monthly relay egress allowance (E09): payload
+	// bytes forwarded, both directions, reset at each UTC month start.
+	RelayMonthBytes int64 `json:"relay_month_bytes"`
+	// RelayState is the private file holding this month's count; empty uses
+	// $STATE_DIRECTORY/relay-month.json from systemd's StateDirectory=.
+	RelayState string `json:"relay_state,omitempty"`
 }
+
+// defaultRelayMonthBytes is a finite starting point (2 TiB). The operator sets
+// the deployed value against the host's egress allowance and other workloads.
+const defaultRelayMonthBytes = 2 << 40
 
 const (
 	maxConfigBytes      = 16 << 10
@@ -64,7 +74,7 @@ func serve(args []string, errOut io.Writer) error {
 	flags.SetOutput(errOut)
 	configFile := flags.String("config", "", "private JSON service configuration; explicit flags override it")
 	check := flags.Bool("check", false, "validate configuration, keys, profile and certificate, then exit")
-	cfg := serveConfig{Listen: ":8443", RelayBPS: 20 << 20, RelayDeviceBPS: 5 << 20, RelaySessionBytes: 16 << 30}
+	cfg := serveConfig{Listen: ":8443", RelayBPS: 20 << 20, RelayDeviceBPS: 5 << 20, RelaySessionBytes: 16 << 30, RelayMonthBytes: defaultRelayMonthBytes}
 	stunListen := flags.String("stun-listen", "", "optional separate numeric UDP STUN listener from reviewed profile")
 	stunBind := flags.String("stun-bind", "", "local UDP address for --stun-listen behind 1:1 NAT (default: the listen address itself)")
 	listen := flags.String("listen", "", "TLS listen address (default :8443)")
@@ -79,6 +89,8 @@ func serve(args []string, errOut io.Writer) error {
 	relayRate := flags.Int64("relay-bps", 0, "aggregate ciphertext bytes/sec (finite, default 20 MiB/s)")
 	deviceRate := flags.Int64("relay-device-bps", 0, "per-device ciphertext bytes/sec (finite, default 5 MiB/s)")
 	sessionBytes := flags.Int64("relay-session-bytes", 0, "maximum ciphertext bytes per tunnel (default 16 GiB)")
+	monthBytes := flags.Int64("relay-month-bytes", 0, "monthly relay egress allowance in bytes, reset each UTC month (default 2 TiB)")
+	relayState := flags.String("relay-state", "", "private file for this month's relay count (default $STATE_DIRECTORY/relay-month.json)")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
@@ -101,12 +113,12 @@ func serve(args []string, errOut io.Writer) error {
 	for name, pair := range map[string]struct {
 		dst *string
 		src *string
-	}{"stun-listen": {&cfg.STUNListen, stunListen}, "stun-bind": {&cfg.STUNBind, stunBind}, "listen": {&cfg.Listen, listen}, "profile": {&cfg.Profile, profileFile}, "overlap-profile": {&cfg.OverlapProfile, overlapProfile}, "overlap-service-key": {&cfg.OverlapServiceKey, overlapKey}, "origin": {&cfg.Origin, origin}, "tls-cert": {&cfg.TLSCert, certFile}, "tls-key": {&cfg.TLSKey, keyFile}, "service-key": {&cfg.ServiceKey, signer}, "metrics-listen": {&cfg.MetricsListen, metrics}} {
+	}{"stun-listen": {&cfg.STUNListen, stunListen}, "stun-bind": {&cfg.STUNBind, stunBind}, "listen": {&cfg.Listen, listen}, "profile": {&cfg.Profile, profileFile}, "overlap-profile": {&cfg.OverlapProfile, overlapProfile}, "overlap-service-key": {&cfg.OverlapServiceKey, overlapKey}, "origin": {&cfg.Origin, origin}, "tls-cert": {&cfg.TLSCert, certFile}, "tls-key": {&cfg.TLSKey, keyFile}, "service-key": {&cfg.ServiceKey, signer}, "metrics-listen": {&cfg.MetricsListen, metrics}, "relay-state": {&cfg.RelayState, relayState}} {
 		if set[name] {
 			*pair.dst = *pair.src
 		}
 	}
-	for name, pair := range map[string]struct{ dst, src *int64 }{"relay-bps": {&cfg.RelayBPS, relayRate}, "relay-device-bps": {&cfg.RelayDeviceBPS, deviceRate}, "relay-session-bytes": {&cfg.RelaySessionBytes, sessionBytes}} {
+	for name, pair := range map[string]struct{ dst, src *int64 }{"relay-bps": {&cfg.RelayBPS, relayRate}, "relay-device-bps": {&cfg.RelayDeviceBPS, deviceRate}, "relay-session-bytes": {&cfg.RelaySessionBytes, sessionBytes}, "relay-month-bytes": {&cfg.RelayMonthBytes, monthBytes}} {
 		if set[name] {
 			*pair.dst = *pair.src
 		}
@@ -202,7 +214,24 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 	if err != nil {
 		return nil, err
 	}
-	service, err := rendezvous.New(rendezvous.Options{Selection: selection, Origin: cfg.Origin, ServiceKey: key, Overlap: overlap, Relay: rendezvous.RelayLimits{ServiceBytesPerSecond: cfg.RelayBPS, DeviceBytesPerSecond: cfg.RelayDeviceBPS, SessionBytes: cfg.RelaySessionBytes}})
+	if cfg.RelayMonthBytes == 0 {
+		cfg.RelayMonthBytes = defaultRelayMonthBytes
+	}
+	if cfg.RelayMonthBytes < 0 {
+		return nil, errors.New("relay_month_bytes must be positive and finite")
+	}
+	if cfg.RelayState == "" {
+		if dir := os.Getenv("STATE_DIRECTORY"); dir != "" && !strings.Contains(dir, ":") {
+			cfg.RelayState = filepath.Join(dir, "relay-month.json")
+		} else {
+			warnings = append(warnings, "relay_state is not set and no StateDirectory is available; the monthly relay count restarts at zero with the service")
+		}
+	}
+	budget, err := rendezvous.OpenRelayBudget(cfg.RelayState, uint64(cfg.RelayMonthBytes), nil)
+	if err != nil {
+		return nil, fmt.Errorf("relay budget state: %w", err)
+	}
+	service, err := rendezvous.New(rendezvous.Options{Selection: selection, Origin: cfg.Origin, ServiceKey: key, Overlap: overlap, RelayBudget: budget, Relay: rendezvous.RelayLimits{ServiceBytesPerSecond: cfg.RelayBPS, DeviceBytesPerSecond: cfg.RelayDeviceBPS, SessionBytes: cfg.RelaySessionBytes}})
 	if err != nil {
 		return nil, fmt.Errorf("profile, origin or service key rejected: %w", err)
 	}
