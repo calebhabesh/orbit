@@ -53,11 +53,18 @@ make test-terminal-packages
 ```
 
 Archives, Debian and RPM packages for amd64/arm64 are written to `dist/`, with
-`SHA256SUMS`, dependency notices, service aliases, a terminal desktop entry,
+`SHA256SUMS`, dependency notices, the `orbit.service` user unit, a terminal desktop entry,
 Bash/Zsh/Fish completions and operator runbooks. Cross builds are not native
 Pi execution. [Install and upgrade](docs/runbooks/install.md) explains startup
-modes and preserved legacy state/services. `filesync` engine commands retain
-their vocabulary, identities, wire format and `.filesync-internal` scratch names.
+modes. Low-level engine commands (scan, sync, membership, work, resolve and the
+rest) live under `orbit engine`; `orbit engine help` lists them.
+
+Orbit 2.0 completed the rename from the project's original working name,
+`file-sync`: binary, packages, service unit (`orbit.service`), state directory
+(`~/.local/state/orbit`), scratch directories (`.orbit-internal`) and protocol
+domain strings all use `orbit`. 2.0 cannot read 1.x state or sync with 1.x
+peers; reinstall and set up again. Historical evidence under `docs/evidence/`
+keeps the commands as they were run.
 `orbit legacy-browser` (retained alias `orbit launch`) explicitly opens the
 frozen browser compatibility interface; keep its bootstrap URL private.
 

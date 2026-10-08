@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 
 	quic "github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"

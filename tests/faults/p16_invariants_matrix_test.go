@@ -13,11 +13,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // TestP16InvariantI01_ImmutableVersionIDOneEnvelope verifies that an immutable
@@ -516,7 +516,7 @@ func TestP16InvariantI11_UnavailableRootsIncompleteScansNeverDelete(t *testing.T
 	_, _ = ws.Scan(ctx, folder)
 
 	// Invalidate root registration marker to simulate unmounted/unavailable root
-	markerPath := filepath.Join(workDir, ".filesync-internal", "registration")
+	markerPath := filepath.Join(workDir, ".orbit-internal", "registration")
 	if err := os.WriteFile(markerPath, []byte("invalid marker payload"), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -942,7 +942,7 @@ func TestP16HarnessRefusesUnsafePaths(t *testing.T) {
 	sub := filepath.Join(noMarkerRoot, "sub")
 	_ = os.Mkdir(sub, 0o700)
 	if err := testkit.ValidateDestructiveTarget(noMarkerRoot, sub); err == nil {
-		t.Fatal("expected rejection when .filesync-disposable marker is missing, got nil")
+		t.Fatal("expected rejection when .orbit-disposable marker is missing, got nil")
 	}
 }
 

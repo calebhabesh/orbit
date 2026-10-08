@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 func (c *Controller) terminalFolders(ctx context.Context, q tc.Query) (tc.Result, error) {
@@ -295,7 +295,7 @@ func (c *Controller) terminalContext(ctx context.Context, q tc.Query) (tc.Result
 
 	// Step 5: Check Path if provided
 	if q.Path != "" {
-		if strings.HasPrefix(q.Path, ".orbit-") || strings.Contains(q.Path, "/.orbit-") || strings.HasPrefix(q.Path, ".filesync") || strings.Contains(q.Path, "/.filesync") {
+		if strings.HasPrefix(q.Path, ".orbit") || strings.Contains(q.Path, "/.orbit") {
 			r.State = "failed"
 			r.Error = &tc.Error{
 				Code:      "INVALID_PATH",

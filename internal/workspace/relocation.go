@@ -13,8 +13,8 @@ import (
 	"reflect"
 	"sort"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
 	"golang.org/x/sys/unix"
 )
 

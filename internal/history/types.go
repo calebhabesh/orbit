@@ -1,4 +1,4 @@
-// Package history implements File Sync's pure causal-history rules. It owns no
+// Package history implements Orbit's pure causal-history rules. It owns no
 // filesystem, database, transport, clock, or user-interface behavior.
 package history
 
@@ -196,7 +196,7 @@ func ValidatePath(path string) error {
 		return fmt.Errorf("%w: path has too many segments", ErrInvalidEnvelope)
 	}
 	for _, segment := range segments {
-		if segment == "" || segment == "." || segment == ".." || len(segment) > MaxSegmentBytes || segment == ".filesync" || strings.HasPrefix(segment, ".filesync-") {
+		if segment == "" || segment == "." || segment == ".." || len(segment) > MaxSegmentBytes || segment == ".orbit" || strings.HasPrefix(segment, ".orbit-") {
 			return fmt.Errorf("%w: invalid or reserved path segment", ErrInvalidEnvelope)
 		}
 	}
@@ -245,7 +245,7 @@ func HeadToken(ids []VersionID) Digest {
 	ordered := append([]VersionID(nil), ids...)
 	sort.Slice(ordered, func(i, j int) bool { return CompareVersionID(ordered[i], ordered[j]) < 0 })
 	hash := sha256.New()
-	hash.Write([]byte("filesync-head-set-v1\x00"))
+	hash.Write([]byte("orbit-head-set-v1\x00"))
 	var encoded [8]byte
 	for _, id := range ordered {
 		hash.Write(id.Folder[:])

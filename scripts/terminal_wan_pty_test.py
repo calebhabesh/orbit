@@ -219,7 +219,7 @@ def run(binary, profile, output, outage_marker):
         # capture and entered new-folder drafts remain usable through the outage.
         outage_path = Path(outage_marker)
         assert outage_path.is_absolute() and outage_path.parent.resolve(strict=True) == outage_path.parent
-        marker = outage_path.parent / '.filesync-disposable'
+        marker = outage_path.parent / '.orbit-disposable'
         assert marker.is_file() and not marker.is_symlink(), 'disposable service marker required'
         with outage_path.open('x') as trigger: trigger.write('stop disposable service only')
         ua = UI(a, 'service-outage-local-capture-draft', size=(100, 36)); active.append(ua)

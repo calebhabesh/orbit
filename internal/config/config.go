@@ -25,13 +25,13 @@ type Config struct {
 
 func DefaultStateDir() string {
 	if stateHome := os.Getenv("XDG_STATE_HOME"); stateHome != "" {
-		return filepath.Join(stateHome, "filesync")
+		return filepath.Join(stateHome, "orbit")
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return ".filesync-state"
+		return ".orbit-state"
 	}
-	return filepath.Join(home, ".local", "state", "filesync")
+	return filepath.Join(home, ".local", "state", "orbit")
 }
 
 func Initialize(stateDir string, now func() time.Time, random io.Reader) (Config, error) {

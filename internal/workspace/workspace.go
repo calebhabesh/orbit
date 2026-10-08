@@ -21,12 +21,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
 	"golang.org/x/sys/unix"
 )
 
-const scratchName = ".filesync-internal"
+const scratchName = ".orbit-internal"
 const markerName = "registration"
 
 const (

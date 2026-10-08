@@ -7,14 +7,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/calebhabesh/file-sync/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/launcher"
 	"io"
 	"path/filepath"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 func privateEnrollmentInput(path string, out any) error {

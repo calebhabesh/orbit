@@ -7,13 +7,13 @@ retirement records through authenticated local control on each reachable machine
 A mere offline member is not a fork and must not be retired to finish rollout.
 
 For an actual fork, preserve every affected state directory and root. Stop each
-selected daemon with `filesync stop --state /private/state` before using the
+selected daemon with `orbit stop --state /private/state` before using the
 compatible stopped inspection/export commands below (T06 expands live parity).
 Pause the old group on each reachable participant:
 
 ```sh
 orbit folders pause --state /private/state --folder OLD_FOLDER_ID --reason MEMBERSHIP_FORK
-filesync membership export --state /private/state --folder OLD_FOLDER_ID --file /private/branch.json
+orbit engine membership export --state /private/state --folder OLD_FOLDER_ID --file /private/branch.json
 ```
 
 Inspect retained path history and conflicts. Copy the working bytes selected by
@@ -21,7 +21,7 @@ the owner into a new, nonoverlapping recovery root; export additional retained
 versions into distinct new paths when they differ from the working copy:
 
 ```sh
-filesync export --state /private/state --folder OLD_FOLDER_ID \
+orbit export --state /private/state --folder OLD_FOLDER_ID \
   --version AUTHOR_ID:COUNTER --out /new/recovery/unique-reviewed-name
 ```
 

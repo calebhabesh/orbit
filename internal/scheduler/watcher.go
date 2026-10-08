@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 	"golang.org/x/sys/unix"
 )
 
@@ -142,7 +142,7 @@ func (w *Watcher) WatchFolder(folder history.ID, rootPath string) error {
 		if !d.IsDir() {
 			return nil
 		}
-		if d.Name() == ".filesync-internal" {
+		if d.Name() == ".orbit-internal" {
 			return filepath.SkipDir
 		}
 		rel, relErr := filepath.Rel(absRoot, path)
@@ -278,7 +278,7 @@ func (w *Watcher) processInotifyEvents(buf []byte) {
 			}
 
 			// Skip internal scratch files
-			if name == ".filesync-internal" || strings.HasPrefix(name, ".filesync-internal/") {
+			if name == ".orbit-internal" || strings.HasPrefix(name, ".orbit-internal/") {
 				continue
 			}
 

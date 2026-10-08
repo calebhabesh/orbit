@@ -12,8 +12,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 type SupportCategory struct {

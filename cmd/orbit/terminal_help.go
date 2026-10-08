@@ -53,6 +53,7 @@ Management & Diagnostics:
   legacy-browser           Explicit frozen browser compatibility launcher
   completion [shell]       Generate shell completions (bash, zsh, fish)
   version                  Display product version, schema, and build metadata
+  engine <command>         Low-level engine commands (scan, sync, membership, work, resolve; see orbit engine help)
 
 Options:
   --state <path>           Explicit agent state directory

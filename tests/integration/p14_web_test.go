@@ -16,11 +16,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func fileManifestHelper(content []byte, exec bool) *history.Manifest {
@@ -48,16 +48,16 @@ func TestP14EmbeddedWebInterfaceAndSPARouting(t *testing.T) {
 	stateDir := filepath.Join(disposable, "state")
 
 	// Initialize state
-	initCmd := exec.Command(binary, "init", "--state", stateDir)
+	initCmd := exec.Command(binary, "engine", "init", "--state", stateDir)
 	if out, err := initCmd.CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v\n%s", err, out)
 	}
 
-	// Start filesync serve with control listener
+	// Start orbit serve with control listener
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, binary, "serve", "--state", stateDir, "--control-listen", "127.0.0.1:0", "--no-watch")
+	cmd := exec.CommandContext(ctx, binary, "engine", "serve", "--state", stateDir, "--control-listen", "127.0.0.1:0", "--no-watch")
 	var stdoutBuf safeBuffer
 	cmd.Stdout = &stdoutBuf
 	cmd.Stderr = os.Stderr

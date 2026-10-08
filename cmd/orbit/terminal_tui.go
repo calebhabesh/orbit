@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"flag"
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/launcher"
 	"io"
 	"os"
 	"os/signal"
@@ -13,8 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/terminal"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/terminal"
 )
 
 // Bare Orbit and the explicit TUI entry share terminal and daemon ownership.

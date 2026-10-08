@@ -14,8 +14,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/model"
 )
 
 func managerServer(t *testing.T, handler http.HandlerFunc) (*httptest.Server, *tls.Config, Target) {

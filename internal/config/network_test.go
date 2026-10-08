@@ -1,7 +1,7 @@
 package config
 
 import (
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"os"
 	"path/filepath"
 	"testing"

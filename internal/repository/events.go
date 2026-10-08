@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 type EventLogEntry struct {

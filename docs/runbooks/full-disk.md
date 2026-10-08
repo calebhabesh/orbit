@@ -15,7 +15,7 @@
 
 1. **Inspect Storage Usage**:
    ```bash
-   filesync storage usage --json
+   orbit storage usage --json
    ```
    Examine:
    - `state_filesystem.available_bytes`: Bytes remaining on the state drive.
@@ -25,7 +25,7 @@
 
 2. **Run Doctor Diagnostic**:
    ```bash
-   filesync doctor
+   orbit doctor
    ```
    Check the `storage` category for specific filesystem remediation advice.
 
@@ -35,26 +35,26 @@
 Reclaim unreferenced and expired chunk payloads:
 ```bash
 # Preview reclaimable capacity
-filesync storage gc preview
+orbit storage gc preview
 
 # Execute garbage collection
-filesync storage gc run
+orbit storage gc run
 ```
 
 ### Step 2: Prune Staging and Quarantined Artifacts
 If corrupted chunks or aborted in-flight transfers have occupied disk space:
 ```bash
 # Preview recovery items
-filesync maintenance recovery --json
+orbit maintenance recovery --json
 
 # Reclaim recovery artifacts
-filesync storage recovery reclaim
+orbit storage recovery reclaim
 ```
 
 ### Step 3: Trigger SQLite WAL Checkpoint
 If SQLite write-ahead log (`metadata.sqlite-wal`) is holding excess disk space:
 ```bash
-filesync maintenance backup --out /mnt/external/backup.sqlite
+orbit maintenance backup --out /mnt/external/backup.sqlite
 ```
 Taking a consistent backup checkpoints active WAL transactions into the main database.
 
@@ -62,17 +62,17 @@ Taking a consistent backup checkpoints active WAL transactions into the main dat
 If user data exceeds available drive capacity:
 1. Pause replication:
    ```bash
-   filesync folders pause --folder <folder-id> --reason "expanding disk capacity"
+   orbit folders pause --folder <folder-id> --reason "expanding disk capacity"
    ```
 2. Move data or expand storage partition.
 3. If mount point changed, update folder root:
    ```bash
-   filesync folders add --folder <folder-id> --root /new/mount/path
-   filesync safety root-revalidate --folder <folder-id>
-   filesync folders resume --folder <folder-id>
+   orbit folders add --folder <folder-id> --root /new/mount/path
+   orbit engine safety root-revalidate --folder <folder-id>
+   orbit folders resume --folder <folder-id>
    ```
 
 4. Verify agent health:
    ```bash
-   filesync doctor
+   orbit doctor
    ```

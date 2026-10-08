@@ -33,8 +33,8 @@ Allocate a **new root for each invocation**, then enter a new namespace:
 ```sh
 run_root=$(mktemp -d /tmp/orbit-w15-XXXXXXXX)
 chmod 700 "$run_root"
-printf 'orbit W15 disposable network/process campaign\n' > "$run_root/.filesync-disposable"
-chmod 600 "$run_root/.filesync-disposable"
+printf 'orbit W15 disposable network/process campaign\n' > "$run_root/.orbit-disposable"
+chmod 600 "$run_root/.orbit-disposable"
 parent_netns=$(readlink /proc/self/ns/net)
 unshare --user --map-root-user --net python3 scripts/wan_failure_campaign.py \
   --root "$run_root" --parent-namespace "$parent_netns" \

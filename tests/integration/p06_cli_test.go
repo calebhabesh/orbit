@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func TestP06CLITwoPeerTransfer(t *testing.T) {
@@ -24,8 +24,8 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -51,13 +51,13 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 		{"register", "--state", stateA, "--folder", folder, "--root", rootA},
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
 	// Export identity and certificate for Node A
-	idOutA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity A: %v\n%s", err, idOutA)
 	}
@@ -68,17 +68,17 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	}
 
 	// Export identity and certificate for Node B
-	idOutB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity B: %v\n%s", err, idOutB)
 	}
 	devB, pinB, _ := parseIdentityOutput(t, idOutB)
 
 	// Pair approve on both nodes
-	if output, err := exec.Command(binary, "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).CombinedOutput(); err != nil {
 		t.Fatalf("pair-approve A: %v\n%s", err, output)
 	}
-	if output, err := exec.Command(binary, "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).CombinedOutput(); err != nil {
 		t.Fatalf("pair-approve B: %v\n%s", err, output)
 	}
 
@@ -105,12 +105,12 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	}
 
 	// Scan on Node A
-	if output, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
 		t.Fatalf("scan A: %v\n%s", err, output)
 	}
 
 	// Inspect on Node A
-	inspOut, err := exec.Command(binary, "inspect", "--state", stateA, "--folder", folder).CombinedOutput()
+	inspOut, err := exec.Command(binary, "engine", "inspect", "--state", stateA, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("inspect A: %v\n%s", err, inspOut)
 	}
@@ -121,7 +121,7 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	}
 
 	// Start Node A serve daemon on loopback port
-	serveCmd := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmd := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutPipe, err := serveCmd.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -141,7 +141,7 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	// Node B runs sync to pull from Node A
 	syncOut, err := exec.Command(
 		binary,
-		"sync",
+		"engine", "sync",
 		"--state", stateB,
 		"--folder", folder,
 		"--peer-url", peerURL,
@@ -189,7 +189,7 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	}
 
 	// Status on Node B: verify versions are stored=true, applied=true
-	statusOutB, err := exec.Command(binary, "status", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
+	statusOutB, err := exec.Command(binary, "engine", "status", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("status B: %v\n%s", err, statusOutB)
 	}
@@ -214,7 +214,7 @@ func TestP06CLITwoPeerTransfer(t *testing.T) {
 	_ = serveCmd.Wait()
 
 	// Status on Node A: verify durable receipts recorded for peer B
-	statusOutA, err := exec.Command(binary, "status", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
+	statusOutA, err := exec.Command(binary, "engine", "status", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("status A: %v\n%s", err, statusOutA)
 	}

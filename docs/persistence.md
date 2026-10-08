@@ -59,7 +59,7 @@ Status: frozen by gate outcomes [G03 and G04](orbit-design-gates.md). Implemente
 
 2. **Move Atomicity, Overwrite Safety & Source Race Protection**:
    - Move installs the destination first, re-verifies the source, and only then deletes the source.
-   - If destination exists, an explicit reviewed overwrite token is required; the displaced file is atomically moved to `.filesync-internal/recovery/<opID>` before installation.
+   - If destination exists, an explicit reviewed overwrite token is required; the displaced file is atomically moved to `.orbit-internal/recovery/<opID>` before installation.
    - **Concurrent source modification (Invariant I26)**: If the source file is modified concurrently by an editor or writer while the move is staging/installing (stat/hash mismatch), **the source is NOT deleted**. Both the new destination and the modified source file are preserved on disk. The operation completes with `StatusCompletedWithSourceRetained` and flags a clear attention item.
    - **Subtree moves**: Directory moves review a snapshot of immediate children. If a new child is added before the move commits, the subtree token is invalidated (`ErrSubtreeInvalidated`), requiring re-review.
 
@@ -90,7 +90,7 @@ state/
   quarantine/               corrupt objects and recoverable candidates
   operations/               explicit backup/migration artifacts
 root/
-  .filesync-internal/        reserved same-filesystem staging/recovery area
+  .orbit-internal/        reserved same-filesystem staging/recovery area
   ... user paths ...
 ```
 
@@ -125,7 +125,7 @@ Remote content readiness uses the same object durability discipline. Verify asse
 Root registration stores the configured absolute path, the opened root's
 device/inode pair, and a random registration ID. The same registration ID is
 stored in the database and in an owner-only regular marker inside
-`.filesync-internal`; the scratch directory and marker must not be symlinks or
+`.orbit-internal`; the scratch directory and marker must not be symlinks or
 hard-linked files. Registration walks the absolute path without following
 symlinks, permits the root itself to be a mount point, and rejects overlap
 with state or another root. Startup and every scan/deletion application reopen
@@ -184,7 +184,7 @@ The implementation must recover each row below. State names are illustrative; re
 
 Before replacing an existing regular file, preserve the supported observed
 local contents durably or defer. Stage verified output beneath the root's
-`.filesync-internal` directory, on the same `st_dev` as the target, and flush
+`.orbit-internal` directory, on the same `st_dev` as the target, and flush
 it before publication. Revalidate through already opened root/parent
 descriptors. For an existing regular target, v1 uses Linux
 `renameat2(RENAME_EXCHANGE)` so the actual displaced namespace object remains

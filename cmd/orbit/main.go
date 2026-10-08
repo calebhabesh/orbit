@@ -20,19 +20,19 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/launcher"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/workspace"
-	"github.com/calebhabesh/file-sync/web"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/workspace"
+	"github.com/calebhabesh/orbit/web"
 )
 
 var (
@@ -46,33 +46,20 @@ func main() {
 	control.Commit = commit
 	control.Date = date
 
-	if filepath.Base(os.Args[0]) == "orbit" {
-		if err := handleOrbit(os.Args[1:], os.Stdout, os.Stderr); err != nil {
-			var ce *CLIExitError
-			if errors.As(err, &ce) {
-				if ce.Err != nil {
-					fmt.Fprintf(os.Stderr, "orbit: %v\n", ce.Err)
-				}
-				os.Exit(ce.Code)
-			}
-			fmt.Fprintf(os.Stderr, "orbit: %v\n", err)
-			os.Exit(1)
-		}
-		return
-	}
-	if err := run(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+	if err := handleOrbit(os.Args[1:], os.Stdout, os.Stderr); err != nil {
 		var ce *CLIExitError
 		if errors.As(err, &ce) {
 			if ce.Err != nil {
-				fmt.Fprintf(os.Stderr, "filesync: %v\n", ce.Err)
+				fmt.Fprintf(os.Stderr, "orbit: %v\n", ce.Err)
 			}
 			os.Exit(ce.Code)
 		}
-		fmt.Fprintf(os.Stderr, "filesync: %v\n", err)
+		fmt.Fprintf(os.Stderr, "orbit: %v\n", err)
 		os.Exit(1)
 	}
 }
 
+// run dispatches the low-level engine commands reached through 'orbit engine'.
 func run(args []string, stdout, stderr io.Writer) error {
 	if len(args) == 0 {
 		usage(stderr)
@@ -80,10 +67,8 @@ func run(args []string, stdout, stderr io.Writer) error {
 	}
 
 	switch args[0] {
-	case "orbit":
-		return handleOrbit(args[1:], stdout, stderr)
 	case "version":
-		fmt.Fprintf(stdout, "filesync %s (commit=%s, built=%s, %s/%s, go=%s)\n",
+		fmt.Fprintf(stdout, "orbit %s (commit=%s, built=%s, %s/%s, go=%s)\n",
 			version, commit, date, runtime.GOOS, runtime.GOARCH, runtime.Version())
 		return nil
 	case "stop":
@@ -100,7 +85,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 		if err := app.StopAgent(*stateDir, *timeout); err != nil {
 			return err
 		}
-		fmt.Fprintf(stdout, "filesync agent in %s stopped successfully\n", *stateDir)
+		fmt.Fprintf(stdout, "orbit agent in %s stopped successfully\n", *stateDir)
 		return nil
 	case "config":
 		if len(args) < 2 {
@@ -637,7 +622,7 @@ func run(args []string, stdout, stderr io.Writer) error {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "usage: filesync <init|serve|stop|config|identity|pair-approve|register|scan|sync|status|peers|membership|enroll|conflicts|resolve|restore|export|history|storage|check|repair|work|inspect|approve-deletions|apply|doctor|support-export|logs|metrics|folders|safety|maintenance|control|version> [options]")
+	fmt.Fprintln(w, "usage: orbit engine <init|serve|stop|config|identity|pair-approve|register|scan|sync|status|peers|membership|enroll|conflicts|resolve|restore|export|history|storage|check|repair|work|inspect|approve-deletions|apply|doctor|support-export|logs|metrics|folders|safety|maintenance|control|version> [options]")
 }
 
 func parseDigest(value string) (history.Digest, error) {
@@ -3356,6 +3341,8 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleOrbitPicker(args[1:], stdout, stderr)
 	case "serve", "stop":
 		return run(args, stdout, stderr)
+	case "engine":
+		return run(args[1:], stdout, stderr)
 	case "help", "-h", "--help":
 		return handleOrbitHelp(args[1:], stdout, stderr)
 	default:
@@ -4235,7 +4222,7 @@ func handleOrbitVersion(args []string, stdout, stderr io.Writer) error {
 		return json.NewEncoder(stdout).Encode(info)
 	}
 
-	fmt.Fprintf(stdout, "Orbit Personal File Manager v%s (filesync compat v%s)\n", version, version)
+	fmt.Fprintf(stdout, "Orbit Personal File Manager v%s\n", version)
 	fmt.Fprintf(stdout, "Commit: %s (built %s)\n", commit, date)
 	fmt.Fprintf(stdout, "Runtime: %s/%s (%s, pure-Go SQLite, zero Node runtime)\n", runtime.GOOS, runtime.GOARCH, runtime.Version())
 	fmt.Fprintf(stdout, "Schema: SQLite user_version %d, Config format %d\n", repository.CurrentSchema, config.FormatVersion)

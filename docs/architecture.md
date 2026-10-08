@@ -45,7 +45,7 @@ Names are illustrative, not a mandate to create one interface per row. Define in
 ## Proposed source layout
 
 ```text
-cmd/filesync/                entry point and CLI client
+cmd/orbit/                entry point and CLI client
 internal/history/            pure causal rules
 internal/repository/         metadata, content store, durable journals and GC
 internal/workspace/          scanning, root operations, publication and recovery

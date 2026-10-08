@@ -7,8 +7,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // EnrollmentTx is a bounded private record transaction. Capability use, nonce

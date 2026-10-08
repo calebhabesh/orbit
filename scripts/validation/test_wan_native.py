@@ -64,8 +64,8 @@ class NativeSafetyTest(unittest.TestCase):
     def test_tui_frames_redact_root_capability_and_addresses(self):
         from wan_tui_phase import redact
         class H:
-            root = Path('/home/u/filesync-validation-abc')
-        text = 'Root: /home/u/filesync-va\nlidation-abc/data cap=SECRETCAP 203.0.113.7:3478'
+            root = Path('/home/u/orbit-validation-abc')
+        text = 'Root: /home/u/orbit-va\nlidation-abc/data cap=SECRETCAP 203.0.113.7:3478'
         out = redact(text, H, ['SECRETCAP'])
         self.assertNotIn('SECRETCAP', out)
         self.assertNotIn('203.0.113.7', out)
@@ -275,9 +275,9 @@ class NativeSafetyTest(unittest.TestCase):
                 transfer([owner, receiver], 'folder', owner, receiver, 'file', value)
 
     def test_private_certificate_input_and_live_root_removal_guard(self):
-        with patch.dict(os.environ), tempfile.TemporaryDirectory(prefix='filesync-validation-', dir=Path.home()) as temp:
+        with patch.dict(os.environ), tempfile.TemporaryDirectory(prefix='orbit-validation-', dir=Path.home()) as temp:
             root = Path(temp)
-            marker = root / '.filesync-disposable'
+            marker = root / '.orbit-disposable'
             marker.write_text('test-token')
             marker.chmod(0o600)
             req = {'root': str(root), 'token': 'test-token'}
@@ -292,7 +292,7 @@ class NativeSafetyTest(unittest.TestCase):
                 self.assertNotIn(b'secret', command.call_args_list[0].kwargs['input'])
             fake_proc = root / '123'
             fake_proc.mkdir()
-            (fake_proc / 'cmdline').write_bytes(bytes(root / 'filesync') + b'\0')
+            (fake_proc / 'cmdline').write_bytes(bytes(root / 'orbit') + b'\0')
             with patch.object(Path, 'iterdir', return_value=iter([fake_proc])):
                 with self.assertRaisesRegex(RuntimeError, 'owned process still'):
                     wan_dispatch({**req, 'action': 'wan-clean'}, dispatch)

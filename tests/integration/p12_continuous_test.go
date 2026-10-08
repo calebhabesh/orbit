@@ -14,12 +14,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/scheduler"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/scheduler"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 type safeBuffer struct {
@@ -45,11 +45,11 @@ func buildBinary(t *testing.T, disposable string) string {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
-		t.Fatalf("build filesync: %v\n%s", err, output)
+		t.Fatalf("build orbit: %v\n%s", err, output)
 	}
 	return binary
 }
@@ -205,7 +205,7 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if out, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, out)
 		}
 	}
@@ -222,7 +222,7 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 	}
 
 	// Initial scan captures file1.txt
-	cmd := exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--json")
+	cmd := exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan 1: %v\n%s", err, out)
@@ -245,7 +245,7 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 	}
 
 	// 4. Quick scan (full=false): stat matches, skips hashing, captures 0 changes
-	cmd = exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--json")
+	cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("quick scan: %v\n%s", err, out)
@@ -259,7 +259,7 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 	}
 
 	// 5. Full-content scan (full=true): forces full hash check and detects mutated bytes!
-	cmd = exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--full", "--json")
+	cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--full", "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("full scan: %v\n%s", err, out)
@@ -294,7 +294,7 @@ func TestP12WatcherFeedbackSuppression(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if out, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, out)
 		}
 	}
@@ -305,7 +305,7 @@ func TestP12WatcherFeedbackSuppression(t *testing.T) {
 	}
 
 	// First scan authors version counter=1
-	cmd := exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--json")
+	cmd := exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan 1: %v\n%s", err, out)
@@ -320,7 +320,7 @@ func TestP12WatcherFeedbackSuppression(t *testing.T) {
 
 	// Repeat scan 5 times (simulating redundant watcher callbacks or restarts)
 	for i := 2; i <= 6; i++ {
-		cmd = exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--full", "--json")
+		cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--full", "--json")
 		out, err = cmd.CombinedOutput()
 		if err != nil {
 			t.Fatalf("repeat scan %d: %v\n%s", i, err, out)
@@ -357,7 +357,7 @@ func TestP12RootUnavailablePauseFolderNoDeletions(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if out, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, out)
 		}
 	}
@@ -367,7 +367,7 @@ func TestP12RootUnavailablePauseFolderNoDeletions(t *testing.T) {
 	}
 
 	// Initial scan captures file
-	cmd := exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--json")
+	cmd := exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--json")
 	if out, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("scan: %v\n%s", err, out)
 	}
@@ -379,7 +379,7 @@ func TestP12RootUnavailablePauseFolderNoDeletions(t *testing.T) {
 	}
 
 	// Scan fails with ROOT_UNAVAILABLE
-	cmd = exec.Command(binary, "work", "scan", "--state", state, "--folder", folder)
+	cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder)
 	out, err := cmd.CombinedOutput()
 	if err == nil || !strings.Contains(string(out), "ROOT_UNAVAILABLE") && !strings.Contains(string(out), "unavailable or replaced") {
 		t.Fatalf("expected root unavailable error, got: %v\n%s", err, out)
@@ -391,7 +391,7 @@ func TestP12RootUnavailablePauseFolderNoDeletions(t *testing.T) {
 	}
 
 	// Verify file is still present and valid
-	cmd = exec.Command(binary, "work", "scan", "--state", state, "--folder", folder, "--json")
+	cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan after restore: %v\n%s", err, out)
@@ -426,13 +426,13 @@ func TestP12WorkStatusRetryCancelAndList(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if out, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, out)
 		}
 	}
 
 	// Enqueue a sync task via CLI
-	cmd := exec.Command(binary, "work", "sync", "--state", state, "--folder", folder, "--json")
+	cmd := exec.Command(binary, "engine", "work", "sync", "--state", state, "--folder", folder, "--json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("work sync enqueue: %v\n%s", err, out)
@@ -446,8 +446,8 @@ func TestP12WorkStatusRetryCancelAndList(t *testing.T) {
 		t.Fatalf("expected valid task_id, got %v", syncRes)
 	}
 
-	// 1. filesync work list
-	cmd = exec.Command(binary, "work", "list", "--state-dir", state, "--folder", folder, "--json")
+	// 1. orbit work list
+	cmd = exec.Command(binary, "engine", "work", "list", "--state-dir", state, "--folder", folder, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("work list: %v\n%s", err, out)
@@ -460,8 +460,8 @@ func TestP12WorkStatusRetryCancelAndList(t *testing.T) {
 		t.Fatalf("expected at least 1 task in list, got 0")
 	}
 
-	// 2. filesync work status
-	cmd = exec.Command(binary, "work", "status", "--state", state, "--folder", folder, "--json")
+	// 2. orbit work status
+	cmd = exec.Command(binary, "engine", "work", "status", "--state", state, "--folder", folder, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("work status: %v\n%s", err, out)
@@ -474,8 +474,8 @@ func TestP12WorkStatusRetryCancelAndList(t *testing.T) {
 		t.Fatalf("expected queued task in status, got %+v", statusRes)
 	}
 
-	// 3. filesync work cancel
-	cmd = exec.Command(binary, "work", "cancel", "--state", state, "--task", taskID, "--json")
+	// 3. orbit work cancel
+	cmd = exec.Command(binary, "engine", "work", "cancel", "--state", state, "--task", taskID, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("work cancel: %v\n%s", err, out)
@@ -489,7 +489,7 @@ func TestP12WorkStatusRetryCancelAndList(t *testing.T) {
 	}
 
 	// Verify state is canceled in work list
-	cmd = exec.Command(binary, "work", "list", "--state-dir", state, "--folder", folder, "--state", "canceled", "--json")
+	cmd = exec.Command(binary, "engine", "work", "list", "--state-dir", state, "--folder", folder, "--state", "canceled", "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("work list canceled: %v\n%s", err, out)
@@ -501,8 +501,8 @@ func TestP12WorkStatusRetryCancelAndList(t *testing.T) {
 		t.Fatalf("expected canceled task in list, got %+v", listRes.Tasks)
 	}
 
-	// 4. filesync work retry
-	cmd = exec.Command(binary, "work", "retry", "--state", state, "--task", taskID, "--json")
+	// 4. orbit work retry
+	cmd = exec.Command(binary, "engine", "work", "retry", "--state", state, "--task", taskID, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("work retry: %v\n%s", err, out)
@@ -539,13 +539,13 @@ func TestP12ContinuousServeProfilesAndShutdown(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if out, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, out)
 		}
 	}
 
-	// Launch filesync serve with Pi profile and bandwidth limit
-	serveCmd := exec.Command(binary, "serve",
+	// Launch orbit serve with Pi profile and bandwidth limit
+	serveCmd := exec.Command(binary, "engine", "serve",
 		"--state", state,
 		"--profile", "pi",
 		"--bandwidth-limit", "1048576", // 1 MiB/s
@@ -692,13 +692,13 @@ func TestP12NotificationLossRecoveredByReconciliationScan(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if out, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, out)
 		}
 	}
 
 	// Launch agent with --no-watch (simulating watcher loss / overflow) and 500ms sync interval
-	serveCmd := exec.Command(binary, "serve",
+	serveCmd := exec.Command(binary, "engine", "serve",
 		"--state", state,
 		"--no-watch",
 		"--sync-interval", "500ms",

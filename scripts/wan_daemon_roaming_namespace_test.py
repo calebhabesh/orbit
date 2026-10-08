@@ -20,7 +20,7 @@ def main():
     assert 0 <= args.latency_ms <= 100 and 0 <= args.loss_percent <= 5
     root = Path(args.root)
     assert root.is_absolute() and root.resolve(strict=True) == root
-    assert not root.is_symlink() and (root / '.filesync-disposable').is_file() and not (root / '.filesync-disposable').is_symlink()
+    assert not root.is_symlink() and (root / '.orbit-disposable').is_file() and not (root / '.orbit-disposable').is_symlink()
     assert root.stat().st_mode & 0o077 == 0, 'disposable root must be private'
     assert os.readlink('/proc/self/ns/net') != args.parent_namespace, 'refusing host network namespace'
     net_fd = os.open('/proc/self/ns/net', os.O_RDONLY)

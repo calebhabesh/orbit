@@ -541,7 +541,7 @@ Production engine tests exercise actual nonloopback IPv4 multicast discovery,
 known-peer two-way hashes/heads, interrupted verified-chunk reuse and native local
 ULA IPv6 TLS/HTTP transfer. The public fixture normally skips deliberately: run
 `scripts/wan_direct_namespace_test.py` inside a newly created user/network namespace
-with a private `.filesync-disposable` root and the compiled race test binary. The
+with a private `.orbit-disposable` root and the compiled race test binary. The
 script verifies namespace ownership with Linux `NS_GET_USERNS` before creating its
 isolated dummy interface/addresses. Actual signed directory/public-scope IPv4/IPv6
 TCP transfer and directory-outage direct reuse run there; addresses are simulated,
@@ -616,7 +616,7 @@ The native replication journey interrupts a two-chunk HTTP3 transfer, switches
 to actual pinned TCP, reuses the verified chunk, loses a receipt response and
 switches back to HTTP3. Exact original heads/authors/manifests, working bytes and
 durable receipts remain verified. The namespace-only test requires a private
-`.filesync-disposable` marker and a different parent network namespace.
+`.orbit-disposable` marker and a different parent network namespace.
 `scripts/wan_roaming_namespace_test.py` additionally validates user-namespace
 ownership before any interface/route mutation; it exercises actual Linux address
 and default-route detection and the same native replication test. A simulation or

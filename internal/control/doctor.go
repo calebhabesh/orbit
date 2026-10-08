@@ -14,10 +14,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/config"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
 	"golang.org/x/sys/unix"
 )
 
@@ -154,8 +154,8 @@ func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
 			Name:        "daemon_lifecycle",
 			Category:    "daemon",
 			Status:      StatusOk,
-			Message:     "running in stopped-state adapter (daemon inactive; start with 'orbit service start' or 'filesync serve' if background sync desired)",
-			Remediation: "run 'orbit service start' (managed) or 'filesync serve' (manual) to start the background daemon",
+			Message:     "running in stopped-state adapter (daemon inactive; start with 'orbit service start' or 'orbit serve' if background sync desired)",
+			Remediation: "run 'orbit service start' (managed) or 'orbit serve' (manual) to start the background daemon",
 		})
 		return checks
 	}
@@ -166,8 +166,8 @@ func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
 			Name:        "daemon_lifecycle",
 			Category:    "daemon",
 			Status:      StatusOk,
-			Message:     "background daemon inactive (start with 'orbit service start' or 'filesync serve' if background sync desired)",
-			Remediation: "run 'orbit service start' (managed) or 'filesync serve' (manual) to start the background daemon",
+			Message:     "background daemon inactive (start with 'orbit service start' or 'orbit serve' if background sync desired)",
+			Remediation: "run 'orbit service start' (managed) or 'orbit serve' (manual) to start the background daemon",
 		})
 		return checks
 	}
@@ -186,7 +186,7 @@ func (c *Controller) checkDaemonLocalControl() []DoctorCheck {
 			Category:    "daemon",
 			Status:      StatusWarn,
 			Message:     "control credential token not found while control address is active",
-			Remediation: "restart the background daemon with 'orbit service restart' or supervised 'filesync serve'",
+			Remediation: "restart the background daemon with 'orbit service restart' or supervised 'orbit serve'",
 		})
 	} else {
 		perm := tokenInfo.Mode().Perm()
@@ -222,7 +222,7 @@ func (c *Controller) checkIdentityPermissions() []DoctorCheck {
 			Category:    "permissions",
 			Status:      StatusWarn,
 			Message:     "identity key file not found",
-			Remediation: "run filesync init or orbit setup to generate device identity and keypair",
+			Remediation: "run orbit init or orbit setup to generate device identity and keypair",
 		})
 	} else if err != nil {
 		checks = append(checks, DoctorCheck{
@@ -273,7 +273,7 @@ func (c *Controller) checkIdentityPermissions() []DoctorCheck {
 						Category:    "permissions",
 						Status:      StatusFail,
 						Message:     fmt.Sprintf("TLS certificate expired at %s", cert.NotAfter.Format(time.RFC3339)),
-						Remediation: "generate fresh certificate with 'filesync init' or re-enroll",
+						Remediation: "generate fresh certificate with 'orbit init' or re-enroll",
 					})
 				} else if now.Add(7 * 24 * time.Hour).After(cert.NotAfter) {
 					checks = append(checks, DoctorCheck{
@@ -465,7 +465,7 @@ func (c *Controller) checkStorageCapacity(ctx context.Context) []DoctorCheck {
 				Category:    "storage",
 				Status:      StatusWarn,
 				Message:     fmt.Sprintf("SQLite WAL file size is %d MiB (soft cap is %d MiB)", walSize/(1024*1024), MetadataWALSoftCapBytes/(1024*1024)),
-				Remediation: "checkpoint WAL or run filesync maintenance backup",
+				Remediation: "checkpoint WAL or run orbit maintenance backup",
 			})
 		} else {
 			checks = append(checks, DoctorCheck{
@@ -540,7 +540,7 @@ func (c *Controller) checkNetworkReachability(ctx context.Context) []DoctorCheck
 					Category:    "network",
 					Status:      StatusWarn,
 					Message:     fmt.Sprintf("advertised peer address %q is loopback while remote peers exist; peers cannot connect", settings.AdvertisedPeer),
-					Remediation: "configure LAN or Tailscale IP in runtime settings with 'orbit config'",
+					Remediation: "configure LAN or Tailscale IP in runtime settings with 'orbit engine config'",
 				})
 			}
 		}
@@ -731,7 +731,7 @@ func (c *Controller) checkMembershipStatus(ctx context.Context) ([]DoctorCheck, 
 				Category:    "membership",
 				Status:      StatusWarn,
 				Message:     fmt.Sprintf("folder %s has %d active members (baseline limit is %d)", shortID(f.Folder), len(pl.Active), MaxActiveMembersBaseline),
-				Remediation: fmt.Sprintf("retire inactive members with filesync peers retire --folder %s", fullID(f.Folder)),
+				Remediation: fmt.Sprintf("retire inactive members with orbit engine peers retire --folder %s", fullID(f.Folder)),
 			})
 		} else {
 			checks = append(checks, DoctorCheck{
@@ -770,7 +770,7 @@ func (c *Controller) checkProtocolCompatibility(ctx context.Context) []DoctorChe
 			Category:    "protocol",
 			Status:      StatusWarn,
 			Message:     fmt.Sprintf("database schema %d is older than binary schema %d", userVer, repository.CurrentSchema),
-			Remediation: "run filesync serve or filesync init to apply migrations",
+			Remediation: "run orbit serve or orbit init to apply migrations",
 		})
 	} else {
 		checks = append(checks, DoctorCheck{
@@ -798,7 +798,7 @@ func (c *Controller) checkPendingRecovery(ctx context.Context) ([]DoctorCheck, e
 			Category:    "recovery",
 			Status:      StatusWarn,
 			Message:     fmt.Sprintf("%d durable work tasks exhausted retries", len(tasks)),
-			Remediation: "run filesync work retry --all or inspect error causes with filesync work list --state exhausted",
+			Remediation: "run orbit engine work retry --all or inspect error causes with orbit engine work list --state exhausted",
 		})
 	} else {
 		checks = append(checks, DoctorCheck{
@@ -831,7 +831,7 @@ func (c *Controller) checkPendingRecovery(ctx context.Context) ([]DoctorCheck, e
 			Category:    "recovery",
 			Status:      StatusWarn,
 			Message:     fmt.Sprintf("%d unfinalized publication journals pending", totalPendingPubs),
-			Remediation: "run filesync work scan to reconcile and complete publication journals",
+			Remediation: "run orbit engine work scan to reconcile and complete publication journals",
 		})
 	} else {
 		checks = append(checks, DoctorCheck{

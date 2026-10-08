@@ -15,12 +15,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 var p06Folder, p06SenderDev, p06ReceiverDev = faultID('F'), faultID('S'), faultID('R')
@@ -63,11 +63,11 @@ func TestP06TransferKillRestartBoundaries(t *testing.T) {
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP06BoundaryHelper$")
 			cmd.Env = append(
 				os.Environ(),
-				"FILESYNC_P06_HELPER=1",
-				"FILESYNC_P06_RECEIVER="+receiverDir,
-				"FILESYNC_P06_SERVER_URL="+serverURL,
-				"FILESYNC_P06_SERVER_CERT="+serverCertPath,
-				"FILESYNC_P06_HOOK="+hook,
+				"ORBIT_P06_HELPER=1",
+				"ORBIT_P06_RECEIVER="+receiverDir,
+				"ORBIT_P06_SERVER_URL="+serverURL,
+				"ORBIT_P06_SERVER_CERT="+serverCertPath,
+				"ORBIT_P06_HOOK="+hook,
 			)
 			output, err := cmd.CombinedOutput()
 			var exitErr *exec.ExitError
@@ -267,13 +267,13 @@ func resumeReceiver(t *testing.T, dir, serverURL, senderCertPath string) {
 }
 
 func TestP06BoundaryHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P06_HELPER") != "1" {
+	if os.Getenv("ORBIT_P06_HELPER") != "1" {
 		return
 	}
-	receiverDir := os.Getenv("FILESYNC_P06_RECEIVER")
-	serverURL := os.Getenv("FILESYNC_P06_SERVER_URL")
-	serverCertPath := os.Getenv("FILESYNC_P06_SERVER_CERT")
-	hook := os.Getenv("FILESYNC_P06_HOOK")
+	receiverDir := os.Getenv("ORBIT_P06_RECEIVER")
+	serverURL := os.Getenv("ORBIT_P06_SERVER_URL")
+	serverCertPath := os.Getenv("ORBIT_P06_SERVER_CERT")
+	hook := os.Getenv("ORBIT_P06_HOOK")
 
 	now := time.Date(2026, 9, 21, 12, 0, 0, 0, time.UTC)
 	receiverID, err := replication.LoadOrCreateIdentity(filepath.Join(receiverDir, "identity"), p06ReceiverDev, now)
@@ -321,7 +321,7 @@ func TestP06BoundaryHelper(t *testing.T) {
 
 func stableTransferID(peer history.ID, id history.VersionID) string {
 	h := sha256.New()
-	h.Write([]byte("filesync-transfer-v1\x00"))
+	h.Write([]byte("orbit-transfer-v1\x00"))
 	h.Write(peer[:])
 	h.Write(id.Folder[:])
 	h.Write(id.Author[:])

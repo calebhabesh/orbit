@@ -4,7 +4,7 @@ import (
 	"io"
 	"net/http"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 )
 
 func (s *Server) registerTerminalContent(mux *http.ServeMux) {

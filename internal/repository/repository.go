@@ -16,8 +16,8 @@ import (
 	"golang.org/x/sys/unix"
 	_ "modernc.org/sqlite"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 const CurrentSchema = 13

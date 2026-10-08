@@ -12,9 +12,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func setupTestServer(t *testing.T) (*Server, string, *Controller) {
@@ -148,7 +148,7 @@ func TestServerSecurityAndBootstrapFlow(t *testing.T) {
 	cookies := resp.Cookies()
 	var sessionCookie *http.Cookie
 	for _, c := range cookies {
-		if c.Name == "filesync_session" {
+		if c.Name == "orbit_session" {
 			sessionCookie = c
 			break
 		}

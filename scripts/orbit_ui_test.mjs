@@ -84,7 +84,7 @@ if (!chromiumPath) {
 }
 
 const rootDir = process.cwd();
-const binary = path.join(rootDir, 'bin', 'filesync');
+const binary = path.join(rootDir, 'bin', 'orbit');
 if (!fs.existsSync(binary)) {
   console.error(`Binary not found at ${binary}. Run 'make build' first.`);
   process.exit(1);
@@ -102,7 +102,7 @@ fs.mkdirSync(syncRoot, { recursive: true });
 fs.mkdirSync(screenshotsDir, { recursive: true });
 
 // Required safety marker for disposable environment
-fs.writeFileSync(path.join(tempDir, '.filesync-disposable'), 'disposable fixture\n');
+fs.writeFileSync(path.join(tempDir, '.orbit-disposable'), 'disposable fixture\n');
 
 // Populate preexisting files in syncRoot to test adoption
 fs.writeFileSync(path.join(syncRoot, 'welcome.txt'), 'Welcome to Orbit local synchronization!\n');
@@ -139,7 +139,7 @@ process.on('SIGTERM', () => { cleanup(); process.exit(1); });
 async function runSetupScenario() {
   console.log('[SCENARIO: SETUP] Starting uninitialized daemon with --allow-init...');
 
-  // Start filesync daemon in background with random available port
+  // Start orbit daemon in background with random available port
   serverProcess = spawn(binary, [
     'serve',
     '--state', stateDir,
@@ -169,7 +169,7 @@ async function runSetupScenario() {
   console.log(`[INFO] Daemon control listener active at: ${controlURL}`);
 
   // Request a 1-use bootstrap token from daemon control API
-  const tokenOut = execFileSync(binary, ['control', 'bootstrap-token', '--state', stateDir, '--json'], { encoding: 'utf-8' });
+  const tokenOut = execFileSync(binary, ['engine', 'control', 'bootstrap-token', '--state', stateDir, '--json'], { encoding: 'utf-8' });
   const tokenData = JSON.parse(tokenOut);
   const bootstrapToken = tokenData.bootstrap_token;
   if (!bootstrapToken || bootstrapToken.length !== 64) {
@@ -471,7 +471,7 @@ async function startDaemon(dir, allowInit = false, watch = false) {
     });
   });
 
-  const tokenOut = execFileSync(binary, ['control', 'bootstrap-token', '--state', dir, '--json'], { encoding: 'utf-8' });
+  const tokenOut = execFileSync(binary, ['engine', 'control', 'bootstrap-token', '--state', dir, '--json'], { encoding: 'utf-8' });
   const tokenData = JSON.parse(tokenOut);
   const tokenFile = path.join(dir, 'control.token');
   const cliToken = fs.existsSync(tokenFile) ? fs.readFileSync(tokenFile, 'utf-8').trim() : '';
@@ -489,7 +489,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 async function runPairingScenario() {
   console.log('\n[SCENARIO: PAIRING] Starting multi-device pairing test (Packet O06)...');
   const pairingTemp = fs.mkdtempSync('/tmp/orbit-o06-pairing-');
-  fs.writeFileSync(path.join(pairingTemp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(pairingTemp, '.orbit-disposable'), 'disposable fixture\n');
   const stateOwner = path.join(pairingTemp, 'state-owner');
   const rootOwner = path.join(pairingTemp, 'root-owner');
   const stateJoiner = path.join(pairingTemp, 'state-joiner');
@@ -506,7 +506,7 @@ async function runPairingScenario() {
   fs.writeFileSync(path.join(rootJoiner, 'laptop_notes.txt'), 'Preexisting notes on Laptop B - preserved across join (Invariant I22)\n');
 
   // Initialize Owner node via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateOwner, '--root', rootOwner, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateOwner, '--root', rootOwner, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
 
   // Start both daemons
   console.log('[INFO] Spawning Owner and Joining daemons...');
@@ -685,7 +685,7 @@ async function runPairingScenario() {
 async function runDevicesScenario() {
   console.log('\n[SCENARIO: DEVICES] Starting device management and retirement preview test (Packet O06)...');
   const devicesTemp = fs.mkdtempSync('/tmp/orbit-o06-devices-');
-  fs.writeFileSync(path.join(devicesTemp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(devicesTemp, '.orbit-disposable'), 'disposable fixture\n');
   const stateOwner = path.join(devicesTemp, 'state-owner');
   const rootOwner = path.join(devicesTemp, 'root-owner');
   const statePeer = path.join(devicesTemp, 'state-peer');
@@ -699,7 +699,7 @@ async function runDevicesScenario() {
   fs.mkdirSync(o06ScreenshotsDir, { recursive: true });
 
   // Initialize Owner node
-  execFileSync(binary, ['orbit', 'setup', '--state', stateOwner, '--root', rootOwner, '--label', 'Owner-Workstation', '--name', 'Main-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateOwner, '--root', rootOwner, '--label', 'Owner-Workstation', '--name', 'Main-Orbit']);
 
   // Start Owner daemon
   const daemonA = await startDaemon(stateOwner, false);
@@ -870,7 +870,7 @@ async function runDevicesScenario() {
 async function runBrowseScenario() {
   console.log('\n[SCENARIO: BROWSE] Starting hierarchical file browser & search test (Packet O08)...');
   const browseTemp = fs.mkdtempSync('/tmp/orbit-o08-browse-');
-  fs.writeFileSync(path.join(browseTemp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(browseTemp, '.orbit-disposable'), 'disposable fixture\n');
   const stateBrowse = path.join(browseTemp, 'state');
   const rootBrowse = path.join(browseTemp, 'root');
   const o08ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o08', 'screenshots');
@@ -889,7 +889,7 @@ async function runBrowseScenario() {
   fs.writeFileSync(path.join(rootBrowse, 'documents', 'work', 'specs.md'), 'Specification document.\n');
 
   // Initialize workspace via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateBrowse, '--root', rootBrowse, '--label', 'Dev-Workstation', '--name', 'Main-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateBrowse, '--root', rootBrowse, '--label', 'Dev-Workstation', '--name', 'Main-Orbit']);
 
   // Populate 10,000 files across 100 directories in SQLite (metadata.sqlite)
   console.log('[INFO] Populating 10,000 files in SQLite database fixture...');
@@ -1222,7 +1222,7 @@ conn.close()
 async function runPreviewsScenario() {
   console.log('\n[SCENARIO: PREVIEWS] Starting file previews, exact downloads & history test (Packet O08)...');
   const previewsTemp = fs.mkdtempSync('/tmp/orbit-o08-previews-');
-  fs.writeFileSync(path.join(previewsTemp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(previewsTemp, '.orbit-disposable'), 'disposable fixture\n');
   const statePreviews = path.join(previewsTemp, 'state');
   const rootPreviews = path.join(previewsTemp, 'root');
   const o08ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o08', 'screenshots');
@@ -1241,7 +1241,7 @@ async function runPreviewsScenario() {
   fs.writeFileSync(path.join(rootPreviews, 'program.bin'), binBytes);
 
   // Initialize workspace
-  execFileSync(binary, ['orbit', 'setup', '--state', statePreviews, '--root', rootPreviews, '--label', 'Studio-PC', '--name', 'Main-Orbit']);
+  execFileSync(binary, ['setup', '--state', statePreviews, '--root', rootPreviews, '--label', 'Studio-PC', '--name', 'Main-Orbit']);
 
   // Add historical version and peer progress in SQLite
   const dbPath = path.join(statePreviews, 'metadata.sqlite');
@@ -1465,7 +1465,7 @@ conn.close()
 async function runFileActionsScenario() {
   console.log('\n[SCENARIO: FILE-ACTIONS] Starting file operations test (Packet O10)...');
   const temp = fs.mkdtempSync('/tmp/orbit-o10-fileactions-');
-  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(temp, '.orbit-disposable'), 'disposable fixture\n');
   const stateDir = path.join(temp, 'state');
   const rootDirFixture = path.join(temp, 'root');
   const o10ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o10', 'screenshots');
@@ -1478,7 +1478,7 @@ async function runFileActionsScenario() {
   fs.writeFileSync(path.join(rootDirFixture, 'notes.txt'), 'Meeting notes and architecture thoughts.\n');
 
   // Initialize workspace via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
 
   // Start daemon
   const daemon = await startDaemon(stateDir, false);
@@ -1703,7 +1703,7 @@ async function runFileActionsScenario() {
 async function runHistoryScenario() {
   console.log('\n[SCENARIO: HISTORY] Starting history timeline and deleted restore test (Packet O10)...');
   const temp = fs.mkdtempSync('/tmp/orbit-o10-history-');
-  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(temp, '.orbit-disposable'), 'disposable fixture\n');
   const stateDir = path.join(temp, 'state');
   const rootDirFixture = path.join(temp, 'root');
   const o10ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o10', 'screenshots');
@@ -1718,7 +1718,7 @@ async function runHistoryScenario() {
   fs.writeFileSync(delDocPath, 'Temporary file content destined for deletion.\n');
 
   // Initialize workspace via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
 
   // Start daemon
   const daemon = await startDaemon(stateDir, false);
@@ -1726,10 +1726,10 @@ async function runHistoryScenario() {
   // Author Version 2 of document.txt via CLI
   const updateFile = path.join(temp, 'doc_v2.txt');
   fs.writeFileSync(updateFile, 'Version 2 of document.\nRevised and published content with newer facts.\n');
-  execFileSync(binary, ['orbit', 'import', '--state', stateDir, '--file', updateFile, '--path', 'document.txt', '--overwrite']);
+  execFileSync(binary, ['import', '--state', stateDir, '--file', updateFile, '--path', 'document.txt', '--overwrite']);
 
   // Author Tombstone for obsolete.txt via CLI
-  execFileSync(binary, ['orbit', 'delete', '--state', stateDir, '--path', 'obsolete.txt']);
+  execFileSync(binary, ['delete', '--state', stateDir, '--path', 'obsolete.txt']);
 
   const browser = await puppeteer.launch({
     executablePath: chromiumPath,
@@ -1832,7 +1832,7 @@ async function runHistoryScenario() {
 async function runAttentionScenario() {
   console.log('\n[SCENARIO: ATTENTION] Starting Needs Attention & conflict resolution test (Packet O10)...');
   const temp = fs.mkdtempSync('/tmp/orbit-o10-attention-');
-  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(temp, '.orbit-disposable'), 'disposable fixture\n');
   const stateDir = path.join(temp, 'state');
   const rootDirFixture = path.join(temp, 'root');
   const o10ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o10', 'screenshots');
@@ -1844,7 +1844,7 @@ async function runAttentionScenario() {
   fs.writeFileSync(path.join(rootDirFixture, 'readme.md'), '# Orbit Sync\n');
 
   // Initialize workspace via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-PC', '--name', 'Studio-Orbit']);
 
   // Populate concurrent conflicts in SQLite metadata
   const dbPath = path.join(stateDir, 'metadata.sqlite');
@@ -2046,13 +2046,13 @@ conn.close()
 
 async function runRelocationScenario() {
   const temp = fs.mkdtempSync('/tmp/orbit-relocation-ui-');
-  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(temp, '.orbit-disposable'), 'disposable fixture\n');
   const stateDir = path.join(temp, 'state');
   const source = path.join(temp, 'root');
   const destination = path.join(temp, 'new-location');
   fs.mkdirSync(stateDir, { mode: 0o700 }); fs.mkdirSync(source);
   fs.writeFileSync(path.join(source, 'notes.txt'), 'original notes');
-  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', source, '--label', 'Relocation-Test', '--name', 'Notes']);
+  execFileSync(binary, ['setup', '--state', stateDir, '--root', source, '--label', 'Relocation-Test', '--name', 'Notes']);
   const daemon = await startDaemon(stateDir, false, true);
   const browser = await puppeteer.launch({ executablePath: chromiumPath, headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'] });
@@ -2101,7 +2101,7 @@ async function runRelocationScenario() {
 async function runSettingsScenario() {
   console.log('\n[SCENARIO: SETTINGS] Starting Settings, Storage & Maintenance test (Packet O11)...');
   const temp = fs.mkdtempSync('/tmp/orbit-o11-settings-');
-  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(temp, '.orbit-disposable'), 'disposable fixture\n');
   const stateDir = path.join(temp, 'state');
   const rootDirFixture = path.join(temp, 'root');
   const o11ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o11', 'screenshots');
@@ -2114,7 +2114,7 @@ async function runSettingsScenario() {
   fs.writeFileSync(path.join(rootDirFixture, 'notes.txt'), 'Meeting notes and architecture thoughts\n');
 
   // Initialize workspace via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-Workstation', '--name', 'Primary-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Studio-Workstation', '--name', 'Primary-Orbit']);
 
   // Start daemon
   const daemon = await startDaemon(stateDir, false);
@@ -2251,7 +2251,7 @@ async function runSettingsScenario() {
 async function runRecoveryScenario() {
   console.log('\n[SCENARIO: RECOVERY] Starting Recovery & Maintenance test (Packet O11)...');
   const temp = fs.mkdtempSync('/tmp/orbit-o11-recovery-');
-  fs.writeFileSync(path.join(temp, '.filesync-disposable'), 'disposable fixture\n');
+  fs.writeFileSync(path.join(temp, '.orbit-disposable'), 'disposable fixture\n');
   const stateDir = path.join(temp, 'state');
   const rootDirFixture = path.join(temp, 'root');
   const o11ScreenshotsDir = path.join(rootDir, 'docs', 'evidence', 'orbit-o11', 'screenshots');
@@ -2263,7 +2263,7 @@ async function runRecoveryScenario() {
   fs.writeFileSync(path.join(rootDirFixture, 'readme.txt'), 'Test sync recovery\n');
 
   // Initialize workspace via CLI
-  execFileSync(binary, ['orbit', 'setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Recovery-Host', '--name', 'Recovery-Orbit']);
+  execFileSync(binary, ['setup', '--state', stateDir, '--root', rootDirFixture, '--label', 'Recovery-Host', '--name', 'Recovery-Orbit']);
 
   // Simulate Root Unavailable condition by updating root_path in SQLite
   const dbPath = path.join(stateDir, 'metadata.sqlite');

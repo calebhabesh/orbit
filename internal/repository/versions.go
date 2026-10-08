@@ -11,8 +11,8 @@ import (
 	"math"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 var (
@@ -716,7 +716,7 @@ func sameEnvelope(a, b history.Envelope) bool {
 }
 func envelopeDigest(e history.Envelope) history.Digest {
 	h := sha256.New()
-	h.Write([]byte("filesync-envelope-db-v1\x00"))
+	h.Write([]byte("orbit-envelope-db-v1\x00"))
 	h.Write(e.ID.Folder[:])
 	h.Write(e.ID.Author[:])
 	h.Write(encodeUint(e.ID.Counter))

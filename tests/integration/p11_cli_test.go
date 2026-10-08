@@ -14,12 +14,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func TestP11IntegrityScanAndQuarantineAffectedVersions(t *testing.T) {
@@ -28,8 +28,8 @@ func TestP11IntegrityScanAndQuarantineAffectedVersions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -51,7 +51,7 @@ func TestP11IntegrityScanAndQuarantineAffectedVersions(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
@@ -67,13 +67,13 @@ func TestP11IntegrityScanAndQuarantineAffectedVersions(t *testing.T) {
 	}
 
 	// Scan
-	scanOut, err := exec.Command(binary, "scan", "--state", state, "--folder", folder).CombinedOutput()
+	scanOut, err := exec.Command(binary, "engine", "scan", "--state", state, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan: %v\n%s", err, scanOut)
 	}
 
 	// 3. Check integrity on clean state
-	checkCleanJSON, err := exec.Command(binary, "storage", "check", "--state", state, "--folder", folder, "--json").CombinedOutput()
+	checkCleanJSON, err := exec.Command(binary, "engine", "storage", "check", "--state", state, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("check clean: %v\n%s", err, checkCleanJSON)
 	}
@@ -92,7 +92,7 @@ func TestP11IntegrityScanAndQuarantineAffectedVersions(t *testing.T) {
 	}
 
 	// 5. Run storage check with auto-quarantine
-	checkCorruptJSON, err := exec.Command(binary, "storage", "check", "--state", state, "--folder", folder, "--quarantine", "--json").CombinedOutput()
+	checkCorruptJSON, err := exec.Command(binary, "engine", "storage", "check", "--state", state, "--folder", folder, "--quarantine", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("check corrupt: %v\n%s", err, checkCorruptJSON)
 	}
@@ -155,8 +155,8 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -177,9 +177,9 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	// Init both nodes
 	for _, cmd := range [][]string{
 		{binary, "init", "--state", stateA},
-		{binary, "register", "--state", stateA, "--folder", folder, "--root", rootA},
+		{binary, "engine", "register", "--state", stateA, "--folder", folder, "--root", rootA},
 		{binary, "init", "--state", stateB},
-		{binary, "register", "--state", stateB, "--folder", folder, "--root", rootB},
+		{binary, "engine", "register", "--state", stateB, "--folder", folder, "--root", rootB},
 	} {
 		if out, err := exec.Command(cmd[0], cmd[1:]...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", cmd, err, out)
@@ -187,13 +187,13 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 
 	// Pair approval
-	outA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	outA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatal(err)
 	}
 	devA, pinA, certA := parseIdentityOutput(t, outA)
 
-	outB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	outB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -209,8 +209,8 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 
 	for _, cmd := range [][]string{
-		{binary, "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB},
-		{binary, "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA},
+		{binary, "engine", "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB},
+		{binary, "engine", "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA},
 	} {
 		if out, err := exec.Command(cmd[0], cmd[1:]...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", cmd, err, out)
@@ -227,12 +227,12 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if out, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
 		t.Fatalf("scan A: %v\n%s", err, out)
 	}
 
 	// Node A serves over TLS
-	serveCmdA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, err := serveCmdA.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -245,7 +245,7 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	urlA := readListenerURL(t, stdoutA)
 
 	// Node B syncs from Node A
-	syncOut, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder,
+	syncOut, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder,
 		"--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
 	if err != nil {
 		t.Fatalf("initial sync B: %v\n%s", err, syncOut)
@@ -287,7 +287,7 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	if err := dbB.Close(); err != nil {
 		t.Fatal(err)
 	}
-	checkOut, err := exec.Command(binary, "storage", "check", "--state", stateB, "--folder", folder, "--quarantine", "--json").CombinedOutput()
+	checkOut, err := exec.Command(binary, "engine", "storage", "check", "--state", stateB, "--folder", folder, "--quarantine", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("check on B: %v\n%s", err, checkOut)
 	}
@@ -313,7 +313,7 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	}
 	versionArg := fmt.Sprintf("%x:%d", vTarget.Author, vTarget.Counter)
 	repairKey := "repair-p11-test-key-1"
-	repairOut, err := exec.Command(binary, "storage", "repair",
+	repairOut, err := exec.Command(binary, "engine", "storage", "repair",
 		"--state", stateB,
 		"--folder", folder,
 		"--version", versionArg,
@@ -370,7 +370,7 @@ func TestP11PeerAssistedRepairAndInvariantPreservation(t *testing.T) {
 	if err := dbB.Close(); err != nil {
 		t.Fatal(err)
 	}
-	replayOut, err := exec.Command(binary, "storage", "repair",
+	replayOut, err := exec.Command(binary, "engine", "storage", "repair",
 		"--state", stateB,
 		"--folder", folder,
 		"--version", versionArg,

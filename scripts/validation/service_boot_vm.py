@@ -27,10 +27,10 @@ import subprocess
 import sys
 import time
 
-MARKER = ".filesync-disposable"
+MARKER = ".orbit-disposable"
 USER = "orbit"
 ADMIN = "observer"
-STATE = "/home/orbit/.local/state/filesync"
+STATE = "/home/orbit/.local/state/orbit"
 ROOT = "/home/orbit/Documents"
 ORBIT = "/home/orbit/.local/bin/orbit"
 
@@ -131,10 +131,10 @@ echo "linger=$(loginctl show-user {USER} -p Linger --value 2>/dev/null || echo n
 echo "user_state=$(loginctl show-user {USER} -p State --value 2>/dev/null || echo absent)"
 # systemd 256+ also lists a class=manager session for the user manager itself.
 echo "user_sessions=$(loginctl list-sessions --no-legend | awk '$3=="{USER}" && $6=="user"' | wc -l)"
-echo "unit_active=$(user_ctl is-active filesync.service || true)"
-echo "unit_enabled=$(user_ctl is-enabled filesync.service || true)"
-echo "unit_main_pid=$(user_ctl show -p MainPID --value filesync.service || true)"
-echo "unit_restarts=$(user_ctl show -p NRestarts --value filesync.service || true)"
+echo "unit_active=$(user_ctl is-active orbit.service || true)"
+echo "unit_enabled=$(user_ctl is-enabled orbit.service || true)"
+echo "unit_main_pid=$(user_ctl show -p MainPID --value orbit.service || true)"
+echo "unit_restarts=$(user_ctl show -p NRestarts --value orbit.service || true)"
 echo "daemon_pids=$(pgrep -u {USER} -f '{STATE} ' | tr '\\n' ' ')"
 echo "agent_pid=$(cat {STATE}/.agent.pid 2>/dev/null | tr -d '\\n')"
 """
@@ -188,7 +188,7 @@ def main():
         if path.exists():
             sys.exit(f"refusing existing path {path}")
     a.work.mkdir(parents=True)
-    (a.work / MARKER).write_text("filesync test data only")
+    (a.work / MARKER).write_text("orbit test data only")
     a.output.mkdir(parents=True)
     port = a.port
     if not port:
@@ -225,7 +225,7 @@ def main():
         g.ssh(USER, "printf 'seed bytes\\n' > Documents/seed.txt")
         g.ssh(USER, f"{ORBIT} setup --state {STATE} --root {ROOT} --label VM --name Documents --connection local_only "
                     f"--preview --review-file setup.json --json >/dev/null && {ORBIT} setup --state {STATE} --request-file setup.json --timeout 60 --json")
-        unit = g.ssh(USER, "cat ~/.config/systemd/user/filesync.service").stdout
+        unit = g.ssh(USER, "cat ~/.config/systemd/user/orbit.service").stdout
         phases["install"] = {"unit_execstart": [l for l in unit.splitlines() if l.startswith("ExecStart=")]}
 
         # Unattended must be refused before lingering, naming the owner step.
@@ -292,7 +292,7 @@ def main():
                                      "final": final, "no_user_session": final["user_sessions"] == "0",
                                      "boot_to_capture_s": round(time.monotonic() - boot_started, 1)}
         phases["unattended_boot"]["sessions_raw"] = g.ssh(ADMIN, "loginctl list-sessions --no-legend").stdout
-        phases["unattended_boot"]["unit_journal"] = g.ssh(ADMIN, "sudo journalctl -b -o short-monotonic --no-pager _SYSTEMD_USER_UNIT=filesync.service | tail -20").stdout
+        phases["unattended_boot"]["unit_journal"] = g.ssh(ADMIN, "sudo journalctl -b -o short-monotonic --no-pager _SYSTEMD_USER_UNIT=orbit.service | tail -20").stdout
         integrity = g.ssh(ADMIN, f"sudo -u {USER} -H {ORBIT} doctor --state {STATE} --json", check=False)
         phases["doctor_after_boot"] = {"rc": integrity.returncode, "stdout": integrity.stdout[-3000:]}
 

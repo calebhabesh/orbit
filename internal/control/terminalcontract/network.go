@@ -2,8 +2,8 @@ package terminalcontract
 
 import (
 	"errors"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // W06 supplies policy/status controls; W12/W14 retain expanded diagnostics and

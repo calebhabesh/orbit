@@ -150,14 +150,14 @@ devices on the same network:
   `firewalld` with a deny-incoming policy on both): give Orbit fixed ports on
   one device and allow them from your local network only. Orbit otherwise
   picks random ports at each start. Stop the daemon (`orbit stop`), then
-  create `~/.local/state/filesync/direct-network.json`, readable only by you:
+  create `~/.local/state/orbit/direct-network.json`, readable only by you:
 
   ```json
   {"interfaces": [], "listen": ":22028", "disabled": false, "udp_listen": ":22028"}
   ```
 
   ```sh
-  chmod 600 ~/.local/state/filesync/direct-network.json
+  chmod 600 ~/.local/state/orbit/direct-network.json
   # ufw example; replace 192.168.1.0/24 with your network
   sudo ufw allow from 192.168.1.0/24 to any port 22027 proto udp   # discovery
   sudo ufw allow from 192.168.1.0/24 to any port 22028             # direct TCP and UDP

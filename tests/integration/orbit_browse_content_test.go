@@ -21,10 +21,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func TestOrbitBrowse_ContentHTTPAuthorizationAndPreviews(t *testing.T) {
@@ -107,7 +107,7 @@ func TestOrbitBrowse_ContentHTTPAuthorizationAndPreviews(t *testing.T) {
 	if resp.StatusCode != 416 {
 		t.Fatalf("invalid range %d", resp.StatusCode)
 	}
-	for _, path := range []string{"/etc/passwd", "docs/../docs", "docs//x", ".filesync-internal"} {
+	for _, path := range []string{"/etc/passwd", "docs/../docs", "docs//x", ".orbit-internal"} {
 		resp = fetch("/api/v1/browse?folder="+hex.EncodeToString(folder[:])+"&path="+url.QueryEscape(path), srv.CLIToken(), "")
 		resp.Body.Close()
 		if resp.StatusCode != 400 {

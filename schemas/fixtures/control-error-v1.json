@@ -2,5 +2,5 @@
   "code": "ROOT_UNAVAILABLE",
   "message": "workspace root directory is unavailable",
   "retryable": false,
-  "action": "verify storage mount or permissions and run filesync safety root-revalidate"
+  "action": "verify storage mount or permissions and run orbit safety root-revalidate"
 }

@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import stat
 
-MARKER = '.filesync-disposable'
+MARKER = '.orbit-disposable'
 TOKEN = 'orbit W15 disposable network/process campaign\n'
 
 
@@ -21,7 +21,7 @@ def validate_root(value):
     info = marker.lstat()
     if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_nlink != 1 or info.st_mode & 0o077:
         raise RuntimeError('requires private owned single-link marker')
-    if marker.read_text() != TOKEN or (root / '.filesync-pilot').exists():
+    if marker.read_text() != TOKEN or (root / '.orbit-pilot').exists():
         raise RuntimeError('disposable token mismatch or personal pilot')
     return root
 

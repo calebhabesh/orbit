@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 // TestWANW16NativeRunnerRehearsal executes the delivered Python runner against
@@ -83,7 +83,7 @@ func TestWANW16NativeRunnerRehearsal(t *testing.T) {
 	}
 	gz := gzip.NewWriter(archive)
 	tw := tar.NewWriter(gz)
-	if err := tw.WriteHeader(&tar.Header{Name: "filesync", Mode: 0700, Size: int64(len(data))}); err != nil {
+	if err := tw.WriteHeader(&tar.Header{Name: "orbit", Mode: 0700, Size: int64(len(data))}); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := tw.Write(data); err != nil {

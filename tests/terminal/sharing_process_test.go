@@ -13,23 +13,23 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh(t *testing.T) {
 	ctx := context.Background()
 	base := testkit.NewDisposable(t)
 	os.Chmod(base, 0700)
-	binary := filepath.Join(base, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(base, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = "../.."
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v %s", err, out)
@@ -73,7 +73,7 @@ func TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh(t *testi
 	})
 	start := func(i int) {
 		t.Helper()
-		p := exec.Command(binary, "serve", "--state", dirs[i], "--control-listen", "127.0.0.1:0", "--sync-interval", "1s", "--no-watch")
+		p := exec.Command(binary, "engine", "serve", "--state", dirs[i], "--control-listen", "127.0.0.1:0", "--sync-interval", "1s", "--no-watch")
 		if err := p.Start(); err != nil {
 			t.Fatal(err)
 		}
@@ -264,7 +264,7 @@ func TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh(t *testi
 	}
 	var shared tc.Invitation
 	for replay := 0; replay < 2; replay++ {
-		out, err := exec.Command(binary, "orbit", "folders", "share", "--state", dirs[0], "--request-file", shareFile, "--json").CombinedOutput()
+		out, err := exec.Command(binary, "folders", "share", "--state", dirs[0], "--request-file", shareFile, "--json").CombinedOutput()
 		if err != nil {
 			t.Fatalf("share CLI: %v %s", err, out)
 		}
@@ -330,7 +330,7 @@ func TestTerminalT05ThreeProcessSharingOfflineRolloutAndEndpointRefresh(t *testi
 		return false
 	})
 	// CLI refresh omits certificate and reuses C's validated saved B anchor.
-	command := exec.Command(binary, "orbit", "devices", "endpoint", "--state", dirs[2], "--folder", folder, "--device", cfgs[1].DeviceID, "--url", "https://"+settings[1].AdvertisedPeer, "--json")
+	command := exec.Command(binary, "devices", "endpoint", "--state", dirs[2], "--folder", folder, "--device", cfgs[1].DeviceID, "--url", "https://"+settings[1].AdvertisedPeer, "--json")
 	if out, err := command.CombinedOutput(); err != nil {
 		t.Fatalf("refresh CLI: %v %s", err, out)
 	}

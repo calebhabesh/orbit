@@ -16,25 +16,25 @@ func TestSelectedServiceAcceptsPackagedHomeSpecifier(t *testing.T) {
 	if err := os.MkdirAll(unitDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	packaged, err := os.ReadFile(filepath.Join("..", "..", "packaging", "systemd", "filesync.service"))
+	packaged, err := os.ReadFile(filepath.Join("..", "..", "packaging", "systemd", "orbit.service"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	unit := strings.ReplaceAll(string(packaged), "/usr/bin/filesync", filepath.Join(home, ".local", "bin", "filesync"))
+	unit := strings.ReplaceAll(string(packaged), "/usr/bin/orbit", filepath.Join(home, ".local", "bin", "orbit"))
 	if !strings.Contains(unit, "--state=%h/") {
 		t.Fatal("packaged unit no longer uses the %h specifier; update this regression")
 	}
-	if err := os.WriteFile(filepath.Join(unitDir, "filesync.service"), []byte(unit), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(unitDir, "orbit.service"), []byte(unit), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	selected := filepath.Join(home, ".local", "state", "filesync")
+	selected := filepath.Join(home, ".local", "state", "orbit")
 	if err := validateSelectedService(selected); err != nil {
 		t.Fatalf("packaged unit for the selected state was refused: %v", err)
 	}
 	if err := validateSelectedService(selected + "/"); err != nil {
 		t.Fatalf("equivalent selected path was refused: %v", err)
 	}
-	for _, other := range []string{filepath.Join(home, ".local", "state", "other"), filepath.Join(home, ".local", "state"), "/elsewhere/.local/state/filesync"} {
+	for _, other := range []string{filepath.Join(home, ".local", "state", "other"), filepath.Join(home, ".local", "state"), "/elsewhere/.local/state/orbit"} {
 		if err := validateSelectedService(other); err == nil {
 			t.Fatalf("unit for %s accepted for a different state %s", selected, other)
 		}

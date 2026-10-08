@@ -3,7 +3,7 @@ package rendezvous
 import (
 	"sync/atomic"
 
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // counters are sanitized operator totals. They never retain addresses,

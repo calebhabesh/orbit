@@ -6,11 +6,12 @@ import (
 	"encoding/hex"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func randomFolderID(t *testing.T) history.ID {
@@ -261,11 +262,12 @@ func TestTerminalContext_PathValidationAndSymlink(t *testing.T) {
 		Folder:  hex.EncodeToString(f[:]),
 		Path:    ".orbit-scratch/secret.txt",
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if r1.Error == nil || r1.Error.Code != "INVALID_PATH" {
+	// The contract validator rejects reserved segments before the context lookup.
+	if err == nil && (r1.Error == nil || r1.Error.Code != "INVALID_PATH") {
 		t.Fatalf("expected INVALID_PATH for reserved path, got %+v", r1.Error)
+	}
+	if err != nil && !strings.Contains(err.Error(), "INVALID_PATH") {
+		t.Fatalf("expected INVALID_PATH for reserved path, got %v", err)
 	}
 
 	// 2. Symlink inside root pointing outside root -> INVALID_PATH

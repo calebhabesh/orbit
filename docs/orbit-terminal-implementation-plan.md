@@ -175,7 +175,7 @@ groups, delivered with the relevant implementation. Discover a nonzero matching
 test set before claiming a targeted run. A zero-match run is unexecuted coverage.
 After discovery, use `go test -count=1 ./... -run '^TestTerminalTXX'`, replacing
 TXX with the packet. Add PTY/process scenarios where specified. `make test`
-currently omits `cmd/filesync` tests: explicitly run `go test ./cmd/filesync/...`
+currently omits `cmd/orbit` tests: explicitly run `go test ./cmd/orbit/...`
 for CLI changes. Broad relevant gates are `make check`, `make test-race`,
 `make demo`, and package/native execution; see each packet for when they apply.
 
@@ -197,7 +197,7 @@ docs/evidence/terminal-tXX-<run-id>/
 ```
 
 Use new disposable roots, ports, and processes for experiments, with explicit
-`.filesync-disposable` markers and existing canonical-path/process validation.
+`.orbit-disposable` markers and existing canonical-path/process validation.
 Existing personal roots and VPS workloads are never fault targets. Record
 privilege prerequisites and test timing from observations; do not change a
 firewall, VPN, or host lingering policy silently. SIGKILL and VM reset evidence

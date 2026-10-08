@@ -3,7 +3,7 @@ package replication
 import (
 	"context"
 	"errors"
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 	"os"
 	"path/filepath"
 	"sync/atomic"

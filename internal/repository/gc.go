@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 	"golang.org/x/sys/unix"
 )
 
@@ -951,12 +951,12 @@ func (db *DB) DetailedStorageUsage(ctx context.Context) (DetailedStorageUsage, e
 			Filesystem: getFilesystemUsage(root),
 		}
 
-		// Calculate working root files bytes (excluding .filesync-internal)
+		// Calculate working root files bytes (excluding .orbit-internal)
 		_ = filepath.Walk(root, func(p string, info os.FileInfo, err error) error {
 			if err != nil {
 				return nil
 			}
-			if info.IsDir() && filepath.Base(p) == ".filesync-internal" {
+			if info.IsDir() && filepath.Base(p) == ".orbit-internal" {
 				return filepath.SkipDir
 			}
 			if info.Mode().IsRegular() {
@@ -965,8 +965,8 @@ func (db *DB) DetailedStorageUsage(ctx context.Context) (DetailedStorageUsage, e
 			return nil
 		})
 
-		// Calculate scratch stage & recovery bytes beneath root/.filesync-internal
-		internalDir := filepath.Join(root, ".filesync-internal")
+		// Calculate scratch stage & recovery bytes beneath root/.orbit-internal
+		internalDir := filepath.Join(root, ".orbit-internal")
 		_ = filepath.Walk(internalDir, func(p string, info os.FileInfo, err error) error {
 			if err != nil || !info.Mode().IsRegular() {
 				return nil

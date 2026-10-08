@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
@@ -21,8 +21,8 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -48,13 +48,13 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 		{"register", "--state", stateA, "--folder", folder, "--root", rootA},
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
 	// Export identity and certificate for Node A
-	idOutA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity A: %v\n%s", err, idOutA)
 	}
@@ -65,7 +65,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Export identity and certificate for Node B
-	idOutB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity B: %v\n%s", err, idOutB)
 	}
@@ -76,10 +76,10 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Pair approve on both nodes
-	if output, err := exec.Command(binary, "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).CombinedOutput(); err != nil {
 		t.Fatalf("pair-approve A: %v\n%s", err, output)
 	}
-	if output, err := exec.Command(binary, "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).CombinedOutput(); err != nil {
 		t.Fatalf("pair-approve B: %v\n%s", err, output)
 	}
 
@@ -93,14 +93,14 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 
 	// Scan while offline
 	for _, state := range []string{stateA, stateB} {
-		if out, err := exec.Command(binary, "scan", "--state", state, "--folder", folder).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, "engine", "scan", "--state", state, "--folder", folder).CombinedOutput(); err != nil {
 			t.Fatalf("scan %s: %v\n%s", state, err, out)
 		}
 	}
 
 	// Bidirectional sync: A -> B, then B -> A
 	// Start server A
-	serveCmdA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, err := serveCmdA.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -112,7 +112,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	urlA := readListenerURL(t, stdoutA)
 
 	// B syncs from A
-	syncOutB, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
+	syncOutB, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B: %v\n%s", err, syncOutB)
 	}
@@ -121,7 +121,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	_ = serveCmdA.Wait()
 
 	// Start server B
-	serveCmdB := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveCmdB := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB, err := serveCmdB.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -133,7 +133,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	urlB := readListenerURL(t, stdoutB)
 
 	// A syncs from B
-	syncOutA, err := exec.Command(binary, "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
+	syncOutA, err := exec.Command(binary, "engine", "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync A: %v\n%s", err, syncOutA)
 	}
@@ -142,7 +142,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	_ = serveCmdB.Wait()
 
 	// 2. Query conflicts on Node A
-	confJSON, err := exec.Command(binary, "conflicts", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
+	confJSON, err := exec.Command(binary, "engine", "conflicts", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("conflicts A: %v\n%s", err, confJSON)
 	}
@@ -164,13 +164,13 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	headB := fmt.Sprintf("%x:%d", conf.Heads[1].ID.Author, conf.Heads[1].ID.Counter)
 	reviewedStr := fmt.Sprintf("%s,%s", headA, headB)
 
-	// 3. Test `filesync export`
+	// 3. Test `orbit export`
 	exportedFileA := filepath.Join(disposable, "export_a.txt")
 	exportedFileB := filepath.Join(disposable, "export_b.txt")
-	if out, err := exec.Command(binary, "export", "--state", stateA, "--folder", folder, "--version", headA, "--out", exportedFileA).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "export", "--state", stateA, "--folder", folder, "--version", headA, "--out", exportedFileA).CombinedOutput(); err != nil {
 		t.Fatalf("export head A: %v\n%s", err, out)
 	}
-	if out, err := exec.Command(binary, "export", "--state", stateA, "--folder", folder, "--version", headB, "--out", exportedFileB).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "export", "--state", stateA, "--folder", folder, "--version", headB, "--out", exportedFileB).CombinedOutput(); err != nil {
 		t.Fatalf("export head B: %v\n%s", err, out)
 	}
 	dataA, _ := os.ReadFile(exportedFileA)
@@ -184,7 +184,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 
 	// 4. Test stale-view rejection with bogus head-token
 	bogusToken := strings.Repeat("f", 64)
-	staleOut, err := exec.Command(binary, "resolve", "select", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
+	staleOut, err := exec.Command(binary, "engine", "resolve", "select", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
 		"--reviewed", reviewedStr, "--head-token", bogusToken, "--selected", headB).CombinedOutput()
 	if err == nil {
 		t.Fatalf("expected stale-token select to fail, but succeeded:\n%s", staleOut)
@@ -195,7 +195,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 
 	// 5. Test `resolve select` on Node A choosing headB
 	// Pick headB as the selected version
-	selOut, err := exec.Command(binary, "resolve", "select", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
+	selOut, err := exec.Command(binary, "engine", "resolve", "select", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
 		"--reviewed", reviewedStr, "--head-token", headToken, "--selected", headB,
 		"--idempotency-key", "select-key-1", "--json").CombinedOutput()
 	if err != nil {
@@ -216,7 +216,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Test replay of `resolve select` with the same idempotency key
-	replayOut, err := exec.Command(binary, "resolve", "select", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
+	replayOut, err := exec.Command(binary, "engine", "resolve", "select", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
 		"--reviewed", reviewedStr, "--head-token", headToken, "--selected", headB,
 		"--idempotency-key", "select-key-1", "--json").CombinedOutput()
 	if err != nil {
@@ -231,7 +231,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Verify rescan on Node A produces 0 extra versions
-	rescanA, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput()
+	rescanA, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("rescan A: %v\n%s", err, rescanA)
 	}
@@ -241,7 +241,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 
 	// 6. Test sync of resolution to Node B
 	// Start server A
-	serveCmdA = exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA = exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, err = serveCmdA.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -253,7 +253,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	urlA = readListenerURL(t, stdoutA)
 
 	// B syncs resolution from A
-	syncOutB, err = exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
+	syncOutB, err = exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B: %v\n%s", err, syncOutB)
 	}
@@ -263,7 +263,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 
 	// Verify both nodes have 0 conflicts remaining
 	for _, nodeState := range []string{stateA, stateB} {
-		confOut, err := exec.Command(binary, "conflicts", "--state", nodeState, "--folder", folder).CombinedOutput()
+		confOut, err := exec.Command(binary, "engine", "conflicts", "--state", nodeState, "--folder", folder).CombinedOutput()
 		if err != nil {
 			t.Fatalf("conflicts check: %v\n%s", err, confOut)
 		}
@@ -272,8 +272,8 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 		}
 	}
 
-	// 7. Test `filesync history`
-	histOut, err := exec.Command(binary, "history", "--state", stateA, "--folder", folder, "--path", "conflict.txt", "--json").CombinedOutput()
+	// 7. Test `orbit history`
+	histOut, err := exec.Command(binary, "engine", "history", "--state", stateA, "--folder", folder, "--path", "conflict.txt", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("history: %v\n%s", err, histOut)
 	}
@@ -297,9 +297,9 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 		t.Fatalf("expected exactly 1 current head, got %d", headCount)
 	}
 
-	// 8. Test `filesync restore`
+	// 8. Test `orbit restore`
 	// Preview restore of headA
-	prevOut, err := exec.Command(binary, "restore", "--preview", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
+	prevOut, err := exec.Command(binary, "engine", "restore", "--preview", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
 		"--source", headA, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("restore preview: %v\n%s", err, prevOut)
@@ -316,7 +316,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	tokenStr := hex.EncodeToString(prev.ExpectedHeadToken[:])
 
 	// Execute restore of headA
-	restOut, err := exec.Command(binary, "restore", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
+	restOut, err := exec.Command(binary, "engine", "restore", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
 		"--source", headA, "--reviewed", curHeadStr, "--head-token", tokenStr,
 		"--idempotency-key", "restore-key-1", "--json").CombinedOutput()
 	if err != nil {
@@ -337,7 +337,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Replay restore
-	restReplayOut, err := exec.Command(binary, "restore", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
+	restReplayOut, err := exec.Command(binary, "engine", "restore", "--state", stateA, "--folder", folder, "--path", "conflict.txt",
 		"--source", headA, "--reviewed", curHeadStr, "--head-token", tokenStr,
 		"--idempotency-key", "restore-key-1", "--json").CombinedOutput()
 	if err != nil {
@@ -352,14 +352,14 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Verify history now has 4 items, and the restored version is a new event extending current causal heads
-	histOut2, _ := exec.Command(binary, "history", "--state", stateA, "--folder", folder, "--path", "conflict.txt", "--json").CombinedOutput()
+	histOut2, _ := exec.Command(binary, "engine", "history", "--state", stateA, "--folder", folder, "--path", "conflict.txt", "--json").CombinedOutput()
 	var histItems2 []control.HistoryItem
 	_ = json.Unmarshal(histOut2, &histItems2)
 	if len(histItems2) != 4 {
 		t.Fatalf("expected 4 history items after restore, got %d", len(histItems2))
 	}
 
-	// 9. Test `filesync conflicts keep-copies`
+	// 9. Test `orbit conflicts keep-copies`
 	// Create another conflict on "doc.txt"
 	if err := os.WriteFile(filepath.Join(rootA, "doc.txt"), []byte("doc from alice"), 0o600); err != nil {
 		t.Fatal(err)
@@ -367,11 +367,11 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(rootB, "doc.txt"), []byte("doc from bob"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	_, _ = exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput()
-	_, _ = exec.Command(binary, "scan", "--state", stateB, "--folder", folder).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "scan", "--state", stateB, "--folder", folder).CombinedOutput()
 
 	// Sync B -> A
-	serveCmdB = exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveCmdB = exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB, err = serveCmdB.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -381,12 +381,12 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 		t.Fatalf("start serve B: %v", err)
 	}
 	urlB = readListenerURL(t, stdoutB)
-	_, _ = exec.Command(binary, "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
 	_ = serveCmdB.Process.Kill()
 	_ = serveCmdB.Wait()
 
 	// Query conflicts on doc.txt to get reviewed heads and token
-	docConfJSON, err := exec.Command(binary, "conflicts", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
+	docConfJSON, err := exec.Command(binary, "engine", "conflicts", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("conflicts check for doc.txt: %v\n%s", err, docConfJSON)
 	}
@@ -410,7 +410,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	docReviewedStr := strings.Join(docHeads, ",")
 
 	// Run keep-copies
-	kcOut, err := exec.Command(binary, "conflicts", "keep-copies", "--state", stateA, "--folder", folder, "--path", "doc.txt",
+	kcOut, err := exec.Command(binary, "engine", "conflicts", "keep-copies", "--state", stateA, "--folder", folder, "--path", "doc.txt",
 		"--reviewed", docReviewedStr, "--head-token", docToken,
 		"--idempotency-key", "kc-key-1", "--json").CombinedOutput()
 	if err != nil {
@@ -432,7 +432,7 @@ func TestP08CLIResolutionRestoreControlReplay(t *testing.T) {
 	}
 
 	// Replay keep-copies with same key
-	kcReplayOut, err := exec.Command(binary, "conflicts", "keep-copies", "--state", stateA, "--folder", folder, "--path", "doc.txt",
+	kcReplayOut, err := exec.Command(binary, "engine", "conflicts", "keep-copies", "--state", stateA, "--folder", folder, "--path", "doc.txt",
 		"--reviewed", docReviewedStr, "--head-token", docToken,
 		"--idempotency-key", "kc-key-1", "--json").CombinedOutput()
 	if err != nil {

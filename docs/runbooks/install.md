@@ -13,36 +13,35 @@ sha256sum -c SHA256SUMS
 ```
 
 For standalone installation, extract into a new directory and run `bash install.sh
-user`. It installs binaries under `~/.local/bin`, a terminal desktop launcher,
-completions/runbooks under `~/.local/share`, and user service aliases. Add
+user`. It installs the `orbit` binary under `~/.local/bin`, a terminal desktop launcher,
+completions/runbooks under `~/.local/share`, and the `orbit.service` user unit. Add
 `~/.local/bin` to PATH. `bash install.sh system` installs shared binaries/assets
 and requires privilege. Install `.deb` with `sudo dpkg -i <package>` or `.rpm`
 with `sudo rpm -Uvh <package>`. No format enables startup automatically.
 Standalone upgrades preserve existing user unit content; review/customize units
 explicitly. Existing active user services may be restarted once by the installer.
-Debian/RPM units use filesync.service with orbit.service as its alias, not a
-second daemon. Package-manager scripts cannot configure another user's manager.
+Debian/RPM packages ship the same single `orbit.service` user unit. Package-manager scripts cannot configure another user's manager.
 
 Run `orbit` for keyboard create/join; the client starts/reuses a daemon for its
 selected state. Scripts use `orbit status`/`orbit --json`. The desktop entry
 requires a terminal emulator chosen by your desktop. Independent headless commands
-and `filesync serve` need neither desktop nor terminal emulator.
+and `orbit serve` need neither desktop nor terminal emulator.
 
 ## Existing installations
 
 Preserve `config.json`, peer identity/certificates, SQLite/WAL, object store,
-operation spools, registered roots and `.filesync-internal` scratch. Do not copy
-old metadata over a running/current identity. Orbit discovers
-`$XDG_STATE_HOME/filesync` (default `~/.local/state/filesync`) or `~/.filesync`.
-If both exist, use `--state /absolute/selected/state`; it will not guess or merge.
+operation spools, registered roots and `.orbit-internal` scratch. Do not copy
+old metadata over a running/current identity. Orbit uses
+`$XDG_STATE_HOME/orbit` (default `~/.local/state/orbit`); pass
+`--state /absolute/selected/state` to select another state directory.
 The selected path stays in place; switching entry names is not an identity reset.
 
 Before upgrading, stop the selected daemon and obtain a consistent backup:
 
 ```sh
-filesync stop --state /absolute/selected/state
-filesync maintenance backup --state /absolute/selected/state --out /private/pre-upgrade.sqlite
-filesync maintenance preflight --state /absolute/selected/state
+orbit stop --state /absolute/selected/state
+orbit maintenance backup --state /absolute/selected/state --out /private/pre-upgrade.sqlite
+orbit maintenance preflight --state /absolute/selected/state
 ```
 
 Keep a protected copy of private configuration/keys/runtime settings and content
@@ -77,7 +76,7 @@ Do not remove retained source/staging roots until the recorded operation is insp
 
 ## Startup modes
 
-Manual: run `filesync serve --state /absolute/selected/state` in a supervised
+Manual: run `orbit serve --state /absolute/selected/state` in a supervised
 session, or let the TUI start its separate daemon. Managed login startup uses:
 
 ```sh
@@ -91,8 +90,8 @@ returns `MANUAL_DAEMON_RUNNING` instead of reporting that daemon as the service:
 run `orbit stop`, then `orbit service start`, or let login startup take over at
 the next login.
 
-The shipped unit selects `~/.local/state/filesync` (written as `%h/...`, which
-Orbit expands when matching the selected state); a legacy/custom state needs
+The shipped unit selects `~/.local/state/orbit` (written as `%h/...`, which
+Orbit expands when matching the selected state); a custom state needs
 an operator-reviewed unit/drop-in with matching ExecStart and ExecStop paths.
 Keep customized listener flags, profile, resource limits and startup policy.
 Never enable an alias for a second state expecting it to adopt a different daemon.

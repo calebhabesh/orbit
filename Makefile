@@ -1,5 +1,5 @@
 GO ?= go
-VERSION ?= 1.0.1
+VERSION ?= 2.0.0
 COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "release")
 DATE ?= 2026-10-01
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
@@ -8,11 +8,10 @@ GOFLAGS ?=
 .PHONY: ci-fast check-core test-short test-race-core build build-arm64 build-orbit-net package-orbit-net test-orbit-net-rehearsal check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
 
 build:
-	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync ./cmd/filesync
-	ln -sf filesync bin/orbit
+	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/orbit ./cmd/orbit
 
 build-arm64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/filesync-linux-arm64 ./cmd/filesync
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/orbit-linux-arm64 ./cmd/orbit
 
 package: build build-arm64
 	$(GO) run ./scripts/build_packages.go
@@ -37,7 +36,7 @@ vet:
 	$(GO) vet ./...
 
 test:
-	$(GO) test ./cmd/filesync/... ./internal/... ./model/...
+	$(GO) test ./cmd/orbit/... ./internal/... ./model/...
 
 test-race: build
 	$(GO) test -race -timeout=60m ./...
@@ -49,7 +48,7 @@ test-race-core: build
 
 # Fast inner loop: skips tests that call testing.Short().
 test-short:
-	$(GO) test -short ./cmd/filesync/... ./internal/... ./model/...
+	$(GO) test -short ./cmd/orbit/... ./internal/... ./model/...
 
 # Push/PR gate. Target: a few minutes. Full suite runs in full.yml.
 ci-fast: fmt-check vet build build-arm64 test-short
@@ -68,13 +67,13 @@ test-harness:
 	python3 -m unittest discover -s scripts/validation -p 'test_*.py'
 
 test-terminal-pty: build
-	python3 scripts/terminal_pty_test.py --binary bin/filesync
+	python3 scripts/terminal_pty_test.py --binary bin/orbit
 
 test-terminal-onboarding-pty: build
-	python3 scripts/terminal_onboarding_pty_test.py --binary bin/filesync
+	python3 scripts/terminal_onboarding_pty_test.py --binary bin/orbit
 
 test-terminal-everyday-pty: build
-	python3 scripts/terminal_everyday_pty_test.py --binary bin/filesync
+	python3 scripts/terminal_everyday_pty_test.py --binary bin/orbit
 
 test-legacy-browser: build
 	$(GO) test ./tests/integration -run '^(TestP14|TestP15EmbeddedUI|TestOrbitSession)'
@@ -97,4 +96,4 @@ check-core: fmt-check vet test test-integration test-model test-faults test-harn
 check: test-terminal test-terminal-packages fmt-check vet test test-integration test-model test-faults test-harness build build-arm64 package
 
 clean:
-	rm -rf bin/filesync bin/orbit bin/filesync-linux-amd64 bin/filesync-linux-arm64 bin/orbit-net bin/orbit-net-linux-amd64 bin/orbit-net-linux-arm64 dist/
+	rm -rf bin/orbit bin/orbit-linux-amd64 bin/orbit-linux-arm64 bin/orbit-net bin/orbit-net-linux-amd64 bin/orbit-net-linux-arm64 dist/

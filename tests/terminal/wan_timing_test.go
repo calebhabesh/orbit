@@ -2,9 +2,9 @@ package terminal_test
 
 import (
 	"context"
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/testkit"
 	"os"
 	"path/filepath"
 	"testing"

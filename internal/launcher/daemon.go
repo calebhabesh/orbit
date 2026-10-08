@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/state"
 	"golang.org/x/sys/unix"
 )
 

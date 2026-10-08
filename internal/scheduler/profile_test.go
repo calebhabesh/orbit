@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/scheduler"
+	"github.com/calebhabesh/orbit/internal/scheduler"
 )
 
 func TestHardwareProfiles(t *testing.T) {

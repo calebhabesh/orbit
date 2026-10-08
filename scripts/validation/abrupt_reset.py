@@ -32,7 +32,7 @@ def newc(name, data, mode, ino):
 def validate(root, disk):
     if root.is_symlink() or disk.is_symlink() or disk.parent != root:
         raise RuntimeError("unsafe VM image target")
-    if (root / ".filesync-disposable").read_text() != "filesync disposable reset VM\n":
+    if (root / ".orbit-disposable").read_text() != "orbit disposable reset VM\n":
         raise RuntimeError("missing disposable VM marker")
 
 
@@ -41,14 +41,14 @@ def boot(root, disk, kernel, mode, hook, logs):
     args = ["qemu-system-x86_64", "-accel", "kvm", "-m", "384", "-smp", "2",
             "-nodefaults", "-nographic", "-serial", "stdio", "-no-reboot",
             "-kernel", str(kernel), "-initrd", str(root / "initramfs.cpio"),
-            "-append", f"console=ttyS0 rdinit=/init panic=-1 filesync.mode={mode} filesync.hook={hook}",
+            "-append", f"console=ttyS0 rdinit=/init panic=-1 orbit.mode={mode} orbit.hook={hook}",
             "-drive", f"file={disk},format=raw,if=virtio,cache=none"]
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     sel = selectors.DefaultSelector()
     sel.register(proc.stdout, selectors.EVENT_READ)
     output = bytearray()
-    token = {"setup": "FILESYNC_RESET_SETUP_OK", "mutate": "FILESYNC_RESET_READY " + hook,
-             "verify": "FILESYNC_RESET_VERIFY_OK", "enospc":"FILESYNC_ENOSPC_VERIFY_OK"}[mode].encode()
+    token = {"setup": "ORBIT_RESET_SETUP_OK", "mutate": "ORBIT_RESET_READY " + hook,
+             "verify": "ORBIT_RESET_VERIFY_OK", "enospc":"ORBIT_ENOSPC_VERIFY_OK"}[mode].encode()
     started = time.monotonic()
     try:
         while time.monotonic() - started < 45:
@@ -57,7 +57,7 @@ def boot(root, disk, kernel, mode, hook, logs):
                 if not data:
                     raise RuntimeError("VM exited before expected boundary")
                 output.extend(data)
-            if b"FILESYNC_RESET_FAIL" in output and b"\n" in output[output.index(b"FILESYNC_RESET_FAIL"):]:
+            if b"ORBIT_RESET_FAIL" in output and b"\n" in output[output.index(b"ORBIT_RESET_FAIL"):]:
                 raise RuntimeError(output.decode(errors="replace")[-3000:])
             if token in output and b"\n" in output[output.index(token):]:
                 return output.decode(errors="replace"), time.monotonic() - started
@@ -84,9 +84,9 @@ def main():
               "kernel_sha256": hashlib.sha256(args.kernel.read_bytes()).hexdigest(),
               "guest_init_sha256": None, "qemu": subprocess.check_output(["qemu-system-x86_64", "--version"], text=True).splitlines()[0],
               "started_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "runs": [], "success": False}
-    with tempfile.TemporaryDirectory(prefix="filesync-reset-") as temp:
+    with tempfile.TemporaryDirectory(prefix="orbit-reset-") as temp:
         root = Path(temp)
-        (root / ".filesync-disposable").write_text("filesync disposable reset VM\n")
+        (root / ".orbit-disposable").write_text("orbit disposable reset VM\n")
         init = root / "init"
         subprocess.run(["go", "build", "-trimpath", "-o", str(init), "scripts/validation/reset_guest.go"],
                        env={**os.environ, "CGO_ENABLED": "0"}, check=True)
@@ -95,7 +95,7 @@ def main():
                                             + newc("TRAILER!!!", b"", 0, 2))
         seed = root / "seed"
         seed.mkdir()
-        shutil.copy(root / ".filesync-disposable", seed)
+        shutil.copy(root / ".orbit-disposable", seed)
         for index, hook in enumerate(args.hook or HOOKS):
             disk = root / f"disk-{index}.raw"
             with disk.open("wb") as handle:
@@ -110,9 +110,9 @@ def main():
                     text, elapsed = boot(root, disk, args.kernel, mode, hook, args.output / f"{hook}-{mode}.log")
                     entry[mode + "_seconds"] = elapsed
                     if mode == "verify":
-                        entry["oracle"] = text[text.index("FILESYNC_RESET_VERIFY_OK"):].strip()
+                        entry["oracle"] = text[text.index("ORBIT_RESET_VERIFY_OK"):].strip()
                     elif mode == "enospc":
-                        entry["oracle"] = text[text.index("FILESYNC_ENOSPC_ERROR"):].strip()
+                        entry["oracle"] = text[text.index("ORBIT_ENOSPC_ERROR"):].strip()
                 entry["success"] = True
                 print(f"PASS {entry['kind']}: {hook}", flush=True)
             finally:

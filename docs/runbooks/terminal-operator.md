@@ -4,7 +4,7 @@ Run `orbit` or `orbit tui` with interactive stdin/stdout. Both discover the
 selected private state and reuse or start its daemon. `--state /absolute/path`
 selects explicitly; competing XDG/legacy installations require that selection.
 Pipes use status and `--json` uses JSON, without starting a daemon or prompting.
-The desktop entry opens a terminal. `filesync serve --state /absolute/path`
+The desktop entry opens a terminal. `orbit serve --state /absolute/path`
 is the direct daemon entry; ordinary engine commands remain available.
 
 Use j/k or arrows to select, Enter to inspect, Esc to return, ? for help and
@@ -79,7 +79,7 @@ and [install/legacy adoption](install.md) explain prerequisites and next actions
 
 Manual, login and unattended startup are different choices. A running daemon is
 not evidence of login enablement; enablement is not evidence of logout/boot
-persistence. For custom/legacy state paths, review the unit's ExecStart/ExecStop
+persistence. For custom state paths, review the unit's ExecStart/ExecStop
 before enabling it. [Rollback](rollback.md) distinguishes keeping the current
 metadata from restoring old counters. [Recovery](database-recovery.md) uses the
 stopped restore/rekey procedure. [Uninstall](uninstall.md) preserves state/files.

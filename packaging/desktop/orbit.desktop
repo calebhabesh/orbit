@@ -8,5 +8,5 @@ Exec=orbit
 Icon=orbit
 Terminal=true
 Categories=Network;FileTransfer;Utility;
-Keywords=sync;files;p2p;causal;storage;orbit;filesync;
+Keywords=sync;files;p2p;causal;storage;orbit;orbit;
 StartupNotify=true

@@ -7,8 +7,8 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/model"
 )
 
 func id(label byte) history.ID {

@@ -1,6 +1,6 @@
 # Third-Party Licenses and Legal Notices
 
-This repository and the compiled `filesync` binary include code from external Go modules and third-party projects. All included code is distributed under permissive open-source licenses compatible with the project license.
+This repository and the compiled `orbit` binary include code from external Go modules and third-party projects. All included code is distributed under permissive open-source licenses compatible with the project license.
 
 See the root [`NOTICE`](../NOTICE) file for complete copyright assertions and license texts.
 

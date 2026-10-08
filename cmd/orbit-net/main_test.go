@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/rendezvous"
+	"github.com/calebhabesh/orbit/internal/rendezvous"
 )
 
 type w13Kit struct {

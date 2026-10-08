@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/model"
 )
 
 type fixtureFile struct {
@@ -42,7 +42,7 @@ func TestGoldenHistoryFixture(t *testing.T) {
 	if err := json.Unmarshal(data, &fixture); err != nil {
 		t.Fatal(err)
 	}
-	if fixture.Format != "filesync-history-fixtures-v1" {
+	if fixture.Format != "orbit-history-fixtures-v1" {
 		t.Fatalf("format=%q", fixture.Format)
 	}
 	production := history.New()

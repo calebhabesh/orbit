@@ -11,18 +11,18 @@ from host_agent import beneath, dispatch, identity, validated_root
 
 class SafetyTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="filesync-safety-")
+        self.temp = tempfile.TemporaryDirectory(prefix="orbit-safety-")
         self.root = Path(self.temp.name)
         self.req = {"root": str(self.root), "token": "disposable safety fixture"}
-        (self.root / ".filesync-disposable").write_text(self.req["token"])
+        (self.root / ".orbit-disposable").write_text(self.req["token"])
         self.addCleanup(self.temp.cleanup)
 
     def test_missing_and_wrong_marker_refused_before_write(self):
-        (self.root / ".filesync-disposable").unlink()
+        (self.root / ".orbit-disposable").unlink()
         with self.assertRaises(FileNotFoundError):
             dispatch({**self.req, "action": "put", "path": "important", "data": ""})
         self.assertFalse((self.root / "important").exists())
-        (self.root / ".filesync-disposable").write_text("wrong token")
+        (self.root / ".orbit-disposable").write_text("wrong token")
         with self.assertRaises(RuntimeError):
             validated_root(self.req)
 
@@ -44,8 +44,8 @@ class SafetyTest(unittest.TestCase):
         (self.root / "state/.agent.pid").write_text(str(os.getpid()))
         with self.assertRaises(RuntimeError):
             dispatch({**self.req, "action": "terminal-stop"})
-        (self.root / ".filesync-disposable").unlink()
-        (self.root / ".filesync-pilot").write_text(self.req["token"])
+        (self.root / ".orbit-disposable").unlink()
+        (self.root / ".orbit-pilot").write_text(self.req["token"])
         with self.assertRaises(FileNotFoundError):
             dispatch({**self.req, "action": "terminal-stop"})
         with self.assertRaises(FileNotFoundError):
@@ -75,7 +75,7 @@ class SafetyTest(unittest.TestCase):
             command.assert_not_called()
 
     def test_network_probe_requires_disposable_marker(self):
-        (self.root / ".filesync-disposable").unlink()
+        (self.root / ".orbit-disposable").unlink()
         from unittest.mock import patch
         with patch("host_agent.socket.create_connection") as connect:
             with self.assertRaises(FileNotFoundError):

@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // Alert thresholds mirror the Monitoring table in docs/orbit-net-operator.md.

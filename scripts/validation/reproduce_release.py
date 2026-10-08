@@ -25,8 +25,8 @@ def main():
     if any(output.iterdir()):
         parser.error("output must be empty; preserve previous evidence")
     source = subprocess.check_output(["git", "rev-parse", args.source + "^{commit}"], text=True).strip()
-    parent = Path(tempfile.mkdtemp(prefix="filesync-reproduction-"))
-    marker = parent / ".filesync-disposable"
+    parent = Path(tempfile.mkdtemp(prefix="orbit-reproduction-"))
+    marker = parent / ".orbit-disposable"
     marker.write_text(uuid.uuid4().hex)
     marker.chmod(0o600)
     checkout = parent / "checkout"
@@ -59,7 +59,7 @@ def main():
         run("disk-full", disk)
         run("checksum", ["sha256sum", "-c", "SHA256SUMS"], checkout / "dist")
         report["artifact_sha256"] = {p.name: digest(p) for p in sorted((checkout / "dist").iterdir()) if p.is_file()}
-        report["binary_version"] = subprocess.check_output([str(checkout / "bin/filesync"), "version"], text=True)
+        report["binary_version"] = subprocess.check_output([str(checkout / "bin/orbit"), "version"], text=True)
         report["orbit_version"] = subprocess.check_output([str(checkout / "bin/orbit"), "version"], text=True)
         run("package-repeat", ["make", "package"])
         report["repeat_artifact_sha256"] = {p.name: digest(p) for p in sorted((checkout / "dist").iterdir()) if p.is_file()}

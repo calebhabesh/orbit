@@ -5,8 +5,8 @@ import puppeteer from '../web/node_modules/puppeteer-core/lib/puppeteer/puppetee
 
 async function main() {
   const rootDir = process.cwd();
-  const binary = path.join(rootDir, 'bin', 'filesync');
-  const tempDir = fs.mkdtempSync('/tmp/filesync-p14-');
+  const binary = path.join(rootDir, 'bin', 'orbit');
+  const tempDir = fs.mkdtempSync('/tmp/orbit-p14-');
   const stateDir = path.join(tempDir, 'state');
   const workspaceDir = path.join(tempDir, 'workspace');
   const screenshotsDir = path.join(rootDir, 'docs', 'evidence', 'p14-20260923', 'screenshots');
@@ -23,31 +23,31 @@ async function main() {
 
   // 2. Register folder
   const folderID = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
-  execFileSync(binary, ['register', '--state', stateDir, '--folder', folderID, '--root', workspaceDir], { stdio: 'inherit' });
+  execFileSync(binary, ['engine', 'register', '--state', stateDir, '--folder', folderID, '--root', workspaceDir], { stdio: 'inherit' });
 
   // 3. Populate files in workspace
   const notesFile = path.join(workspaceDir, 'notes.txt');
   fs.writeFileSync(notesFile, 'Initial notes version 1\n');
 
   const scriptFile = path.join(workspaceDir, 'deploy.sh');
-  fs.writeFileSync(scriptFile, '#!/bin/sh\necho "Deploying File Sync..."\n', { mode: 0o755 });
+  fs.writeFileSync(scriptFile, '#!/bin/sh\necho "Deploying Orbit..."\n', { mode: 0o755 });
 
   const archFile = path.join(workspaceDir, 'architecture.md');
   fs.writeFileSync(archFile, '# Architecture Overview\n\nCausal synchronization with local SQLite persistence.\n');
 
   // Initial scan
-  execFileSync(binary, ['scan', '--state', stateDir, '--folder', folderID], { stdio: 'inherit' });
+  execFileSync(binary, ['engine', 'scan', '--state', stateDir, '--folder', folderID], { stdio: 'inherit' });
 
   // Update notes.txt to version 2
   fs.writeFileSync(notesFile, 'Updated notes version 2 with additional insights and tasks.\n');
-  execFileSync(binary, ['scan', '--state', stateDir, '--folder', folderID], { stdio: 'inherit' });
+  execFileSync(binary, ['engine', 'scan', '--state', stateDir, '--folder', folderID], { stdio: 'inherit' });
 
   // 3b. Inject concurrent conflict for architecture.md
   console.log('Injecting concurrent conflict for architecture.md...');
   execFileSync('go', ['run', 'scripts/create_conflict.go', stateDir, folderID], { stdio: 'inherit' });
 
   // 4. Start serve in background
-  console.log('Starting filesync serve with control listener...');
+  console.log('Starting orbit serve with control listener...');
   const server = spawn(binary, ['serve', '--state', stateDir, '--control-listen', '127.0.0.1:0', '--no-watch'], {
     stdio: ['ignore', 'pipe', 'inherit'],
   });
@@ -69,7 +69,7 @@ async function main() {
   console.log(`Control listener is active at: ${controlURL}`);
 
   // 5. Generate bootstrap token
-  const bootOut = execFileSync(binary, ['control', 'bootstrap-token', '--state', stateDir, '--json'], { encoding: 'utf-8' });
+  const bootOut = execFileSync(binary, ['engine', 'control', 'bootstrap-token', '--state', stateDir, '--json'], { encoding: 'utf-8' });
   const bootData = JSON.parse(bootOut);
   const bootstrapToken = bootData.bootstrap_token;
   console.log(`Generated bootstrap token: ${bootstrapToken}`);

@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
+	"github.com/calebhabesh/orbit/internal/control"
 )
 
 func findBinary(t *testing.T) string {
@@ -30,7 +30,7 @@ func findBinary(t *testing.T) string {
 	if err != nil {
 		t.Fatalf("resolve root: %v", err)
 	}
-	bin := filepath.Join(root, "bin", "filesync")
+	bin := filepath.Join(root, "bin", "orbit")
 	if _, err := os.Stat(bin); err != nil {
 		t.Fatalf("binary %s not found, run make build first: %v", bin, err)
 	}
@@ -49,15 +49,15 @@ func makeTestStateDir(t *testing.T) string {
 func TestP15VersionAndBuildMetadata(t *testing.T) {
 	bin := findBinary(t)
 
-	cmd := exec.Command(bin, "version")
+	cmd := exec.Command(bin, "engine", "version")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		t.Fatalf("run filesync version: %v (output: %s)", err, string(out))
+		t.Fatalf("run orbit version: %v (output: %s)", err, string(out))
 	}
 
 	str := string(out)
-	if !strings.Contains(str, "filesync 1.0.1") {
-		t.Errorf("version output missing 'filesync 1.0.1', got: %s", str)
+	if !strings.Contains(str, "orbit 2.0.0") {
+		t.Errorf("version output missing 'orbit 2.0.0', got: %s", str)
 	}
 	if platform := runtime.GOOS + "/" + runtime.GOARCH; !strings.Contains(str, platform) {
 		t.Errorf("version output missing %q, got: %s", platform, str)
@@ -74,7 +74,7 @@ func TestP15ReleaseBinaryExcludesDestructiveTestHooks(t *testing.T) {
 	bin := findBinary(t)
 
 	// Verify that production binary accepts no hook injection CLI flags
-	cmd := exec.Command(bin, "serve", "--fault-hook", "some_hook")
+	cmd := exec.Command(bin, "engine", "serve", "--fault-hook", "some_hook")
 	out, err := cmd.CombinedOutput()
 	if err == nil {
 		t.Fatalf("expected error passing --fault-hook to binary, got success: %s", string(out))
@@ -89,7 +89,7 @@ func TestP15EmbeddedUIWithoutNode(t *testing.T) {
 	bin := findBinary(t)
 
 	// Initialize state
-	initCmd := exec.Command(bin, "init", "--state", stateDir)
+	initCmd := exec.Command(bin, "engine", "init", "--state", stateDir)
 	if out, err := initCmd.CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
@@ -105,7 +105,7 @@ func TestP15EmbeddedUIWithoutNode(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, bin, "serve", "--state", stateDir, "--control-listen", addr)
+	cmd := exec.CommandContext(ctx, bin, "engine", "serve", "--state", stateDir, "--control-listen", addr)
 	// Strip node and npm from PATH to guarantee zero runtime node dependency
 	cmd.Env = []string{
 		"PATH=/usr/bin:/bin",
@@ -164,18 +164,18 @@ func TestP15ConfigValidation(t *testing.T) {
 	bin := findBinary(t)
 
 	// Before init -> validation fails
-	cmd := exec.Command(bin, "config", "validate", "--state", stateDir)
+	cmd := exec.Command(bin, "engine", "config", "validate", "--state", stateDir)
 	if err := cmd.Run(); err == nil {
 		t.Fatalf("expected config validate to fail on uninitialized state dir")
 	}
 
 	// Initialize
-	if out, err := exec.Command(bin, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
 
 	// Validate after init -> success
-	cmd = exec.Command(bin, "config", "validate", "--state", stateDir, "--json")
+	cmd = exec.Command(bin, "engine", "config", "validate", "--state", stateDir, "--json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("config validate failed: %v (%s)", err, string(out))
@@ -190,7 +190,7 @@ func TestP15ConfigValidation(t *testing.T) {
 
 	// Corrupt config.json -> validation fails
 	_ = os.WriteFile(filepath.Join(stateDir, "config.json"), []byte("{broken json"), 0o600)
-	cmd = exec.Command(bin, "config", "validate", "--state", stateDir)
+	cmd = exec.Command(bin, "engine", "config", "validate", "--state", stateDir)
 	if err := cmd.Run(); err == nil {
 		t.Fatalf("expected config validate to fail on corrupted config.json")
 	}
@@ -200,12 +200,12 @@ func TestP15AgentStop(t *testing.T) {
 	stateDir := makeTestStateDir(t)
 	bin := findBinary(t)
 
-	if out, err := exec.Command(bin, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
 
 	// Start agent in background
-	cmd := exec.Command(bin, "serve", "--state", stateDir)
+	cmd := exec.Command(bin, "engine", "serve", "--state", stateDir)
 	if err := cmd.Start(); err != nil {
 		t.Fatalf("start agent: %v", err)
 	}
@@ -228,11 +228,11 @@ func TestP15AgentStop(t *testing.T) {
 		t.Fatalf("agent did not write .agent.pid")
 	}
 
-	// Run filesync stop
-	stopCmd := exec.Command(bin, "stop", "--state", stateDir)
+	// Run orbit stop
+	stopCmd := exec.Command(bin, "engine", "stop", "--state", stateDir)
 	if out, err := stopCmd.CombinedOutput(); err != nil {
 		_ = cmd.Process.Kill()
-		t.Fatalf("filesync stop failed: %v (%s)", err, string(out))
+		t.Fatalf("orbit stop failed: %v (%s)", err, string(out))
 	}
 
 	// Verify background process exited
@@ -259,12 +259,12 @@ func TestP15UpgradePreflight(t *testing.T) {
 	stateDir := makeTestStateDir(t)
 	bin := findBinary(t)
 
-	if out, err := exec.Command(bin, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
 
 	// Test 1: Clean preflight when agent is stopped
-	cmd := exec.Command(bin, "maintenance", "preflight", "--state", stateDir, "--json")
+	cmd := exec.Command(bin, "engine", "maintenance", "preflight", "--state", stateDir, "--json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("preflight failed: %v (%s)", err, string(out))
@@ -295,7 +295,7 @@ func TestP15UpgradePreflight(t *testing.T) {
 		t.Fatalf("bump user_version: %v", err)
 	}
 
-	cmd = exec.Command(bin, "maintenance", "preflight", "--state", stateDir, "--json")
+	cmd = exec.Command(bin, "engine", "maintenance", "preflight", "--state", stateDir, "--json")
 	out, _ = cmd.CombinedOutput()
 	var incompRes control.PreflightResult
 	_ = json.Unmarshal(out, &incompRes)
@@ -357,7 +357,7 @@ func TestP15ConsistentBackupAndRestoreSafety(t *testing.T) {
 	bin := findBinary(t)
 
 	// 1. Initialize
-	if out, err := exec.Command(bin, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
 
@@ -372,7 +372,7 @@ func TestP15ConsistentBackupAndRestoreSafety(t *testing.T) {
 
 	// 2. Perform consistent backup
 	backupPath := filepath.Join(backupDir, "test-backup.sqlite")
-	backupCmd := exec.Command(bin, "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
+	backupCmd := exec.Command(bin, "engine", "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
 	if out, err := backupCmd.CombinedOutput(); err != nil {
 		t.Fatalf("backup failed: %v (%s)", err, string(out))
 	}
@@ -390,7 +390,7 @@ func TestP15ConsistentBackupAndRestoreSafety(t *testing.T) {
 	bDB.Close()
 
 	// 3. Restore from backup -> must reset identity (Invariant I08)
-	restoreCmd := exec.Command(bin, "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
+	restoreCmd := exec.Command(bin, "engine", "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
 	out, err := restoreCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("restore-backup failed: %v (%s)", err, string(out))
@@ -455,12 +455,12 @@ func TestP15PackagingOutputsAndChecksums(t *testing.T) {
 	}
 
 	expectedPackages := []string{
-		"filesync-v1.0.1-linux-amd64.tar.gz",
-		"filesync_1.0.1_amd64.deb",
-		"filesync-1.0.1-1.x86_64.rpm",
-		"filesync-v1.0.1-linux-arm64.tar.gz",
-		"filesync_1.0.1_arm64.deb",
-		"filesync-1.0.1-1.aarch64.rpm",
+		"orbit-v2.0.0-linux-amd64.tar.gz",
+		"orbit_2.0.0_amd64.deb",
+		"orbit-2.0.0-1.x86_64.rpm",
+		"orbit-v2.0.0-linux-arm64.tar.gz",
+		"orbit_2.0.0_arm64.deb",
+		"orbit-2.0.0-1.aarch64.rpm",
 	}
 
 	for _, p := range expectedPackages {
@@ -492,7 +492,7 @@ func TestP15PackagingOutputsAndChecksums(t *testing.T) {
 	}
 
 	// Verify tar.gz contents
-	tarGzPath := filepath.Join(distDir, "filesync-v1.0.1-linux-amd64.tar.gz")
+	tarGzPath := filepath.Join(distDir, "orbit-v2.0.0-linux-amd64.tar.gz")
 	f, err := os.Open(tarGzPath)
 	if err != nil {
 		t.Fatalf("open tar.gz: %v", err)
@@ -514,7 +514,7 @@ func TestP15PackagingOutputsAndChecksums(t *testing.T) {
 		}
 		foundFiles[hdr.Name] = true
 	}
-	for _, req := range []string{"filesync", "systemd/filesync.service", "install.sh", "uninstall.sh", "LICENSE", "NOTICE"} {
+	for _, req := range []string{"orbit", "systemd/orbit.service", "install.sh", "uninstall.sh", "LICENSE", "NOTICE"} {
 		if !foundFiles[req] {
 			t.Errorf("tar.gz missing expected file %s", req)
 		}
@@ -523,7 +523,7 @@ func TestP15PackagingOutputsAndChecksums(t *testing.T) {
 
 func TestP15UninstallPreservesUserData(t *testing.T) {
 	tempHome := t.TempDir()
-	stateDir := filepath.Join(tempHome, ".local", "share", "filesync")
+	stateDir := filepath.Join(tempHome, ".local", "share", "orbit")
 	workspaceRoot := filepath.Join(tempHome, "SyncedNotes")
 	bin := findBinary(t)
 
@@ -537,7 +537,7 @@ func TestP15UninstallPreservesUserData(t *testing.T) {
 	}
 
 	// Initialize state dir
-	if out, err := exec.Command(bin, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(bin, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
 
@@ -546,14 +546,14 @@ func TestP15UninstallPreservesUserData(t *testing.T) {
 	if err := os.MkdirAll(localBin, 0o755); err != nil {
 		t.Fatalf("mkdir local bin: %v", err)
 	}
-	installedBin := filepath.Join(localBin, "filesync")
+	installedBin := filepath.Join(localBin, "orbit")
 	_ = os.WriteFile(installedBin, []byte("#!/bin/sh\n"), 0o755)
 
 	localServiceDir := filepath.Join(tempHome, ".config", "systemd", "user")
 	if err := os.MkdirAll(localServiceDir, 0o755); err != nil {
 		t.Fatalf("mkdir local service dir: %v", err)
 	}
-	installedService := filepath.Join(localServiceDir, "filesync.service")
+	installedService := filepath.Join(localServiceDir, "orbit.service")
 	_ = os.WriteFile(installedService, []byte("[Service]\n"), 0o644)
 
 	// Run uninstall.sh with HOME=tempHome

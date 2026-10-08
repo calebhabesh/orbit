@@ -190,7 +190,7 @@ new test groups/runner commands as deliverables. Full suite/build/package/demo
 checks, native hosts and explicit VM experiments are required for the final
 affected guarantees, not for documentation-only planning.
 
-The destructive-harness marker is `.filesync-disposable`; preserve canonical
+The destructive-harness marker is `.orbit-disposable`; preserve canonical
 path/process validation in existing testkit/validation workers. Personal pilot
 markers do not authorize fault injection. Native checks create new private
 roots/ports/processes and never stop an existing service or modify the owner's

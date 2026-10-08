@@ -757,7 +757,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <strong>Approve new enrollment:</strong> Generate an invitation on your active machine, submit the join request from the new device, and explicitly approve it.
               </li>
               <li>
-                <strong>Restoring from metadata backup:</strong> If restoring an existing SQLite backup, stop the agent first (<code className="code-font" style={{ color: 'var(--text-primary)' }}>systemctl --user stop filesync</code>) and restore via <code className="code-font" style={{ color: 'var(--text-primary)' }}>filesync maintenance restore-backup --file &lt;backup.sqlite&gt;</code>. Identity and counters are safely reset to fresh keys (Invariant I08). Missing CAS chunks are fetched from peers.
+                <strong>Restoring from metadata backup:</strong> If restoring an existing SQLite backup, stop the agent first (<code className="code-font" style={{ color: 'var(--text-primary)' }}>systemctl --user stop orbit</code>) and restore via <code className="code-font" style={{ color: 'var(--text-primary)' }}>orbit maintenance restore-backup --file &lt;backup.sqlite&gt;</code>. Identity and counters are safely reset to fresh keys (Invariant I08). Missing CAS chunks are fetched from peers.
               </li>
             </ol>
           </div>

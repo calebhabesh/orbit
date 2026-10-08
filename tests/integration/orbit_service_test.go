@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 // TestOrbitService_StatusReporting tests Invariant I19 & Requirement U12:
@@ -52,8 +52,8 @@ func TestOrbitService_StatusReporting(t *testing.T) {
 	if st1.CaptureSuccessful {
 		t.Errorf("expected CaptureSuccessful=false before initial scan")
 	}
-	if !strings.Contains(st1.ManualCommand, "filesync serve") {
-		t.Errorf("expected ManualCommand containing filesync serve, got: %s", st1.ManualCommand)
+	if !strings.Contains(st1.ManualCommand, "orbit serve") {
+		t.Errorf("expected ManualCommand containing orbit serve, got: %s", st1.ManualCommand)
 	}
 	if !strings.Contains(st1.LingeringInstruction, "loginctl enable-linger") {
 		t.Errorf("expected LingeringInstruction containing loginctl enable-linger, got: %s", st1.LingeringInstruction)
@@ -179,7 +179,7 @@ func TestOrbitService_AbsentSystemdGracefulFallback(t *testing.T) {
 
 	// If systemd is unavailable, verify Enable, Start, Stop return ControlError with SYSTEMD_UNAVAILABLE
 	if !st.SystemdAvailable {
-		_, err := control.EnableService(ctx, stateDir, "/usr/bin/filesync", nil)
+		_, err := control.EnableService(ctx, stateDir, "/usr/bin/orbit", nil)
 		if err == nil {
 			t.Fatal("expected error from EnableService when systemd unavailable")
 		}
@@ -237,13 +237,13 @@ func TestOrbitService_InstallUserUnit(t *testing.T) {
 
 	disposable := testkit.NewDisposable(t)
 	stateDir := filepath.Join(disposable, "unit-state")
-	binPath := "/opt/orbit/bin/filesync"
+	binPath := "/opt/orbit/bin/orbit"
 
 	if err := control.InstallUserUnit(stateDir, binPath); err != nil {
 		t.Fatalf("InstallUserUnit failed: %v", err)
 	}
 
-	unitFile := filepath.Join(tempHome, ".config", "systemd", "user", "filesync.service")
+	unitFile := filepath.Join(tempHome, ".config", "systemd", "user", "orbit.service")
 	data, err := os.ReadFile(unitFile)
 	if err != nil {
 		t.Fatalf("unit file not found at %s: %v", unitFile, err)
@@ -251,7 +251,7 @@ func TestOrbitService_InstallUserUnit(t *testing.T) {
 
 	content := string(data)
 	expectedTokens := []string{
-		"Description=File Sync Background Engine",
+		"Description=Orbit Background Engine",
 		"ExecStart=" + binPath + " serve --state=" + stateDir + " --control-listen=127.0.0.1:8080 --allow-init",
 		"ExecStop=" + binPath + " stop --state=" + stateDir,
 		"Restart=on-failure",
@@ -269,15 +269,15 @@ func TestOrbitService_InstallUserUnit(t *testing.T) {
 	}
 }
 
-// TestOrbitService_CLI_ServiceStatus verifies the CLI command 'filesync orbit service status --json'.
+// TestOrbitService_CLI_ServiceStatus verifies the CLI command 'orbit service status --json'.
 func TestOrbitService_CLI_ServiceStatus(t *testing.T) {
 	root, err := filepath.Abs("../..")
 	if err != nil {
 		t.Fatal(err)
 	}
-	filesyncBin := filepath.Join(root, "bin", "filesync")
-	if _, err := os.Stat(filesyncBin); err != nil {
-		t.Skip("bin/filesync not found; skipping CLI test")
+	orbitBin := filepath.Join(root, "bin", "orbit")
+	if _, err := os.Stat(orbitBin); err != nil {
+		t.Skip("bin/orbit not found; skipping CLI test")
 	}
 
 	disposable := testkit.NewDisposable(t)
@@ -286,7 +286,7 @@ func TestOrbitService_CLI_ServiceStatus(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	cmd := exec.Command(filesyncBin, "orbit", "service", "status", "--state="+stateDir, "--json")
+	cmd := exec.Command(orbitBin, "service", "status", "--state="+stateDir, "--json")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("orbit service status failed: %v (%s)", err, string(out))

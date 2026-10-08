@@ -18,26 +18,26 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
-// TestP13CLIDiagnosticsAndDoctor verifies filesync doctor, metrics, and logs CLI commands.
+// TestP13CLIDiagnosticsAndDoctor verifies orbit doctor, metrics, and logs CLI commands.
 func TestP13CLIDiagnosticsAndDoctor(t *testing.T) {
 	disposable := testkit.NewDisposable(t)
 	binary := buildBinary(t, disposable)
 	stateDir := filepath.Join(disposable, "state")
 
 	// 1. Initialize
-	initCmd := exec.Command(binary, "init", "--state", stateDir)
+	initCmd := exec.Command(binary, "engine", "init", "--state", stateDir)
 	if out, err := initCmd.CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v\n%s", err, out)
 	}
 
 	// 2. Doctor CLI
-	doctorCmd := exec.Command(binary, "doctor", "--state", stateDir, "--json")
+	doctorCmd := exec.Command(binary, "engine", "doctor", "--state", stateDir, "--json")
 	out, err := doctorCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("doctor --json failed: %v\n%s", err, out)
@@ -54,7 +54,7 @@ func TestP13CLIDiagnosticsAndDoctor(t *testing.T) {
 	}
 
 	// 3. Plaintext doctor
-	doctorPlain := exec.Command(binary, "doctor", "--state", stateDir)
+	doctorPlain := exec.Command(binary, "engine", "doctor", "--state", stateDir)
 	plainOut, err := doctorPlain.CombinedOutput()
 	if err != nil {
 		t.Fatalf("doctor plaintext failed: %v\n%s", err, plainOut)
@@ -64,7 +64,7 @@ func TestP13CLIDiagnosticsAndDoctor(t *testing.T) {
 	}
 
 	// 4. Metrics CLI
-	metricsCmd := exec.Command(binary, "metrics", "--state", stateDir, "--json")
+	metricsCmd := exec.Command(binary, "engine", "metrics", "--state", stateDir, "--json")
 	mOut, err := metricsCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("metrics --json failed: %v\n%s", err, mOut)
@@ -75,7 +75,7 @@ func TestP13CLIDiagnosticsAndDoctor(t *testing.T) {
 	}
 
 	// 5. Logs CLI
-	logsCmd := exec.Command(binary, "logs", "--state", stateDir, "--json")
+	logsCmd := exec.Command(binary, "engine", "logs", "--state", stateDir, "--json")
 	lOut, err := logsCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("logs --json failed: %v\n%s", err, lOut)
@@ -100,7 +100,7 @@ func TestP13SupportExportSanitizationAndRedaction(t *testing.T) {
 	}
 
 	// Initialize
-	if out, err := exec.Command(binary, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init: %v\n%s", err, out)
 	}
 
@@ -115,20 +115,20 @@ func TestP13SupportExportSanitizationAndRedaction(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	regCmd := exec.Command(binary, "register", "--state", stateDir, "--folder", folderHex, "--root", rootDir)
+	regCmd := exec.Command(binary, "engine", "register", "--state", stateDir, "--folder", folderHex, "--root", rootDir)
 	if out, err := regCmd.CombinedOutput(); err != nil {
 		t.Fatalf("register: %v\n%s", err, out)
 	}
 
 	// Scan to capture file
-	scanCmd := exec.Command(binary, "scan", "--state", stateDir, "--folder", folderHex)
+	scanCmd := exec.Command(binary, "engine", "scan", "--state", stateDir, "--folder", folderHex)
 	if out, err := scanCmd.CombinedOutput(); err != nil {
 		t.Fatalf("scan: %v\n%s", err, out)
 	}
 
 	// Export support bundle
 	bundleTarget := filepath.Join(disposable, "support_bundle.tar.gz")
-	exportCmd := exec.Command(binary, "support-export", "--state", stateDir, "--out", bundleTarget, "--json")
+	exportCmd := exec.Command(binary, "engine", "support-export", "--state", stateDir, "--out", bundleTarget, "--json")
 	out, err := exportCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("support-export: %v\n%s", err, out)
@@ -230,7 +230,7 @@ func TestP13FolderLifecycleAndZeroReplicatedDeletes(t *testing.T) {
 	}
 
 	// Initialize
-	if out, err := exec.Command(binary, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init: %v\n%s", err, out)
 	}
 
@@ -247,13 +247,13 @@ func TestP13FolderLifecycleAndZeroReplicatedDeletes(t *testing.T) {
 	}
 
 	// 1. Add folder
-	addCmd := exec.Command(binary, "folders", "add", "--state", stateDir, "--folder", folderHex, "--root", rootDir)
+	addCmd := exec.Command(binary, "engine", "folders", "add", "--state", stateDir, "--folder", folderHex, "--root", rootDir)
 	if out, err := addCmd.CombinedOutput(); err != nil {
 		t.Fatalf("folders add: %v\n%s", err, out)
 	}
 
 	// 2. Scan folder to author initial version
-	scanCmd := exec.Command(binary, "scan", "--state", stateDir, "--folder", folderHex)
+	scanCmd := exec.Command(binary, "engine", "scan", "--state", stateDir, "--folder", folderHex)
 	if out, err := scanCmd.CombinedOutput(); err != nil {
 		t.Fatalf("scan: %v\n%s", err, out)
 	}
@@ -273,13 +273,13 @@ func TestP13FolderLifecycleAndZeroReplicatedDeletes(t *testing.T) {
 	db.Close()
 
 	// 3. Pause folder
-	pauseCmd := exec.Command(binary, "folders", "pause", "--state", stateDir, "--folder", folderHex, "--reason", "maintenance test")
+	pauseCmd := exec.Command(binary, "engine", "folders", "pause", "--state", stateDir, "--folder", folderHex, "--reason", "maintenance test")
 	if out, err := pauseCmd.CombinedOutput(); err != nil {
 		t.Fatalf("folders pause: %v\n%s", err, out)
 	}
 
 	// List folders: verify paused
-	listCmd := exec.Command(binary, "folders", "list", "--state", stateDir, "--json")
+	listCmd := exec.Command(binary, "engine", "folders", "list", "--state", stateDir, "--json")
 	listOut, err := listCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("folders list: %v\n%s", err, listOut)
@@ -293,19 +293,19 @@ func TestP13FolderLifecycleAndZeroReplicatedDeletes(t *testing.T) {
 	}
 
 	// 4. Resume folder
-	resumeCmd := exec.Command(binary, "folders", "resume", "--state", stateDir, "--folder", folderHex)
+	resumeCmd := exec.Command(binary, "engine", "folders", "resume", "--state", stateDir, "--folder", folderHex)
 	if out, err := resumeCmd.CombinedOutput(); err != nil {
 		t.Fatalf("folders resume: %v\n%s", err, out)
 	}
 
 	// 5. Revalidate root (via safety command)
-	revalCmd := exec.Command(binary, "safety", "root-revalidate", "--state", stateDir, "--folder", folderHex)
+	revalCmd := exec.Command(binary, "engine", "safety", "root-revalidate", "--state", stateDir, "--folder", folderHex)
 	if out, err := revalCmd.CombinedOutput(); err != nil {
 		t.Fatalf("safety root-revalidate: %v\n%s", err, out)
 	}
 
 	// 6. Remove registration (CRITICAL TEST)
-	removeCmd := exec.Command(binary, "folders", "remove", "--state", stateDir, "--folder", folderHex, "--json")
+	removeCmd := exec.Command(binary, "engine", "folders", "remove", "--state", stateDir, "--folder", folderHex, "--json")
 	if out, err := removeCmd.CombinedOutput(); err != nil {
 		t.Fatalf("folders remove: %v\n%s", err, out)
 	}
@@ -351,13 +351,13 @@ func TestP13MaintenanceBackupCheckRecoveryAndReset(t *testing.T) {
 	stateDir := filepath.Join(disposable, "state")
 
 	// Initialize
-	if out, err := exec.Command(binary, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init: %v\n%s", err, out)
 	}
 
 	// 1. Backup
 	backupPath := filepath.Join(disposable, "backup.sqlite")
-	backupCmd := exec.Command(binary, "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
+	backupCmd := exec.Command(binary, "engine", "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
 	out, err := backupCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("maintenance backup: %v\n%s", err, out)
@@ -374,7 +374,7 @@ func TestP13MaintenanceBackupCheckRecoveryAndReset(t *testing.T) {
 	}
 
 	// 2. Migration Check
-	checkCmd := exec.Command(binary, "maintenance", "check", "--state", stateDir, "--json")
+	checkCmd := exec.Command(binary, "engine", "maintenance", "check", "--state", stateDir, "--json")
 	out, err = checkCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("maintenance check: %v\n%s", err, out)
@@ -388,7 +388,7 @@ func TestP13MaintenanceBackupCheckRecoveryAndReset(t *testing.T) {
 	}
 
 	// 3. Recovery Inspection
-	recCmd := exec.Command(binary, "maintenance", "recovery", "--state", stateDir, "--json")
+	recCmd := exec.Command(binary, "engine", "maintenance", "recovery", "--state", stateDir, "--json")
 	out, err = recCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("maintenance recovery: %v\n%s", err, out)
@@ -399,7 +399,7 @@ func TestP13MaintenanceBackupCheckRecoveryAndReset(t *testing.T) {
 	}
 
 	// 4. Reset Identity
-	resetCmd := exec.Command(binary, "maintenance", "reset-identity", "--state", stateDir, "--json")
+	resetCmd := exec.Command(binary, "engine", "maintenance", "reset-identity", "--state", stateDir, "--json")
 	out, err = resetCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("maintenance reset-identity: %v\n%s", err, out)
@@ -428,7 +428,7 @@ func TestP13LoopbackControlSecurityAndBootstrap(t *testing.T) {
 	stateDir := filepath.Join(disposable, "state")
 
 	// Initialize
-	if out, err := exec.Command(binary, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init: %v\n%s", err, out)
 	}
 
@@ -436,13 +436,13 @@ func TestP13LoopbackControlSecurityAndBootstrap(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, binary, "serve", "--state", stateDir, "--control-listen", "127.0.0.1:0", "--no-watch")
+	cmd := exec.CommandContext(ctx, binary, "engine", "serve", "--state", stateDir, "--control-listen", "127.0.0.1:0", "--no-watch")
 	var stdoutBuf safeBuffer
 	cmd.Stdout = &stdoutBuf
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Start(); err != nil {
-		t.Fatalf("start filesync serve: %v", err)
+		t.Fatalf("start orbit serve: %v", err)
 	}
 	defer func() {
 		cancel()
@@ -546,7 +546,7 @@ func TestP13LoopbackControlSecurityAndBootstrap(t *testing.T) {
 	resp.Body.Close()
 
 	// 5. Generate Bootstrap Token via CLI command:
-	bootCmd := exec.Command(binary, "control", "bootstrap-token", "--state", stateDir, "--json")
+	bootCmd := exec.Command(binary, "engine", "control", "bootstrap-token", "--state", stateDir, "--json")
 	bOut, err := bootCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("control bootstrap-token CLI failed: %v\n%s", err, bOut)
@@ -591,13 +591,13 @@ func TestP13LoopbackControlSecurityAndBootstrap(t *testing.T) {
 	cookies := jar.Cookies(parsedURL)
 	var foundCookie bool
 	for _, c := range cookies {
-		if c.Name == "filesync_session" && c.Value == bootRes.SessionID {
+		if c.Name == "orbit_session" && c.Value == bootRes.SessionID {
 			foundCookie = true
 			break
 		}
 	}
 	if !foundCookie {
-		t.Fatal("filesync_session cookie was not stored in client jar")
+		t.Fatal("orbit_session cookie was not stored in client jar")
 	}
 
 	// 7. Verify Bootstrap Token Burn (Replay Rejected):

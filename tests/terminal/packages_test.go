@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/calebhabesh/file-sync/internal/control"
+	"github.com/calebhabesh/orbit/internal/control"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -16,20 +16,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/config"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
-func TestTerminalT12BareEntryAndLegacyDiscovery(t *testing.T) {
+func TestTerminalT12BareEntryAndDefaultDiscovery(t *testing.T) {
 	base := testkit.NewDisposable(t)
 	binary := buildOrbitBinary(t, base)
 	home := filepath.Join(base, "home")
 	if err := os.Mkdir(home, 0700); err != nil {
 		t.Fatal(err)
 	}
-	dir := filepath.Join(home, ".filesync")
+	dir := filepath.Join(home, ".local", "state", "orbit")
 	run := func(args ...string) []byte {
 		t.Helper()
 		cmd := exec.Command(binary, args...)
@@ -48,14 +48,11 @@ func TestTerminalT12BareEntryAndLegacyDiscovery(t *testing.T) {
 			t.Fatalf("pipe opened UI: %s", out)
 		}
 		if len(args) > 0 && !bytes.Contains(out, []byte(dir)) {
-			t.Fatalf("legacy state not discovered: %s", out)
+			t.Fatalf("default state not discovered: %s", out)
 		}
 	}
 	if !bytes.Equal(before, mustRead(t, filepath.Join(dir, "config.json"))) {
 		t.Fatal("entry changed identity")
-	}
-	if _, err := os.Stat(filepath.Join(home, ".local/state/filesync/config.json")); !os.IsNotExist(err) {
-		t.Fatal("created competing default state")
 	}
 }
 

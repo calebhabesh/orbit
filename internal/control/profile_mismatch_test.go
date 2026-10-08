@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 func mismatchProfile(t *testing.T, signer ed25519.PrivateKey, operator string, epoch uint64) network.ProfileSelection {

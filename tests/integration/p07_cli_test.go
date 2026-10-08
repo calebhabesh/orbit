@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/model"
 )
 
 func TestP07CLIBidirectionalReconciliation(t *testing.T) {
@@ -19,8 +19,8 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -46,13 +46,13 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 		{"register", "--state", stateA, "--folder", folder, "--root", rootA},
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
 	// Export identity and certificate for Node A
-	idOutA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity A: %v\n%s", err, idOutA)
 	}
@@ -63,7 +63,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	}
 
 	// Export identity and certificate for Node B
-	idOutB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity B: %v\n%s", err, idOutB)
 	}
@@ -74,10 +74,10 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	}
 
 	// Pair approve on both nodes
-	if output, err := exec.Command(binary, "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).CombinedOutput(); err != nil {
 		t.Fatalf("pair-approve A: %v\n%s", err, output)
 	}
-	if output, err := exec.Command(binary, "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).CombinedOutput(); err != nil {
+	if output, err := exec.Command(binary, "engine", "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).CombinedOutput(); err != nil {
 		t.Fatalf("pair-approve B: %v\n%s", err, output)
 	}
 
@@ -104,17 +104,17 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	}
 
 	// Scan on both nodes while offline
-	scanOutA, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput()
+	scanOutA, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan A: %v\n%s", err, scanOutA)
 	}
-	scanOutB, err := exec.Command(binary, "scan", "--state", stateB, "--folder", folder).CombinedOutput()
+	scanOutB, err := exec.Command(binary, "engine", "scan", "--state", stateB, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan B: %v\n%s", err, scanOutB)
 	}
 
 	// Start server on Node A
-	serveCmdA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, err := serveCmdA.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -126,7 +126,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	urlA := readListenerURL(t, stdoutA)
 
 	// Node B syncs from Node A
-	syncOutB, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
+	syncOutB, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B: %v\n%s", err, syncOutB)
 	}
@@ -136,7 +136,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	_ = serveCmdA.Wait()
 
 	// Start server on Node B
-	serveCmdB := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveCmdB := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB, err := serveCmdB.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -148,7 +148,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 	urlB := readListenerURL(t, stdoutB)
 
 	// Node A syncs from Node B
-	syncOutA, err := exec.Command(binary, "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
+	syncOutA, err := exec.Command(binary, "engine", "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync A: %v\n%s", err, syncOutA)
 	}
@@ -169,7 +169,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 		{"Node B", stateB, rootB, "edit from node B", devB},
 	} {
 		// 1. Text output of conflicts command
-		confText, err := exec.Command(binary, "conflicts", "--state", node.state, "--folder", folder).CombinedOutput()
+		confText, err := exec.Command(binary, "engine", "conflicts", "--state", node.state, "--folder", folder).CombinedOutput()
 		if err != nil {
 			t.Fatalf("%s conflicts command: %v\n%s", node.name, err, confText)
 		}
@@ -181,7 +181,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 		}
 
 		// 2. JSON output of conflicts command
-		confJSON, err := exec.Command(binary, "conflicts", "--state", node.state, "--folder", folder, "--json").CombinedOutput()
+		confJSON, err := exec.Command(binary, "engine", "conflicts", "--state", node.state, "--folder", folder, "--json").CombinedOutput()
 		if err != nil {
 			t.Fatalf("%s conflicts JSON command: %v\n%s", node.name, err, confJSON)
 		}
@@ -231,7 +231,7 @@ func TestP07CLIBidirectionalReconciliation(t *testing.T) {
 		{"Node A", stateA},
 		{"Node B", stateB},
 	} {
-		scanOut, err := exec.Command(binary, "scan", "--state", node.state, "--folder", folder).CombinedOutput()
+		scanOut, err := exec.Command(binary, "engine", "scan", "--state", node.state, "--folder", folder).CombinedOutput()
 		if err != nil {
 			t.Fatalf("%s subsequent scan: %v\n%s", node.name, err, scanOut)
 		}

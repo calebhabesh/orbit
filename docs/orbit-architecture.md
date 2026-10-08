@@ -52,7 +52,7 @@ idempotency, resource admission and durable recovery.
 | `internal/scheduler` | Durable/coalesced setup, propagation and file-operation work; cancellation/progress |
 | `internal/control` | Deep operations for setup, enrollment, browse/read, file actions and maintenance |
 | `internal/config` / `internal/state` | Typed configuration, safe identity transition, compatibility and exclusive process ownership |
-| `cmd/filesync` and packaging scripts | Orbit entry/launcher compatibility, service/desktop integration and CLI adapters |
+| `cmd/orbit` and packaging scripts | Orbit entry/launcher compatibility, service/desktop integration and CLI adapters |
 | `web/src` | Presentation, accessible interaction, control clients and operation-state rendering |
 
 Prefer extending these modules over creating a parallel engine or wrapper
@@ -74,9 +74,9 @@ from a peer are untrusted display data. Freeze whether they are owner-local
 aliases or transmitted hints before O02; baseline is owner-local aliases with
 the joining device name offered during approval.
 
-Preserve existing state locations, `.filesync-internal`, wire domain separators
+Preserve existing state locations, `.orbit-internal`, wire domain separators
 and version identities for the first Orbit release. Package an `orbit` launcher/
-entry alias while retaining the existing `filesync` command. Existing configured
+entry alias while retaining the existing `orbit` command. Existing configured
 services/state are adopted explicitly; avoid starting two processes or choosing
 between two possible states silently. A product rename is not a data migration.
 

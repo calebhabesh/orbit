@@ -29,7 +29,7 @@ func TestExclusiveLockAcrossProcesses(t *testing.T) {
 	defer lock.Close()
 
 	cmd := exec.Command(os.Args[0], "-test.run=^TestLockHelper$")
-	cmd.Env = append(os.Environ(), "FILESYNC_LOCK_HELPER=1", "FILESYNC_LOCK_DIR="+dir)
+	cmd.Env = append(os.Environ(), "ORBIT_LOCK_HELPER=1", "ORBIT_LOCK_DIR="+dir)
 	err = cmd.Run()
 	var exitErr *exec.ExitError
 	if !errors.As(err, &exitErr) || exitErr.ExitCode() != 42 {
@@ -38,10 +38,10 @@ func TestExclusiveLockAcrossProcesses(t *testing.T) {
 }
 
 func TestLockHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_LOCK_HELPER") != "1" {
+	if os.Getenv("ORBIT_LOCK_HELPER") != "1" {
 		return
 	}
-	lock, err := Acquire(os.Getenv("FILESYNC_LOCK_DIR"))
+	lock, err := Acquire(os.Getenv("ORBIT_LOCK_DIR"))
 	if errors.Is(err, ErrLocked) {
 		os.Exit(42)
 	}

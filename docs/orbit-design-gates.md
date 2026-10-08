@@ -86,7 +86,7 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - Move is executed as stage destination + install destination + verify source + delete source.
    - If destination path exists:
      - Without an explicit reviewed overwrite token: operation fails with `ErrDestinationExists`.
-     - With overwrite token: the displaced destination file is moved into `.filesync-internal/recovery/<opID>` via `RENAME_EXCHANGE` or atomic displace before installing the new destination. Displaced bytes are never permanently unlinked.
+     - With overwrite token: the displaced destination file is moved into `.orbit-internal/recovery/<opID>` via `RENAME_EXCHANGE` or atomic displace before installing the new destination. Displaced bytes are never permanently unlinked.
    - **Invariant I26 (Concurrent Source Modification Race)**:
      - If the source file is modified concurrently by an editor or writer between planning and deletion (detected via stat/hash re-verification): **the source file is NOT deleted**.
      - Both the new destination file and the concurrently modified source file are preserved on disk. The operation completes with `StatusCompletedWithSourceRetained` and surfaces a clear attention item.
@@ -156,7 +156,7 @@ These decisions freeze the operational, protocol, and persistence contracts for 
    - Legacy peers that only support `base_sync_v1` establish normal bidirectional synchronization; Orbit-specific endpoints are disabled for that connection without connection errors.
    - Mandatory capabilities that are unsupported cause a clean rejection (`ErrMandatoryCapUnsupported`).
 3. **Legacy State Adoption and Schema Rollback Limits**:
-   - Orbit adopts existing `.filesync-internal` state directories containing schema version 5 without data loss or re-initialization.
+   - Orbit adopts existing `.orbit-internal` state directories containing schema version 5 without data loss or re-initialization.
    - **Invariant I20**: If the database `user_version` is newer than the supported maximum (e.g. rolling back to an older binary after a future upgrade), the daemon refuses to run (`ErrUnsupportedSchemaVersion`) to preserve recoverable state.
 
 ### Executable Fixtures and Oracles

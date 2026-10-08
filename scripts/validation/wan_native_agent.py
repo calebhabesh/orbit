@@ -40,7 +40,7 @@ def daemon_resources(root):
     proc = Path('/proc') / str(pid)
     try:
         argv = (proc / 'cmdline').read_bytes().split(b'\0')
-        if os.fsencode(root / 'filesync') not in argv:
+        if os.fsencode(root / 'orbit') not in argv:
             raise RuntimeError('daemon ownership mismatch')
         status = dict(line.split(':', 1) for line in (proc / 'status').read_text().splitlines() if ':' in line)
         stat = (proc / 'stat').read_text()
@@ -75,11 +75,11 @@ def wan_dispatch(req, base):
     os.environ['ORBIT_DISABLE_PACKAGED_PROFILE'] = '1' if req.get('rehearsal') else '0'
     if req['action'] not in ('inventory', 'create'):
         root = base.__globals__['validated_root'](req)
-        if root.parent != Path.home().resolve() or not root.name.startswith('filesync-validation-'):
+        if root.parent != Path.home().resolve() or not root.name.startswith('orbit-validation-'):
             raise RuntimeError('W16 requires a freshly allocated validation root')
-        if (root / '.filesync-pilot').exists():
+        if (root / '.orbit-pilot').exists():
             raise RuntimeError('personal pilot refused')
-        if (root / '.filesync-disposable').lstat().st_mode & 0o077:
+        if (root / '.orbit-disposable').lstat().st_mode & 0o077:
             raise RuntimeError('disposable marker must be private')
         if req['action'] == 'wan-identity':
             # Hash only the public SPKI. Never send private PEM outside the host
@@ -114,7 +114,7 @@ def wan_dispatch(req, base):
                     argv = (entry / 'cmdline').read_bytes().split(b'\0')
                 except (FileNotFoundError, PermissionError, ProcessLookupError):
                     continue
-                if os.fsencode(root / 'filesync') in argv or os.fsencode(root / 'state') in argv or b'--state=' + os.fsencode(root / 'state') in argv:
+                if os.fsencode(root / 'orbit') in argv or os.fsencode(root / 'state') in argv or b'--state=' + os.fsencode(root / 'state') in argv:
                     raise RuntimeError('owned process still references root; removal refused')
             shutil.rmtree(root)
             return {'removed': True}

@@ -35,7 +35,7 @@ const bashCompletionScript = `_orbit_completion() {
         cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
     fi
 
-    local commands="tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor completion version help"
+    local commands="tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor engine completion version help"
     local common_flags="--state --folder --json --help"
 
     if [[ ${cword} -eq 1 ]]; then
@@ -112,6 +112,7 @@ _orbit() {
         'stop:Stop a daemon started outside the service'
         'storage:Inspect storage usage and maintenance'
         'doctor:Run actionable diagnostics'
+        'engine:Low-level engine commands'
         'completion:Generate shell completion script'
         'version:Display version information'
         'help:Show command documentation'
@@ -182,7 +183,7 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor completion version help
+        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor engine completion version help
             return 1
         end
     end
@@ -198,6 +199,7 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'conflicts' -d 'List files 
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'history' -d 'List known versions'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'deleted' -d 'Find deleted files available for restore'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'restore' -d 'Restore a historical version'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'engine' -d 'Low-level engine commands'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'setup' -d 'Create or adopt a synced folder'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'join' -d 'Join an existing Orbit'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'network' -d 'Status, diagnostics and policy controls'

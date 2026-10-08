@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 type testResolver struct {

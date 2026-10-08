@@ -7,10 +7,10 @@ orbit service stop --state /absolute/selected/state
 orbit service disable --state /absolute/selected/state
 ```
 
-Use `sudo dpkg -r filesync` for Debian packages, `sudo rpm -e filesync` for RPM,
+Use `sudo dpkg -r orbit` for Debian packages, `sudo rpm -e orbit` for RPM,
 or `bash uninstall.sh user` from the extracted standalone archive. Standalone
 system installation uses `bash uninstall.sh system` with appropriate privilege.
-The package name remains filesync; orbit is its binary/service alias.
+The package name remains orbit; orbit is its binary/service alias.
 
 Removal deletes executables, distributed completion/runbook assets, desktop/icon
 and service registration. It preserves selected state, identities, SQLite/history,

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"bytes"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 	"github.com/pion/stun/v4"
 	"net/netip"
 )

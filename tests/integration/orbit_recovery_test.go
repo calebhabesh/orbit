@@ -13,14 +13,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // TestOrbitRecoveryCandidate1ConfigWriteAndRestart verifies that ResetIdentity and RestoreBackup
@@ -32,13 +32,13 @@ func TestOrbitRecoveryCandidate1ConfigWriteAndRestart(t *testing.T) {
 	stateDir := filepath.Join(disposable, "state")
 
 	// 1. Initialize device
-	initCmd := exec.Command(binary, "init", "--state", stateDir)
+	initCmd := exec.Command(binary, "engine", "init", "--state", stateDir)
 	if out, err := initCmd.CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v\n%s", err, out)
 	}
 
 	// 2. Reset identity
-	resetCmd := exec.Command(binary, "maintenance", "reset-identity", "--state", stateDir, "--json")
+	resetCmd := exec.Command(binary, "engine", "maintenance", "reset-identity", "--state", stateDir, "--json")
 	out, err := resetCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("reset-identity failed: %v\n%s", err, out)
@@ -64,20 +64,20 @@ func TestOrbitRecoveryCandidate1ConfigWriteAndRestart(t *testing.T) {
 	}
 
 	// 4. CLI config validate succeeds
-	valCmd := exec.Command(binary, "config", "validate", "--state", stateDir, "--json")
+	valCmd := exec.Command(binary, "engine", "config", "validate", "--state", stateDir, "--json")
 	if out, err := valCmd.CombinedOutput(); err != nil {
 		t.Fatalf("config validate failed after reset-identity: %v\n%s", err, out)
 	}
 
 	// 5. Create a backup
 	backupPath := filepath.Join(disposable, "backup.sqlite")
-	backupCmd := exec.Command(binary, "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
+	backupCmd := exec.Command(binary, "engine", "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
 	if out, err := backupCmd.CombinedOutput(); err != nil {
 		t.Fatalf("backup failed: %v\n%s", err, out)
 	}
 
 	// 6. Restore backup
-	restoreCmd := exec.Command(binary, "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
+	restoreCmd := exec.Command(binary, "engine", "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
 	out, err = restoreCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("restore-backup failed: %v\n%s", err, out)
@@ -103,7 +103,7 @@ func TestOrbitRecoveryCandidate1ConfigWriteAndRestart(t *testing.T) {
 	}
 
 	// 8. CLI config validate succeeds after restore
-	valCmd2 := exec.Command(binary, "config", "validate", "--state", stateDir, "--json")
+	valCmd2 := exec.Command(binary, "engine", "config", "validate", "--state", stateDir, "--json")
 	if out, err := valCmd2.CombinedOutput(); err != nil {
 		t.Fatalf("config validate failed after restore-backup: %v\n%s", err, out)
 	}
@@ -117,7 +117,7 @@ func TestOrbitRecoveryCandidate2KeyRotation(t *testing.T) {
 	stateDir := filepath.Join(disposable, "state")
 
 	// 1. Initialize
-	initCmd := exec.Command(binary, "init", "--state", stateDir)
+	initCmd := exec.Command(binary, "engine", "init", "--state", stateDir)
 	if out, err := initCmd.CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v\n%s", err, out)
 	}
@@ -137,7 +137,7 @@ func TestOrbitRecoveryCandidate2KeyRotation(t *testing.T) {
 	initialPin := ident0.KeyPin
 
 	// 2. Reset identity
-	resetCmd := exec.Command(binary, "maintenance", "reset-identity", "--state", stateDir, "--json")
+	resetCmd := exec.Command(binary, "engine", "maintenance", "reset-identity", "--state", stateDir, "--json")
 	out, err := resetCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("reset-identity failed: %v\n%s", err, out)
@@ -166,12 +166,12 @@ func TestOrbitRecoveryCandidate2KeyRotation(t *testing.T) {
 
 	// 3. Test backup and restore key rotation
 	backupPath := filepath.Join(disposable, "backup.sqlite")
-	backupCmd := exec.Command(binary, "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
+	backupCmd := exec.Command(binary, "engine", "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
 	if out, err := backupCmd.CombinedOutput(); err != nil {
 		t.Fatalf("backup failed: %v\n%s", err, out)
 	}
 
-	restoreCmd := exec.Command(binary, "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
+	restoreCmd := exec.Command(binary, "engine", "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
 	out, err = restoreCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("restore-backup failed: %v\n%s", err, out)
@@ -200,7 +200,7 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	}
 
 	// 1. Initialize
-	initCmd := exec.Command(binary, "init", "--state", stateDir)
+	initCmd := exec.Command(binary, "engine", "init", "--state", stateDir)
 	if out, err := initCmd.CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v\n%s", err, out)
 	}
@@ -212,7 +212,7 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	folderHex := hex.EncodeToString(folderID[:])
 
 	// 2. Register folder and author files
-	regCmd := exec.Command(binary, "register", "--state", stateDir, "--folder", folderHex, "--root", workspaceRoot)
+	regCmd := exec.Command(binary, "engine", "register", "--state", stateDir, "--folder", folderHex, "--root", workspaceRoot)
 	if out, err := regCmd.CombinedOutput(); err != nil {
 		t.Fatalf("register failed: %v\n%s", err, out)
 	}
@@ -220,14 +220,14 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(workspaceRoot, "file1.txt"), []byte("content 1"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	scanCmd := exec.Command(binary, "scan", "--state", stateDir, "--folder", folderHex)
+	scanCmd := exec.Command(binary, "engine", "scan", "--state", stateDir, "--folder", folderHex)
 	if out, err := scanCmd.CombinedOutput(); err != nil {
 		t.Fatalf("scan failed: %v\n%s", err, out)
 	}
 
 	// 3. Take backup after file1
 	backupPath := filepath.Join(disposable, "backup.sqlite")
-	backupCmd := exec.Command(binary, "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
+	backupCmd := exec.Command(binary, "engine", "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json")
 	if out, err := backupCmd.CombinedOutput(); err != nil {
 		t.Fatalf("backup failed: %v\n%s", err, out)
 	}
@@ -236,7 +236,7 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(workspaceRoot, "file2.txt"), []byte("content 2"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	scanCmd2 := exec.Command(binary, "scan", "--state", stateDir, "--folder", folderHex)
+	scanCmd2 := exec.Command(binary, "engine", "scan", "--state", stateDir, "--folder", folderHex)
 	if out, err := scanCmd2.CombinedOutput(); err != nil {
 		t.Fatalf("scan2 failed: %v\n%s", err, out)
 	}
@@ -255,7 +255,7 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	db.Close()
 
 	// 5. Reset identity
-	resetCmd := exec.Command(binary, "maintenance", "reset-identity", "--state", stateDir, "--json")
+	resetCmd := exec.Command(binary, "engine", "maintenance", "reset-identity", "--state", stateDir, "--json")
 	out, err := resetCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("reset-identity failed: %v\n%s", err, out)
@@ -292,7 +292,7 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(workspaceRoot, "file3.txt"), []byte("content 3"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	scanCmd3 := exec.Command(binary, "scan", "--state", stateDir, "--folder", folderHex)
+	scanCmd3 := exec.Command(binary, "engine", "scan", "--state", stateDir, "--folder", folderHex)
 	if out, err := scanCmd3.CombinedOutput(); err != nil {
 		t.Fatalf("scan3 failed: %v\n%s", err, out)
 	}
@@ -312,7 +312,7 @@ func TestOrbitRecoveryCandidate3TransactionalAuthorAlignment(t *testing.T) {
 	db.Close()
 
 	// 8. Restore from backup and verify author alignment and history preservation
-	restoreCmd := exec.Command(binary, "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
+	restoreCmd := exec.Command(binary, "engine", "maintenance", "restore-backup", "--state", stateDir, "--backup", backupPath, "--json")
 	out, err = restoreCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("restore-backup failed: %v\n%s", err, out)
@@ -372,7 +372,7 @@ func TestOrbitRecoveryCandidate4InspectionDoesNotMutateState(t *testing.T) {
 	}
 
 	// Place an unreferenced recovery file in the workspace internal scratch directory
-	scratchDir := filepath.Join(workspaceRoot, ".filesync-internal")
+	scratchDir := filepath.Join(workspaceRoot, ".orbit-internal")
 	if err := os.MkdirAll(scratchDir, 0o700); err != nil {
 		t.Fatalf("mkdir scratchDir: %v", err)
 	}
@@ -445,10 +445,10 @@ func TestOrbitRecoveryCandidate5RunbookWorkflow(t *testing.T) {
 	}
 
 	// Init both nodes
-	if out, err := exec.Command(binary, "init", "--state", node1State).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", node1State).CombinedOutput(); err != nil {
 		t.Fatalf("init node1: %v\n%s", err, out)
 	}
-	if out, err := exec.Command(binary, "init", "--state", node2State).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", node2State).CombinedOutput(); err != nil {
 		t.Fatalf("init node2: %v\n%s", err, out)
 	}
 
@@ -457,22 +457,22 @@ func TestOrbitRecoveryCandidate5RunbookWorkflow(t *testing.T) {
 	folderHex := hex.EncodeToString(folderID[:])
 
 	// Register shared folder on both surviving peer (node1) and local node (node2)
-	if out, err := exec.Command(binary, "register", "--state", node1State, "--folder", folderHex, "--root", node1Root).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "register", "--state", node1State, "--folder", folderHex, "--root", node1Root).CombinedOutput(); err != nil {
 		t.Fatalf("register node1: %v\n%s", err, out)
 	}
-	if out, err := exec.Command(binary, "register", "--state", node2State, "--folder", folderHex, "--root", node2Root).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "register", "--state", node2State, "--folder", folderHex, "--root", node2Root).CombinedOutput(); err != nil {
 		t.Fatalf("register node2: %v\n%s", err, out)
 	}
 	if err := os.WriteFile(filepath.Join(node2Root, "doc.txt"), []byte("initial doc"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(binary, "scan", "--state", node2State, "--folder", folderHex).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "scan", "--state", node2State, "--folder", folderHex).CombinedOutput(); err != nil {
 		t.Fatalf("scan node2: %v\n%s", err, out)
 	}
 
 	// Take backup of node2
 	backupFile := filepath.Join(disposable, "node2-backup.sqlite")
-	if out, err := exec.Command(binary, "maintenance", "backup", "--state", node2State, "--out", backupFile, "--json").CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "maintenance", "backup", "--state", node2State, "--out", backupFile, "--json").CombinedOutput(); err != nil {
 		t.Fatalf("backup node2: %v\n%s", err, out)
 	}
 
@@ -483,7 +483,7 @@ func TestOrbitRecoveryCandidate5RunbookWorkflow(t *testing.T) {
 	}
 
 	// === Execute Runbook Step 1: Restore backup and safe identity reset ===
-	restoreCmd := exec.Command(binary, "maintenance", "restore-backup", "--state", node2State, "--backup", backupFile, "--json")
+	restoreCmd := exec.Command(binary, "engine", "maintenance", "restore-backup", "--state", node2State, "--backup", backupFile, "--json")
 	out, err := restoreCmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("runbook step 1 (restore-backup) failed: %v\n%s", err, out)
@@ -497,7 +497,7 @@ func TestOrbitRecoveryCandidate5RunbookWorkflow(t *testing.T) {
 
 	// === Execute Runbook Step 2: Re-enroll folders on surviving peer and recovered node ===
 	// Surviving peer (node1) approves the recovered node's new identity
-	pairCmd := exec.Command(binary, "pair-approve", "--state", node1State, "--folder", folderHex,
+	pairCmd := exec.Command(binary, "engine", "pair-approve", "--state", node1State, "--folder", folderHex,
 		"--peer-device", newDev2Hex, "--peer-key-pin", newPin2Hex)
 	if out, err := pairCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 2 (pair-approve on peer) failed: %v\n%s", err, out)
@@ -505,40 +505,40 @@ func TestOrbitRecoveryCandidate5RunbookWorkflow(t *testing.T) {
 
 	// Export updated membership bundle from peer
 	membershipFile := filepath.Join(disposable, "updated-membership.json")
-	exportCmd := exec.Command(binary, "membership", "export", "--state", node1State, "--folder", folderHex, "--file", membershipFile)
+	exportCmd := exec.Command(binary, "engine", "membership", "export", "--state", node1State, "--folder", folderHex, "--file", membershipFile)
 	if out, err := exportCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 2 (membership export) failed: %v\n%s", err, out)
 	}
 
 	// Import updated membership onto recovered node with --approve
-	importCmd := exec.Command(binary, "membership", "import", "--state", node2State, "--folder", folderHex, "--file", membershipFile, "--approve")
+	importCmd := exec.Command(binary, "engine", "membership", "import", "--state", node2State, "--folder", folderHex, "--file", membershipFile, "--approve")
 	if out, err := importCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 2 (membership import on recovered) failed: %v\n%s", err, out)
 	}
 
 	// Revalidate folder root on recovered node (the restored backup retains folder registration)
-	revalCmd := exec.Command(binary, "folders", "revalidate", "--state", node2State, "--folder", folderHex)
+	revalCmd := exec.Command(binary, "engine", "folders", "revalidate", "--state", node2State, "--folder", folderHex)
 	if out, err := revalCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 2 (folders revalidate on recovered) failed: %v\n%s", err, out)
 	}
 
 	// === Execute Runbook Step 3: Reconcile workspace root ===
-	scanCmd := exec.Command(binary, "work", "scan", "--state", node2State, "--folder", folderHex, "--full")
+	scanCmd := exec.Command(binary, "engine", "work", "scan", "--state", node2State, "--folder", folderHex, "--full")
 	if out, err := scanCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 3 (work scan --full) failed: %v\n%s", err, out)
 	}
 
-	syncCmd := exec.Command(binary, "work", "sync", "--state", node2State, "--folder", folderHex)
+	syncCmd := exec.Command(binary, "engine", "work", "sync", "--state", node2State, "--folder", folderHex)
 	if out, err := syncCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 3 (work sync) failed: %v\n%s", err, out)
 	}
 
-	doctorCmd := exec.Command(binary, "doctor", "--state", node2State)
+	doctorCmd := exec.Command(binary, "engine", "doctor", "--state", node2State)
 	if out, err := doctorCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 3 (doctor) failed: %v\n%s", err, out)
 	}
 
-	statusCmd := exec.Command(binary, "work", "status", "--state", node2State, "--folder", folderHex)
+	statusCmd := exec.Command(binary, "engine", "work", "status", "--state", node2State, "--folder", folderHex)
 	if out, err := statusCmd.CombinedOutput(); err != nil {
 		t.Fatalf("runbook step 3 (work status) failed: %v\n%s", err, out)
 	}
@@ -553,12 +553,12 @@ func TestOrbitRecoveryLiveResetFenced(t *testing.T) {
 	stateDir := filepath.Join(disposable, "state")
 
 	// Init
-	if out, err := exec.Command(binary, "init", "--state", stateDir).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init: %v\n%s", err, out)
 	}
 
 	backupPath := filepath.Join(disposable, "backup.sqlite")
-	if out, err := exec.Command(binary, "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json").CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "maintenance", "backup", "--state", stateDir, "--out", backupPath, "--json").CombinedOutput(); err != nil {
 		t.Fatalf("backup: %v\n%s", err, out)
 	}
 

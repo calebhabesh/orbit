@@ -15,15 +15,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // setupMutationNode creates an initialized Orbit test node and registered folder with sync root.
@@ -196,7 +196,7 @@ func TestOrbitImport(t *testing.T) {
 	}
 
 	// Verify displaced destination is preserved in recovery storage!
-	scratchRecovery := filepath.Join(syncRoot, ".filesync-internal", "recovery-op-import-ovw")
+	scratchRecovery := filepath.Join(syncRoot, ".orbit-internal", "recovery-op-import-ovw")
 	if got := mustReadFile(t, scratchRecovery); got != content1 {
 		t.Fatalf("expected recovery file to preserve original bytes %q, got %q", content1, got)
 	}

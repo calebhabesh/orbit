@@ -75,7 +75,7 @@ def unpack_cpio(data, target):
 
 def checked_root(root, token):
     assert root.is_absolute() and root.is_dir() and not root.is_symlink()
-    assert (root/'.filesync-disposable').read_text() == token
+    assert (root/'.orbit-disposable').read_text() == token
 
 
 def main():
@@ -87,7 +87,7 @@ def main():
     parser.add_argument('--emulate-arm64', action='store_true', help='use local multiarch QEMU image; never claim native arm64')
     args = parser.parse_args(); dist = Path(args.dist).resolve(strict=True)
     root = Path(tempfile.mkdtemp(prefix='orbit-t12-packages-')).resolve(); root.chmod(0o700)
-    token = uuid.uuid4().hex; (root/'.filesync-disposable').write_text(token)
+    token = uuid.uuid4().hex; (root/'.orbit-disposable').write_text(token)
     results=[]
     try:
         for line in (dist/'SHA256SUMS').read_text().splitlines():
@@ -113,20 +113,20 @@ def main():
             for kind in ['tar','deb','rpm']:
                 target=root/f'{arch}-{kind}';target.mkdir()
                 if kind=='tar':
-                    with tarfile.open(dist/f'orbit-v1.0.1-linux-{arch}.tar.gz') as archive:
+                    with tarfile.open(dist/f'orbit-v2.0.0-linux-{arch}.tar.gz') as archive:
                         archive.extractall(target, filter='data')
                     binary=target/'orbit'; share=target/'share';desktop=target/'desktop/orbit.desktop';unit=target/'systemd/orbit.service'
                 elif kind=='deb':
-                    members=dict(deb_members((dist/f'filesync_1.0.1_{arch}.deb').read_bytes()))
+                    members=dict(deb_members((dist/f'orbit_2.0.0_{arch}.deb').read_bytes()))
                     with tarfile.open(fileobj=io.BytesIO(members['data.tar.gz'])) as archive:
                         archive.extractall(target,filter='data')
                     binary=target/'usr/bin/orbit';share=target/'usr/share';desktop=share/'applications/orbit.desktop';unit=target/'usr/lib/systemd/user/orbit.service'
                 else:
-                    unpack_cpio(rpm_payload((dist/f'filesync-1.0.1-1.{rpmarch}.rpm').read_bytes()),target)
+                    unpack_cpio(rpm_payload((dist/f'orbit-2.0.0-1.{rpmarch}.rpm').read_bytes()),target)
                     binary=target/'usr/bin/orbit';share=target/'usr/share';desktop=share/'applications/orbit.desktop';unit=target/'usr/lib/systemd/user/orbit.service'
-                assert unit.is_symlink() and unit.readlink()==Path('filesync.service'), 'duplicate service unit'
+                assert unit.is_file() and not unit.is_symlink(), 'single regular service unit'
                 assert 'Terminal=true' in desktop.read_text() and 'Exec=orbit\n' in desktop.read_text()
-                for name in ['bash-completion/completions/orbit','zsh/site-functions/_orbit','fish/vendor_completions.d/orbit.fish','doc/filesync/runbooks/terminal-operator.md']:
+                for name in ['bash-completion/completions/orbit','zsh/site-functions/_orbit','fish/vendor_completions.d/orbit.fish','doc/orbit/runbooks/terminal-operator.md']:
                     assert (share/name).stat().st_size > 0
                 if arch==host or (qemu and arch=='arm64'):
                     prefix = [] if arch==host else [qemu]
@@ -146,9 +146,9 @@ def main():
         (fake/'update-desktop-database').write_text('#!/bin/sh\nexit 0\n');(fake/'update-desktop-database').chmod(0o700)
         env=dict(os.environ,HOME=str(home),XDG_STATE_HOME=str(home/'.local/state'),PATH=str(fake)+':'+os.environ['PATH'])
         run(['bash',target/'install.sh','user'],env=env)
-        unit=home/'.config/systemd/user/filesync.service'
+        unit=home/'.config/systemd/user/orbit.service'
         custom=unit.read_bytes()+b'\n# operator-customized unit retained\n';unit.write_bytes(custom)
-        binary=home/'.local/bin/orbit';state=home/'.filesync'
+        binary=home/'.local/bin/orbit';state=home/'.local/state/orbit'
         run([binary,'init','--state',state],env=env)
         original=(state/'config.json').read_bytes()
         for attempt in range(2):
@@ -161,47 +161,47 @@ def main():
         run(['bash',target/'uninstall.sh','user'],env=env)
         assert (state/'config.json').read_bytes()==original and (working/'keep').read_bytes()==b'ordinary protected file'
         assert not binary.exists() and not binary.is_symlink()
-        results.append({'scenario':'standalone-install-repeat-upgrade-uninstall','result':'passed','assertions':['custom unit preserved','legacy identity/state preserved','ordinary bytes preserved','no user service changes']})
+        results.append({'scenario':'standalone-install-repeat-upgrade-uninstall','result':'passed','assertions':['custom unit preserved','identity/state preserved','ordinary bytes preserved','no user service changes']})
         # Run the production real-PTY lifetime oracle against package-extracted bytes.
-        pty_args = ['python3',Path(__file__).with_name('terminal_pty_test.py'),'--binary',target/'filesync','--bare']
+        pty_args = ['python3',Path(__file__).with_name('terminal_pty_test.py'),'--binary',target/'orbit','--bare']
         if args.pty_output:
             pty_args += ['--output', args.pty_output]
         run(pty_args)
         results.append({'scenario':'package-extracted-bare-PTY','result':'passed'})
         if args.containers:
             for image,package,install,remove in [
-                ('debian:bookworm-slim','filesync_1.0.1_amd64.deb','dpkg -i','dpkg -r filesync'),
-                ('fedora:43','filesync-1.0.1-1.x86_64.rpm','rpm -i --nosignature','rpm -e filesync')]:
+                ('debian:bookworm-slim','orbit_2.0.0_amd64.deb','dpkg -i','dpkg -r orbit'),
+                ('fedora:43','orbit-2.0.0-1.x86_64.rpm','rpm -i --nosignature','rpm -e orbit')]:
                 script='''set -eu
 same_bytes() { test "$(sha256sum "$1" | cut -d ' ' -f 1)" = "$(sha256sum "$2" | cut -d ' ' -f 1)"; }
 mkdir -m 700 /tmp/orbit-t12
-printf 'disposable container\\n' > /tmp/orbit-t12/.filesync-disposable
+printf 'disposable container\\n' > /tmp/orbit-t12/.orbit-disposable
 export HOME=/tmp/orbit-t12
 export XDG_STATE_HOME=$HOME/.local/state
 export ORBIT_DISABLE_PACKAGED_PROFILE=1
 INSTALL /packages/PACKAGE
-orbit init --state "$HOME/.filesync"
-cp "$HOME/.filesync/config.json" "$HOME/identity-before"
+orbit init --state "$HOME/.local/state/orbit"
+cp "$HOME/.local/state/orbit/config.json" "$HOME/identity-before"
 mkdir -m 700 "$HOME/Notes"
 printf 'protected package journey\n' > "$HOME/Notes/notes.txt"
 orbit setup --root "$HOME/Notes" --name Notes --label Packaged --preview --review-file "$HOME/setup.json"
 orbit setup --request-file "$HOME/setup.json" --timeout 10
 cd "$HOME/Notes"
-orbit history notes.txt --state "$HOME/.filesync" --folder Notes --json > "$HOME/history-before"
+orbit history notes.txt --state "$HOME/.local/state/orbit" --folder Notes --json > "$HOME/history-before"
 grep -q 'digest' "$HOME/history-before"
-filesync stop --state "$HOME/.filesync"
+orbit stop --state "$HOME/.local/state/orbit"
 orbit --json
-orbit doctor --state "$HOME/.filesync"
+orbit doctor --state "$HOME/.local/state/orbit"
 INSTALL /packages/PACKAGE
-same_bytes "$HOME/identity-before" "$HOME/.filesync/config.json"
-orbit history notes.txt --state "$HOME/.filesync" --folder Notes --json > "$HOME/history-after"
+same_bytes "$HOME/identity-before" "$HOME/.local/state/orbit/config.json"
+orbit history notes.txt --state "$HOME/.local/state/orbit" --folder Notes --json > "$HOME/history-after"
 same_bytes "$HOME/history-before" "$HOME/history-after"
-test -f /tmp/orbit-t12/.filesync-disposable
+test -f /tmp/orbit-t12/.orbit-disposable
 REMOVE
-same_bytes "$HOME/identity-before" "$HOME/.filesync/config.json"
+same_bytes "$HOME/identity-before" "$HOME/.local/state/orbit/config.json"
 test ! -e /usr/bin/orbit
 grep -q 'protected package journey' "$HOME/Notes/notes.txt"
-test -f "$HOME/.filesync/metadata.sqlite"
+test -f "$HOME/.local/state/orbit/metadata.sqlite"
 '''.replace('INSTALL',install).replace('PACKAGE',package).replace('REMOVE',remove)
                 if image.startswith('fedora'):
                     script=script.replace('rpm -i --nosignature /packages/', 'rpm -U --replacepkgs --nosignature /packages/')

@@ -39,9 +39,9 @@ def package_binary(dist, arch):
     if hashlib.sha256(raw).hexdigest() != sums[package.name]:
         raise RuntimeError("package checksum mismatch")
     with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as archive:
-        members = [m for m in archive.getmembers() if m.name == "filesync" and m.isfile()]
+        members = [m for m in archive.getmembers() if m.name == "orbit" and m.isfile()]
         if len(members) != 1:
-            raise RuntimeError("expected one packaged filesync executable")
+            raise RuntimeError("expected one packaged orbit executable")
         binary = archive.extractfile(members[0]).read()
     return binary, {"package": package.name, "package_sha256": sums[package.name],
                     "binary_sha256": hashlib.sha256(binary).hexdigest()}
@@ -53,7 +53,7 @@ class TerminalNode(Node):
         self.root = self.call("create")["root"]
         self.put("host_agent.py", AGENT.encode())
         binary, self.provenance = package_binary(dist, "arm64" if self.inventory["arch"] == "aarch64" else "amd64")
-        self.put("filesync", binary, mode=0o700)
+        self.put("orbit", binary, mode=0o700)
         self.network = self.call("network")
         candidates = [v["local"] for interface in self.network["addresses"]
                       if interface["operstate"] == "UP" and not interface["ifname"].startswith(("docker", "br-"))

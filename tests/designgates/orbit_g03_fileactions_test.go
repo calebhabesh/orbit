@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 var (
@@ -59,7 +59,7 @@ func computeHash(path string) (string, error) {
 func TestOrbitG03MoveOverwriteAndRecoveryPreservation(t *testing.T) {
 	root := testkit.NewDisposable(t)
 
-	recoveryDir := filepath.Join(root, ".filesync-internal", "recovery")
+	recoveryDir := filepath.Join(root, ".orbit-internal", "recovery")
 	_ = os.MkdirAll(recoveryDir, 0700)
 
 	src := filepath.Join(root, "fileA.txt")

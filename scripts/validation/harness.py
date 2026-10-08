@@ -46,11 +46,11 @@ class Node:
     def setup(self, folder):
         self.inventory = self.call("inventory")
         self.root = self.call("create")["root"]
-        binary = Path("bin/filesync-linux-arm64" if self.inventory["arch"] == "aarch64" else "bin/filesync")
+        binary = Path("bin/orbit-linux-arm64" if self.inventory["arch"] == "aarch64" else "bin/orbit")
         if self.host == "local":
-            self.put("filesync", binary.read_bytes(), mode=0o700)
+            self.put("orbit", binary.read_bytes(), mode=0o700)
         else:
-            subprocess.run(["scp", "-q", str(binary), f"{self.host}:{self.root}/filesync"], check=True)
+            subprocess.run(["scp", "-q", str(binary), f"{self.host}:{self.root}/orbit"], check=True)
             self.call("run", args=["version"])
         self.put("host_agent.py", AGENT.encode())
         self.folder = folder

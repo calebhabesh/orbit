@@ -3,8 +3,8 @@ package control
 import (
 	"context"
 	"fmt"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 // Everyday queries reuse repository search and maintenance ownership. No read

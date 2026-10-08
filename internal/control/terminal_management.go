@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 func (c *Controller) terminalSetups(ctx context.Context, q tc.Query) (tc.Result, error) {

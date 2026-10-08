@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/testkit"
 	_ "modernc.org/sqlite"
 )
 
@@ -121,7 +121,7 @@ func TestOrbitG05ProtocolCapabilityNegotiation(t *testing.T) {
 
 	// Case 1: Legacy peer only supports base_sync_v1
 	legacyHandshake := HandshakeMessage{
-		ClientVersion: "filesync-1.0.0",
+		ClientVersion: "orbit-1.0.0",
 		Capabilities:  []string{"base_sync_v1"},
 	}
 	active, err := orbitNode.Negotiate(legacyHandshake)
@@ -147,7 +147,7 @@ func TestOrbitG05ProtocolCapabilityNegotiation(t *testing.T) {
 
 	// Case 3: Future peer with unsupported mandatory capability
 	futureHandshake := HandshakeMessage{
-		ClientVersion: "filesync-9.0.0",
+		ClientVersion: "orbit-9.0.0",
 		Capabilities:  []string{"base_sync_v1", "future_quantum_crypto_v9"},
 		MandatoryCaps: []string{"future_quantum_crypto_v9"},
 	}

@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 // VersionRead pins an immutable exact version for the entire response, including

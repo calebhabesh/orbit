@@ -6,7 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // ReleaseAuthority is the frozen trust anchor for packaged release profiles.

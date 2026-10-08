@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/model"
 )
 
 var (

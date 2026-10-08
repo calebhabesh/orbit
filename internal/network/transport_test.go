@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 func TestWANW01TransportTrustAndPlaintext(t *testing.T) {
@@ -20,7 +20,7 @@ func TestWANW01TransportTrustAndPlaintext(t *testing.T) {
 	device[0] = 1
 	target := Target{Device: device, Pin: pin, Purpose: PeerData}
 	upstream := errors.New("replication rejected this cert")
-	cfg := &tls.Config{MinVersion: tls.VersionTLS13, RootCAs: x509.NewCertPool(), ServerName: "peer.filesync.invalid", VerifyConnection: func(tls.ConnectionState) error { return upstream }}
+	cfg := &tls.Config{MinVersion: tls.VersionTLS13, RootCAs: x509.NewCertPool(), ServerName: "peer.orbit.invalid", VerifyConnection: func(tls.ConnectionState) error { return upstream }}
 	called := false
 	rt, e := NewTransport(target, cfg, func(context.Context, Target) (net.Conn, error) {
 		called = true
@@ -30,7 +30,7 @@ func TestWANW01TransportTrustAndPlaintext(t *testing.T) {
 		t.Fatal(e)
 	}
 	defer rt.CloseIdleConnections()
-	request, _ := http.NewRequest("POST", "http://peer.filesync.invalid/peer/v1/hello", nil)
+	request, _ := http.NewRequest("POST", "http://peer.orbit.invalid/peer/v1/hello", nil)
 	if _, e = rt.RoundTrip(request); e == nil || called {
 		t.Fatal("plaintext reached dialer")
 	}

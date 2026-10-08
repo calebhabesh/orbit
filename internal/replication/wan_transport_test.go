@@ -21,11 +21,11 @@ import (
 	"testing"
 	"time"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/model"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/model"
 	"github.com/coder/websocket"
 )
 
@@ -178,7 +178,7 @@ func TestWANW01PinnedTransport(t *testing.T) {
 			if len(cfg.NextProtos) != 0 {
 				t.Fatal("mutated caller TLS config")
 			}
-			c := &Client{baseURL: "https://peer.filesync.invalid", http: network.HTTPClient(rt)}
+			c := &Client{baseURL: "https://peer.orbit.invalid", http: network.HTTPClient(rt)}
 			syncer := NewSyncer(f.repoB, f.workB, c, f.devB, f.devA, f.folder, f.approved, TransferOptions{})
 			if _, e = syncer.Sync(f.ctx); e != nil {
 				t.Fatal(e)
@@ -237,7 +237,7 @@ func TestWANW01WrongPinAndIsolation(t *testing.T) {
 				}
 				defer rt.CloseIdleConnections()
 				secret := []byte("SYNTHETIC-INVITATION-CAPABILITY-NEVER-DISCLOSED")
-				req, _ := http.NewRequest("POST", "https://peer.filesync.invalid/enrollment/v2/challenge", bytes.NewReader(secret))
+				req, _ := http.NewRequest("POST", "https://peer.orbit.invalid/enrollment/v2/challenge", bytes.NewReader(secret))
 				if r, e := network.HTTPClient(rt).Do(req); e == nil {
 					r.Body.Close()
 					t.Fatal("wrong inviter pin accepted")
@@ -290,7 +290,7 @@ func TestWANW01WrongPinAndIsolation(t *testing.T) {
 				t.Fatal(e)
 			}
 			defer rt.CloseIdleConnections()
-			r, _ := http.NewRequest("POST", "https://peer.filesync.invalid"+test.path, bytes.NewReader([]byte(`{}`)))
+			r, _ := http.NewRequest("POST", "https://peer.orbit.invalid"+test.path, bytes.NewReader([]byte(`{}`)))
 			response, e := network.HTTPClient(rt).Do(r)
 			if test.want == 0 {
 				if e == nil {
@@ -328,7 +328,7 @@ func TestWANW01EnrollmentHandlerThroughRelay(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	inv := tc.Invitation{Version: "1", Folder: hex.EncodeToString(f.folder[:]), Inviter: hex.EncodeToString(f.devA[:]), KeyPin: hex.EncodeToString(a.KeyPin[:]), CertificateDER: base64.StdEncoding.EncodeToString(a.Leaf.Raw), Capability: token, ExpiresAt: time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano), EnrollmentEndpoint: "https://peer.filesync.invalid", PeerEndpoint: "https://peer.filesync.invalid"}
+	inv := tc.Invitation{Version: "1", Folder: hex.EncodeToString(f.folder[:]), Inviter: hex.EncodeToString(f.devA[:]), KeyPin: hex.EncodeToString(a.KeyPin[:]), CertificateDER: base64.StdEncoding.EncodeToString(a.Leaf.Raw), Capability: token, ExpiresAt: time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano), EnrollmentEndpoint: "https://peer.orbit.invalid", PeerEndpoint: "https://peer.orbit.invalid"}
 	stored := inv
 	stored.Capability = ""
 	e = f.repoA.EnrollmentTransaction(f.ctx, func(tx *repository.EnrollmentTx) error {
@@ -381,7 +381,7 @@ func TestWANW01EnrollmentHandlerThroughRelay(t *testing.T) {
 		t.Fatal(e)
 	}
 	defer dataRT.CloseIdleConnections()
-	client := &Client{baseURL: "https://peer.filesync.invalid", http: network.HTTPClient(dataRT)}
+	client := &Client{baseURL: "https://peer.orbit.invalid", http: network.HTTPClient(dataRT)}
 	_, e = client.Inventory(f.ctx, InventoryRequest{ProtocolVersion: "1", DeviceID: hex.EncodeToString(b.DeviceID[:]), FolderID: inv.Folder, Revision: "1", MembershipDigest: hex.EncodeToString(f.approved.Digest[:]), PageSize: "1"})
 	var denied *WireError
 	if !errors.As(e, &denied) || denied.Body.Code != "UNAUTHORIZED" {
@@ -466,7 +466,7 @@ func TestWANW01V3EnrollmentTransportAndMembership(t *testing.T) {
 			defer rt.CloseIdleConnections()
 			raw, _ := json.Marshal(request)
 			for _, want := range []string{"pending", "replayed"} {
-				q, _ := http.NewRequest("POST", "https://peer.filesync.invalid/enrollment/v3/request", bytes.NewReader(raw))
+				q, _ := http.NewRequest("POST", "https://peer.orbit.invalid/enrollment/v3/request", bytes.NewReader(raw))
 				r, e := network.HTTPClient(rt).Do(q)
 				if e != nil {
 					t.Fatal(e)
@@ -579,7 +579,7 @@ func TestWANW01TransportCancellationRedirectAndBinding(t *testing.T) {
 
 				ctx, cancel := context.WithCancel(context.Background())
 				defer cancel()
-				q, _ := http.NewRequestWithContext(ctx, "POST", "https://peer.filesync.invalid/peer/v1/hello", bytes.NewReader([]byte(`{}`)))
+				q, _ := http.NewRequestWithContext(ctx, "POST", "https://peer.orbit.invalid/peer/v1/hello", bytes.NewReader([]byte(`{}`)))
 				if mode == "cancel" {
 					done := make(chan error, 1)
 					go func() {

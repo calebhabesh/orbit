@@ -1,7 +1,7 @@
 # Operator Runbook: Binary Rollback, Database Rollback, and Identity Safety
 
 Pass `--state /absolute/selected/state` to every maintenance/engine command below
-when using legacy/custom state. These retained engine commands keep their default
+when using a custom state directory. These retained engine commands keep their default
 state convention; selecting the TUI state does not change an engine command's
 flags. Stop that exact daemon and inspect recovery markers before replacing data.
 
@@ -27,8 +27,8 @@ compatibility conditions have actual evidence:
    ```
 2. Reinstall the previous compatible package or binary:
    ```bash
-   sudo dpkg -i filesync_<previous-version>_<arch>.deb
-   # or replace ~/.local/bin/filesync and ~/.local/bin/orbit
+   sudo dpkg -i orbit_<previous-version>_<arch>.deb
+   # or replace ~/.local/bin/orbit and ~/.local/bin/orbit
    ```
 3. Run the schema check to confirm compatibility:
    ```bash
@@ -80,15 +80,15 @@ Orbit provides an integrated, atomic restoration command that automatically enfo
 ```bash
 orbit service stop
 # Or via systemctl:
-systemctl --user stop orbit.service filesync.service 2>/dev/null || true
+systemctl --user stop orbit.service 2>/dev/null || true
 ```
 
 #### Step 2: Restore from Consistent Backup
 Execute `orbit maintenance restore-backup`:
 ```bash
-orbit maintenance restore-backup --backup ~/.local/state/filesync/pre-upgrade-backup.sqlite
+orbit maintenance restore-backup --backup ~/.local/state/orbit/pre-upgrade-backup.sqlite
 ```
-*(Compatibility note: legacy syntax `filesync maintenance restore-backup` is also supported).*
+*(Compatibility note: legacy syntax `orbit maintenance restore-backup` is also supported).*
 
 What this command does:
 1. Validates backup file integrity (`PRAGMA quick_check`) and schema compatibility.
@@ -114,10 +114,10 @@ Action required: re-enroll new device ID in folder memberships with peers (Invar
 Because the node has assumed a fresh cryptographic identity, you must approve the new device ID on participating peer devices:
 ```bash
 # Display new identity and certificate pin
-filesync identity --certificate
+orbit engine identity --certificate
 
 # On peer device(s), approve the new device ID:
-filesync pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-pin>
+orbit engine pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-pin>
 # Or via enrollment request workflow:
 # orbit requests approve --request <request-id>
 ```

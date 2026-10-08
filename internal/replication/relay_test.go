@@ -25,13 +25,13 @@ import (
 	"testing"
 	"time"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/rendezvous"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
+	p "github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/rendezvous"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func productionRelayService(t *testing.T, stunServers ...string) (*rendezvous.Service, network.ProfileSelection, string, *x509.CertPool, func() *rendezvous.Service) {
@@ -502,7 +502,7 @@ func TestWANW04ProductionUnknownEnrollmentCannotReachDataOrControl(t *testing.T)
 	if err != nil {
 		t.Fatal(err)
 	}
-	inv := tc.Invitation{Version: "1", Folder: hex.EncodeToString(f.folder[:]), Inviter: hex.EncodeToString(f.senderID.DeviceID[:]), KeyPin: hex.EncodeToString(f.senderID.KeyPin[:]), CertificateDER: base64.StdEncoding.EncodeToString(f.senderID.Leaf.Raw), Capability: token, ExpiresAt: time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano), EnrollmentEndpoint: network.LogicalOrigin(target), PeerEndpoint: "https://peer.filesync.invalid"}
+	inv := tc.Invitation{Version: "1", Folder: hex.EncodeToString(f.folder[:]), Inviter: hex.EncodeToString(f.senderID.DeviceID[:]), KeyPin: hex.EncodeToString(f.senderID.KeyPin[:]), CertificateDER: base64.StdEncoding.EncodeToString(f.senderID.Leaf.Raw), Capability: token, ExpiresAt: time.Now().Add(time.Hour).UTC().Format(time.RFC3339Nano), EnrollmentEndpoint: network.LogicalOrigin(target), PeerEndpoint: "https://peer.orbit.invalid"}
 	stored := inv
 	stored.Capability = ""
 	if err = f.senderRepo.EnrollmentTransaction(f.ctx, func(tx *repository.EnrollmentTx) error {

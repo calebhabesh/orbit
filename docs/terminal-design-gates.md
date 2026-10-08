@@ -25,7 +25,7 @@ is the explicit operational cost of isolating public enrollment admission.
 Invitations carry version 1, exact folder, enrolled inviter DeviceID, exact
 certificate DER and SHA-256 SPKI pin, both endpoints, random 32-byte capability
 and expiry. Deliberate owner transfer is the trust bootstrap. The certificate
-is the exact trust anchor with existing server name `peer.filesync.invalid`;
+is the exact trust anchor with existing server name `peer.orbit.invalid`;
 normal chain/time/EKU/name verification and explicit SPKI comparison occur
 **before HTTP**. No bare TLS verification bypass. Existing randomly allocated
 DeviceIDs are preserved; they are not re-derived from new key hashes. The
@@ -242,7 +242,7 @@ T11/T13 still owe the interactive terminal editor journey and release campaign.
 
 Bare orbit requires interactive input/output terminals for TUI; a pipe uses
 concise status/JSON with no hidden prompts or terminal escape sequences.
-`filesync` preserves legacy dispatch and explicit Orbit commands stay available.
+One `orbit` binary serves the TUI and every command; the low-level engine commands sit under `orbit engine`.
 T09 pins/verifies the [subsequently selected Charm v2 stack](orbit-terminal-architecture.md#tui-stack-decision--2026-10-03);
 it owns terminal modes and restore on
 quit/signals/error/resize and external-tool exit. Client query cancel/resize/

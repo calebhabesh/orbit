@@ -168,7 +168,7 @@ revision. An unavailable architect session does not block ordinary implementatio
 I01–I28 remain authoritative; [WAN invariants](verification.md#native-wan-verification)
 add N01–N10. Discover actual tests before running a planned `TestWANWXX` group;
 zero matched tests mean unexecuted coverage. Typical discovery is
-`go test -list '^TestWANWXX' ./internal/... ./tests/... ./cmd/filesync/...`.
+`go test -list '^TestWANWXX' ./internal/... ./tests/... ./cmd/orbit/...`.
 Record the discovered packages, then run their tests with `-count=1` and the
 appropriate race/PTY/process checks. Planned runner names must be delivered and
 documented before being reported as available.

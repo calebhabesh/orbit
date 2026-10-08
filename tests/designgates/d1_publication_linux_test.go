@@ -9,14 +9,14 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/testkit"
 	"golang.org/x/sys/unix"
 )
 
 func TestD1PreRenameStatCannotCloseSaveByRenameRace(t *testing.T) {
 	root := publicationRoot(t)
 	target := filepath.Join(root, "document")
-	stage := filepath.Join(root, ".filesync-internal", "stage")
+	stage := filepath.Join(root, ".orbit-internal", "stage")
 	mustWrite(t, target, "captured-old")
 	mustWrite(t, stage, "remote")
 
@@ -55,7 +55,7 @@ func TestD1ExchangePreservesObservedOverwriteAndSaveByRename(t *testing.T) {
 	t.Run("in-place-overwrite-before-exchange", func(t *testing.T) {
 		root := publicationRoot(t)
 		target := filepath.Join(root, "document")
-		stage := filepath.Join(root, ".filesync-internal", "stage")
+		stage := filepath.Join(root, ".orbit-internal", "stage")
 		mustWrite(t, target, "captured-old")
 		mustWrite(t, stage, "remote")
 		mustWrite(t, target, "local-overwrite")
@@ -71,7 +71,7 @@ func TestD1ExchangePreservesObservedOverwriteAndSaveByRename(t *testing.T) {
 	t.Run("save-by-rename", func(t *testing.T) {
 		root := publicationRoot(t)
 		target := filepath.Join(root, "document")
-		stage := filepath.Join(root, ".filesync-internal", "stage")
+		stage := filepath.Join(root, ".orbit-internal", "stage")
 		mustWrite(t, target, "captured-old")
 		mustWrite(t, stage, "remote")
 		editorTemp := filepath.Join(root, ".editor-save")
@@ -91,7 +91,7 @@ func TestD1ExchangePreservesObservedOverwriteAndSaveByRename(t *testing.T) {
 	t.Run("open-descriptor", func(t *testing.T) {
 		root := publicationRoot(t)
 		target := filepath.Join(root, "document")
-		stage := filepath.Join(root, ".filesync-internal", "stage")
+		stage := filepath.Join(root, ".orbit-internal", "stage")
 		mustWrite(t, target, "old-content")
 		mustWrite(t, stage, "remote-data")
 		writer, err := os.OpenFile(target, os.O_WRONLY, 0)
@@ -116,7 +116,7 @@ func TestD1ExchangePreservesObservedOverwriteAndSaveByRename(t *testing.T) {
 func TestD1StageMustShareTargetFilesystem(t *testing.T) {
 	root := publicationRoot(t)
 	target := filepath.Join(root, "document")
-	stage := filepath.Join(root, ".filesync-internal", "stage")
+	stage := filepath.Join(root, ".orbit-internal", "stage")
 	mustWrite(t, target, "old")
 	mustWrite(t, stage, "new")
 	targetInfo, err := os.Stat(target)
@@ -189,8 +189,8 @@ func TestD1RecoveryAtEveryExchangeGapPreservesVariants(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			root := publicationRoot(t)
 			target := filepath.Join(root, "document")
-			stage := filepath.Join(root, ".filesync-internal", "stage")
-			recovery := filepath.Join(root, ".filesync-internal", "recovery")
+			stage := filepath.Join(root, ".orbit-internal", "stage")
+			recovery := filepath.Join(root, ".orbit-internal", "recovery")
 			mustWrite(t, target, "old")
 			mustWrite(t, stage, "new")
 			if tc.act != nil {
@@ -227,7 +227,7 @@ func publicationRoot(t *testing.T) string {
 	if err := testkit.ValidateDestructiveTarget(disposable, root); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Mkdir(filepath.Join(root, ".filesync-internal"), 0o700); err != nil {
+	if err := os.Mkdir(filepath.Join(root, ".orbit-internal"), 0o700); err != nil {
 		t.Fatal(err)
 	}
 	return root

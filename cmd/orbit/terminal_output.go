@@ -9,8 +9,8 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 )
 
 // EscapeTerminal sanitizes strings before printing to a terminal emulator, preventing

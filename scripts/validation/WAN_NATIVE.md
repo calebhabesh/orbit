@@ -139,7 +139,7 @@ explicitly label the run as a self-host rehearsal with native and bundled-defaul
 acceptance unexecuted. This is a compatibility/development fixture, never a
 WG6 exception.
 
-The worker allocates new private `~/filesync-validation-*` roots and exact random
+The worker allocates new private `~/orbit-validation-*` roots and exact random
 owner-only disposable markers. Reuse, pilot markers, symlink escapes, unsafe
 markers and unrelated PIDs are refused. Process stopping reuses the exact
 executable/state/start-time guard, allowing 15 seconds for graceful shutdown.

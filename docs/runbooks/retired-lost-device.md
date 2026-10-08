@@ -15,7 +15,7 @@
 ### Step 1: Preview Member Retirement
 Inspect the effect of retirement on the remaining cluster:
 ```bash
-filesync peers retire --folder <folder-id> --device <target-device-id> --preview --json
+orbit engine peers retire --folder <folder-id> --device <target-device-id> --preview --json
 ```
 Verify:
 - `surviving_members`: Lists all surviving devices.
@@ -24,7 +24,7 @@ Verify:
 
 ### Step 2: Execute Retirement on an Active Device
 ```bash
-filesync peers retire --folder <folder-id> --device <target-device-id>
+orbit engine peers retire --folder <folder-id> --device <target-device-id>
 ```
 The output confirms:
 `retired device <device-id> on folder <folder-id>: new_revision=<rev> digest=<digest>`
@@ -32,24 +32,24 @@ The output confirms:
 ### Step 3: Export and Distribute Membership Update
 Export the canonical updated membership with retirement snapshot:
 ```bash
-filesync membership export --folder <folder-id> --out membership-rev<rev>.json
+orbit engine membership export --folder <folder-id> --out membership-rev<rev>.json
 ```
 On surviving devices, import the updated membership:
 ```bash
-filesync membership import --folder <folder-id> --file membership-rev<rev>.json
+orbit engine membership import --folder <folder-id> --file membership-rev<rev>.json
 ```
 
 ### Step 4: Decommissioning the Physical Device (If Accessible)
 If the retired machine is still physically accessible:
 1. Stop the sync service:
    ```bash
-   systemctl --user stop filesync
+   systemctl --user stop orbit
    ```
 2. Unregister synchronized folders (this preserves user files while clearing agent metadata):
    ```bash
-   filesync folders remove --folder <folder-id>
+   orbit folders remove --folder <folder-id>
    ```
 3. If complete wipe is desired, remove the state directory:
    ```bash
-   rm -rf ~/.local/state/filesync/
+   rm -rf ~/.local/state/orbit/
    ```
