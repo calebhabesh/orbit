@@ -1,0 +1,125 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.1.0 -X main.commit=56162eb -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build  -trimpath -ldflags '-X main.version=2.1.0 -X main.commit=56162eb -X main.date=2026-10-08' -o bin/orbit-linux-arm64 ./cmd/orbit
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> ~/dev/orbit/bin/orbit-linux-amd64
+Building binary for linux/arm64 -> ~/dev/orbit/bin/orbit-linux-arm64
+Generating orbit-v2.1.0-linux-amd64.tar.gz...
+Generating orbit_2.1.0_amd64.deb...
+Generating orbit-2.1.0-1.x86_64.rpm...
+Generating orbit-v2.1.0-linux-arm64.tar.gz...
+Generating orbit_2.1.0_arm64.deb...
+Generating orbit-2.1.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - orbit-v2.1.0-linux-amd64.tar.gz (18881448 bytes)
+  - orbit-v2.1.0-linux-amd64.tar.gz (18881448 bytes)
+  - orbit_2.1.0_amd64.deb (18874058 bytes)
+  - orbit-2.1.0-1.x86_64.rpm (18878785 bytes)
+  - orbit-v2.1.0-linux-arm64.tar.gz (17660138 bytes)
+  - orbit-v2.1.0-linux-arm64.tar.gz (17660138 bytes)
+  - orbit_2.1.0_arm64.deb (17654274 bytes)
+  - orbit-2.1.0-1.aarch64.rpm (17655902 bytes)
+  - release-manifest.json (786 bytes)
+  - SHA256SUMS
+python3 scripts/terminal_package_test.py --dist dist
+[
+  {
+    "scenario": "all-package-checksums",
+    "result": "passed"
+  },
+  {
+    "scenario": "amd64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "arm64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "standalone-install-repeat-upgrade-uninstall",
+    "result": "passed",
+    "assertions": [
+      "custom unit preserved",
+      "identity/state preserved",
+      "ordinary bytes preserved",
+      "no user service changes"
+    ]
+  },
+  {
+    "scenario": "package-extracted-bare-PTY",
+    "result": "passed"
+  }
+]
+go vet ./...
+go test ./cmd/orbit/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	1.195s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	0.044s
+ok  	github.com/calebhabesh/orbit/internal/control	12.539s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.008s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.002s
+ok  	github.com/calebhabesh/orbit/internal/history	0.001s
+?   	github.com/calebhabesh/orbit/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/network	115.096s
+ok  	github.com/calebhabesh/orbit/internal/pairing	0.002s
+ok  	github.com/calebhabesh/orbit/internal/protocol	0.030s
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	71.412s
+ok  	github.com/calebhabesh/orbit/internal/replication	95.617s
+ok  	github.com/calebhabesh/orbit/internal/repository	1.592s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	11.581s
+ok  	github.com/calebhabesh/orbit/internal/state	0.002s
+ok  	github.com/calebhabesh/orbit/internal/terminal	4.081s
+ok  	github.com/calebhabesh/orbit/internal/testkit	0.001s
+ok  	github.com/calebhabesh/orbit/internal/workspace	0.875s
+ok  	github.com/calebhabesh/orbit/model	0.283s
+go test ./tests/integration/...
+--- FAIL: TestOrbitPackagingArtifacts (1.70s)
+    orbit_package_test.go:94: SHA256SUMS missing expected entry: 01ebff8f5b6f2119cf3d55cbaa79747255589a0322d43076a56268760c0c2bde  orbit-v2.0.0-linux-amd64.tar.gz
+    orbit_package_test.go:94: SHA256SUMS missing expected entry: 2c518afa795c927e71f0d92937b10e26d55c3542d43694a2ca18a8700f61916b  orbit_2.0.0_amd64.deb
+    orbit_package_test.go:94: SHA256SUMS missing expected entry: 40b99e5014ce8b0d7150e17e589851e98998c48e3d75f730b9da66fa4a001e02  orbit-2.0.0-1.x86_64.rpm
+    orbit_package_test.go:94: SHA256SUMS missing expected entry: 967a873d0113b29f08e58d375010268b3f3aff2e411e74893b140798ee7021b2  orbit-v2.0.0-linux-arm64.tar.gz
+    orbit_package_test.go:94: SHA256SUMS missing expected entry: 9eb269c9c091770ce78cfe3fad12a0c0ed484dd0af236dce6d11db8b6e26a46b  orbit_2.0.0_arm64.deb
+    orbit_package_test.go:94: SHA256SUMS missing expected entry: 2516f52a9fc53a5a3cb09197caca0b15a2b7c18a11d0018bfc0c5d5f55f48571  orbit-2.0.0-1.aarch64.rpm
+--- FAIL: TestOrbitVersionAndManifestMetadata (0.04s)
+    orbit_package_test.go:170: missing Orbit brand string, got: Orbit Personal File Manager v2.1.0
+        Commit: 56162eb (built 2026-10-08)
+        Runtime: linux/amd64 (go1.27.1-X:nodwarf5, pure-Go SQLite, zero Node runtime)
+        Schema: SQLite user_version 13, Config format 1
+        Embedded Assets: 3 files (SHA-256: 1d6c5084c2ba29bb4fe64e4d67a053ae0dab396dcd0d770aaafbaf103f24b67d)
+        Packaged service profile: "Caleb Habesh" epoch 2, expires 2027-10-07T16:41:45Z (SHA-256: 9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681)
+        Packaged service profile disabled by ORBIT_DISABLE_PACKAGED_PROFILE
+--- FAIL: TestP15VersionAndBuildMetadata (0.01s)
+    p15_packaging_lifecycle_test.go:60: version output missing 'orbit 2.0.0', got: orbit 2.1.0 (commit=56162eb, built=2026-10-08, linux/amd64, go=go1.27.1-X:nodwarf5)
+--- FAIL: TestP15PackagingOutputsAndChecksums (1.80s)
+    p15_packaging_lifecycle_test.go:490: SHA256SUMS missing expected entry: 01ebff8f5b6f2119cf3d55cbaa79747255589a0322d43076a56268760c0c2bde  orbit-v2.0.0-linux-amd64.tar.gz
+    p15_packaging_lifecycle_test.go:490: SHA256SUMS missing expected entry: 2c518afa795c927e71f0d92937b10e26d55c3542d43694a2ca18a8700f61916b  orbit_2.0.0_amd64.deb
+    p15_packaging_lifecycle_test.go:490: SHA256SUMS missing expected entry: 40b99e5014ce8b0d7150e17e589851e98998c48e3d75f730b9da66fa4a001e02  orbit-2.0.0-1.x86_64.rpm
+    p15_packaging_lifecycle_test.go:490: SHA256SUMS missing expected entry: 967a873d0113b29f08e58d375010268b3f3aff2e411e74893b140798ee7021b2  orbit-v2.0.0-linux-arm64.tar.gz
+    p15_packaging_lifecycle_test.go:490: SHA256SUMS missing expected entry: 9eb269c9c091770ce78cfe3fad12a0c0ed484dd0af236dce6d11db8b6e26a46b  orbit_2.0.0_arm64.deb
+    p15_packaging_lifecycle_test.go:490: SHA256SUMS missing expected entry: 2516f52a9fc53a5a3cb09197caca0b15a2b7c18a11d0018bfc0c5d5f55f48571  orbit-2.0.0-1.aarch64.rpm
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/integration	84.486s
+FAIL
+make: *** [Makefile:58: test-integration] Error 1

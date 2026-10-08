@@ -1,0 +1,50 @@
+[
+  {
+    "scenario": "all-package-checksums",
+    "result": "passed"
+  },
+  {
+    "scenario": "amd64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "arm64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "standalone-install-repeat-upgrade-uninstall",
+    "result": "passed",
+    "assertions": [
+      "custom unit preserved",
+      "identity/state preserved",
+      "ordinary bytes preserved",
+      "no user service changes"
+    ]
+  },
+  {
+    "scenario": "package-extracted-bare-PTY",
+    "result": "passed"
+  }
+]

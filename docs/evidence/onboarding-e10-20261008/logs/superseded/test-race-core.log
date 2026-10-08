@@ -1,0 +1,7 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.1.0 -X main.commit=56162eb -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+go test -race -timeout=30m ./cmd/... ./internal/... ./model/... ./tests/integration/... ./tests/designgates/... ./tests/faults/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	3.870s
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	1.120s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	1.604s
+make: *** [Makefile:47: test-race-core] Terminated

@@ -1,0 +1,26 @@
+{
+  "packet": "E10",
+  "date": "2026-10-08",
+  "revisions": {"orbit": "037584b (2.1.0)", "orbit_net": "0da2e7d (1.1.0)", "e06_e08": "0da2e7d"},
+  "validation": {
+    "tests_terminal_full": "pass (2036 s, uncached)",
+    "make_check_rest": "pass",
+    "test_race_core": "1 failure: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (15 s budget under full parallel race load); 6/6 alone, internal/network race rerun pass",
+    "pty_suites": "terminal, onboarding, keys (after prompt-text fix), everyday: pass",
+    "demo": "pass",
+    "orbit_net_rehearsal": "pass",
+    "post_fix_037584b": "make test pass; tests/terminal run 1 exit 1 (log lost), rerun pass; package test pass"
+  },
+  "packages": {
+    "orbit-v2.1.0-linux-amd64.tar.gz": "12c39ec664ff02b7ec944a3b355861ba074c27fc3554f3237e9e2dd3556aa299",
+    "orbit_2.1.0_arm64.deb": "138dd2ce8ac71cc093595a275b757fb1741105d0ddb8e2abe72cd40c116ed850",
+    "orbit-net-v1.1.0-linux-arm64.tar.gz": "df856eff4486bdd129d2b5e1cd4958b79767398b72933133710681eb14cd8f6f",
+    "orbit-net-1.1.0-arm64-binary": "d559069b64d7eaa4ff3f8eca119d3836f05c50a235dd066eb240fb61438b838e",
+    "verification": "sha256sum -c SHA256SUMS and orbit-net-SHA256SUMS; remote sha256sum matched before install"
+  },
+  "deployment": {"host": "hosted orbit-net service", "owner_confirmed": "2026-10-08", "relay_month_bytes": 2199023255552, "state_directory_dropin": true, "backups": "*.bak-20261008", "post_checks": ["--check", "active", "metrics limit 2199023255552", "alert job exit 0", "PC doctor: service_dns_tcp, service_tls, directory, udp_stun VERIFIED"]},
+  "hosts": {"pc": "install.sh user, 2.1.0 037584b, drop-in removed, service active", "laptop": "install.sh user, 2.1.0 037584b, unit rewritten to port 0, daemon stopped", "pi": "dpkg -i, 2.1.0 037584b, drop-in removed, pilot PID unchanged, daemon stopped"},
+  "hosted_short_code": "PC code resolved by disposable laptop state in preview; automatic join plan; nothing submitted; state deleted",
+  "fixed": ["offline/unreachable-peer sync failures flooded attention (50 items) and blocked Files landing", "PTY/W16 harness drift from Files landing, --code short default and join prompt text", "packaging tests and terminal_package_test.py pinned to 2.0.0 (the latter passed against stale artifacts)", "package build date", "devices help for --code/--long"],
+  "unexecuted": ["owner's three-machine trial", "Pi join", "cross-network relay transfer between physical devices"]
+}

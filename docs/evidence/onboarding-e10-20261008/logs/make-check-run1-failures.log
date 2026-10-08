@@ -1,0 +1,14 @@
+--- FAIL: TestTerminalT12BareRealPTY (11.64s)
+            raise AssertionError(f"{name}: missing {needle!r}; tail=<omitted>
+        AssertionError: 40x16-ctrl-c-tool-failure: missing b'Notes\xe7\x95\x8c'; tail=<omitted>
+--- FAIL: TestTerminalT09RealPTYLifetime (11.68s)
+            raise AssertionError(f"{name}: missing {needle!r}; tail=<omitted>
+        AssertionError: 40x16-ctrl-c-tool-failure: missing b'Notes\xe7\x95\x8c'; tail=<omitted>
+--- FAIL: TestWANW16NativeRunnerRehearsal (39.59s)
+    --- FAIL: TestWANW16NativeRunnerRehearsal/cli (2.67s)
+              "failure": "ordinary journey must use routed v3 invitation",
+    --- FAIL: TestWANW16NativeRunnerRehearsal/tui-three-host (35.99s)
+              "failure": "Owner TUI invite failed: RuntimeError: invite: visible '[Overview]' absent",
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	1628.460s
+FAIL

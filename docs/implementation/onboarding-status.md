@@ -1,10 +1,11 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E05, E07 and E09 complete.** The
+Updated: 2026-10-08. **E00–E10 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
-[packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E06 and E08 — implementation and validation in progress.** The owner selected CPace on 2026-10-08; the interrupted E08 work has been resumed. The owner's next three-machine trial
-(PC, laptop, Pi) waits for E10.
+[packet details](onboarding-packets.md) form the handoff. Orbit 2.1.0 is
+installed on the PC, laptop and Pi, and orbit-net 1.1.0 (short codes, 2 TiB
+monthly relay budget) runs on the hosted service. The owner's three-machine
+trial follows [the trial guide](../demo.md).
 
 ## Packet tracker
 
@@ -16,16 +17,16 @@ Updated: 2026-10-08. **E00–E05, E07 and E09 complete.** The
 | E03 Keys/forms/paste | complete ([evidence](../evidence/onboarding-e03-20261008/summary.md)) | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
 | E04 Join/setup defaults | complete ([evidence](../evidence/onboarding-e04-20261008/summary.md)) | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
 | E05 Long invitation | complete ([evidence](../evidence/onboarding-e05-20261008/summary.md)) | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
-| E06 Short code | in progress; CPace selected by owner | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
+| E06 Short code | complete ([evidence](../evidence/onboarding-e06-20261008/summary.md)) | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
 | E07 Approval wait | complete ([evidence](../evidence/onboarding-e07-20261008/summary.md)) | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
-| E08 Files view | in progress; EG2 defined, integration checks running | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
-| E09 Relay budget | complete; VPS deployment pending owner at E10 ([evidence](../evidence/onboarding-e09-20261008/summary.md)) | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
-| E10 Trial readiness | preparatory checks in progress; deployment pending | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
+| E08 Files view | complete ([evidence](../evidence/onboarding-e08-20261008/summary.md)) | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
+| E09 Relay budget | complete; deployed at E10 ([evidence](../evidence/onboarding-e09-20261008/summary.md)) | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
+| E10 Trial readiness | complete ([evidence](../evidence/onboarding-e10-20261008/summary.md)) | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
 
 | Gate | State | Owning packet |
 | --- | --- | --- |
-| EG1 Short-code security | open; scoped ([E00](onboarding-gates.md)) | E06 |
-| EG2 Files-view truthfulness | open; scoped ([E00](onboarding-gates.md)) | E08 |
+| EG1 Short-code security | **closed** ([E06](onboarding-gates.md#eg1--short-code-security-e06)) | E06 |
+| EG2 Files-view truthfulness | **closed** ([E08](onboarding-gates.md#eg2--files-view-truthfulness-e08)) | E08 |
 | EG3 Host-class startup default | **closed** ([E01](onboarding-gates.md#eg3--host-class-startup-default-e01)) | E01 |
 | EG4 Relay egress accounting | **closed** ([E09](onboarding-gates.md#eg4--relay-egress-accounting-e09)) | E09 |
 
@@ -62,18 +63,14 @@ Also observed and working: Automatic mode, operator review, routed enrollment
 by invitation file, verification-code approval from the CLI, direct QUIC between
 PC and laptop, and download of all seven files.
 
-## Host workarounds to remove in E10
+## Host workarounds removed in E10
 
 Applied 2026-10-08 with the owner's go-ahead to unblock the trial (F01):
-
-| Host | File | Content |
-| --- | --- | --- |
-| PC | `~/.config/systemd/user/orbit.service.d/control-port.conf` | `ExecStart=` reset, then `orbit serve … --control-listen=127.0.0.1:0` |
-| Pi | same path | same, with `/usr/bin/orbit` |
-
-The laptop needed none (8080 free). A temporary invitation directory on the
-laptop, `~/.local/state/orbit-invites/`, should be deleted after the trial.
-Owner trial state: PC and laptop joined in folder `Orbit`; Pi not yet joined.
+`~/.config/systemd/user/orbit.service.d/control-port.conf` on the PC and the
+Pi. Both were removed at E10 after the 2.1.0 install rewrote the user units to
+`--control-listen=127.0.0.1:0`. Copies are kept in the E10 session scratch space,
+not in the repository. The laptop needed none. Owner trial state: PC and laptop
+joined in folder `Orbit`; Pi not yet joined.
 
 ## Packet log
 
@@ -193,8 +190,55 @@ targets, PTY suites and the orbit-net rehearsal pass. The VPS deployment and its
 [Commands](../evidence/onboarding-e09-20261008/commands.md),
 [results](../evidence/onboarding-e09-20261008/results.json).
 
+### E06 — complete (2026-10-08)
+
+Code `0da2e7d`. EG1 closed: CPaceRistretto255/SHA-512 (draft-21) on
+`gtank/ristretto255`, published vectors pass. `XXXX-XXXX` codes allow one guess
+per code (2^-20). Mailboxes live in memory: 128 total, 4 per key, 10 minutes,
+burned by a wrong code, lost on restart. The service sees only public PAKE
+messages and invitation ciphertext; the capture test finds neither the code
+nor the invitation. `orbit devices invite --code` prefers the short code, and
+`--long` keeps the long one. The TUI and `orbit join` accept either, and
+approval is unchanged. The profile privacy text stays accurate. Fixed in
+acceptance: a fresh headless host with lingering proposed manual startup
+because systemctl prints an empty line for a missing unit. Unexecuted: a
+short-code join between physical devices through the hosted service (owner trial).
+[Evidence](../evidence/onboarding-e06-20261008/summary.md).
+
+### E08 — complete (2026-10-08)
+
+Code `0da2e7d`. EG2 closed (seven per-device states, other devices only as
+aged reports). `files`/`file_details` queries back both the Files view (`5`)
+and `orbit files`. Configured devices with no attention land on Files. Model
+tests cover navigation, 10,000-entry paging, search, unsafe names and every
+state, and a real PTY run checks CLI/TUI parity, `$EDITOR` and resize.
+Unexecuted: `xdg-open` on a real desktop session.
+[Evidence](../evidence/onboarding-e08-20261008/summary.md).
+
+### E10 — complete (2026-10-08)
+
+Orbit 2.1.0 and orbit-net 1.1.0. Uncached validation: `tests/terminal` (full,
+2036 s), the rest of `make check` (packages, integration, model, faults,
+harness, builds), `test-race-core`, all four PTY suites, `make demo` and the
+orbit-net rehearsal pass. One race-mode timing failure
+(`TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration`, 15 s budget
+under full parallel load) passed 6/6 alone and in a full `internal/network`
+race rerun. Fixes made in E10: PTY/W16 harnesses for the Files landing,
+`--code`/`--long` and the reworded join prompt. The packaging tests and
+`terminal_package_test.py` were still pinned to 2.0.0 (the latter had passed
+against stale 2.0.0 artifacts, which are now archived). Also fixed: the package
+build date, and help for `--code`/`--long`. Trial finding fixed: a device that
+is only switched off no longer produces one EXHAUSTED_WORK item per periodic
+sync (the owner's PC showed 50). The W12 relay-probe timeout did not recur in
+three logged full terminal runs after relay probes got the 10 s handshake
+bound; a fourth run exited 1 with its log lost, cause unknown. Deployed with
+the owner's confirmation: orbit-net 1.1.0 on the VPS with `relay_month_bytes`
+2 TiB and a `StateDirectory` drop-in. Installed 2.1.0 on PC, laptop and Pi and
+removed the port drop-ins. [Evidence](../evidence/onboarding-e10-20261008/summary.md).
+
 ## Handoff
 
-The owner selected CPace on 2026-10-08. E06 and E08 are being validated;
-neither has final acceptance evidence yet. E10 must also investigate the intermittent
-`TestWANW12BinaryDoctorPrivacyAndPTY` relay-probe timeout, which predates E09.
+All onboarding packets are complete. Next is the owner's three-machine trial
+with [the trial guide](../demo.md); record findings in a new table above.
+Remove `overlap_profile`/`overlap_service_key` from the VPS `serve.json` after
+2027-01-04.

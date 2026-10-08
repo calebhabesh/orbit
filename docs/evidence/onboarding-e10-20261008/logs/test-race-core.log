@@ -1,0 +1,34 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.1.0 -X main.commit=56162eb -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+go test -race -timeout=30m ./cmd/... ./internal/... ./model/... ./tests/integration/... ./tests/designgates/... ./tests/faults/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	3.849s
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	1.111s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	1.595s
+ok  	github.com/calebhabesh/orbit/internal/control	588.472s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	1.046s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	1.011s
+ok  	github.com/calebhabesh/orbit/internal/history	1.010s
+?   	github.com/calebhabesh/orbit/internal/launcher	[no test files]
+2026/10/08 13:21:45 http: TLS handshake error from 127.0.0.1:49532: remote error: tls: bad certificate
+2026/10/08 13:21:45 http: TLS handshake error from 127.0.0.1:33000: remote error: tls: bad certificate
+2026/10/08 13:21:46 connection doesn't allow setting of receive buffer size. Not a *net.UDPConn?. See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+--- FAIL: TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration (15.05s)
+    wan_w15_test.go:150: semantic refusal kept readiness
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/network	129.991s
+ok  	github.com/calebhabesh/orbit/internal/pairing	1.019s
+ok  	github.com/calebhabesh/orbit/internal/protocol	1.237s
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	84.090s
+ok  	github.com/calebhabesh/orbit/internal/replication	170.445s
+ok  	github.com/calebhabesh/orbit/internal/repository	64.638s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	18.452s
+ok  	github.com/calebhabesh/orbit/internal/state	1.011s
+ok  	github.com/calebhabesh/orbit/internal/terminal	15.325s
+ok  	github.com/calebhabesh/orbit/internal/testkit	1.005s
+ok  	github.com/calebhabesh/orbit/internal/workspace	18.579s
+ok  	github.com/calebhabesh/orbit/model	2.619s
+ok  	github.com/calebhabesh/orbit/tests/integration	128.661s
+ok  	github.com/calebhabesh/orbit/tests/designgates	1.649s
+ok  	github.com/calebhabesh/orbit/tests/faults	31.496s
+FAIL
+make: *** [Makefile:47: test-race-core] Error 1

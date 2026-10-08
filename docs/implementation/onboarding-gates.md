@@ -61,14 +61,18 @@ invoked with `enable-linger`); linger re-check after the owner runs the command.
 
 ## EG1 — Short-code security (E06)
 
-Owner selected CPace on 2026-10-08. Implementation under validation uses
+**Closed 2026-10-08 by E06** ([evidence](../evidence/onboarding-e06-20261008/summary.md)).
+Owner selected CPace on 2026-10-08. The implementation uses
 CPaceRistretto255/SHA-512, initiator/responder variant pinned to
 [draft-irtf-cfrg-cpace-21](https://www.ietf.org/archive/id/draft-irtf-cfrg-cpace-21.txt),
 with `github.com/gtank/ristretto255 v0.2.0` (BSD-3-Clause) and its
 `filippo.io/edwards25519 v1.1.0` arithmetic dependency. This is a source-reviewed
 library choice, not a claim of an independent audit of Orbit's integration.
-Published Appendix B.3 generator, public-message and ISK vectors pass.
-The gate remains open until the full production acceptance set is recorded.
+Published Appendix B.3 generator, public-message and ISK vectors pass. The
+production acceptance set (wrong code burns the mailbox and tells the inviter,
+expiry, single claim, restart, squatting and flood bounds, opaque capture, older
+service fallback, end-to-end headless join) passes. The profile privacy text
+stays accurate, so no epoch change. Bound: one online guess per code (2^-20).
 
 
 Facts: the WAN service already authenticates devices by key with signed proofs,

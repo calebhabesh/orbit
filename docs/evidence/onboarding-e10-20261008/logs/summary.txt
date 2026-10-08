@@ -1,0 +1,20 @@
+commit 56162eb + working tree
+test-terminal rc=0 (make-check-run2-terminal-pass.log, uncached, same tree)
+make-check-rest rc=0 start=2026-10-08T17:17:58Z end=2026-10-08T17:21:40Z
+test-race-core rc=2 start=2026-10-08T17:21:40Z end=2026-10-08T17:31:30Z
+pty-terminal rc=0 start=2026-10-08T17:31:30Z end=2026-10-08T17:31:40Z
+pty-onboarding rc=0 start=2026-10-08T17:31:40Z end=2026-10-08T17:32:58Z
+pty-keys rc=2 start=2026-10-08T17:32:58Z end=2026-10-08T17:33:21Z
+pty-everyday rc=0 start=2026-10-08T17:33:21Z end=2026-10-08T17:34:16Z
+demo rc=0 start=2026-10-08T17:34:16Z end=2026-10-08T17:34:17Z
+pty-keys (rerun after prompt-text fix) rc=0
+orbit-net-rehearsal rc=0 start=2026-10-08T17:34:17Z end=2026-10-08T17:36:22Z
+ALLDONE
+test-race internal/network rerun (idle host) rc=0
+post-fix make test rc=0
+post-fix tests/terminal rc=1
+POSTFIXDONE
+post-fix tests/terminal (rerun; first run rc=1, log lost) rc=0
+package test 6a2650d rc=0
+post-fix (transient set) make test rc=0
+package test 037584b rc=0
