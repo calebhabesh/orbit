@@ -5,6 +5,32 @@ prerequisite and address-entry portions of this handoff for new Automatic-mode
 work. Its relay/default-service journeys are planned, not implemented. Existing
 manual/private-network flows and all non-network terminal guarantees remain.
 
+## Owner amendment 2026-10-08
+
+After the first 2.0.0 trial the owner approved these changes; they are planned in
+the [onboarding plan](orbit-onboarding-implementation-plan.md) and not yet implemented.
+They supersede the conflicting text below.
+
+- **Files view.** The terminal gains a read-only Files view of synced folders with
+  per-file sync state, details, and actions that open the file in the owner's own
+  tools, its history or its conflict review. It is the default screen when setup
+  is complete and nothing needs attention; Overview remains the default otherwise.
+  Renaming, moving, deleting and editing still happen in the owner's tools. This
+  replaces the decision that ordinary browsing is outside the terminal.
+- **Keys.** ↑/↓ (and `j`/`k`) move rows and form fields; Tab/Shift+Tab move
+  between fields or panes; ←/→ change selectors and move through the Files tree;
+  Enter selects, advances and confirms; Esc goes back. Fixed choices are selectors
+  with defaults, never typed words. Number keys switch views.
+- **Defaults.** Create and join default to Automatic connection after one privacy
+  review; startup defaults to login on desktops and unattended on headless hosts
+  (with the lingering step shown, never run implicitly); the service uses an
+  ephemeral control port; the device name is the hostname.
+- **Invitations.** A short pairing code is the default in service modes
+  ([WAN UX](orbit-wan-ux.md#short-pairing-code-amendment-2026-10-08)); long
+  invitations are shown unboxed, copied whole and transferable as a file.
+- **Attention.** Items clear themselves once their cause is gone, Enter opens the
+  matching review, and every suggested action works while the daemon runs.
+
 Date: 2026-10-03. The owner agreed to recommendations Q1–Q14 and selected the
 terminal redesign. This document is the agreed UX contract. The comprehensive
 [implementation plan](orbit-terminal-implementation-plan.md),
@@ -26,7 +52,8 @@ explanation remain outstanding.
 
 Orbit manages synchronization among one owner's trusted Linux devices. Each
 joined folder has a complete local copy. Ordinary file browsing and editing
-use the owner's shell, Vim, and other applications.
+use the owner's shell, Vim, and other applications. (Amended 2026-10-08: a
+read-only Files view is added; see [the amendment](#owner-amendment-2026-10-08).)
 
 | Interview | Agreed behavior |
 | --- | --- |
@@ -171,7 +198,8 @@ stored copies, and reported applied copies. A blocked path can coexist with
 successful work on other paths.
 
 Support `j/k` and arrows, `/` search, Enter to inspect/select, Esc to return,
-Tab between controls, and `?` help. Text fields use ordinary entry. Show focus
+Tab between controls, and `?` help (the 2026-10-08 amendment extends arrows and
+Enter to forms and replaces typed choices with selectors). Text fields use ordinary entry. Show focus
 and status with text, preserve selection during refresh, and adapt to a narrow
 terminal without truncating essential recovery actions. Plain output remains
 usable without color or terminal-specific glyphs.

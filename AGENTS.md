@@ -1,5 +1,12 @@
 # Implementation guidance
 
+**Current selected work (2026-10-08): Orbit onboarding and everyday use.** Start with
+[the onboarding plan](docs/orbit-onboarding-implementation-plan.md) and
+[its tracker](docs/implementation/onboarding-status.md), then implement the first
+eligible E packet (initially E00) when assigned a build task. Either 6.1 Sol Medium
+or 3.8 Flash High can implement any eligible E packet. The WAN, terminal and P/O
+plans below are delivered or historical baselines; preserve their evidence.
+
 For the selected **Orbit native WAN expansion**, start with
 [WAN plan](docs/orbit-wan-implementation-plan.md) and
 [WAN status](docs/implementation/wan-status.md). Read its
