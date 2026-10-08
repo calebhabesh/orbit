@@ -32,6 +32,9 @@ func (m *model) workflowView() tea.View {
 	switch f.screen {
 	case "welcome":
 		title = "Orbit | Create or join"
+		if m.width >= 50 && m.height >= 20 {
+			lines = append(lines, m.theme().banner()...)
+		}
 		lines = append(lines, "Create your Orbit [c / Enter]", "Join an existing Orbit [j]", "Existing folder contents are reviewed before adoption.", "Closing this interface leaves background sync running.")
 	case "load_settings":
 		title = "Orbit | Setup"
@@ -40,22 +43,20 @@ func (m *model) workflowView() tea.View {
 		title = "Orbit | Join invitation"
 		lines = append(lines, "Paste a private v2/v3 invitation or enter an absolute private file path.", "The invitation is hidden and never included in status/logs.")
 		focusLine = len(lines)
-		lines = append(lines, "> Private invitation: "+f.fields[f.focus].input.View())
+		lines = append(lines, m.theme().field("Private invitation", f.fields[f.focus].input.View(), "", true))
 		footer = "Enter verify  Esc back  Ctrl-C close"
 	case "form":
 		title = "Orbit | Review setup inputs"
 		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.", "Startup: login needs user systemd; unattended also needs lingering.")
 		for _, i := range m.formIndices() {
-			prefix := "  "
 			value := safe(f.fields[i].input.Value())
 			if i == f.focus {
-				prefix = "> "
 				value = f.fields[i].input.View()
 				focusLine = len(lines)
 			}
-			lines = append(lines, prefix+f.fields[i].label+": "+value)
+			lines = append(lines, m.theme().field(f.fields[i].label, value, f.fields[i].input.Value(), i == f.focus))
 		}
-		lines = append(lines, fmt.Sprintf("Finite metadata=%d reserve=%d; retention uses per-folder controls.", f.settings.MetadataBudget, f.settings.ReserveBytes))
+		lines = append(lines, "Metadata budget="+hb(f.settings.MetadataBudget)+" reserve="+hb(f.settings.ReserveBytes)+"; retention uses per-folder controls.")
 		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back"
 	case "preview":
 		title = "Orbit | Measuring root"
@@ -85,7 +86,7 @@ func (m *model) workflowView() tea.View {
 			}
 		}
 		lines = append(lines, previewLines(f.result.Preview)...)
-		lines = append(lines, fmt.Sprintf("Startup=%s; data=%d metadata=%d reserve=%d bytes; concurrency=%d bandwidth=%d", safe(s.Startup), s.DataBudget, s.MetadataBudget, s.ReserveBytes, s.Concurrency, s.BandwidthBytesPerSecond))
+		lines = append(lines, fmt.Sprintf("Startup=%s; data=%s metadata=%s reserve=%s; concurrency=%d bandwidth=%s", safe(s.Startup), hb(s.DataBudget), hb(s.MetadataBudget), hb(s.ReserveBytes), s.Concurrency, bandwidth(s.BandwidthBytesPerSecond)))
 		if f.advanced {
 			lines = append(lines, "Peer listen: "+safe(s.PeerListen)+"; advertise: "+safe(s.AdvertisedPeer), "Enrollment listen: "+safe(s.EnrollmentListen)+"; advertise: "+safe(s.AdvertisedEnrollment))
 		}
@@ -196,11 +197,11 @@ func (m *model) workflowView() tea.View {
 		}
 		lines = append(lines, networkLines(f.result.Network)...)
 		lines = append(lines, "Observed connections are separate from saved/stored/applied/conflict state.", "Advanced policy/profile/timing review: orbit network preview; orbit network apply.")
-		footer = "r refresh cached observations  d explicit doctor (20s)  Esc cancel/back  arrows scroll  Esc back  q quit"
+		footer = "r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit"
 	case "save_invitation", "relocate_form":
 		title = "Orbit | " + f.screen
 		focusLine = len(lines)
-		lines = append(lines, "> "+f.fields[0].label+": "+f.fields[0].input.View())
+		lines = append(lines, m.theme().field(f.fields[0].label, f.fields[0].input.View(), "", true))
 		footer = "Enter continue  Esc back  Ctrl-C close"
 	case "folder", "retire":
 		title = "Orbit | Inspect folder and devices"
@@ -226,8 +227,7 @@ func (m *model) workflowView() tea.View {
 				lines = append(lines, safe(a.Code)+": "+safe(a.Action))
 			}
 		}
-		lines = append(lines, "v copy status | h path history | D deleted | C conflicts | b storage")
-		footer = "N connection | v h D C b | p pause l relocate a add s share x unregister t retire ?"
+		footer = "v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  x unregister  t retire  N connection  ? help"
 	case "folder_action":
 		title = "Orbit | Confirm local " + f.task
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
@@ -240,38 +240,66 @@ func (m *model) workflowView() tea.View {
 		footer = "Enter relocate  Esc edit  q quit"
 	case "unregister_preview":
 		title = "Orbit | Unregister preview"
-		lines = append(lines, "Scope: remove this device's local root registration only.", "Working files are preserved; remote copies and membership are unchanged.", "This does not erase a remote device or revoke its keys.", "Use the existing conservative procedure: filesync folders remove --folder "+safe(f.folder))
+		lines = append(lines, "Scope: remove this device's local root registration only.", "Working files are preserved; remote copies and membership are unchanged.", "This does not erase a remote device or revoke its keys.", "Use the existing conservative procedure: orbit folders remove --folder "+safe(f.folder))
 		footer = "arrows scroll  Esc back  q quit"
 	case "retirement_preview":
 		title = "Orbit | Retirement preview"
 		for _, it := range f.result.Items {
 			lines = append(lines, safe(it.Name), safe(it.Root))
 		}
-		lines = append(lines, "Preview only. Follow the conservative reviewed retirement procedure.", "filesync peers retire --help; docs/runbooks/membership-fork.md")
+		lines = append(lines, "Preview only. Follow the conservative reviewed retirement procedure.", "orbit engine peers retire --help; docs/runbooks/membership-fork.md")
 		footer = "arrows scroll  Esc back  q quit"
 	}
 	if f.busy {
 		lines = append(lines, "Submitting exact operation; closing the client does not cancel admitted work.")
 	}
-	// Scroll content, retain the focused field and reserve stable title/footer.
-	var body []string
-	focusWrapped := -1
-	for i, line := range lines {
-		if i == focusLine {
-			focusWrapped = len(body)
-		}
-		body = append(body, strings.Split(ansi.Wrap(line, max(1, m.width), ""), "\n")...)
+	return m.frame(title, lines, footer, focusLine, f.scroll)
+}
+
+// frame renders a workflow screen: header, one scrolling panel and key hints.
+// The focused line stays visible and the title/footer never scroll away.
+func (m *model) frame(title string, lines []string, footer string, focusLine, scroll int) tea.View {
+	t := m.theme()
+	title = strings.TrimPrefix(title, "Orbit | ")
+	right := ""
+	if s := m.result.Service; s != nil && !t.plain {
+		right = t.pill(running(s), safe(s.Mode))
 	}
-	heading := strings.Split(ansi.Wrap(title, max(1, m.width), ""), "\n")
-	tail := strings.Split(ansi.Wrap(footer, max(1, m.width), ""), "\n")
+	heading := []string{t.header(m.width, t.bold(title), right)}
+	if t.plain {
+		heading = strings.Split(ansi.Wrap("Orbit | "+title, max(1, m.width), ""), "\n")
+	}
+	tail := t.footer(footer, m.width)
+	// A revealed invitation is copied from the terminal, so no border may
+	// interleave with its wrapped lines.
+	copyable := m.flow != nil && m.flow.screen == "invitation_out" && m.flow.reveal
+	boxed := !copyable && m.width >= 60 && m.height >= len(heading)+len(tail)+4
+	inner := m.width
+	if boxed {
+		inner = m.width - 4
+	}
+	body, focusWrapped := t.body(lines, inner, focusLine)
 	available := max(1, m.height-len(heading)-len(tail))
-	start := min(f.scroll, max(0, len(body)-available))
+	if boxed {
+		available = max(1, available-2)
+	}
+	start := min(scroll, max(0, len(body)-available))
 	if focusWrapped >= 0 {
 		start = max(start, focusWrapped-available+2)
 		start = min(start, focusWrapped)
 	}
 	start = max(0, min(start, max(0, len(body)-available)))
-	output := append(heading, body[start:min(len(body), start+available)]...)
+	visible := body[start:min(len(body), start+available)]
+	output := heading
+	if boxed {
+		status := ""
+		if len(body) > available {
+			status = fmt.Sprintf("%d-%d of %d", start+1, start+len(visible), len(body))
+		}
+		output = append(output, t.panel("", status, visible, m.width, available+2, true)...)
+	} else {
+		output = append(output, visible...)
+	}
 	output = append(output, tail...)
 	if len(output) > m.height {
 		output = output[:m.height]
@@ -280,11 +308,12 @@ func (m *model) workflowView() tea.View {
 	v.AltScreen = true
 	return v
 }
+
 func previewLines(p *tc.RootPreview) []string {
 	if p == nil {
 		return nil
 	}
-	lines := []string{fmt.Sprintf("Measured files=%d directories=%d bytes=%d; complete=%t", p.Files, p.Directories, p.Bytes, p.Complete), fmt.Sprintf("Unsupported=%d unreadable=%d capacity known=%t available=%d bytes", p.Unsupported, p.Unreadable, p.CapacityKnown, p.AvailableBytes)}
+	lines := []string{fmt.Sprintf("Measured files=%d directories=%d size=%s; complete=%t", p.Files, p.Directories, hb(p.Bytes), p.Complete), fmt.Sprintf("Unsupported=%d unreadable=%d capacity known=%t available=%s", p.Unsupported, p.Unreadable, p.CapacityKnown, hb(p.AvailableBytes))}
 	for _, issue := range p.Issues {
 		lines = append(lines, safe(issue.Code)+": "+safe(issue.Path))
 	}
