@@ -14,6 +14,7 @@ import (
 
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
 	"github.com/calebhabesh/orbit/internal/repository"
 )
 
@@ -249,7 +250,22 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 		// A. Exhausted durable tasks
 		tasks, tErr := c.db.ListDurableTasks(ctx, repository.TaskFilter{State: "exhausted"})
 		if tErr == nil {
+			seenSync := map[string]bool{}
 			for _, task := range tasks {
+				if task.Kind == "sync" && task.Peer != nil {
+					// A device that is off or asleep, or a service that was
+					// briefly busy, is not owner work: periodic syncs resolve
+					// these, and a long absence is the OFFLINE item above.
+					// Other sync failures show once per folder, device and cause.
+					if peerTemporarilyUnreachable[task.ErrorCode] {
+						continue
+					}
+					key := hex.EncodeToString(task.Folder[:]) + hex.EncodeToString(task.Peer[:]) + task.ErrorCode
+					if seenSync[key] {
+						continue
+					}
+					seenSync[key] = true
+				}
 				folderHex := ""
 				if task.Folder != (history.ID{}) {
 					folderHex = hex.EncodeToString(task.Folder[:])
@@ -714,6 +730,14 @@ func attentionPriority(code string) int {
 	default:
 		return 1
 	}
+}
+
+// peerTemporarilyUnreachable lists the transient codes a sync records when
+// it could not reach the other device (scheduler.RetryClassifier).
+var peerTemporarilyUnreachable = map[string]bool{
+	protocol.NetworkUnavailable: true, protocol.NetworkServiceUnavailable: true,
+	protocol.NetworkQuota: true, protocol.NetworkStaleGeneration: true,
+	"NETWORK_BUSY": true, "STALE_NETWORK_GENERATION": true,
 }
 
 // exhaustedWorkAction names the failure and a retry that works while the
