@@ -82,7 +82,14 @@ func (m *model) workflowView() tea.View {
 		s := p.Settings
 		lines = append(lines, "Device: "+safe(p.DeviceName), "Folder: "+safe(p.FolderName), "Root: "+safe(p.Root), "Existing supported local contents become shared; nothing is erased.")
 		if f.kind == "join" {
-			lines = append(lines, "Inviter: "+safe(f.invitation.Inviter), "Key pin: "+safe(f.invitation.KeyPin), "Invitation expires: "+expiresIn(f.invitation.ExpiresAt, time.Now()), "Invitation folder: "+safe(f.invitation.Folder))
+			inviter, folder := safe(f.invitation.Inviter), safe(f.invitation.Folder)
+			if n := f.invitation.InviterName; n != "" {
+				inviter = safe(n) + " (" + inviter + ")"
+			}
+			if n := f.invitation.FolderName; n != "" {
+				folder = safe(n) + " (" + folder + ")"
+			}
+			lines = append(lines, "Inviter: "+inviter, "Key pin: "+safe(f.invitation.KeyPin), "Invitation expires: "+expiresIn(f.invitation.ExpiresAt, time.Now()), "Invitation folder: "+folder)
 		}
 		if p.Network != nil {
 			lines = append(lines, policyLines(*p.Network)...)
@@ -129,7 +136,11 @@ func (m *model) workflowView() tea.View {
 				if f.plan.DeviceName != "" {
 					who += " (" + safe(f.plan.DeviceName) + ")"
 				}
-				lines = append(lines, "Waiting for the inviting device to approve "+who+".",
+				inviting := "the inviting device"
+				if n := f.invitation.InviterName; n != "" && f.invitation.Inviter == r.Join.Inviter {
+					inviting = safe(n)
+				}
+				lines = append(lines, "Awaiting approval: waiting for "+inviting+" to approve "+who+".",
 					"On the inviting device: open Attention (or press w), choose the request and compare this code: "+joinVerification(r))
 			}
 
@@ -210,12 +221,15 @@ func (m *model) workflowView() tea.View {
 		footer = "Enter create scoped invitation  Esc back  q quit"
 	case "invitation_out":
 		title = "Orbit | Private invitation"
+		status, review := inviteStatus(f)
+		lines = append(lines, "Status: "+status, "")
+		reviewKey := ""
+		if review {
+			reviewKey = "Enter review request  "
+		}
 		if p := f.result.Pairing; p != nil && p.Code != "" {
-			lines = append(lines, "Pairing code: "+p.Code, "Expires: "+expiresIn(p.Expires, time.Now()), "On the other device choose Join and type this code.", "Pairing: "+safe(p.State), "Owner approval and verification-code comparison still follow.")
-			if p.Error != "" {
-				lines = append(lines, "This code is unavailable or a wrong code was tried. Press r for a new code.")
-			}
-			footer = "c copy code  r new code  v long invitation  s save file  x revoke  Esc back  q quit"
+			lines = append(lines, "Pairing code: "+p.Code, "Expires: "+expiresIn(p.Expires, time.Now()), "On the other device choose Join and type this code.", "Owner approval and verification-code comparison still follow.")
+			footer = reviewKey + "c copy code  r new code  v long invitation  s save file  x revoke  Esc back  q quit"
 			break
 		}
 		code, _ := tc.InvitationCode(f.invitation)
@@ -227,7 +241,7 @@ func (m *model) workflowView() tea.View {
 		if f.saved != "" {
 			lines = append(lines, savedTransferLines(f.saved)...)
 		}
-		footer = "c copy  v show  s save file  x revoke  Esc back  q quit"
+		footer = reviewKey + "c copy  v show  s save file  x revoke  Esc back  q quit"
 	case "revoke_invitation_review":
 		title = "Orbit | Revoke invitation"
 		lines = append(lines, "Revoke this exact invitation for folder: "+safe(f.invitation.Folder), "Pending requests using it cannot be approved. Existing approved membership is preserved.")
@@ -547,4 +561,42 @@ func expiresIn(at string, now time.Time) string {
 		}
 		return fmt.Sprintf("%s (%d h left)", when, h)
 	}
+}
+
+// inviteStatus says where the invited device is, newest step first. review is
+// true when a join request for this folder waits for the owner's approval.
+func inviteStatus(f *workflow) (string, bool) {
+	if len(f.invitePending) > 0 {
+		p := f.invitePending[0]
+		name := "A device"
+		if p.Label != "" {
+			name = safe(p.Label)
+		}
+		return "Awaiting your approval: " + name + " wants to join. Verification code " + safe(p.VerificationCode) + "; check it matches that device, then press Enter.", true
+	}
+	if s := f.inviteSeen; s != nil {
+		name := "The device"
+		if s.Label != "" {
+			name = safe(s.Label)
+		}
+		switch s.State {
+		case "approved":
+			return "Approved: " + name + " can now sync this folder.", false
+		case "declined":
+			return "Declined: " + name + " was not added.", false
+		}
+		return name + "'s request is no longer waiting (" + safe(s.State) + ").", false
+	}
+	if p := f.result.Pairing; p != nil && p.Code != "" {
+		switch {
+		case p.Error == "PAIRING_WRONG_CODE":
+			return "A wrong code was tried, so this code no longer works. Press r for a new one.", false
+		case p.Error != "" || p.State == "expired" || p.State == "failed":
+			return "This code can't be used any more. Press r for a new one.", false
+		case p.State == "sent":
+			return "Code used: waiting for the other device to send its join request.", false
+		}
+		return "Waiting for the other device to enter the code.", false
+	}
+	return "Waiting for the other device to use this invitation.", false
 }

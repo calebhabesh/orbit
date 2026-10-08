@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 // Invitation code prefixes. The legacy envelope uses control version 1 inside
@@ -100,10 +101,18 @@ func validEndpoint(s string) bool {
 	return err == nil && u.Scheme == "https" && u.Hostname() != "" && u.User == nil && u.RawQuery == "" && u.Fragment == "" && (u.Path == "" || u.Path == "/")
 }
 
+// MaxInvitationName bounds each display name carried by an invitation.
+const MaxInvitationName = 128
+
 // Validate checks a transferred invitation's structure and certificate pin.
 // Trust still requires deliberate transfer; expiry and current membership are
 // rechecked by the inviter's durable admission transaction, not this codec.
 func (i Invitation) Validate() error {
+	for _, name := range []string{i.InviterName, i.FolderName} {
+		if len(name) > MaxInvitationName || !utf8.ValidString(name) {
+			return fmt.Errorf("INVALID_REQUEST: invitation name")
+		}
+	}
 	if i.Version == "3" {
 		data, err := json.Marshal(i)
 		if err != nil || len(data) > protocol.RoutedInvitationMaxBytes {

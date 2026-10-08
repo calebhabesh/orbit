@@ -238,7 +238,20 @@ removed the port drop-ins. [Evidence](../evidence/onboarding-e10-20261008/summar
 
 ## Handoff
 
-All onboarding packets are complete. Next is the owner's three-machine trial
-with [the trial guide](../demo.md); record findings in a new table above.
+**2.2.0 trial polish (2026-10-08, uncommitted to hosts).** Owner requests from
+the 2.1.0 trial are implemented and committed but **not yet installed**: the
+"Orbits" list with a live file preview (TUI wording only), live status on the
+invitation page with Enter to review the waiting request, inviter and folder
+names in invitations (2.1 cannot read them; update all devices together), the
+proposed join folder name and `~/<name>` root, and the join "reconnecting"
+wait. Validation run: build, vet, `internal/terminal`, `internal/control`,
+`cmd/orbit`, and all four PTY suites pass. Not run: full `tests/terminal`,
+integration/packaging tests, race. Version is 2.2.0; packages are not built.
+
+Trial state: PC, laptop and Pi share `Trial` on 2.1.0 (Pi unattended with
+lingering). The owner wants fast iteration: next, a quick check target and a
+disposable-trial reset for the three hosts, so a full suite is not needed per
+change.
+
 Remove `overlap_profile`/`overlap_service_key` from the VPS `serve.json` after
 2027-01-04.

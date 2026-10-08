@@ -95,9 +95,9 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 	case "1", "2", "3", "4", "5":
 		return m.changeSection(int(k[0] - '1'))
 	case "j", "down":
-		m.selectRow(1)
+		return m.selectRow(1)
 	case "k", "up":
-		m.selectRow(-1)
+		return m.selectRow(-1)
 	case "left":
 		return m.changeSection((m.section + len(sections) - 1) % len(sections))
 	case "right":

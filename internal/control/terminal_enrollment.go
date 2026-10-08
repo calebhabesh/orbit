@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/calebhabesh/orbit/internal/config"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
@@ -66,6 +67,10 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 	// Accepted local mutations finish independently of a disconnected waiter.
 	owned, cancel := context.WithTimeout(context.WithoutCancel(ctx), 10*time.Second)
 	defer cancel()
+	var folderName, inviterName string
+	if (m.Kind == "invite" || m.Kind == "share") && m.Invite != nil {
+		folderName, inviterName = c.invitationNames(owned, m.Invite.Folder)
+	}
 	err = c.db.EnrollmentTransaction(owned, func(t *repository.EnrollmentTx) error {
 		var old repository.TerminalRecord
 		if err := t.Get("operation/"+m.OperationID, &old); err == nil {
@@ -124,7 +129,7 @@ func (c *Controller) terminalEnrollmentMutation(ctx context.Context, m tc.Mutati
 			if err != nil || !now.Before(expires) || expires.After(now.Add(24*time.Hour)) {
 				return terminalError("INVALID_REQUEST")
 			}
-			inv := tc.Invitation{Version: tc.Version, Folder: p.Folder, Inviter: hex.EncodeToString(id.DeviceID[:]), CertificateDER: base64.StdEncoding.EncodeToString(id.Leaf.Raw), KeyPin: hex.EncodeToString(id.KeyPin[:]), EnrollmentEndpoint: "https://" + settings.AdvertisedEnrollment, PeerEndpoint: "https://" + settings.AdvertisedPeer, ExpiresAt: p.ExpiresAt}
+			inv := tc.Invitation{Version: tc.Version, Folder: p.Folder, Inviter: hex.EncodeToString(id.DeviceID[:]), CertificateDER: base64.StdEncoding.EncodeToString(id.Leaf.Raw), KeyPin: hex.EncodeToString(id.KeyPin[:]), EnrollmentEndpoint: "https://" + settings.AdvertisedEnrollment, PeerEndpoint: "https://" + settings.AdvertisedPeer, ExpiresAt: p.ExpiresAt, FolderName: folderName, InviterName: inviterName}
 			if routed {
 				if c.options.Relay == nil {
 					return terminalError("SERVICE_UNAVAILABLE")
@@ -349,4 +354,28 @@ func printableLabel(label string) string {
 		}
 		return r
 	}, label))
+}
+
+// invitationNames reads this device's own name and the folder's local name for
+// an invitation. They are display text only; a missing name is left empty.
+func (c *Controller) invitationNames(ctx context.Context, folder string) (folderName, deviceName string) {
+	if folders, err := c.db.NamedFolders(ctx); err == nil {
+		for _, f := range folders {
+			if f.ID == folder {
+				folderName = f.Name
+			}
+		}
+	}
+	if devices, err := c.db.NamedDevices(ctx); err == nil && len(devices) > 0 && devices[0].Name != "This device" {
+		deviceName = devices[0].Name // the local device sorts first
+	}
+	return clipName(folderName), clipName(deviceName)
+}
+
+func clipName(s string) string {
+	for len(s) > tc.MaxInvitationName {
+		_, size := utf8.DecodeLastRuneInString(s)
+		s = s[:len(s)-size]
+	}
+	return s
 }

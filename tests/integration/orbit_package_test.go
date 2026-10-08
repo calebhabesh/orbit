@@ -58,12 +58,12 @@ func TestOrbitPackagingArtifacts(t *testing.T) {
 	}
 
 	expectedPackages := []string{
-		"orbit-v2.1.0-linux-amd64.tar.gz",
-		"orbit_2.1.0_amd64.deb",
-		"orbit-2.1.0-1.x86_64.rpm",
-		"orbit-v2.1.0-linux-arm64.tar.gz",
-		"orbit_2.1.0_arm64.deb",
-		"orbit-2.1.0-1.aarch64.rpm",
+		"orbit-v2.2.0-linux-amd64.tar.gz",
+		"orbit_2.2.0_amd64.deb",
+		"orbit-2.2.0-1.x86_64.rpm",
+		"orbit-v2.2.0-linux-arm64.tar.gz",
+		"orbit_2.2.0_arm64.deb",
+		"orbit-2.2.0-1.aarch64.rpm",
 		"release-manifest.json",
 	}
 
@@ -103,7 +103,7 @@ func TestOrbitTarballContentsAndSymlinks(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolve root: %v", err)
 	}
-	tarGzPath := filepath.Join(root, "dist", "orbit-v2.1.0-linux-amd64.tar.gz")
+	tarGzPath := filepath.Join(root, "dist", "orbit-v2.2.0-linux-amd64.tar.gz")
 
 	f, err := os.Open(tarGzPath)
 	if err != nil {
@@ -166,7 +166,7 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 		t.Fatalf("orbit version: %v (%s)", err, string(out))
 	}
 	outStr := string(out)
-	if !strings.Contains(outStr, "Orbit Personal File Manager v2.1.0") {
+	if !strings.Contains(outStr, "Orbit Personal File Manager v2.2.0") {
 		t.Errorf("missing Orbit brand string, got: %s", outStr)
 	}
 	if !strings.Contains(outStr, "Schema: SQLite user_version 13") {

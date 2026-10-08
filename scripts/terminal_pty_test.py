@@ -221,7 +221,7 @@ print('TOOL_DONE',flush=True)
             os.write(master, b"\x1b")  # Clear filter in navigation.
             time.sleep(0.12)
             os.write(master, b"f")
-            read_until(b"[Folders]" if size[0]>=60 else b"Folders |")
+            read_until(b"[Orbits]" if size[0]>=60 else b"Orbits |")
             # E03: Tab moves between views; / opens search.
             os.write(master, b"\x1b[B\x1b[A/")
             read_until(b"Type to filter")
@@ -234,7 +234,7 @@ print('TOOL_DONE',flush=True)
             fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 16, 40, 0, 0))
             screen.resize(40,16)
             self.send_signal(p, signal.SIGWINCH)
-            read_until(b"Folders |")
+            read_until(b"Orbits |")
             if tool_mode:
                 os.write(master, b"e")
                 read_until(b"TOOL_READY")

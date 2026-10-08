@@ -1,8 +1,8 @@
-# Orbit 2.1 three-machine trial
+# Orbit 2.2 three-machine trial
 
 Use a dedicated test folder for this rehearsal. Keep your personal folders and
-existing Pi pilot untouched. All three devices need Orbit 2.1; short codes also
-need the upgraded Orbit service. The deployment and host records are in the
+existing Pi pilot untouched. All three devices need Orbit 2.2 (2.1 cannot read 2.2
+invitations); short codes also need the upgraded Orbit service. The deployment and host records are in the
 [onboarding tracker](implementation/onboarding-status.md).
 
 1. **Create on the PC.** Run `orbit`, choose Create, name the device PC and the
@@ -10,17 +10,21 @@ need the upgraded Orbit service. The deployment and host records are in the
    Automatic and Startup at the proposed desktop setting, login. Review the
    root and operator before confirming. If already set up, press `1`, then `c`
    to add a separate folder.
-2. **Get a short code.** Press `a`, select Trial, review the folder and press
-   Enter. Copy or type the `XXXX-XXXX` pairing code on the laptop. It expires
-   after ten minutes and permits one claim. Press `r` for a fresh code after a
+2. **Get a short code.** Press `a` and select Trial; the `XXXX-XXXX` pairing
+   code appears straight away. Type it on the laptop. It expires after ten
+   minutes (the page shows the local time and minutes left) and permits one
+   claim. Keep the page open: its status line follows the laptop through to
+   approval. Press `r` for a fresh code after a
    mistake or expiry. `v` reveals the long invitation and `s` saves a private
    file for an older device or a service that has not been upgraded.
 3. **Join on the laptop.** Run `orbit`, choose Join (or press `J`), review the
-   named operator, and enter the code. Review the inviter and folder, choose a
-   dedicated local folder, and accept the proposed connection and login startup.
+   named operator, and enter the code. The form proposes the PC's folder name
+   (Trial) and `~/Trial`; review the inviter and folder, adjust the root if you
+   like, and accept the proposed connection and login startup.
    Submit the review. Keep the waiting screen open.
-4. **Approve on the PC.** Press `w`, inspect the laptop request, compare the
-   verification code on both screens, then approve the exact request. Wait for
+4. **Approve on the PC.** The invitation page now says "Awaiting your
+   approval: <laptop> wants to join" with a verification code. Compare it with
+   the laptop's screen and press Enter to review and approve (or use `w`). Wait for
    local readiness on the laptop. Approval remains mandatory after code exchange.
 5. **Join the Pi.** Request a new code on the PC and join over SSH using `orbit`
    on the Pi. A headless host proposes unattended startup when lingering is
@@ -28,7 +32,8 @@ need the upgraded Orbit service. The deployment and host records are in the
    yourself, then use Ctrl-R to re-check. Without lingering, Orbit explicitly
    uses login startup. Approve this new Pi request separately on the PC.
 6. **Browse and edit.** Reopen Orbit: a configured device with no attention items
-   lands on Files. Press `5` to visit Files at any time; `1` opens Overview.
+   lands on Files. Press `5` to visit Files at any time; `1` opens Overview and `2`
+   the Orbits list, whose right pane previews the highlighted Orbit's files.
    Enter or Right opens a directory; Left or Backspace goes up. Use `/` to search,
    `]` and `[` to page, `o` to open, `e` for your configured editor, and `y` to copy
    a path. Edit a small text file on each device and check the bytes on the others.

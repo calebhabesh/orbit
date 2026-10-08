@@ -469,3 +469,12 @@ Older receivers use the explicitly available long invitation/file.
 invitations retain the explicit long-code/private-file transfer. The pairing
 control request has a 45-second operation bound and a 50-second HTTP write
 deadline; ordinary requests retain their existing deadline.
+
+## 2.2.0 invitation names and join reconnect
+
+`Invitation` gains optional `inviter_name` and `folder_name` (UTF-8, at most
+128 bytes each): display text chosen on the inviting device, never identity.
+Decoders before 2.2.0 reject invitations that carry them. A join whose
+enrollment connection fails for a retryable reason keeps its phase, state
+`running`, no error, and one effect `reconnecting:<CAUSE>` (a service code,
+`TIMEOUT` or `UNREACHABLE`); an identity mismatch still blocks.

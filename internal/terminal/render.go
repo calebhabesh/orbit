@@ -77,7 +77,7 @@ func (m *model) View() tea.View {
 var helpKeys = [][2]string{
 	{"q / Ctrl-C", "close interface (sync and committed work continue); Ctrl-C works anywhere"},
 	{"↑/↓ or j/k", "select rows; in forms, move between fields"},
-	{"1-5 or o f n d", "Overview, Folders, Attention, Devices, Files"},
+	{"1-5 or o f n d", "Overview, Orbits, Attention, Devices, Files"},
 	{"Files", "Enter/→ open · ←/Backspace up · o open · e edit · h history · c conflicts · D deleted · y copy path · / search folder"},
 	{"Tab / Shift-Tab", "next / previous view; in forms, next / previous field"},
 	{"←/→", "previous / next view; in forms, change a ‹ choice ›"},
@@ -196,7 +196,7 @@ func (m *model) rowLines(t theme, width, height int) ([]string, string) {
 	grouped := m.section == 0 && len(m.result.Attention) > 0 && len(rows) > len(m.result.Attention)
 	for i, r := range rows {
 		if grouped {
-			g := "Folders"
+			g := "Orbits"
 			if strings.HasPrefix(r.key, "a:") {
 				g = "Needs attention"
 			}
@@ -296,6 +296,9 @@ func (m *model) detailLines() (string, []string) {
 			}
 		}
 		lines = append(lines, "", r.action)
+		if r.folder != "" && r.folder == m.highlightedOrbit() {
+			return r.name, append(lines, m.previewLines(r.folder)...)
+		}
 	}
 	return "Details", lines
 }
@@ -305,7 +308,7 @@ func (m *model) listTitle() string {
 	case filesSection:
 		return m.filesTitle()
 	case 0, 1:
-		return "Folders"
+		return "Orbits"
 	case 2:
 		return "Attention"
 	}
@@ -411,7 +414,7 @@ func (m *model) compactLines() []string {
 		lines = append(lines, d...)
 	} else {
 		if m.section == 0 {
-			lines = append(lines, "Needs attention, then synced folders (first pages)")
+			lines = append(lines, "Needs attention, then your Orbits (first pages)")
 		}
 		rows := m.rows()
 		if len(rows) == 0 {
@@ -478,4 +481,39 @@ func fileColumns(r row, width int) string {
 	nameWidth := max(8, width-4-ansi.StringWidth(tail))
 	name := ansi.Truncate(r.name, nameWidth, "…")
 	return name + strings.Repeat(" ", max(0, nameWidth-ansi.StringWidth(name))) + tail
+}
+
+// previewLines lists the top of an Orbit beside the list: names with their
+// state on this device. Files (5) opens the same Orbit to browse it.
+func (m *model) previewLines(folder string) []string {
+	lines := []string{"", "Files"}
+	p := m.preview
+	switch {
+	case p.folder != folder:
+		return append(lines, "Loading…")
+	case p.err:
+		return append(lines, "Files unavailable right now; press 5 to open Files.")
+	case len(p.files) == 0:
+		return append(lines, "No files yet. Anything saved in this folder appears here.")
+	}
+	width := 0
+	for _, f := range p.files {
+		width = max(width, len(safe(f.Name))+1)
+	}
+	width = min(width, 40)
+	for _, f := range p.files {
+		name := safe(f.Name)
+		if f.Directory {
+			name += "/"
+		}
+		state := ""
+		if f.State != "" {
+			state = fileState(f.State)
+		}
+		lines = append(lines, fmt.Sprintf("  %-*s  %s", width, ansi.Truncate(name, width, "…"), state))
+	}
+	if p.more {
+		lines = append(lines, "  …")
+	}
+	return append(lines, "", "5 open in Files  Enter manage this Orbit")
 }

@@ -100,6 +100,10 @@ func e04JoinDefaults(t *testing.T, short bool) {
 	if b, e := os.ReadFile(invFile); e != nil || json.Unmarshal(b, &inv) != nil || inv.Route == nil {
 		t.Fatal("routed invitation unreadable", e)
 	}
+	// Trial: the invitation names the inviting device and the folder.
+	if inv.InviterName != "PC" || inv.FolderName != "Orbit" {
+		t.Fatalf("invitation names: inviter %q folder %q", inv.InviterName, inv.FolderName)
+	}
 	freshFile := filepath.Join(base, "join-fresh.json")
 	if short {
 		// A self-hosted joiner reviews its operator before using its short code.
