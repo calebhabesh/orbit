@@ -14,7 +14,7 @@ import (
 
 const pageSize = 20
 
-var sections = []string{"Overview", "Folders", "Attention", "Devices", "Files"}
+var sections = []string{"Overview", "Orbits", "Attention", "Devices", "Files"}
 
 type queryReply struct {
 	request, generation uint64
@@ -24,6 +24,15 @@ type queryReply struct {
 	task                string
 	setups              []tc.NamedItem
 	files               *filesState
+	preview             *orbitPreview
+}
+
+// orbitPreview is the top of the highlighted Orbit, shown beside the list.
+type orbitPreview struct {
+	folder string
+	files  []tc.FileEntry
+	more   bool
+	err    bool
 }
 type refreshMsg struct{}
 type toolReply struct {
@@ -55,6 +64,7 @@ type model struct {
 	firstLoad                               bool
 	unfinished                              []tc.NamedItem
 	files                                   filesState
+	preview                                 orbitPreview
 }
 
 func newModel(ctx context.Context, client Queries, opts Options) *model {
@@ -102,6 +112,7 @@ func (m *model) startQuery() tea.Cmd {
 	m.pending = m.request
 	request, generation := m.request, m.generation
 	section, detail, target, cursor := m.section, m.detail, m.detailRow, m.cursor
+	previewFolder := m.highlightedOrbit()
 	ctx, cancel := context.WithTimeout(m.ctx, 5*time.Second)
 	m.cancel = cancel
 	client := m.client
@@ -171,11 +182,19 @@ func (m *model) startQuery() tea.Cmd {
 				setups = a.Items[:min(len(a.Items), pageSize)]
 			}
 		}
+		var preview *orbitPreview
+		if err == nil && r.Error == nil && previewFolder != "" {
+			p, e := client.Query(ctx, tc.Query{Version: tc.Version, Kind: "files", Folder: previewFolder, Limit: pageSize})
+			preview = &orbitPreview{folder: previewFolder, err: e != nil || p.Error != nil}
+			if !preview.err {
+				preview.files, preview.more = p.Files[:min(len(p.Files), pageSize)], p.Cursor != ""
+			}
+		}
 		// Defensive bounds also apply to injected/future adapters.
 		r.Items = r.Items[:min(len(r.Items), pageSize)]
 		r.Attention = r.Attention[:min(len(r.Attention), pageSize)]
 		r.Observations = r.Observations[:min(len(r.Observations), pageSize)]
-		return queryReply{request: request, generation: generation, result: r, devices: devices, err: err, setups: setups}
+		return queryReply{request: request, generation: generation, result: r, devices: devices, err: err, setups: setups, preview: preview}
 	}
 }
 
@@ -218,6 +237,9 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if msg.files != nil {
 					m.files = *msg.files
 				}
+				if msg.preview != nil {
+					m.preview = *msg.preview
+				}
 				m.restoreSelection()
 				m.unfinished = msg.setups
 				if !m.firstLoad {
@@ -241,6 +263,12 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 		if m.dirty {
+			return m, m.startQuery()
+		}
+		// The list just arrived: fetch the highlighted Orbit's preview once.
+		// Only after a good reply that did not already try, so a failing daemon
+		// waits for the normal refresh instead of being asked in a loop.
+		if f := m.highlightedOrbit(); f != "" && f != m.preview.folder && msg.preview == nil && msg.err == nil && msg.result.Error == nil && m.flow == nil && !m.quitting {
 			return m, m.startQuery()
 		}
 	case refreshMsg:
@@ -379,15 +407,41 @@ func (m *model) restoreSelection() {
 	}
 }
 
-func (m *model) selectRow(delta int) {
+func (m *model) selectRow(delta int) tea.Cmd {
 	rows := m.rows()
 	m.selected = min(max(0, m.selected+delta), max(0, len(rows)-1))
 	if len(rows) > 0 {
 		m.selectedKey = rows[m.selected].key
 	}
+	// Moving onto another Orbit fetches its files for the preview pane.
+	if f := m.highlightedOrbit(); f != "" && f != m.preview.folder {
+		return m.invalidate()
+	}
+	return nil
+}
+
+// highlightedOrbit is the Orbit under the cursor when the wide layout has a
+// preview pane for it (Overview and Orbits lists, not while inspecting).
+func (m *model) highlightedOrbit() string {
+	if m.width < 100 || m.detail || (m.section != 0 && m.section != 1) {
+		return ""
+	}
+	rows := m.rows()
+	if len(rows) == 0 {
+		return ""
+	}
+	r := rows[min(m.selected, len(rows)-1)]
+	if strings.HasPrefix(r.key, "a:") {
+		return ""
+	}
+	return r.folder
 }
 
 func (m *model) changeSection(section int) tea.Cmd {
+	// Files opens the Orbit highlighted in Overview or Orbits.
+	if f := m.highlightedOrbit(); section == filesSection && f != "" && f != m.files.folder {
+		m.files = filesState{folder: f}
+	}
 	m.section, m.selected, m.focus = section, 0, 0
 	m.detail, m.help = false, false
 	m.selectedKey, m.cursor = "", ""

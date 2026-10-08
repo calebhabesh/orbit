@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	PackageVersion = "2.1.0"
+	PackageVersion = "2.2.0"
 	PackageRelease = "1"
 	PackageName    = "orbit"
 	FixedTimestamp = 1790208000 // 2026-09-23T00:00:00Z for reproducible builds

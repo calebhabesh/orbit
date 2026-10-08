@@ -248,3 +248,44 @@ func TestOnboardingE08ExplicitViewWinsInitialLanding(t *testing.T) {
 		t.Fatal("initial response overrode explicit Overview selection")
 	}
 }
+
+// Trial request: the left list is "Orbits"; the right pane previews the
+// highlighted Orbit's files without Enter, and 5 opens that Orbit in Files.
+func TestOnboardingTrialOrbitsListPreviewsFiles(t *testing.T) {
+	m, c := e08Model(t)
+	e08Key(m, "2")
+	view := m.View().Content
+	if !strings.Contains(view, "Orbits") || strings.Contains(view, "Folders") {
+		t.Fatalf("list not titled Orbits:\n%s", view)
+	}
+	previewed := false
+	for _, q := range c.queries {
+		previewed = previewed || (q.Kind == "files" && q.Folder == e08Folder && q.Path == "")
+	}
+	if !previewed {
+		t.Fatal("no files query for the highlighted Orbit")
+	}
+	for _, want := range []string{"Files", "big/", "conflict.txt", "Conflict", "Saved here", `evil\u001b[31m\u000a.txt`, "5 open in Files"} {
+		if !strings.Contains(view, want) {
+			t.Errorf("preview lacks %q\n%s", want, view)
+		}
+	}
+	if strings.Contains(view, "\x1b[31m") {
+		t.Fatal("raw escape in preview")
+	}
+	e08Key(m, "5")
+	if m.section != filesSection || m.files.folder != e08Folder {
+		t.Fatalf("5 did not open the highlighted Orbit: section %d folder %q", m.section, m.files.folder)
+	}
+	// Narrow terminals have no preview pane and issue no preview query.
+	n, nc := e08Model(t)
+	n.width = 80
+	e08Key(n, "2")
+	before := len(nc.queries)
+	e08Run(n, n.startQuery())
+	for _, q := range nc.queries[before:] {
+		if q.Kind == "files" {
+			t.Fatal("narrow layout fetched a preview")
+		}
+	}
+}

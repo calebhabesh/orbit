@@ -123,6 +123,10 @@ type Invitation struct {
 	PeerEndpoint       string                    `json:"peer_endpoint"`
 	Capability         string                    `json:"capability"` // explicit transfer only; never in status
 	ExpiresAt          string                    `json:"expires_at"`
+	// Display names chosen on the inviting device, shown to the joiner and
+	// proposed as its local folder name. Not identity: trust is the key pin.
+	InviterName string `json:"inviter_name,omitempty"`
+	FolderName  string `json:"folder_name,omitempty"`
 }
 type InviteIntent struct {
 	ShortCode          bool   `json:"short_code,omitempty"`

@@ -264,24 +264,24 @@ def run(binary, output):
         ub.back();ub.wait("Overview |")
         ua.back();ua.wait("[Overview]")
         # Local pause/resume uses actual root state, and relocation preserves bytes.
-        ua.send(b"f");ua.wait("[Folders]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
+        ua.send(b"f");ua.wait("[Orbits]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
         ua.send(b"p");ua.wait("Confirm local pause");ua.send(b"\r");ua.wait("Local pause=true")
         assert a.query("folder_management",folder=folder)["folder_management"]["paused"]
         ua.send(b"p");ua.wait("Confirm local resume");ua.send(b"\r");ua.wait("Local pause=false")
-        ua.send(b"x");ua.wait("Unregister preview");ua.wait("Working files are preserved");ua.back();ua.wait("[Folders]")
+        ua.send(b"x");ua.wait("Unregister preview");ua.wait("Working files are preserved");ua.back();ua.wait("[Orbits]")
         # Separate second folder and exact known-device invitation. Restart only
         # the fixture inviter to reset its real process-local admission bucket.
         a.stop(daemons[0]);daemons[0]=a.start_daemon()
         second_a=a.root/"second";second_a.mkdir(mode=0o700);(second_a/"second.txt").write_bytes(b"second-folder bytes")
         second_b=b.root/"second";second_b.mkdir(mode=0o700)
-        ua.send(b"c");ua.wait("Review setup inputs");ua.form("Laptop",second_a);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Folders]")
+        ua.send(b"c");ua.wait("Review setup inputs");ua.form("Laptop",second_a);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Orbits]")
         # Select the second folder by its actual named-page position.
         items=a.query("folders",limit="20")["items"];second=next(it for it in items if it["root"]==str(second_a));idx=items.index(second)
         ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
         # share shortcut on detail skips folder selection.
         ua.send(b"s");ua.wait("Select device");devices=a.query("devices",limit="20")["items"];ua.wait("> "+devices[0]["name"]);idx=next(i for i,it in enumerate(devices) if it["id"]==b.device)
         ua.send(b"j"*idx+b"\r");ua.wait("Reviewed membership revision:");ua.send(b"\r");ua.wait("Private invitation")
-        transfer=a.root/"second-invite.json";ua.send(b"s");ua.wait("save_invitation");ua.replace(str(transfer));ua.send(b"\r");ua.wait("Private invitation saved");ua.back();ua.wait("[Folders]")
+        transfer=a.root/"second-invite.json";ua.send(b"s");ua.wait("save_invitation");ua.replace(str(transfer));ua.send(b"\r");ua.wait("Private invitation saved");ua.back();ua.wait("[Orbits]")
         inv2=json.loads(transfer.read_text());assert inv2["folder"]==second["id"] and inv2["folder"]!=folder
         code2="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(inv2).encode()).decode().rstrip("=")
         ub.send(b"J");ub.wait("Join invitation");ub.invitation(code2);ub.form("Pi",second_b);ub.send(b"\r");ub.wait("Waiting for approval",timeout=25)
@@ -290,7 +290,7 @@ def run(binary, output):
         approve(ua,a,join2["join"]["request"])
         wait_bytes(second_a,second_b,"second.txt",b"second-folder bytes",active);ub.wait("Locally ready",timeout=40)
         # Existing relocation control runs from a reviewed local source/destination.
-        ua.back();ua.wait("[Folders]")
+        ua.back();ua.wait("[Orbits]")
         items=a.query("folders",limit="20")["items"];idx=next(i for i,it in enumerate(items) if it["id"]==folder)
         ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
         relocated=a.root/"relocated-notes"
@@ -299,7 +299,7 @@ def run(binary, output):
         a.data=relocated
         assert (a.data/"owner.txt").read_bytes()==b"owner preexisting bytes"
         # Actual startup error under an empty PATH does not change any host unit.
-        ua.back();ua.wait("[Folders]");ua.send(b"c");ua.wait("Review setup inputs")
+        ua.back();ua.wait("[Orbits]");ua.send(b"c");ua.wait("Review setup inputs")
         blocked=a.root/"startup-block";ua.form("Laptop",blocked,startup="login");ua.send(b"\r");ua.wait("SYSTEMD_UNAVAILABLE",timeout=25)
         blocked_ops=a.query("setups",limit="20")["items"];assert any(it["root"]==str(blocked) for it in blocked_ops)
         assert not blocked.exists(), "startup failure created unreviewed/root bytes"

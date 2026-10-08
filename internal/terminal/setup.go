@@ -50,18 +50,23 @@ type workflow struct {
 	replaceOnType                                   bool
 	saved                                           string
 	// joinPolicy is the connection the invitation proposes (F08).
-	joinPolicy  *tc.NetworkPolicy
-	plan        tc.SetupIntent
-	invitation  tc.Invitation
-	mutation    tc.Mutation
-	request     tc.EnrollmentRequest
-	result      tc.Result
-	items       []tc.NamedItem
-	retirement  *control.RetireDevicePreviewResult
-	err, notice string
-	work        func(context.Context) (tc.Result, error)
-	task        string
-	busy        bool
+	joinPolicy *tc.NetworkPolicy
+	plan       tc.SetupIntent
+	invitation tc.Invitation
+	mutation   tc.Mutation
+	request    tc.EnrollmentRequest
+	// Join requests for the shown invitation's folder: pending ones the owner
+	// can approve from the invitation page, and the last one seen, so the page
+	// can say it was approved once it leaves the pending list.
+	invitePending []tc.EnrollmentRequest
+	inviteSeen    *tc.EnrollmentRequest
+	result        tc.Result
+	items         []tc.NamedItem
+	retirement    *control.RetireDevicePreviewResult
+	err, notice   string
+	work          func(context.Context) (tc.Result, error)
+	task          string
+	busy          bool
 }
 
 func newField(label, value string, secret bool) field {
@@ -137,10 +142,26 @@ func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, err
 	q := tc.Query{Version: tc.Version, Limit: pageSize, Cursor: f.cursor}
 	switch f.screen {
 	case "invitation_out":
-		if f.result.Pairing == nil || f.result.Pairing.Code == "" {
-			return "", nil
+		operation, folder := f.mutation.OperationID, f.invitation.Folder
+		code := f.result.Pairing != nil && f.result.Pairing.Code != ""
+		return "invitation_out", func() (tc.Result, error) {
+			var out tc.Result
+			if code {
+				if r, err := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "pairing", ID: operation}); err == nil {
+					out.Pairing = r.Pairing
+				}
+			}
+			r, err := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "requests", Folder: folder, Limit: 200})
+			if err != nil {
+				return out, err
+			}
+			for _, req := range r.Requests {
+				if req.Folder == folder {
+					out.Requests = append(out.Requests, req)
+				}
+			}
+			return out, nil
 		}
-		q.Kind, q.ID = "pairing", f.mutation.OperationID
 	case "load_settings":
 		return "load_settings", func() (tc.Result, error) {
 			r, err := w.Query(ctx, tc.Query{Version: tc.Version, Kind: "settings"})
@@ -241,10 +262,24 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 	}
 	switch task {
 	case "invitation_out":
-		if r.Pairing != nil {
+		if r.Pairing != nil && f.result.Pairing != nil {
 			code := f.result.Pairing.Code
 			f.result.Pairing = r.Pairing
 			f.result.Pairing.Code = code
+		}
+		f.invitePending = f.invitePending[:0]
+		for _, req := range r.Requests {
+			if req.State == "pending_approval" {
+				f.invitePending = append(f.invitePending, req)
+			}
+			if f.inviteSeen != nil && req.ID == f.inviteSeen.ID {
+				seen := req
+				f.inviteSeen = &seen
+			}
+		}
+		if f.inviteSeen == nil && len(f.invitePending) > 0 {
+			seen := f.invitePending[0]
+			f.inviteSeen = &seen
 		}
 	case "load_settings":
 		if r.Settings == nil {
@@ -298,6 +333,7 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		p := tc.JoinPolicy(f.invitation, f.network, f.builtin, m.opts.FreshInstall || len(m.result.Items) == 0)
 		f.joinPolicy = &p
 		f.fields[13].input.SetValue(p.Mode)
+		proposeJoinNames(f.fields, f.invitation.FolderName)
 		f.screen = "form"
 		f.focus = 0
 		return m.focusField(0)
@@ -808,6 +844,14 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 			return m.makeInvitation()
 		}
 	case "invitation_out":
+		if k == "enter" && len(f.invitePending) > 0 {
+			// Review the waiting device's request without leaving for Requests.
+			f.request = f.invitePending[0]
+			f.screen = "approval"
+			f.err = ""
+			f.mutation = tc.Mutation{} // the approval is its own operation
+			return m.invalidate()
+		}
 		if k == "r" && f.mutation.Invite != nil {
 			id, err := newID()
 			if err != nil {
@@ -943,4 +987,22 @@ func (m *model) formIndices() []int {
 func (m *model) cycleConnection() tea.Cmd {
 	m.flow.fields[13].cycle(1)
 	return nil
+}
+
+// proposeJoinNames uses the inviter's folder name for an untouched folder
+// name and, when it is a plain directory name, for an untouched local root
+// (~/<name>). Anything the owner already typed is kept.
+func proposeJoinNames(fields []field, folder string) {
+	folder = strings.TrimSpace(folder)
+	if folder == "" || len(fields) < 3 {
+		return
+	}
+	if fields[1].input.Value() == "Orbit" {
+		fields[1].input.SetValue(safe(folder))
+	}
+	home, err := os.UserHomeDir()
+	plain := folder != "." && folder != ".." && !strings.ContainsAny(folder, "/\\") && safe(folder) == folder
+	if err == nil && plain && fields[2].input.Value() == filepath.Join(home, "Orbit") {
+		fields[2].input.SetValue(filepath.Join(home, folder))
+	}
 }

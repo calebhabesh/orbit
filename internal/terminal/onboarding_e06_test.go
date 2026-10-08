@@ -20,6 +20,12 @@ func TestOnboardingE06NegotiatesShortCodeAndShowsFailure(t *testing.T) {
 		}
 	}
 	inv, _ := e00Invitation()
+	status := map[string]string{
+		"waiting": "Waiting for the other device to enter the code",
+		"sent":    "Code used: waiting for the other device to send its join request",
+		"failed":  "can't be used any more. Press r for a new one",
+		"expired": "can't be used any more. Press r for a new one",
+	}
 	for _, state := range []string{"waiting", "sent", "failed", "expired"} {
 		m, _ := workflowModel()
 		m.width, m.height = 100, 30
@@ -28,13 +34,10 @@ func TestOnboardingE06NegotiatesShortCodeAndShowsFailure(t *testing.T) {
 			m.flow.result.Pairing.Error = "PAIRING_UNAVAILABLE"
 		}
 		view := m.View().Content
-		for _, want := range []string{"ABCD-2345", state, "Owner approval", "v long invitation"} {
+		for _, want := range []string{"ABCD-2345", status[state], "Owner approval", "v long invitation"} {
 			if !strings.Contains(view, want) {
 				t.Fatalf("%s missing %q: %s", state, want, view)
 			}
-		}
-		if m.flow.result.Pairing.Error != "" && !strings.Contains(view, "Press r for a new code") {
-			t.Fatal("no recovery action")
 		}
 	}
 }

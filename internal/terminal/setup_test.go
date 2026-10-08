@@ -12,6 +12,7 @@ import (
 	"github.com/calebhabesh/orbit/internal/config"
 	"github.com/calebhabesh/orbit/internal/control"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/network"
 	"github.com/charmbracelet/x/ansi"
 )
 
@@ -286,5 +287,56 @@ func TestOnboardingTrialExpiryIsLocalWithTimeLeft(t *testing.T) {
 	}
 	if got := expiresIn(now.Add(90*time.Minute).Format(time.RFC3339), now); !strings.HasSuffix(got, "(1 h 30 min left)") {
 		t.Fatal(got)
+	}
+}
+
+// Trial request: the invitation page follows the invited device through to
+// approval, and the owner can approve from it.
+func TestOnboardingTrialInvitationPageShowsApprovalStatus(t *testing.T) {
+	inv, _ := e00Invitation()
+	m, _ := workflowModel()
+	m.width, m.height = 120, 40
+	m.flow = &workflow{screen: "invitation_out", invitation: inv, mutation: tc.Mutation{OperationID: "invite-op"}, result: tc.Result{Pairing: &network.PairingStatus{Code: "ABCD-2345", State: "sent"}}}
+	req := tc.EnrollmentRequest{ID: "req-1", Folder: inv.Folder, Label: "Pi\x1b[31m", VerificationCode: "123-456", State: "pending_approval"}
+	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
+	view := m.View().Content
+	if !strings.Contains(view, "Awaiting your approval: Pi\\u001b[31m wants to join. Verification code 123-456") || !strings.Contains(view, "Enter review request") {
+		t.Fatalf("pending request not shown safely:\n%s", view)
+	}
+	press(m, "enter")
+	if m.flow.screen != "approval" || m.flow.request.ID != "req-1" || m.flow.mutation.OperationID != "" {
+		t.Fatalf("Enter did not open a fresh review of the request: %+v", m.flow.request)
+	}
+	m.flow.screen = "invitation_out"
+	req.State = "approved"
+	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
+	if view = m.View().Content; !strings.Contains(view, "Approved: Pi") || strings.Contains(view, "Enter review request") {
+		t.Fatalf("approval not reflected:\n%s", view)
+	}
+	req.State = "declined"
+	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
+	if view = m.View().Content; !strings.Contains(view, "Declined: Pi") {
+		t.Fatalf("decline not reflected:\n%s", view)
+	}
+}
+
+// Trial finding: the laptop proposed "Orbit" for a folder the PC calls Trial.
+func TestOnboardingTrialJoinProposesInviterFolderName(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	fields := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", filepath.Join(home, "Orbit"), false)}
+	proposeJoinNames(fields, "Trial")
+	if fields[1].input.Value() != "Trial" || fields[2].input.Value() != filepath.Join(home, "Trial") {
+		t.Fatalf("got %q %q", fields[1].input.Value(), fields[2].input.Value())
+	}
+	typed := []field{newField("Device name", "laptop", false), newField("Folder name", "Mine", false), newField("Local root", "/data/x", false)}
+	proposeJoinNames(typed, "../escape")
+	if typed[1].input.Value() != "Mine" || typed[2].input.Value() != "/data/x" {
+		t.Fatal("overwrote what the owner typed")
+	}
+	odd := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", filepath.Join(home, "Orbit"), false)}
+	proposeJoinNames(odd, "a/b")
+	if odd[1].input.Value() != "a/b" || odd[2].input.Value() != filepath.Join(home, "Orbit") {
+		t.Fatal("a name with a slash must not become a path")
 	}
 }

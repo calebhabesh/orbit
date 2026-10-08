@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/calebhabesh/orbit/internal/config"
 	"github.com/calebhabesh/orbit/internal/control"
@@ -175,7 +176,8 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 		if *label == "" {
 			*label = "Orbit Device"
 		}
-		if *name == "" {
+		nameDefaulted := *name == ""
+		if nameDefaulted {
 			*name = "Orbit"
 		}
 		settings, err := client.Query(context.Background(), tc.Query{Version: tc.Version, Kind: "settings"})
@@ -376,6 +378,15 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				}
 				if (*remote != "" && *remote != inv.EnrollmentEndpoint) || (*folder != "" && *folder != inv.Folder) {
 					return errors.New("invitation identity/scope mismatch")
+				}
+				// Propose the inviter's folder name unless --name was given.
+				if proposed := strings.Map(func(r rune) rune {
+					if unicode.IsControl(r) || unicode.Is(unicode.Cf, r) {
+						return -1
+					}
+					return r
+				}, strings.TrimSpace(inv.FolderName)); nameDefaulted && proposed != "" {
+					*name = proposed
 				}
 				if *connection == "" && !connectionAnswered {
 					// The invitation decides the operator unless the owner chose (F08).

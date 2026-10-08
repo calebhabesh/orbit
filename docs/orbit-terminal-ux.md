@@ -5,6 +5,34 @@ prerequisite and address-entry portions of this handoff for new Automatic-mode
 work. Its relay/default-service journeys are planned, not implemented. Existing
 manual/private-network flows and all non-network terminal guarantees remain.
 
+## Owner amendment 2026-10-08 (trial polish)
+
+Approved by the owner during the 2.1.0 trial; implemented in 2.2.0. These
+supersede conflicting text below.
+
+- **Orbits.** The terminal calls synced folders *Orbits*: view `2` is
+  `Orbits` and the Overview list is grouped under `Orbits`. CLI commands,
+  JSON and the other docs keep "folder". On wide terminals (100 columns or
+  more) the right pane follows the cursor: the highlighted Orbit's root, any
+  attention, and its top-level entries with their state here. Enter still
+  opens the Orbit's management screen; `5` (or Tab into Files) opens the
+  highlighted Orbit in Files. ←/→ keep switching views.
+- **Inviting.** Choosing an Orbit under `a` creates the code straight away;
+  sharing with a device that is already a member keeps its review. The
+  invitation page shows one status line that follows the invited device:
+  waiting for the code, code used, `Awaiting your approval: <device> wants to
+  join. Verification code …`, then approved or declined. Enter on a waiting
+  request opens its review. Expiry is local 12-hour time with the time left.
+- **Joining.** Invitations carry the inviting device's name and the folder
+  name (display text only; trust is still the key pin). The join form
+  proposes that folder name and `~/<name>` as the root; typed values are
+  kept. Local root accepts `~` and `~/…`. The waiting screen names the
+  inviting device ("Awaiting approval: waiting for CalebPC…"). When the
+  inviting device cannot be reached, the join keeps its step and says
+  "Can't reach the inviting device yet (<cause>)", retrying every 15–25
+  seconds, instead of stopping as blocked. Builds before 2.2.0 cannot read
+  these invitations; update every device together.
+
 ## Owner amendment 2026-10-08
 
 After the first 2.0.0 trial the owner approved these changes; they are planned in

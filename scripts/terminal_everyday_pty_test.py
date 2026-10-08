@@ -31,7 +31,7 @@ def until(fn, uis=(), timeout=35):
 
 def folder_ui(ui):
     ui.back()
-    ui.send(b"f");until(lambda: "[Folders]" in ui.screen.text() or "Folders |" in ui.screen.text(), (ui,));ui.wait("Notes")
+    ui.send(b"f");until(lambda: "[Orbits]" in ui.screen.text() or "Orbits |" in ui.screen.text(), (ui,));ui.wait("Notes")
     # Refresh may retain attention selection on overview, but Folders has one root.
     ui.send(b"\r");ui.wait("Inspect folder");ui.wait("Local pause=")
 
