@@ -34,7 +34,7 @@ func TestTerminalT03MembershipDecoder(t *testing.T) {
 		t.Fatal("trailing membership data accepted")
 	}
 	unsorted := append([]byte{}, golden...)
-	offset := len("filesync-membership-v1\x00") + 32 + 8 + 32 + 2
+	offset := len("orbit-membership-v1\x00") + 32 + 8 + 32 + 2
 	first := append([]byte{}, unsorted[offset:offset+64]...)
 	copy(unsorted[offset:offset+64], unsorted[offset+64:offset+128])
 	copy(unsorted[offset+64:offset+128], first)

@@ -18,8 +18,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 var (
@@ -93,7 +93,7 @@ func main() {
 	flag.Parse()
 
 	fmt.Println("\033[1;35m===============================================================\033[0m")
-	fmt.Println("\033[1;35m       File Sync: Local Multi-Process Replication Demo         \033[0m")
+	fmt.Println("\033[1;35m       Orbit: Local Multi-Process Replication Demo         \033[0m")
 	fmt.Println("\033[1;35m===============================================================\033[0m")
 
 	// 1. Setup disposable environment
@@ -107,7 +107,7 @@ func main() {
 			os.Exit(1)
 		}
 	} else {
-		temp, err := os.MkdirTemp("", "filesync-demo-*")
+		temp, err := os.MkdirTemp("", "orbit-demo-*")
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
@@ -174,10 +174,10 @@ func main() {
 		fmt.Fprintf(os.Stderr, "get root: %v\n", err)
 		os.Exit(1)
 	}
-	binary := filepath.Join(repoRoot, "bin", "filesync")
+	binary := filepath.Join(repoRoot, "bin", "orbit")
 	if _, err := os.Stat(binary); err != nil {
-		logInfo("Building filesync binary...")
-		buildCmd := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+		logInfo("Building orbit binary...")
+		buildCmd := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 		buildCmd.Dir = repoRoot
 		if out, err := buildCmd.CombinedOutput(); err != nil {
 			fmt.Fprintf(os.Stderr, "build binary failed: %v\n%s\n", err, out)
@@ -195,14 +195,14 @@ func main() {
 		{"register", "--state", stateA, "--folder", folder, "--root", rootA},
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 	} {
-		cmd := exec.Command(binary, args...)
+		cmd := exec.Command(binary, append([]string{"engine"}, args...)...)
 		if out, err := cmd.CombinedOutput(); err != nil {
 			fmt.Fprintf(os.Stderr, "cmd %v: %v\n%s\n", args, err, out)
 			os.Exit(1)
 		}
 	}
 
-	idOutA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "identity A: %v\n%s\n", err, idOutA)
 		os.Exit(1)
@@ -211,7 +211,7 @@ func main() {
 	certPathA := filepath.Join(disposableDir, "nodeA.pem")
 	_ = os.WriteFile(certPathA, certA, 0o600)
 
-	idOutB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "identity B: %v\n%s\n", err, idOutB)
 		os.Exit(1)
@@ -223,20 +223,20 @@ func main() {
 	logInfo("Node A Device: %s (Key Pin: %s)", devA[:12]+"...", pinA[:16]+"...")
 	logInfo("Node B Device: %s (Key Pin: %s)", devB[:12]+"...", pinB[:16]+"...")
 
-	_ = exec.Command(binary, "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).Run()
-	_ = exec.Command(binary, "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).Run()
+	_ = exec.Command(binary, "engine", "pair-approve", "--state", stateA, "--folder", folder, "--peer-device", devB, "--peer-key-pin", pinB).Run()
+	_ = exec.Command(binary, "engine", "pair-approve", "--state", stateB, "--folder", folder, "--peer-device", devA, "--peer-key-pin", pinA).Run()
 	logSuccess("Mutual pairing approved for shared folder: %s", folder[:12]+"...")
 	pause()
 
 	// Step 2: Normal Synchronization
 	logStep(2, "Demonstrating normal file creation and verified transfer")
-	helloContent := []byte("# Project Readme\n\nCreated by Alice on Node A. Welcome to File Sync!\n")
+	helloContent := []byte("# Project Readme\n\nCreated by Alice on Node A. Welcome to Orbit!\n")
 	_ = os.WriteFile(filepath.Join(rootA, "README.md"), helloContent, 0o600)
 	logInfo("Node A authors 'README.md'")
 
-	_ = exec.Command(binary, "scan", "--state", stateA, "--folder", folder).Run()
+	_ = exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).Run()
 
-	serveCmdA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, _ := serveCmdA.StdoutPipe()
 	serveCmdA.Stderr = os.Stderr
 	_ = serveCmdA.Start()
@@ -247,7 +247,7 @@ func main() {
 	}
 	logInfo("Node A serving TLS on %s", urlA)
 
-	syncOutB, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
+	syncOutB, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "sync B: %v\n%s\n", err, syncOutB)
 		os.Exit(1)
@@ -273,37 +273,37 @@ func main() {
 	logInfo("Node A (offline) modifies 'architecture.md' (Proposal: P2P)")
 	logInfo("Node B (offline) modifies 'architecture.md' (Proposal: VPS Hub)")
 
-	_ = exec.Command(binary, "scan", "--state", stateA, "--folder", folder).Run()
-	_ = exec.Command(binary, "scan", "--state", stateB, "--folder", folder).Run()
+	_ = exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).Run()
+	_ = exec.Command(binary, "engine", "scan", "--state", stateB, "--folder", folder).Run()
 	logSuccess("Both nodes captured independent local versions into causal DAG")
 	pause()
 
 	// Step 4: Reconnection & Conflict Detection
 	logStep(4, "Reconnecting nodes: bidirectional gossip and conflict detection")
 	// A serves, B syncs
-	serveA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	pipeA, _ := serveA.StdoutPipe()
 	serveA.Stderr = os.Stderr
 	_ = serveA.Start()
 	urlA, _ = readListenerURL(pipeA)
 
-	_, _ = exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
 	_ = serveA.Process.Kill()
 	_ = serveA.Wait()
 
 	// B serves, A syncs
-	serveB := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveB := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	pipeB, _ := serveB.StdoutPipe()
 	serveB.Stderr = os.Stderr
 	_ = serveB.Start()
 	urlB, _ := readListenerURL(pipeB)
 
-	_, _ = exec.Command(binary, "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
 	_ = serveB.Process.Kill()
 	_ = serveB.Wait()
 
 	// Query conflicts on Node A
-	confJSON, err := exec.Command(binary, "conflicts", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
+	confJSON, err := exec.Command(binary, "engine", "conflicts", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "conflicts query: %v\n%s\n", err, confJSON)
 		os.Exit(1)
@@ -340,7 +340,7 @@ func main() {
 	reviewedFlag := strings.Join(reviewedStrs, ",")
 
 	logInfo("Resolving '%s' by selecting Head 1 with token %s", conflict.Path, headTokenHex[:12]+"...")
-	resolveCmd := exec.Command(binary, "resolve", "select",
+	resolveCmd := exec.Command(binary, "engine", "resolve", "select",
 		"--state", stateA,
 		"--folder", folder,
 		"--path", conflict.Path,
@@ -355,19 +355,19 @@ func main() {
 	logSuccess("Resolution committed atomically to causal version DAG")
 
 	// Propagate resolution to Node B
-	serveA = exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveA = exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	pipeA, _ = serveA.StdoutPipe()
 	serveA.Stderr = os.Stderr
 	_ = serveA.Start()
 	urlA, _ = readListenerURL(pipeA)
 
-	_, _ = exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
 	_ = serveA.Process.Kill()
 	_ = serveA.Wait()
 
 	// Verify both nodes have 0 conflicts
 	for node, state := range map[string]string{"Node A": stateA, "Node B": stateB} {
-		out, _ := exec.Command(binary, "conflicts", "--state", state, "--folder", folder, "--json").CombinedOutput()
+		out, _ := exec.Command(binary, "engine", "conflicts", "--state", state, "--folder", folder, "--json").CombinedOutput()
 		var res struct {
 			Conflicts []repository.ConflictSet `json:"conflicts"`
 		}

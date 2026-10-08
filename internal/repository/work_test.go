@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 func TestDurableWorkTasksLifecycleAndCoalescing(t *testing.T) {

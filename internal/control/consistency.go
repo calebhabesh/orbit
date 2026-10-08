@@ -12,8 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/repository"
 	_ "modernc.org/sqlite"
 )
 
@@ -90,7 +90,7 @@ func checkRecoveryConsistency(ctx context.Context, stateDir string, owner *repos
 				cert, err := x509.ParseCertificate(block.Bytes)
 				if err == nil && cert != nil {
 					cn := cert.Subject.CommonName
-					const prefix = "filesync-device-"
+					const prefix = "orbit-device-"
 					if strings.HasPrefix(cn, prefix) {
 						certDevHex := strings.TrimPrefix(cn, prefix)
 						report.CertDevicePrefix = certDevHex

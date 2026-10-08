@@ -3,7 +3,7 @@ package scheduler
 import (
 	"context"
 	"errors"
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/network"
 	"testing"
 	"time"
 )

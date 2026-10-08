@@ -223,7 +223,7 @@ func TestRelocationCrossFilesystemRecoveryAndCopyRefusal(t *testing.T) {
 			if err != nil {
 				t.Skip(err)
 			}
-			if err := os.WriteFile(filepath.Join(parent, ".filesync-disposable"), []byte("disposable"), 0o600); err != nil {
+			if err := os.WriteFile(filepath.Join(parent, ".orbit-disposable"), []byte("disposable"), 0o600); err != nil {
 				t.Fatal(err)
 			}
 			t.Cleanup(func() { os.RemoveAll(parent) })

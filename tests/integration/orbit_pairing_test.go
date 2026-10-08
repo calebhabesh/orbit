@@ -9,7 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"net"
 	"net/http/httptest"
 	"os"
@@ -19,16 +19,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // setupNode creates an initialized Orbit test node in a disposable directory.
@@ -579,17 +579,11 @@ func TestOrbitPairing_CLI_Parity(t *testing.T) {
 
 	binPath := filepath.Join("..", "..", "bin", "orbit")
 	if _, err := os.Stat(binPath); err != nil {
-		binPath = filepath.Join("..", "..", "bin", "filesync")
-		if _, err := os.Stat(binPath); err != nil {
-			t.Skip("orbit binary not found in bin/; run 'make build' first")
-		}
+		t.Skip("orbit binary not found in bin/; run 'make build' first")
 	}
 
 	orbitCmd := func(subArgs ...string) *exec.Cmd {
-		if filepath.Base(binPath) == "orbit" {
-			return exec.Command(binPath, subArgs...)
-		}
-		return exec.Command(binPath, append([]string{"orbit"}, subArgs...)...)
+		return exec.Command(binPath, subArgs...)
 	}
 
 	// 1. orbit setup
@@ -625,7 +619,6 @@ func TestOrbitPairing_CLI_Parity(t *testing.T) {
 		t.Fatalf("could not parse invitation digest from output: %s", outStr)
 	}
 
-	// 3. filesync orbit invite list
 	// 3. orbit invite list
 	cmd = orbitCmd("invite", "list", "--state", stateDir)
 	out, err = cmd.CombinedOutput()
@@ -674,17 +667,11 @@ func TestOrbitPairing_CLI_RunningDaemon_Parity(t *testing.T) {
 
 	binPath := filepath.Join("..", "..", "bin", "orbit")
 	if _, err := os.Stat(binPath); err != nil {
-		binPath = filepath.Join("..", "..", "bin", "filesync")
-		if _, err := os.Stat(binPath); err != nil {
-			t.Skip("orbit binary not found in bin/; run 'make build' first")
-		}
+		t.Skip("orbit binary not found in bin/; run 'make build' first")
 	}
 
 	orbitCmd := func(subArgs ...string) *exec.Cmd {
-		if filepath.Base(binPath) == "orbit" {
-			return exec.Command(binPath, subArgs...)
-		}
-		return exec.Command(binPath, append([]string{"orbit"}, subArgs...)...)
+		return exec.Command(binPath, subArgs...)
 	}
 
 	// 1. orbit setup on node A

@@ -14,10 +14,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/config"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 func terminalResult() tc.Result {

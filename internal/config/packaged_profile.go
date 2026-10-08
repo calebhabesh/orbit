@@ -5,8 +5,8 @@ import (
 	"errors"
 	"os"
 
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // Outcomes of AdoptPackagedProfile.

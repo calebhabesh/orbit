@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 func BenchmarkCaptureDistinctPaths(b *testing.B) {

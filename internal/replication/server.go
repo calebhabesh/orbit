@@ -15,10 +15,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 type Server struct {
@@ -57,7 +57,7 @@ func (server *Server) HTTPServer() *http.Server {
 
 // Serve runs the peer API on an explicitly supplied listener and stops on
 // context cancellation. Callers choose the bind interface; no firewall state
-// is modified by File Sync.
+// is modified by Orbit.
 func (server *Server) Serve(ctx context.Context, listener net.Listener) error {
 	httpServer := server.HTTPServer()
 	tlsListener := tls.NewListener(listener, httpServer.TLSConfig)
@@ -399,7 +399,7 @@ func (server *Server) handleChunk(writer http.ResponseWriter, request *http.Requ
 	}
 	writer.Header().Set("Content-Type", "application/octet-stream")
 	writer.Header().Set("Content-Length", strconv.FormatUint(chunk.Length, 10))
-	writer.Header().Set("X-FileSync-Chunk-SHA256", hex.EncodeToString(chunk.Digest[:]))
+	writer.Header().Set("X-Orbit-Chunk-SHA256", hex.EncodeToString(chunk.Digest[:]))
 	writer.WriteHeader(http.StatusOK)
 	_, _ = writer.Write(data)
 }

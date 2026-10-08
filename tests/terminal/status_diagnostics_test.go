@@ -14,14 +14,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // TestTerminalT07_Status_Observations_MixedState verifies:
@@ -608,8 +608,8 @@ func TestTerminalT07_Doctor_DiagnosticsAndRemediations(t *testing.T) {
 		for _, ch := range warnReport.Checks {
 			if ch.Name == "exhausted_tasks" && ch.Status == control.StatusWarn {
 				foundWorkWarn = true
-				if !strings.Contains(ch.Remediation, "filesync work retry") {
-					t.Errorf("expected remediation to suggest 'filesync work retry', got %q", ch.Remediation)
+				if !strings.Contains(ch.Remediation, "orbit engine work retry") {
+					t.Errorf("expected remediation to suggest 'orbit engine work retry', got %q", ch.Remediation)
 				}
 			}
 		}

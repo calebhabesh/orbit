@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 // Exercise the normal CLI daemon, with no injected client factory or manual
@@ -24,7 +24,7 @@ func TestBackgroundSyncFromPersistedPeerEndpoints(t *testing.T) {
 	roots := []string{filepath.Join(root, "files-a"), filepath.Join(root, "files-b")}
 	run := func(args ...string) []byte {
 		t.Helper()
-		out, err := exec.Command(binary, args...).CombinedOutput()
+		out, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput()
 		if err != nil {
 			t.Fatalf("%v: %v %s", args, err, out)
 		}
@@ -46,7 +46,7 @@ func TestBackgroundSyncFromPersistedPeerEndpoints(t *testing.T) {
 	}
 	start := func(state string) (*exec.Cmd, string) {
 		t.Helper()
-		cmd := exec.Command(binary, "serve", "--state", state, "--peer-listen", "127.0.0.1:0", "--sync-interval", "100ms")
+		cmd := exec.Command(binary, "engine", "serve", "--state", state, "--peer-listen", "127.0.0.1:0", "--sync-interval", "100ms")
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
 			t.Fatal(err)

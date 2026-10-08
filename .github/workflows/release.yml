@@ -33,5 +33,5 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" --draft --verify-tag --generate-notes \
             --title "Orbit $GITHUB_REF_NAME" \
-            dist/orbit-v*.tar.gz dist/filesync-v*.tar.gz dist/*.deb dist/*.rpm \
+            dist/orbit-v*.tar.gz dist/*.deb dist/*.rpm \
             dist/SHA256SUMS dist/release-manifest.json

@@ -20,8 +20,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/history"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // peerLAN is one side of an exchange: its signing key, pin and a discovery that

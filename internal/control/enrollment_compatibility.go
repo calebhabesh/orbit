@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/config"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 // This compatibility record supplies pinned transport to the earlier join flow.

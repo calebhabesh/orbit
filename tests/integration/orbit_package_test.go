@@ -19,11 +19,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 	_ "modernc.org/sqlite"
 )
 
@@ -58,14 +58,12 @@ func TestOrbitPackagingArtifacts(t *testing.T) {
 	}
 
 	expectedPackages := []string{
-		"filesync-v1.0.1-linux-amd64.tar.gz",
-		"orbit-v1.0.1-linux-amd64.tar.gz",
-		"filesync_1.0.1_amd64.deb",
-		"filesync-1.0.1-1.x86_64.rpm",
-		"filesync-v1.0.1-linux-arm64.tar.gz",
-		"orbit-v1.0.1-linux-arm64.tar.gz",
-		"filesync_1.0.1_arm64.deb",
-		"filesync-1.0.1-1.aarch64.rpm",
+		"orbit-v2.0.0-linux-amd64.tar.gz",
+		"orbit_2.0.0_amd64.deb",
+		"orbit-2.0.0-1.x86_64.rpm",
+		"orbit-v2.0.0-linux-arm64.tar.gz",
+		"orbit_2.0.0_arm64.deb",
+		"orbit-2.0.0-1.aarch64.rpm",
 		"release-manifest.json",
 	}
 
@@ -99,13 +97,13 @@ func TestOrbitPackagingArtifacts(t *testing.T) {
 }
 
 // TestOrbitTarballContentsAndSymlinks inspects the extracted tarball to verify
-// that orbit and filesync binaries, desktop launcher, SVG icon, and manifest are present.
+// that the orbit binary, desktop launcher, SVG icon, and manifest are present.
 func TestOrbitTarballContentsAndSymlinks(t *testing.T) {
 	root, err := filepath.Abs("../..")
 	if err != nil {
 		t.Fatalf("resolve root: %v", err)
 	}
-	tarGzPath := filepath.Join(root, "dist", "orbit-v1.0.1-linux-amd64.tar.gz")
+	tarGzPath := filepath.Join(root, "dist", "orbit-v2.0.0-linux-amd64.tar.gz")
 
 	f, err := os.Open(tarGzPath)
 	if err != nil {
@@ -132,9 +130,7 @@ func TestOrbitTarballContentsAndSymlinks(t *testing.T) {
 	}
 
 	requiredFiles := []string{
-		"filesync",
 		"orbit",
-		"systemd/filesync.service",
 		"systemd/orbit.service",
 		"desktop/orbit.desktop",
 		"icons/orbit.svg",
@@ -153,15 +149,8 @@ func TestOrbitTarballContentsAndSymlinks(t *testing.T) {
 			t.Errorf("tar.gz missing expected file %s", req)
 			continue
 		}
-		if req == "orbit" {
-			if hdr.Typeflag != tar.TypeSymlink || hdr.Linkname != "filesync" {
-				t.Errorf("orbit entry must be symlink to filesync, got type=%v linkname=%s", hdr.Typeflag, hdr.Linkname)
-			}
-		}
-		if req == "systemd/orbit.service" {
-			if hdr.Typeflag != tar.TypeSymlink || hdr.Linkname != "filesync.service" {
-				t.Errorf("orbit.service entry must be symlink to filesync.service, got type=%v linkname=%s", hdr.Typeflag, hdr.Linkname)
-			}
+		if hdr.Typeflag != tar.TypeReg {
+			t.Errorf("%s must be a regular file, got type=%v", req, hdr.Typeflag)
 		}
 	}
 }
@@ -177,11 +166,8 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 		t.Fatalf("orbit version: %v (%s)", err, string(out))
 	}
 	outStr := string(out)
-	if !strings.Contains(outStr, "Orbit Personal File Manager v1.0.1") {
+	if !strings.Contains(outStr, "Orbit Personal File Manager v2.0.0") {
 		t.Errorf("missing Orbit brand string, got: %s", outStr)
-	}
-	if !strings.Contains(outStr, "filesync compat v1.0.1") {
-		t.Errorf("missing filesync compat note, got: %s", outStr)
 	}
 	if !strings.Contains(outStr, "Schema: SQLite user_version 13") {
 		t.Errorf("missing Schema 13, got: %s", outStr)
@@ -265,7 +251,7 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 func TestOrbitInstallAndUninstallScriptLifecycle(t *testing.T) {
 	tempHome := t.TempDir()
 	workspaceRoot := filepath.Join(tempHome, "PersonalNotes")
-	stateDir := filepath.Join(tempHome, ".local", "state", "filesync")
+	stateDir := filepath.Join(tempHome, ".local", "state", "orbit")
 
 	// 1. Create user files and state
 	if err := os.MkdirAll(workspaceRoot, 0o755); err != nil {
@@ -277,7 +263,7 @@ func TestOrbitInstallAndUninstallScriptLifecycle(t *testing.T) {
 	}
 
 	root, _ := filepath.Abs("../..")
-	binPath := filepath.Join(root, "bin", "filesync")
+	binPath := filepath.Join(root, "bin", "orbit")
 	if out, err := exec.Command(binPath, "init", "--state", stateDir).CombinedOutput(); err != nil {
 		t.Fatalf("init failed: %v (%s)", err, string(out))
 	}
@@ -297,9 +283,7 @@ func TestOrbitInstallAndUninstallScriptLifecycle(t *testing.T) {
 
 	// Verify installed files in user mode
 	expectedInstalled := []string{
-		filepath.Join(tempHome, ".local/bin/filesync"),
 		filepath.Join(tempHome, ".local/bin/orbit"),
-		filepath.Join(tempHome, ".config/systemd/user/filesync.service"),
 		filepath.Join(tempHome, ".config/systemd/user/orbit.service"),
 		filepath.Join(tempHome, ".local/share/applications/orbit.desktop"),
 		filepath.Join(tempHome, ".local/share/icons/hicolor/scalable/apps/orbit.svg"),

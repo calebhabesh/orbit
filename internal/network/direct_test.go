@@ -25,8 +25,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/history"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 func lanRecord(t *testing.T) (p.LANAnnouncement, ed25519.PrivateKey, Target, LocalInterface) {

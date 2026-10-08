@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // RelayRuntime rebuilds service/control state from reviewed durable intent.

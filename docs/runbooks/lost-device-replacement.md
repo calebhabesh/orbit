@@ -26,22 +26,22 @@ From any active device (via Orbit Web UI under **Devices** > **Retire Device**, 
 
 ```bash
 # 1. Preview retirement impact
-orbit peers retire --folder <folder-id> --device <lost-device-id> --preview --json
+orbit engine peers retire --folder <folder-id> --device <lost-device-id> --preview --json
 
 # 2. Execute retirement
-orbit peers retire --folder <folder-id> --device <lost-device-id>
+orbit engine peers retire --folder <folder-id> --device <lost-device-id>
 ```
 The retirement creates a deterministic snapshot of all versions authored by the lost device up to the retirement revision. The lost device cannot fork the workspace.
 
 ### 2. Provision the Replacement Device (Fresh Identity)
 On the new/replacement hardware:
-1. Install File Sync / Orbit.
+1. Install Orbit / Orbit.
 2. Initialize with a brand new, independent device identity:
    ```bash
    orbit init
    ```
    > [!IMPORTANT]
-   > Never attempt to copy private keys or `.filesync-internal` states from an old machine to "re-use" the lost device's identity. Reusing device IDs or counter sequences violates causal DAG invariants and causes permanent branch rejection.
+   > Never attempt to copy private keys or `.orbit-internal` states from an old machine to "re-use" the lost device's identity. Reusing device IDs or counter sequences violates causal DAG invariants and causes permanent branch rejection.
 
 ### 3. Enroll the Replacement Device
 1. On the surviving device, generate an invitation code:
@@ -61,13 +61,13 @@ If restoring state from a consistent SQLite backup (`backup-*.sqlite`):
 
 1. Stop the background service:
    ```bash
-   systemctl --user stop filesync.service
+   systemctl --user stop orbit.service
    # or
    orbit service stop
    ```
 2. Run exclusive restore with automatic identity reset:
    ```bash
-   filesync maintenance restore-backup --state ~/.local/state/filesync --backup /path/to/backup.sqlite
+   orbit maintenance restore-backup --state ~/.local/state/orbit --backup /path/to/backup.sqlite
    ```
    Output:
    ```json
@@ -80,7 +80,7 @@ If restoring state from a consistent SQLite backup (`backup-*.sqlite`):
    ```
 3. Restart the background service:
    ```bash
-   systemctl --user start filesync.service
+   systemctl --user start orbit.service
    # or
    orbit service start
    ```
@@ -96,7 +96,7 @@ For servers, headless home labs, or VPS instances where the operator is not logg
    ```
 2. Verify service status:
    ```bash
-   systemctl --user status filesync.service
+   systemctl --user status orbit.service
    ```
 3. Access Orbit Web UI remotely via secure SSH port forwarding:
    ```bash

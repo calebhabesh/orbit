@@ -40,7 +40,7 @@ Run `make test-terminal-pty` for the actual-binary PTY campaign. To retain
 sanitized transcripts, use a new empty output directory:
 
 ```sh
-python3 scripts/terminal_pty_test.py --binary bin/filesync \
+python3 scripts/terminal_pty_test.py --binary bin/orbit \
   --output /new/empty/evidence-directory
 ```
 

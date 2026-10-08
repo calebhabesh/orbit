@@ -13,10 +13,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 const (
@@ -654,7 +654,7 @@ func wireVersion(id history.VersionID) VersionIDWire {
 
 func stableTransferID(peer history.ID, id history.VersionID) string {
 	h := sha256.New()
-	h.Write([]byte("filesync-transfer-v1\x00"))
+	h.Write([]byte("orbit-transfer-v1\x00"))
 	h.Write(peer[:])
 	h.Write(id.Folder[:])
 	h.Write(id.Author[:])

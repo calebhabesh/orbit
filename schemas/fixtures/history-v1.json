@@ -1,5 +1,5 @@
 {
-  "format": "filesync-history-fixtures-v1",
+  "format": "orbit-history-fixtures-v1",
   "counter_encoding": "canonical unsigned decimal strings",
   "cases": [
     {"id":"A1","label":"empty-file","author":"A","counter":"1","parents":[],"kind":"file","size":"0","executable":false},

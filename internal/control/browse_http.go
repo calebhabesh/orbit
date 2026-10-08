@@ -19,8 +19,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 const textPreviewLimit = 1 << 20

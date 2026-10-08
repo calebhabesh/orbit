@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func TestWANW07RealPTYRelayOnboarding(t *testing.T) {

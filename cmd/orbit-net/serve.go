@@ -25,10 +25,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/rendezvous"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/rendezvous"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // serveConfig is the operator's reviewed service configuration. Paths name

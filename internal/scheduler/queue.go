@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 const MaxReadySkips = 8 // force progress independently of file size

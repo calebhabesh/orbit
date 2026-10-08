@@ -15,13 +15,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func TestP10StorageAccountingAndCLI(t *testing.T) {
@@ -30,8 +30,8 @@ func TestP10StorageAccountingAndCLI(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -53,13 +53,13 @@ func TestP10StorageAccountingAndCLI(t *testing.T) {
 		{"init", "--state", state},
 		{"register", "--state", state, "--folder", folder, "--root", root},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
-	// 2. Test `filesync storage usage` text and JSON
-	usageText, err := exec.Command(binary, "storage", "usage", "--state", state).CombinedOutput()
+	// 2. Test `orbit storage usage` text and JSON
+	usageText, err := exec.Command(binary, "engine", "storage", "usage", "--state", state).CombinedOutput()
 	if err != nil {
 		t.Fatalf("storage usage text: %v\n%s", err, usageText)
 	}
@@ -67,7 +67,7 @@ func TestP10StorageAccountingAndCLI(t *testing.T) {
 		t.Fatalf("unexpected storage usage text output:\n%s", usageText)
 	}
 
-	usageJSON, err := exec.Command(binary, "storage", "usage", "--state", state, "--json").CombinedOutput()
+	usageJSON, err := exec.Command(binary, "engine", "storage", "usage", "--state", state, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("storage usage json: %v\n%s", err, usageJSON)
 	}
@@ -82,15 +82,15 @@ func TestP10StorageAccountingAndCLI(t *testing.T) {
 		t.Fatalf("expected 1 folder in storage usage, got %d", len(usageRes.Usage.Folders))
 	}
 
-	// 3. Test `filesync storage recovery reclaim`
-	scratchDir := filepath.Join(root, ".filesync-internal")
+	// 3. Test `orbit storage recovery reclaim`
+	scratchDir := filepath.Join(root, ".orbit-internal")
 	orphanFile := filepath.Join(scratchDir, "recovery-op-orphan")
 	orphanContent := []byte("orphaned recovery file content")
 	if err := os.WriteFile(orphanFile, orphanContent, 0o600); err != nil {
 		t.Fatal(err)
 	}
 
-	reclaimJSON, err := exec.Command(binary, "storage", "recovery", "reclaim", "--state", state, "--folder", folder, "--json").CombinedOutput()
+	reclaimJSON, err := exec.Command(binary, "engine", "storage", "recovery", "reclaim", "--state", state, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("recovery reclaim: %v\n%s", err, reclaimJSON)
 	}
@@ -115,8 +115,8 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -145,13 +145,13 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 		{"register", "--state", stateA, "--folder", folder, "--root", rootA},
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
 	// 2. Export identities & certificates
-	idOutA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity A: %v\n%s", err, idOutA)
 	}
@@ -161,7 +161,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	idOutB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity B: %v\n%s", err, idOutB)
 	}
@@ -201,7 +201,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 
 	for _, st := range []string{stateA, stateB} {
-		if out, err := exec.Command(binary, "membership", "import", "--state", st, "--folder", folder, "--file", bundlePath1, "--approve").CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, "engine", "membership", "import", "--state", st, "--folder", folder, "--file", bundlePath1, "--approve").CombinedOutput(); err != nil {
 			t.Fatalf("membership import on %s: %v\n%s", st, err, out)
 		}
 	}
@@ -211,12 +211,12 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(rootA, "report.txt"), v1Content, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
 		t.Fatalf("scan A v1: %v\n%s", err, out)
 	}
 
 	// Sync A -> B (v1)
-	serveCmdA1 := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA1 := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA1, err := serveCmdA1.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -227,7 +227,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 	urlA1 := readListenerURL(t, stdoutA1)
 
-	if out, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA1, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA1, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput(); err != nil {
 		t.Fatalf("sync B v1: %v\n%s", err, out)
 	}
 	_ = serveCmdA1.Process.Kill()
@@ -238,12 +238,12 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(rootA, "report.txt"), v2Content, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
 		t.Fatalf("scan A v2: %v\n%s", err, out)
 	}
 
 	// Sync A -> B (v2)
-	serveCmdA2 := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA2 := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA2, err := serveCmdA2.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -254,7 +254,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 	urlA2 := readListenerURL(t, stdoutA2)
 
-	if out, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA2, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA2, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput(); err != nil {
 		t.Fatalf("sync B v2: %v\n%s", err, out)
 	}
 	_ = serveCmdA2.Process.Kill()
@@ -267,7 +267,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 
 	// 6. Test retention preview on B (default 30-day retention protects superseded v1)
-	prevOutB, err := exec.Command(binary, "storage", "retention", "preview", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
+	prevOutB, err := exec.Command(binary, "engine", "storage", "retention", "preview", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("retention preview B: %v\n%s", err, prevOutB)
 	}
@@ -280,7 +280,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 
 	// 7. Change retention policy to 0 days, 0 min-superseded
-	changeOutB, err := exec.Command(binary, "storage", "retention", "change", "--state", stateB, "--folder", folder,
+	changeOutB, err := exec.Command(binary, "engine", "storage", "retention", "change", "--state", stateB, "--folder", folder,
 		"--retention-days", "0", "--min-superseded", "0", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("retention change B: %v\n%s", err, changeOutB)
@@ -294,7 +294,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 
 	// 8. Preview GC on B: now candidate_chunks must be 1 (v1's chunk)
-	gcPrevOutB, err := exec.Command(binary, "storage", "gc", "preview", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
+	gcPrevOutB, err := exec.Command(binary, "engine", "storage", "gc", "preview", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("gc preview B: %v\n%s", err, gcPrevOutB)
 	}
@@ -308,7 +308,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 
 	// 9. Run GC on B with idempotency key
 	key := "gc-test-run-p10"
-	gcRunOut1, err := exec.Command(binary, "storage", "gc", "run", "--state", stateB, "--folder", folder,
+	gcRunOut1, err := exec.Command(binary, "engine", "storage", "gc", "run", "--state", stateB, "--folder", folder,
 		"--idempotency-key", key, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("gc run B: %v\n%s", err, gcRunOut1)
@@ -322,7 +322,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 
 	// Replay GC run with same idempotency key: must be replay=true
-	gcRunOut2, err := exec.Command(binary, "storage", "gc", "run", "--state", stateB, "--folder", folder,
+	gcRunOut2, err := exec.Command(binary, "engine", "storage", "gc", "run", "--state", stateB, "--folder", folder,
 		"--idempotency-key", key, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("gc replay B: %v\n%s", err, gcRunOut2)
@@ -343,7 +343,7 @@ func TestP10RetentionExpiryAndCrashSafeGC(t *testing.T) {
 	}
 
 	// Check history: causal metadata for both v1 and v2 is STILL preserved!
-	histOutB, err := exec.Command(binary, "history", "--state", stateB, "--folder", folder, "--path", "report.txt", "--json").CombinedOutput()
+	histOutB, err := exec.Command(binary, "engine", "history", "--state", stateB, "--folder", folder, "--path", "report.txt", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("history B: %v\n%s", err, histOutB)
 	}
@@ -362,8 +362,8 @@ func TestP10LongOfflinePeerNoResurrectedDeletions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -396,22 +396,22 @@ func TestP10LongOfflinePeerNoResurrectedDeletions(t *testing.T) {
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 		{"register", "--state", stateC, "--folder", folder, "--root", rootC},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
-	idOutA, _ := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, _ := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	devA, pinA, certA := parseIdentityOutput(t, idOutA)
 	certPathA := filepath.Join(disposable, "peerA.pem")
 	_ = os.WriteFile(certPathA, certA, 0o600)
 
-	idOutB, _ := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, _ := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	devB, pinB, certB := parseIdentityOutput(t, idOutB)
 	certPathB := filepath.Join(disposable, "peerB.pem")
 	_ = os.WriteFile(certPathB, certB, 0o600)
 
-	idOutC, _ := exec.Command(binary, "identity", "--state", stateC, "--certificate").CombinedOutput()
+	idOutC, _ := exec.Command(binary, "engine", "identity", "--state", stateC, "--certificate").CombinedOutput()
 	devC, pinC, certC := parseIdentityOutput(t, idOutC)
 	certPathC := filepath.Join(disposable, "peerC.pem")
 	_ = os.WriteFile(certPathC, certC, 0o600)
@@ -448,7 +448,7 @@ func TestP10LongOfflinePeerNoResurrectedDeletions(t *testing.T) {
 	_ = os.WriteFile(bundlePath, bundleBytes, 0o600)
 
 	for _, st := range []string{stateA, stateB, stateC} {
-		if out, err := exec.Command(binary, "membership", "import", "--state", st, "--folder", folder, "--file", bundlePath, "--approve").CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, "engine", "membership", "import", "--state", st, "--folder", folder, "--file", bundlePath, "--approve").CombinedOutput(); err != nil {
 			t.Fatalf("import: %v\n%s", err, out)
 		}
 	}
@@ -458,21 +458,21 @@ func TestP10LongOfflinePeerNoResurrectedDeletions(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(rootA, "delete_me.txt"), delContent, 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
 		t.Fatalf("scan A: %v\n%s", err, out)
 	}
 
 	// Sync to B and C
-	serveCmdA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, _ := serveCmdA.StdoutPipe()
 	serveCmdA.Stderr = os.Stderr
 	_ = serveCmdA.Start()
 	urlA := readListenerURL(t, stdoutA)
 
-	if out, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput(); err != nil {
 		t.Fatalf("sync B: %v\n%s", err, out)
 	}
-	if out, err := exec.Command(binary, "sync", "--state", stateC, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "sync", "--state", stateC, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput(); err != nil {
 		t.Fatalf("sync C: %v\n%s", err, out)
 	}
 	_ = serveCmdA.Process.Kill()
@@ -488,37 +488,37 @@ func TestP10LongOfflinePeerNoResurrectedDeletions(t *testing.T) {
 	if err := os.Remove(filepath.Join(rootA, "delete_me.txt")); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput(); err != nil {
 		t.Fatalf("scan A delete: %v\n%s", err, out)
 	}
 
 	// Sync A -> B (B receives tombstone)
-	serveCmdA2 := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA2 := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA2, _ := serveCmdA2.StdoutPipe()
 	serveCmdA2.Stderr = os.Stderr
 	_ = serveCmdA2.Start()
 	urlA2 := readListenerURL(t, stdoutA2)
 
-	if out, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA2, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA2, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput(); err != nil {
 		t.Fatalf("sync B delete: %v\n%s", err, out)
 	}
 	_ = serveCmdA2.Process.Kill()
 	_ = serveCmdA2.Wait()
 
 	// Node B runs aggressive GC
-	_, _ = exec.Command(binary, "storage", "retention", "change", "--state", stateB, "--folder", folder,
+	_, _ = exec.Command(binary, "engine", "storage", "retention", "change", "--state", stateB, "--folder", folder,
 		"--retention-days", "0", "--min-superseded", "0").CombinedOutput()
-	_, _ = exec.Command(binary, "storage", "gc", "run", "--state", stateB, "--folder", folder).CombinedOutput()
+	_, _ = exec.Command(binary, "engine", "storage", "gc", "run", "--state", stateB, "--folder", folder).CombinedOutput()
 
 	// 3. Node C comes back online and syncs with Node B!
-	serveCmdB := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveCmdB := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB, _ := serveCmdB.StdoutPipe()
 	serveCmdB.Stderr = os.Stderr
 	_ = serveCmdB.Start()
 	urlB := readListenerURL(t, stdoutB)
 
 	// C syncs from B: B provides the tombstone
-	if out, err := exec.Command(binary, "sync", "--state", stateC, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "sync", "--state", stateC, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput(); err != nil {
 		t.Fatalf("sync C from B: %v\n%s", err, out)
 	}
 	_ = serveCmdB.Process.Kill()

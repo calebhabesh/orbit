@@ -30,11 +30,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/network"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/network"
+	p "github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/model"
 	"github.com/coder/websocket"
 )
 

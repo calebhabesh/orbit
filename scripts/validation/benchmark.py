@@ -30,7 +30,7 @@ def digest(path):
 
 def inventory(root):
     return {p.relative_to(root).as_posix(): {"sha256": digest(p), "size": p.stat().st_size}
-            for p in sorted(root.rglob("*")) if p.is_file() and ".filesync-internal" not in p.parts}
+            for p in sorted(root.rglob("*")) if p.is_file() and ".orbit-internal" not in p.parts}
 
 
 def flush_dir(path):
@@ -98,7 +98,7 @@ class FullFileBaseline:
         self.context.minimum_version = ssl.TLSVersion.TLSv1_3
         self.context.maximum_version = ssl.TLSVersion.TLSv1_3
         self.context.load_cert_chain(receiver.root + "/state/identity/peer-identity.pem")
-        # Pinned trust root, same server-name validation as File Sync.
+        # Pinned trust root, same server-name validation as Orbit.
 
     def connect(self, port):
         class Connection(http.client.HTTPSConnection):
@@ -106,8 +106,8 @@ class FullFileBaseline:
                 import socket
                 sock = socket.create_connection(("127.0.0.1", port), timeout=30)
                 sock.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
-                conn.sock = self.context.wrap_socket(sock, server_hostname="peer.filesync.invalid")
-        return Connection("peer.filesync.invalid", port, context=self.context)
+                conn.sock = self.context.wrap_socket(sock, server_hostname="peer.orbit.invalid")
+        return Connection("peer.orbit.invalid", port, context=self.context)
 
     def run(self, bandwidth=0, latency=0):
         proxy = Proxy(self.server.server_address, bandwidth, latency, self.relay)
@@ -211,7 +211,7 @@ def main():
               "tcp": "TCP_NODELAY enabled in both proxy directions and baseline sockets, matching Go TCP defaults; avoids proxy-introduced delayed-ACK/Nagle stalls",
               "throttle": "Configured bandwidth is per response TCP stream; four-worker ceilings are equal but stream utilization differs. Delay is per read, not calibrated RTT",
               "storage_measurement": "Apparent regular-file bytes: receiver state, working root and internal recovery/staging separately; baseline working files. Not filesystem allocated blocks",
-              "storage_limits": "Fresh File Sync states use init's finite 10-GiB data, 256-MiB metadata and 512-MiB free-space reserve defaults; raw receiver totals are recorded",
+              "storage_limits": "Fresh Orbit states use init's finite 10-GiB data, 256-MiB metadata and 512-MiB free-space reserve defaults; raw receiver totals are recorded",
               "baseline": "TLS 1.3 mutual auth, full SHA256 on both sides, flush received bytes, atomic replace + directory fsync, four workers; unchanged files skipped by full hash",
               "timing": "sender scan/hash + sync to durable receipt/publication; baseline source/destination hash + durable publication. Server/tunnel startup and final comparison excluded",
               "limitations": "Python baseline vs Go engine; baseline retains only working tree, engine additionally commits history/content/journals. No equivalent CPU-work or generic speedup claim",
@@ -231,7 +231,7 @@ def main():
                 if args.resume_after_initial:
                     for node, saved_root in zip(nodes, report["hosts"][0]["roots"]):
                         node.root = saved_root
-                        node.token = (Path(saved_root) / ".filesync-disposable").read_text().strip()
+                        node.token = (Path(saved_root) / ".orbit-disposable").read_text().strip()
                         node.inventory = node.call("inventory")
                         # Reap only orphaned workers from this exact marked run.
                         for pidfile in Path(saved_root).glob("*.pid.json"):
@@ -242,7 +242,7 @@ def main():
                         node.device = re.search(r"device=([a-f0-9]{64})", identity)[1]
                         node.pin = re.search(r"key-pin=([a-f0-9]{64})", identity)[1]
                         node.cert = identity[identity.index("-----BEGIN CERTIFICATE-----"):].encode()
-                        node.binary_hash = hashlib.sha256((Path(saved_root)/"filesync").read_bytes()).hexdigest()
+                        node.binary_hash = hashlib.sha256((Path(saved_root)/"orbit").read_bytes()).hexdigest()
                         if node.binary_hash != report["hosts"][0]["binary_sha256"]:
                             raise RuntimeError("resume binary differs from measured initial workload")
                         c = __import__("sqlite3").connect(f"file:{saved_root}/state/metadata.sqlite?mode=ro",uri=True)
@@ -276,25 +276,25 @@ def main():
                         start = time.monotonic()
                         source.scan()
                         scan_seconds = time.monotonic() - start
-                        entry["filesync"] = sync(source, receiver, bandwidth=bandwidth, latency=latency, relay=args.relay)
-                        entry["filesync"]["scan_seconds"] = scan_seconds
+                        entry["orbit"] = sync(source, receiver, bandwidth=bandwidth, latency=latency, relay=args.relay)
+                        entry["orbit"]["scan_seconds"] = scan_seconds
                         entry["receiver_storage_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "state").rglob("*") if p.is_file())
                         entry["receiver_root_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "data").rglob("*") if p.is_file())
-                        entry["receiver_root_scratch_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "data/.filesync-internal").rglob("*") if p.is_file())
+                        entry["receiver_root_scratch_bytes"] = sum(p.stat().st_size for p in (Path(receiver.root) / "data/.orbit-internal").rglob("*") if p.is_file())
                         entry["receiver_managed_bytes"] = entry["receiver_storage_bytes"] + entry["receiver_root_bytes"]
-                        entry["filesync"]["total_seconds"] = entry["filesync"]["seconds"] + scan_seconds
+                        entry["orbit"]["total_seconds"] = entry["orbit"]["seconds"] + scan_seconds
                         entry["baseline"] = baseline.run(bandwidth, latency)
                         entry["baseline_storage_bytes"] = sum(p.stat().st_size for p in baseline.destination.rglob("*") if p.is_file())
                         expected = inventory(root)
                         if inventory(Path(receiver.root) / "data") != expected:
-                            raise RuntimeError("File Sync resulting tree differs")
+                            raise RuntimeError("Orbit resulting tree differs")
                         entry["file_count"] = len(expected)
                         entry["source_payload_bytes"] = sum(v["size"] for v in expected.values())
                         entry["workload_digest"] = hashlib.sha256(json.dumps(expected, sort_keys=True).encode()).hexdigest()
-                        fs_bytes, full_bytes = entry["filesync"]["total_tls_tcp_bytes"], entry["baseline"]["total_tls_tcp_bytes"]
+                        fs_bytes, full_bytes = entry["orbit"]["total_tls_tcp_bytes"], entry["baseline"]["total_tls_tcp_bytes"]
                         entry["tls_tcp_savings_percent"] = 100 * (1 - fs_bytes / full_bytes)
                         entry["success"] = True
-                        print(f"PASS {repetition + 1} {name}: FileSync={fs_bytes} baseline={full_bytes} TLS/TCP bytes", flush=True)
+                        print(f"PASS {repetition + 1} {name}: Orbit={fs_bytes} baseline={full_bytes} TLS/TCP bytes", flush=True)
                     except Exception as error:
                         entry["error"] = str(error)
                         raise
@@ -340,7 +340,7 @@ def main():
             runs = [r for r in report["runs"] if r["workload"] == workload]
             report["summaries"].append({"workload": workload, "samples": len(runs),
                 "median_tls_tcp_savings_percent": statistics.median(r["tls_tcp_savings_percent"] for r in runs),
-                "median_filesync_seconds": statistics.median(r["filesync"]["total_seconds"] for r in runs),
+                "median_orbit_seconds": statistics.median(r["orbit"]["total_seconds"] for r in runs),
                 "median_baseline_seconds": statistics.median(r["baseline"]["seconds"] for r in runs)})
         report["success"] = True
     finally:

@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 )
 
 // NamedPage is a live keyset page of folder/device labels. It is navigation,

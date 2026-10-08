@@ -81,7 +81,7 @@ Status: frozen by gate outcomes [G01 and G05](orbit-design-gates.md). Implemente
 3. **Product Settings Separation**:
    - Product display preferences (device label, workspace display names, default workspace, UI theme) are stored in a separate `settings.json` or SQLite table.
    - `config.json` remains strictly validated at `format_version: 1` (`format_version`, `device_id`, `created_at`).
-   - Orbit adopts existing `.filesync-internal` directories cleanly, and rejects unsupported newer database schemas (a `user_version` above `repository.CurrentSchema`) to preserve recoverable state (Invariant I20).
+   - Orbit adopts existing `.orbit-internal` directories cleanly, and rejects unsupported newer database schemas (a `user_version` above `repository.CurrentSchema`) to preserve recoverable state (Invariant I20).
 
 ## Trust and authentication
 
@@ -94,7 +94,7 @@ remain controller-owned. Trusted external tools use direct argv and prlimit.
 The terminal desktop entry has Terminal=true. `orbit legacy-browser` (alias
 `orbit launch`) freezes explicit browser compatibility; embedded assets remain.
 Ordinary builds/packages add no browser or GUI dependency. Packages distribute
-completions, runbooks, licenses and the filesync/orbit service alias. Standalone
+completions, runbooks, licenses and the orbit user service. Standalone
 upgrade preserves customized service units. See [operator guide](runbooks/terminal-operator.md)
 and [install/adoption](runbooks/install.md). Native logout/boot/LAN/Tailscale
 and actual owner use remain release evidence obligations.
@@ -350,7 +350,7 @@ browser launcher reuse this transport. Exact read/upload support remains T08.
 `launcher.EnsureDaemon` coordinates launch attempts with `.launch.lock`, then
 checks `.agent.lock`; the latter remains the daemon's exclusive ownership.
 Authenticated readiness must succeed before reuse/start reports success. Client
-context cancellation or exit leaves the child running. Explicit `filesync stop`
+context cancellation or exit leaves the child running. Explicit `orbit stop`
 checks a private PID, a pidfd and an open descriptor to the selected lock before
 signalling, refusing a stale PID. This requires Linux pidfd and `/proc` access.
 
@@ -402,13 +402,13 @@ never overwrite an existing unit. `daemon-reload` and action failures are report
 a command exit alone cannot substitute for an observed running/enabled state.
 The selected unit is matched by its `ExecStart` `--state=` value after expanding
 systemd's `%h` home specifier, so the packaged per-user unit written by
-`install.sh user` is accepted for `~/.local/state/filesync` and nothing else.
+`install.sh user` is accepted for `~/.local/state/orbit` and nothing else.
 `start`/`restart` succeed only when the unit's `MainPID` is the recorded state
 owner. If a daemon started outside the unit (for example by setup or the
 terminal) owns the state, they return `MANUAL_DAEMON_RUNNING` with the action
 `orbit stop`, then `orbit service start`, and dispatch nothing; enabling login
 startup is unaffected and takes over at the next login. `orbit stop` is the
-Orbit entry for the existing graceful `filesync stop`.
+Orbit entry for the existing graceful `orbit stop`.
 
 Native lifecycle (W17, 2026-10-07): `scripts/validation/service_boot_vm.py`
 installs the packaged archive with `install.sh user` in a disposable KVM guest

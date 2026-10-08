@@ -17,9 +17,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
 	quic "github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
 )
@@ -206,7 +206,7 @@ func TestWANW09HTTP3AuthenticationAuthorizationAndBounds(t *testing.T) {
 	// Use matching address families for the actual native socket.
 	client := quicHTTPClient(t, f.receiverID, f.senderID, ea.LocalAddr(), nil)
 	post := func(c *http.Client, path string, data string, header string) (int, error) {
-		req, _ := http.NewRequest("POST", "https://peer.filesync.invalid"+path, strings.NewReader(data))
+		req, _ := http.NewRequest("POST", "https://peer.orbit.invalid"+path, strings.NewReader(data))
 		if header != "" {
 			req.Header.Set("X-Large", header)
 		}
@@ -230,7 +230,7 @@ func TestWANW09HTTP3AuthenticationAuthorizationAndBounds(t *testing.T) {
 	}
 	req.ProtocolVersion = "99"
 	data, _ = json.Marshal(req)
-	res, e := client.Post("https://peer.filesync.invalid/peer/v1/hello", "application/json", bytes.NewReader(data))
+	res, e := client.Post("https://peer.orbit.invalid/peer/v1/hello", "application/json", bytes.NewReader(data))
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -241,7 +241,7 @@ func TestWANW09HTTP3AuthenticationAuthorizationAndBounds(t *testing.T) {
 	}
 	inventory := InventoryRequest{ProtocolVersion: "1", DeviceID: hex.EncodeToString(f.receiverID.DeviceID[:]), FolderID: strings.Repeat("f", 64), Revision: "1", MembershipDigest: hex.EncodeToString(f.approved.Digest[:]), PageSize: "1"}
 	raw, _ := json.Marshal(inventory)
-	res, e = client.Post("https://peer.filesync.invalid/peer/v1/inventory", "application/json", bytes.NewReader(raw))
+	res, e = client.Post("https://peer.orbit.invalid/peer/v1/inventory", "application/json", bytes.NewReader(raw))
 	if e != nil {
 		t.Fatal(e)
 	}

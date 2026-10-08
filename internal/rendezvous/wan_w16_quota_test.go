@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/network"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/network"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // W16 native runs showed a daemon locked out of the operated service: the

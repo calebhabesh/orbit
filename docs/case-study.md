@@ -269,7 +269,7 @@ with Syncthing and does not aim for feature parity. The
 [SQLite WAL documentation](https://www.sqlite.org/wal.html) informs local
 transaction/flush assumptions. [Linux rename semantics](https://man7.org/linux/man-pages/man2/rename.2.html)
 explain why exchange preserves the displaced inode but cannot bound a writer
-that retains its old descriptor. File Sync implements its own sync engine and
+that retains its old descriptor. Orbit implements its own sync engine and
 does not claim Syncthing compatibility or inherit another project's correctness.
 
 The owner selected the scope and architecture. Implementation and validation

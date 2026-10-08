@@ -32,10 +32,10 @@ from terminal_vt import Screen  # noqa: E402
 class Host:
     def __init__(self, root, token):
         self.root = Path(root).resolve(strict=True)
-        marker = self.root / '.filesync-disposable'
-        if marker.is_symlink() or marker.read_text() != token or not self.root.name.startswith('filesync-validation-'):
+        marker = self.root / '.orbit-disposable'
+        if marker.is_symlink() or marker.read_text() != token or not self.root.name.startswith('orbit-validation-'):
             raise RuntimeError('W16 TUI phase requires the marked validation root')
-        self.binary = self.root / 'filesync'
+        self.binary = self.root / 'orbit'
         self.state = self.root / 'state'
 
     def query(self, kind, **fields):
@@ -57,7 +57,7 @@ class UI:
         fcntl.ioctl(self.slave, termios.TIOCSWINSZ, struct.pack('HHHH', size[1], size[0], 0, 0))
         self.before = copy.deepcopy(termios.tcgetattr(self.slave))
         self.screen, self.raw, self.frames = Screen(*size), bytearray(), []
-        self.p = subprocess.Popen([str(host.binary), 'orbit', 'tui', '--state', str(host.state), '--no-color'],
+        self.p = subprocess.Popen([str(host.binary), 'tui', '--state', str(host.state), '--no-color'],
                                   stdin=self.slave, stdout=self.slave, stderr=self.slave, cwd=host.root,
                                   env=dict(os.environ, TERM='xterm-256color', NO_COLOR='1'))
 

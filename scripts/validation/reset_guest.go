@@ -16,9 +16,9 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/workspace"
 	"golang.org/x/sys/unix"
 )
 
@@ -50,7 +50,7 @@ func stopAt(name string) error {
 	// Existing file, same-size overwrite, deliberately NO flush. This is a
 	// negative control for loss of guest dirty caches, not protected user data.
 	must(os.WriteFile("/disk/volatile", bytes.Repeat([]byte("N"), 4096), 0600))
-	fmt.Println("FILESYNC_RESET_READY " + name)
+	fmt.Println("ORBIT_RESET_READY " + name)
 	for {
 		time.Sleep(time.Hour)
 	}
@@ -71,7 +71,7 @@ func fullDiskExperiment(db *repository.DB, ws *workspace.Workspace, hook string,
 		must(err)
 		defer reopened.Close()
 		must(reopened.VerifyVersionContent(ctx, baseID))
-		fmt.Println("FILESYNC_ENOSPC_VERIFY_OK hook=enospc.fsync protected_hashes=true syscall_fault=true")
+		fmt.Println("ORBIT_ENOSPC_VERIFY_OK hook=enospc.fsync protected_hashes=true syscall_fault=true")
 		return
 	}
 	if hook == "enospc.checkpoint" {
@@ -112,7 +112,7 @@ func fullDiskExperiment(db *repository.DB, ws *workspace.Workspace, hook string,
 	if !errors.Is(operationErr, syscall.ENOSPC) && !strings.Contains(strings.ToLower(operationErr.Error()), "full") && !strings.Contains(strings.ToLower(operationErr.Error()), "space") {
 		panic(fmt.Sprintf("operation failed for another reason: %v", operationErr))
 	}
-	fmt.Printf("FILESYNC_ENOSPC_ERROR hook=%s error=%v\n", hook, operationErr)
+	fmt.Printf("ORBIT_ENOSPC_ERROR hook=%s error=%v\n", hook, operationErr)
 	must(os.Remove("/disk/filler"))
 	if hook == "enospc.staging" {
 		must(ws.Recover(ctx, folder))
@@ -138,13 +138,13 @@ func fullDiskExperiment(db *repository.DB, ws *workspace.Workspace, hook string,
 			panic("committed WAL record lost")
 		}
 	}
-	fmt.Printf("FILESYNC_ENOSPC_VERIFY_OK hook=%s protected_hashes=true reopened=true\n", hook)
+	fmt.Printf("ORBIT_ENOSPC_VERIFY_OK hook=%s protected_hashes=true reopened=true\n", hook)
 }
 
 func fsyncWorker() {
-	marker, err := os.ReadFile("/disk/.filesync-disposable")
+	marker, err := os.ReadFile("/disk/.orbit-disposable")
 	must(err)
-	if string(marker) != "filesync disposable reset VM\n" {
+	if string(marker) != "orbit disposable reset VM\n" {
 		panic("unmarked fsync-fault disk")
 	}
 	db, err := repository.Open(ctx, "/disk/state")
@@ -171,7 +171,7 @@ func fsyncWorker() {
 	if !errors.Is(err, syscall.ENOSPC) || !strings.Contains(err.Error(), "flush incoming chunk") {
 		panic(fmt.Sprintf("fsync syscall fault not observed: %v", err))
 	}
-	fmt.Printf("FILESYNC_ENOSPC_ERROR hook=enospc.fsync error=%v\n", err)
+	fmt.Printf("ORBIT_ENOSPC_ERROR hook=enospc.fsync error=%v\n", err)
 }
 
 func main() {
@@ -181,7 +181,7 @@ func main() {
 	}
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Printf("FILESYNC_RESET_FAIL %v\n", err)
+			fmt.Printf("ORBIT_RESET_FAIL %v\n", err)
 			for {
 				time.Sleep(time.Hour)
 			}
@@ -200,20 +200,20 @@ func main() {
 		time.Sleep(50 * time.Millisecond)
 	}
 	must(unix.Mount("/dev/vda", "/disk", "ext4", 0, ""))
-	marker, err := os.ReadFile("/disk/.filesync-disposable")
+	marker, err := os.ReadFile("/disk/.orbit-disposable")
 	must(err)
-	if string(marker) != "filesync disposable reset VM\n" {
+	if string(marker) != "orbit disposable reset VM\n" {
 		panic("unmarked VM disk")
 	}
 	cmdline, err := os.ReadFile("/proc/cmdline")
 	must(err)
 	mode, hook := "", ""
 	for _, field := range strings.Fields(string(cmdline)) {
-		if strings.HasPrefix(field, "filesync.mode=") {
-			mode = strings.TrimPrefix(field, "filesync.mode=")
+		if strings.HasPrefix(field, "orbit.mode=") {
+			mode = strings.TrimPrefix(field, "orbit.mode=")
 		}
-		if strings.HasPrefix(field, "filesync.hook=") {
-			hook = strings.TrimPrefix(field, "filesync.hook=")
+		if strings.HasPrefix(field, "orbit.hook=") {
+			hook = strings.TrimPrefix(field, "orbit.hook=")
 		}
 	}
 	publication := strings.HasPrefix(hook, "publication.") || hook == "enospc.staging"
@@ -261,7 +261,7 @@ func main() {
 		barrierFile("/disk/volatile", bytes.Repeat([]byte("O"), 4096))
 		must(db.Close())
 		unix.Sync()
-		fmt.Println("FILESYNC_RESET_SETUP_OK")
+		fmt.Println("ORBIT_RESET_SETUP_OK")
 	case "mutate":
 		if hook == "dirty-cache-control" {
 			_ = stopAt(hook)
@@ -309,7 +309,7 @@ func main() {
 		if hook == "dirty-cache-control" && !bytes.Equal(volatile, bytes.Repeat([]byte("O"), 4096)) {
 			panic("negative control: dirty guest cache was not discarded")
 		}
-		fmt.Printf("FILESYNC_RESET_VERIFY_OK hook=%s versions=%d dirty_cache_discarded=%t\n", hook, len(ids), bytes.Equal(volatile, bytes.Repeat([]byte("O"), 4096)))
+		fmt.Printf("ORBIT_RESET_VERIFY_OK hook=%s versions=%d dirty_cache_discarded=%t\n", hook, len(ids), bytes.Equal(volatile, bytes.Repeat([]byte("O"), 4096)))
 	default:
 		panic("unknown mode")
 	}

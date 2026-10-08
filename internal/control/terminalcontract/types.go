@@ -10,7 +10,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 const Version = "1"

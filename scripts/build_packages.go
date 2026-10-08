@@ -18,13 +18,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/network"
 )
 
 const (
-	PackageVersion = "1.0.1"
+	PackageVersion = "2.0.0"
 	PackageRelease = "1"
-	PackageName    = "filesync"
+	PackageName    = "orbit"
 	FixedTimestamp = 1790208000 // 2026-09-23T00:00:00Z for reproducible builds
 )
 
@@ -55,7 +55,7 @@ var terminalAssets = map[string][]byte{}
 
 func loadTerminalAssets(repoRoot, binary string) error {
 	for shell, name := range map[string]string{"bash": "bash-completion/completions/orbit", "zsh": "zsh/site-functions/_orbit", "fish": "fish/vendor_completions.d/orbit.fish"} {
-		data, err := exec.Command(binary, "orbit", "completion", shell).Output()
+		data, err := exec.Command(binary, "completion", shell).Output()
 		if err != nil {
 			return fmt.Errorf("generate %s completion: %w", shell, err)
 		}
@@ -70,7 +70,7 @@ func loadTerminalAssets(repoRoot, binary string) error {
 		if err != nil {
 			return err
 		}
-		terminalAssets["doc/filesync/runbooks/"+filepath.Base(path)] = data
+		terminalAssets["doc/orbit/runbooks/"+filepath.Base(path)] = data
 	}
 	return nil
 }
@@ -107,30 +107,30 @@ func run() error {
 	}
 
 	// Embed an explicit source revision; deterministic packaging timestamps stay
-	// fixed. Export FILESYNC_BUILD_COMMIT for source archives without Git metadata.
-	buildCommit := os.Getenv("FILESYNC_BUILD_COMMIT")
+	// fixed. Export ORBIT_BUILD_COMMIT for source archives without Git metadata.
+	buildCommit := os.Getenv("ORBIT_BUILD_COMMIT")
 	if buildCommit == "" {
 		output, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output()
 		if err != nil {
-			return fmt.Errorf("set FILESYNC_BUILD_COMMIT when building an archive without git metadata: %w", err)
+			return fmt.Errorf("set ORBIT_BUILD_COMMIT when building an archive without git metadata: %w", err)
 		}
 		buildCommit = strings.TrimSpace(string(output))
 	}
-	buildDate := os.Getenv("FILESYNC_BUILD_DATE")
+	buildDate := os.Getenv("ORBIT_BUILD_DATE")
 	if buildDate == "" {
 		buildDate = "2026-10-01"
 	}
 
 	// 1. Build binaries for amd64 and arm64
 	for _, arch := range supportedArchs {
-		// bin/filesync stays the host binary from `make build`; overwriting it
+		// bin/orbit stays the host binary from `make build`; overwriting it
 		// with amd64 breaks later tests on arm64 hosts.
-		binTarget := filepath.Join(binDir, fmt.Sprintf("filesync-linux-%s", arch.GoArch))
+		binTarget := filepath.Join(binDir, fmt.Sprintf("orbit-linux-%s", arch.GoArch))
 
 		fmt.Printf("Building binary for linux/%s -> %s\n", arch.GoArch, binTarget)
 		cmd := exec.Command("go", "build", "-trimpath",
 			"-ldflags", fmt.Sprintf("-X main.version=%s -X main.commit=%s -X main.date=%s", PackageVersion, buildCommit, buildDate),
-			"-o", binTarget, "./cmd/filesync")
+			"-o", binTarget, "./cmd/orbit")
 		cmd.Env = append(os.Environ(), "CGO_ENABLED=0", "GOOS=linux", "GOARCH="+arch.GoArch)
 		cmd.Dir = repoRoot
 		cmd.Stdout = os.Stdout
@@ -140,28 +140,17 @@ func run() error {
 		}
 	}
 
-	// Ensure bin/orbit symlink exists in repoRoot/bin
-	orbitSymlink := filepath.Join(binDir, "orbit")
-	_ = os.Remove(orbitSymlink)
-	if err := os.Symlink("filesync", orbitSymlink); err != nil {
-		return fmt.Errorf("create bin/orbit symlink: %w", err)
-	}
-
 	// Completions are architecture-independent; generate them with the binary
 	// this host can execute.
-	completionBinary := filepath.Join(binDir, "filesync-linux-"+runtime.GOARCH)
+	completionBinary := filepath.Join(binDir, "orbit-linux-"+runtime.GOARCH)
 	if err := loadTerminalAssets(repoRoot, completionBinary); err != nil {
 		return err
 	}
 
 	// Read common files
-	serviceBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/systemd/filesync.service"))
+	serviceBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/systemd/orbit.service"))
 	if err != nil {
 		return err
-	}
-	orbitServiceBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/systemd/orbit.service"))
-	if err != nil {
-		orbitServiceBytes = serviceBytes
 	}
 	desktopBytes, err := os.ReadFile(filepath.Join(repoRoot, "packaging/desktop/orbit.desktop"))
 	if err != nil {
@@ -274,17 +263,17 @@ func run() error {
 	var generatedPackages []string
 
 	for _, arch := range supportedArchs {
-		binPath := filepath.Join(binDir, fmt.Sprintf("filesync-linux-%s", arch.GoArch))
+		binPath := filepath.Join(binDir, fmt.Sprintf("orbit-linux-%s", arch.GoArch))
 		binBytes, err := os.ReadFile(binPath)
 		if err != nil {
 			return fmt.Errorf("read binary %s: %w", binPath, err)
 		}
 
-		// A. Build tar.gz package (filesync and orbit)
+		// A. Build tar.gz package (orbit)
 		tarGzName := fmt.Sprintf("%s-v%s-linux-%s.tar.gz", PackageName, PackageVersion, arch.GoArch)
 		tarGzPath := filepath.Join(distDir, tarGzName)
 		fmt.Printf("Generating %s...\n", tarGzName)
-		if err := buildTarGz(tarGzPath, binBytes, serviceBytes, orbitServiceBytes, desktopBytes, iconBytes,
+		if err := buildTarGz(tarGzPath, binBytes, serviceBytes, desktopBytes, iconBytes,
 			installScriptBytes, uninstallScriptBytes, licenseBytes, noticeBytes, licensesMdBytes, readmeBytes, manifestBytes); err != nil {
 			return fmt.Errorf("build tar.gz for %s: %w", arch.GoArch, err)
 		}
@@ -316,7 +305,7 @@ func run() error {
 		rpmName := fmt.Sprintf("%s-%s-%s.%s.rpm", PackageName, PackageVersion, PackageRelease, arch.RpmArch)
 		rpmPath := filepath.Join(distDir, rpmName)
 		fmt.Printf("Generating %s...\n", rpmName)
-		if err := buildRpm(rpmPath, arch, binBytes, serviceBytes, orbitServiceBytes, desktopBytes, iconBytes,
+		if err := buildRpm(rpmPath, arch, binBytes, serviceBytes, desktopBytes, iconBytes,
 			licenseBytes, noticeBytes, licensesMdBytes, manifestBytes); err != nil {
 			return fmt.Errorf("build rpm for %s: %w", arch.RpmArch, err)
 		}
@@ -352,7 +341,7 @@ func run() error {
 	return nil
 }
 
-func buildTarGz(outPath string, bin, service, orbitService, desktop, icon, installScript, uninstallScript, license, notice, licensesMd, readme, manifest []byte) error {
+func buildTarGz(outPath string, bin, service, desktop, icon, installScript, uninstallScript, license, notice, licensesMd, readme, manifest []byte) error {
 	f, err := os.OpenFile(outPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o644)
 	if err != nil {
 		return err
@@ -374,10 +363,8 @@ func buildTarGz(outPath string, bin, service, orbitService, desktop, icon, insta
 		Linkname string
 		Data     []byte
 	}{
-		{Name: "filesync", Mode: 0755, Typeflag: tar.TypeReg, Data: bin},
-		{Name: "orbit", Mode: 0755, Typeflag: tar.TypeSymlink, Linkname: "filesync"},
-		{Name: "systemd/filesync.service", Mode: 0644, Typeflag: tar.TypeReg, Data: service},
-		{Name: "systemd/orbit.service", Mode: 0644, Typeflag: tar.TypeSymlink, Linkname: "filesync.service"},
+		{Name: "orbit", Mode: 0755, Typeflag: tar.TypeReg, Data: bin},
+		{Name: "systemd/orbit.service", Mode: 0644, Typeflag: tar.TypeReg, Data: service},
 		{Name: "desktop/orbit.desktop", Mode: 0644, Typeflag: tar.TypeReg, Data: desktop},
 		{Name: "icons/orbit.svg", Mode: 0644, Typeflag: tar.TypeReg, Data: icon},
 		{Name: "install.sh", Mode: 0755, Typeflag: tar.TypeReg, Data: installScript},
@@ -439,9 +426,9 @@ Version: %s
 Section: utils
 Priority: optional
 Architecture: %s
-Maintainer: File Sync Maintainers <maintainers@example.com>
+Maintainer: Orbit Maintainers <maintainers@example.com>
 Installed-Size: %d
-Description: Orbit Personal File Manager and File Sync daemon
+Description: Orbit Personal File Manager and Orbit daemon
  Orbit is a personal file manager and synchronization engine over trusted
  Linux replicas, providing SQLite-backed causal history tracking, terminal
  management, desktop integration, and crash-resilient publication.
@@ -451,8 +438,8 @@ Description: Orbit Personal File Manager and File Sync daemon
 set -e
 if [ "${1:-}" = remove ] || [ "${1:-}" = deconfigure ]; then
     if command -v systemctl >/dev/null 2>&1; then
-        systemctl --user stop filesync.service orbit.service 2>/dev/null || true
-        systemctl --user disable filesync.service orbit.service 2>/dev/null || true
+        systemctl --user stop orbit.service 2>/dev/null || true
+        systemctl --user disable orbit.service 2>/dev/null || true
     fi
 fi
 exit 0
@@ -462,11 +449,7 @@ exit 0
 set -e
 if command -v systemctl >/dev/null 2>&1; then
     systemctl --user daemon-reload 2>/dev/null || true
-    if systemctl --user is-active --quiet filesync.service 2>/dev/null; then
-        systemctl --user try-restart filesync.service 2>/dev/null || true
-    elif systemctl --user is-active --quiet orbit.service 2>/dev/null; then
-        systemctl --user try-restart orbit.service 2>/dev/null || true
-    fi
+    systemctl --user try-restart orbit.service 2>/dev/null || true
 fi
 if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database -q /usr/share/applications 2>/dev/null || true
@@ -483,8 +466,8 @@ if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database -q /usr/share/applications 2>/dev/null || true
 fi
 # DATA PRESERVATION GUARANTEE (Invariant S21 / I20):
-# Package removal strictly preserves ~/.local/share/filesync, ~/.local/state/filesync,
-# ~/.filesync, and all operator workspace folder contents.
+# Package removal strictly preserves ~/.local/share/orbit, ~/.local/state/orbit
+# and all operator workspace folder contents.
 exit 0
 `
 
@@ -534,16 +517,14 @@ exit 0
 		Linkname string
 		Data     []byte
 	}{
-		{Name: "./usr/bin/filesync", Mode: 0755, Typeflag: tar.TypeReg, Data: bin},
-		{Name: "./usr/bin/orbit", Mode: 0755, Typeflag: tar.TypeSymlink, Linkname: "filesync"},
-		{Name: "./usr/lib/systemd/user/filesync.service", Mode: 0644, Typeflag: tar.TypeReg, Data: service},
-		{Name: "./usr/lib/systemd/user/orbit.service", Mode: 0644, Typeflag: tar.TypeSymlink, Linkname: "filesync.service"},
+		{Name: "./usr/bin/orbit", Mode: 0755, Typeflag: tar.TypeReg, Data: bin},
+		{Name: "./usr/lib/systemd/user/orbit.service", Mode: 0644, Typeflag: tar.TypeReg, Data: service},
 		{Name: "./usr/share/applications/orbit.desktop", Mode: 0644, Typeflag: tar.TypeReg, Data: desktop},
 		{Name: "./usr/share/icons/hicolor/scalable/apps/orbit.svg", Mode: 0644, Typeflag: tar.TypeReg, Data: icon},
-		{Name: "./usr/share/doc/filesync/copyright", Mode: 0644, Typeflag: tar.TypeReg, Data: license},
-		{Name: "./usr/share/doc/filesync/NOTICE", Mode: 0644, Typeflag: tar.TypeReg, Data: notice},
-		{Name: "./usr/share/doc/filesync/LICENSES.md", Mode: 0644, Typeflag: tar.TypeReg, Data: licensesMd},
-		{Name: "./usr/share/doc/filesync/release-manifest.json", Mode: 0644, Typeflag: tar.TypeReg, Data: manifest},
+		{Name: "./usr/share/doc/orbit/copyright", Mode: 0644, Typeflag: tar.TypeReg, Data: license},
+		{Name: "./usr/share/doc/orbit/NOTICE", Mode: 0644, Typeflag: tar.TypeReg, Data: notice},
+		{Name: "./usr/share/doc/orbit/LICENSES.md", Mode: 0644, Typeflag: tar.TypeReg, Data: licensesMd},
+		{Name: "./usr/share/doc/orbit/release-manifest.json", Mode: 0644, Typeflag: tar.TypeReg, Data: manifest},
 	}
 
 	for _, name := range terminalAssetNames() {
@@ -640,7 +621,7 @@ exit 0
 	return nil
 }
 
-func buildRpm(outPath string, arch ArchInfo, bin, service, orbitService, desktop, icon, license, notice, licensesMd, manifest []byte) error {
+func buildRpm(outPath string, arch ArchInfo, bin, service, desktop, icon, license, notice, licensesMd, manifest []byte) error {
 	// Create CPIO payload (format "070701")
 	var cpioBuf bytes.Buffer
 	files := []struct {
@@ -648,16 +629,14 @@ func buildRpm(outPath string, arch ArchInfo, bin, service, orbitService, desktop
 		Mode uint32
 		Data []byte
 	}{
-		{"usr/bin/filesync", 0100755, bin},
-		{"usr/bin/orbit", 0120777, []byte("filesync")},
-		{"usr/lib/systemd/user/filesync.service", 0100644, service},
-		{"usr/lib/systemd/user/orbit.service", 0120777, []byte("filesync.service")},
+		{"usr/bin/orbit", 0100755, bin},
+		{"usr/lib/systemd/user/orbit.service", 0100644, service},
 		{"usr/share/applications/orbit.desktop", 0100644, desktop},
 		{"usr/share/icons/hicolor/scalable/apps/orbit.svg", 0100644, icon},
-		{"usr/share/doc/filesync/LICENSE", 0100644, license},
-		{"usr/share/doc/filesync/NOTICE", 0100644, notice},
-		{"usr/share/doc/filesync/LICENSES.md", 0100644, licensesMd},
-		{"usr/share/doc/filesync/release-manifest.json", 0100644, manifest},
+		{"usr/share/doc/orbit/LICENSE", 0100644, license},
+		{"usr/share/doc/orbit/NOTICE", 0100644, notice},
+		{"usr/share/doc/orbit/LICENSES.md", 0100644, licensesMd},
+		{"usr/share/doc/orbit/release-manifest.json", 0100644, manifest},
 	}
 
 	for _, name := range terminalAssetNames() {
@@ -849,7 +828,7 @@ func buildRpmMainHeader(rpmArch string, files []struct {
 	addString(1000, PackageName)
 	addString(1001, PackageVersion)
 	addString(1002, PackageRelease)
-	addString(1004, "Orbit Personal File Manager and File Sync daemon")
+	addString(1004, "Orbit Personal File Manager and Orbit daemon")
 	addString(1005, "Personal file manager and background synchronization agent with SQLite metadata, terminal management and desktop integration.")
 	addString(1014, "MIT")
 	addString(1016, "Applications/System")
@@ -868,26 +847,22 @@ func buildRpmMainHeader(rpmArch string, files []struct {
 	addString(1024, `#!/bin/sh
 if command -v systemctl >/dev/null 2>&1; then
     systemctl --user daemon-reload 2>/dev/null || true
-    if systemctl --user is-active --quiet filesync.service 2>/dev/null; then
-        systemctl --user try-restart filesync.service 2>/dev/null || true
-    elif systemctl --user is-active --quiet orbit.service 2>/dev/null; then
-        systemctl --user try-restart orbit.service 2>/dev/null || true
-    fi
+    systemctl --user try-restart orbit.service 2>/dev/null || true
 fi
 exit 0
 `)
 	addStringArray(1087, []string{"/bin/sh"})
 	addString(1025, `#!/bin/sh
 if [ "${1:-}" = 0 ] && command -v systemctl >/dev/null 2>&1; then
-    systemctl --user stop filesync.service orbit.service 2>/dev/null || true
-    systemctl --user disable filesync.service orbit.service 2>/dev/null || true
+    systemctl --user stop orbit.service 2>/dev/null || true
+    systemctl --user disable orbit.service 2>/dev/null || true
 fi
 exit 0
 `)
 
 	// Post-uninstall script preserving user data
 	addStringArray(1088, []string{"/bin/sh"})
-	addString(1026, "#!/bin/sh\nif command -v systemctl >/dev/null 2>&1; then systemctl --user daemon-reload 2>/dev/null || true; fi\n# DATA PRESERVATION GUARANTEE (Invariant S21):\n# ~/.local/state/filesync, ~/.filesync and workspace files are strictly preserved\nexit 0\n")
+	addString(1026, "#!/bin/sh\nif command -v systemctl >/dev/null 2>&1; then systemctl --user daemon-reload 2>/dev/null || true; fi\n# DATA PRESERVATION GUARANTEE (Invariant S21):\n# ~/.local/state/orbit and workspace files are strictly preserved\nexit 0\n")
 
 	// File tags
 	var baseNames []string

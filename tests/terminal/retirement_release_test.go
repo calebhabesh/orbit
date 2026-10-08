@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/replication"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/replication"
 )
 
 func TestTerminalT13RetiredIdentityApprovalHasRecoveryAction(t *testing.T) {

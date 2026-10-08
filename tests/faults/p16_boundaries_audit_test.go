@@ -13,11 +13,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 var p16Folder, p16AuthorA, p16AuthorB = faultID('F'), faultID('A'), faultID('B')
@@ -70,9 +70,9 @@ func TestP16CheckpointBoundaries(t *testing.T) {
 			// Launch helper that calls db.Checkpoint() and gets SIGKILLed at hook
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP16CheckpointHelper$")
 			cmd.Env = append(os.Environ(),
-				"FILESYNC_P16_CHECKPOINT_HELPER=1",
-				"FILESYNC_P16_STATE="+state,
-				"FILESYNC_P16_HOOK="+hook,
+				"ORBIT_P16_CHECKPOINT_HELPER=1",
+				"ORBIT_P16_STATE="+state,
+				"ORBIT_P16_HOOK="+hook,
 			)
 			err = cmd.Run()
 			var exitErr *exec.ExitError
@@ -103,12 +103,12 @@ func TestP16CheckpointBoundaries(t *testing.T) {
 }
 
 func TestP16CheckpointHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P16_CHECKPOINT_HELPER") != "1" {
+	if os.Getenv("ORBIT_P16_CHECKPOINT_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	hook := os.Getenv("FILESYNC_P16_HOOK")
-	db, err := repository.OpenWithOptions(ctx, os.Getenv("FILESYNC_P16_STATE"), repository.Options{
+	hook := os.Getenv("ORBIT_P16_HOOK")
+	db, err := repository.OpenWithOptions(ctx, os.Getenv("ORBIT_P16_STATE"), repository.Options{
 		FaultHook: func(name string) error {
 			if name == hook {
 				_ = syscall.Kill(os.Getpid(), syscall.SIGKILL)
@@ -167,9 +167,9 @@ func TestP16GCBoundaries(t *testing.T) {
 			// Launch helper that triggers GC and gets killed at hook
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP16GCHelper$")
 			cmd.Env = append(os.Environ(),
-				"FILESYNC_P16_GC_HELPER=1",
-				"FILESYNC_P16_STATE="+state,
-				"FILESYNC_P16_HOOK="+hook,
+				"ORBIT_P16_GC_HELPER=1",
+				"ORBIT_P16_STATE="+state,
+				"ORBIT_P16_HOOK="+hook,
 			)
 			err = cmd.Run()
 			var exitErr *exec.ExitError
@@ -215,12 +215,12 @@ func TestP16GCBoundaries(t *testing.T) {
 }
 
 func TestP16GCHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P16_GC_HELPER") != "1" {
+	if os.Getenv("ORBIT_P16_GC_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	hook := os.Getenv("FILESYNC_P16_HOOK")
-	db, err := repository.OpenWithOptions(ctx, os.Getenv("FILESYNC_P16_STATE"), repository.Options{
+	hook := os.Getenv("ORBIT_P16_HOOK")
+	db, err := repository.OpenWithOptions(ctx, os.Getenv("ORBIT_P16_STATE"), repository.Options{
 		FaultHook: func(name string) error {
 			if name == hook {
 				_ = syscall.Kill(os.Getpid(), syscall.SIGKILL)
@@ -318,10 +318,10 @@ func TestP16ControlResolutionBoundaries(t *testing.T) {
 			// Launch helper that executes resolve select or restore, getting SIGKILLed at hook
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP16ControlHelper$")
 			cmd.Env = append(os.Environ(),
-				"FILESYNC_P16_CONTROL_HELPER=1",
-				"FILESYNC_P16_STATE="+state,
-				"FILESYNC_P16_ROOT="+root,
-				"FILESYNC_P16_HOOK="+hook,
+				"ORBIT_P16_CONTROL_HELPER=1",
+				"ORBIT_P16_STATE="+state,
+				"ORBIT_P16_ROOT="+root,
+				"ORBIT_P16_HOOK="+hook,
 			)
 			err = cmd.Run()
 			var exitErr *exec.ExitError
@@ -359,12 +359,12 @@ func TestP16ControlResolutionBoundaries(t *testing.T) {
 }
 
 func TestP16ControlHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P16_CONTROL_HELPER") != "1" {
+	if os.Getenv("ORBIT_P16_CONTROL_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	state := os.Getenv("FILESYNC_P16_STATE")
-	hook := os.Getenv("FILESYNC_P16_HOOK")
+	state := os.Getenv("ORBIT_P16_STATE")
+	hook := os.Getenv("ORBIT_P16_HOOK")
 
 	db, err := repository.Open(ctx, state)
 	if err != nil {
@@ -482,10 +482,10 @@ func TestP16IntegrityQuarantineRepairBoundaries(t *testing.T) {
 			// Launch helper that executes quarantine or repair and gets SIGKILLed at hook
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP16IntegrityHelper$")
 			cmd.Env = append(os.Environ(),
-				"FILESYNC_P16_INTEGRITY_HELPER=1",
-				"FILESYNC_P16_STATE="+state,
-				"FILESYNC_P16_HOOK="+hook,
-				"FILESYNC_P16_DIGEST="+hex.EncodeToString(digest[:]),
+				"ORBIT_P16_INTEGRITY_HELPER=1",
+				"ORBIT_P16_STATE="+state,
+				"ORBIT_P16_HOOK="+hook,
+				"ORBIT_P16_DIGEST="+hex.EncodeToString(digest[:]),
 			)
 			err = cmd.Run()
 			var exitErr *exec.ExitError
@@ -528,13 +528,13 @@ func TestP16IntegrityQuarantineRepairBoundaries(t *testing.T) {
 }
 
 func TestP16IntegrityHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P16_INTEGRITY_HELPER") != "1" {
+	if os.Getenv("ORBIT_P16_INTEGRITY_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	hook := os.Getenv("FILESYNC_P16_HOOK")
-	state := os.Getenv("FILESYNC_P16_STATE")
-	dHex := os.Getenv("FILESYNC_P16_DIGEST")
+	hook := os.Getenv("ORBIT_P16_HOOK")
+	state := os.Getenv("ORBIT_P16_STATE")
+	dHex := os.Getenv("ORBIT_P16_DIGEST")
 
 	raw, err := hex.DecodeString(dHex)
 	if err != nil || len(raw) != 32 {

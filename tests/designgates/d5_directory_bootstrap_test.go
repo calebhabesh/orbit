@@ -12,7 +12,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 type observedKind string
@@ -41,7 +41,7 @@ func validateRelativePath(candidate string) error {
 		if segment == "" || segment == "." || segment == ".." || len([]byte(segment)) > 255 {
 			return errors.New("invalid path segment")
 		}
-		if segment == ".filesync-internal" {
+		if segment == ".orbit-internal" {
 			return errors.New("reserved internal name")
 		}
 	}
@@ -55,7 +55,7 @@ func TestD5CanonicalPathPolicy(t *testing.T) {
 			t.Errorf("valid path %q rejected: %v", candidate, err)
 		}
 	}
-	invalid := []string{"", "/absolute", "trailing/", "double//segment", "a/../b", "./a", "a\\b", ".filesync-internal/stage", "a/.filesync-internal/x", string([]byte{0xff})}
+	invalid := []string{"", "/absolute", "trailing/", "double//segment", "a/../b", "./a", "a\\b", ".orbit-internal/stage", "a/.orbit-internal/x", string([]byte{0xff})}
 	for _, candidate := range invalid {
 		if err := validateRelativePath(candidate); err == nil {
 			t.Errorf("invalid path %q accepted", candidate)
@@ -78,7 +78,7 @@ func observeRootIdentity(root string) (rootIdentity, error) {
 		return rootIdentity{}, errors.New("root is not a real directory")
 	}
 	stat := info.Sys().(*syscall.Stat_t)
-	markerPath := filepath.Join(root, ".filesync-internal", "registration")
+	markerPath := filepath.Join(root, ".orbit-internal", "registration")
 	markerInfo, err := os.Lstat(markerPath)
 	if err != nil {
 		return rootIdentity{}, err
@@ -96,13 +96,13 @@ func observeRootIdentity(root string) (rootIdentity, error) {
 func TestD5RootIdentityDetectsReplacementAndMarkerMismatch(t *testing.T) {
 	disposable := testkit.NewDisposable(t)
 	root := filepath.Join(disposable, "root")
-	if err := os.MkdirAll(filepath.Join(root, ".filesync-internal"), 0o700); err != nil {
+	if err := os.MkdirAll(filepath.Join(root, ".orbit-internal"), 0o700); err != nil {
 		t.Fatal(err)
 	}
 	if err := testkit.ValidateDestructiveTarget(disposable, root); err != nil {
 		t.Fatal(err)
 	}
-	mustWrite(t, filepath.Join(root, ".filesync-internal", "registration"), "random-registration-id")
+	mustWrite(t, filepath.Join(root, ".orbit-internal", "registration"), "random-registration-id")
 	registered, err := observeRootIdentity(root)
 	if err != nil {
 		t.Fatal(err)
@@ -111,10 +111,10 @@ func TestD5RootIdentityDetectsReplacementAndMarkerMismatch(t *testing.T) {
 	if err := os.Rename(root, oldRoot); err != nil {
 		t.Fatal(err)
 	}
-	if err := os.MkdirAll(filepath.Join(root, ".filesync-internal"), 0o700); err != nil {
+	if err := os.MkdirAll(filepath.Join(root, ".orbit-internal"), 0o700); err != nil {
 		t.Fatal(err)
 	}
-	mustWrite(t, filepath.Join(root, ".filesync-internal", "registration"), "random-registration-id")
+	mustWrite(t, filepath.Join(root, ".orbit-internal", "registration"), "random-registration-id")
 	replacement, err := observeRootIdentity(root)
 	if err != nil {
 		t.Fatal(err)
@@ -123,7 +123,7 @@ func TestD5RootIdentityDetectsReplacementAndMarkerMismatch(t *testing.T) {
 		t.Fatal("root replacement with copied marker was not detected")
 	}
 
-	mustWrite(t, filepath.Join(root, ".filesync-internal", "registration"), "different-registration-id")
+	mustWrite(t, filepath.Join(root, ".orbit-internal", "registration"), "different-registration-id")
 	mismatched, err := observeRootIdentity(root)
 	if err != nil {
 		t.Fatal(err)

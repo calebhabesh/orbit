@@ -16,7 +16,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     prepare_output(args.output)
-    template = Path("packaging/systemd/filesync.service").read_text()
+    template = Path("packaging/systemd/orbit.service").read_text()
     desktop_template = Path("packaging/desktop/orbit.desktop").read_text()
     icon_template = Path("packaging/icons/orbit.svg").read_text()
     results = []

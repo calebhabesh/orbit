@@ -41,7 +41,7 @@ remain in force; report unavailable network/host conditions explicitly.
 Approved through the planning interview on 2026-09-20, with Orbit amendments
 on 2026-10-01, the terminal redesign on 2026-10-03 and native WAN on 2026-10-05. Supersedes the
 2026-09-12 two-peer-only release scope. These are requirements, not implementation
-claims. The repository owns File Sync's detailed scope; the parent portfolio
+claims. The repository owns Orbit's detailed scope; the parent portfolio
 blueprint summarizes it.
 
 ## Orbit product direction — 2026-10-01

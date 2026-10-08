@@ -6,13 +6,13 @@ import (
 	"errors"
 	"io"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 // DecodeMembership accepts only the bounded canonical v1 byte representation.
 func DecodeMembership(data []byte) (Membership, error) {
 	var m Membership
-	domain := []byte("filesync-membership-v1\x00")
+	domain := []byte("orbit-membership-v1\x00")
 	if len(data) > len(domain)+76+history.MaxIdentities*72 || !bytes.HasPrefix(data, domain) {
 		return m, errors.New("invalid membership encoding")
 	}

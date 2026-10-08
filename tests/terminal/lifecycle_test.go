@@ -21,14 +21,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/launcher"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func terminalClient(t *testing.T, f *fixture) *controlclient.Client {
@@ -431,8 +431,8 @@ var _ tc.Client = (*controlclient.Client)(nil)
 
 func TestTerminalT02ServiceProcessActionsAndSelection(t *testing.T) {
 	root := testkit.NewDisposable(t)
-	binary := filepath.Join(root, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(root, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = filepath.Join("..", "..")
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("fixture build: %v %s", err, output)
@@ -598,7 +598,7 @@ esac
 	t.Setenv("ORBIT_T02_REJECT", "")
 	// A daemon launched outside the unit owns the state: start is refused
 	// rather than reported, and no external start is dispatched.
-	manual := exec.Command(binary, "serve", "--state="+dir, "--control-listen=127.0.0.1:0", "--no-watch")
+	manual := exec.Command(binary, "engine", "serve", "--state="+dir, "--control-listen=127.0.0.1:0", "--no-watch")
 	if err := manual.Start(); err != nil {
 		t.Fatal(err)
 	}
@@ -627,14 +627,14 @@ esac
 	// A different selected state cannot replace or operate this user unit.
 	other := filepath.Join(root, "other")
 	os.Mkdir(other, 0700)
-	before, _ := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "filesync.service"))
+	before, _ := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "orbit.service"))
 	if _, err := control.StartService(context.Background(), other, nil); err == nil {
 		t.Fatal("unrelated unit started")
 	}
 	if err := control.InstallUserUnit(other, binary); err == nil {
 		t.Fatal("existing unit overwritten")
 	}
-	after, _ := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "filesync.service"))
+	after, _ := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "orbit.service"))
 	if string(before) != string(after) {
 		t.Fatal("personal service bytes changed")
 	}

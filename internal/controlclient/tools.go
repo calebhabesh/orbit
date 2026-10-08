@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/calebhabesh/file-sync/internal/control"
+	"github.com/calebhabesh/orbit/internal/control"
 	"io"
 	"os/exec"
 	"strings"

@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 func attentionID(parts ...string) string {
@@ -259,7 +259,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 					Folder:      folderHex,
 					OperationID: task.ID,
 					Code:        "EXHAUSTED_WORK",
-					Action:      fmt.Sprintf("Retry task with 'filesync work retry --task %s'", task.ID),
+					Action:      fmt.Sprintf("Retry task with 'orbit engine work retry --task %s'", task.ID),
 				})
 			}
 		}

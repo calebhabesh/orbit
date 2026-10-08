@@ -15,9 +15,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 type WireError struct {
@@ -138,7 +138,7 @@ func (client *Client) Chunk(ctx context.Context, request ChunkRequest, expected 
 		}
 		return nil, &WireError{Status: response.StatusCode, Body: wire}
 	}
-	if expected.Length > history.ChunkSize || response.Header.Get("Content-Length") != strconv.FormatUint(expected.Length, 10) || response.Header.Get("X-FileSync-Chunk-SHA256") != fmt.Sprintf("%x", expected.Digest) {
+	if expected.Length > history.ChunkSize || response.Header.Get("Content-Length") != strconv.FormatUint(expected.Length, 10) || response.Header.Get("X-Orbit-Chunk-SHA256") != fmt.Sprintf("%x", expected.Digest) {
 		return nil, errors.New("chunk response metadata does not match requested manifest")
 	}
 	body, err := io.ReadAll(io.LimitReader(response.Body, int64(expected.Length)+1))

@@ -12,13 +12,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 // w14LegacyRef is the last pre-WAN source revision (T11 terminal release). Its
@@ -47,7 +47,7 @@ func buildLegacyOrbit(t *testing.T, base string) string {
 		t.Fatalf("extract legacy source: %v %s", err, out)
 	}
 	binary := filepath.Join(base, "orbit-legacy")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = src
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build legacy %s: %v\n%s", ref, err, out)

@@ -14,9 +14,9 @@ import (
 
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 )
 
 // Workflow operations are the same shared-client controls used by the CLI.

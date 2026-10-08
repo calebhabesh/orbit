@@ -266,11 +266,11 @@ below retains its original source context. T02–T08 own production repairs.
 | Invitation lacks inviting key pin; join skips TLS verification; token consumption does not check recorded folder against requested folder (`internal/control/orbit_control.go:835,920,1414`, `internal/repository/product_records.go:190`) | Authenticate the inviter, prove requester possession, bind capability to exact scope, and retain explicit owner approval |
 | Enrollment request ID derives only from joining key and is a global primary key (`internal/control/orbit_control.go:935`, `internal/repository/repository.go:588`) | Additional-folder enrollment and safe retries work with the same persistent device identity |
 | Join persistence omits request/endpoint; completion ignores initial scan failure (`internal/control/orbit_control.go:1450,1582`) | Restart resumes the exact request; actual capture/membership/content observations determine readiness |
-| Setup/join and several conflict/restore CLI paths enter exclusive stopped-state adapters (`cmd/filesync/main.go:3406,672,1546,1625,1730`) | Normal terminal controls work against a running daemon through the shared authenticated operations |
+| Setup/join and several conflict/restore CLI paths enter exclusive stopped-state adapters (`cmd/orbit/main.go:3406,672,1546,1625,1730`) | Normal terminal controls work against a running daemon through the shared authenticated operations |
 | Launcher initialization bypasses finite storage initialization (`internal/launcher/launcher.go`, `internal/app/app.go:53,116`, `internal/config/storage.go:26`) | Every initialization path creates validated finite budgets and the setup review exposes them |
 | Root preview counts immediate entries without full size/unsupported/race review (`internal/control/orbit_control.go:280,295`) | Bounded measured adoption review binds execution to the reviewed root and detects changes |
-| `orbit status` is service/setup-only; detail summaries lose direct-observation information (`cmd/filesync/main.go:3325,3345`, `internal/repository/browse.go:394`) | Status includes attention and qualified saved/stored/applied/contact observations |
-| CLI merge reads entire file; reviewed editor sessions and a terminal deleted-files command are missing (`cmd/filesync/main.go:1535,3213`) | Bounded exact-version review, stale-result protection, and human-facing history/deleted recovery work end to end |
+| `orbit status` is service/setup-only; detail summaries lose direct-observation information (`cmd/orbit/main.go:3325,3345`, `internal/repository/browse.go:394`) | Status includes attention and qualified saved/stored/applied/contact observations |
+| CLI merge reads entire file; reviewed editor sessions and a terminal deleted-files command are missing (`cmd/orbit/main.go:1535,3213`) | Bounded exact-version review, stale-result protection, and human-facing history/deleted recovery work end to end |
 
 ## Implementation sequence and acceptance
 

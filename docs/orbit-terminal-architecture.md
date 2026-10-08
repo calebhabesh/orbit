@@ -61,7 +61,7 @@ the selected daemon through the shared lifecycle operation.
 | `internal/control` | Typed operation families and authoritative results/errors |
 | proposed `internal/controlclient` | Shared live/stopped adapter and streamed content access |
 | `internal/launcher`, config/state and service code | One daemon, finite initialization, network/startup configuration |
-| `cmd/filesync` | Root dispatch, argument validation, compatibility and CLI adapter |
+| `cmd/orbit` | Root dispatch, argument validation, compatibility and CLI adapter |
 | proposed `internal/terminal` | TUI state/render/key handlers over injected typed client |
 | scripts/packaging and terminal runbooks | Native packages, launch compatibility and reproducible checks |
 

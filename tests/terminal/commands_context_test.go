@@ -13,21 +13,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func buildOrbitBinary(t *testing.T, base string) string {
 	t.Helper()
 	binary := filepath.Join(base, "orbit")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = "../.."
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build orbit binary: %v\n%s", err, string(out))
@@ -354,7 +354,7 @@ func TestTerminalT06StaleAndUnavailableRoot(t *testing.T) {
 
 // TestTerminalT06PathSafetyAndLiteralPaths verifies:
 // - Escaping root via `..` returns exit code 4 (INVALID_PATH)
-// - Reserved paths (e.g. .filesync) return exit code 4 (INVALID_PATH)
+// - Reserved paths (e.g. .orbit) return exit code 4 (INVALID_PATH)
 // - `--` allows literal leading-dash paths without flag collision
 // - Spaces and Unicode paths resolve accurately without corruption
 func TestTerminalT06PathSafetyAndLiteralPaths(t *testing.T) {
@@ -405,8 +405,8 @@ func TestTerminalT06PathSafetyAndLiteralPaths(t *testing.T) {
 		t.Errorf("expected INVALID_PATH, got %v", res.Error)
 	}
 
-	// 2. Reserved internal path (.filesync) -> exit code 4
-	cmd = exec.Command(binary, "context", ".filesync/data.db", "--state", stateDir, "--json")
+	// 2. Reserved internal path (.orbit) -> exit code 4
+	cmd = exec.Command(binary, "context", ".orbit/data.db", "--state", stateDir, "--json")
 	cmd.Dir = root
 	out, err = cmd.CombinedOutput()
 	if err == nil {

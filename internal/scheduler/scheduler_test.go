@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/scheduler"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/scheduler"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func TestSchedulerStartStopAndScanExecution(t *testing.T) {
@@ -156,7 +156,7 @@ func TestSchedulerRootUnavailablePausesFolder(t *testing.T) {
 	}
 
 	// Invalidate root marker
-	markerPath := filepath.Join(rootDir, ".filesync-internal", "registration")
+	markerPath := filepath.Join(rootDir, ".orbit-internal", "registration")
 	_ = os.Remove(markerPath)
 
 	// Submit scan task

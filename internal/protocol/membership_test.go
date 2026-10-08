@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 func repeatedID(value byte) history.ID {

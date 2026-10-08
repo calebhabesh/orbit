@@ -42,15 +42,15 @@ func run() error {
 	if _, err = os.Stat(filepath.Join(root, "go.mod")); err != nil {
 		return fmt.Errorf("run from the repository root: %w", err)
 	}
-	commit := os.Getenv("FILESYNC_BUILD_COMMIT")
+	commit := os.Getenv("ORBIT_BUILD_COMMIT")
 	if commit == "" {
 		out, e := exec.Command("git", "rev-parse", "--short", "HEAD").Output()
 		if e != nil {
-			return fmt.Errorf("set FILESYNC_BUILD_COMMIT without git metadata: %w", e)
+			return fmt.Errorf("set ORBIT_BUILD_COMMIT without git metadata: %w", e)
 		}
 		commit = strings.TrimSpace(string(out))
 	}
-	date := os.Getenv("FILESYNC_BUILD_DATE")
+	date := os.Getenv("ORBIT_BUILD_DATE")
 	if date == "" {
 		date = "2026-10-01"
 	}

@@ -10,7 +10,7 @@ uppercase/non-hex IDs, and bodies over 8 MiB. Optional fields are omitted, not
 | `/peer/v1/hello` | `HelloRequest` | `HelloResponse` |
 | `/peer/v1/inventory` | `InventoryRequest` | `InventoryResponse` |
 | `/peer/v1/versions/get` | `VersionsRequest` | `VersionsResponse` containing v1 envelope objects |
-| `/peer/v1/chunks/get` | `ChunkRequest` | raw bytes with exact `Content-Length` and `X-FileSync-Chunk-SHA256` |
+| `/peer/v1/chunks/get` | `ChunkRequest` | raw bytes with exact `Content-Length` and `X-Orbit-Chunk-SHA256` |
 
 The authoritative field spellings are the Go structs in
 `internal/replication/wire.go` and the golden examples in `schemas/fixtures`.

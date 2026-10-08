@@ -2,19 +2,19 @@
 
 ## Trigger and Symptoms
 - Agent reports error code `CONTENT_UNAVAILABLE` or logs checksum mismatch on chunk access.
-- `filesync storage check` detects corrupted chunks or missing blobs.
+- `orbit storage check` detects corrupted chunks or missing blobs.
 - Filesystem bitrot or storage media degradation.
 
 ## Guarantees
 - Invariant **I04**: Every stored and transferred chunk is cryptographically addressed and verified by SHA-256 digest and length.
-- Corrupted chunks are immediately quarantined into `.filesync-scratch/quarantine/` and never served to peers or published into the workspace.
+- Corrupted chunks are immediately quarantined into `.orbit-scratch/quarantine/` and never served to peers or published into the workspace.
 - The sync engine supports fallback chunk retrieval: if a primary peer provides a corrupted chunk, the syncer requests the chunk from alternative authorized cluster members.
 
 ## Diagnostic Steps
 
 1. **Run Storage Integrity Check**:
    ```bash
-   filesync storage check --folder <folder-id> --json
+   orbit storage check --folder <folder-id> --json
    ```
    Check:
    - `corrupted_chunks`: Count of chunks failing SHA-256 digest validation.
@@ -22,7 +22,7 @@
 
 2. **Inspect Specific File History and Availability**:
    ```bash
-   filesync history --folder <folder-id> --path "relative/path/to/file.ext" --json
+   orbit history --folder <folder-id> --path "relative/path/to/file.ext" --json
    ```
    Inspect `content_state`: `available`, `pending`, `unavailable`, or `expired`.
 
@@ -31,7 +31,7 @@
 ### Step 1: Execute Storage Repair
 Instruct the agent to repair corrupt versions by querying surviving peers:
 ```bash
-filesync storage repair --folder <folder-id> --json
+orbit storage repair --folder <folder-id> --json
 ```
 The repair pipeline:
 1. Identifies corrupted or missing chunks in local object store.
@@ -42,11 +42,11 @@ The repair pipeline:
 ### Step 2: Rescan Workspace Root
 Force a cryptographic verification scan to confirm workspace files match authored manifests:
 ```bash
-filesync work scan --folder <folder-id> --full
+orbit engine work scan --folder <folder-id> --full
 ```
 
 ### Step 3: Reclaim Quarantined Artifacts
 Once repaired, purge quarantined bytes:
 ```bash
-filesync storage recovery reclaim
+orbit storage recovery reclaim
 ```

@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 type retiringTestConn struct {

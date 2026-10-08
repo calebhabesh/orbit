@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // TestP16StorageBarrierSmoke checks ordinary file IO, orderly database reopen,
@@ -116,7 +116,7 @@ func TestP16StorageBarrierSmoke(t *testing.T) {
 		}
 
 		// Place a scratch fixture; no publication or crash is performed.
-		// Staging file in .filesync-internal/stage has no link at destination.
+		// Staging file in .orbit-internal/stage has no link at destination.
 		// Destination file remains completely intact.
 		destPath := filepath.Join(root, "safe_doc.txt")
 		originalBytes := []byte("original safe document bytes")
@@ -129,7 +129,7 @@ func TestP16StorageBarrierSmoke(t *testing.T) {
 		}
 
 		// Create a simulated incomplete/orphaned stage file in scratch area
-		stageDir := filepath.Join(root, ".filesync-internal", "stage")
+		stageDir := filepath.Join(root, ".orbit-internal", "stage")
 		_ = os.MkdirAll(stageDir, 0o700)
 		orphanStage := filepath.Join(stageDir, "incomplete_staging.tmp")
 		_ = os.WriteFile(orphanStage, []byte("partial incomplete chunk bytes"), 0o600)

@@ -9,8 +9,8 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/state"
 	"io"
 	"net"
 	"os"
@@ -19,11 +19,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/launcher"
 	"golang.org/x/sys/unix"
 )
 

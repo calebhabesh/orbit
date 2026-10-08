@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -17,9 +17,9 @@ import (
 	"testing"
 	"time"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func TestTerminalT10BlockedSetupPagesAndFolderManagement(t *testing.T) {
@@ -69,8 +69,8 @@ func TestTerminalT10BlockedSetupPagesAndFolderManagement(t *testing.T) {
 }
 func TestTerminalT10RealPTYOnboarding(t *testing.T) {
 	base := testkit.NewDisposable(t)
-	binary := filepath.Join(base, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(base, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = "../.."
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v %s", err, out)

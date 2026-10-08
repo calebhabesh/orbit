@@ -16,17 +16,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/web"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/web"
 )
 
 var (
-	Version = "1.0.1"
+	Version = "2.0.0"
 	Commit  = "release"
 	Date    = "2026-10-01"
 )
@@ -723,7 +723,7 @@ func (s *Server) Handler() http.Handler {
 			Code:      "OPERATION_BLOCKED",
 			Message:   "identity reset requires exclusive stopped state; cannot reset identity on running daemon",
 			Retryable: false,
-			Action:    "stop background service ('systemctl --user stop filesync' or 'filesync stop') and run 'filesync maintenance reset-identity'",
+			Action:    "stop background service ('systemctl --user stop orbit' or 'orbit stop') and run 'orbit maintenance reset-identity'",
 		})
 	})
 	mux.HandleFunc("GET /api/v1/maintenance/preflight", func(w http.ResponseWriter, r *http.Request) {
@@ -739,7 +739,7 @@ func (s *Server) Handler() http.Handler {
 			Code:      "OPERATION_BLOCKED",
 			Message:   "backup restore requires exclusive stopped state; cannot restore backup on running daemon",
 			Retryable: false,
-			Action:    "stop background service ('systemctl --user stop filesync' or 'filesync stop') and run 'filesync maintenance restore-backup'",
+			Action:    "stop background service ('systemctl --user stop orbit' or 'orbit stop') and run 'orbit maintenance restore-backup'",
 		})
 	})
 
@@ -1350,7 +1350,7 @@ func (s *Server) Handler() http.Handler {
 
 			if !isCLI {
 				// Check browser session cookie
-				cookie, err := r.Cookie("filesync_session")
+				cookie, err := r.Cookie("orbit_session")
 				if err != nil {
 					writeJSON(w, http.StatusUnauthorized, UnauthorizedError(""))
 					return
@@ -1421,7 +1421,7 @@ func (s *Server) handleBootstrap(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "filesync_session",
+		Name:     "orbit_session",
 		Value:    sessID,
 		Path:     "/",
 		HttpOnly: true,
@@ -1445,7 +1445,7 @@ func (s *Server) handleGenerateBootstrapToken(w http.ResponseWriter, r *http.Req
 }
 
 func (s *Server) handleSessionInfo(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("filesync_session")
+	cookie, err := r.Cookie("orbit_session")
 	if err != nil {
 		writeJSON(w, http.StatusOK, map[string]any{"authenticated": false})
 		return
@@ -1465,14 +1465,14 @@ func (s *Server) handleSessionInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("filesync_session")
+	cookie, err := r.Cookie("orbit_session")
 	if err == nil {
 		s.mu.Lock()
 		delete(s.sessions, cookie.Value)
 		s.mu.Unlock()
 	}
 	http.SetCookie(w, &http.Cookie{
-		Name:     "filesync_session",
+		Name:     "orbit_session",
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,

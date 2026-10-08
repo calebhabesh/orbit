@@ -11,9 +11,9 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func faultID(label byte) history.ID {
@@ -47,7 +47,7 @@ func TestP03KillRestartBoundaries(t *testing.T) {
 				t.Fatal(err)
 			}
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP03BoundaryHelper$")
-			cmd.Env = append(os.Environ(), "FILESYNC_P03_HELPER=1", "FILESYNC_P03_STATE="+state, "FILESYNC_P03_HOOK="+test.hook, "FILESYNC_P03_SCENARIO="+test.scenario)
+			cmd.Env = append(os.Environ(), "ORBIT_P03_HELPER=1", "ORBIT_P03_STATE="+state, "ORBIT_P03_HOOK="+test.hook, "ORBIT_P03_SCENARIO="+test.scenario)
 			err := cmd.Run()
 			var exitErr *exec.ExitError
 			if !errors.As(err, &exitErr) || exitErr.ProcessState.Success() {
@@ -144,12 +144,12 @@ func prepareBoundaryState(state, scenario string) error {
 }
 
 func TestP03BoundaryHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P03_HELPER") != "1" {
+	if os.Getenv("ORBIT_P03_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	hook := os.Getenv("FILESYNC_P03_HOOK")
-	db, err := repository.OpenWithOptions(ctx, os.Getenv("FILESYNC_P03_STATE"), repository.Options{FaultHook: func(name string) error {
+	hook := os.Getenv("ORBIT_P03_HOOK")
+	db, err := repository.OpenWithOptions(ctx, os.Getenv("ORBIT_P03_STATE"), repository.Options{FaultHook: func(name string) error {
 		if name == hook {
 			_ = syscall.Kill(os.Getpid(), syscall.SIGKILL)
 		}
@@ -158,7 +158,7 @@ func TestP03BoundaryHelper(t *testing.T) {
 	if err != nil {
 		os.Exit(80)
 	}
-	switch os.Getenv("FILESYNC_P03_SCENARIO") {
+	switch os.Getenv("ORBIT_P03_SCENARIO") {
 	case "object":
 		digest := sha256.Sum256(faultBytes)
 		err = db.InstallChunk(ctx, digest, uint64(len(faultBytes)), bytes.NewReader(faultBytes))

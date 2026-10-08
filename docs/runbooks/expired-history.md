@@ -14,7 +14,7 @@
 
 1. **Inspect Path History**:
    ```bash
-   filesync history --folder <folder-id> --path "relative/path.txt" --json
+   orbit history --folder <folder-id> --path "relative/path.txt" --json
    ```
    Check the `content_state` field on historical entries:
    - `available`: Chunks are present locally in the content-addressed store.
@@ -24,7 +24,7 @@
 
 2. **Inspect Folder Retention Policy**:
    ```bash
-   filesync storage retention preview --folder <folder-id> --json
+   orbit storage retention preview --folder <folder-id> --json
    ```
 
 ## Operator Actions
@@ -39,17 +39,17 @@ Explain to user/operator:
 Even if chunks have expired locally, another participating replica (such as an always-on VPS or NAS with larger retention settings) may still retain the chunks.
 ```bash
 # Attempt to fetch or inspect availability across peers
-filesync storage repair --folder <folder-id>
+orbit storage repair --folder <folder-id>
 ```
 
 ### Step 3: Adjust Retention Policy Going Forward
 If longer history retention is required for this folder:
 ```bash
-filesync storage retention change --folder <folder-id> \
+orbit storage retention change --folder <folder-id> \
   --retention-days 90 \
   --min-superseded 5
 ```
 Preview the anticipated storage requirements:
 ```bash
-filesync storage retention preview --folder <folder-id>
+orbit storage retention preview --folder <folder-id>
 ```

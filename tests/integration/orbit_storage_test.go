@@ -11,12 +11,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 // TestOrbitStorage_AccountingCategories verifies that storage accounting distinctly tracks:
@@ -77,8 +77,8 @@ func TestOrbitStorage_AccountingCategories(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// 3. Create stage and recovery files beneath root/.filesync-internal
-	internalDir := filepath.Join(rootDir, ".filesync-internal")
+	// 3. Create stage and recovery files beneath root/.orbit-internal
+	internalDir := filepath.Join(rootDir, ".orbit-internal")
 	_ = os.MkdirAll(internalDir, 0o755)
 
 	stagePath := filepath.Join(internalDir, "stage-op1")
@@ -290,7 +290,7 @@ func TestOrbitStorage_ReclaimRecovery(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	internalDir := filepath.Join(rootDir, ".filesync-internal")
+	internalDir := filepath.Join(rootDir, ".orbit-internal")
 	_ = os.MkdirAll(internalDir, 0o755)
 	_ = os.WriteFile(filepath.Join(internalDir, "recovery-op123"), []byte("recovered data 1"), 0o600)
 	_ = os.WriteFile(filepath.Join(internalDir, "recovery-op456"), []byte("recovered data 2"), 0o600)

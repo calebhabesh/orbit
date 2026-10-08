@@ -384,7 +384,7 @@ class WANNode(TerminalNode):
         self.put('host_agent.py', HOST_AGENT.encode())
         for name in ('wan_tui_phase.py', '../terminal_vt.py'):
             self.put(Path(name).name, (Path(__file__).parent / name).read_bytes())
-        self.put('filesync', binary, mode=0o700)
+        self.put('orbit', binary, mode=0o700)
         version = self.call('run', args=['orbit', 'version', '--json'])
         if version['returncode']:
             raise RuntimeError('packaged version command failed')

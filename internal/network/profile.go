@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 // ProfileSelection is durable reviewed trust, never inferred from a downloaded

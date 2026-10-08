@@ -1,7 +1,7 @@
 # Operator Runbook: Database Recovery and Identity Reset
 
 Pass `--state /absolute/selected/state` to every maintenance/engine command below
-when using legacy/custom state. These retained engine commands keep their default
+when using a custom state directory. These retained engine commands keep their default
 state convention; selecting the TUI state does not change an engine command's
 flags. Stop that exact daemon and inspect recovery markers before replacing data.
 
@@ -52,10 +52,10 @@ If the primary SQLite file was damaged and restored from an older backup:
 
 Stop the background service first, then restore the backup and reset causal identity:
 ```bash
-systemctl --user stop orbit.service filesync.service 2>/dev/null || true
+systemctl --user stop orbit.service 2>/dev/null || true
 orbit maintenance restore-backup --backup /path/to/backup.sqlite --json
 ```
-*(Compatibility note: legacy syntax `filesync maintenance restore-backup` is also supported).*
+*(Compatibility note: legacy syntax `orbit maintenance restore-backup` is also supported).*
 
 This automated command:
 1. Verifies the backup database integrity.
@@ -66,9 +66,9 @@ This automated command:
 
 Alternatively, if manually replacing the database file:
 ```bash
-systemctl --user stop orbit.service filesync.service 2>/dev/null || true
-cp /path/to/backup.sqlite ~/.local/state/filesync/metadata.sqlite
-rm -f ~/.local/state/filesync/metadata.sqlite-wal ~/.local/state/filesync/metadata.sqlite-shm
+systemctl --user stop orbit.service 2>/dev/null || true
+cp /path/to/backup.sqlite ~/.local/state/orbit/metadata.sqlite
+rm -f ~/.local/state/orbit/metadata.sqlite-wal ~/.local/state/orbit/metadata.sqlite-shm
 orbit maintenance reset-identity --json
 ```
 
@@ -76,22 +76,22 @@ orbit maintenance reset-identity --json
 1. For each shared folder, approve membership of the new device ID and key pin from an active surviving peer:
    ```bash
    # On surviving peer:
-   filesync pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-key-pin>
-   filesync membership export --folder <folder-id> --file updated-membership.json
+   orbit engine pair-approve --folder <folder-id> --peer-device <new-device-id> --peer-key-pin <new-key-pin>
+   orbit engine membership export --folder <folder-id> --file updated-membership.json
 
    # On recovered device:
-   filesync membership import --folder <folder-id> --file updated-membership.json --approve
+   orbit engine membership import --folder <folder-id> --file updated-membership.json --approve
    orbit folders revalidate --folder <folder-id>
    ```
 
 #### Step 3: Reconcile Workspace Root
 Trigger a full scan to adopt existing local files under the new identity:
 ```bash
-filesync work scan --folder <folder-id> --full
-filesync work sync --folder <folder-id>
+orbit engine work scan --folder <folder-id> --full
+orbit engine work sync --folder <folder-id>
 ```
 Verify convergence:
 ```bash
 orbit doctor
-filesync work status --folder <folder-id>
+orbit engine work status --folder <folder-id>
 ```

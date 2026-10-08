@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 var (
@@ -154,7 +154,7 @@ func IncompatibleVersionError(message string) *ControlError {
 		Code:      "INCOMPATIBLE_VERSION",
 		Message:   message,
 		Retryable: false,
-		Action:    "upgrade filesync agent to a compatible protocol version",
+		Action:    "upgrade orbit agent to a compatible protocol version",
 		Err:       ErrIncompatibleVersion,
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 func TestLoadOrCreateIdentityReusesExistingKey(t *testing.T) {

@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strconv"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/state"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // WritePrivate installs a flushed owner-only record, including its directory entry.

@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
-# Orbit and File Sync standalone installation script
+# Orbit and Orbit standalone installation script
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BIN_SRC="${SCRIPT_DIR}/filesync"
-SERVICE_SRC="${SCRIPT_DIR}/systemd/filesync.service"
+BIN_SRC="${SCRIPT_DIR}/orbit"
+SERVICE_SRC="${SCRIPT_DIR}/systemd/orbit.service"
 DESKTOP_SRC="${SCRIPT_DIR}/desktop/orbit.desktop"
 ICON_SRC="${SCRIPT_DIR}/icons/orbit.svg"
 
 # Fall back to packaging/ and bin/ paths if running from repository root or scripts dir
-if [ ! -f "${BIN_SRC}" ] && [ -f "${SCRIPT_DIR}/../../bin/filesync" ]; then
-    BIN_SRC="${SCRIPT_DIR}/../../bin/filesync"
+if [ ! -f "${BIN_SRC}" ] && [ -f "${SCRIPT_DIR}/../../bin/orbit" ]; then
+    BIN_SRC="${SCRIPT_DIR}/../../bin/orbit"
 fi
-if [ ! -f "${BIN_SRC}" ] && [ -f "${SCRIPT_DIR}/bin/filesync" ]; then
-    BIN_SRC="${SCRIPT_DIR}/bin/filesync"
+if [ ! -f "${BIN_SRC}" ] && [ -f "${SCRIPT_DIR}/bin/orbit" ]; then
+    BIN_SRC="${SCRIPT_DIR}/bin/orbit"
 fi
-if [ ! -f "${SERVICE_SRC}" ] && [ -f "${SCRIPT_DIR}/../systemd/filesync.service" ]; then
-    SERVICE_SRC="${SCRIPT_DIR}/../systemd/filesync.service"
+if [ ! -f "${SERVICE_SRC}" ] && [ -f "${SCRIPT_DIR}/../systemd/orbit.service" ]; then
+    SERVICE_SRC="${SCRIPT_DIR}/../systemd/orbit.service"
 fi
-if [ ! -f "${SERVICE_SRC}" ] && [ -f "${SCRIPT_DIR}/packaging/systemd/filesync.service" ]; then
-    SERVICE_SRC="${SCRIPT_DIR}/packaging/systemd/filesync.service"
+if [ ! -f "${SERVICE_SRC}" ] && [ -f "${SCRIPT_DIR}/packaging/systemd/orbit.service" ]; then
+    SERVICE_SRC="${SCRIPT_DIR}/packaging/systemd/orbit.service"
 fi
 if [ ! -f "${DESKTOP_SRC}" ] && [ -f "${SCRIPT_DIR}/../desktop/orbit.desktop" ]; then
     DESKTOP_SRC="${SCRIPT_DIR}/../desktop/orbit.desktop"
@@ -35,7 +35,7 @@ if [ ! -f "${ICON_SRC}" ] && [ -f "${SCRIPT_DIR}/packaging/icons/orbit.svg" ]; t
 fi
 
 if [ ! -f "${BIN_SRC}" ]; then
-    echo "Error: filesync binary not found in ${SCRIPT_DIR}" >&2
+    echo "Error: orbit binary not found in ${SCRIPT_DIR}" >&2
     exit 1
 fi
 
@@ -44,27 +44,23 @@ case "$MODE" in user|system) ;; *) echo "Usage: install.sh [user|system]" >&2; e
 
 if [ "${MODE}" = "system" ]; then
     echo "Installing Orbit system-wide (requires root)..."
-    INSTALL_BIN="/usr/local/bin/filesync"
-    INSTALL_ORBIT_BIN="/usr/local/bin/orbit"
-    INSTALL_SERVICE="/usr/lib/systemd/user/filesync.service"
-    INSTALL_ORBIT_SERVICE="/usr/lib/systemd/user/orbit.service"
+    INSTALL_BIN="/usr/local/bin/orbit"
+    INSTALL_SERVICE="/usr/lib/systemd/user/orbit.service"
     INSTALL_APP_DIR="/usr/local/share/applications"
     INSTALL_ICON_DIR="/usr/local/share/icons/hicolor/scalable/apps"
 
     install -d -m 0755 /usr/local/bin
     install -m 0755 "${BIN_SRC}" "${INSTALL_BIN}"
-    ln -sf "${INSTALL_BIN}" "${INSTALL_ORBIT_BIN}"
 
     install -d -m 0755 /usr/lib/systemd/user
-    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${INSTALL_SERVICE}" ] && [ ! -L "${INSTALL_SERVICE}" ] && [ ! -e "${INSTALL_ORBIT_SERVICE}" ] && [ ! -L "${INSTALL_ORBIT_SERVICE}" ]; then
-        sed "s|/usr/bin/filesync|${INSTALL_BIN}|g; s|/usr/bin/orbit|${INSTALL_ORBIT_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
+    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${INSTALL_SERVICE}" ] && [ ! -L "${INSTALL_SERVICE}" ]; then
+        sed "s|/usr/bin/orbit|${INSTALL_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
         chmod 0644 "${INSTALL_SERVICE}"
-        ln -sf filesync.service "${INSTALL_ORBIT_SERVICE}"
     fi
 
     if [ -f "${DESKTOP_SRC}" ]; then
         install -d -m 0755 "${INSTALL_APP_DIR}"
-        sed "s|Exec=orbit$|Exec=${INSTALL_ORBIT_BIN}|g" "${DESKTOP_SRC}" > "${INSTALL_APP_DIR}/orbit.desktop"
+        sed "s|Exec=orbit$|Exec=${INSTALL_BIN}|g" "${DESKTOP_SRC}" > "${INSTALL_APP_DIR}/orbit.desktop"
         chmod 0644 "${INSTALL_APP_DIR}/orbit.desktop"
     fi
 
@@ -73,8 +69,8 @@ if [ "${MODE}" = "system" ]; then
         install -m 0644 "${ICON_SRC}" "${INSTALL_ICON_DIR}/orbit.svg"
     fi
 
-    echo "Installed binary: ${INSTALL_BIN} (symlinked: ${INSTALL_ORBIT_BIN})"
-    echo "Installed service: ${INSTALL_SERVICE} (symlinked: ${INSTALL_ORBIT_SERVICE})"
+    echo "Installed binary: ${INSTALL_BIN}"
+    echo "Installed service: ${INSTALL_SERVICE}"
     echo "Installed desktop launcher: ${INSTALL_APP_DIR}/orbit.desktop"
 else
     echo "Installing Orbit for current user (${USER})..."
@@ -84,14 +80,12 @@ else
     TARGET_ICON_DIR="${HOME}/.local/share/icons/hicolor/scalable/apps"
 
     mkdir -p "${TARGET_BIN_DIR}"
-    install -m 0755 "${BIN_SRC}" "${TARGET_BIN_DIR}/filesync"
-    ln -sf filesync "${TARGET_BIN_DIR}/orbit"
+    install -m 0755 "${BIN_SRC}" "${TARGET_BIN_DIR}/orbit"
 
     mkdir -p "${TARGET_SERVICE_DIR}"
-    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${TARGET_SERVICE_DIR}/filesync.service" ] && [ ! -L "${TARGET_SERVICE_DIR}/filesync.service" ] && [ ! -e "${TARGET_SERVICE_DIR}/orbit.service" ] && [ ! -L "${TARGET_SERVICE_DIR}/orbit.service" ]; then
-        sed "s|/usr/bin/filesync|${TARGET_BIN_DIR}/filesync|g; s|/usr/bin/orbit|${TARGET_BIN_DIR}/orbit|g" "${SERVICE_SRC}" > "${TARGET_SERVICE_DIR}/filesync.service"
-        chmod 0644 "${TARGET_SERVICE_DIR}/filesync.service"
-        ln -sf filesync.service "${TARGET_SERVICE_DIR}/orbit.service"
+    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${TARGET_SERVICE_DIR}/orbit.service" ] && [ ! -L "${TARGET_SERVICE_DIR}/orbit.service" ]; then
+        sed "s|/usr/bin/orbit|${TARGET_BIN_DIR}/orbit|g" "${SERVICE_SRC}" > "${TARGET_SERVICE_DIR}/orbit.service"
+        chmod 0644 "${TARGET_SERVICE_DIR}/orbit.service"
     fi
 
     if [ -f "${DESKTOP_SRC}" ]; then
@@ -105,8 +99,8 @@ else
         install -m 0644 "${ICON_SRC}" "${TARGET_ICON_DIR}/orbit.svg"
     fi
 
-    echo "Installed binary: ${TARGET_BIN_DIR}/filesync (symlinked: ${TARGET_BIN_DIR}/orbit)"
-    echo "Installed service: ${TARGET_SERVICE_DIR}/filesync.service (symlinked: ${TARGET_SERVICE_DIR}/orbit.service)"
+    echo "Installed binary: ${TARGET_BIN_DIR}/orbit"
+    echo "Installed service: ${TARGET_SERVICE_DIR}/orbit.service"
     echo "Installed desktop launcher: ${TARGET_APP_DIR}/orbit.desktop"
 
     # Check PATH
@@ -123,19 +117,19 @@ if [ -d "$SHARE_SRC" ]; then
     for entry in bash-completion/completions/orbit zsh/site-functions/_orbit fish/vendor_completions.d/orbit.fish; do
         install -D -m 0644 "$SHARE_SRC/$entry" "$TARGET_SHARE/$entry"
     done
-    mkdir -p "$TARGET_SHARE/doc/filesync/runbooks"
-    install -m 0644 "$SHARE_SRC"/doc/filesync/runbooks/*.md "$TARGET_SHARE/doc/filesync/runbooks/"
+    mkdir -p "$TARGET_SHARE/doc/orbit/runbooks"
+    install -m 0644 "$SHARE_SRC"/doc/orbit/runbooks/*.md "$TARGET_SHARE/doc/orbit/runbooks/"
     for entry in LICENSE NOTICE LICENSES.md README.md release-manifest.json; do
-        install -m 0644 "$SCRIPT_DIR/$entry" "$TARGET_SHARE/doc/filesync/$entry"
+        install -m 0644 "$SCRIPT_DIR/$entry" "$TARGET_SHARE/doc/orbit/$entry"
     done
 fi
 
 # Reload systemd user daemon and smoothly adopt existing service if running (G05 policy)
 if command -v systemctl >/dev/null 2>&1; then
     systemctl --user daemon-reload 2>/dev/null || true
-    if systemctl --user is-active --quiet filesync.service 2>/dev/null; then
-        echo "Existing filesync service is active; reloading unit..."
-        systemctl --user try-restart filesync.service 2>/dev/null || true
+    if systemctl --user is-active --quiet orbit.service 2>/dev/null; then
+        echo "Existing orbit service is active; reloading unit..."
+        systemctl --user try-restart orbit.service 2>/dev/null || true
     elif systemctl --user is-active --quiet orbit.service 2>/dev/null; then
         echo "Existing orbit service is active; reloading unit..."
         systemctl --user try-restart orbit.service 2>/dev/null || true

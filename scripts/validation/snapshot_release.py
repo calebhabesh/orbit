@@ -22,7 +22,7 @@ def run(kernel, output):
     output = output.resolve()
     prepare_output(output)
     parent = Path(tempfile.mkdtemp(prefix="orbit-t13-snapshot-")).resolve()
-    (parent / ".filesync-disposable").write_text(uuid.uuid4().hex)
+    (parent / ".orbit-disposable").write_text(uuid.uuid4().hex)
     snapshot = parent / "source"
     snapshot.mkdir(mode=0o700)
     inputs = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"]).split(b"\0")

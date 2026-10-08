@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/charmbracelet/x/ansi"
 )
 

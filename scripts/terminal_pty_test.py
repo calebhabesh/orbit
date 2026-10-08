@@ -33,16 +33,26 @@ from terminal_vt import Screen
 os.environ.setdefault('ORBIT_DISABLE_PACKAGED_PROFILE', '1')
 
 
+
+def orbit_argv(args):
+    """Map pre-2.0 'filesync' argv onto the single orbit binary."""
+    args = list(args)
+    if args and args[0] == "orbit":
+        return args[1:]
+    return ["engine", *args]
+
+
 class Campaign:
     def __init__(self, root, binary, output, bare=False):
         self.bare = bare
         self.root = root.resolve()
         self.token = uuid.uuid4().hex
-        marker = root / ".filesync-disposable"
+        marker = root / ".orbit-disposable"
         marker.write_text(self.token)
         marker.chmod(0o600)
-        self.binary = beneath(root, "filesync")
-        shutil.copyfile(binary, self.binary)
+        self.binary = beneath(root, "orbit")
+        if Path(binary).resolve() != self.binary.resolve():
+            shutil.copyfile(binary, self.binary)
         self.binary.chmod(0o700)
         self.state = beneath(root, "state")
         self.data = beneath(root, "Notes界")
@@ -57,7 +67,7 @@ class Campaign:
 
     def run(self, *args):
         self.checked()
-        proc = subprocess.run([str(self.binary), *args], stdin=subprocess.DEVNULL,
+        proc = subprocess.run([str(self.binary), *orbit_argv(args)], stdin=subprocess.DEVNULL,
                               capture_output=True, timeout=15, cwd=self.data)
         if proc.returncode:
             raise AssertionError(f"CLI {args[0]} failed ({proc.returncode}): " + (proc.stdout+proc.stderr).decode(errors="replace"))
@@ -65,7 +75,7 @@ class Campaign:
 
     def spawn(self, args, **kwargs):
         self.checked()
-        p = subprocess.Popen([str(self.binary), *args], **kwargs)
+        p = subprocess.Popen([str(self.binary), *orbit_argv(args)], **kwargs)
         ticks, _ = identity(p.pid)
         self.children[p.pid] = (p, ticks)
         return p
@@ -306,9 +316,9 @@ print('TOOL_DONE',flush=True)
             assert b"\x1b" not in json_pipe and json.loads(json_pipe)["service"]["running"], "JSON rendered a terminal screen"
             master, slave = pty.openpty()
             try:
-                tty_input_pipe = subprocess.run([str(self.binary), "orbit", "tui", "--state", str(self.state)], stdin=slave, capture_output=True, timeout=10)
+                tty_input_pipe = subprocess.run([str(self.binary), "tui", "--state", str(self.state)], stdin=slave, capture_output=True, timeout=10)
                 assert tty_input_pipe.returncode==0 and b"\x1b" not in tty_input_pipe.stdout, "TTY input with piped output rendered TUI"
-                piped_input_tty = subprocess.run([str(self.binary), "orbit", "tui", "--state", str(self.state)], stdin=subprocess.DEVNULL, stdout=slave, stderr=subprocess.PIPE, timeout=10)
+                piped_input_tty = subprocess.run([str(self.binary), "tui", "--state", str(self.state)], stdin=subprocess.DEVNULL, stdout=slave, stderr=subprocess.PIPE, timeout=10)
                 assert piped_input_tty.returncode==0, "piped input with TTY output hung"
                 assert b"\x1b" not in os.read(master,65536), "piped input emitted terminal escapes"
             finally:
@@ -344,7 +354,7 @@ print('TOOL_DONE',flush=True)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--binary", default="bin/filesync")
+    parser.add_argument("--binary", default="bin/orbit")
     parser.add_argument("--output")
     parser.add_argument("--bare", action="store_true", help="exercise ordinary Orbit entry")
     args = parser.parse_args()

@@ -1,4 +1,4 @@
-module github.com/calebhabesh/file-sync
+module github.com/calebhabesh/orbit
 
 go 1.27.0
 

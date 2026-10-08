@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/scheduler"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/scheduler"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func TestRetryClassification(t *testing.T) {

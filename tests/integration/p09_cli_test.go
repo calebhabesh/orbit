@@ -10,12 +10,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/model"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/model"
 )
 
 func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
@@ -24,8 +24,8 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	binary := filepath.Join(disposable, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(disposable, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = repoRoot
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build: %v\n%s", err, output)
@@ -58,13 +58,13 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		{"register", "--state", stateB, "--folder", folder, "--root", rootB},
 		{"register", "--state", stateC, "--folder", folder, "--root", rootC},
 	} {
-		if output, err := exec.Command(binary, args...).CombinedOutput(); err != nil {
+		if output, err := exec.Command(binary, append([]string{"engine"}, args...)...).CombinedOutput(); err != nil {
 			t.Fatalf("%v: %v\n%s", args, err, output)
 		}
 	}
 
 	// 2. Export identities and certificates
-	idOutA, err := exec.Command(binary, "identity", "--state", stateA, "--certificate").CombinedOutput()
+	idOutA, err := exec.Command(binary, "engine", "identity", "--state", stateA, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity A: %v\n%s", err, idOutA)
 	}
@@ -74,7 +74,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	idOutB, err := exec.Command(binary, "identity", "--state", stateB, "--certificate").CombinedOutput()
+	idOutB, err := exec.Command(binary, "engine", "identity", "--state", stateB, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity B: %v\n%s", err, idOutB)
 	}
@@ -84,7 +84,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	idOutC, err := exec.Command(binary, "identity", "--state", stateC, "--certificate").CombinedOutput()
+	idOutC, err := exec.Command(binary, "engine", "identity", "--state", stateC, "--certificate").CombinedOutput()
 	if err != nil {
 		t.Fatalf("identity C: %v\n%s", err, idOutC)
 	}
@@ -133,7 +133,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 
 	// Preview and approve revision 1 on all three nodes
 	for _, st := range []string{stateA, stateB, stateC} {
-		prevOut, err := exec.Command(binary, "membership", "preview", "--state", st, "--folder", folder, "--file", bundlePath1, "--json").CombinedOutput()
+		prevOut, err := exec.Command(binary, "engine", "membership", "preview", "--state", st, "--folder", folder, "--file", bundlePath1, "--json").CombinedOutput()
 		if err != nil {
 			t.Fatalf("membership preview on %s: %v\n%s", st, err, prevOut)
 		}
@@ -145,14 +145,14 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 			t.Fatalf("expected valid transition for rev1 on %s: %+v", st, prev)
 		}
 
-		impOut, err := exec.Command(binary, "membership", "import", "--state", st, "--folder", folder, "--file", bundlePath1, "--approve").CombinedOutput()
+		impOut, err := exec.Command(binary, "engine", "membership", "import", "--state", st, "--folder", folder, "--file", bundlePath1, "--approve").CombinedOutput()
 		if err != nil {
 			t.Fatalf("membership import on %s: %v\n%s", st, err, impOut)
 		}
 	}
 
 	// Verify peers list on Node B
-	peersOutB, err := exec.Command(binary, "peers", "list", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
+	peersOutB, err := exec.Command(binary, "engine", "peers", "list", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("peers list B: %v\n%s", err, peersOutB)
 	}
@@ -175,13 +175,13 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	scanOutA, err := exec.Command(binary, "scan", "--state", stateA, "--folder", folder).CombinedOutput()
+	scanOutA, err := exec.Command(binary, "engine", "scan", "--state", stateA, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan A: %v\n%s", err, scanOutA)
 	}
 
 	// Serve A, B syncs from A
-	serveCmdA := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveCmdA := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA, err := serveCmdA.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -192,7 +192,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 	urlA := readListenerURL(t, stdoutA)
 
-	syncOutB, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
+	syncOutB, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA, "--peer-device", devA, "--peer-certificate", certPathA, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B from A: %v\n%s", err, syncOutB)
 	}
@@ -201,7 +201,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	_ = serveCmdA.Wait()
 
 	// Serve B, C syncs from B (C receives A's file via B forwarding)
-	serveCmdB := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveCmdB := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB, err := serveCmdB.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -212,7 +212,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 	urlB := readListenerURL(t, stdoutB)
 
-	syncOutC, err := exec.Command(binary, "sync", "--state", stateC, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
+	syncOutC, err := exec.Command(binary, "engine", "sync", "--state", stateC, "--folder", folder, "--peer-url", urlB, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync C from B: %v\n%s", err, syncOutC)
 	}
@@ -231,7 +231,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// 2. Status on Node C: author identity is devA (NOT devB!) (Invariant I08)
-	statOutC, err := exec.Command(binary, "status", "--state", stateC, "--folder", folder, "--json").CombinedOutput()
+	statOutC, err := exec.Command(binary, "engine", "status", "--state", stateC, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("status C: %v\n%s", err, statOutC)
 	}
@@ -264,13 +264,13 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	scanOutC, err := exec.Command(binary, "scan", "--state", stateC, "--folder", folder).CombinedOutput()
+	scanOutC, err := exec.Command(binary, "engine", "scan", "--state", stateC, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("scan C: %v\n%s", err, scanOutC)
 	}
 
 	// Serve C, B syncs from C
-	serveCmdC := exec.Command(binary, "serve", "--state", stateC, "--peer-listen", "127.0.0.1:0")
+	serveCmdC := exec.Command(binary, "engine", "serve", "--state", stateC, "--peer-listen", "127.0.0.1:0")
 	stdoutC, err := serveCmdC.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -281,7 +281,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 	urlC := readListenerURL(t, stdoutC)
 
-	syncOutBFromC, err := exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlC, "--peer-device", devC, "--peer-certificate", certPathC, "--json").CombinedOutput()
+	syncOutBFromC, err := exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlC, "--peer-device", devC, "--peer-certificate", certPathC, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B from C: %v\n%s", err, syncOutBFromC)
 	}
@@ -290,7 +290,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	_ = serveCmdC.Wait()
 
 	// Serve B, A syncs from B
-	serveCmdB2 := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveCmdB2 := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB2, err := serveCmdB2.StdoutPipe()
 	if err != nil {
 		t.Fatal(err)
@@ -301,7 +301,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 	urlB2 := readListenerURL(t, stdoutB2)
 
-	syncOutAFromB, err := exec.Command(binary, "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB2, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
+	syncOutAFromB, err := exec.Command(binary, "engine", "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB2, "--peer-device", devB, "--peer-certificate", certPathB, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync A from B: %v\n%s", err, syncOutAFromB)
 	}
@@ -319,7 +319,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Status on Node A has author devC
-	statOutA, err := exec.Command(binary, "status", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
+	statOutA, err := exec.Command(binary, "engine", "status", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("status A: %v\n%s", err, statOutA)
 	}
@@ -344,7 +344,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Verify direct progress labeling in text status on Node B
-	statusTextB, err := exec.Command(binary, "status", "--state", stateB, "--folder", folder).CombinedOutput()
+	statusTextB, err := exec.Command(binary, "engine", "status", "--state", stateB, "--folder", folder).CombinedOutput()
 	if err != nil {
 		t.Fatalf("status text B: %v\n%s", err, statusTextB)
 	}
@@ -370,19 +370,19 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 
 	// Scan offline on all 3 nodes
 	for _, st := range []string{stateA, stateB, stateC} {
-		if out, err := exec.Command(binary, "scan", "--state", st, "--folder", folder).CombinedOutput(); err != nil {
+		if out, err := exec.Command(binary, "engine", "scan", "--state", st, "--folder", folder).CombinedOutput(); err != nil {
 			t.Fatalf("scan %s: %v\n%s", st, err, out)
 		}
 	}
 
 	// Sync A to B
-	serveA2 := exec.Command(binary, "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
+	serveA2 := exec.Command(binary, "engine", "serve", "--state", stateA, "--peer-listen", "127.0.0.1:0")
 	stdoutA2, _ := serveA2.StdoutPipe()
 	serveA2.Stderr = os.Stderr
 	_ = serveA2.Start()
 	urlA2 := readListenerURL(t, stdoutA2)
 
-	_, err = exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA2, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
+	_, err = exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlA2, "--peer-device", devA, "--peer-certificate", certPathA).CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B from A2: %v", err)
 	}
@@ -390,7 +390,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	_ = serveA2.Wait()
 
 	// Check conflicts on B: should have 2 heads (A and B)
-	confOutB, err := exec.Command(binary, "conflicts", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
+	confOutB, err := exec.Command(binary, "engine", "conflicts", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("conflicts B: %v\n%s", err, confOutB)
 	}
@@ -424,7 +424,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	reviewedStr := strings.Join(headIDs, ",")
 
 	// Resolve A and B on Node B by selecting A
-	resOutB, err := exec.Command(binary, "resolve", "select", "--state", stateB, "--folder", folder,
+	resOutB, err := exec.Command(binary, "engine", "resolve", "select", "--state", stateB, "--folder", folder,
 		"--path", sharedPath, "--selected", selectedHead, "--reviewed", reviewedStr,
 		"--head-token", headTokenStr, "--idempotency-key", "resolve-ab-1", "--json").CombinedOutput()
 	if err != nil {
@@ -439,13 +439,13 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Late-arrival of C's edit: sync C to B
-	serveC2 := exec.Command(binary, "serve", "--state", stateC, "--peer-listen", "127.0.0.1:0")
+	serveC2 := exec.Command(binary, "engine", "serve", "--state", stateC, "--peer-listen", "127.0.0.1:0")
 	stdoutC2, _ := serveC2.StdoutPipe()
 	serveC2.Stderr = os.Stderr
 	_ = serveC2.Start()
 	urlC2 := readListenerURL(t, stdoutC2)
 
-	_, err = exec.Command(binary, "sync", "--state", stateB, "--folder", folder, "--peer-url", urlC2, "--peer-device", devC, "--peer-certificate", certPathC).CombinedOutput()
+	_, err = exec.Command(binary, "engine", "sync", "--state", stateB, "--folder", folder, "--peer-url", urlC2, "--peer-device", devC, "--peer-certificate", certPathC).CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync B from C2: %v", err)
 	}
@@ -453,7 +453,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	_ = serveC2.Wait()
 
 	// Check conflicts on B again: C was concurrent and unreviewed, so it MUST remain concurrent! (I03)
-	confOutB2, err := exec.Command(binary, "conflicts", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
+	confOutB2, err := exec.Command(binary, "engine", "conflicts", "--state", stateB, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("conflicts B2: %v\n%s", err, confOutB2)
 	}
@@ -475,17 +475,17 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Sync B to A and B to C so all nodes converge
-	serveB3 := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveB3 := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB3, _ := serveB3.StdoutPipe()
 	serveB3.Stderr = os.Stderr
 	_ = serveB3.Start()
 	urlB3 := readListenerURL(t, stdoutB3)
 
-	_, err = exec.Command(binary, "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB3, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
+	_, err = exec.Command(binary, "engine", "sync", "--state", stateA, "--folder", folder, "--peer-url", urlB3, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync A from B3: %v", err)
 	}
-	_, err = exec.Command(binary, "sync", "--state", stateC, "--folder", folder, "--peer-url", urlB3, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
+	_, err = exec.Command(binary, "engine", "sync", "--state", stateC, "--folder", folder, "--peer-url", urlB3, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
 	if err != nil {
 		t.Fatalf("sync C from B3: %v", err)
 	}
@@ -501,7 +501,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		{"Node B", stateB},
 		{"Node C", stateC},
 	} {
-		confOut, err := exec.Command(binary, "conflicts", "--state", node.state, "--folder", folder, "--json").CombinedOutput()
+		confOut, err := exec.Command(binary, "engine", "conflicts", "--state", node.state, "--folder", folder, "--json").CombinedOutput()
 		if err != nil {
 			t.Fatalf("%s conflicts: %v\n%s", node.name, err, confOut)
 		}
@@ -540,7 +540,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	// =========================================================================
 
 	// Preview retirement of Node C on Node B
-	prevRetOut, err := exec.Command(binary, "peers", "retire", "--state", stateB, "--folder", folder,
+	prevRetOut, err := exec.Command(binary, "engine", "peers", "retire", "--state", stateB, "--folder", folder,
 		"--peer-device", devC, "--preview", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("peers retire preview: %v\n%s", err, prevRetOut)
@@ -557,7 +557,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Execute retirement of Node C on Node B
-	retOut, err := exec.Command(binary, "peers", "retire", "--state", stateB, "--folder", folder,
+	retOut, err := exec.Command(binary, "engine", "peers", "retire", "--state", stateB, "--folder", folder,
 		"--peer-device", devC, "--idempotency-key", "retire-c-exec", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("peers retire execute: %v\n%s", err, retOut)
@@ -571,7 +571,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Replay retirement of Node C on Node B with same key
-	retReplayOut, err := exec.Command(binary, "peers", "retire", "--state", stateB, "--folder", folder,
+	retReplayOut, err := exec.Command(binary, "engine", "peers", "retire", "--state", stateB, "--folder", folder,
 		"--peer-device", devC, "--idempotency-key", "retire-c-exec", "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("peers retire replay: %v\n%s", err, retReplayOut)
@@ -586,14 +586,14 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 
 	// Export membership revision 2 bundle from Node B
 	bundleRev2Path := filepath.Join(disposable, "membership_rev2.json")
-	expOut, err := exec.Command(binary, "membership", "export", "--state", stateB, "--folder", folder,
+	expOut, err := exec.Command(binary, "engine", "membership", "export", "--state", stateB, "--folder", folder,
 		"--file", bundleRev2Path).CombinedOutput()
 	if err != nil {
 		t.Fatalf("membership export rev2: %v\n%s", err, expOut)
 	}
 
 	// On survivor Node A, preview and import revision 2
-	prevAOut, err := exec.Command(binary, "membership", "preview", "--state", stateA, "--folder", folder,
+	prevAOut, err := exec.Command(binary, "engine", "membership", "preview", "--state", stateA, "--folder", folder,
 		"--file", bundleRev2Path, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("membership preview on A: %v\n%s", err, prevAOut)
@@ -606,14 +606,14 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		t.Fatalf("unexpected membership preview on A: %+v", prevA)
 	}
 
-	impAOut, err := exec.Command(binary, "membership", "import", "--state", stateA, "--folder", folder,
+	impAOut, err := exec.Command(binary, "engine", "membership", "import", "--state", stateA, "--folder", folder,
 		"--file", bundleRev2Path, "--approve").CombinedOutput()
 	if err != nil {
 		t.Fatalf("membership import on A: %v\n%s", err, impAOut)
 	}
 
 	// Verify Node A peer list shows C retired
-	peersAOut, err := exec.Command(binary, "peers", "list", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
+	peersAOut, err := exec.Command(binary, "engine", "peers", "list", "--state", stateA, "--folder", folder, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("peers list on A: %v\n%s", err, peersAOut)
 	}
@@ -627,14 +627,14 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 
 	// Access Termination (Invariant I14):
 	// Node C (retired) attempts to connect to Node B
-	serveB4 := exec.Command(binary, "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
+	serveB4 := exec.Command(binary, "engine", "serve", "--state", stateB, "--peer-listen", "127.0.0.1:0")
 	stdoutB4, _ := serveB4.StdoutPipe()
 	serveB4.Stderr = os.Stderr
 	_ = serveB4.Start()
 	urlB4 := readListenerURL(t, stdoutB4)
 
 	// Node C attempts to sync with Node B - MUST FAIL
-	syncFailOut, err := exec.Command(binary, "sync", "--state", stateC, "--folder", folder,
+	syncFailOut, err := exec.Command(binary, "engine", "sync", "--state", stateC, "--folder", folder,
 		"--peer-url", urlB4, "--peer-device", devB, "--peer-certificate", certPathB).CombinedOutput()
 	if err == nil {
 		t.Fatalf("expected sync from retired Node C to fail, but succeeded:\n%s", syncFailOut)
@@ -656,7 +656,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if out, err := exec.Command(binary, "init", "--state", stateD).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateD).CombinedOutput(); err != nil {
 		t.Fatalf("init D: %v\n%s", err, out)
 	}
 
@@ -671,12 +671,12 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Register folder on D
-	if out, err := exec.Command(binary, "register", "--state", stateD, "--folder", folder, "--root", rootD).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "register", "--state", stateD, "--folder", folder, "--root", rootD).CombinedOutput(); err != nil {
 		t.Fatalf("register D: %v\n%s", err, out)
 	}
 
 	// Enroll preview
-	enrPrevOut, err := exec.Command(binary, "enroll", "preview", "--state", stateD, "--folder", folder,
+	enrPrevOut, err := exec.Command(binary, "engine", "enroll", "preview", "--state", stateD, "--folder", folder,
 		"--root", rootD, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("enroll preview D: %v\n%s", err, enrPrevOut)
@@ -690,7 +690,7 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Enroll bootstrap
-	enrBootOut, err := exec.Command(binary, "enroll", "bootstrap", "--state", stateD, "--folder", folder,
+	enrBootOut, err := exec.Command(binary, "engine", "enroll", "bootstrap", "--state", stateD, "--folder", folder,
 		"--root", rootD, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("enroll bootstrap D: %v\n%s", err, enrBootOut)
@@ -723,13 +723,13 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Initialize Node E
-	if out, err := exec.Command(binary, "init", "--state", stateE).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateE).CombinedOutput(); err != nil {
 		t.Fatalf("init E: %v\n%s", err, out)
 	}
 	if err := os.WriteFile(filepath.Join(rootE, "reinstall_note.txt"), []byte("valuable work preserved"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if out, err := exec.Command(binary, "register", "--state", stateE, "--folder", folder, "--root", rootE).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "register", "--state", stateE, "--folder", folder, "--root", rootE).CombinedOutput(); err != nil {
 		t.Fatalf("register E: %v\n%s", err, out)
 	}
 
@@ -742,15 +742,15 @@ func TestP09ThreePeerForwardingAndMembershipLifecycle(t *testing.T) {
 	}
 
 	// Reinitialize with fresh identity
-	if out, err := exec.Command(binary, "init", "--state", stateE).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "init", "--state", stateE).CombinedOutput(); err != nil {
 		t.Fatalf("reinstall init E: %v\n%s", err, out)
 	}
-	if out, err := exec.Command(binary, "register", "--state", stateE, "--folder", folder, "--root", rootE).CombinedOutput(); err != nil {
+	if out, err := exec.Command(binary, "engine", "register", "--state", stateE, "--folder", folder, "--root", rootE).CombinedOutput(); err != nil {
 		t.Fatalf("reinstall register E: %v\n%s", err, out)
 	}
 
 	// Re-enroll folder via bootstrap
-	bootEOut, err := exec.Command(binary, "enroll", "bootstrap", "--state", stateE, "--folder", folder,
+	bootEOut, err := exec.Command(binary, "engine", "enroll", "bootstrap", "--state", stateE, "--folder", folder,
 		"--root", rootE, "--json").CombinedOutput()
 	if err != nil {
 		t.Fatalf("reinstall bootstrap E: %v\n%s", err, bootEOut)

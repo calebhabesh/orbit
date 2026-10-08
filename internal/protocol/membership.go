@@ -7,7 +7,7 @@ import (
 	"errors"
 	"sort"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 const MaxActiveMembers = 16
@@ -56,7 +56,7 @@ func EncodeMembership(m Membership) ([]byte, error) {
 		seen[member.Device] = true
 	}
 	var out bytes.Buffer
-	out.WriteString("filesync-membership-v1\x00")
+	out.WriteString("orbit-membership-v1\x00")
 	out.Write(m.Folder[:])
 	_ = binary.Write(&out, binary.BigEndian, m.Revision)
 	out.Write(m.PriorDigest[:])
@@ -108,7 +108,7 @@ func EncodeRetirementSnapshot(snapshot RetirementSnapshot) ([]byte, error) {
 		}
 	}
 	var out bytes.Buffer
-	out.WriteString("filesync-retirement-v1\x00")
+	out.WriteString("orbit-retirement-v1\x00")
 	out.Write(snapshot.Folder[:])
 	_ = binary.Write(&out, binary.BigEndian, snapshot.ConfigurationRev)
 	out.Write(snapshot.RetiredDevice[:])
@@ -129,7 +129,7 @@ func RetirementSnapshotDigest(snapshot RetirementSnapshot) (history.Digest, erro
 }
 
 func DecodeRetirementSnapshot(data []byte) (RetirementSnapshot, error) {
-	const prefix = "filesync-retirement-v1\x00"
+	const prefix = "orbit-retirement-v1\x00"
 	if len(data) < len(prefix)+32+8+32+8 {
 		return RetirementSnapshot{}, errors.New("retirement snapshot data too short")
 	}

@@ -9,12 +9,12 @@ import (
 	"testing"
 )
 
-const Marker = ".filesync-disposable"
+const Marker = ".orbit-disposable"
 
 func NewDisposable(t testing.TB) string {
 	t.Helper()
 	root := t.TempDir()
-	if err := os.WriteFile(filepath.Join(root, Marker), []byte("filesync test data only\n"), 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(root, Marker), []byte("orbit test data only\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	return root

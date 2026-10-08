@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
 func TestOrbitBrowse_PendingStructuralAndStrictPaths(t *testing.T) {
@@ -53,7 +53,7 @@ func TestOrbitBrowse_PendingStructuralAndStrictPaths(t *testing.T) {
 	if err != nil || len(unicode.Items) != 1 || !unicode.Items[0].IsDir {
 		t.Fatalf("unicode explicit directory: %+v %v", unicode, err)
 	}
-	for _, path := range []string{"/日本", "日本/../日本", "日本//empty", "日本/", "../collision", ".filesync-internal"} {
+	for _, path := range []string{"/日本", "日本/../日本", "日本//empty", "日本/", "../collision", ".orbit-internal"} {
 		if _, err := db.BrowseWorkspaceDirectory(ctx, folder, BrowseOptions{DirPath: path}); !errors.Is(err, ErrInvalidDirectoryPath) {
 			t.Fatalf("accepted invalid path %q: %v", path, err)
 		}

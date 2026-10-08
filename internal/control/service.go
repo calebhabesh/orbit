@@ -14,9 +14,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // ServiceStatus inspects the system environment, systemd user service state,
@@ -56,7 +56,7 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 	}
 
 	res := &ServiceStatusResult{
-		ManualCommand: fmt.Sprintf("filesync serve --state=%s --control-listen=127.0.0.1:8080", stateDir),
+		ManualCommand: fmt.Sprintf("orbit serve --state=%s --control-listen=127.0.0.1:8080", stateDir),
 	}
 
 	// 1. Check systemctl availability and user bus reachability
@@ -83,16 +83,16 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 	// 2. Unit file existence
 	var userUnitPath string
 	if home, err := os.UserHomeDir(); err == nil {
-		userUnitPath = filepath.Join(home, ".config", "systemd", "user", "filesync.service")
+		userUnitPath = filepath.Join(home, ".config", "systemd", "user", "orbit.service")
 		if _, err := os.Stat(userUnitPath); err == nil {
 			res.UnitInstalled = true
 		}
 	}
 	if !res.UnitInstalled {
 		for _, p := range []string{
-			"/usr/lib/systemd/user/filesync.service",
-			"/usr/local/lib/systemd/user/filesync.service",
-			"/etc/systemd/user/filesync.service",
+			"/usr/lib/systemd/user/orbit.service",
+			"/usr/local/lib/systemd/user/orbit.service",
+			"/etc/systemd/user/orbit.service",
 		} {
 			if _, err := os.Stat(p); err == nil {
 				res.UnitInstalled = true
@@ -105,7 +105,7 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 	if res.SystemdAvailable {
 		enabledCtx, enabledCancel := context.WithTimeout(ctx, 1500*time.Millisecond)
 		defer enabledCancel()
-		cmd := exec.CommandContext(enabledCtx, systemctlPath, "--user", "is-enabled", "filesync.service")
+		cmd := exec.CommandContext(enabledCtx, systemctlPath, "--user", "is-enabled", "orbit.service")
 		out, _ := cmd.CombinedOutput()
 		if strings.TrimSpace(string(out)) == "enabled" {
 			res.EnabledOnLogin = true
@@ -228,7 +228,7 @@ func EnableService(ctx context.Context, stateDir, binPath string, db *repository
 	}
 
 	// Enable unit
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "enable", "filesync.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "enable", "orbit.service")
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -243,7 +243,7 @@ func EnableService(ctx context.Context, stateDir, binPath string, db *repository
 		Action:  "enable",
 		Success: updatedStatus.EnabledOnLogin,
 		Status:  *updatedStatus,
-		Message: "filesync user service enabled successfully",
+		Message: "orbit user service enabled successfully",
 	}, nil
 }
 
@@ -275,7 +275,7 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB) (*Ser
 	if st.CurrentlyRunning && !serviceOwnsState(ctx, systemctlPath, stateDir) {
 		return nil, manualDaemonError()
 	}
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "start", "filesync.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "start", "orbit.service")
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -291,7 +291,7 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB) (*Ser
 		Action:  "start",
 		Success: owned && updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
-		Message: "filesync user service started successfully",
+		Message: "orbit user service started successfully",
 	}, nil
 }
 
@@ -320,7 +320,7 @@ func StopService(ctx context.Context, stateDir string, db *repository.DB) (*Serv
 	}
 
 	systemctlPath, _ := exec.LookPath("systemctl")
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "stop", "filesync.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "stop", "orbit.service")
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -335,7 +335,7 @@ func StopService(ctx context.Context, stateDir string, db *repository.DB) (*Serv
 		Action:  "stop",
 		Success: !updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
-		Message: "filesync user service stopped successfully",
+		Message: "orbit user service stopped successfully",
 	}, nil
 }
 
@@ -367,7 +367,7 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB) (*S
 	if st.CurrentlyRunning && !serviceOwnsState(ctx, systemctlPath, stateDir) {
 		return nil, manualDaemonError()
 	}
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "restart", "filesync.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "restart", "orbit.service")
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -383,7 +383,7 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB) (*S
 		Action:  "restart",
 		Success: owned && updatedStatus.CurrentlyRunning,
 		Status:  *updatedStatus,
-		Message: "filesync user service restarted successfully",
+		Message: "orbit user service restarted successfully",
 	}, nil
 }
 
@@ -398,7 +398,7 @@ func serviceOwnsState(ctx context.Context, systemctlPath, stateDir string) bool 
 	if stateDir == "" {
 		stateDir = config.DefaultStateDir()
 	}
-	out, err := exec.CommandContext(ctx, systemctlPath, "--user", "show", "-p", "MainPID", "--value", "filesync.service").Output()
+	out, err := exec.CommandContext(ctx, systemctlPath, "--user", "show", "-p", "MainPID", "--value", "orbit.service").Output()
 	if err != nil {
 		return false
 	}
@@ -432,7 +432,7 @@ func waitServiceOwnsState(ctx context.Context, systemctlPath, stateDir string) b
 	}
 }
 
-// InstallUserUnit writes ~/.config/systemd/user/filesync.service configured for this binary.
+// InstallUserUnit writes ~/.config/systemd/user/orbit.service configured for this binary.
 func InstallUserUnit(stateDir, binPath string) error {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -442,7 +442,7 @@ func InstallUserUnit(stateDir, binPath string) error {
 		if execPath, err := os.Executable(); err == nil {
 			binPath = execPath
 		} else {
-			binPath = "/usr/bin/filesync"
+			binPath = "/usr/bin/orbit"
 		}
 	}
 	if stateDir == "" {
@@ -455,8 +455,8 @@ func InstallUserUnit(stateDir, binPath string) error {
 	}
 
 	content := fmt.Sprintf(`[Unit]
-Description=File Sync Background Engine
-Documentation=https://github.com/calebhabesh/file-sync
+Description=Orbit Background Engine
+Documentation=https://github.com/calebhabesh/orbit
 After=network.target
 
 [Service]
@@ -474,13 +474,13 @@ NoNewPrivileges=yes
 
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=filesync
+SyslogIdentifier=orbit
 
 [Install]
 WantedBy=default.target
 `, binPath, stateDir, binPath, stateDir)
 
-	targetFile := filepath.Join(userDir, "filesync.service")
+	targetFile := filepath.Join(userDir, "orbit.service")
 	if strings.ContainsAny(stateDir+binPath, "\r\n\x00%\"\\") || strings.ContainsAny(stateDir+binPath, " \t") {
 		return errors.New("service paths require plain absolute paths without whitespace or systemd specifiers")
 	}
@@ -510,7 +510,7 @@ func DisableService(ctx context.Context, stateDir string, db *repository.DB) (*S
 	if err != nil {
 		return nil, err
 	}
-	if out, err := exec.CommandContext(ctx, path, "--user", "disable", "filesync.service").CombinedOutput(); err != nil {
+	if out, err := exec.CommandContext(ctx, path, "--user", "disable", "orbit.service").CombinedOutput(); err != nil {
 		return nil, fmt.Errorf("disable service: %w (%s)", err, out)
 	}
 	updated, err := CheckServiceStatus(ctx, stateDir, db)
@@ -530,7 +530,7 @@ func validateSelectedService(stateDir string) error {
 	if err != nil {
 		return err
 	}
-	data, err := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "filesync.service"))
+	data, err := os.ReadFile(filepath.Join(home, ".config", "systemd", "user", "orbit.service"))
 	if err != nil {
 		return &ControlError{Code: "SERVICE_SELECTION_REQUIRED", Message: "selected state has no verified user unit", Action: "install a user unit for the selected state"}
 	}

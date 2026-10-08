@@ -14,11 +14,11 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // Folders returns all folders in the database.
@@ -105,10 +105,10 @@ func (c *Controller) CheckMigration(ctx context.Context) (*MigrationCheckResult,
 		res.Action = "database schema is up to date"
 	} else if ver < repository.CurrentSchema {
 		res.Status = "migration_needed"
-		res.Action = "run filesync serve or filesync init to apply pending migrations"
+		res.Action = "run orbit serve or orbit init to apply pending migrations"
 	} else {
 		res.Status = "incompatible"
-		res.Action = "upgrade filesync binary to match newer database schema"
+		res.Action = "upgrade orbit binary to match newer database schema"
 	}
 	return res, nil
 }
@@ -182,7 +182,7 @@ func ResetIdentity(ctx context.Context, stateDir string) (*ResetIdentityResult, 
 	lock, err := state.Acquire(stateDir)
 	if err != nil {
 		if errors.Is(err, state.ErrLocked) {
-			return nil, errors.New("cannot reset identity while agent is running; stop service first ('systemctl --user stop filesync.service' or 'filesync stop')")
+			return nil, errors.New("cannot reset identity while agent is running; stop service first ('systemctl --user stop orbit.service' or 'orbit stop')")
 		}
 		return nil, fmt.Errorf("acquire agent lock: %w", err)
 	}
@@ -349,8 +349,8 @@ func RunPreflight(ctx context.Context, stateDir string) (*PreflightResult, error
 		if errors.Is(err, state.ErrLocked) {
 			result.AgentRunning = true
 			result.Status = "warning"
-			result.Issues = append(result.Issues, "file-sync background agent is currently running (lock held)")
-			result.NextSteps = append(result.NextSteps, "stop background service ('systemctl --user stop filesync.service' or 'filesync stop') before applying binary upgrade")
+			result.Issues = append(result.Issues, "orbit background agent is currently running (lock held)")
+			result.NextSteps = append(result.NextSteps, "stop background service ('systemctl --user stop orbit.service' or 'orbit stop') before applying binary upgrade")
 		} else {
 			result.Status = "blocked"
 			result.Issues = append(result.Issues, fmt.Sprintf("cannot inspect agent lock: %v", err))
@@ -366,7 +366,7 @@ func RunPreflight(ctx context.Context, stateDir string) (*PreflightResult, error
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
 		result.Status = "blocked"
 		result.Issues = append(result.Issues, "metadata.sqlite does not exist in state directory")
-		result.NextSteps = append(result.NextSteps, "initialize device first ('filesync init')")
+		result.NextSteps = append(result.NextSteps, "initialize device first ('orbit init')")
 		return result, nil
 	}
 
@@ -391,7 +391,7 @@ func RunPreflight(ctx context.Context, stateDir string) (*PreflightResult, error
 	if userVersion > repository.CurrentSchema {
 		result.Status = "blocked"
 		result.Issues = append(result.Issues, fmt.Sprintf("database schema (%d) is newer than binary schema (%d); binary cannot run against newer schema (Invariant I20)", userVersion, repository.CurrentSchema))
-		result.NextSteps = append(result.NextSteps, "upgrade filesync binary to match newer database schema")
+		result.NextSteps = append(result.NextSteps, "upgrade orbit binary to match newer database schema")
 	} else if userVersion < repository.CurrentSchema {
 		result.NextSteps = append(result.NextSteps, fmt.Sprintf("pending migration: database schema will be updated from %d to %d upon restart", userVersion, repository.CurrentSchema))
 	}
@@ -405,7 +405,7 @@ func RunPreflight(ctx context.Context, stateDir string) (*PreflightResult, error
 	}
 
 	if result.Status == "ready" {
-		result.NextSteps = append(result.NextSteps, "environment is ready for upgrade; create consistent backup ('filesync maintenance backup') and proceed")
+		result.NextSteps = append(result.NextSteps, "environment is ready for upgrade; create consistent backup ('orbit maintenance backup') and proceed")
 	}
 
 	return result, nil
@@ -445,7 +445,7 @@ func RestoreBackup(ctx context.Context, stateDir string, backupPath string) (*Re
 	lock, err := state.Acquire(stateDir)
 	if err != nil {
 		if errors.Is(err, state.ErrLocked) {
-			return nil, errors.New("cannot restore backup while agent is running; stop service first ('systemctl --user stop filesync.service' or 'filesync stop')")
+			return nil, errors.New("cannot restore backup while agent is running; stop service first ('systemctl --user stop orbit.service' or 'orbit stop')")
 		}
 		return nil, fmt.Errorf("acquire agent lock: %w", err)
 	}

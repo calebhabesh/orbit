@@ -46,7 +46,7 @@ class W15SafetyTest(unittest.TestCase):
         for path in (link, self.root / '..', Path.home(), '/tmp', str(self.root) + '/link/..'):
             with self.assertRaises(RuntimeError):
                 validate_root(path)
-        (self.root / '.filesync-pilot').write_text(TOKEN)
+        (self.root / '.orbit-pilot').write_text(TOKEN)
         with self.assertRaises(RuntimeError):
             validate_root(self.root)
 

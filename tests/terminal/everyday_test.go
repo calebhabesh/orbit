@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/testkit"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -120,8 +120,8 @@ func TestTerminalT11SessionResultStreamAndSymlinkRefusal(t *testing.T) {
 }
 func TestTerminalT11RealPTYEveryday(t *testing.T) {
 	root := testkit.NewDisposable(t)
-	binary := filepath.Join(root, "filesync")
-	build := exec.Command("go", "build", "-o", binary, "./cmd/filesync")
+	binary := filepath.Join(root, "orbit")
+	build := exec.Command("go", "build", "-o", binary, "./cmd/orbit")
 	build.Dir = "../.."
 	if out, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("build %v %s", err, out)

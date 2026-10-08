@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/controlclient"
 )
 
 // DaemonStarter encapsulates starting the background daemon process or runner.

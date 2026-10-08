@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
 )
 
 func TestWANW08ProductionMulticastKnownPeerTwoWaySync(t *testing.T) {

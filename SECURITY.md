@@ -15,7 +15,7 @@ reproduce. Expect an acknowledgement within a week.
 
 ## Scope
 
-- The `orbit`/`filesync` client, its peer protocol and local state handling.
+- The `orbit` client, its peer protocol and local state handling.
 - The `orbit-net` connection service and the hosted instance named in the
   release profile. Do not run load, flood or denial-of-service tests against
   the hosted service; use a self-hosted instance instead.

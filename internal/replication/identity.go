@@ -18,10 +18,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
+	"github.com/calebhabesh/orbit/internal/history"
 )
 
-const certificateServerName = "peer.filesync.invalid"
+const certificateServerName = "peer.orbit.invalid"
 
 type Identity struct {
 	DeviceID    history.ID
@@ -131,7 +131,7 @@ func generateIdentityPEM(deviceID history.ID, now time.Time) ([]byte, error) {
 	}
 	template := &x509.Certificate{
 		SerialNumber:          serial,
-		Subject:               pkix.Name{CommonName: "filesync-device-" + hex.EncodeToString(deviceID[:8])},
+		Subject:               pkix.Name{CommonName: "orbit-device-" + hex.EncodeToString(deviceID[:8])},
 		DNSNames:              []string{certificateServerName},
 		NotBefore:             now.UTC().Add(-5 * time.Minute),
 		NotAfter:              now.UTC().AddDate(10, 0, 0),

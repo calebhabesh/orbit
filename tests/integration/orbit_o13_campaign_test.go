@@ -19,18 +19,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/launcher"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/web"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/web"
 )
 
 // SCENARIO 1: Fresh install/create default folder; repeat launch; nonempty alternate-root preview;
@@ -769,13 +769,13 @@ func TestOrbitO13_Scenario06_SessionSecurity_ServiceRestart_SingletonLock_Headle
 	_ = json.NewDecoder(bootResp.Body).Decode(&bootResult)
 	sessionCookie := ""
 	for _, c := range bootResp.Cookies() {
-		if c.Name == "filesync_session" {
+		if c.Name == "orbit_session" {
 			sessionCookie = c.Value
 		}
 	}
 	bootResp.Body.Close()
 	if sessionCookie == "" || bootResult.CSRFToken == "" {
-		t.Fatal("expected filesync_session cookie and csrf_token set")
+		t.Fatal("expected orbit_session cookie and csrf_token set")
 	}
 
 	// Second exchange of same token MUST fail (one-use token, Invariant I21)
@@ -789,7 +789,7 @@ func TestOrbitO13_Scenario06_SessionSecurity_ServiceRestart_SingletonLock_Headle
 
 	// 3. User logout: invalidates session cookie, but daemon sync remains running! (Invariant I21)
 	logoutReq, _ := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/api/v1/auth/logout", addr), nil)
-	logoutReq.Header.Set("Cookie", fmt.Sprintf("filesync_session=%s", sessionCookie))
+	logoutReq.Header.Set("Cookie", fmt.Sprintf("orbit_session=%s", sessionCookie))
 	logoutReq.Header.Set("X-CSRF-Token", bootResult.CSRFToken)
 	logoutResp, err := client.Do(logoutReq)
 	if err != nil || logoutResp.StatusCode != http.StatusOK {
@@ -1081,7 +1081,7 @@ func TestOrbitO13_Scenario08_LostDeviceRetirement_ReplacementKey_StoppedBackupRe
 	}
 }
 
-// SCENARIO 9: Existing File Sync state/package upgrade, capability mismatch and supported rollback;
+// SCENARIO 9: Existing Orbit state/package upgrade, capability mismatch and supported rollback;
 // uninstall retains data; no remote asset/runtime dependency.
 func TestOrbitO13_Scenario09_LegacySchemaAdoption_RollbackRefusal_UninstallDataPreservation(t *testing.T) {
 	ctx := context.Background()

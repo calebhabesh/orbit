@@ -7,27 +7,18 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
 	_ "modernc.org/sqlite"
 )
 
 var (
-	ErrMultipleStatesFound = errors.New("multiple state directories found; specify which to use with --state")
-	ErrInvalidState        = errors.New("invalid existing state directory")
+	ErrInvalidState = errors.New("invalid existing state directory")
 )
 
-type StateCandidate struct {
-	Path        string
-	Exists      bool
-	Initialized bool
-	HasDB       bool
-	HasLock     bool
-}
-
-// DiscoverState discovers the state directory without guessing when multiple states exist.
+// DiscoverState returns the explicit state directory, or the default one.
 func DiscoverState(explicitDir string) (string, error) {
 	if explicitDir != "" {
 		clean, err := filepath.Abs(explicitDir)
@@ -37,53 +28,7 @@ func DiscoverState(explicitDir string) (string, error) {
 		return clean, nil
 	}
 
-	// Candidate 1: Default XDG state dir (~/.local/state/filesync or $XDG_STATE_HOME/filesync)
-	defaultDir := config.DefaultStateDir()
-
-	// Candidate 2: Legacy state dir (~/.filesync)
-	var legacyDir string
-	if home, err := os.UserHomeDir(); err == nil {
-		legacyDir = filepath.Join(home, ".filesync")
-	}
-
-	candDefault := inspectCandidate(defaultDir)
-	candLegacy := inspectCandidate(legacyDir)
-
-	// If both have state (initialized or DB exists or lock held)
-	if candDefault.HasState() && candLegacy.HasState() && defaultDir != legacyDir {
-		return "", fmt.Errorf("%w: default state (%s) and legacy state (%s) both exist",
-			ErrMultipleStatesFound, defaultDir, legacyDir)
-	}
-
-	if candLegacy.HasState() {
-		return legacyDir, nil
-	}
-	return defaultDir, nil
-}
-
-func inspectCandidate(dir string) StateCandidate {
-	if dir == "" {
-		return StateCandidate{}
-	}
-	info, err := os.Stat(dir)
-	if err != nil || !info.IsDir() {
-		return StateCandidate{Path: dir, Exists: false}
-	}
-	_, cfgErr := os.Stat(filepath.Join(dir, "config.json"))
-	_, dbErr := os.Stat(filepath.Join(dir, "metadata.sqlite"))
-	_, lockErr := os.Stat(filepath.Join(dir, ".agent.lock"))
-
-	return StateCandidate{
-		Path:        dir,
-		Exists:      true,
-		Initialized: cfgErr == nil,
-		HasDB:       dbErr == nil,
-		HasLock:     lockErr == nil,
-	}
-}
-
-func (c StateCandidate) HasState() bool {
-	return c.Exists && (c.Initialized || c.HasDB || c.HasLock)
+	return config.DefaultStateDir(), nil
 }
 
 // ValidateExistingState verifies that an existing state directory is valid

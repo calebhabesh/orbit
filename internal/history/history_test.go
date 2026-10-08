@@ -254,7 +254,7 @@ func TestReviewedResolutionAndStructuralConflict(t *testing.T) {
 }
 
 func TestPathManifestAndRetirementValidation(t *testing.T) {
-	for _, path := range []string{"", "/absolute", "a//b", "a/../b", `a\b`, ".filesync/stage", strings.Repeat("x", 256)} {
+	for _, path := range []string{"", "/absolute", "a//b", "a/../b", `a\b`, ".orbit/stage", strings.Repeat("x", 256)} {
 		if err := ValidatePath(path); err == nil {
 			t.Errorf("path %q accepted", path)
 		}

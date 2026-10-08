@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/rendezvous"
+	"github.com/calebhabesh/orbit/internal/rendezvous"
 )
 
 // metricsHandler serves sanitized totals in Prometheus text format on a

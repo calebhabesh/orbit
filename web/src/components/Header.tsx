@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
         </svg>
         <div>
           <h1 className="brand-title">
-            File Sync
+            Orbit
             <span className="brand-badge">Operator Console</span>
           </h1>
         </div>

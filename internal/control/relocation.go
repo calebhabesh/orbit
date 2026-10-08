@@ -2,8 +2,8 @@ package control
 
 import (
 	"context"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 type RelocateFolderRequest struct {

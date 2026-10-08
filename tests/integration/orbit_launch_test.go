@@ -18,12 +18,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/launcher"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func startTestDaemon(t *testing.T, stateDir string) (string, func()) {
@@ -189,47 +189,6 @@ func TestOrbitLaunch_RepeatedLaunchReusesDaemon(t *testing.T) {
 	}
 }
 
-// TestOrbitLaunch_MultiStateDetectionRefusesSilentChoice tests that if both default and
-// legacy state directories exist, the launcher refuses to pick silently without --state.
-func TestOrbitLaunch_MultiStateDetectionRefusesSilentChoice(t *testing.T) {
-	tempHome := t.TempDir()
-	t.Setenv("HOME", tempHome)
-	t.Setenv("XDG_STATE_HOME", filepath.Join(tempHome, ".local", "state"))
-
-	defaultDir := filepath.Join(tempHome, ".local", "state", "filesync")
-	legacyDir := filepath.Join(tempHome, ".filesync")
-
-	// Create valid state in default directory
-	if err := os.MkdirAll(defaultDir, 0o700); err != nil {
-		t.Fatal(err)
-	}
-	_ = config.Save(defaultDir, config.Config{FormatVersion: 1, DeviceID: hex.EncodeToString(make([]byte, 32)), CreatedAt: time.Now()})
-
-	// Create valid state in legacy directory
-	if err := os.MkdirAll(legacyDir, 0o700); err != nil {
-		t.Fatal(err)
-	}
-	_ = config.Save(legacyDir, config.Config{FormatVersion: 1, DeviceID: hex.EncodeToString(make([]byte, 32)), CreatedAt: time.Now()})
-
-	// Discovery without explicit state must fail with ErrMultipleStatesFound
-	_, err := launcher.DiscoverState("")
-	if !errors.Is(err, launcher.ErrMultipleStatesFound) {
-		t.Fatalf("expected ErrMultipleStatesFound when both exist, got: %v", err)
-	}
-
-	// Explicit selection of default succeeds
-	chosen, err := launcher.DiscoverState(defaultDir)
-	if err != nil || chosen != defaultDir {
-		t.Errorf("explicit defaultDir failed: %v (%s)", err, chosen)
-	}
-
-	// Explicit selection of legacy succeeds
-	chosenLeg, err := launcher.DiscoverState(legacyDir)
-	if err != nil || chosenLeg != legacyDir {
-		t.Errorf("explicit legacyDir failed: %v (%s)", err, chosenLeg)
-	}
-}
-
 // TestOrbitLaunch_InvalidOldStateRefusesOverwrite tests that corrupted configs or newer
 // incompatible database schemas are rejected safely without overwriting data (Invariant I20).
 func TestOrbitLaunch_InvalidOldStateRefusesOverwrite(t *testing.T) {
@@ -324,7 +283,7 @@ func TestOrbitLaunch_TokenExchangeAndSessionSeparation(t *testing.T) {
 
 	var sessionCookie *http.Cookie
 	for _, c := range resp.Cookies() {
-		if c.Name == "filesync_session" {
+		if c.Name == "orbit_session" {
 			sessionCookie = c
 			break
 		}
@@ -336,7 +295,7 @@ func TestOrbitLaunch_TokenExchangeAndSessionSeparation(t *testing.T) {
 	resp.Body.Close()
 
 	if sessionCookie == nil {
-		t.Fatal("expected filesync_session cookie in exchange response")
+		t.Fatal("expected orbit_session cookie in exchange response")
 	}
 	if !sessionCookie.HttpOnly {
 		t.Errorf("expected HttpOnly cookie")
@@ -433,38 +392,31 @@ func TestOrbitLaunch_BootstrapSecretNotLeakedInSupportExport(t *testing.T) {
 	}
 }
 
-// TestOrbitLaunch_CLI_BinaryAlias tests running the real compiled binary as 'orbit'
-// and 'filesync orbit' using exec.Command.
-func TestOrbitLaunch_CLI_BinaryAlias(t *testing.T) {
+// TestOrbitLaunch_CLI_Help runs the real compiled binary's product help and
+// its low-level engine usage.
+func TestOrbitLaunch_CLI_Help(t *testing.T) {
 	root, err := filepath.Abs("../..")
 	if err != nil {
 		t.Fatal(err)
 	}
-	binDir := filepath.Join(root, "bin")
-	filesyncBin := filepath.Join(binDir, "filesync")
-	orbitBin := filepath.Join(binDir, "orbit")
-
-	if _, err := os.Stat(filesyncBin); err != nil {
-		t.Skip("bin/filesync not found; run make build first")
+	orbitBin := filepath.Join(root, "bin", "orbit")
+	if _, err := os.Stat(orbitBin); err != nil {
+		t.Skip("bin/orbit not found; run make build first")
 	}
 
-	// Test 1: filesync orbit help
-	out1, err := exec.Command(filesyncBin, "orbit", "help").CombinedOutput()
+	out, err := exec.Command(orbitBin, "help").CombinedOutput()
 	if err != nil {
-		t.Fatalf("filesync orbit help failed: %v (%s)", err, string(out1))
+		t.Fatalf("orbit help failed: %v (%s)", err, string(out))
 	}
-	if !strings.Contains(string(out1), "Orbit - Local file synchronization") {
-		t.Errorf("unexpected output from filesync orbit help:\n%s", string(out1))
+	if !strings.Contains(string(out), "Orbit - Local file synchronization") {
+		t.Errorf("unexpected output from orbit help:\n%s", string(out))
 	}
 
-	// Test 2: orbit help (if symlink exists)
-	if _, err := os.Stat(orbitBin); err == nil {
-		out2, err := exec.Command(orbitBin, "help").CombinedOutput()
-		if err != nil {
-			t.Fatalf("orbit help failed: %v (%s)", err, string(out2))
-		}
-		if !strings.Contains(string(out2), "Orbit - Local file synchronization") {
-			t.Errorf("unexpected output from orbit help:\n%s", string(out2))
-		}
+	out, err = exec.Command(orbitBin, "engine", "help").CombinedOutput()
+	if err != nil {
+		t.Fatalf("orbit engine help failed: %v (%s)", err, string(out))
+	}
+	if !strings.Contains(string(out), "usage: orbit engine <init|serve") {
+		t.Errorf("unexpected output from orbit engine help:\n%s", string(out))
 	}
 }

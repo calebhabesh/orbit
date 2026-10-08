@@ -5,8 +5,8 @@ import (
 	"errors"
 	"os"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/state"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // LoadNetworkPolicy is an additive migration scaffold. Missing intent means the

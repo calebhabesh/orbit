@@ -16,7 +16,7 @@ import (
 	"syscall"
 	"time"
 
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 	"golang.org/x/sys/unix"
 )
 

@@ -11,7 +11,7 @@ import (
 	"net/http/httptrace"
 	"net/url"
 
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/protocol"
 	"sync"
 	"time"
 )

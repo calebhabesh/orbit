@@ -7,18 +7,18 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/protocol"
 	"io"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/controlclient"
-	"github.com/calebhabesh/file-sync/internal/launcher"
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/launcher"
+	"github.com/calebhabesh/orbit/internal/network"
 )
 
 func restartOrbitDaemon(ctx context.Context, dir string) error {

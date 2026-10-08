@@ -86,7 +86,7 @@ needs them. `history`, `repository` and `workspace` do not import traversal libr
 | `internal/control`, `controlclient` | Reviewed connection settings, named network queries and setup operations |
 | `internal/app`, config, launcher | One daemon, manager lifecycle, isolated listeners, configuration loading |
 | `internal/scheduler` | Existing durable jobs; fair retries over manager-provided transport |
-| `cmd/filesync`, `internal/terminal` | CLI/TUI adapters, contextual setup, qualified network presentation |
+| `cmd/orbit`, `internal/terminal` | CLI/TUI adapters, contextual setup, qualified network presentation |
 | proposed `cmd/orbit-net` and server implementation | Rendezvous, relay and STUN deployment; no sync repository or owner control |
 | scripts/packaging | Service packages, profiles, safe local network harness and native campaigns |
 

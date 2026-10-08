@@ -2,10 +2,10 @@ package scheduler
 
 import (
 	"fmt"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/network"
 )
 
 func TestWANW02NetworkBackpressureUsesExistingRetryBudget(t *testing.T) {

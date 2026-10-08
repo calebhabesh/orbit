@@ -18,10 +18,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/rendezvous"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/rendezvous"
+	"github.com/calebhabesh/orbit/internal/testkit"
 	"github.com/pion/stun/v4"
 	"github.com/pion/transport/v5"
 )

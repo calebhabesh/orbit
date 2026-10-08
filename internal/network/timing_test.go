@@ -2,7 +2,7 @@ package network
 
 import (
 	"context"
-	"github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/protocol"
 	"sync/atomic"
 	"testing"
 	"time"

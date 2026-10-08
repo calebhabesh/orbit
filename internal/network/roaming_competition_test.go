@@ -3,7 +3,7 @@ package network
 import (
 	"context"
 	"encoding/hex"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 	"net"
 	"net/http"
 	"sync"

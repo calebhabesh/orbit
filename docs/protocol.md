@@ -80,7 +80,7 @@ path. Device IDs and SHA-256 public-key pins are also 32-byte values. Each
 device explicitly approves its membership configuration: revision number,
 prior revision digest, active device IDs/key pins, and retirement references.
 The P01 canonical membership encoding is the ASCII domain separator
-`filesync-membership-v1` followed by NUL, folder ID, big-endian `uint64`
+`orbit-membership-v1` followed by NUL, folder ID, big-endian `uint64`
 revision, 32-byte prior digest (all zero for the first revision), big-endian
 `uint16` active count, active `(device ID, key pin)` pairs sorted by device ID,
 big-endian `uint16` retirement count, then retirement `(device ID,
@@ -263,7 +263,7 @@ Retirement baseline: pause membership-dependent exchange/GC; converge known meta
 
 The retirement snapshot is a canonical stream that identifies the exact
 accepted versions of the retired author included by the survivors. Its
-encoding is the ASCII domain separator `filesync-retirement-v1` followed by
+encoding is the ASCII domain separator `orbit-retirement-v1` followed by
 NUL, folder ID, big-endian `uint64` configuration revision being retired,
 retired device ID, big-endian `uint64` entry count, then
 `(author counter, 32-byte immutable-envelope digest)` entries sorted by

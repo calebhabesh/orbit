@@ -10,13 +10,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func TestRelocationCLIStoppedAndLive(t *testing.T) {
@@ -51,7 +51,7 @@ func TestRelocationCLIStoppedAndLive(t *testing.T) {
 	db.Close()
 	execute := func(from, to string) {
 		var stdout, stderr bytes.Buffer
-		err := run([]string{"orbit", "folders", "relocate", "--state", stateDir, "--folder", hex.EncodeToString(folder[:]), "--from", from, "--to", to, "--json"}, &stdout, &stderr)
+		err := handleOrbit([]string{"folders", "relocate", "--state", stateDir, "--folder", hex.EncodeToString(folder[:]), "--from", from, "--to", to, "--json"}, &stdout, &stderr)
 		if err != nil {
 			t.Fatalf("CLI: %v %s", err, stderr.String())
 		}

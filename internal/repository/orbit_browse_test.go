@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 func setupTestDB(t *testing.T) (*DB, history.ID, history.ID, func()) {
@@ -91,7 +91,7 @@ func TestOrbitBrowse_HierarchicalDirectoryQueries(t *testing.T) {
 	ctx := context.Background()
 
 	// 1. Install root files
-	installTestVersion(t, db, folder, "readme.txt", history.KindFile, []byte("Orbit File Sync"))
+	installTestVersion(t, db, folder, "readme.txt", history.KindFile, []byte("Orbit Orbit"))
 	installTestVersion(t, db, folder, "root.go", history.KindFile, []byte("package main"))
 	installTestVersion(t, db, folder, "space file (1).txt", history.KindFile, []byte("spaces and parens"))
 	installTestVersion(t, db, folder, "unicode_日本語_🚀.md", history.KindFile, []byte("# 日本語 Rocket"))

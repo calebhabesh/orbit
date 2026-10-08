@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/config"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/config"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 )
 
 func TestWANW12BinaryDoctorPrivacyAndPTY(t *testing.T) {

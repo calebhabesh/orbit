@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 	"github.com/pion/ice/v4"
 	"github.com/pion/logging"
 	"github.com/pion/stun/v4"
@@ -30,7 +30,7 @@ import (
 func iceVirtualPair(t *testing.T, natType *vnet.NATType, blocked bool, doubleNAT ...bool) (*ICESession, *ICESession, *vnet.Router) {
 	t.Helper()
 	root := t.TempDir()
-	if e := os.WriteFile(filepath.Join(root, ".filesync-disposable"), []byte("W10 in-process virtual network only\n"), 0600); e != nil {
+	if e := os.WriteFile(filepath.Join(root, ".orbit-disposable"), []byte("W10 in-process virtual network only\n"), 0600); e != nil {
 		t.Fatal(e)
 	}
 	log := logging.NewDefaultLoggerFactory()

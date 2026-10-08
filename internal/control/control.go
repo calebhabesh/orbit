@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"io"
 	"os"
 	"path/filepath"
@@ -19,13 +19,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/replication"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/replication"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 type FaultHook func(name string) error
@@ -859,7 +859,7 @@ func requestDigest(req any) (history.Digest, error) {
 	if err != nil {
 		return history.Digest{}, err
 	}
-	h := sha256.Sum256(append([]byte("filesync-control-op-v1\x00"), data...))
+	h := sha256.Sum256(append([]byte("orbit-control-op-v1\x00"), data...))
 	return history.Digest(h), nil
 }
 
@@ -1227,7 +1227,7 @@ func (c *Controller) EnrollPreview(ctx context.Context, folder history.ID, rootP
 			return err
 		}
 		if fi.IsDir() {
-			if fi.Name() == ".filesync-internal" {
+			if fi.Name() == ".orbit-internal" {
 				return filepath.SkipDir
 			}
 			return nil

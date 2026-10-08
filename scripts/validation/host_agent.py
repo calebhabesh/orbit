@@ -20,6 +20,14 @@ import time
 import urllib.request
 
 
+
+def orbit_argv(args):
+    """Map pre-2.0 'filesync' argv onto the single orbit binary."""
+    args = list(args)
+    if args and args[0] == "orbit":
+        return args[1:]
+    return ["engine", *args]
+
 def validated_root(req):
     root = Path(req["root"])
     if not root.is_absolute() or root.is_symlink() or root.resolve() != root:
@@ -27,7 +35,7 @@ def validated_root(req):
     root_info = root.stat()
     if root_info.st_uid != os.getuid() or root_info.st_mode & 0o077:
         raise RuntimeError("run root must be private and owner-controlled")
-    marker = root / (".filesync-pilot" if req.get("purpose") == "pilot" else ".filesync-disposable")
+    marker = root / (".orbit-pilot" if req.get("purpose") == "pilot" else ".orbit-disposable")
     info = marker.lstat()
     if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid():
         raise RuntimeError("unsafe marker")
@@ -58,7 +66,7 @@ def identity(pid):
 
 def stop(root, name):
     record = json.loads(beneath(root, f"{name}.pid.json").read_text())
-    if (root / ".filesync-pilot").exists() and record["kind"] == "sync":
+    if (root / ".orbit-pilot").exists() and record["kind"] == "sync":
         raise RuntimeError("fault interruption is forbidden in a personal pilot")
     pid = record["pid"]
     try:
@@ -68,7 +76,7 @@ def stop(root, name):
     if state == "Z":
         return
     argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
-    if ticks != record["start_ticks"] or os.fsencode(root / "filesync") not in argv or not any(a in (os.fsencode(root / "state"), b"--state=" + os.fsencode(root / "state")) for a in argv):
+    if ticks != record["start_ticks"] or os.fsencode(root / "orbit") not in argv or not any(a in (os.fsencode(root / "state"), b"--state=" + os.fsencode(root / "state")) for a in argv):
         raise RuntimeError("refusing signal: process identity or state path changed")
     os.kill(pid, signal.SIGKILL if record["kind"] == "sync" else signal.SIGTERM)
     for _ in range(100):
@@ -104,15 +112,15 @@ def dispatch(req):
                 "hostname": os.uname().nodename, "arch": os.uname().machine}
     if action == "create":
         if req.get("purpose") == "pilot":
-            name = req.get("pilot_name", "FileSyncPilot-20261001")
+            name = req.get("pilot_name", "OrbitPilot-20261001")
             if not re.fullmatch(r"[A-Za-z0-9-]+", name):
                 raise RuntimeError("unsafe pilot directory name")
             root = Path.home().resolve() / name
             root.mkdir(mode=0o700)  # Never overwrite/reuse existing user data.
-            marker = root / ".filesync-pilot"
+            marker = root / ".orbit-pilot"
         else:
-            root = Path(tempfile.mkdtemp(prefix="filesync-validation-", dir=Path.home())).resolve()
-            marker = root / ".filesync-disposable"
+            root = Path(tempfile.mkdtemp(prefix="orbit-validation-", dir=Path.home())).resolve()
+            marker = root / ".orbit-disposable"
         marker.write_text(req["token"])
         marker.chmod(0o600)
         (root / "data").mkdir(mode=0o700)
@@ -137,7 +145,7 @@ def dispatch(req):
         script = req["script"]
         if script not in ("terminal_pty_test.py", "terminal_onboarding_pty_test.py", "terminal_everyday_pty_test.py"):
             raise RuntimeError("unknown terminal campaign")
-        args = [sys.executable, str(beneath(root, script)), "--binary", str(beneath(root, "filesync")),
+        args = [sys.executable, str(beneath(root, script)), "--binary", str(beneath(root, "orbit")),
                 "--output", str(beneath(root, "pty-" + script.removesuffix(".py")))]
         if script == "terminal_pty_test.py":
             args.append("--bare")
@@ -176,7 +184,7 @@ def dispatch(req):
         if process_state == "Z":
             return {"stopped": False}
         argv = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
-        if os.fsencode(root / "filesync") not in argv or not any(
+        if os.fsencode(root / "orbit") not in argv or not any(
                 a in (os.fsencode(root / "state"), b"--state=" + os.fsencode(root / "state")) for a in argv):
             raise RuntimeError("refusing signal: terminal daemon ownership mismatch")
         name = "terminal-" + str(pid)
@@ -206,7 +214,7 @@ def dispatch(req):
                 h.update(data)
         return {"sha256": h.hexdigest()}
     if action == "run":
-        proc = subprocess.Popen([str(root / "filesync"), *req["args"]], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        proc = subprocess.Popen([str(root / "orbit"), *orbit_argv(req["args"])], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         samples = {"sampled_peak_fds": 0, "sampled_peak_rss_kib": 0}
         finished = threading.Event()
         def sample():
@@ -255,7 +263,7 @@ def dispatch(req):
     if action == "worker":
         name = req["name"]
         with beneath(root, name + ".log").open("wb") as log:
-            proc = subprocess.Popen([str(root / "filesync"), *req["args"]], stdin=subprocess.DEVNULL, stdout=log, stderr=log)
+            proc = subprocess.Popen([str(root / "orbit"), *orbit_argv(req["args"])], stdin=subprocess.DEVNULL, stdout=log, stderr=log)
             ticks, _ = identity(proc.pid)
             record = {"pid": proc.pid, "start_ticks": ticks, "kind": req["kind"]}
             temp = beneath(root, name + ".pid.tmp")
@@ -303,12 +311,12 @@ def dispatch(req):
         with sqlite3.connect(f"file:{root}/state/metadata.sqlite?mode=ro", uri=True) as db:
             return {"sqlite": db.execute("PRAGMA integrity_check").fetchone()[0]}
     if action == "service-install":
-        unit = ("filesync-pilot-" if req.get("purpose") == "pilot" else "filesync-validation-") + req["token"] + ".service"
+        unit = ("orbit-pilot-" if req.get("purpose") == "pilot" else "orbit-validation-") + req["token"] + ".service"
         target = beneath(root, unit)
-        text = req["template"].replace("/usr/bin/filesync", str(root / "filesync")).replace("/usr/bin/orbit", str(root / "filesync"))
+        text = req["template"].replace("/usr/bin/orbit", str(root / "orbit")).replace("/usr/bin/orbit", str(root / "orbit"))
         # Unique validation units must never create/remove the installed aliases.
         text = "\n".join(line for line in text.splitlines() if not line.startswith("Alias=")) + "\n"
-        text = text.replace("%h/.local/state/filesync", str(root / "state"))
+        text = text.replace("%h/.local/state/orbit", str(root / "state"))
         text = text.replace("127.0.0.1:8080", "127.0.0.1:0")
         if req.get("peer_listen"):
             text = text.replace("--control-listen=127.0.0.1:0", "--control-listen=127.0.0.1:0 --peer-listen=" + req["peer_listen"] + " --sync-interval=2s --profile=" + req.get("profile","laptop"))
@@ -320,10 +328,10 @@ def dispatch(req):
             subprocess.run(["systemctl","--user","enable",unit],check=True,capture_output=True,text=True)
         return {"unit": unit}
     if action in ["service-check", "service-restart", "service-uninstall"]:
-        unit = ("filesync-pilot-" if req.get("purpose") == "pilot" else "filesync-validation-") + req["token"] + ".service"
+        unit = ("orbit-pilot-" if req.get("purpose") == "pilot" else "orbit-validation-") + req["token"] + ".service"
         configured = subprocess.check_output(["systemctl", "--user", "show", unit, "--property=ExecStart", "--property=FragmentPath"], text=True)
         fragment = re.search(r"FragmentPath=(.*)", configured)
-        if str(root / "filesync") not in configured or not fragment or Path(fragment[1]).resolve() != root / unit:
+        if str(root / "orbit") not in configured or not fragment or Path(fragment[1]).resolve() != root / unit:
             raise RuntimeError("service ownership mismatch")
         if action == "service-restart":
             subprocess.run(["systemctl", "--user", "restart", unit], check=True, capture_output=True)
@@ -339,7 +347,7 @@ def dispatch(req):
             raise RuntimeError("service unhealthy: " + info)
         pid = int(re.search(r"MainPID=(\d+)", info)[1])
         commandline = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
-        if os.fsencode(root / "filesync") not in commandline:
+        if os.fsencode(root / "orbit") not in commandline:
             raise RuntimeError("unexpected service executable")
         import http.client
         sockets = {os.readlink(p)[8:-1] for p in Path(f"/proc/{pid}/fd").iterdir() if os.readlink(p).startswith("socket:[")}

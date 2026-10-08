@@ -10,10 +10,10 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 var p04Local = []byte("captured local bytes")
@@ -51,7 +51,7 @@ func TestP04PublicationKillRestartBoundaries(t *testing.T) {
 				t.Fatal(err)
 			}
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP04BoundaryHelper$")
-			cmd.Env = append(os.Environ(), "FILESYNC_P04_HELPER=1", "FILESYNC_P04_STATE="+state, "FILESYNC_P04_HOOK="+hook)
+			cmd.Env = append(os.Environ(), "ORBIT_P04_HELPER=1", "ORBIT_P04_STATE="+state, "ORBIT_P04_HOOK="+hook)
 			err = cmd.Run()
 			var exitErr *exec.ExitError
 			if !errors.As(err, &exitErr) || exitErr.ProcessState.Success() || exitErr.ExitCode() != -1 {
@@ -135,7 +135,7 @@ func TestP04NewFileKillRestartBoundaries(t *testing.T) {
 				t.Fatal(err)
 			}
 			cmd := exec.Command(os.Args[0], "-test.run=^TestP04BoundaryHelper$")
-			cmd.Env = append(os.Environ(), "FILESYNC_P04_HELPER=1", "FILESYNC_P04_STATE="+state, "FILESYNC_P04_HOOK="+hook)
+			cmd.Env = append(os.Environ(), "ORBIT_P04_HELPER=1", "ORBIT_P04_STATE="+state, "ORBIT_P04_HOOK="+hook)
 			err = cmd.Run()
 			var exitErr *exec.ExitError
 			if !errors.As(err, &exitErr) || exitErr.ExitCode() != -1 {
@@ -226,7 +226,7 @@ func TestP04ParentCreationKillDoesNotAuthorScaffold(t *testing.T) {
 		t.Fatal(err)
 	}
 	cmd := exec.Command(os.Args[0], "-test.run=^TestP04BoundaryHelper$")
-	cmd.Env = append(os.Environ(), "FILESYNC_P04_HELPER=1", "FILESYNC_P04_STATE="+state, "FILESYNC_P04_HOOK="+workspace.HookParentCreated)
+	cmd.Env = append(os.Environ(), "ORBIT_P04_HELPER=1", "ORBIT_P04_STATE="+state, "ORBIT_P04_HOOK="+workspace.HookParentCreated)
 	err = cmd.Run()
 	var exitErr *exec.ExitError
 	if !errors.As(err, &exitErr) || exitErr.ExitCode() != -1 {
@@ -300,12 +300,12 @@ func prepareP04(ctx context.Context, state, root string) (history.VersionID, his
 }
 
 func TestP04BoundaryHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P04_HELPER") != "1" {
+	if os.Getenv("ORBIT_P04_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	hook := os.Getenv("FILESYNC_P04_HOOK")
-	db, err := repository.OpenWithOptions(ctx, os.Getenv("FILESYNC_P04_STATE"), repository.Options{FaultHook: func(name string) error {
+	hook := os.Getenv("ORBIT_P04_HOOK")
+	db, err := repository.OpenWithOptions(ctx, os.Getenv("ORBIT_P04_STATE"), repository.Options{FaultHook: func(name string) error {
 		if name == hook {
 			_ = syscall.Kill(os.Getpid(), syscall.SIGKILL)
 		}
@@ -347,7 +347,7 @@ func TestP04DirectoryTombstoneKillRestart(t *testing.T) {
 					t.Fatal(err)
 				}
 				cmd := exec.Command(os.Args[0], "-test.run=^TestP04StructuralHelper$")
-				cmd.Env = append(os.Environ(), "FILESYNC_P04_STRUCT_HELPER=1", "FILESYNC_P04_STATE="+state, "FILESYNC_P04_HOOK="+hook)
+				cmd.Env = append(os.Environ(), "ORBIT_P04_STRUCT_HELPER=1", "ORBIT_P04_STATE="+state, "ORBIT_P04_HOOK="+hook)
 				err = cmd.Run()
 				var exitErr *exec.ExitError
 				if !errors.As(err, &exitErr) || exitErr.ExitCode() != -1 {
@@ -423,12 +423,12 @@ func prepareP04Structural(ctx context.Context, state, root, kind string) (histor
 }
 
 func TestP04StructuralHelper(t *testing.T) {
-	if os.Getenv("FILESYNC_P04_STRUCT_HELPER") != "1" {
+	if os.Getenv("ORBIT_P04_STRUCT_HELPER") != "1" {
 		return
 	}
 	ctx := context.Background()
-	hook := os.Getenv("FILESYNC_P04_HOOK")
-	db, err := repository.OpenWithOptions(ctx, os.Getenv("FILESYNC_P04_STATE"), repository.Options{FaultHook: func(name string) error {
+	hook := os.Getenv("ORBIT_P04_HOOK")
+	db, err := repository.OpenWithOptions(ctx, os.Getenv("ORBIT_P04_STATE"), repository.Options{FaultHook: func(name string) error {
 		if name == hook {
 			_ = syscall.Kill(os.Getpid(), syscall.SIGKILL)
 		}

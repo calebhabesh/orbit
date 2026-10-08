@@ -1,7 +1,7 @@
 package rendezvous
 
 import (
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/network"
 	"net"
 )
 

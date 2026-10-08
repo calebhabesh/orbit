@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/config"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/config"
+	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
 // TestOrbitSettings_LoadAndSaveRoundtrip tests saving and loading product settings.

@@ -58,7 +58,7 @@ def main():
             report["hosts"].append({"role": n.role, "ssh_alias": n.host, "root": n.root,
                                      "inventory": n.inventory, "binary_sha256": n.binary_hash, "device": n.device})
         pair(nodes)
-        baseline = b"Dedicated File Sync validation note: initial version.\n"
+        baseline = b"Dedicated Orbit validation note: initial version.\n"
         a.put("data/note.txt", baseline)
         a.scan()
         results["normal_sync"] = {"a_to_vps": sync(a, c), "vps_to_pi": sync(c, b),

@@ -10,7 +10,7 @@ import (
 	"time"
 
 	tea "charm.land/bubbletea/v2"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/charmbracelet/colorprofile"
 	"github.com/charmbracelet/x/term"
 )

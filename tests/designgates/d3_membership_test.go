@@ -73,7 +73,7 @@ func canonicalMembership(revision membershipRevision) ([]byte, error) {
 	}
 
 	var output bytes.Buffer
-	output.WriteString("filesync-membership-v1\x00")
+	output.WriteString("orbit-membership-v1\x00")
 	output.Write(revision.folder[:])
 	writeU64(&output, revision.revision)
 	output.Write(revision.priorDigest[:])
@@ -100,7 +100,7 @@ func canonicalRetirementSnapshot(snapshot retirementSnapshot) ([]byte, error) {
 		}
 	}
 	var output bytes.Buffer
-	output.WriteString("filesync-retirement-v1\x00")
+	output.WriteString("orbit-retirement-v1\x00")
 	output.Write(snapshot.folder[:])
 	writeU64(&output, snapshot.configurationRev)
 	output.Write(snapshot.retiredDevice[:])

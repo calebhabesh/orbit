@@ -12,9 +12,9 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/testkit"
 	"golang.org/x/sys/unix"
 )
 
@@ -1034,7 +1034,7 @@ func TestDualScanCadenceAndEqualSizeTimestampPreservingEdits(t *testing.T) {
 
 	// Root unavailable test (Invariant I11):
 	// Temporarily corrupt registration marker
-	markerPath := filepath.Join(root, ".filesync-internal", "registration")
+	markerPath := filepath.Join(root, ".orbit-internal", "registration")
 	if err := os.WriteFile(markerPath, []byte("invalid marker"), 0o600); err != nil {
 		t.Fatal(err)
 	}

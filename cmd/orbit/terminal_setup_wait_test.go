@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"testing"
 	"time"
 )

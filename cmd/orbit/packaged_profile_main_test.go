@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/network"
 )
 
 // Hermetic suites never select the packaged hosted profile, so daemons they

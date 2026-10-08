@@ -80,7 +80,7 @@ Run actual binary evidence with:
 
 ```sh
 make test-terminal-onboarding-pty
-python3 scripts/terminal_onboarding_pty_test.py --binary bin/filesync \
+python3 scripts/terminal_onboarding_pty_test.py --binary bin/orbit \
   --output /new/empty/evidence-directory
 ```
 

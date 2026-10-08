@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/state"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 // ServiceRootsFile holds reviewed custom trust for a self-hosted or development

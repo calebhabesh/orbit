@@ -17,14 +17,15 @@ p.add_argument('--root', required=True)
 p.add_argument('--state', required=True)
 a = p.parse_args()
 root, state = Path(a.root).resolve(strict=True), Path(a.state).resolve(strict=True)
-assert (root / '.filesync-disposable').is_file() and not (root / '.filesync-disposable').is_symlink()
+assert (root / '.orbit-disposable').is_file() and not (root / '.orbit-disposable').is_symlink()
 assert state.is_relative_to(root) and state != root
 peer = Peer.__new__(Peer)
 peer.root, peer.state = root, state
-peer.binary = root / "filesync"
-shutil.copyfile(Path(a.binary).resolve(strict=True), peer.binary)
+peer.binary = root / "orbit"
+if Path(a.binary).resolve(strict=True) != peer.binary.resolve():
+    shutil.copyfile(Path(a.binary).resolve(strict=True), peer.binary)
 peer.binary.chmod(0o700)
-peer.token = (root / ".filesync-disposable").read_text()
+peer.token = (root / ".orbit-disposable").read_text()
 peer.children, peer.frames, peer.results, peer.raw = {}, [], [], {}
 peer.output = None
 peer.data = root

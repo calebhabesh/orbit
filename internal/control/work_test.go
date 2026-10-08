@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/repository"
+	"github.com/calebhabesh/orbit/internal/repository"
 )
 
 func TestWorkControlOperations(t *testing.T) {

@@ -10,13 +10,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/calebhabesh/file-sync/internal/app"
-	"github.com/calebhabesh/file-sync/internal/control"
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/repository"
-	"github.com/calebhabesh/file-sync/internal/state"
-	"github.com/calebhabesh/file-sync/internal/testkit"
-	"github.com/calebhabesh/file-sync/internal/workspace"
+	"github.com/calebhabesh/orbit/internal/app"
+	"github.com/calebhabesh/orbit/internal/control"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/repository"
+	"github.com/calebhabesh/orbit/internal/state"
+	"github.com/calebhabesh/orbit/internal/testkit"
+	"github.com/calebhabesh/orbit/internal/workspace"
 )
 
 func TestOrbitBrowse_CLIStoppedAndLiveParity(t *testing.T) {
@@ -50,10 +50,10 @@ func TestOrbitBrowse_CLIStoppedAndLiveParity(t *testing.T) {
 	db.Close()
 	commands := [][]string{{"browse", "--path", "docs"}, {"search", "--query", "notes"}, {"details", "--path", "docs/notes.txt"}}
 	execute := func(command []string) []byte {
-		args := append([]string{"orbit"}, command...)
+		args := append([]string{}, command...)
 		args = append(args, "--state", stateDir, "--folder", hex.EncodeToString(folder[:]))
 		var stdout, stderr bytes.Buffer
-		if err := run(args, &stdout, &stderr); err != nil {
+		if err := handleOrbit(args, &stdout, &stderr); err != nil {
 			t.Fatalf("%v: %v %s", command, err, stderr.String())
 		}
 		if !json.Valid(stdout.Bytes()) {

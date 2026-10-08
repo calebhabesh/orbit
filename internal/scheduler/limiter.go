@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/history"
-	"github.com/calebhabesh/file-sync/internal/network"
+	"github.com/calebhabesh/orbit/internal/history"
+	"github.com/calebhabesh/orbit/internal/network"
 )
 
 type bandwidthWaiter struct{ ready chan struct{} }

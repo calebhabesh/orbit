@@ -23,9 +23,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
-	"github.com/calebhabesh/file-sync/internal/protocol"
-	"github.com/calebhabesh/file-sync/internal/state"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
+	"github.com/calebhabesh/orbit/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/state"
 )
 
 func terminalTranscript() protocol.TerminalEnrollmentTranscript {
@@ -355,7 +355,7 @@ func terminalReplayDecision(old *terminalReplay, fp string, expired bool) string
 }
 func TestTerminalT01TG3AdaptersAndReplay(t *testing.T) {
 	root := t.TempDir()
-	if err := os.WriteFile(filepath.Join(root, ".filesync-disposable"), []byte("T01 lock experiment"), 0600); err != nil {
+	if err := os.WriteFile(filepath.Join(root, ".orbit-disposable"), []byte("T01 lock experiment"), 0600); err != nil {
 		t.Fatal(err)
 	}
 	if err := state.EnsureDirectory(root); err != nil {
@@ -550,8 +550,8 @@ func TestTerminalT01TG5Lifecycle(t *testing.T) {
 	if svc.Running || svc.UnattendedVerified {
 		t.Fatal("enabled inferred running or logout guarantee")
 	}
-	legacy := map[string]string{"orbit": "tty_dispatch", "filesync": "legacy_dispatch", "state": "preserved", "identity": "preserved"}
-	if legacy["filesync"] != "legacy_dispatch" || legacy["identity"] != "preserved" {
-		t.Fatal("compatibility contract")
+	dispatch := map[string]string{"orbit": "tty_dispatch", "orbit engine": "engine_dispatch"}
+	if dispatch["orbit"] != "tty_dispatch" || dispatch["orbit engine"] != "engine_dispatch" {
+		t.Fatal("dispatch contract")
 	}
 }

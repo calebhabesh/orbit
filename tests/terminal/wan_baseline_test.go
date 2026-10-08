@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/replication"
+	"github.com/calebhabesh/orbit/internal/replication"
 )
 
 // This passing baseline records missing automatic routing, rather than treating

@@ -32,7 +32,7 @@ Run broad gates sequentially: packaging tests and `make check` write the same
 `dist` artifacts, so overlapping them can invalidate packaging observations.
 
 T12 adds bare entry/legacy discovery and adoption replay tests, plus the same
-real PTY lifetime oracle using bare entry. `make test` includes cmd/filesync;
+real PTY lifetime oracle using bare entry. `make test` includes cmd/orbit;
 `make check` includes tests/terminal and `make test-terminal-packages`, which
 checks every payload/checksum, actual native extracted entry, standalone repeated
 installation/custom-unit preservation/uninstall, and package-extracted bare PTY.
@@ -124,7 +124,7 @@ ordinary aggregate execution skips the namespace-only whole-daemon case.
 Compile `go test -c -race -o /tmp/orbit-w11-terminal.test ./tests/terminal` and run
 `scripts/wan_daemon_roaming_namespace_test.py` under a newly created
 `unshare --user --map-root-user --net` namespace. Supply the compiled `--test-binary`,
-a canonical private `--root` containing a regular `.filesync-disposable` marker,
+a canonical private `--root` containing a regular `.orbit-disposable` marker,
 and the host network namespace identity as `--parent-namespace` (captured before
 unshare). The runner validates the owning user namespace before any `ip`, firewall
 or `tc` action. `--latency-ms 25 --loss-percent 1` impairs actual peer/service

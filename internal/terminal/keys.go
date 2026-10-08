@@ -2,7 +2,7 @@ package terminal
 
 import (
 	tea "charm.land/bubbletea/v2"
-	tc "github.com/calebhabesh/file-sync/internal/control/terminalcontract"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 )
 
 func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {

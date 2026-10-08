@@ -31,7 +31,7 @@ def main():
         raise RuntimeError('requires canonical test executable')
     target = root / 'terminal.test'
     # Never replace prior executable/transcripts, and never accept an arbitrary PID.
-    if any(p.name != '.filesync-disposable' for p in root.iterdir()):
+    if any(p.name != '.orbit-disposable' for p in root.iterdir()):
         raise RuntimeError('requires fresh disposable root; prior evidence preserved')
     for tool in ('ip', 'tc', 'iptables', 'ip6tables'):
         if not shutil.which(tool):

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/calebhabesh/file-sync/internal/network"
-	p "github.com/calebhabesh/file-sync/internal/protocol"
+	"github.com/calebhabesh/orbit/internal/network"
+	p "github.com/calebhabesh/orbit/internal/protocol"
 )
 
 func rotationProfile(t *testing.T, signer ed25519.PrivateKey, origin string, epoch, expires uint64, environment string) ServedProfile {
