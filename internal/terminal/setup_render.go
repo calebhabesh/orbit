@@ -43,7 +43,7 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Loading actual finite/network/startup settings…")
 	case "invitation":
 		title = "Orbit | Join invitation"
-		lines = append(lines, "Paste a private v2/v3 invitation or enter an absolute private file path.", "The invitation is hidden and never included in status/logs.")
+		lines = append(lines, "Paste the invitation code, or type the path of a saved invitation file.", "Over SSH a file is easier: copy it here first (scp), then type its path.", "The invitation is hidden and never included in status/logs.")
 		focusLine = len(lines)
 		lines = append(lines, m.theme().field("Private invitation", f.fields[f.focus].input.View(), "", true))
 		lines = append(lines, receivedLine(f.fields[f.focus].input.Value()))
@@ -197,14 +197,16 @@ func (m *model) workflowView() tea.View {
 		footer = "Enter create scoped invitation  Esc back  q quit"
 	case "invitation_out":
 		title = "Orbit | Private invitation"
-		lines = append(lines, "Invitation created for selected folder only.", "Paste on receiver, review its root, then approve the exact request here.", "Expires: "+safe(f.invitation.ExpiresAt), "s: save to private transfer file  v: reveal/hide invitation")
-		if f.reveal {
-			code, _ := tc.InvitationCode(f.invitation)
-			lines = append(lines, code)
-		} else {
-			lines = append(lines, "Capability hidden. Reveal only for deliberate transfer.")
+		code, _ := tc.InvitationCode(f.invitation)
+		lines = append(lines, "Invitation created for selected folder only.", "Paste it on the receiving device, review its root there, then approve the exact request here.", "Expires: "+safe(f.invitation.ExpiresAt),
+			"The code is "+humanCount(len(code))+" characters and stays hidden here (F05):",
+			"  c  copy it to the clipboard (OSC 52)",
+			"  v  show it as one line to select and copy (the screen is cleared afterwards)",
+			"  s  save it to a private file to transfer, for example over SSH")
+		if f.saved != "" {
+			lines = append(lines, savedTransferLines(f.saved)...)
 		}
-		footer = "s save private file  v reveal  x revoke  arrows scroll  Esc back  q quit"
+		footer = "c copy  v show  s save file  x revoke  Esc back  q quit"
 	case "revoke_invitation_review":
 		title = "Orbit | Revoke invitation"
 		lines = append(lines, "Revoke this exact invitation for folder: "+safe(f.invitation.Folder), "Pending requests using it cannot be approved. Existing approved membership is preserved.")

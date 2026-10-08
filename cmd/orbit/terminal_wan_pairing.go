@@ -157,7 +157,7 @@ func handleWANInvite(args []string, out, errOut io.Writer) error {
 		if e != nil {
 			return e
 		}
-		fmt.Fprintf(errOut, "Invitation for this folder only; expires %s. On the other device run `orbit join` and paste:\n", r.Invitation.ExpiresAt)
+		fmt.Fprintf(errOut, "Invitation for this folder only; expires %s. It is %d characters on one line. On the other device run `orbit join` and paste it, or save it with --out and transfer the file:\n", r.Invitation.ExpiresAt, len(code))
 		fmt.Fprintln(out, code)
 		return nil
 	}

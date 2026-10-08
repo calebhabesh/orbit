@@ -42,6 +42,17 @@ They supersede the conflicting text below.
 - **Invitations.** A short pairing code is the default in service modes
   ([WAN UX](orbit-wan-ux.md#short-pairing-code-amendment-2026-10-08)); long
   invitations are shown unboxed, copied whole and transferable as a file.
+  *As implemented (E05, 2026-10-08):* the invitation screen never draws the code
+  inside a panel; it shows its character count and three actions. `c` sends it
+  to the clipboard with OSC 52 (bounded at 16 KiB; "Copy not supported here"
+  where `TERM` rules OSC 52 out; terminals do not acknowledge OSC 52, so success
+  is stated as sent). `v` pauses the interface and prints the code on the
+  ordinary screen as one unbroken line that the terminal wraps itself, so a
+  selection copies one line; Enter returns and clears the screen and its
+  scrollback. `s` saves it to a private file, by default
+  `<state>/invitation-<folder>-<digest>.json` (0600 in the 0700 state folder),
+  and shows the `scp` and `orbit join --invitation-file` commands. The join
+  prompt says it takes a code or a file path, the fallback for SSH sessions.
 - **Attention.** Items clear themselves once their cause is gone, Enter opens the
   matching review, and every suggested action works while the daemon runs.
 

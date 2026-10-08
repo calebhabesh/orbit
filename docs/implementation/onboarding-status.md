@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E04 complete.** The
+Updated: 2026-10-08. **E00–E05 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E05 — Long invitation display, copy and file transfer** (E07 and E09 are also unblocked). The owner's next three-machine trial
+**E06 — Short pairing code** (needs gate EG1 closed first); E07 and E09 are also unblocked. The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -15,7 +15,7 @@ Updated: 2026-10-08. **E00–E04 complete.** The
 | E02 Attention/actions | complete ([evidence](../evidence/onboarding-e02-20261008/summary.md)) | E00 | [E02](onboarding-packets.md#e02--self-healing-attention-and-runnable-actions) |
 | E03 Keys/forms/paste | complete ([evidence](../evidence/onboarding-e03-20261008/summary.md)) | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
 | E04 Join/setup defaults | complete ([evidence](../evidence/onboarding-e04-20261008/summary.md)) | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
-| E05 Long invitation | not started | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
+| E05 Long invitation | complete ([evidence](../evidence/onboarding-e05-20261008/summary.md)) | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
 | E06 Short code | not started | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
 | E07 Approval wait | not started | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
 | E08 Files view | not started | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
@@ -155,8 +155,21 @@ first; the wait screen cannot name the inviter.
 [Commands](../evidence/onboarding-e04-20261008/commands.md),
 [results](../evidence/onboarding-e04-20261008/results.json).
 
+### E05 — complete (2026-10-08)
+
+Base `176da46`. F05: the invitation panel shows a character count, never the
+code. `c` sends a bounded OSC 52 copy; `v` prints one unbroken line outside
+the panel, then clears the screen and scrollback; `s` saves a private default
+file and shows the scp/join commands; the join prompt accepts a code or a
+path. A real PTY run at 80 and 200 columns reconstructs the exact code. A full,
+uninterrupted `make check` and all PTY suites pass.
+[Commands](../evidence/onboarding-e05-20261008/commands.md),
+[results](../evidence/onboarding-e05-20261008/results.json).
+
 ## Handoff
 
-Start E05 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
-Promote `TestOnboardingE00F05…`. E07 owns `TestOnboardingE00F10…` (unit and
-the relay-wait process test).
+Next by table order: E06 (short pairing code). Its gate EG1 (code format, PAKE
+construction and Go implementation, mailbox semantics, abuse bounds, privacy
+text) must be closed first, and choosing a PAKE dependency is a material
+security design decision. E07 (approval wait, F10) and E09 (relay budget) are
+unblocked.
