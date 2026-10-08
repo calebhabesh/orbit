@@ -640,7 +640,7 @@ func (c *EnrollmentClient) post(ctx context.Context, path string, in, out any) e
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return errors.New("enrollment connection or TLS identity verification failed")
+		return &EnrollmentConnectionError{Cause: connectionCause(err)}
 	}
 	defer resp.Body.Close()
 	data, err := io.ReadAll(io.LimitReader(resp.Body, EnrollmentMaxBytes+1))
@@ -751,4 +751,33 @@ func (c *EnrollmentClient) Status(ctx context.Context, request string) (protocol
 		}
 	}
 	return out, err
+}
+
+// EnrollmentConnectionError reports that the inviting device could not be
+// reached or did not prove its pinned identity. Cause is a short category
+// (a service code, TIMEOUT or UNREACHABLE) that names no address or detail.
+type EnrollmentConnectionError struct{ Cause string }
+
+func (e *EnrollmentConnectionError) Error() string {
+	return "could not reach the inviting device (" + e.Cause + ")"
+}
+
+// Retryable reports whether trying again later can help. An identity
+// failure means the device at the other end is not the invited one.
+func (e *EnrollmentConnectionError) Retryable() bool { return e.Cause != "IDENTITY_MISMATCH" }
+
+func connectionCause(err error) string {
+	var verify *tls.CertificateVerificationError
+	if errors.Is(err, ErrPeerPinMismatch) || errors.As(err, &verify) {
+		return "IDENTITY_MISMATCH"
+	}
+	var service *network.ServiceError
+	if errors.As(err, &service) && service.Code != "" {
+		return service.Code
+	}
+	var timeout interface{ Timeout() bool }
+	if errors.Is(err, context.DeadlineExceeded) || (errors.As(err, &timeout) && timeout.Timeout()) {
+		return "TIMEOUT"
+	}
+	return "UNREACHABLE"
 }

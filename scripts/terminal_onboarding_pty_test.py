@@ -192,7 +192,9 @@ def invite(ui, peer, path, device=None):
         ui.wait("> "+items[0]["name"])
         index=next(i for i,it in enumerate(items) if it["id"]==device)
         ui.send(b"j"*index+b"\r")
-    ui.wait("Add device / share folder"); ui.wait("Reviewed membership revision:"); ui.send(b"\r"); ui.wait("Private invitation")
+        # Sharing with a known device keeps its explicit review.
+        ui.wait("Reviewed membership revision:"); ui.send(b"\r")
+    ui.wait("Private invitation")
     short = re.search(r'Pairing code: ([0-9A-Z]{4}-[0-9A-Z]{4})', ui.screen.text())
     ui.pairing_code = short.group(1) if short else None
     ui.send(b"s"); ui.wait("save_invitation")
@@ -278,7 +280,7 @@ def run(binary, output):
         ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
         # share shortcut on detail skips folder selection.
         ua.send(b"s");ua.wait("Select device");devices=a.query("devices",limit="20")["items"];ua.wait("> "+devices[0]["name"]);idx=next(i for i,it in enumerate(devices) if it["id"]==b.device)
-        ua.send(b"j"*idx+b"\r");ua.wait("Add device / share folder");ua.wait("Reviewed membership revision:");ua.send(b"\r");ua.wait("Private invitation")
+        ua.send(b"j"*idx+b"\r");ua.wait("Reviewed membership revision:");ua.send(b"\r");ua.wait("Private invitation")
         transfer=a.root/"second-invite.json";ua.send(b"s");ua.wait("save_invitation");ua.replace(str(transfer));ua.send(b"\r");ua.wait("Private invitation saved");ua.back();ua.wait("[Folders]")
         inv2=json.loads(transfer.read_text());assert inv2["folder"]==second["id"] and inv2["folder"]!=folder
         code2="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(inv2).encode()).decode().rstrip("=")

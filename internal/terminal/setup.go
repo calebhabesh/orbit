@@ -378,6 +378,12 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.notice = "Exact request " + task + " completed. Other devices may still need membership updates."
 	case "invite_review":
 		f.result = r
+		// Choosing the folder is the owner's decision for a new device, which
+		// still needs approval, so create the code without a second Enter.
+		// Sharing with an existing device keeps its explicit review.
+		if f.kind == "invite" && f.device == "" && r.FolderManagement != nil && f.mutation.OperationID == "" && f.err == "" {
+			return m.makeInvitation()
+		}
 	case "invite":
 		if r.Invitation == nil {
 			f.err = "Invitation unavailable; retry the same operation."
@@ -519,6 +525,12 @@ func (m *model) previewSetup() tea.Cmd {
 			return m.focusField(v.i)
 		}
 		*v.n = tc.Uint(n)
+	}
+	// Accept "~" and "~/path" for the local root, as a shell would.
+	if root := get(2); root == "~" || strings.HasPrefix(root, "~/") {
+		if home, err := os.UserHomeDir(); err == nil {
+			f.fields[2].input.SetValue(filepath.Join(home, strings.TrimPrefix(root, "~")))
+		}
 	}
 	for i := range 3 {
 		if get(i) == "" || (i == 2 && !filepath.IsAbs(get(2))) {

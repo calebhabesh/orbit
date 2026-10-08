@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	tea "charm.land/bubbletea/v2"
@@ -81,7 +82,7 @@ func (m *model) workflowView() tea.View {
 		s := p.Settings
 		lines = append(lines, "Device: "+safe(p.DeviceName), "Folder: "+safe(p.FolderName), "Root: "+safe(p.Root), "Existing supported local contents become shared; nothing is erased.")
 		if f.kind == "join" {
-			lines = append(lines, "Inviter: "+safe(f.invitation.Inviter), "Key pin: "+safe(f.invitation.KeyPin), "Invitation expires: "+safe(f.invitation.ExpiresAt), "Invitation folder: "+safe(f.invitation.Folder))
+			lines = append(lines, "Inviter: "+safe(f.invitation.Inviter), "Key pin: "+safe(f.invitation.KeyPin), "Invitation expires: "+expiresIn(f.invitation.ExpiresAt, time.Now()), "Invitation folder: "+safe(f.invitation.Folder))
 		}
 		if p.Network != nil {
 			lines = append(lines, policyLines(*p.Network)...)
@@ -116,6 +117,10 @@ func (m *model) workflowView() tea.View {
 			for _, e := range r.Effects {
 				if e.State == "slowed_down" {
 					lines = append(lines, "Waiting; the inviting device asked us to slow down, so Orbit checks again a little later.")
+				}
+				if cause, ok := strings.CutPrefix(e.State, "reconnecting:"); ok {
+					lines = append(lines, "Can't reach the inviting device yet ("+safe(cause)+"); Orbit keeps trying every 15–25 seconds.",
+						"Keep Orbit running on the inviting device. Nothing is lost while waiting.")
 				}
 			}
 			if r.Operation.Phase == "awaiting_approval" && r.Join != nil {
@@ -206,7 +211,7 @@ func (m *model) workflowView() tea.View {
 	case "invitation_out":
 		title = "Orbit | Private invitation"
 		if p := f.result.Pairing; p != nil && p.Code != "" {
-			lines = append(lines, "Pairing code: "+p.Code, "Expires: "+p.Expires, "On the other device choose Join and type this code.", "Pairing: "+safe(p.State), "Owner approval and verification-code comparison still follow.")
+			lines = append(lines, "Pairing code: "+p.Code, "Expires: "+expiresIn(p.Expires, time.Now()), "On the other device choose Join and type this code.", "Pairing: "+safe(p.State), "Owner approval and verification-code comparison still follow.")
 			if p.Error != "" {
 				lines = append(lines, "This code is unavailable or a wrong code was tried. Press r for a new code.")
 			}
@@ -214,7 +219,7 @@ func (m *model) workflowView() tea.View {
 			break
 		}
 		code, _ := tc.InvitationCode(f.invitation)
-		lines = append(lines, "Invitation created for selected folder only.", "Paste it on the receiving device, review its root there, then approve the exact request here.", "Expires: "+safe(f.invitation.ExpiresAt),
+		lines = append(lines, "Invitation created for selected folder only.", "Paste it on the receiving device, review its root there, then approve the exact request here.", "Expires: "+expiresIn(f.invitation.ExpiresAt, time.Now()),
 			"The code is "+humanCount(len(code))+" characters and stays hidden here (F05):",
 			"  c  copy it to the clipboard (OSC 52)",
 			"  v  show it as one line to select and copy (the screen is cleared afterwards)",
@@ -513,4 +518,33 @@ func humanCount(n int) string {
 		s = s[:i] + "," + s[i:]
 	}
 	return s
+}
+
+// expiresIn shows an RFC 3339 expiry as local 12-hour time with the time
+// left, for example "4:45 PM (9 min left)". Unparseable input is shown safely.
+func expiresIn(at string, now time.Time) string {
+	t, err := time.Parse(time.RFC3339Nano, at)
+	if err != nil {
+		return safe(at)
+	}
+	local := t.Local()
+	when := local.Format("3:04 PM")
+	if local.YearDay() != now.Local().YearDay() || local.Year() != now.Local().Year() {
+		when = local.Format("Mon Jan 2, 3:04 PM")
+	}
+	left := t.Sub(now)
+	switch {
+	case left <= 0:
+		return when + " (expired)"
+	case left < time.Minute:
+		return when + " (less than 1 min left)"
+	case left < time.Hour:
+		return fmt.Sprintf("%s (%d min left)", when, int(left.Minutes()))
+	default:
+		h := int(left.Hours())
+		if m := int(left.Minutes()) % 60; m > 0 {
+			return fmt.Sprintf("%s (%d h %d min left)", when, h, m)
+		}
+		return fmt.Sprintf("%s (%d h left)", when, h)
+	}
 }

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	mrand "math/rand/v2"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -345,6 +346,19 @@ func (c *Controller) advanceSetup(ctx, work context.Context, record repository.T
 			delay := preparedRequestThrottleDelay(r.Operation.Phase, expires, c.options.Now()) + mrand.N(10*time.Second)
 			job.NextContact = c.options.Now().Add(delay).UTC().Format(time.RFC3339Nano)
 			r.Effects = append(r.Effects, tc.Effect{State: "slowed_down"})
+			if e := c.saveSetupPhase(context.WithoutCancel(ctx), &record, job, r.Operation.Phase); e != nil {
+				return *r, e
+			}
+			return *r, nil
+		}
+		var unreachable *replication.EnrollmentConnectionError
+		if m.Join != nil && errors.As(err, &unreachable) && unreachable.Retryable() {
+			// The inviting device is asleep, behind a firewall that needs the
+			// relay, or the service was briefly busy. That is also waiting:
+			// keep the phase and try again shortly, saying why.
+			job.NextContact = c.options.Now().Add(15*time.Second + mrand.N(10*time.Second)).UTC().Format(time.RFC3339Nano)
+			r.Effects = slices.DeleteFunc(r.Effects, func(e tc.Effect) bool { return strings.HasPrefix(e.State, "reconnecting:") })
+			r.Effects = append(r.Effects, tc.Effect{State: "reconnecting:" + unreachable.Cause})
 			if e := c.saveSetupPhase(context.WithoutCancel(ctx), &record, job, r.Operation.Phase); e != nil {
 				return *r, e
 			}
