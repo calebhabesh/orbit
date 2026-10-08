@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00 complete.** The
+Updated: 2026-10-08. **E00 and E01 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E01 — Daemon lifecycle and service defaults** (E02, E03 and E09 are also unblocked). The owner's next three-machine trial
+**E02 — Self-healing attention and runnable actions** (E03 and E09 are also unblocked). The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -11,7 +11,7 @@ Updated: 2026-10-08. **E00 complete.** The
 | Packet | State | Dependencies | Acceptance owner |
 | --- | --- | --- | --- |
 | E00 Baseline/reproductions | complete ([evidence](../evidence/onboarding-e00-20261008/summary.md)) | repository | [E00](onboarding-packets.md#e00--baseline-and-reproductions) |
-| E01 Lifecycle/service defaults | not started | E00 | [E01](onboarding-packets.md#e01--daemon-lifecycle-and-service-defaults) |
+| E01 Lifecycle/service defaults | complete ([evidence](../evidence/onboarding-e01-20261008/summary.md)) | E00 | [E01](onboarding-packets.md#e01--daemon-lifecycle-and-service-defaults) |
 | E02 Attention/actions | not started | E00 | [E02](onboarding-packets.md#e02--self-healing-attention-and-runnable-actions) |
 | E03 Keys/forms/paste | not started | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
 | E04 Join/setup defaults | not started | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
@@ -26,7 +26,7 @@ Updated: 2026-10-08. **E00 complete.** The
 | --- | --- | --- |
 | EG1 Short-code security | open; scoped ([E00](onboarding-gates.md)) | E06 |
 | EG2 Files-view truthfulness | open; scoped ([E00](onboarding-gates.md)) | E08 |
-| EG3 Host-class startup default | open; scoped ([E00](onboarding-gates.md)) | E01 |
+| EG3 Host-class startup default | **closed** ([E01](onboarding-gates.md#eg3--host-class-startup-default-e01)) | E01 |
 | EG4 Relay egress accounting | open; scoped ([E00](onboarding-gates.md)) | E09 |
 
 ## Trial findings
@@ -89,8 +89,27 @@ capture of F05/F06 (left to E03/E05) and `make check` (no production change).
 [Commands](../evidence/onboarding-e00-20261008/commands.md),
 [results](../evidence/onboarding-e00-20261008/results.json).
 
+### E01 — complete (2026-10-08)
+
+Base `a49c3d2`. F01, F04, F14 and the F12 startup default are fixed, and EG3 is closed. The units
+listen on `127.0.0.1:0`. The launcher starts `orbit.service` when it serves the selected
+state, and otherwise runs a detached daemon logging to `<state>/daemon.log`. Status reports
+`owner` and `unit_state` apart from the startup mode. `orbit service start/restart` hand
+a terminal daemon over to the unit, and `stop` also stops it. Host-class startup
+proposals are scoped to states the unit can serve. Unit selection trusts
+`systemctl --user show -p ExecStart` over `$HOME` files. `TestOnboardingE00F01…` and
+`…F04F14…` were promoted to 8 `TestOnboardingE01…` cases (7 ordinary plus 1 opt-in
+real-manager check, run once). `make check` run 1 found
+state-unscoped proposals blocking disposable setups (fixed). Run 2 found two stale
+integration expectations (updated). The targets after them and all three
+PTY harnesses pass. Unexecuted: one uninterrupted `make check` after that last
+test-only fix, and real-host upgrades (E10).
+[Commands](../evidence/onboarding-e01-20261008/commands.md),
+[results](../evidence/onboarding-e01-20261008/results.json).
+
 ## Handoff
 
-Start E01 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
-Promote `TestOnboardingE00F01…` and `…F04F14…` into ordinary regressions as part
-of E01; close EG3 using the probes in [onboarding-gates.md](onboarding-gates.md#eg3--host-class-startup-default-e01).
+Start E02 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
+Promote `TestOnboardingE00F02…`, `…F03…`, `…F09…` and `…F13…` into ordinary
+regressions. E01 changed service start to client dispatch and added `owner`/`unit_state`;
+the `MANUAL_DAEMON_RUNNING` advice in `internal/terminal/setup.go` (F13 scope) is now stale.

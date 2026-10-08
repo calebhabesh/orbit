@@ -287,6 +287,9 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 						return err
 					}
 				}
+				if h := settings.Host; h != nil && h.Note != "" {
+					fmt.Fprintln(stderr, h.Note)
+				}
 				desired.Startup, err = ask("Startup (manual/login/unattended)", desired.Startup)
 				if err != nil {
 					return err

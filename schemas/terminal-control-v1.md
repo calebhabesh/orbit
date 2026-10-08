@@ -201,6 +201,14 @@ Read/upload and explicit cancellation remain their owning later packets.
 Service claim/completion are internal authenticated dispatch/reconciliation calls, not a new
 mutation identity or public command intent. It references the already admitted
 service operation. Lost stop/restart replies are inspected by that original ID.
+
+E01 (2026-10-08) adds optional fields. `Service.owner` (`service`, `terminal`,
+`manual`; omitted when stopped) and `Service.unit_state` (systemd ActiveState)
+are observations. `Result.host` (`HostStartup`: `class`, `suggested`,
+`systemd`, `lingering`, `linger_command`, `note`) accompanies the `settings`
+query; it is advisory and never enables anything. Service `start` is now
+client-dispatched like `stop`/`restart`, so a client can hand a daemon started
+outside the unit over to it; claim/complete are unchanged.
 Runtime retention remains per-folder; nonzero terminal retention changes are
 rejected rather than silently claiming that storage policy changed.
 

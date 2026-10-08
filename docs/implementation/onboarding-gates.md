@@ -8,6 +8,26 @@ owner's hosts; candidates are options, not decisions.
 
 ## EG3 — Host-class startup default (E01)
 
+**Closed 2026-10-08 by E01.** Selected design: candidate 3, scoped to the
+selected state. A host is a desktop if `systemctl get-default` is
+`graphical.target` or the user's `graphical-session.target` is active, and
+proposes `login`. Otherwise it is headless: `unattended` with lingering on,
+else `login` plus the shown `sudo loginctl enable-linger USER` and a re-check.
+With no user manager the proposal is `manual`. The proposal applies only when
+the effective unit serves the state (or no unit exists and it is the default
+state); otherwise `manual` with a note. Saved settings keep the owner's choice. A
+setup that chose `unattended` while lingering is off enables `login`, and status
+reports `login`. Evidence: `TestOnboardingE01EG3HostClassFixtures` (six host
+fixtures), `TestOnboardingE01EG3FreshSettingsUseHostDefault`,
+`TestOnboardingE01F12HostNoteAndLingerRecheck`, the no-escalation grep, and the
+recording `sudo`/`loginctl` stand-ins ([E01 evidence](../evidence/onboarding-e01-20261008/summary.md)).
+Owning spec: [operations](../operations.md#daemon-ownership-and-service-defaults-e01-2026-10-08).
+Limitations: classification is fixture-tested plus the PC's real manager; a
+desktop booted to multi-user with no graphical session is classed headless
+(the selector shows the alternative, E03).
+
+Scoping record (E00):
+
 Facts:
 
 - Read-only host probes (2026-10-08): PC `graphical.target`, local Wayland

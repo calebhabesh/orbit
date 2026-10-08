@@ -395,13 +395,34 @@ func running(s *tc.Service) string {
 }
 
 func (m *model) summary() string {
-	s := m.result.Service
-	startup := "unknown"
-	if s != nil {
-		startup = safe(s.Mode)
-		if !s.Enabled {
-			startup += " (not enabled)"
-		}
+	return fmt.Sprintf("Daemon: %s   Startup: %s", daemonLabel(m.result.Service), startupLabel(m.result.Service))
+}
+
+// daemonLabel names the daemon state and who runs it: the service, the
+// terminal launcher or a manual start (F04).
+func daemonLabel(s *tc.Service) string {
+	label := running(s)
+	if s != nil && s.Running && s.Owner != "" {
+		label += " (" + safe(s.Owner) + ")"
 	}
-	return fmt.Sprintf("Daemon: %s   Startup: %s", running(s), startup)
+	return label
+}
+
+// startupLabel is the configured startup mode, reported separately from the
+// owner, with a failing or restarting unit shown as such.
+func startupLabel(s *tc.Service) string {
+	if s == nil {
+		return "unknown"
+	}
+	startup := safe(s.Mode)
+	if !s.Enabled {
+		startup += " (not enabled)"
+	}
+	switch {
+	case s.UnitState == "failed":
+		startup += "; service failed"
+	case s.UnitState == "activating" && s.Owner != "service":
+		startup += "; service restarting"
+	}
+	return startup
 }

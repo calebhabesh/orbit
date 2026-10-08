@@ -42,6 +42,22 @@ fi
 MODE="${1:-user}"
 case "$MODE" in user|system) ;; *) echo "Usage: install.sh [user|system]" >&2; exit 1 ;; esac
 
+# install_unit RENDERED TARGET installs the unit when absent, and replaces an
+# earlier packaged unit that differs only by its fixed 127.0.0.1:8080 control
+# port (F01). Any other local edit is preserved; drop-ins are never touched.
+install_unit() {
+    rendered="$1"; target="$2"
+    if [ ! -e "$target" ] && [ ! -L "$target" ]; then
+        printf '%s\n' "$rendered" > "$target"
+        chmod 0644 "$target"
+    elif [ -f "$target" ] && [ ! -L "$target" ] && grep -q -- '--control-listen=127.0.0.1:8080' "$target" \
+        && [ "$(sed 's|--control-listen=127.0.0.1:8080|--control-listen=127.0.0.1:0|' "$target")" = "$rendered" ]; then
+        printf '%s\n' "$rendered" > "$target"
+        chmod 0644 "$target"
+        echo "Updated ${target}: the control port is now chosen automatically."
+    fi
+}
+
 if [ "${MODE}" = "system" ]; then
     echo "Installing Orbit system-wide (requires root)..."
     INSTALL_BIN="/usr/local/bin/orbit"
@@ -53,9 +69,8 @@ if [ "${MODE}" = "system" ]; then
     install -m 0755 "${BIN_SRC}" "${INSTALL_BIN}"
 
     install -d -m 0755 /usr/lib/systemd/user
-    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${INSTALL_SERVICE}" ] && [ ! -L "${INSTALL_SERVICE}" ]; then
-        sed "s|/usr/bin/orbit|${INSTALL_BIN}|g" "${SERVICE_SRC}" > "${INSTALL_SERVICE}"
-        chmod 0644 "${INSTALL_SERVICE}"
+    if [ -f "${SERVICE_SRC}" ]; then
+        install_unit "$(sed "s|/usr/bin/orbit|${INSTALL_BIN}|g" "${SERVICE_SRC}")" "${INSTALL_SERVICE}"
     fi
 
     if [ -f "${DESKTOP_SRC}" ]; then
@@ -83,9 +98,8 @@ else
     install -m 0755 "${BIN_SRC}" "${TARGET_BIN_DIR}/orbit"
 
     mkdir -p "${TARGET_SERVICE_DIR}"
-    if [ -f "${SERVICE_SRC}" ] && [ ! -e "${TARGET_SERVICE_DIR}/orbit.service" ] && [ ! -L "${TARGET_SERVICE_DIR}/orbit.service" ]; then
-        sed "s|/usr/bin/orbit|${TARGET_BIN_DIR}/orbit|g" "${SERVICE_SRC}" > "${TARGET_SERVICE_DIR}/orbit.service"
-        chmod 0644 "${TARGET_SERVICE_DIR}/orbit.service"
+    if [ -f "${SERVICE_SRC}" ]; then
+        install_unit "$(sed "s|/usr/bin/orbit|${TARGET_BIN_DIR}/orbit|g" "${SERVICE_SRC}")" "${TARGET_SERVICE_DIR}/orbit.service"
     fi
 
     if [ -f "${DESKTOP_SRC}" ]; then

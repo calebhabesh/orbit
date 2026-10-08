@@ -42,6 +42,7 @@ type workflow struct {
 	settings                                        tc.Settings
 	network                                         tc.NetworkPolicy
 	builtin                                         *tc.BuiltinProfile
+	host                                            *tc.HostStartup
 	plan                                            tc.SetupIntent
 	invitation                                      tc.Invitation
 	mutation                                        tc.Mutation
@@ -205,6 +206,7 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 			return nil
 		}
 		f.settings = *r.Settings
+		f.host = r.Host
 		f.network = tc.NetworkPolicy{Mode: "manual", Generation: 1}
 		if r.Network != nil {
 			f.network = r.Network.Policy
@@ -232,6 +234,12 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 			f.screen = "form"
 		}
 		f.fields[f.focus].input.Focus()
+	case "recheck_host":
+		// Re-check after the owner ran the linger command; Orbit never runs it.
+		f.host = r.Host
+		if r.Host != nil && r.Host.Suggested == "unattended" && f.fields[3].input.Value() == "login" {
+			f.fields[3].input.SetValue("unattended")
+		}
 	case "parse_invitation":
 		f.invitation = *r.Invitation
 		f.screen = "form"
@@ -520,6 +528,16 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 	case "ctrl+n":
 		if f.screen == "form" {
 			return m.cycleConnection()
+		}
+		return nil
+	case "ctrl+r":
+		if f.screen == "form" {
+			w, _ := m.workflows()
+			f.task = "recheck_host"
+			f.work = func(ctx context.Context) (tc.Result, error) {
+				return w.Query(ctx, tc.Query{Version: tc.Version, Kind: "settings"})
+			}
+			return m.invalidate()
 		}
 		return nil
 	case "tab", "shift+tab":

@@ -12,6 +12,8 @@ import (
 func TestSelectedServiceAcceptsPackagedHomeSpecifier(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
+	// No reachable user manager: unit files are the only source here.
+	t.Setenv("PATH", t.TempDir())
 	unitDir := filepath.Join(home, ".config", "systemd", "user")
 	if err := os.MkdirAll(unitDir, 0o755); err != nil {
 		t.Fatal(err)

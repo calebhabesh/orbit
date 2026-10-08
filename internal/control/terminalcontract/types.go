@@ -317,6 +317,21 @@ type Service struct {
 	UnattendedVerified bool   `json:"unattended_verified"`
 	RootHealthy        bool   `json:"root_healthy"`
 	CaptureHealthy     bool   `json:"capture_healthy"`
+	// Owner names who runs the daemon (service, terminal, manual), separate
+	// from the configured startup Mode; UnitState is systemd's ActiveState.
+	Owner     string `json:"owner,omitempty"`
+	UnitState string `json:"unit_state,omitempty"`
+}
+
+// HostStartup is the advisory startup default for this host. Orbit never
+// enables lingering itself; LingerCommand is shown for the owner to run.
+type HostStartup struct {
+	Class         string `json:"class"`     // desktop, headless, unknown
+	Suggested     string `json:"suggested"` // manual, login, unattended
+	Systemd       bool   `json:"systemd"`
+	Lingering     bool   `json:"lingering"`
+	LingerCommand string `json:"linger_command,omitempty"`
+	Note          string `json:"note,omitempty"`
 }
 type NamedItem struct {
 	ID     string `json:"id"`
@@ -376,6 +391,7 @@ type Result struct {
 	Session          *EditorSession      `json:"session,omitempty"`
 	Settings         *Settings           `json:"settings,omitempty"`
 	Service          *Service            `json:"service,omitempty"`
+	Host             *HostStartup        `json:"host,omitempty"`
 	Readiness        *Readiness          `json:"readiness,omitempty"`
 	Items            []NamedItem         `json:"items"`
 	Requests         []EnrollmentRequest `json:"requests"`

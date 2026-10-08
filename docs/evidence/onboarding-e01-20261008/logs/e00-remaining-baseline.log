@@ -1,0 +1,68 @@
+--- FAIL: TestOnboardingE00F05RevealedInvitationCopiesWhole (0.01s)
+    onboarding_e00_test.go:43: fixture code length 1863
+    onboarding_e00_test.go:72: 80x24: no rendered row copies as the exact 1863-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:75: 80x24: no character count shown with the invitation
+    onboarding_e00_test.go:72: 200x50: no rendered row copies as the exact 1863-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:75: 200x50: no character count shown with the invitation
+--- FAIL: TestOnboardingE00F06SecretPasteReplacesAndReportsLength (0.00s)
+    onboarding_e00_test.go:91: second paste produced 2663 characters, want exactly the pasted 1863 (approved: paste replaces)
+    onboarding_e00_test.go:95: secret field shows no received-length status line
+--- FAIL: TestOnboardingE00F07TruncatedInvitationIsSpecific (0.00s)
+    onboarding_e00_test.go:112: cut at 1862 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 1862: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 1862: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 1861 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 1861: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 1861: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 931 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 931: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 931: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 300 of 1863: "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:119: cut 300: generic failure "CONTROL_UNAVAILABLE: Retry; use orbit doctor to inspect local control/network reachability."
+    onboarding_e00_test.go:122: cut 300: message does not say the code is incomplete/damaged
+--- FAIL: TestOnboardingE00F08JoinDefaultsToAutomatic (0.00s)
+    onboarding_e00_test.go:153: join connection default "manual", want automatic
+--- FAIL: TestOnboardingE00F09AwaitingApprovalOpensRequests (0.00s)
+    onboarding_e00_test.go:174: Enter on AWAITING_APPROVAL opened "day_operation", want requests review
+--- FAIL: TestOnboardingE00F12StartupIsSelector (0.00s)
+    onboarding_e00_test.go:184: startup field "Startup (manual/login/unattended)" default "manual"
+    onboarding_e00_test.go:186: startup offered as typed enumeration
+    onboarding_e00_test.go:192: typing changed startup to "manualz" (approved: selector)
+    onboarding_e00_test.go:195: setup default startup is manual (approved: login on desktops, unattended on headless with linger guidance)
+    onboarding_e00_test.go:200: right arrow left startup at "manual" (approved: selector moves to the next choice)
+--- FAIL: TestOnboardingE00F13NoGenericErrorAdvice (0.00s)
+    onboarding_e00_test.go:220: 10 of 11 sampled failures show the generic advice: [INVALID_REQUEST INTERNAL_ERROR IO_ERROR CONTROL_UNAVAILABLE UNAUTHORIZED PAYLOAD_TOO_LARGE SETUP_BLOCKED QUOTA_EXCEEDED SOMETHING_NEW transport error]
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/terminal	0.026s
+--- FAIL: TestOnboardingE00F02RootUnavailableScanHealsAfterLaterScan (0.04s)
+    onboarding_e00_test.go:118: superseded ROOT_UNAVAILABLE scan still exhausted after a later scan completed
+    onboarding_e00_test.go:127: attention still lists EXHAUSTED_WORK; advice "Retry task with 'orbit engine work retry --task 605645c794afe509e799a007027c9f55'"
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/scheduler	0.047s
+--- FAIL: TestOnboardingE00F10StatusPollingFitsInviterSourceBucket (0.00s)
+    onboarding_e00_test.go:34: request 12 at 1m15.2s of the approval wait refused with RATE_LIMITED (per-source 5/min, burst 5; client sends 8/min)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/replication	0.002s
+--- FAIL: TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon (0.62s)
+    onboarding_e00_test.go:77: orbit engine work retry --task 1011680dc086cb3e4ab83c1b6177ad38 => exit status 1: orbit: state directory is already owned by another agent
+    onboarding_e00_test.go:79: attention advice cannot run while the daemon runs: orbit: state directory is already owned by another agent
+--- FAIL: TestOnboardingE00F15ReviewFileInGroupReadableHome (0.61s)
+    onboarding_e00_test.go:105: setup --review-file ~/r.json (0750 home) => exit status 1: orbit: state directory "/tmp/<disposable>/001/home" must not be accessible by group or other users (mode 0700)
+    onboarding_e00_test.go:113: review-file failure is described as a state directory problem
+    onboarding_e00_test.go:116: review-file failure does not name the file's directory and the fix
+--- FAIL: TestOnboardingE00RelayJoinWaitNamesAndModes (206.25s)
+    onboarding_e00_test.go:191: F08: fresh routed join plan: mode "automatic", profile set false, awaiting profile true; inviter's operator profile preselected false
+    onboarding_e00_test.go:198: F08: submitting the fresh plan => err=exit status 1 SETUP_BLOCKED: no such file or directory
+    onboarding_e00_test.go:201: F08: fresh join does not preselect the routed invitation's operator (approved: Automatic/inviter operator offered for review, then the join proceeds)
+    onboarding_e00_test.go:228: F10: joiner errors during 2m30s unapproved wait: map[RATE_LIMITED:23]; first RATE_LIMITED after 48s; local service requests 52
+    onboarding_e00_test.go:230: F10: waiting joiner shown RATE_LIMITED 23 times
+    onboarding_e00_test.go:257: F16: source mode 0644, received mode 0600
+    onboarding_e00_test.go:264: F11: inviter `orbit devices`:
+        Workspace Replicas (Membership Revision: 2):
+          [active]  PC                   device=18d11041cc61622e801c8501324bbb11fda46412795f32106c745ac3cfc65277 pin=97c293938a7c7130e3e6033a175bf36a1d96f86ad7fe97e0879c7316b8a5a5c4 endpoint=no endpoint
+          [active]  Device 6020fdb336efe388 device=6020fdb336efe3885cfcbfbbdfcce8cd4d23f21bbb41f598167dc03a4b554680 pin=7a7f245798f750b32bd7708e0630797363b9f2c7c671dd156ff5940220f1fd02 endpoint=no endpoint
+    onboarding_e00_test.go:266: F11: inviter's device list does not show the joiner's chosen name
+    onboarding_e00_test.go:270: F11: inviter's JSON device list lacks the joiner's chosen name
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	207.474s
+FAIL

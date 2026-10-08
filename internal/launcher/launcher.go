@@ -121,12 +121,24 @@ func Launch(ctx context.Context, opts LaunchOptions) (*LaunchResult, error) {
 	}, nil
 }
 
+// detachedLog keeps a terminal-started daemon's output (F14). The previous
+// run's log is kept as daemon.log.1 so a crash stays inspectable once.
+const detachedLog = "daemon.log"
+
 func defaultDaemonStarter(_ context.Context, stateDir, ctrlAddr string) error {
 	bin, err := os.Executable()
 	if err != nil {
 		return err
 	}
-	cmd := exec.Command(bin, "serve", "--state="+stateDir, "--control-listen="+ctrlAddr, "--allow-init")
+	logPath := filepath.Join(stateDir, detachedLog)
+	_ = os.Rename(logPath, logPath+".1")
+	logFile, err := os.OpenFile(logPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC|os.O_APPEND|syscall.O_NOFOLLOW, 0600)
+	if err != nil {
+		return err
+	}
+	defer logFile.Close()
+	cmd := exec.Command(bin, "serve", "--state="+stateDir, "--control-listen="+ctrlAddr, "--allow-init", "--started-by=terminal")
+	cmd.Stdout, cmd.Stderr = logFile, logFile
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	if err := cmd.Start(); err != nil {
 		return err

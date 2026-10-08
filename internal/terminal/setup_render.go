@@ -47,7 +47,8 @@ func (m *model) workflowView() tea.View {
 		footer = "Enter verify  Esc back  Ctrl-C close"
 	case "form":
 		title = "Orbit | Review setup inputs"
-		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.", "Startup: login needs user systemd; unattended also needs lingering.")
+		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.")
+		lines = append(lines, hostStartupLines(f.host)...)
 		for _, i := range m.formIndices() {
 			value := safe(f.fields[i].input.Value())
 			if i == f.focus {
@@ -57,7 +58,7 @@ func (m *model) workflowView() tea.View {
 			lines = append(lines, m.theme().field(f.fields[i].label, value, f.fields[i].input.Value(), i == f.focus))
 		}
 		lines = append(lines, "Metadata budget="+hb(f.settings.MetadataBudget)+" reserve="+hb(f.settings.ReserveBytes)+"; retention uses per-folder controls.")
-		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-A advanced  Esc back"
+		footer = "Tab next  Shift-Tab back  Enter preview  Ctrl-N connection  Ctrl-R re-check startup  Ctrl-A advanced  Esc back"
 	case "preview":
 		title = "Orbit | Measuring root"
 		lines = append(lines, "Bounded enumeration continues; adoption has not been confirmed.")
@@ -263,7 +264,7 @@ func (m *model) frame(title string, lines []string, footer string, focusLine, sc
 	title = strings.TrimPrefix(title, "Orbit | ")
 	right := ""
 	if s := m.result.Service; s != nil && !t.plain {
-		right = t.pill(running(s), safe(s.Mode))
+		right = t.pill(daemonLabel(s), startupLabel(s))
 	}
 	heading := []string{t.header(m.width, t.bold(title), right)}
 	if t.plain {
@@ -415,6 +416,29 @@ func networkLines(n *tc.NetworkStatus) []string {
 		}
 		lines = append(lines, safe(o.Device)+": "+label+"; observed="+safe(o.ObservedAt)+"; "+safe(o.Code))
 		lines = append(lines, "Freshness: "+safe(o.Freshness)+fmt.Sprintf("; candidates LAN=%d public=%d expired=%d; UDP=%s", o.LANCandidates, o.PublicCandidates, o.ExpiredCandidates, safe(o.UDPCode)), "Next action: "+safe(o.Action))
+	}
+	return lines
+}
+
+// hostStartupLines explain the proposed startup for this host (EG3), including
+// the exact linger command the owner may run; Orbit never runs it.
+func hostStartupLines(h *tc.HostStartup) []string {
+	if h == nil {
+		return []string{"Startup: login needs user systemd; unattended also needs lingering."}
+	}
+	var lines []string
+	switch h.Class {
+	case "desktop":
+		lines = append(lines, "Startup: this looks like a desktop, so Orbit starts when you log in.")
+	case "headless":
+		if h.Lingering {
+			lines = append(lines, "Startup: this looks like a headless host with lingering on, so Orbit runs unattended.")
+		} else {
+			lines = append(lines, "Startup: this looks like a headless host.")
+		}
+	}
+	if h.Note != "" {
+		lines = append(lines, safe(h.Note))
 	}
 	return lines
 }

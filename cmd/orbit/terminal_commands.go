@@ -520,9 +520,19 @@ func RenderOrbitStatusHuman(stdout io.Writer, res tc.Result, stateDir string) {
 	if res.Service != nil {
 		if res.Service.Running {
 			daemonStatus = "running"
+			// Who runs the daemon is reported apart from the startup mode (F04).
+			if res.Service.Owner != "" {
+				daemonStatus += " (" + res.Service.Owner + ")"
+			}
 		}
 		if res.Service.Mode != "" {
 			startupMode = res.Service.Mode
+		}
+		switch {
+		case res.Service.UnitState == "failed":
+			startupMode += "; service failed"
+		case res.Service.UnitState == "activating" && res.Service.Owner != "service":
+			startupMode += "; service restarting"
 		}
 	}
 	fmt.Fprintf(stdout, "Orbit                                Daemon: %-9s Startup: %s\n", daemonStatus, startupMode)

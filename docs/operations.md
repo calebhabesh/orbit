@@ -391,7 +391,8 @@ is conservatively false until T07 supplies current capture evidence; the legacy
 `capture_successful` field still means some historical version was captured.
 Unattended verification is false until native lifecycle validation. Unattended
 enablement checks lingering first and returns the owner step
-`loginctl enable-linger USER` when absent; Orbit never executes it.
+`sudo loginctl enable-linger USER` when absent; Orbit never executes it (E01:
+no code path runs `sudo` or `loginctl enable-linger`).
 
 Service dispatch first claims the admitted operation durably; concurrent retries
 cannot repeat its external command. A caller arriving while another stopped
@@ -404,11 +405,66 @@ The selected unit is matched by its `ExecStart` `--state=` value after expanding
 systemd's `%h` home specifier, so the packaged per-user unit written by
 `install.sh user` is accepted for `~/.local/state/orbit` and nothing else.
 `start`/`restart` succeed only when the unit's `MainPID` is the recorded state
-owner. If a daemon started outside the unit (for example by setup or the
-terminal) owns the state, they return `MANUAL_DAEMON_RUNNING` with the action
-`orbit stop`, then `orbit service start`, and dispatch nothing; enabling login
-startup is unaffected and takes over at the next login. `orbit stop` is the
-Orbit entry for the existing graceful `orbit stop`.
+owner. `orbit stop` is the Orbit entry for the existing graceful `orbit stop`.
+
+### Daemon ownership and service defaults (E01, 2026-10-08)
+
+**One daemon owner.** The packaged unit and the unit `orbit service enable`
+writes both use `--control-listen=127.0.0.1:0`; every client reads the
+published `control.addr`, so another program on 8080 cannot stop Orbit (F01).
+`install.sh` replaces an earlier packaged unit that differs only by the old
+`127.0.0.1:8080` port, and a service action rewrites a byte-exact earlier
+Orbit-generated user unit the same way; edited units and drop-ins are kept.
+
+When the TUI, `orbit launch` or a CLI restart needs a daemon and none runs, the
+launcher starts `orbit.service` if a user manager is reachable and the effective
+unit serves the selected state (fresh state is initialized first, as
+`--allow-init` would). The unit's own `systemctl show -p ExecStart` is
+authoritative: it resolves `%h` and the config home from the account, so a
+process with a different `$HOME` can never select the owner's real unit; unit
+files (highest-precedence unit, then `orbit.service.d/*.conf` drop-ins in name
+order, where an empty `ExecStart=` resets) are read only when the manager
+reports no Orbit command. If the unit does not take ownership within about 8 s,
+the launcher stops it (so `Restart=on-failure` cannot crash-loop against the
+fallback) and starts a detached daemon instead. Without a user manager the
+detached daemon is the only option.
+
+A detached daemon records `.agent.origin` = `terminal` and writes its output to
+`<state>/daemon.log` (owner-only; the previous run is kept as `daemon.log.1`).
+
+**Truthful status (F04).** Service status reports `owner` — `service` (unit
+`MainPID` is the lock owner), `terminal` (origin file) or `manual` — separately
+from the startup mode, plus the unit's `unit_state` (`failed`, `activating` …).
+The TUI header, `orbit status` and `orbit service status` show for example
+`running (terminal)` and `login; service failed`. The reported mode is
+`unattended` only when lingering is on; otherwise it is `login`.
+
+**Handover (F14).** Start, stop and restart run in the client after the daemon
+admits the operation. `orbit service start`/`restart` gracefully stop a
+`terminal` or `manual` daemon (the existing `orbit stop` path, 15 s bound) and
+then start the unit; the result says "took over from the terminal daemon".
+`orbit service stop` stops the unit and then any daemon still running outside
+it, also without a user manager. The daemon's own legacy HTTP service action
+cannot hand itself over and still returns `MANUAL_DAEMON_RUNNING`.
+
+**Startup default (F12, EG3).** A fresh device's settings review proposes the
+host-class default; saved settings keep the owner's choice. A host is a desktop
+when `systemctl get-default` is `graphical.target` or the user's
+`graphical-session.target` is active (stable over SSH, and correct for a
+desktop booted to multi-user while a graphical session runs); desktops propose
+`login`. Other hosts with a user manager are headless: `unattended` when
+lingering is already on, otherwise `login` with a note showing
+`sudo loginctl enable-linger USER` and a re-check (TUI Ctrl-R; re-running the
+CLI review). With no user manager the proposal is `manual`. The proposal applies only
+to a state that can use the user unit (the effective unit serves it, or no unit
+exists and it is the default state, so enable installs one); a unit serving a
+different state is never replaced, so other states stay `manual` with a note.
+(The first E01 `make check` caught this: disposable test states on a desktop
+with the owner's real unit were proposed `login` and blocked at enable with
+`SERVICE_SELECTION_REQUIRED`; no unit was modified.) A setup that chose
+`unattended` while lingering is still off enables login startup instead and
+status reports `login`. Seat presence and the current session type are not used:
+every trial host has `seat0`, and an SSH session to a desktop is `tty`.
 
 Native lifecycle (W17, 2026-10-07): `scripts/validation/service_boot_vm.py`
 installs the packaged archive with `install.sh user` in a disposable KVM guest

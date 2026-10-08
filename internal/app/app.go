@@ -105,6 +105,9 @@ type ServeOptions struct {
 	NoWatch             bool
 	ClientFactory       scheduler.ClientFactory
 	AllowInitialize     bool // auto-initialize clean uninitialized state directory
+	// StartedBy records who started this daemon (only "terminal" is recorded),
+	// so status can name the owner separately from the startup mode.
+	StartedBy string
 }
 
 func Serve(ctx context.Context, stateDir, peerAddress string, ready io.Writer) error {
@@ -143,6 +146,13 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		return err
 	}
 	defer os.Remove(filepath.Join(stateDir, ".agent.instance"))
+	_ = os.Remove(filepath.Join(stateDir, ".agent.origin"))
+	if opts.StartedBy == "terminal" {
+		if err := config.WritePrivate(stateDir, ".agent.origin", []byte("terminal\n")); err != nil {
+			return err
+		}
+		defer os.Remove(filepath.Join(stateDir, ".agent.origin"))
+	}
 
 	cfg, err := config.Load(stateDir)
 	if err != nil {

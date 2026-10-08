@@ -1,0 +1,21 @@
+{
+  "packet": "E01",
+  "date": "2026-10-08",
+  "base_revision": "a49c3d2",
+  "go": "go1.27.1-X:nodwarf5 linux/amd64",
+  "findings": {
+    "F01": {"result": "fixed", "tests": ["TestOnboardingE01F01PackagedUnitStartsWithPort8080Taken", "TestOnboardingE01F01LegacyUserUnitMigrates", "TestOnboardingE01F01RealUserManagerTransientUnit (opt-in, run)"], "observed": "packaged and generated units use --control-listen=127.0.0.1:0; daemon starts with 8080 held by java; orbit status connects through control.addr; real transient unit active with journal output"},
+    "F04": {"result": "fixed", "tests": ["TestOnboardingE01F04F14OwnerAndHandover", "TestOnboardingE01F04HeaderNamesOwnerAndFailingUnit"], "observed": "status owner=terminal unit_state=failed; orbit status header 'running (terminal)' and 'service failed'; owner=service after handover"},
+    "F12": {"result": "startup default fixed (selector is E03)", "tests": ["TestOnboardingE01EG3HostClassFixtures", "TestOnboardingE01EG3FreshSettingsUseHostDefault", "TestOnboardingE01F12HostNoteAndLingerRecheck"], "observed": "desktop->login, headless linger off->login plus the sudo command, linger on->unattended, no manager->manual; foreign unit or no unit on a non-default state->manual; Ctrl-R re-check"},
+    "F14": {"result": "fixed", "tests": ["TestOnboardingE01F04F14OwnerAndHandover"], "observed": "detached daemon fds -> <state>/daemon.log; failed unit stopped before fallback; service start hands over keeping identity and settings; stop/start/restart complete with owner named; stop also stops a terminal daemon"}
+  },
+  "gates": {"EG3": "closed", "EG1": "scoped", "EG2": "scoped", "EG4": "scoped"},
+  "checks": {
+    "make_check_run1": "fail (10 tests/terminal; fixed by state-scoped startup proposal)",
+    "make_check_run2": "tests/terminal pass; test-integration fail (2 stale expectations, updated)",
+    "remaining_targets": "pass (fmt-check vet test-integration test-model test-faults test-harness build build-arm64 package)",
+    "pty_harnesses": "pass (terminal_pty, terminal_onboarding_pty, terminal_everyday_pty)",
+    "e00_remaining_baseline": "12 expected failures owned by E02-E07"
+  },
+  "unexecuted": ["one uninterrupted make check after the final test-expectation fix", "install.sh upgrade replacement on a real host (E10 migration)", "deb upgrade on the Pi (E10)", "physical desktop/headless hosts (fixtures plus the PC's real manager only)"]
+}
