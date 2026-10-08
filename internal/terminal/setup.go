@@ -28,6 +28,7 @@ type Workflows interface {
 	ManageFolder(context.Context, string, string, string, string) error
 	RetirementPreview(context.Context, string, string) (control.RetireDevicePreviewResult, error)
 	SaveInvitation(context.Context, string, tc.Invitation) error
+	RetryWork(context.Context, control.WorkRetryRequest) (*control.WorkRetryResult, error)
 }
 type field struct {
 	label string
@@ -234,6 +235,9 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 			f.screen = "form"
 		}
 		f.fields[f.focus].input.Focus()
+	case "retry_work":
+		m.notice = "Work re-queued; attention clears when it completes."
+		return m.closeFlow()
 	case "recheck_host":
 		// Re-check after the owner ran the linger command; Orbit never runs it.
 		f.host = r.Host
@@ -351,12 +355,16 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 }
 func workflowError(r tc.Result, err error) string {
 	code := "CONTROL_UNAVAILABLE"
+	// The daemon's own next step for codes this table does not know (F13).
+	daemonAction := ""
 	if r.Error != nil {
 		code = r.Error.Code
+		daemonAction = r.Error.Action
 	} else {
 		var e *control.ControlError
 		if errors.As(err, &e) {
 			code = e.Code
+			daemonAction = e.Action
 		} else if err != nil {
 			// Only known categories are displayed; transport errors may contain secrets.
 			for _, c := range []string{"IDENTITY_MISMATCH", "INVALID_REQUEST", "STALE_VIEW", "STORAGE_BLOCKED", "NETWORK_RESTART_REQUIRED", "IDEMPOTENCY_CONFLICT", "INVITATION_EXPIRED"} {
@@ -367,8 +375,37 @@ func workflowError(r tc.Result, err error) string {
 			}
 		}
 	}
-	action := "Retry; use orbit doctor to inspect local control/network reachability."
+	// No generic "retry" advice (F13): each code names its next step; unknown
+	// codes use the daemon's action, else say where the details are.
+	action := daemonAction
+	if action == "" {
+		action = "This step failed; details are in Orbit's log (journalctl --user -u orbit, or daemon.log in the state directory) and orbit doctor."
+	}
 	switch code {
+	case "CONTROL_UNAVAILABLE":
+		action = "Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+	case "NOT_SET_UP":
+		action = "Orbit is not set up on this device yet; create or join an Orbit first."
+	case "INVALID_REQUEST":
+		action = "Orbit rejected this input as malformed; check the values on this screen (an invitation must be pasted whole) and submit again."
+	case "UNAUTHORIZED":
+		action = "The local control credential was refused; quit and reopen orbit so it reads the current credential."
+	case "PAYLOAD_TOO_LARGE":
+		action = "The input is larger than Orbit accepts; check that only one invitation or file path was pasted."
+	case "INTERNAL_ERROR", "IO_ERROR":
+		action = "Orbit hit an internal or disk error during this step; details are in its log (journalctl --user -u orbit, or daemon.log in the state directory). Your reviewed input is kept."
+	case "SETUP_BLOCKED":
+		action = "Setup stopped before finishing; open the setup's progress for the blocking step. Your reviewed input is kept."
+	case "QUOTA_EXCEEDED":
+		action = "The Orbit service's limit for this device is used up for now; wait and resume the same operation later."
+	case "IDEMPOTENCY_CONFLICT":
+		action = "This operation ID was already used for different input; start the step again from its screen."
+	case "UNSUPPORTED_CAPABILITY", "INCOMPATIBLE_VERSION":
+		action = "The running daemon is a different Orbit version; restart it (orbit service restart) and try again."
+	case "HANDOVER_FAILED":
+		action = "The background daemon could not be handed to the service; run orbit stop, then orbit service start."
+	case "SERVICE_REVIEW_REQUIRED":
+		action = "A service command was interrupted; check orbit service status before trying it again."
 	case "IDENTITY_MISMATCH":
 		action = "Stop and verify the inviter identity; request a new invitation from the intended device."
 	case "EXPIRED_ATTEMPT", "INVITATION_EXPIRED", "EXPIRED_OR_DECLINED_ATTEMPT", "EXPIRED_REPLAY", "INVITATION_INVALID":
@@ -382,7 +419,7 @@ func workflowError(r tc.Result, err error) string {
 	case "SYSTEMD_UNAVAILABLE", "UNATTENDED_PREREQUISITE", "STARTUP_REVIEW_REQUIRED", "SERVICE_SELECTION_REQUIRED":
 		action = "Inspect startup prerequisites with orbit doctor; manual startup remains available."
 	case "MANUAL_DAEMON_RUNNING":
-		action = "Sync keeps running; login startup takes over at next login, or run orbit stop then orbit service start."
+		action = "Sync keeps running; run orbit service start from a terminal to hand the daemon over to the service."
 	case "SERVICE_UNAVAILABLE", "UNAVAILABLE", "DEVICE_OFFLINE":
 		action = "Waiting for a connection; saved local work and the reviewed attempt are retained. Retry later or open Connection details."
 	case "PROFILE_MISSING_OR_EXPIRED", "PROFILE_MISMATCH", "NETWORK_REVIEW_REQUIRED":
@@ -716,6 +753,10 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 	case "relocate_review":
 		if k == "enter" {
 			return m.manageFolder("relocate")
+		}
+	case "retry_review":
+		if k == "enter" {
+			return m.retryWork()
 		}
 	}
 	return nil

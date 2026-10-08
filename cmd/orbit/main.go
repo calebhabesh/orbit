@@ -3153,21 +3153,18 @@ func handleWorkRetry(args []string, stdout, stderr io.Writer) error {
 		}
 	}
 
-	return app.WithWorkspace(context.Background(), actualStateDir, func(_ config.Config, db *repository.DB, ws *workspace.Workspace) error {
-		ctrl := control.New(db, ws)
-		res, err := ctrl.WorkRetry(context.Background(), control.WorkRetryRequest{
-			Folder: folder,
-			TaskID: *taskID,
-		})
-		if err != nil {
-			return err
-		}
-		if *jsonOutput {
-			return json.NewEncoder(stdout).Encode(res)
-		}
-		fmt.Fprintf(stdout, "%s\n", res.Message)
-		return nil
-	})
+	// Through the running daemon when there is one (F03), so the advice shown
+	// in attention works while Orbit runs.
+	client := &controlclient.Client{StateDir: actualStateDir}
+	res, err := client.RetryWork(context.Background(), control.WorkRetryRequest{Folder: folder, TaskID: *taskID})
+	if err != nil {
+		return err
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(res)
+	}
+	fmt.Fprintf(stdout, "%s\n", res.Message)
+	return nil
 }
 
 func handleWorkCancel(args []string, stdout, stderr io.Writer) error {
@@ -3329,6 +3326,8 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleStorageUsage(nil, stdout, stderr)
 	case "maintenance":
 		return handleMaintenance(args[1:], stdout, stderr)
+	case "retry":
+		return handleWorkRetry(args[1:], stdout, stderr)
 	case "service":
 		return handleOrbitService(args[1:], stdout, stderr)
 	case "doctor":

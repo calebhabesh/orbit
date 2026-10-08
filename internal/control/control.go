@@ -48,6 +48,9 @@ type Options struct {
 	// SetupStepBound limits each setup step that holds terminalMu; zero uses
 	// DefaultSetupStepBound. Steps that grow with folder size are not bounded.
 	SetupStepBound time.Duration
+	// WorkChanged tells the running scheduler that durable work was re-queued
+	// through control (F03); nil in a stopped adapter, which has no scheduler.
+	WorkChanged func()
 }
 
 type Controller struct {
@@ -1695,11 +1698,18 @@ func (c *Controller) WorkStatus(ctx context.Context, req WorkStatusRequest) (*Wo
 	return result, nil
 }
 
+func (c *Controller) workChanged() {
+	if c.options.WorkChanged != nil {
+		c.options.WorkChanged()
+	}
+}
+
 func (c *Controller) WorkRetry(ctx context.Context, req WorkRetryRequest) (*WorkRetryResult, error) {
 	if req.TaskID != "" {
 		if err := c.db.RetryDurableTask(ctx, req.TaskID); err != nil {
 			return nil, err
 		}
+		c.workChanged()
 		return &WorkRetryResult{
 			RetriedCount: 1,
 			Message:      fmt.Sprintf("retried task %s", req.TaskID),
@@ -1713,6 +1723,9 @@ func (c *Controller) WorkRetry(ctx context.Context, req WorkRetryRequest) (*Work
 	count, err := c.db.RetryAllExhaustedTasks(ctx, folderPtr)
 	if err != nil {
 		return nil, err
+	}
+	if count > 0 {
+		c.workChanged()
 	}
 	return &WorkRetryResult{
 		RetriedCount: count,

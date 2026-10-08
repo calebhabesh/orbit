@@ -1,0 +1,56 @@
+--- FAIL: TestOnboardingE00F05RevealedInvitationCopiesWhole (0.01s)
+    onboarding_e00_test.go:43: fixture code length 1863
+    onboarding_e00_test.go:72: 80x24: no rendered row copies as the exact 1863-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:75: 80x24: no character count shown with the invitation
+    onboarding_e00_test.go:72: 200x50: no rendered row copies as the exact 1863-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:75: 200x50: no character count shown with the invitation
+--- FAIL: TestOnboardingE00F06SecretPasteReplacesAndReportsLength (0.00s)
+    onboarding_e00_test.go:91: second paste produced 2663 characters, want exactly the pasted 1863 (approved: paste replaces)
+    onboarding_e00_test.go:95: secret field shows no received-length status line
+--- FAIL: TestOnboardingE00F07TruncatedInvitationIsSpecific (0.00s)
+    onboarding_e00_test.go:112: cut at 1862 of 1863: "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:119: cut 1862: generic failure "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:122: cut 1862: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 1861 of 1863: "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:119: cut 1861: generic failure "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:122: cut 1861: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 931 of 1863: "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:119: cut 931: generic failure "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:122: cut 931: message does not say the code is incomplete/damaged
+    onboarding_e00_test.go:112: cut at 300 of 1863: "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:119: cut 300: generic failure "CONTROL_UNAVAILABLE: Orbit's background daemon did not answer; check it with orbit service status (log: journalctl --user -u orbit, or daemon.log in the state directory)."
+    onboarding_e00_test.go:122: cut 300: message does not say the code is incomplete/damaged
+--- FAIL: TestOnboardingE00F08JoinDefaultsToAutomatic (0.00s)
+    onboarding_e00_test.go:153: join connection default "manual", want automatic
+--- FAIL: TestOnboardingE00F12StartupIsSelector (0.00s)
+    onboarding_e00_test.go:163: startup field "Startup (manual/login/unattended)" default "manual"
+    onboarding_e00_test.go:165: startup offered as typed enumeration
+    onboarding_e00_test.go:171: typing changed startup to "manualz" (approved: selector)
+    onboarding_e00_test.go:174: setup default startup is manual (approved: login on desktops, unattended on headless with linger guidance)
+    onboarding_e00_test.go:179: right arrow left startup at "manual" (approved: selector moves to the next choice)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/terminal	0.025s
+--- FAIL: TestOnboardingE00F10StatusPollingFitsInviterSourceBucket (0.00s)
+    onboarding_e00_test.go:34: request 12 at 1m15.2s of the approval wait refused with RATE_LIMITED (per-source 5/min, burst 5; client sends 8/min)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/replication	0.002s
+--- FAIL: TestOnboardingE00F15ReviewFileInGroupReadableHome (0.61s)
+    onboarding_e00_test.go:84: setup --review-file ~/r.json (0750 home) => exit status 1: orbit: state directory "/tmp/<disposable>/001/home" must not be accessible by group or other users (mode 0700)
+    onboarding_e00_test.go:92: review-file failure is described as a state directory problem
+    onboarding_e00_test.go:95: review-file failure does not name the file's directory and the fix
+--- FAIL: TestOnboardingE00RelayJoinWaitNamesAndModes (205.23s)
+    onboarding_e00_test.go:170: F08: fresh routed join plan: mode "automatic", profile set false, awaiting profile true; inviter's operator profile preselected false
+    onboarding_e00_test.go:177: F08: submitting the fresh plan => err=exit status 1 SETUP_BLOCKED: no such file or directory
+    onboarding_e00_test.go:180: F08: fresh join does not preselect the routed invitation's operator (approved: Automatic/inviter operator offered for review, then the join proceeds)
+    onboarding_e00_test.go:207: F10: joiner errors during 2m30s unapproved wait: map[RATE_LIMITED:23]; first RATE_LIMITED after 48s; local service requests 52
+    onboarding_e00_test.go:209: F10: waiting joiner shown RATE_LIMITED 23 times
+    onboarding_e00_test.go:236: F16: source mode 0644, received mode 0600
+    onboarding_e00_test.go:243: F11: inviter `orbit devices`:
+        Workspace Replicas (Membership Revision: 2):
+          [active]  PC                   device=56fff9cec318b02b8eddf73a075fda402a7fab7d3fcc0424e174f84c0d085524 pin=5efc009e7f1e1be8e2ae77af1191456f421b5a7f4b565bd9014593b855e4547e endpoint=no endpoint
+          [active]  Device bcf248b65738fa39 device=bcf248b65738fa395370fef17245ce6870c0915c20fb55f84ff85958ef72c4ef pin=4e93d21ca9d185614bb1d9e5aaf0866c836900878145cabe7a98e55b246fce57 endpoint=no endpoint
+    onboarding_e00_test.go:245: F11: inviter's device list does not show the joiner's chosen name
+    onboarding_e00_test.go:249: F11: inviter's JSON device list lacks the joiner's chosen name
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	205.848s
+FAIL

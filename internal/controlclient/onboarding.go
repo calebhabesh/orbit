@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -289,4 +290,24 @@ func (c *Client) RevokeInvitation(ctx context.Context, inv tc.Invitation) error 
 		var out control.RevokeInvitationResult
 		return c.Call(ctx, "POST", "/api/v1/invitations/revoke", req, &out)
 	}, func(ctrl *control.Controller) error { _, err := ctrl.RevokeInvitation(ctx, req); return err })
+}
+
+// RetryWork re-queues one exhausted task, or every exhausted task (optionally
+// of one folder) when req.TaskID is empty, through the running daemon when there is one (F03); otherwise
+// through a stopped adapter. Never opens the database beside a live daemon.
+func (c *Client) RetryWork(ctx context.Context, req control.WorkRetryRequest) (*control.WorkRetryResult, error) {
+	var res control.WorkRetryResult
+	err := c.WithController(ctx, func() error {
+		return c.Call(ctx, http.MethodPost, "/api/v1/work/retry", req, &res)
+	}, func(ctrl *control.Controller) error {
+		out, err := ctrl.WorkRetry(ctx, req)
+		if out != nil {
+			res = *out
+		}
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
 }

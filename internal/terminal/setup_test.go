@@ -18,6 +18,7 @@ type workflowFixture struct {
 	query    func(context.Context, tc.Query) (tc.Result, error)
 	mutation tc.Mutation
 	calls    int
+	retried  []control.WorkRetryRequest
 }
 
 func (w *workflowFixture) Query(ctx context.Context, q tc.Query) (tc.Result, error) {
@@ -38,6 +39,10 @@ func (*workflowFixture) ManageFolder(context.Context, string, string, string, st
 	return nil
 }
 func (*workflowFixture) SaveInvitation(context.Context, string, tc.Invitation) error { return nil }
+func (w *workflowFixture) RetryWork(_ context.Context, req control.WorkRetryRequest) (*control.WorkRetryResult, error) {
+	w.retried = append(w.retried, req)
+	return &control.WorkRetryResult{RetriedCount: 1}, nil
+}
 func (*workflowFixture) RetirementPreview(context.Context, string, string) (control.RetireDevicePreviewResult, error) {
 	return control.RetireDevicePreviewResult{}, nil
 }

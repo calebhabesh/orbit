@@ -154,27 +154,6 @@ func TestOnboardingE00F08JoinDefaultsToAutomatic(t *testing.T) {
 	}
 }
 
-// F09: Enter on an AWAITING_APPROVAL attention item opens the request review,
-// even though the item carries the request ID in OperationID.
-func TestOnboardingE00F09AwaitingApprovalOpensRequests(t *testing.T) {
-	onboardingBaseline(t)
-	m, _ := workflowModel()
-	folder, request := strings.Repeat("f", 64), strings.Repeat("e", 64)
-	m.section = 2
-	m.result = tc.Result{Attention: []tc.Attention{{ID: "att-1", Folder: folder, OperationID: request, Code: "AWAITING_APPROVAL", Action: "Review pending enrollment request"}}}
-	m.restoreSelection()
-	if len(m.rows()) == 0 {
-		t.Fatal("attention row missing")
-	}
-	m.inspect()
-	if m.flow == nil {
-		t.Fatal("Enter opened nothing")
-	}
-	if m.flow.screen != "requests" {
-		t.Errorf("Enter on AWAITING_APPROVAL opened %q, want requests review", m.flow.screen)
-	}
-}
-
 // F12: startup is a selector, not a typed word, and its default is not manual.
 func TestOnboardingE00F12StartupIsSelector(t *testing.T) {
 	onboardingBaseline(t)
@@ -198,25 +177,5 @@ func TestOnboardingE00F12StartupIsSelector(t *testing.T) {
 	m.Update(tea.KeyPressMsg{Code: tea.KeyRight})
 	if got := f.fields[3].input.Value(); got == before || (got != "manual" && got != "login" && got != "unattended") {
 		t.Errorf("right arrow left startup at %q (approved: selector moves to the next choice)", got)
-	}
-}
-
-// F13: no error code falls back to the shared "Retry; use orbit doctor" advice.
-func TestOnboardingE00F13NoGenericErrorAdvice(t *testing.T) {
-	onboardingBaseline(t)
-	generic := "Retry; use orbit doctor to inspect local control/network reachability."
-	codes := []string{"INVALID_REQUEST", "INTERNAL_ERROR", "IO_ERROR", "CONTROL_UNAVAILABLE", "UNAUTHORIZED",
-		"INVITATION_INVALID", "PAYLOAD_TOO_LARGE", "SETUP_BLOCKED", "QUOTA_EXCEEDED", "SOMETHING_NEW"}
-	var fallbacks []string
-	for _, code := range codes {
-		if strings.Contains(workflowError(tc.Result{Error: &tc.Error{Code: code}}, nil), generic) {
-			fallbacks = append(fallbacks, code)
-		}
-	}
-	if strings.Contains(workflowError(tc.Result{}, context.DeadlineExceeded), generic) {
-		fallbacks = append(fallbacks, "transport error")
-	}
-	if len(fallbacks) != 0 {
-		t.Errorf("%d of %d sampled failures show the generic advice: %v", len(fallbacks), len(codes)+1, fallbacks)
 	}
 }

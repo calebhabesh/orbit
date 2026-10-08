@@ -440,6 +440,12 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 		if task.Kind == "sync" && task.Peer != nil {
 			_ = s.db.ResolveExhaustedSyncTasks(context.Background(), task.Folder, *task.Peer)
 		}
+		// A completed full scan covers every earlier scan of the folder, so a
+		// scan exhausted on a passing condition (a briefly missing root, F02)
+		// stops being attention without the owner retrying it.
+		if task.Kind == "scan" && task.TargetPath == "" {
+			_, _ = s.db.SupersedeExhaustedScans(context.Background(), task.Folder, task.ID, task.CreatedNS)
+		}
 		return
 	}
 
@@ -512,6 +518,14 @@ func (s *Scheduler) RetryAll(folder *history.ID) (int, error) {
 		s.notifyWork()
 	}
 	return count, err
+}
+
+// ReloadWork picks up tasks re-queued in the database by another component,
+// such as a control retry while the daemon runs (F03).
+func (s *Scheduler) ReloadWork() {
+	if err := s.queue.LoadFromDB(context.Background()); err == nil {
+		s.notifyWork()
+	}
 }
 
 func (s *Scheduler) PauseFolder(folder history.ID, reason string) {

@@ -292,3 +292,15 @@ dispatched by `controlclient` after durable admission and claim, with
 (`control.ProbeHostStartup`, `tc.Result.Host`) accompanies the `settings`
 query; the TUI form shows its note and re-checks with Ctrl-R. Rules and
 fallbacks are in [operations](operations.md#daemon-ownership-and-service-defaults-e01-2026-10-08).
+
+## E02 attention routing — 2026-10-08
+
+Enter on an attention row routes by code through `attentionRoutes`
+(`internal/terminal/attention_route.go`) before any use of the item's
+`OperationID`. Approvals open request review, exhausted work opens a retry
+review, conflicts and editor recovery open content review, setups open
+progress, budgets open storage and root/membership/offline items open the
+folder. A code without a route shows the item's details. `Workflows` gains
+`RetryWork`, implemented by `controlclient` over the authenticated work-retry
+route. A model test covers every entry in `control.AttentionCodes`, and a
+real-PTY test drives Enter → retry review → Enter on a running daemon.

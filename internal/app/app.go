@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/calebhabesh/orbit/internal/config"
@@ -442,7 +443,13 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		}
 		return nil, errors.New("IDENTITY_MISMATCH")
 	}
-	ctrl = control.New(db, ws, control.Options{LocalDevice: deviceID, Network: manager, Relay: relayRuntime, NetworkPolicy: &networkPolicy, NetworkError: networkError, NetworkService: serviceClient, NetworkSelfPin: hex.EncodeToString(identity.KeyPin[:]), NetworkPeerTLS: peerTLS, StopInternet: func() error {
+	// The scheduler is created after the controller; retries reach it here.
+	var reloadWork atomic.Pointer[func()]
+	ctrl = control.New(db, ws, control.Options{WorkChanged: func() {
+		if f := reloadWork.Load(); f != nil {
+			(*f)()
+		}
+	}, LocalDevice: deviceID, Network: manager, Relay: relayRuntime, NetworkPolicy: &networkPolicy, NetworkError: networkError, NetworkService: serviceClient, NetworkSelfPin: hex.EncodeToString(identity.KeyPin[:]), NetworkPeerTLS: peerTLS, StopInternet: func() error {
 		if relayRuntime != nil {
 			_ = relayRuntime.Close()
 		}
@@ -694,6 +701,8 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	if err := sched.Start(ctx); err != nil {
 		return fmt.Errorf("start scheduler: %w", err)
 	}
+	reload := sched.ReloadWork
+	reloadWork.Store(&reload)
 	defer sched.Stop()
 
 	var ctrlServer *control.Server

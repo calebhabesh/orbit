@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00 and E01 complete.** The
+Updated: 2026-10-08. **E00–E02 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E02 — Self-healing attention and runnable actions** (E03 and E09 are also unblocked). The owner's next three-machine trial
+**E03 — Keyboard, form and paste conventions** (E09 is also unblocked; E04 follows E03). The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -12,7 +12,7 @@ Updated: 2026-10-08. **E00 and E01 complete.** The
 | --- | --- | --- | --- |
 | E00 Baseline/reproductions | complete ([evidence](../evidence/onboarding-e00-20261008/summary.md)) | repository | [E00](onboarding-packets.md#e00--baseline-and-reproductions) |
 | E01 Lifecycle/service defaults | complete ([evidence](../evidence/onboarding-e01-20261008/summary.md)) | E00 | [E01](onboarding-packets.md#e01--daemon-lifecycle-and-service-defaults) |
-| E02 Attention/actions | not started | E00 | [E02](onboarding-packets.md#e02--self-healing-attention-and-runnable-actions) |
+| E02 Attention/actions | complete ([evidence](../evidence/onboarding-e02-20261008/summary.md)) | E00 | [E02](onboarding-packets.md#e02--self-healing-attention-and-runnable-actions) |
 | E03 Keys/forms/paste | not started | E00 | [E03](onboarding-packets.md#e03--keyboard-form-and-paste-conventions) |
 | E04 Join/setup defaults | not started | E01, E03 | [E04](onboarding-packets.md#e04--join-and-setup-defaults-actionable-onboarding-errors) |
 | E05 Long invitation | not started | E03 | [E05](onboarding-packets.md#e05--long-invitation-display-copy-and-file-transfer) |
@@ -107,9 +107,25 @@ test-only fix, and real-host upgrades (E10).
 [Commands](../evidence/onboarding-e01-20261008/commands.md),
 [results](../evidence/onboarding-e01-20261008/results.json).
 
+### E02 — complete (2026-10-08)
+
+Base `82116cf`. F02: a completed full scan supersedes earlier exhausted scans
+(`SUPERSEDED`, original error kept). F03: `orbit retry` and the engine command go
+through the daemon's retry route, and `WorkChanged` wakes the scheduler (a
+negative check proved it is needed). F09: Enter routes through a per-code
+table covering all 14 emitted codes; a real-PTY Enter → retry → Enter passes.
+F13: per-code advice. Also fixed: advice naming a nonexistent `conflicts resolve`
+and a relocate command missing required flags. `make check` found two stale T07 text assertions (updated);
+the remaining targets and the PTY harnesses pass. Unexecuted: one uninterrupted
+`make check` after those test-text fixes, and PTY checks for codes other than
+`EXHAUSTED_WORK`. Observed, not fixed: outside Overview the TUI header shows the
+daemon as `unknown`.
+[Commands](../evidence/onboarding-e02-20261008/commands.md),
+[results](../evidence/onboarding-e02-20261008/results.json).
+
 ## Handoff
 
-Start E02 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
-Promote `TestOnboardingE00F02…`, `…F03…`, `…F09…` and `…F13…` into ordinary
-regressions. E01 changed service start to client dispatch and added `owner`/`unit_state`;
-the `MANUAL_DAEMON_RUNNING` advice in `internal/terminal/setup.go` (F13 scope) is now stale.
+Start E03 with the kickoff in the [plan](../orbit-onboarding-implementation-plan.md#worker-kickoff).
+Promote `TestOnboardingE00F06…`, `…F15…` and the selector part of `…F12…` into
+ordinary regressions. E01 added the host note and Ctrl-R re-check to the setup
+form; E03 turns startup into a selector over the proposed default.
