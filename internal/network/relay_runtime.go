@@ -352,6 +352,9 @@ func (r *RelayRuntime) ICE(ctx context.Context, t Target) (*QUICEndpoint, net.Ad
 }
 
 // A quota refusal needs a quiet refill, shared by all targets using this client.
+// RelayBudgetRetry spaces relay attempts after a RELAY_BUDGET refusal.
+const RelayBudgetRetry = time.Hour
+
 // Refused local retries do not extend the deadline or send more service traffic.
 func (r *RelayRuntime) serviceCooldown() error {
 	r.mu.Lock()
@@ -363,7 +366,7 @@ func (r *RelayRuntime) serviceCooldown() error {
 }
 func (r *RelayRuntime) recordServiceFailure(err error) {
 	var service *ServiceError
-	if !errors.As(err, &service) || service.Code != p.NetworkQuota {
+	if !errors.As(err, &service) || (service.Code != p.NetworkQuota && service.Code != p.NetworkRelayBudget) {
 		return
 	}
 	r.mu.Lock()
@@ -371,7 +374,13 @@ func (r *RelayRuntime) recordServiceFailure(err error) {
 	if time.Now().Before(r.retryAfter) {
 		return
 	}
-	r.retryAfter = time.Now().Add(ServiceRetryQuietPeriod)
+	quiet := ServiceRetryQuietPeriod
+	if service.Code == p.NetworkRelayBudget {
+		// A spent monthly relay budget lasts until the month resets or the
+		// operator raises it; ask again hourly, not every quiet period.
+		quiet = RelayBudgetRetry
+	}
+	r.retryAfter = time.Now().Add(quiet)
 	r.retryCode = service.Code
 }
 
@@ -425,7 +434,7 @@ func transientServiceFailure(err error) bool {
 		code = service.Code
 	}
 	switch code {
-	case p.NetworkQuota, p.NetworkServiceUnavailable, p.NetworkCanceled:
+	case p.NetworkQuota, p.NetworkRelayBudget, p.NetworkServiceUnavailable, p.NetworkCanceled:
 		return true
 	}
 	return false

@@ -1,9 +1,9 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E05 and E07 complete.** The
+Updated: 2026-10-08. **E00–E05, E07 and E09 complete.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
 [packet details](onboarding-packets.md) form the handoff. Next eligible:
-**E09 — Monthly relay egress budget** (E06 waits on the owner's PAKE choice for EG1; E08 needs EG2). The owner's next three-machine trial
+**E08 — Files view** (EG2 first). E06 waits on the owner's PAKE choice for EG1. The owner's next three-machine trial
 (PC, laptop, Pi) waits for E10.
 
 ## Packet tracker
@@ -19,7 +19,7 @@ Updated: 2026-10-08. **E00–E05 and E07 complete.** The
 | E06 Short code | not started | E04, E05, EG1 | [E06](onboarding-packets.md#e06--short-pairing-code-through-the-orbit-service) |
 | E07 Approval wait | complete ([evidence](../evidence/onboarding-e07-20261008/summary.md)) | E00, E04 | [E07](onboarding-packets.md#e07--approval-waiting-within-service-limits) |
 | E08 Files view | not started | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
-| E09 Relay budget | not started | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
+| E09 Relay budget | complete; VPS deployment pending owner at E10 ([evidence](../evidence/onboarding-e09-20261008/summary.md)) | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
 | E10 Trial readiness | not started | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
 
 | Gate | State | Owning packet |
@@ -27,7 +27,7 @@ Updated: 2026-10-08. **E00–E05 and E07 complete.** The
 | EG1 Short-code security | open; scoped ([E00](onboarding-gates.md)) | E06 |
 | EG2 Files-view truthfulness | open; scoped ([E00](onboarding-gates.md)) | E08 |
 | EG3 Host-class startup default | **closed** ([E01](onboarding-gates.md#eg3--host-class-startup-default-e01)) | E01 |
-| EG4 Relay egress accounting | open; scoped ([E00](onboarding-gates.md)) | E09 |
+| EG4 Relay egress accounting | **closed** ([E09](onboarding-gates.md#eg4--relay-egress-accounting-e09)) | E09 |
 
 ## Trial findings
 
@@ -178,8 +178,23 @@ change.
 [Commands](../evidence/onboarding-e07-20261008/commands.md),
 [results](../evidence/onboarding-e07-20261008/results.json).
 
+### E09 — complete (2026-10-08)
+
+Base `4f8ea36`. EG4 closed: the relay counter is egress payload in both
+directions, with 0.22% framing overhead. `relay_month_bytes` (2 TiB default)
+lives in a private state file under a new `StateDirectory`; it survives
+restarts and resets monthly. At the budget, data relays are refused with
+`RELAY_BUDGET` and live ones end at the next chunk; pairing relays are exempt.
+Metrics, 80%/100% alerts, device wording and the route share are added.
+`make check`: `TestWANW12BinaryDoctorPrivacyAndPTY` fails intermittently
+(relay probe `TIMEOUT`), and that reproduced on unmodified `4f8ea36`. All other
+targets, PTY suites and the orbit-net rehearsal pass. The VPS deployment and its
+`relay_month_bytes` value need the owner's confirmation at E10.
+[Commands](../evidence/onboarding-e09-20261008/commands.md),
+[results](../evidence/onboarding-e09-20261008/results.json).
+
 ## Handoff
 
-E06 waits on the owner's choice of PAKE construction (EG1). Next eligible: E09
-(relay budget, EG4); E08 (Files view) needs EG2. Unfinished E00 baselines: none
-in ordinary packages (F05/F10 promoted).
+E06 waits on the owner's PAKE choice (EG1). E08 (Files view) is next once
+EG2 is closed. E10 must also investigate the intermittent
+`TestWANW12BinaryDoctorPrivacyAndPTY` relay-probe timeout, which predates E09.

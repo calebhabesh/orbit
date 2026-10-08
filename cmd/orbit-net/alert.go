@@ -248,6 +248,19 @@ func evaluateAlerts(client *http.Client, cfg alertConfig, st *alertState, now ti
 		desired["certificate_expiring"] = fmt.Sprintf("%s TLS certificate expires in %s; check the renewal timer", cfg.Name, humanDuration(v))
 	}
 
+	// Monthly relay budget (E09): 80% warns, 100% means data relays are
+	// refused until the next UTC month. Each fires once on its transition and
+	// resolves when the month resets.
+	if limit := samples["orbit_net_relay_month_limit_bytes"]; limit > 0 {
+		used := samples["orbit_net_relay_month_bytes"]
+		reset := time.Date(now.UTC().Year(), now.UTC().Month()+1, 1, 0, 0, 0, 0, time.UTC).Format("2006-01-02")
+		if used >= limit {
+			desired["relay_budget_spent"] = fmt.Sprintf("%s monthly relay budget spent (%s of %s); data relays refused until %s UTC, direct connections unaffected", cfg.Name, humanBytes(used), humanBytes(limit), reset)
+		} else if used >= 0.8*limit {
+			desired["relay_budget_80"] = fmt.Sprintf("%s monthly relay budget at %.0f%% (%s of %s); resets %s UTC", cfg.Name, 100*used/limit, humanBytes(used), humanBytes(limit), reset)
+		}
+	}
+
 	// A rejected reload latches until a later successful reload or a restart.
 	failures, reloads := samples["orbit_net_certificate_reload_failures_total"], samples["orbit_net_certificate_reloads_total"]
 	prevFailures, hadFailures := st.Counters["orbit_net_certificate_reload_failures_total"]
@@ -431,4 +444,15 @@ func notify(client *http.Client, cfg alertConfig, title, body, priority string) 
 		return fmt.Errorf("notification endpoint returned %d", resp.StatusCode)
 	}
 	return nil
+}
+
+// humanBytes formats a byte count with binary units for notifications.
+func humanBytes(v float64) string {
+	units := []string{"B", "KiB", "MiB", "GiB", "TiB", "PiB"}
+	i := 0
+	for v >= 1024 && i < len(units)-1 {
+		v /= 1024
+		i++
+	}
+	return fmt.Sprintf("%.1f %s", v, units[i])
 }

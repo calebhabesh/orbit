@@ -14,6 +14,9 @@ Group=orbit-net
 # and the TLS chain/key, all owned by orbit-net with directory mode 0700.
 ConfigurationDirectory=orbit-net
 ConfigurationDirectoryMode=0700
+# Monthly relay count (relay-month.json); $STATE_DIRECTORY is its default home.
+StateDirectory=orbit-net
+StateDirectoryMode=0700
 ExecStartPre=/usr/bin/orbit-net serve --config /etc/orbit-net/serve.json --check
 ExecStart=/usr/bin/orbit-net serve --config /etc/orbit-net/serve.json
 ExecReload=/bin/kill -HUP $MAINPID

@@ -302,6 +302,9 @@ func handleOrbitNetwork(args []string, out, errOut io.Writer) error {
 		for _, probe := range n.Probes {
 			fmt.Fprintf(out, "Probe %s: %s; observed=%s\n", probe.Kind, probe.Code, probe.ObservedAt)
 		}
+		if len(n.Observations) > 0 {
+			fmt.Fprintln(out, routeShare(n.Observations))
+		}
 		for _, o := range n.Observations {
 			fmt.Fprintf(out, "Device %s: %s; code=%s; observed=%s\n", o.Device, o.Route, o.Code, o.ObservedAt)
 			fmt.Fprintf(out, "  Freshness: %s; candidates LAN=%d public=%d expired=%d; UDP=%s\n  Next action: %s\n", o.Freshness, o.LANCandidates, o.PublicCandidates, o.ExpiredCandidates, o.UDPCode, o.Action)
@@ -397,4 +400,21 @@ func daemonHasCapability(ctx context.Context, client *controlclient.Client, capa
 		}
 	}
 	return false
+}
+
+// routeShare summarizes the latest route observation per device: relay
+// versus direct share as seen from this device (E09).
+func routeShare(observations []tc.NetworkObservation) string {
+	direct, relay, other := 0, 0, 0
+	for _, o := range observations {
+		switch o.Route {
+		case "relay":
+			relay++
+		case "direct", "quic":
+			direct++
+		default:
+			other++
+		}
+	}
+	return fmt.Sprintf("Routes: %d direct, %d relay, %d not connected (latest observation per device)", direct, relay, other)
 }

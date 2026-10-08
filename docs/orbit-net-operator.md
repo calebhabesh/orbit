@@ -120,15 +120,25 @@ Every value is a finite ceiling, not an availability or bandwidth promise.
 | `relay_bps` | 20 MiB/s | Aggregate relay ciphertext, both directions |
 | `relay_device_bps` | 5 MiB/s | Per device, retained 60 s across reconnects |
 | `relay_session_bytes` | 16 GiB | Per tunnel lifetime |
+| `relay_month_bytes` | 2 TiB | Relay data allowance per UTC month (E09); at the limit new data relays are refused with `RELAY_BUDGET` and live ones end at their next chunk. Pairing relays stay available |
+| `relay_state` | `$STATE_DIRECTORY/relay-month.json` | Private file (0600) holding this month's count; written at most every 30 s and on stop |
 | Fixed | 256 sockets, 128 controls, 128 sessions, 128 leases | Overflow is refused, never queued |
 | Fixed | 128 pre-auth req/s; 2/s per source (burst 128) | Shared NAT: up to 128 devices can register together, then 2/s |
 | Fixed | 1 metadata op/s per device (burst 10) | Per device key, independent of source address |
 | STUN | 10/s per IPv4 /24 or IPv6 /64, 200/s total | Responses ≤ 3× request, ≤ 128 bytes |
 
-Worst-case relay egress per month is about `relay_bps × 2.6 million seconds`
-(20 MiB/s is about 54 TiB). Set `relay_bps` to what your hosting plan can pay
-for; devices fall back to direct paths and simply see the service as busy when
-it is reached. The unit caps the process at 4096 file descriptors and 512 MiB of
+Worst-case relay egress per month without a budget would be about `relay_bps ×
+2.6 million seconds` (20 MiB/s is about 54 TiB); `relay_month_bytes` bounds it.
+Set it against your plan's free egress (for example 10 TB/month on the Oracle
+free tier) minus the host's other traffic. The count is the same as
+`orbit_net_relay_bytes_total`: relay payload written to receiving devices, both
+forwarding directions. It excludes TLS and WebSocket framing, measured at
+0.22% for bulk transfer (EG4), so leave a few percent of headroom. A crash can
+forget at most the last 30 seconds of counting (at most `relay_bps × 30 s`,
+600 MiB at the default). At the budget, devices say "relay unavailable until
+<the next month>; direct connections still work", keep using direct routes and
+ask the relay again hourly. Raising `relay_month_bytes` and restarting takes
+effect immediately. The unit caps the process at 4096 file descriptors and 512 MiB of
 memory; the local rehearsal measured about 265 descriptors and 25 MiB RSS under
 a 320-socket flood (see W13 evidence).
 
@@ -146,6 +156,8 @@ Prometheus text format. No metric carries an address, device ID, pin or session.
 | Saturation | `orbit_net_connections_refused_total` or `orbit_net_refusals_total{reason="quota"}` rising for 10 min |
 | Stranded devices | `orbit_net_refusals_total{reason="untrusted"}` or `{reason="expired"}` rising after a change |
 | Egress | `rate(orbit_net_relay_bytes_total)` near `orbit_net_relay_limit_bytes_per_second` |
+| Relay budget 80% | `orbit_net_relay_month_bytes` ≥ 80% of `orbit_net_relay_month_limit_bytes` (fires once; resolves at 100% or the next month) |
+| Relay budget spent | `orbit_net_relay_month_bytes` ≥ `orbit_net_relay_month_limit_bytes`; `orbit_net_refusals_total{reason="budget"}` counts refused data relays; resolves when the month resets |
 | Down | `/healthz` not 200, or the unit not active |
 
 Without a Prometheus stack, `orbit-net alert` implements this table. Each run
@@ -236,7 +248,8 @@ owner to review it; treat it as a new operator.
 | `serve.json`, unit overrides | Yes |
 | Service key | Optional; replacing it needs a new epoch |
 | TLS key and chain | Per your certificate process |
-| Directory leases, sessions, rate buckets, relay state | No; memory only, rebuilt by devices after restart |
+| Directory leases, sessions, rate buckets, live relays | No; memory only, rebuilt by devices after restart |
+| `relay-month.json` | Optional; losing it restarts this month's relay count at zero |
 
 ### Verify an offline authority backup
 

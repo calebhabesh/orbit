@@ -574,9 +574,12 @@ const (
 	NetworkStaleGeneration     = "STALE_GENERATION"
 	NetworkIdempotencyConflict = "IDEMPOTENCY_CONFLICT"
 	NetworkQuota               = "QUOTA_EXCEEDED"
-	NetworkUnavailable         = "ROUTE_UNAVAILABLE"
-	NetworkServiceUnavailable  = "SERVICE_UNAVAILABLE"
-	NetworkCanceled            = "CANCELED"
+	// NetworkRelayBudget refuses relay data because the operator's monthly
+	// relay allowance is spent; it resets at the next UTC month (E09).
+	NetworkRelayBudget        = "RELAY_BUDGET"
+	NetworkUnavailable        = "ROUTE_UNAVAILABLE"
+	NetworkServiceUnavailable = "SERVICE_UNAVAILABLE"
+	NetworkCanceled           = "CANCELED"
 )
 
 func (p NetworkProof) Intent(private bool) ([]byte, error) {

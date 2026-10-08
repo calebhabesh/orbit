@@ -11,12 +11,15 @@ import (
 type counters struct {
 	quota, invalid, expired, untrusted, other atomic.Uint64
 	relayBytes                                atomic.Uint64
+	budget                                    atomic.Uint64
 }
 
 func (c *counters) refused(code string) {
 	switch code {
 	case p.NetworkQuota:
 		c.quota.Add(1)
+	case p.NetworkRelayBudget:
+		c.budget.Add(1)
 	case p.NetworkInvalidRequest, p.NetworkUnsupported:
 		c.invalid.Add(1)
 	case p.NetworkProfileExpired:
@@ -46,6 +49,10 @@ type Metrics struct {
 	RefusedUntrusted, RelayBytes  uint64
 	ServiceBytesPerSecond         int64
 	DeviceBytesPerSecond          int64
+	// Monthly relay budget (E09); zero limit means no budget is configured.
+	RefusedBudget                    uint64
+	RelayMonthBytes, RelayMonthLimit uint64
+	RelayMonth                       string
 }
 
 func (s *Service) Metrics() Metrics {
@@ -67,6 +74,10 @@ func (s *Service) Metrics() Metrics {
 	}
 	m.RefusedQuota, m.RefusedInvalid, m.RefusedExpired = s.stats.quota.Load(), s.stats.invalid.Load(), s.stats.expired.Load()
 	m.RefusedUntrusted, m.RefusedOther, m.RelayBytes = s.stats.untrusted.Load(), s.stats.other.Load(), s.stats.relayBytes.Load()
+	m.RefusedBudget = s.stats.budget.Load()
+	if s.budget != nil {
+		m.RelayMonth, m.RelayMonthBytes, m.RelayMonthLimit = s.budget.Snapshot()
+	}
 	return m
 }
 func digestOf(sp *servedProfile) string { d, _ := sp.selection.Digest(); return d }

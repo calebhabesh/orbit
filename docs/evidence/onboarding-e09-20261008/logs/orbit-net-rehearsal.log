@@ -1,0 +1,11 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.0.0 -X main.commit=4f8ea36 -X main.date=2026-10-01' -o bin/orbit ./cmd/orbit
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.0.0 -X main.commit=4f8ea36 -X main.date=2026-10-01' -o bin/orbit-net ./cmd/orbit-net
+go test -count=1 -v ./tests/terminal -run '^TestWANW13'
+=== RUN   TestWANW13PackagedSelfHostRehearsal
+    wan_w13_test.go:299: orbit-net dev (unknown, unknown)
+    wan_w13_test.go:570: overload: baseline fds=21 rss=18172KiB; flood peak fds=265 rss=21084KiB active=256 refused=76; pre-auth 429=118 untrusted=122
+    wan_w13_test.go:605: STUN: 100 binding requests + 2 malformed in 501ms; answers=10 largest=32B; dropped rate=91 invalid=1
+    wan_w13_test.go:719: W13 rehearsal: packaged orbit-net pid lifecycle, private-CA self-hosting via reviewed trust, relay pairing/transfer, SIGHUP certificate rotation, overload/STUN limits, epoch rotation with mixed-epoch devices, rollback refusal, per-epoch expiry, local-only disable and graceful shutdown
+--- PASS: TestWANW13PackagedSelfHostRehearsal (134.04s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	134.044s
