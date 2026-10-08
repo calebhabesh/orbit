@@ -1291,3 +1291,12 @@ output was not retained). Unexecuted: native multi-host validation scripts
 (`scripts/validation/*`; their argv maps through `orbit_argv` in
 `host_agent.py`), the legacy browser Puppeteer suite, and container/QEMU
 package transactions.
+
+Follow-up the same day: a fresh device printed INTERNAL_ERROR (raw `lstat`)
+for `orbit status`; it now reports NOT_SET_UP with the next step
+(`TestQueryWithoutStateReportsNotSetUp`; v1.0.1 behaved the same). After that
+fix the full unit, integration, fault and terminal suites passed in one run
+(terminal 1282 s, including `TestWANW16NativeRunnerRehearsal`). The 1.0.1 demo
+installs were replaced with 2.0.0 on the dev PC (`install.sh user`) and the Pi
+(`dpkg -r/--purge filesync`, `dpkg -i orbit_2.0.0_arm64.deb`); the Pi pilot
+daemon kept its PID throughout. No startup units were enabled.

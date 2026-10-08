@@ -428,7 +428,7 @@ Priority: optional
 Architecture: %s
 Maintainer: Orbit Maintainers <maintainers@example.com>
 Installed-Size: %d
-Description: Orbit Personal File Manager and Orbit daemon
+Description: Orbit personal file sync: terminal interface and background daemon
  Orbit is a personal file manager and synchronization engine over trusted
  Linux replicas, providing SQLite-backed causal history tracking, terminal
  management, desktop integration, and crash-resilient publication.
@@ -828,7 +828,7 @@ func buildRpmMainHeader(rpmArch string, files []struct {
 	addString(1000, PackageName)
 	addString(1001, PackageVersion)
 	addString(1002, PackageRelease)
-	addString(1004, "Orbit Personal File Manager and Orbit daemon")
+	addString(1004, "Orbit personal file sync: terminal interface and background daemon")
 	addString(1005, "Personal file manager and background synchronization agent with SQLite metadata, terminal management and desktop integration.")
 	addString(1014, "MIT")
 	addString(1016, "Applications/System")
