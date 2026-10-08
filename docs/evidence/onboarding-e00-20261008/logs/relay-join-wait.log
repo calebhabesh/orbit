@@ -1,0 +1,20 @@
+    onboarding_e00_test.go:346: F08: fresh routed join plan: mode "automatic", profile set false, awaiting profile true; inviter's operator profile preselected false
+    onboarding_e00_test.go:353: F08: submitting the fresh plan => err=exit status 1 SETUP_BLOCKED: no such file or directory
+    onboarding_e00_test.go:356: F08: fresh join does not preselect the routed invitation's operator (approved: Automatic/inviter operator offered for review, then the join proceeds)
+    onboarding_e00_test.go:383: F10: joiner errors during 2m30s unapproved wait: map[RATE_LIMITED:23]; first RATE_LIMITED after 48s; local service requests 52
+    onboarding_e00_test.go:385: F10: waiting joiner shown RATE_LIMITED 23 times
+    onboarding_e00_test.go:412: F16: source mode 0644, received mode 0600
+    onboarding_e00_test.go:419: F11: inviter `orbit devices`:
+        Workspace Replicas (Membership Revision: 2):
+          [active]  PC                   device=532216e46020828ff0a90ce83203f8b8b173c58feb9aaea512668d5950f0e07c pin=da1e3cd3c93848e13034c5a1f869539489b62923a9a27d6270d78c25262c1dcf endpoint=no endpoint
+          [active]  Device b179a9ecd0b3d4af device=b179a9ecd0b3d4afaa800f792e561c743b6b2c1b054a5aac8a848909f002690b pin=85c5bd5147e9b7496a21b197e27b2ba5edf302f64305cd10b4a1f933d1c3b31a endpoint=no endpoint
+    onboarding_e00_test.go:421: F11: inviter's device list does not show the joiner's chosen name
+    onboarding_e00_test.go:425: F11: inviter's JSON device list lacks the joiner's chosen name
+--- FAIL: TestOnboardingE00RelayJoinWaitNamesAndModes (206.31s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	206.314s
+FAIL
+
+[exited with code 0]
+
+[exited with code 0]

@@ -201,7 +201,10 @@ service event subscription, `orbit-net` limits only if E00 shows they are wrong.
 
 Required work:
 
-- **F10:** fix the cause E00 found. Expected direction: the joining device waits
+- **F10:** fix the cause E00 found: the inviter's enrollment per-source bucket
+  (5/min, burst 5, `internal/replication/enrollment.go`) refuses the joiner's
+  15 s status polls, which cost two POSTs each (8/min). `orbit-net` is not
+  involved. Promote `TestOnboardingE00F10…` and the relay wait test. Expected direction: the joining device waits
   on an event or backs off (with jitter) instead of polling per second; a
   `RATE_LIMITED` response pauses the loop and is shown as "waiting; the service
   asked us to slow down", never as a blocking error.

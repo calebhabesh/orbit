@@ -1,0 +1,50 @@
+=== RUN   TestOnboardingE00F05RevealedInvitationCopiesWhole
+    onboarding_e00_test.go:41: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F05RevealedInvitationCopiesWhole (0.00s)
+=== RUN   TestOnboardingE00F06SecretPasteReplacesAndReportsLength
+    onboarding_e00_test.go:83: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F06SecretPasteReplacesAndReportsLength (0.00s)
+=== RUN   TestOnboardingE00F07TruncatedInvitationIsSpecific
+    onboarding_e00_test.go:105: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F07TruncatedInvitationIsSpecific (0.00s)
+=== RUN   TestOnboardingE00F08JoinDefaultsToAutomatic
+    onboarding_e00_test.go:134: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F08JoinDefaultsToAutomatic (0.00s)
+=== RUN   TestOnboardingE00F09AwaitingApprovalOpensRequests
+    onboarding_e00_test.go:160: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F09AwaitingApprovalOpensRequests (0.00s)
+=== RUN   TestOnboardingE00F12StartupIsSelector
+    onboarding_e00_test.go:180: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F12StartupIsSelector (0.00s)
+=== RUN   TestOnboardingE00F13NoGenericErrorAdvice
+    onboarding_e00_test.go:206: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F13NoGenericErrorAdvice (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/terminal	0.016s
+=== RUN   TestOnboardingE00F02RootUnavailableScanHealsAfterLaterScan
+    onboarding_e00_test.go:27: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F02RootUnavailableScanHealsAfterLaterScan (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/scheduler	0.002s
+=== RUN   TestOnboardingE00F10StatusPollingFitsInviterSourceBucket
+    onboarding_e00_test.go:20: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F10StatusPollingFitsInviterSourceBucket (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/replication	0.002s
+=== RUN   TestOnboardingE00F01PackagedUnitStartsWithPort8080Taken
+    onboarding_e00_test.go:66: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F01PackagedUnitStartsWithPort8080Taken (0.00s)
+=== RUN   TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon
+    onboarding_e00_test.go:116: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon (0.00s)
+=== RUN   TestOnboardingE00F04F14TerminalDaemonAndFailingUnit
+    onboarding_e00_test.go:170: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F04F14TerminalDaemonAndFailingUnit (0.00s)
+=== RUN   TestOnboardingE00F15ReviewFileInGroupReadableHome
+    onboarding_e00_test.go:240: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00F15ReviewFileInGroupReadableHome (0.00s)
+=== RUN   TestOnboardingE00RelayJoinWaitNamesAndModes
+    onboarding_e00_test.go:278: deliberately failing E00 baseline; opt in with ORBIT_ONBOARDING_BASELINE=1
+--- SKIP: TestOnboardingE00RelayJoinWaitNamesAndModes (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	0.002s
