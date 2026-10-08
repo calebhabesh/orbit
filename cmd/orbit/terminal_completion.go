@@ -35,7 +35,7 @@ const bashCompletionScript = `_orbit_completion() {
         cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
     fi
 
-    local commands="tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor engine completion version help"
+    local commands="tui status context folders devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help"
     local common_flags="--state --folder --json --help"
 
     if [[ ${cword} -eq 1 ]]; then
@@ -108,6 +108,7 @@ _orbit() {
         'network:Review connection policy, diagnostics and cached routes'
         'setup:Create or adopt a synced folder'
         'join:Join an existing Orbit using a private invitation'
+        'retry:Retry work that ran out of attempts'
         'service:Manage background daemon service'
         'stop:Stop a daemon started outside the service'
         'storage:Inspect storage usage and maintenance'
@@ -183,7 +184,7 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network service stop storage doctor engine completion version help
+        if contains -- $i tui status context folders devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help
             return 1
         end
     end
@@ -203,6 +204,7 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'engine' -d 'Low-level engi
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'setup' -d 'Create or adopt a synced folder'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'join' -d 'Join an existing Orbit'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'network' -d 'Status, diagnostics and policy controls'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'retry' -d 'Retry work that ran out of attempts'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'service' -d 'Manage background daemon service'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'stop' -d 'Stop a daemon started outside the service'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'storage' -d 'Inspect storage usage and maintenance'

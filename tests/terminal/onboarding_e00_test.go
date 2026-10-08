@@ -4,7 +4,7 @@ package terminal_test
 // findings that need real processes. Each test asserts approved behavior and
 // deliberately fails on the current implementation; ordinary runs skip them.
 // Opt in with ORBIT_ONBOARDING_BASELINE=1. E01 promoted F01 and F04/F14 into
-// ordinary regressions in onboarding_e01_test.go. All state, HOME and service-manager
+// ordinary regressions in onboarding_e01_test.go; E02 promoted F03. All state, HOME and service-manager
 // stand-ins live in marked disposable roots; no real user unit, systemd
 // manager, personal folder or deployed service is touched.
 
@@ -57,27 +57,6 @@ func e00StopOnCleanup(t *testing.T, base, dir string) {
 		}
 		_ = app.StopAgent(dir, 10*time.Second)
 	})
-}
-
-// F03: the advice printed for exhausted work must run while the daemon runs.
-func TestOnboardingE00F03ExhaustedWorkAdviceRunsWithDaemon(t *testing.T) {
-	onboardingBaseline(t)
-	base := testkit.NewDisposable(t)
-	_ = os.Chmod(base, 0700)
-	binary := buildOrbitBinary(t, base)
-	state := filepath.Join(base, "state")
-	env := []string{"HOME=" + base, "PATH=" + os.Getenv("PATH")}
-	e00StopOnCleanup(t, base, state)
-	if out, err := e00Run(t, env, 30*time.Second, binary, "launch", "--state", state, "--no-browser", "--json"); err != nil {
-		t.Fatalf("launch: %v\n%s", err, out)
-	}
-	// The exact advice text from control attention (terminal_status.go).
-	advice := "orbit engine work retry --task 1011680dc086cb3e4ab83c1b6177ad38"
-	out, err := e00Run(t, env, 30*time.Second, binary, append(strings.Fields(advice)[1:], "--state", state)...)
-	t.Logf("%s => %v: %s", advice, err, strings.TrimSpace(out))
-	if strings.Contains(out, "already owned by another agent") {
-		t.Errorf("attention advice cannot run while the daemon runs: %s", strings.TrimSpace(out))
-	}
 }
 
 // F15: a review file in an ordinary 0750 home directory reports the file's

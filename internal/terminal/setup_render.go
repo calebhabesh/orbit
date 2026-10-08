@@ -233,6 +233,20 @@ func (m *model) workflowView() tea.View {
 		title = "Orbit | Confirm local " + f.task
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
 		footer = "Enter confirm  Esc back  q quit"
+	case "retry_review":
+		title = "Orbit | Retry work"
+		var item tc.Attention
+		for _, a := range m.result.Attention {
+			if a.OperationID == f.operation && a.Code == "EXHAUSTED_WORK" {
+				item = a
+			}
+		}
+		lines = append(lines, "Task "+safe(f.operation)+" ran out of attempts.")
+		if item.Action != "" {
+			lines = append(lines, safe(item.Action))
+		}
+		lines = append(lines, "Retrying queues it again in the running daemon; nothing else changes.")
+		footer = "Enter retry  Esc back  q quit"
 	case "relocate_review":
 		title = "Orbit | Confirm relocation"
 		if info := f.result.FolderManagement; info != nil {

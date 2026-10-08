@@ -1,0 +1,20 @@
+{
+  "packet": "E02",
+  "date": "2026-10-08",
+  "base_revision": "82116cf",
+  "findings": {
+    "F02": {"result": "fixed", "tests": ["TestOnboardingE02F02RootUnavailableScanHealsAfterLaterScan"], "observed": "exhausted ROOT_UNAVAILABLE scan becomes completed/SUPERSEDED with last_error 'superseded by completed scan <id>; was ROOT_UNAVAILABLE: ...'; no EXHAUSTED_WORK attention"},
+    "F03": {"result": "fixed", "tests": ["TestOnboardingE02F03RetryAdviceRunsWithDaemon", "TestOnboardingE02F03ControlRetryReachesRunningScheduler", "TestOnboardingE02F03RetryReviewCallsControl", "TestOnboardingE02F09RealPTYEnterOpensRetry"], "observed": "advised 'orbit retry --task' and 'orbit engine work retry --task' both print 'retried task <id>' with the daemon running; running scheduler executes the re-queued task"},
+    "F09": {"result": "fixed", "tests": ["TestOnboardingE02F09EnterRoutesEveryAttentionCode", "TestOnboardingE02AttentionCodesAndActions", "TestOnboardingE02F09RealPTYEnterOpensRetry"], "observed": "all 14 emitted codes route by code; unknown code shows details; real PTY Enter opens Retry work"},
+    "F13": {"result": "fixed", "tests": ["TestOnboardingE02F13SpecificErrorAdvice"], "observed": "no generic advice; unknown codes use the daemon action or name journal/daemon.log and orbit doctor"}
+  },
+  "also_fixed": ["attention advised nonexistent 'orbit conflicts resolve'", "relocate advice lacked required --folder/--from/--to"],
+  "checks": {
+    "make_check": "test-terminal failed on 2 stale T07 text assertions (updated, T07 pass); rest of suite passed",
+    "remaining_targets": "pass (test-terminal-packages, fmt-check, vet, test, test-integration, test-model, test-faults, test-harness, build, build-arm64, package)",
+    "pty_harnesses": "pass",
+    "e00_remaining_baseline": "8 expected failures owned by E03-E07"
+  },
+  "unexecuted": ["one uninterrupted make check after the test-text fixes", "PTY Enter for codes other than EXHAUSTED_WORK (model tests cover all 14)", "doctor remediations naming engine commands (peer retire, engine config, engine work scan) are unchanged diagnostics"],
+  "observed_not_fixed": ["outside Overview the TUI header shows 'unknown · startup unknown' because only the overview query loads service state"]
+}

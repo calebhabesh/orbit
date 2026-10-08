@@ -801,7 +801,7 @@ func (c *Controller) checkPendingRecovery(ctx context.Context) ([]DoctorCheck, e
 			Category:    "recovery",
 			Status:      StatusWarn,
 			Message:     fmt.Sprintf("%d durable work tasks exhausted retries", len(tasks)),
-			Remediation: "run orbit engine work retry --all or inspect error causes with orbit engine work list --state exhausted",
+			Remediation: "run orbit retry --all; each task's error code is listed under attention in orbit status",
 		})
 	} else {
 		checks = append(checks, DoctorCheck{

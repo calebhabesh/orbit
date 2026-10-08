@@ -284,6 +284,27 @@ func (db *DB) ResolveExhaustedSyncTasks(ctx context.Context, folder, peer histor
 	return err
 }
 
+// SupersededCode marks an exhausted task closed because later work covered it.
+const SupersededCode = "SUPERSEDED"
+
+// SupersedeExhaustedScans closes exhausted scans of folder created before the
+// completed full scan by. They become completed with error code SUPERSEDED and
+// a last_error that keeps the original failure, so history still says why.
+func (db *DB) SupersedeExhaustedScans(ctx context.Context, folder history.ID, by string, before int64) (int, error) {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	res, err := db.db.ExecContext(ctx, `UPDATE durable_work_tasks SET state='completed',
+		last_error=substr('superseded by completed scan ' || ? || '; was ' || COALESCE(error_code, '') || ': ' || COALESCE(last_error, ''), 1, 2048),
+		error_code=?, updated_ns=?
+		WHERE folder_id=? AND task_kind='scan' AND state='exhausted' AND created_ns < ? AND task_id <> ?`,
+		by, SupersededCode, time.Now().UnixNano(), folder[:], before, by)
+	if err != nil {
+		return 0, err
+	}
+	n, err := res.RowsAffected()
+	return int(n), err
+}
+
 func (db *DB) CancelDurableTask(ctx context.Context, taskID string) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()

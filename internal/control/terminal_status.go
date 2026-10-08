@@ -156,21 +156,21 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 					ID:     attentionID("root_unavailable", folderHex),
 					Folder: folderHex,
 					Code:   "ROOT_UNAVAILABLE",
-					Action: "Restore access to the root or relocate with 'orbit folders relocate'",
+					Action: fmt.Sprintf("Restore access to %s, or press Enter to relocate it (orbit folders relocate --folder %s --from %s --to <new>)", reg.Path, folderHex, reg.Path),
 				})
 			} else if reg.Paused {
 				allAttention = append(allAttention, tc.Attention{
 					ID:     attentionID("folder_paused", folderHex),
 					Folder: folderHex,
 					Code:   "FOLDER_PAUSED",
-					Action: fmt.Sprintf("Resume folder with 'orbit folders resume %s'", folderHex),
+					Action: fmt.Sprintf("Press Enter to resume the folder, or run 'orbit folders resume %s'", folderHex),
 				})
 			} else if revalErr := c.ws.Revalidate(ctx, folder); revalErr != nil {
 				allAttention = append(allAttention, tc.Attention{
 					ID:     attentionID("stale_root", folderHex),
 					Folder: folderHex,
 					Code:   "STALE_ROOT",
-					Action: "Revalidate root with 'orbit folders relocate'",
+					Action: fmt.Sprintf("Press Enter to inspect the folder, or run 'orbit folders revalidate %s'", folderHex),
 				})
 			}
 		}
@@ -198,7 +198,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 					Folder: folderHex,
 					Path:   cf.Path,
 					Code:   "CONFLICT",
-					Action: fmt.Sprintf("Review competing versions with 'orbit conflicts resolve %s'", cf.Path),
+					Action: fmt.Sprintf("Press Enter to review competing versions, or run 'orbit conflicts show %s --folder %s --out <review.json>'", cf.Path, folderHex),
 				})
 			}
 		}
@@ -212,7 +212,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 					Folder: folderHex,
 					Path:   sc.DescendantPath,
 					Code:   "STRUCTURAL_CONFLICT",
-					Action: fmt.Sprintf("Review structural conflict with 'orbit conflicts resolve %s'", sc.DescendantPath),
+					Action: fmt.Sprintf("Press Enter to review the structural conflict, or run 'orbit conflicts show %s --folder %s --out <review.json>'", sc.DescendantPath, folderHex),
 				})
 			}
 		}
@@ -223,7 +223,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 				ID:     attentionID("membership_fork", folderHex),
 				Folder: folderHex,
 				Code:   "MEMBERSHIP_FORK",
-				Action: "Review competing membership revisions.",
+				Action: "Membership has competing revisions; press Enter for the folder, then follow docs/runbooks/membership-fork.md",
 			})
 		}
 
@@ -237,7 +237,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 						ID:     attentionID("offline", folderHex, peerHex),
 						Folder: folderHex,
 						Code:   "OFFLINE",
-						Action: "Check the configured peer address.",
+						Action: "A device is unreachable; press Enter for the folder, then N for its connection details",
 					})
 				}
 			}
@@ -259,7 +259,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 					Folder:      folderHex,
 					OperationID: task.ID,
 					Code:        "EXHAUSTED_WORK",
-					Action:      fmt.Sprintf("Retry task with 'orbit engine work retry --task %s'", task.ID),
+					Action:      exhaustedWorkAction(task),
 				})
 			}
 		}
@@ -270,21 +270,21 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 				allAttention = append(allAttention, tc.Attention{
 					ID:     attentionID("disk_budget"),
 					Code:   "DISK_BUDGET",
-					Action: "Free space or review budgets.",
+					Action: "Free space on this disk, or press Enter to review storage budgets",
 				})
 			}
 			if usage.DataBudgetBytes > 0 && usage.ObjectBytes > usage.DataBudgetBytes {
 				allAttention = append(allAttention, tc.Attention{
 					ID:     attentionID("data_budget"),
 					Code:   "DISK_BUDGET",
-					Action: "Free space or review budgets.",
+					Action: "Free space on this disk, or press Enter to review storage budgets",
 				})
 			}
 			if usage.MetadataBudgetBytes > 0 && usage.MetadataBytes > usage.MetadataBudgetBytes {
 				allAttention = append(allAttention, tc.Attention{
 					ID:     attentionID("metadata_budget"),
 					Code:   "METADATA_BUDGET",
-					Action: "Checkpoint WAL or review metadata budgets.",
+					Action: "Metadata is near its budget; press Enter to review storage and maintenance",
 				})
 			}
 		}
@@ -299,7 +299,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 						Folder:      req.Folder,
 						OperationID: req.ID,
 						Code:        "AWAITING_APPROVAL",
-						Action:      fmt.Sprintf("Review pending enrollment request from %s with 'orbit devices requests'", req.Requester),
+						Action:      fmt.Sprintf("Press Enter to review the request from %s, or run 'orbit devices requests'", req.Requester),
 					})
 				}
 			}
@@ -318,7 +318,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 						Folder:      folderHex,
 						OperationID: req.RequestID,
 						Code:        "AWAITING_APPROVAL",
-						Action:      fmt.Sprintf("Review pending enrollment request from %s with 'orbit devices requests'", label),
+						Action:      fmt.Sprintf("Press Enter to review the request from %s, or run 'orbit devices requests'", label),
 					})
 				}
 			}
@@ -334,7 +334,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 						ID:          attentionID("incomplete_setup", op.Mutation.OperationID),
 						OperationID: op.Mutation.OperationID,
 						Code:        "INCOMPLETE_SETUP",
-						Action:      "Resume setup with 'orbit setup' or 'orbit join'",
+						Action:      "Press Enter to see the setup's progress, or resume it with 'orbit setup' or 'orbit join'",
 					})
 				}
 			}
@@ -351,7 +351,7 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 		}
 		expiry, e := time.Parse(time.RFC3339Nano, session.ExpiresAt)
 		if session.State == "recovery" || (session.State == "active" && (e != nil || !now.Before(expiry))) {
-			allAttention = append(allAttention, tc.Attention{ID: session.ID, Folder: session.Context.Folder, Path: session.Context.Path, Code: "EDITOR_RECOVERY", Action: "inspect retained editor result with orbit conflicts session --session " + session.ID})
+			allAttention = append(allAttention, tc.Attention{ID: session.ID, Folder: session.Context.Folder, Path: session.Context.Path, Code: "EDITOR_RECOVERY", Action: "Press Enter to inspect the retained editor result, or run 'orbit conflicts session --session " + session.ID + "'"})
 		}
 	}
 
@@ -714,4 +714,27 @@ func attentionPriority(code string) int {
 	default:
 		return 1
 	}
+}
+
+// exhaustedWorkAction names the failure and a retry that works while the
+// daemon runs: Enter in the terminal, or orbit retry through control (F03).
+func exhaustedWorkAction(task repository.DurableTask) string {
+	what := fmt.Sprintf("%s stopped after %d attempts", task.Kind, task.Attempts)
+	if task.Attempts == 1 {
+		what = task.Kind + " stopped after 1 attempt"
+	}
+	if task.ErrorCode != "" {
+		what += " (" + task.ErrorCode + ")"
+	}
+	return what + "; press Enter to retry, or run 'orbit retry --task " + task.ID + "'"
+}
+
+// AttentionCodes lists every attention code the status/attention queries
+// emit. The terminal routes each one explicitly (F09); a test keeps this list
+// equal to the codes written in this file.
+var AttentionCodes = []string{
+	"ROOT_UNAVAILABLE", "FOLDER_PAUSED", "STALE_ROOT", "BLOCKED_PATH", "CONFLICT",
+	"STRUCTURAL_CONFLICT", "MEMBERSHIP_FORK", "OFFLINE", "EXHAUSTED_WORK",
+	"DISK_BUDGET", "METADATA_BUDGET", "AWAITING_APPROVAL", "INCOMPLETE_SETUP",
+	"EDITOR_RECOVERY",
 }

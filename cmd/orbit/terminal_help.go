@@ -40,6 +40,7 @@ Management & Diagnostics:
   folders pause <name>     Pause local synchronization for a folder
   folders resume <name>    Resume local synchronization for a folder
   folders relocate <name>  Change the local filesystem path for a folder
+  retry --task ID | --all  Retry work that ran out of attempts (works while Orbit runs)
   service                  Manage background service (status, enable, start, stop, restart)
   stop                     Stop a background daemon started outside the service
   storage                  Inspect storage usage, retention, and maintenance

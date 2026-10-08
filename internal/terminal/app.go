@@ -356,21 +356,12 @@ func (m *model) inspect() tea.Cmd {
 		if strings.HasPrefix(r.key, "a:") {
 			for _, a := range m.result.Attention {
 				if "a:"+a.ID == r.key {
-					if a.Code == "CONFLICT" || a.Code == "STRUCTURAL_CONFLICT" {
-						return m.everyday(a.Folder, "load_review", a.Path)
+					if cmd := m.openAttention(a); cmd != nil || m.flow != nil {
+						return cmd
 					}
-					if a.Code == "EDITOR_RECOVERY" {
-						return m.openFlow(&workflow{screen: "day_load_session", operation: a.ID, folder: a.Folder, daily: &dailyState{path: a.Path, limit: 1 << 20}})
-					}
-					if a.OperationID != "" && a.Code != "INCOMPLETE_SETUP" {
-						return m.openFlow(&workflow{screen: "day_operation", operation: a.OperationID, folder: a.Folder, daily: &dailyState{}})
-					}
-					if a.Code == "INCOMPLETE_SETUP" {
-						return m.openFlow(&workflow{screen: "progress", operation: a.OperationID})
-					}
-					if a.Code == "AWAITING_APPROVAL" {
-						return m.openFlow(&workflow{screen: "requests", folder: a.Folder})
-					}
+					// No screen for this code: show the item's details.
+					m.detailRow, m.detail = r, true
+					return nil
 				}
 			}
 		}

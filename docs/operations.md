@@ -158,7 +158,7 @@ No host AppArmor, firewall or VPN policy is changed by installation.
 | Concurrent heads / parents | 64 each | Backpressure/review; never discard conflicts to fit |
 | Transfers / hashing workers | 4 chunk transfers, 2 hash workers globally; Pi profile starts at 2/1 | Fair queue, bounded buffers |
 | Queued in-memory tasks | 1024 lightweight IDs | Coalesce durable work; apply backpressure |
-| Retry attempts | 5 transient attempts per work cycle with capped exponential jitter | Visible retry-exhausted state; later reconciliation/manual retry may restart |
+| Retry attempts | 5 transient attempts per work cycle with capped exponential jitter | Visible retry-exhausted state; a later completed full scan supersedes exhausted scans of the folder (E02); `orbit retry` or Enter on the attention item re-queues through the running daemon |
 | Full reconciliation scan | 5 minutes, configurable; debounce notifications | No overlapping unbounded scans |
 | Full-content rescan | Daily, configurable and spread over work budget | Same-size/timestamp changes eventually inspected |
 | Metadata budget | 256 MiB starting soft admission cap, including WAL accounting | Pause admission before hard disk exhaustion; preserve recovery reserve |
@@ -406,6 +406,36 @@ systemd's `%h` home specifier, so the packaged per-user unit written by
 `install.sh user` is accepted for `~/.local/state/orbit` and nothing else.
 `start`/`restart` succeed only when the unit's `MainPID` is the recorded state
 owner. `orbit stop` is the Orbit entry for the existing graceful `orbit stop`.
+
+### Self-healing attention and runnable actions (E02, 2026-10-08)
+
+**Superseded scans (F02).** When a full scan of a folder completes, every
+earlier exhausted scan of that folder becomes `completed` with error code
+`SUPERSEDED` and `last_error` "superseded by completed scan <id>; was <code>:
+<original error>", so the history keeps why. Its `EXHAUSTED_WORK` attention
+item disappears without owner action. This mirrors the existing rule that a
+successful sync closes exhausted syncs with the same peer. Other kinds are not
+superseded.
+
+**Retry through control (F03).** `orbit retry --task ID | --all` (and the
+retained `orbit engine work retry`) calls `POST /api/v1/work/retry` on the
+running daemon, or a stopped adapter when none runs, and never opens the
+database beside a live daemon. A retry made through control wakes the running
+scheduler (`control.Options.WorkChanged` → `Scheduler.ReloadWork`). Without
+that wake-up the task would stay queued until the next restart.
+
+**Actions that run (F03/F13).** Every attention action names what Enter opens
+and, where one exists, a CLI command that works while the daemon runs: for example
+`orbit folders resume|revalidate`, `orbit folders relocate --folder … --from …
+--to …` (falls back to the daemon API), `orbit conflicts show … --out …`,
+`orbit devices requests` and `orbit retry`. `control.AttentionCodes` lists every
+emitted code, and a source-scanning test keeps it complete and rejects
+`orbit engine` or nonexistent subcommands in actions. Terminal error advice is
+per code; unknown codes show the daemon's own action, else where details are
+(journal or `daemon.log`, and `orbit doctor`). The shared "Retry; use orbit
+doctor" text is gone. Doctor remediations that still name engine commands
+(peer retirement, `engine config`, `engine work scan`) are diagnostics, not
+attention actions, and are unchanged.
 
 ### Daemon ownership and service defaults (E01, 2026-10-08)
 

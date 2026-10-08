@@ -158,7 +158,7 @@ func TestTerminalT07_Status_Observations_MixedState(t *testing.T) {
 	for _, att := range res.Attention {
 		if att.Code == "OFFLINE" && att.Folder == hex.EncodeToString(folder[:]) {
 			hasOfflineAtt = true
-			if !strings.Contains(att.Action, "configured peer address") {
+			if !strings.Contains(att.Action, "connection details") {
 				t.Errorf("unexpected offline action: %s", att.Action)
 			}
 			break
@@ -608,8 +608,8 @@ func TestTerminalT07_Doctor_DiagnosticsAndRemediations(t *testing.T) {
 		for _, ch := range warnReport.Checks {
 			if ch.Name == "exhausted_tasks" && ch.Status == control.StatusWarn {
 				foundWorkWarn = true
-				if !strings.Contains(ch.Remediation, "orbit engine work retry") {
-					t.Errorf("expected remediation to suggest 'orbit engine work retry', got %q", ch.Remediation)
+				if !strings.Contains(ch.Remediation, "orbit retry --all") {
+					t.Errorf("expected remediation to suggest 'orbit retry --all' (daemon-safe, E02), got %q", ch.Remediation)
 				}
 			}
 		}
