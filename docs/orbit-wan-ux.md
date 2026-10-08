@@ -288,6 +288,21 @@ not offered: Orbit has no phone client, and the receiving laptop or Pi has no
 camera. A short human-typeable code needs a service-side mailbox and is a future
 extension.
 
+### Short pairing code amendment 2026-10-08
+
+The owner approved a short pairing code as the default invitation in Automatic
+and self-hosted modes; it is planned as E06 of the
+[onboarding plan](orbit-onboarding-implementation-plan.md) and not implemented.
+**Add device** shows an eight-character code such as `K7Q4-M9XD` (case and
+dashes ignored). The inviter leaves the encrypted invitation in a short-lived
+mailbox on its operator's service; the joiner's code names the mailbox and
+supplies a PAKE password, so the service never reads the invitation and an
+attacker gets one guess per code. Enrollment then continues exactly as v3:
+pinned identities, request, verification code and owner approval. Local-only
+devices, older builds and an unavailable service use the long code or a file.
+Gate EG1 confirms the format, PAKE construction, mailbox limits and whether
+the operator's privacy text must change before any code is accepted.
+
 Pairing errors name the cause and the device to change:
 `PROFILE_EPOCH_MISMATCH` ("update Orbit on this device" or "on the inviting
 device"), `PROFILE_OPERATOR_MISMATCH`, `PROFILE_NOT_PACKAGED` (short code from a
