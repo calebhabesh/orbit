@@ -1,0 +1,10 @@
+{
+  "packet": "E06",
+  "date": "2026-10-08",
+  "revision": "0da2e7d",
+  "gate": {"EG1": "closed", "construction": "CPaceRistretto255/SHA-512 draft-irtf-cfrg-cpace-21, gtank/ristretto255 v0.2.0", "guess_bound": "one online guess per code, 2^-20", "privacy_text": "unchanged; no profile epoch change"},
+  "tests": ["TestOnboardingE06CPacePublishedVectors", "TestOnboardingE06CPaceRejectsWrongPasswordAndReuse", "TestOnboardingE06PairingAndOpaqueCapture", "TestOnboardingE06WrongCodeBurnsMailbox", "TestOnboardingE06MailboxExpirySingleClaimAndBounds", "TestOnboardingE06ServiceRestartLosesMailbox", "TestOnboardingE06GlobalMailboxAndSourceBounds", "TestOnboardingE06OlderServiceRefusesShortCode", "TestOnboardingE06NegotiatesShortCodeAndShowsFailure", "TestOnboardingE06ShortCodeJoinsAndTransfers", "TestWANW07RealPTYRelayOnboarding (TUI short-code join)"],
+  "observed": {"capture": "no invitation plaintext or code in service request bodies", "wrong_code": "mailbox burned, inviter told PAIRING_WRONG_CODE", "restart": "mailbox lost, PAIRING_UNAVAILABLE", "older_service": "UNSUPPORTED_CAPABILITY, long invitation offered", "end_to_end": "fresh headless joiner via short code, approval, file received"},
+  "fixed_in_acceptance": ["empty systemctl ExecStart line treated as another unit (headless startup proposed manual)", "systemctl test stub did not track enable"],
+  "unexecuted": ["short-code join between physical devices through the hosted service"]
+}

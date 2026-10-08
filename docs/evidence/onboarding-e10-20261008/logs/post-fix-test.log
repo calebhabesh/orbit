@@ -1,0 +1,21 @@
+go test ./cmd/orbit/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	1.178s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	(cached)
+ok  	github.com/calebhabesh/orbit/internal/control	18.207s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	(cached)
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.002s
+ok  	github.com/calebhabesh/orbit/internal/history	(cached)
+?   	github.com/calebhabesh/orbit/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/network	(cached)
+ok  	github.com/calebhabesh/orbit/internal/pairing	(cached)
+ok  	github.com/calebhabesh/orbit/internal/protocol	(cached)
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	(cached)
+ok  	github.com/calebhabesh/orbit/internal/replication	(cached)
+ok  	github.com/calebhabesh/orbit/internal/repository	(cached)
+ok  	github.com/calebhabesh/orbit/internal/scheduler	11.596s
+ok  	github.com/calebhabesh/orbit/internal/state	(cached)
+ok  	github.com/calebhabesh/orbit/internal/terminal	3.983s
+ok  	github.com/calebhabesh/orbit/internal/testkit	(cached)
+ok  	github.com/calebhabesh/orbit/internal/workspace	(cached)
+ok  	github.com/calebhabesh/orbit/model	(cached)

@@ -1,0 +1,33 @@
+=== RUN   TestOnboardingE06CPacePublishedVectors
+--- PASS: TestOnboardingE06CPacePublishedVectors (0.00s)
+=== RUN   TestOnboardingE06CPaceRejectsWrongPasswordAndReuse
+--- PASS: TestOnboardingE06CPaceRejectsWrongPasswordAndReuse (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/pairing	0.001s
+=== RUN   TestOnboardingE06PairingAndOpaqueCapture
+--- PASS: TestOnboardingE06PairingAndOpaqueCapture (3.01s)
+=== RUN   TestOnboardingE06WrongCodeBurnsMailbox
+--- PASS: TestOnboardingE06WrongCodeBurnsMailbox (3.01s)
+=== RUN   TestOnboardingE06MailboxExpirySingleClaimAndBounds
+--- PASS: TestOnboardingE06MailboxExpirySingleClaimAndBounds (2.00s)
+=== RUN   TestOnboardingE06ServiceRestartLosesMailbox
+--- PASS: TestOnboardingE06ServiceRestartLosesMailbox (3.01s)
+=== RUN   TestOnboardingE06GlobalMailboxAndSourceBounds
+--- PASS: TestOnboardingE06GlobalMailboxAndSourceBounds (0.00s)
+=== RUN   TestOnboardingE06OlderServiceRefusesShortCode
+--- PASS: TestOnboardingE06OlderServiceRefusesShortCode (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	11.031s
+=== RUN   TestOnboardingE06NegotiatesShortCodeAndShowsFailure
+--- PASS: TestOnboardingE06NegotiatesShortCodeAndShowsFailure (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/terminal	0.014s
+=== RUN   TestOnboardingE06ShortCodeJoinsAndTransfers
+    onboarding_e04_test.go:124: Short code resolved through production CLI and local service
+    onboarding_e04_test.go:139: F08: fresh routed join plan: mode "self_hosted", profile set true, awaiting profile false; inviter's operator profile preselected true
+    onboarding_e04_test.go:146: F08: submitting the fresh plan => err=<nil> 
+    onboarding_e04_test.go:183: F16: source mode 0644, received mode 0600
+    onboarding_e04_test.go:190: F11: inviter `orbit devices`:
+--- PASS: TestOnboardingE06ShortCodeJoinsAndTransfers (48.58s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	48.582s

@@ -1,0 +1,7 @@
+go test -timeout=45m ./tests/terminal/...
+ok  	github.com/calebhabesh/orbit/tests/terminal	2036.332s
+CGO_ENABLED=0 go build -count=1 -trimpath -ldflags '-X main.version=2.1.0 -X main.commit=56162eb -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+flag provided but not defined: -count
+usage: go build [-o output] [build flags] [packages]
+Run 'go help build' for details.
+make: *** [Makefile:11: build] Error 2

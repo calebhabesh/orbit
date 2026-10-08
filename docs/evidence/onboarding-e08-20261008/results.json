@@ -1,0 +1,9 @@
+{
+  "packet": "E08",
+  "date": "2026-10-08",
+  "revision": "0da2e7d",
+  "gate": {"EG2": "closed", "states": ["blocked", "conflict", "content_missing", "downloading", "waiting_publish", "captured", "deleted"], "other_devices": "details only, per-device report with age; no global mark"},
+  "tests": ["TestOnboardingE08FileStatesFromProductionPaths", "TestOnboardingE08ObservationKeepsItsAge", "TestOnboardingE08PagesTenThousandEntries", "TestOnboardingE08LandsOnFilesWhenNothingNeedsAttention", "TestOnboardingE08NavigationPagingAndSearch", "TestOnboardingE08DetailsShowReportAge", "TestOnboardingE08OpenCopyAndReadOnlyKeys", "TestOnboardingE08ExplicitViewWinsInitialLanding", "TestOnboardingE08RealPTYFilesViewMatchesCLI"],
+  "observed": {"paging": "10,000 entries in 50 pages, ~0.2 s per page", "cli_tui_parity": "same entries and states", "editor": "$EDITOR round-trip edits the working copy"},
+  "unexecuted": ["xdg-open on a real desktop session (model test only)"]
+}

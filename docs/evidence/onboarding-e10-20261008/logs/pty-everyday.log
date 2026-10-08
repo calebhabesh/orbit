@@ -1,0 +1,3 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.1.0 -X main.commit=56162eb -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+python3 scripts/terminal_everyday_pty_test.py --binary bin/orbit
+{"result": "passed", "scenarios": ["real offline/reconnect concurrent heads", "canonical diff/editor failed exit", "stale editor refusal and fresh review", "exact select and keep copies", "delete history restore and separate copy", "storage preview narrow root block", "terminal restoration and daemon transfer after quit"]}

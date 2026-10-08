@@ -1,0 +1,4 @@
+=== RUN   TestOnboardingE08RealPTYFilesViewMatchesCLI
+--- PASS: TestOnboardingE08RealPTYFilesViewMatchesCLI (9.30s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	9.307s
