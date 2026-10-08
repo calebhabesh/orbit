@@ -1,0 +1,13 @@
+--- FAIL: TestOnboardingE00F05RevealedInvitationCopiesWhole (0.01s)
+    onboarding_e00_test.go:40: fixture code length 1862
+    onboarding_e00_test.go:69: 80x24: no rendered row copies as the exact 1862-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:72: 80x24: no character count shown with the invitation
+    onboarding_e00_test.go:69: 200x50: no rendered row copies as the exact 1862-character code (approved: unboxed block that copies as one line)
+    onboarding_e00_test.go:72: 200x50: no character count shown with the invitation
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/terminal	0.020s
+--- FAIL: TestOnboardingE00F10StatusPollingFitsInviterSourceBucket (0.00s)
+    onboarding_e00_test.go:34: request 12 at 1m15.2s of the approval wait refused with RATE_LIMITED (per-source 5/min, burst 5; client sends 8/min)
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/replication	0.002s
+FAIL

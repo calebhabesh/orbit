@@ -1,0 +1,22 @@
+=== RUN   TestOnboardingE04F07TruncatedInvitationIsSpecific
+    onboarding_e04_test.go:23: cut at 1862 of 1863: "INVITATION_INCOMPLETE: The invitation code is incomplete or damaged; copy the whole line again (or transfer the invitation file instead)."
+    onboarding_e04_test.go:23: cut at 1861 of 1863: "INVITATION_INCOMPLETE: The invitation code is incomplete or damaged; copy the whole line again (or transfer the invitation file instead)."
+    onboarding_e04_test.go:23: cut at 931 of 1863: "INVITATION_INCOMPLETE: The invitation code is incomplete or damaged; copy the whole line again (or transfer the invitation file instead)."
+    onboarding_e04_test.go:23: cut at 300 of 1863: "INVITATION_INCOMPLETE: The invitation code is incomplete or damaged; copy the whole line again (or transfer the invitation file instead)."
+--- PASS: TestOnboardingE04F07TruncatedInvitationIsSpecific (0.00s)
+=== RUN   TestOnboardingE04F08JoinDefaultsToAutomatic
+--- PASS: TestOnboardingE04F08JoinDefaultsToAutomatic (0.00s)
+=== RUN   TestOnboardingE04F08RoutedInvitationProposesInviterOperator
+--- PASS: TestOnboardingE04F08RoutedInvitationProposesInviterOperator (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/terminal	0.015s
+=== RUN   TestOnboardingE04PrintableLabel
+--- PASS: TestOnboardingE04PrintableLabel (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/control	0.002s
+=== RUN   TestOnboardingE04JoinPolicy
+--- PASS: TestOnboardingE04JoinPolicy (0.00s)
+=== RUN   TestOnboardingE04InvitationErrorClasses
+--- PASS: TestOnboardingE04InvitationErrorClasses (0.00s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.002s

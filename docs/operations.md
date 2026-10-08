@@ -437,6 +437,44 @@ doctor" text is gone. Doctor remediations that still name engine commands
 (peer retirement, `engine config`, `engine work scan`) are diagnostics, not
 attention actions, and are unchanged.
 
+### Join defaults and onboarding errors (E04, 2026-10-08)
+
+**Connection from the invitation (F08).** `tc.JoinPolicy` proposes the
+joiner's policy, the same way in the CLI and the TUI. A routed (v3) invitation
+selects the inviter's operator: Automatic when its profile is this build's
+packaged one, self-hosted otherwise. A direct invitation keeps the current
+policy, except that a device without folders is offered Automatic when a
+current packaged profile exists. The join review shows the operator and its
+privacy text. Confirming it installs the profile carried in the invitation
+through the ordinary profile review (signature, epoch floors, refusal of an
+operator change). An explicit `--connection` or a changed form choice wins.
+Limitation: a self-hosted operator whose service needs custom CA roots still
+needs `orbit network set --service-roots` first; the invitation carries no
+trust roots.
+
+When the reviewed policy differs from the one the running daemon started
+with, the join records phase `network_restart` (not an error). The client then
+restarts the daemon and the resumed job continues. Without a stored profile,
+enrollment now reports `NETWORK_REVIEW_REQUIRED` naming the operator, never a
+bare "no such file or directory".
+
+**Invitation errors (F07).** A pasted code that does not decode to a whole
+invitation (cut short, damaged base64 or JSON, broken routed shape) is
+`INVITATION_INCOMPLETE`: "copy the whole line again (or transfer the invitation
+file)". Expiry, a newer version, an unpackaged profile, a wrong key pin and an
+operator mismatch keep their own codes. No invitation failure is reported as
+`INVALID_REQUEST`.
+
+**Names (F11).** On approval, the inviter names the new device with the label
+the joiner chose, with non-printable characters removed, unless the owner had
+already named it. CLI, JSON and TUI listings all read this name. The joiner's
+wait screen says the inviting device must approve and shows the code to
+compare. The inviter's name is not shown, because invitations carry none.
+
+**Received file modes (F16).** Documented in [persistence](persistence.md)
+and shown once on the setup form: received files are owner-only (`0600`, or
+`0700` when executable). There is no behavior change.
+
 ### Private file folders (E03, 2026-10-08)
 
 Setup review files (`--review-file`) and saved invitation files must sit in a

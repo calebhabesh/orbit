@@ -1,0 +1,18 @@
+{
+  "packet": "E04",
+  "date": "2026-10-08",
+  "base_revision": "e292743",
+  "findings": {
+    "F07": {"result": "fixed", "tests": ["TestOnboardingE04F07TruncatedInvitationIsSpecific", "TestOnboardingE04InvitationErrorClasses"], "observed": "every truncation -> INVITATION_INCOMPLETE 'copy the whole line again'; newer version, identity mismatch keep their codes; no INVALID_REQUEST"},
+    "F08": {"result": "fixed", "tests": ["TestOnboardingE04F08JoinDefaultsToAutomatic", "TestOnboardingE04F08RoutedInvitationProposesInviterOperator", "TestOnboardingE04JoinPolicy", "TestOnboardingE04FreshJoinDefaultsNamesAndModes"], "observed": "routed invitation proposes inviter operator (automatic if packaged, else self_hosted with invitation profile); fresh CLI join with every default reaches approval and Ready; network_restart phase instead of SERVICE_UNAVAILABLE / 'no such file'"},
+    "F11": {"result": "fixed", "tests": ["TestOnboardingE04FreshJoinDefaultsNamesAndModes", "TestOnboardingE04PrintableLabel"], "observed": "inviter lists 'Pi' in orbit devices text, JSON and terminal devices query; non-printable runes stripped"},
+    "F16": {"result": "documented", "observed": "0644 source received 0600; persistence.md and setup form state the rule"}
+  },
+  "checks": {
+    "make_check": "5 WAN in-process tests failed on the new restart phase; fixed; those plus E04 pass; WAN+onboarding subset 1137 s pass",
+    "remaining_targets": "pass",
+    "pty_suites": "pass"
+  },
+  "limitations": ["self-hosted operators needing custom CA roots still require orbit network set --service-roots before joining", "joiner wait screen cannot name the inviter (invitations carry no name)", "line-mode CLI prompts remain typed"],
+  "unexecuted": ["one uninterrupted make check after the restart-condition fix", "E00 F10 relay wait (E07 baseline) not rerun"]
+}

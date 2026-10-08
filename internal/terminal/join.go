@@ -19,15 +19,13 @@ func (m *model) parseInvitation() tea.Cmd {
 		var b []byte
 		var err error
 		var code bool
-		b, code, err = tc.DecodeInvitationCode(raw)
+		_, code, err = tc.DecodeInvitationCode(raw)
+		b = []byte(raw)
 		if err == nil && !code {
 			b, err = controlclient.PrivateInvitation(ctx, raw)
 		}
 		if err == nil {
-			err = tc.Decode(b, &inv)
-		}
-		if err == nil {
-			err = inv.ExpandPackaged()
+			inv, _, err = tc.DecodeInvitationText(b)
 		}
 		// Classify expired fresh input before its historical certificate check.
 		// No transport or mutation runs for either rejected input.
@@ -39,7 +37,7 @@ func (m *model) parseInvitation() tea.Cmd {
 			}
 		}
 		if err == nil {
-			err = inv.Validate()
+			err = tc.ShapeError(inv.Validate())
 		}
 		return tc.Result{Invitation: &inv}, err
 	}
