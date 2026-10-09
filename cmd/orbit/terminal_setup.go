@@ -140,7 +140,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 			if e != nil {
 				return e
 			}
-			*root = filepath.Join(home, "Orbit")
+			*root = filepath.Join(home, tc.DefaultOrbitName)
 		}
 		*root, err = filepath.Abs(*root)
 		if err != nil {
@@ -178,7 +178,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 		}
 		nameDefaulted := *name == ""
 		if nameDefaulted {
-			*name = "Orbit"
+			*name = tc.DefaultOrbitName
 		}
 		settings, err := client.Query(context.Background(), tc.Query{Version: tc.Version, Kind: "settings"})
 		if err != nil {

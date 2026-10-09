@@ -141,7 +141,7 @@ def wait(text,limit=20):
  raise SystemExit('timeout waiting for %r; screen:\n%s'%(text,screen.text()))
 wait('Orbit')
 time.sleep(1)
-os.write(master,b'n'); wait('1 of 1')
+os.write(master,b'3'); wait('1 of 1')
 os.write(master,b'\r'); wait('Retry work')
 print('--- retry review ---'); print(screen.text())
 os.write(master,b'\r'); wait('re-queued')

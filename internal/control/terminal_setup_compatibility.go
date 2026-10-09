@@ -21,7 +21,7 @@ func (c *Controller) submitReviewedCompatibilityJoin(ctx context.Context, req Jo
 	if label == "" {
 		label = "Orbit Device"
 	}
-	plan := tc.SetupIntent{DeviceName: label, FolderName: "Orbit", Root: req.RootPath, Settings: settings}
+	plan := tc.SetupIntent{DeviceName: label, FolderName: tc.DefaultOrbitName, Root: req.RootPath, Settings: settings}
 	q := tc.Query{Version: "1", Kind: "root_preview", Path: req.RootPath, Name: "join", RootPlan: &plan}
 	var preview tc.Result
 	for {
@@ -81,7 +81,7 @@ func (c *Controller) startReviewedCompatibilitySetup(ctx context.Context, req St
 		label = "Orbit Device"
 	}
 	if name == "" {
-		name = "Orbit"
+		name = tc.DefaultOrbitName
 	}
 	var m tc.Mutation
 	id, err := randomTerminalID()

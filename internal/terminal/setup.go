@@ -129,7 +129,7 @@ func (m *model) setupForm(kind string) tea.Cmd {
 		host = "Orbit Device"
 	}
 	return m.openFlow(&workflow{screen: "load_settings", kind: kind, fields: []field{
-		newField("Device name", host, false), newField("Orbit name", "Orbit", false), newField("Folder", "~/Orbit", false),
+		newField("Device name", host, false), newField("Orbit name", tc.DefaultOrbitName, false), newField("Folder", defaultFolder(tc.DefaultOrbitName), false),
 	}})
 }
 func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, error)) {
@@ -776,13 +776,26 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 	return cmd
 }
 
-// followName proposes ~/<name> as the Folder for a plain Orbit name.
+// followName keeps the Folder equal to ~/<name> (see defaultFolder) for what
+// is typed in Orbit name, character for character; an empty or unusable name
+// empties the Folder rather than leaving a stale proposal.
 func followName(fields []field, name string) {
-	name = strings.TrimSpace(name)
-	if name == "" || name == "." || name == ".." || strings.ContainsAny(name, "/\\") || safe(name) != name {
+	dir := folderFor(name)
+	if dir == "" {
+		fields[2].input.SetValue("")
 		return
 	}
-	fields[2].input.SetValue("~/" + name)
+	fields[2].input.SetValue(defaultFolder(dir))
+}
+
+// folderFor turns an Orbit name into one directory name: separators become
+// "-" so a name never turns into a nested or escaping path.
+func folderFor(name string) string {
+	dir := strings.TrimSpace(strings.NewReplacer("/", "-", "\\", "-").Replace(name))
+	if dir == "." || dir == ".." || safe(dir) != dir {
+		return ""
+	}
+	return dir
 }
 
 // moveField focuses the next (delta 1) or previous visible field, wrapping.
@@ -849,7 +862,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 		if k == "c" || k == "enter" {
 			return m.setupForm("setup")
 		}
-		if k == "j" {
+		if k == "j" || k == "J" {
 			return m.setupForm("join")
 		}
 	case "review":
@@ -1046,24 +1059,38 @@ func proposeJoinNames(fields []field, folder string) {
 	if folder == "" || len(fields) < 3 {
 		return
 	}
-	if fields[1].input.Value() == "Orbit" {
+	if fields[1].input.Value() == tc.DefaultOrbitName {
 		fields[1].input.SetValue(safe(folder))
 	}
-	if expandHome(fields[2].input.Value()) == expandHome("~/Orbit") {
+	if expandHome(fields[2].input.Value()) == expandHome(defaultFolder(tc.DefaultOrbitName)) {
 		followName(fields, folder)
 	}
 }
 
-// expandHome turns "~" and "~/path" into a path under the home directory.
+// expandHome turns "~" and "~/path" into a path under the account's home
+// directory, as the shell would, even in an instance run with its own HOME.
 func expandHome(path string) string {
 	if path != "~" && !strings.HasPrefix(path, "~/") {
 		return path
 	}
-	home, err := os.UserHomeDir()
-	if err != nil || home == "" {
+	home, account := homes()
+	if account != "." {
+		home = account
+	}
+	if home == "" || home == "." {
 		return path
 	}
 	return filepath.Join(home, strings.TrimPrefix(path, "~"))
+}
+
+// defaultFolder proposes <HOME>/<name>, written as ~/<name> where "~" means
+// the account's home and as an absolute path otherwise.
+func defaultFolder(name string) string {
+	home, _ := homes()
+	if home == "" || home == "." {
+		return "~/" + name
+	}
+	return homePath(filepath.Join(home, name))
 }
 
 // renameSelected opens Rename for the highlighted Orbit or device.

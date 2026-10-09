@@ -170,9 +170,9 @@ func (c *Controller) InspectSetup(ctx context.Context) (*InspectSetupResult, err
 	cfg, err := config.Load(stateDir)
 	initialized := err == nil && cfg.DeviceID != ""
 
-	suggestedRoot := "~/Orbit"
+	suggestedRoot := "~/" + tc.DefaultOrbitName
 	if home, err := os.UserHomeDir(); err == nil {
-		suggestedRoot = filepath.Join(home, "Orbit")
+		suggestedRoot = filepath.Join(home, tc.DefaultOrbitName)
 	}
 
 	settings, _ := config.LoadSettings(stateDir)

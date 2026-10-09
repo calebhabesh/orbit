@@ -31,7 +31,7 @@ def until(fn, uis=(), timeout=35):
 
 def folder_ui(ui):
     ui.back()
-    ui.send(b"f");until(lambda: "[Orbits]" in ui.screen.text() or "Orbits |" in ui.screen.text(), (ui,));ui.wait("Notes")
+    ui.send(b"2");until(lambda: "[Orbits]" in ui.screen.text() or "Orbits |" in ui.screen.text(), (ui,));ui.wait("Notes")
     # Refresh may retain attention selection on overview, but Folders has one root.
     ui.send(b"\r");ui.wait("Inspect folder");ui.wait("Local pause=")
 
@@ -159,7 +159,7 @@ input()
         # Rename whole disposable root away; no scan can mass-delete its contents.
         missing=a.root/"temporarily-missing";a.data.rename(missing)
         ua.back();until(lambda: "Search page" in ua.screen.text(), (ua,))
-        ua.send(b"n");ua.wait("Attention");ua.wait("ROOT_UNAVAILABLE",timeout=20)
+        ua.send(b"3");ua.wait("Attention");ua.wait("ROOT_UNAVAILABLE",timeout=20)
         assert a.query("status",folder=folder,limit="20")["readiness"]["root_available"] is False
         missing.rename(a.data)
         assert (a.data/"doc").read_bytes()==b"fresh reviewed merge"

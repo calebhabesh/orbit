@@ -102,16 +102,8 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 		return m.changeSection((m.section + len(sections) - 1) % len(sections))
 	case "right":
 		return m.changeSection((m.section + 1) % len(sections))
-	case "o":
-		return m.changeSection(0)
-	case "f":
-		return m.changeSection(1)
-	case "n":
-		return m.changeSection(2)
 	case "R":
 		return m.renameSelected()
-	case "d":
-		return m.changeSection(3)
 	case "enter":
 		if !m.detail {
 			return m.inspect()

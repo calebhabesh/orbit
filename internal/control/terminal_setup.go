@@ -71,7 +71,7 @@ func (c *Controller) terminalRootPreview(ctx context.Context, q tc.Query) (tc.Re
 			return r, terminalError("STALE_VIEW")
 		}
 	} else {
-		plan := tc.SetupIntent{DeviceName: "Orbit Device", FolderName: "Orbit", Root: q.Path}
+		plan := tc.SetupIntent{DeviceName: "Orbit Device", FolderName: tc.DefaultOrbitName, Root: q.Path}
 		var err error
 		plan.Settings, err = config.LoadRuntimeSettings(c.db.StateDir())
 		if err != nil {

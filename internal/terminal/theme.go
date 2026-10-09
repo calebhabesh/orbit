@@ -3,6 +3,7 @@ package terminal
 import (
 	"image/color"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -364,23 +365,99 @@ func besides(left, right []string) []string {
 
 func (m *model) theme() theme { return theme{plain: m.opts.Colorless} }
 
-// banner is the welcome screen's mark: an orbit around a device.
-func (t theme) banner() []string {
-	art := []string{"   ·  ─  ·   ", " ·    ◉    · ", "   ·  ─  ·   "}
-	text := []string{"", "O R B I T", "Your folders, on every device"}
-	out := make([]string, 0, len(art)+1)
-	for i := range art {
-		if t.plain {
-			out = append(out, strings.TrimRight(art[i]+"  "+text[i], " "))
-			continue
-		}
-		label := t.muted(text[i])
-		if i == 1 {
-			label = t.accent(text[i])
-		}
-		out = append(out, t.fg(cAccent, art[i])+"  "+label)
+// logoLarge and logoSmall are the Orbit mark: a sun with planets on nested
+// orbits, drawn in ASCII so it survives any terminal font.
+var logoLarge = []string{
+	`   +             _.----------o--._`,
+	`         .------'                 '------.     +`,
+	`     .--'         _.-----------._         '--.`,
+	`   .'       .----'               '--O-.       '.`,
+	` .'       .'       _.o--------._       '.       '.`,
+	`/       .'      .-'   .:-=-:.   '-.      '.       \`,
+	`@       |      |    .=#%@@@%#=.    |      |       |`,
+	`\       '.      '-.   ':-=-:'   .-'      .'       /`,
+	` '.       '.       '-----------'       .'       .'`,
+	`   '.       '----.               .----'       .'`,
+	`     '--.         '--@----------'         .--'`,
+	`         '------.                 .--O---'`,
+	`  *              '---------------'             +`,
+}
+
+var logoSmall = []string{
+	`   *       _.---------o-._`,
+	`     .----'               '----.`,
+	`   .'       _.o--------._       '.`,
+	` .'      .-'   .:-=-:.   '-.      '.`,
+	` @      |    .=#%@@@%#=.    |      |`,
+	` '.      '-.   ':-=-:'   .-'      .'`,
+	`   '.       '-----------'       .'`,
+	`     '--O-.               .----' +`,
+	`           '-------------'`,
+}
+
+// planetColors colour the planets in reading order.
+var planetColors = []color.Color{cGreen, cBlue, lipgloss.Color("5"), cRed, cYellow, lipgloss.Color("14")}
+
+// logo returns the mark that fits the space, or nil when none does.
+func logo(width, height int) []string {
+	switch {
+	case width >= 56 && height >= 30:
+		return logoLarge
+	case width >= 42 && height >= 22:
+		return logoSmall
 	}
-	return append(out, "")
+	return nil
+}
+
+// banner is the welcome screen's mark with the product name beneath it.
+func (t theme) banner(width, height int) []string {
+	art := logo(width, height)
+	if art == nil {
+		return nil
+	}
+	sunRow, sunCol := 0, 0
+	for i, line := range art {
+		if j := strings.Index(line, "@@@"); j >= 0 {
+			sunRow, sunCol = i, j+1
+		}
+	}
+	wide := 0
+	for _, line := range art {
+		wide = max(wide, len(line))
+	}
+	centre := func(s string) string { return strings.Repeat(" ", max(0, (wide-len(s))/2)) + s }
+	name, tagline := centre("O R B I T"), centre("Your folders, on every device")
+	if t.plain {
+		return append(append(slices.Clone(art), "", name, tagline), "")
+	}
+	out := make([]string, 0, len(art)+4)
+	planet := 0
+	for i, line := range art {
+		var b strings.Builder
+		for j, r := range line {
+			c := cAccent
+			sun := i >= sunRow-1 && i <= sunRow+1 && j >= sunCol-5 && j <= sunCol+5
+			switch {
+			case r == ' ':
+				b.WriteRune(r)
+				continue
+			case sun && (r == '@' || r == '%'):
+				c = lipgloss.Color("11")
+			case sun && (r == '#' || r == '='):
+				c = cYellow
+			case sun:
+				c = cRed
+			case r == 'o' || r == 'O' || r == '@':
+				c = planetColors[planet%len(planetColors)]
+				planet++
+			case r == '+' || r == '*':
+				c = cMuted
+			}
+			b.WriteString(lipgloss.NewStyle().Foreground(c).Bold(c != cAccent && c != cMuted).Render(string(r)))
+		}
+		out = append(out, b.String())
+	}
+	return append(out, "", t.accent(name), t.muted(tagline), "")
 }
 
 // field renders one form input. The focused field carries the "> " marker in

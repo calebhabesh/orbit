@@ -245,7 +245,7 @@ func TestTerminalT10PrivateNarrowViewsAndErrorActions(t *testing.T) {
 // Trial finding: "~/OrbitTrial" in Local root was refused as not absolute.
 func TestOnboardingTrialRootAcceptsHomeTilde(t *testing.T) {
 	home := t.TempDir()
-	t.Setenv("HOME", home)
+	setHome(t, home)
 	m, w := loadedForm(t)
 	m.flow.fields[2].input.SetValue("~/OrbitTrial")
 	var root string
@@ -329,8 +329,8 @@ func TestOnboardingTrialInvitationPageShowsApprovalStatus(t *testing.T) {
 // Trial finding: the laptop proposed "Orbit" for a folder the PC calls Trial.
 func TestOnboardingTrialJoinProposesInviterFolderName(t *testing.T) {
 	home := t.TempDir()
-	t.Setenv("HOME", home)
-	fields := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", "~/Orbit", false)}
+	setHome(t, home)
+	fields := []field{newField("Device name", "laptop", false), newField("Folder name", tc.DefaultOrbitName, false), newField("Local root", "~/"+tc.DefaultOrbitName, false)}
 	proposeJoinNames(fields, "Trial")
 	if fields[1].input.Value() != "Trial" || fields[2].input.Value() != "~/Trial" || expandHome(fields[2].input.Value()) != filepath.Join(home, "Trial") {
 		t.Fatalf("got %q %q", fields[1].input.Value(), fields[2].input.Value())
@@ -340,10 +340,10 @@ func TestOnboardingTrialJoinProposesInviterFolderName(t *testing.T) {
 	if typed[1].input.Value() != "Mine" || typed[2].input.Value() != "/data/x" {
 		t.Fatal("overwrote what the owner typed")
 	}
-	odd := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", "~/Orbit", false)}
+	odd := []field{newField("Device name", "laptop", false), newField("Folder name", tc.DefaultOrbitName, false), newField("Local root", "~/"+tc.DefaultOrbitName, false)}
 	proposeJoinNames(odd, "a/b")
-	if odd[1].input.Value() != "a/b" || odd[2].input.Value() != "~/Orbit" {
-		t.Fatal("a name with a slash must not become a path")
+	if odd[1].input.Value() != "a/b" || odd[2].input.Value() != "~/a-b" {
+		t.Fatalf("a name with a slash must not become a nested path: %q", odd[2].input.Value())
 	}
 }
 
@@ -351,7 +351,7 @@ func TestOnboardingTrialJoinProposesInviterFolderName(t *testing.T) {
 // folder follows the name until the owner edits the folder.
 func TestSetupFolderFollowsOrbitName(t *testing.T) {
 	home := t.TempDir()
-	t.Setenv("HOME", home)
+	setHome(t, home)
 	m, _ := loadedForm(t)
 	if m.flow.fields[1].label != "Orbit name" || m.flow.fields[2].label != "Folder" {
 		t.Fatalf("fields %q %q", m.flow.fields[1].label, m.flow.fields[2].label)
@@ -363,6 +363,16 @@ func TestSetupFolderFollowsOrbitName(t *testing.T) {
 	}
 	if got := m.flow.fields[2].input.Value(); got != "~/Demo" {
 		t.Fatalf("folder did not follow the name: %q", got)
+	}
+	// Owner finding: deleting the name left "~/D" behind.
+	for range "Demo" {
+		m.key(tea.KeyPressMsg{Code: tea.KeyBackspace})
+	}
+	if got := m.flow.fields[2].input.Value(); got != "" {
+		t.Fatalf("cleared name left folder %q", got)
+	}
+	for _, r := range "Demo" {
+		press(m, string(r))
 	}
 	if view := m.View().Content; !strings.Contains(view, "What this Orbit is called in the app.") {
 		t.Fatalf("focused field has no hint:\n%s", view)
@@ -402,5 +412,34 @@ func TestRenameSelectedOrbit(t *testing.T) {
 	}
 	if m.flow != nil || !strings.Contains(m.notice, "Renamed to Projects") {
 		t.Fatalf("flow %+v notice %q", m.flow, m.notice)
+	}
+}
+
+// setHome makes home both $HOME and the account's home for one test.
+func setHome(t *testing.T, home string) {
+	t.Setenv("HOME", home)
+	old := accountHome
+	accountHome = func() string { return home }
+	t.Cleanup(func() { accountHome = old })
+}
+
+func TestSeparateHomeShowsAbsolutePaths(t *testing.T) {
+	account := t.TempDir()
+	home := filepath.Join(account, "orbit-trial")
+	t.Setenv("HOME", home)
+	old := accountHome
+	accountHome = func() string { return account }
+	t.Cleanup(func() { accountHome = old })
+	if got := homePath(filepath.Join(home, "Demo")); got != filepath.Join(home, "Demo") {
+		t.Fatalf("separate home abbreviated: %q", got)
+	}
+	if got := defaultFolder("Demo"); got != filepath.Join(home, "Demo") {
+		t.Fatalf("default folder %q", got)
+	}
+	if got := expandHome("~/Demo"); got != filepath.Join(account, "Demo") {
+		t.Fatalf("~ should mean the account home as in the shell: %q", got)
+	}
+	if got := folderLocation("~/Demo"); got != "Files live in "+filepath.Join(account, "Demo") {
+		t.Fatalf("location %q", got)
 	}
 }
