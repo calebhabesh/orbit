@@ -5,7 +5,7 @@ DATE ?= 2026-10-08
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
 GOFLAGS ?=
 
-.PHONY: ci-fast check-core test-short test-race-core build build-arm64 build-orbit-net package-orbit-net test-orbit-net-rehearsal check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal-keys-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
+.PHONY: quick trial-install trial-reset trial-fresh trial-status ci-fast check-core test-short test-race-core build build-arm64 build-orbit-net package-orbit-net test-orbit-net-rehearsal check fmt-check test test-race test-integration test-model test-faults test-harness test-terminal-pty test-terminal-onboarding-pty test-terminal-everyday-pty test-terminal-keys-pty test-terminal test-terminal-release test-terminal-packages test-terminal-package-transactions test-legacy-browser vet clean package demo
 
 build:
 	CGO_ENABLED=0 $(GO) build $(GOFLAGS) -trimpath -ldflags '$(LDFLAGS)' -o bin/orbit ./cmd/orbit
@@ -49,6 +49,24 @@ test-race-core: build
 # Fast inner loop: skips tests that call testing.Short().
 test-short:
 	$(GO) test -short ./cmd/orbit/... ./internal/... ./model/...
+
+# Trial inner loop (about a minute): build, vet and short tests of the touched
+# packages plus the affected PTY suites. Not a release gate; see scripts/quick_check.sh.
+quick:
+	scripts/quick_check.sh
+
+# Disposable orbit-trial instance on local, laptop and rpi (TRIAL_HOSTS to override).
+trial-install:
+	scripts/trial/trial.sh install
+
+trial-reset:
+	scripts/trial/trial.sh reset
+
+trial-fresh:
+	scripts/trial/trial.sh fresh
+
+trial-status:
+	scripts/trial/trial.sh status
 
 # Push/PR gate. Target: a few minutes. Full suite runs in full.yml.
 ci-fast: fmt-check vet build build-arm64 test-short

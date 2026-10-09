@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -19,6 +20,20 @@ import (
 	"github.com/calebhabesh/orbit/internal/repository"
 	"github.com/calebhabesh/orbit/internal/state"
 )
+
+// ServiceUnitEnv names a second, disposable user unit (orbit-<name>.service)
+// so a trial instance with its own state can be managed beside the owner's
+// orbit.service (scripts/trial). Any other value selects orbit.service.
+const ServiceUnitEnv = "ORBIT_SERVICE_UNIT"
+
+var serviceUnitPattern = regexp.MustCompile(`^orbit-[a-z0-9][a-z0-9-]{0,30}\.service$`)
+
+func serviceUnit() string {
+	if v := os.Getenv(ServiceUnitEnv); serviceUnitPattern.MatchString(v) {
+		return v
+	}
+	return "orbit.service"
+}
 
 // ServiceStatus inspects the system environment, systemd user service state,
 // lingering configuration, and engine data readiness.
@@ -81,7 +96,7 @@ func CheckServiceStatus(ctx context.Context, stateDir string, db *repository.DB)
 	if res.SystemdAvailable {
 		enabledCtx, enabledCancel := context.WithTimeout(ctx, 1500*time.Millisecond)
 		defer enabledCancel()
-		cmd := exec.CommandContext(enabledCtx, systemctlPath, "--user", "is-enabled", "orbit.service")
+		cmd := exec.CommandContext(enabledCtx, systemctlPath, "--user", "is-enabled", serviceUnit())
 		out, _ := cmd.CombinedOutput()
 		if strings.TrimSpace(string(out)) == "enabled" {
 			res.EnabledOnLogin = true
@@ -198,7 +213,7 @@ func EnableService(ctx context.Context, stateDir, binPath string, db *repository
 	}
 
 	// Enable unit
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "enable", "orbit.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "enable", serviceUnit())
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -287,7 +302,7 @@ func StartServiceUnit(ctx context.Context, stateDir string) bool {
 	migrateLegacyUserUnit(ctx, systemctl)
 	startCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	if exec.CommandContext(startCtx, systemctl, "--user", "start", "orbit.service").Run() == nil {
+	if exec.CommandContext(startCtx, systemctl, "--user", "start", serviceUnit()).Run() == nil {
 		deadline := time.Now().Add(8 * time.Second)
 		for time.Now().Before(deadline) && ctx.Err() == nil {
 			if serviceOwnsState(ctx, systemctl, stateDir) {
@@ -298,7 +313,7 @@ func StartServiceUnit(ctx context.Context, stateDir string) bool {
 	}
 	stopCtx, stopCancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer stopCancel()
-	_ = exec.CommandContext(stopCtx, systemctl, "--user", "stop", "orbit.service").Run()
+	_ = exec.CommandContext(stopCtx, systemctl, "--user", "stop", serviceUnit()).Run()
 	return false
 }
 
@@ -318,7 +333,7 @@ func StartService(ctx context.Context, stateDir string, db *repository.DB, stop 
 	if err != nil {
 		return nil, err
 	}
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "start", "orbit.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "start", serviceUnit())
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -360,7 +375,7 @@ func StopService(ctx context.Context, stateDir string, db *repository.DB, stop D
 		}
 		return nil, err
 	}
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "stop", "orbit.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "stop", serviceUnit())
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -409,7 +424,7 @@ func RestartService(ctx context.Context, stateDir string, db *repository.DB, sto
 	if err != nil {
 		return nil, err
 	}
-	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "restart", "orbit.service")
+	cmd := exec.CommandContext(ctx, systemctlPath, "--user", "restart", serviceUnit())
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
@@ -440,7 +455,7 @@ func serviceOwnsState(ctx context.Context, systemctlPath, stateDir string) bool 
 	if stateDir == "" {
 		stateDir = config.DefaultStateDir()
 	}
-	out, err := exec.CommandContext(ctx, systemctlPath, "--user", "show", "-p", "MainPID", "--value", "orbit.service").Output()
+	out, err := exec.CommandContext(ctx, systemctlPath, "--user", "show", "-p", "MainPID", "--value", serviceUnit()).Output()
 	if err != nil {
 		return false
 	}
@@ -477,7 +492,7 @@ func waitServiceOwnsState(ctx context.Context, systemctlPath, stateDir string) b
 // userUnitContent is the unit "orbit service enable" installs. The control
 // listener is ephemeral; clients read control.addr (F01).
 func userUnitContent(binPath, stateDir, controlListen string) string {
-	return fmt.Sprintf(`[Unit]
+	unit := fmt.Sprintf(`[Unit]
 Description=Orbit Background Engine
 Documentation=https://github.com/calebhabesh/orbit
 After=network.target
@@ -502,9 +517,16 @@ SyslogIdentifier=orbit
 [Install]
 WantedBy=default.target
 `, binPath, stateDir, controlListen, binPath, stateDir)
+	if name := serviceUnit(); name != "orbit.service" {
+		// The daemon must manage the same unit the launcher started.
+		unit = strings.Replace(unit, "[Service]\n", "[Service]\nEnvironment="+ServiceUnitEnv+"="+name+"\n", 1)
+		unit = strings.Replace(unit, "SyslogIdentifier=orbit\n", "SyslogIdentifier="+strings.TrimSuffix(name, ".service")+"\n", 1)
+	}
+	return unit
 }
 
-// InstallUserUnit writes ~/.config/systemd/user/orbit.service configured for this binary.
+// InstallUserUnit writes ~/.config/systemd/user/orbit.service (or the
+// ORBIT_SERVICE_UNIT override) configured for this binary.
 func InstallUserUnit(stateDir, binPath string) error {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -527,7 +549,7 @@ func InstallUserUnit(stateDir, binPath string) error {
 	}
 
 	content := userUnitContent(binPath, stateDir, "127.0.0.1:0")
-	targetFile := filepath.Join(userDir, "orbit.service")
+	targetFile := filepath.Join(userDir, serviceUnit())
 	if strings.ContainsAny(stateDir+binPath, "\r\n\x00%\"\\") || strings.ContainsAny(stateDir+binPath, " \t") {
 		return errors.New("service paths require plain absolute paths without whitespace or systemd specifiers")
 	}
@@ -545,10 +567,10 @@ func InstallUserUnit(stateDir, binPath string) error {
 // earlier Orbit-generated file is replaced; anything edited is preserved.
 func migrateLegacyUserUnit(ctx context.Context, systemctlPath string) bool {
 	home, err := os.UserHomeDir()
-	if err != nil {
+	if err != nil || serviceUnit() != "orbit.service" {
 		return false
 	}
-	path := filepath.Join(home, ".config", "systemd", "user", "orbit.service")
+	path := filepath.Join(home, ".config", "systemd", "user", serviceUnit())
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return false
@@ -565,7 +587,7 @@ func migrateLegacyUserUnit(ctx context.Context, systemctlPath string) bool {
 	if bin == "" || string(data) != userUnitContent(bin, dir, "127.0.0.1:8080") {
 		return false
 	}
-	if err := config.WritePrivate(filepath.Dir(path), "orbit.service", []byte(userUnitContent(bin, dir, "127.0.0.1:0"))); err != nil {
+	if err := config.WritePrivate(filepath.Dir(path), serviceUnit(), []byte(userUnitContent(bin, dir, "127.0.0.1:0"))); err != nil {
 		return false
 	}
 	_ = os.Chmod(path, 0644)
@@ -590,7 +612,7 @@ func DisableService(ctx context.Context, stateDir string, db *repository.DB) (*S
 	if err != nil {
 		return nil, err
 	}
-	if out, err := exec.CommandContext(ctx, path, "--user", "disable", "orbit.service").CombinedOutput(); err != nil {
+	if out, err := exec.CommandContext(ctx, path, "--user", "disable", serviceUnit()).CombinedOutput(); err != nil {
 		return nil, fmt.Errorf("disable service: %w (%s)", err, out)
 	}
 	updated, err := CheckServiceStatus(ctx, stateDir, db)
@@ -615,7 +637,7 @@ func userUnitDirs() []string {
 func effectiveUnit() (string, error) {
 	var unit []byte
 	for _, dir := range userUnitDirs() {
-		b, err := os.ReadFile(filepath.Join(dir, "orbit.service"))
+		b, err := os.ReadFile(filepath.Join(dir, serviceUnit()))
 		if err == nil {
 			unit = b
 			break
@@ -626,7 +648,7 @@ func effectiveUnit() (string, error) {
 	}
 	dropins := map[string]string{}
 	for _, dir := range slices.Backward(userUnitDirs()) {
-		matches, _ := filepath.Glob(filepath.Join(dir, "orbit.service.d", "*.conf"))
+		matches, _ := filepath.Glob(filepath.Join(dir, serviceUnit()+".d", "*.conf"))
 		for _, m := range matches {
 			dropins[filepath.Base(m)] = m
 		}
@@ -656,7 +678,7 @@ func managerExecStart() string {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 1500*time.Millisecond)
 	defer cancel()
-	out, err := exec.CommandContext(ctx, systemctl, "--user", "show", "-p", "ExecStart", "--value", "orbit.service").Output()
+	out, err := exec.CommandContext(ctx, systemctl, "--user", "show", "-p", "ExecStart", "--value", serviceUnit()).Output()
 	if err != nil {
 		return ""
 	}
