@@ -289,3 +289,36 @@ func TestOnboardingTrialOrbitsListPreviewsFiles(t *testing.T) {
 		}
 	}
 }
+
+// In Files, o opens the file and C shows conflicts; views change only with
+// numbers or Tab, and c still creates an Orbit as on every other view.
+func TestFilesKeysDoNotCollideWithViews(t *testing.T) {
+	m, _ := e08Model(t)
+	var opened string
+	m.opts.Open = func(p string) error { opened = p; return nil }
+	e08Key(m, "j")
+	e08Key(m, "o")
+	if opened == "" || m.section != filesSection {
+		t.Fatalf("o: opened %q section %d", opened, m.section)
+	}
+	for _, k := range []string{"f", "n", "d"} {
+		e08Key(m, k)
+		if m.section != filesSection || m.flow != nil {
+			t.Fatalf("%s left Files: section %d", k, m.section)
+		}
+	}
+	// The fixture has no everyday controls, so conflicts reports that.
+	e08Key(m, "C")
+	if m.notice != "Everyday controls unavailable." {
+		t.Fatalf("C did not ask for conflicts: %q", m.notice)
+	}
+	// Nor workflow controls, so create reports that instead of opening.
+	e08Key(m, "c")
+	if m.notice != "Workflow controls unavailable." {
+		t.Fatalf("c did not ask to create: %q", m.notice)
+	}
+	e08Key(m, "1")
+	if m.section != 0 {
+		t.Fatalf("1 selects Overview, got %d", m.section)
+	}
+}

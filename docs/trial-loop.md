@@ -21,7 +21,10 @@ Device identities are fresh after each reset. The trial never touches
 `orbit.service`, `~/.local/state/orbit`, `~/Orbit` or the Pi's `filesync-pilot`
 unit, and the owner's Orbit keeps running throughout.
 
-To drop test files into a trial folder: `~/orbit-trial/<folder name>`.
+To drop test files into a trial folder: `~/orbit-trial/<folder name>`. Because
+the trial's HOME is not the account's home, the trial shows absolute paths and
+proposes `~/orbit-trial/<name>`; a typed `~` means the real home, as in the
+shell.
 Choosing a folder outside `~/orbit-trial` works but reset leaves it in place
 (it says so). Never point the trial at `~/Orbit`: Orbit would take over that
 root's registration from the owner's instance.

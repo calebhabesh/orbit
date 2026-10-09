@@ -266,7 +266,7 @@ def run(binary, output):
         ub.back();ub.wait("Overview |")
         ua.back();ua.wait("[Overview]")
         # Local pause/resume uses actual root state, and relocation preserves bytes.
-        ua.send(b"f");ua.wait("[Orbits]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
+        ua.send(b"2");ua.wait("[Orbits]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
         ua.send(b"p");ua.wait("Confirm local pause");ua.send(b"\r");ua.wait("Local pause=true")
         assert a.query("folder_management",folder=folder)["folder_management"]["paused"]
         ua.send(b"p");ua.wait("Confirm local resume");ua.send(b"\r");ua.wait("Local pause=false")

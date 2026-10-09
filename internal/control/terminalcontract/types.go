@@ -15,6 +15,10 @@ import (
 )
 
 const Version = "1"
+
+// DefaultOrbitName names a new Orbit (and its folder, ~/Synced) when the
+// owner gives no name; it reads as what the folder is, not as the app.
+const DefaultOrbitName = "Synced"
 const Capability = "terminal_control_v1"
 const MaxMetadata = 1 << 20
 const MaxPage = 200

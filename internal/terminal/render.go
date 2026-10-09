@@ -3,6 +3,8 @@ package terminal
 import (
 	"fmt"
 	"os"
+	"os/user"
+	"path/filepath"
 	"strings"
 	"unicode"
 
@@ -77,18 +79,19 @@ func (m *model) View() tea.View {
 var helpKeys = [][2]string{
 	{"q / Ctrl-C", "close interface (sync and committed work continue); Ctrl-C works anywhere"},
 	{"↑/↓ or j/k", "select rows; in forms, move between fields"},
-	{"1-5 or o f n d", "Overview, Orbits, Attention, Devices, Files"},
-	{"Files", "Enter/→ open · ←/Backspace up · o open · e edit · h history · c conflicts · D deleted · y copy path · / search folder"},
+	{"1-5", "Overview, Orbits, Attention, Devices, Files"},
+	{"Files", "Enter/→ open · ←/Backspace up · o open in app · e edit · y copy path · h history · C conflicts · D deleted · / search folder"},
 	{"Tab / Shift-Tab", "next / previous view; in forms, next / previous field"},
-	{"←/→", "previous / next view; in forms, change a ‹ choice ›"},
+	{"←/→", "previous / next view (Files: up / open); in forms, change a ‹ choice ›"},
 	{"/", "search this page"},
 	{"Enter", "inspect; in forms, next field, then confirm on the last"},
 	{"Esc", "back"},
 	{"r", "refresh"},
 	{"] [", "next page / first page"},
-	{"e", "configured external tool"},
+	{"e", "configured external tool (Files: edit the file)"},
+	{"R", "rename the selected Orbit or device"},
 	{"b", "storage"},
-	{"v h D C", "folder status, history, deleted, conflicts"},
+	{"v h D C", "in an Orbit: copy status, history, deleted, conflicts"},
 	{"c", "create/adopt"},
 	{"J", "join"},
 	{"a", "add device"},
@@ -104,7 +107,7 @@ func (m *model) footer() string {
 		if m.width < 60 {
 			return "j/k Enter ← o e h ? q"
 		}
-		return "↑/↓ select  Enter open  ← up  / search  o open  e edit  h history  c conflicts  y copy path  ] more  Tab views  ? help  q quit"
+		return "↑/↓ select  Enter open  ← up  / search  o open in app  e edit  y copy path  h history  C conflicts  D deleted  ] more  1-5 views  ? help  q quit"
 	}
 	footer := "j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests  u setup  N connection"
 	if m.section == 1 || m.section == 3 {
@@ -127,7 +130,7 @@ func (m *model) footerLines(t theme) []string {
 }
 
 func (m *model) tabs(t theme) string {
-	keys := []string{"o", "f", "n", "d", "5"}
+	keys := []string{"1", "2", "3", "4", "5"}
 	nav := make([]string, len(sections))
 	for i, name := range sections {
 		nav[i] = t.tab(name, keys[i], i == m.section)
@@ -287,7 +290,7 @@ func (m *model) detailLines() (string, []string) {
 		lines = append(lines, "Issue: "+r.subtitle, "Next action: "+r.action, "", "Enter opens the review for this item.")
 	} else {
 		if r.subtitle != "" {
-			label := "Root: "
+			label := "Folder: "
 			if r.folder == "" {
 				label = "ID: "
 			}
@@ -441,7 +444,7 @@ func (m *model) compactLines() []string {
 	output, _ := t.body(lines, m.width, -1)
 	if !t.plain && len(output) > 2 {
 		output[0] = t.header(m.width, "", t.pill(daemonLabel(m.result.Service), m.startup()))
-		output[1] = t.tab(sections[m.section], "", true) + " " + t.hints("f n d o")
+		output[1] = t.tab(sections[m.section], "", true) + " " + t.hints("1-5 views")
 	}
 	footerLines := m.footerLines(t)
 	if len(output)+len(footerLines) > m.height {
@@ -457,10 +460,27 @@ func count(n int, noun string) string {
 	return fmt.Sprintf("%d %ss", n, noun)
 }
 
-// homePath shortens a path under the user's home directory to ~/… for lists.
+// homes returns $HOME and the account's own home directory. They differ in a
+// separate instance run with its own HOME (such as orbit-trial).
+func homes() (home, account string) {
+	home, _ = os.UserHomeDir()
+	return filepath.Clean(home), filepath.Clean(accountHome())
+}
+
+// accountHome is the home directory recorded for the user account.
+var accountHome = func() string {
+	if u, err := user.Current(); err == nil {
+		return u.HomeDir
+	}
+	return ""
+}
+
+// homePath shortens a path under the home directory to ~/… for display. When
+// HOME is not the account's home, "~" would not mean what the shell means, so
+// paths stay absolute and always show where files really live.
 func homePath(path string) string {
-	home, err := os.UserHomeDir()
-	if err != nil || home == "" || home == "/" {
+	home, account := homes()
+	if home == "" || home == "/" || home == "." || (account != "." && account != home) {
 		return path
 	}
 	if path == home {

@@ -23,6 +23,7 @@ capturing and synchronizing files after the browser closes. An optional
 always-on replica forwards files between devices that are online at different times.
 
 The default experience is one workspace called Orbit, rooted at `~/Orbit`.
+(Amended 2026-10-08: a new Orbit is named Synced, at `~/Synced`.)
 A workspace corresponds to the existing shared-folder identity. A device can
 join additional workspaces through advanced setup; each joined workspace is
 fully replicated. A directory inside a workspace is ordinary file organization,

@@ -235,7 +235,7 @@ func (m *model) filesKey(k string) (tea.Cmd, bool) {
 			return m.everyday(fs.folder, "history", r.path), true
 		}
 		return nil, true
-	case "c":
+	case "C":
 		if fs.folder != "" {
 			return m.everyday(fs.folder, "conflicts", ""), true
 		}

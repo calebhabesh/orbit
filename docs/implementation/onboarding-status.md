@@ -274,6 +274,23 @@ pass after their scripts were updated (570 s rerun); W11 failed once with
 Not run: race, packages, harness unit tests. Default installs were cleared and updated to 2.2.0
 packages (built before these changes); the owner trials with `orbit-trial`.
 
+Trial findings, keys/paths/mark (2026-10-08, PC–laptop trial): letter view keys
+`o f n d` retired (Files `o` open collided with `o` Overview); views are `1`–`5`,
+Tab or ←/→; Files conflicts moved `c`→`C` so `c` creates everywhere. `~` is
+abbreviated only when `$HOME` is the account home; the trial shows absolute
+paths, the form prints "Files live in <absolute>", the review prints the
+absolute root, and a typed `~` expands to the account home. ASCII orbit mark on
+the welcome screen. Evidence: `go test -short ./internal/terminal` ok (new
+`TestFilesKeysDoNotCollideWithViews`, `TestSeparateHomeShowsAbsolutePaths`);
+`make quick` with all four PTY suites ok after updating `terminal_pty_test.py`
+and two scripts to press `2`/`3`. Default Orbit name is now **Synced**
+(`~/Synced`, `tc.DefaultOrbitName`); the Folder follows the typed name exactly
+(clearing it clears the Folder). `go test -short ./cmd/... ./internal/...` ok;
+`go test -timeout 40m ./tests/terminal -run 'E0[0-9]|Setup|Onboarding'`: 20
+pass, `TestOnboardingE02F09RealPTYEnterOpensRetry` failed on the retired `n`
+key, fixed to `3` and passes alone. The owner reports the trial working over
+WAN (laptop off the home network). Not run: full integration suite.
+
 Legacy trial state: PC, laptop and Pi still share the old `Trial` folder in
 their real 2.1.0 installs (Pi unattended with lingering). Orbit cannot remove a
 single folder; retiring it needs the owner's choice (pause it on PC/laptop; on

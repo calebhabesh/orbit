@@ -5,13 +5,37 @@ prerequisite and address-entry portions of this handoff for new Automatic-mode
 work. Its relay/default-service journeys are planned, not implemented. Existing
 manual/private-network flows and all non-network terminal guarantees remain.
 
+## Owner amendment 2026-10-08 (keys, paths and mark)
+
+Found in the PC–laptop trial. **Keys:** views are chosen with `1`–`5`, Tab /
+Shift-Tab or ←/→; the letter view keys `o f n d` are retired because `o` also
+opened a file in Files. The tab bar shows `1 Overview 2 Orbits 3 Attention
+4 Devices 5 Files`. Global keys on every view: `c` create, `J` join, `a` add
+device, `s` share, `w` requests, `u` unfinished setup, `N` connection, `b`
+storage, `R` rename, `r` refresh, `/` search, `?` help, `q` quit. Files adds
+`o` open in app, `e` edit, `y` copy path, `h` history, `C` conflicts, `D`
+deleted (matching an Orbit's own screen: `v h D C`); ←/→ there move up/into
+folders. Workflow screens are modal and keep their own letters (for example
+`a` approve, `c` copy code). **Paths:** `~` abbreviates only when `$HOME` is
+the account's own home. A separate instance with its own HOME (orbit-trial)
+shows absolute paths, proposes `<HOME>/<name>`, and expands a typed `~` to the
+account's home, as the shell does. The form shows the resolved folder under
+Folder ("Files live in /home/…/Demo") and the review prints the absolute
+path. **Mark:** the welcome screen shows an ASCII sun with planets on nested
+orbits (`logoLarge`, or `logoSmall` on smaller terminals; none below 42×22).
+**Default name (same day):** a new Orbit is called **Synced** with folder
+`~/Synced` (`tc.DefaultOrbitName`, used by the TUI, CLI and control defaults),
+because "Orbit" in `~/Orbit` repeated the app's name. This supersedes the
+`~/Orbit` suggestion in U04/Q3. The Folder follows the Orbit name exactly as
+typed: clearing the name clears the Folder, and `/` or `\` become `-`.
+
 ## Owner amendment 2026-10-08 (names and folders)
 
 Approved by the owner during the 2.2.0 trial. Create and join forms label
 their fields **Device name** ("How your other devices see this one"), **Orbit
 name** ("What this Orbit is called in the app") and **Folder** ("Where its
 files live on this device; created if missing"); the focused field shows its
-hint. Folder defaults to `~/Orbit`, shows `~` as typed, and follows the Orbit
+hint. Folder defaults to `~/Orbit` (now `~/Synced`, see the amendment above), shows `~` as typed, and follows the Orbit
 name (`~/<name>`) until the owner edits it. A folder whose parents are missing
 is created with them on confirmation (the nearest existing ancestor is pinned
 at review). The create form opens with "An Orbit is a folder that stays in

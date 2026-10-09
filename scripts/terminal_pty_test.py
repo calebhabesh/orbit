@@ -220,7 +220,7 @@ print('TOOL_DONE',flush=True)
             time.sleep(0.12)
             os.write(master, b"\x1b")  # Clear filter in navigation.
             time.sleep(0.12)
-            os.write(master, b"f")
+            os.write(master, b"2")
             read_until(b"[Orbits]" if size[0]>=60 else b"Orbits |")
             # E03: Tab moves between views; / opens search.
             os.write(master, b"\x1b[B\x1b[A/")

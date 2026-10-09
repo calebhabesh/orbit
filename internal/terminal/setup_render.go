@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -35,9 +36,7 @@ func (m *model) workflowView() tea.View {
 	switch f.screen {
 	case "welcome":
 		title = "Orbit | Create or join"
-		if m.width >= 50 && m.height >= 20 {
-			lines = append(lines, m.theme().banner()...)
-		}
+		lines = append(lines, m.theme().banner(m.width-4, m.height)...)
 		lines = append(lines, "Create your Orbit [c / Enter]", "Join an existing Orbit [j]", "Existing folder contents are reviewed before adoption.", "Closing this interface leaves background sync running.")
 	case "load_settings":
 		title = "Orbit | Setup"
@@ -76,6 +75,9 @@ func (m *model) workflowView() tea.View {
 			if i == f.focus && i < len(setupFieldHints) {
 				lines = append(lines, m.theme().muted("    "+setupFieldHints[i]))
 			}
+			if i == 2 {
+				lines = append(lines, m.theme().muted("    "+folderLocation(f.fields[2].input.Value())))
+			}
 		}
 		lines = append(lines, "Metadata budget="+hb(f.settings.MetadataBudget)+" reserve="+hb(f.settings.ReserveBytes)+"; retention uses per-folder controls.")
 		footer = "↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced  Esc back"
@@ -89,7 +91,7 @@ func (m *model) workflowView() tea.View {
 		title = "Orbit | Confirm adoption"
 		p := f.plan
 		s := p.Settings
-		lines = append(lines, "Orbit "+safe(p.FolderName)+" will sync "+safe(homePath(p.Root))+" on "+safe(p.DeviceName)+".", "Files already in that folder become shared; nothing is deleted.")
+		lines = append(lines, "Orbit "+safe(p.FolderName)+" will sync this folder on "+safe(p.DeviceName)+":", "  "+safe(p.Root), "Files already in that folder become shared; nothing is deleted.")
 		if f.kind == "join" {
 			inviter, folder := safe(f.invitation.Inviter), safe(f.invitation.Folder)
 			if n := f.invitation.InviterName; n != "" {
@@ -405,6 +407,16 @@ var setupFieldHints = []string{
 	"How your other devices see this one.",
 	"What this Orbit is called in the app.",
 	"Where its files live on this device; created if missing.",
+}
+
+// folderLocation spells out the absolute folder a Folder value resolves to.
+func folderLocation(value string) string {
+	value = strings.TrimSpace(value)
+	root := expandHome(value)
+	if !filepath.IsAbs(root) {
+		return "Use a path such as ~/Documents or /data/Documents."
+	}
+	return "Files live in " + safe(filepath.Clean(root))
 }
 
 // orbitLabel names the picked Orbit ("Demo (~/Demo here)"), or "this Orbit".

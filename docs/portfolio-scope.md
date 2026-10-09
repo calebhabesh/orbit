@@ -63,7 +63,7 @@ Approval defines the target, not completed behavior or a proven guarantee.
 | U01 | User-facing product name Orbit; existing identity/history remain intact through rebranding | Approved name; compatibility baseline |
 | U02 | One owner, owner-operated storage, Linux only, complete local copies of joined folders | Approved |
 | U03 | Equal writable replicas; an always-on Pi/NAS/VPS is optional and has no conflict authority | Approved |
-| U04 | Suggest `~/Orbit`; existing local folders and additional named synced folders are normal options; review preexisting contents and preserve Change location | Approved terminal UX |
+| U04 | Suggest `~/Synced` (was `~/Orbit`; owner amendment 2026-10-08, [terminal UX](orbit-terminal-ux.md)) as the folder of an Orbit named Synced; existing local folders and additional named synced folders are normal options; review preexisting contents and preserve Change location | Approved terminal UX |
 | U05 | Short-lived invitations from an enrolled device, explicit owner approval, persistent per-device authentication; defer Google/account login | Approved |
 | U06 | Automatic LAN/WAN connectivity through Orbit discovery/rendezvous, direct paths and encrypted relay fallback; existing manual/private networks remain supported | Approved WAN target; unimplemented |
 | U07 | Sync-manager journeys with names, paths and qualified plain-language status; ordinary browsing/editing stays in existing file tools | Approved terminal UX |
