@@ -21,6 +21,7 @@ type workflowFixture struct {
 	mutation tc.Mutation
 	calls    int
 	retried  []control.WorkRetryRequest
+	renamed  []string
 }
 
 func (w *workflowFixture) Query(ctx context.Context, q tc.Query) (tc.Result, error) {
@@ -38,6 +39,10 @@ func (w *workflowFixture) Setup(ctx context.Context, m tc.Mutation) (tc.Result, 
 	return w.Mutate(ctx, m)
 }
 func (*workflowFixture) ManageFolder(context.Context, string, string, string, string) error {
+	return nil
+}
+func (w *workflowFixture) Rename(_ context.Context, kind, id, name string) error {
+	w.renamed = append(w.renamed, kind+" "+id+" "+name)
 	return nil
 }
 func (*workflowFixture) SaveInvitation(context.Context, string, tc.Invitation) error { return nil }
@@ -252,7 +257,8 @@ func TestOnboardingTrialRootAcceptsHomeTilde(t *testing.T) {
 	}
 	m.focusField(13)
 	runReply(m, keyCode(m, tea.KeyEnter))
-	if want := filepath.Join(home, "OrbitTrial"); root != want || m.flow.fields[2].input.Value() != want {
+	// The request gets the absolute path; the field keeps what was typed.
+	if want := filepath.Join(home, "OrbitTrial"); root != want || m.flow.fields[2].input.Value() != "~/OrbitTrial" {
 		t.Fatalf("root %q, field %q; want %q", root, m.flow.fields[2].input.Value(), want)
 	}
 }
@@ -300,7 +306,7 @@ func TestOnboardingTrialInvitationPageShowsApprovalStatus(t *testing.T) {
 	req := tc.EnrollmentRequest{ID: "req-1", Folder: inv.Folder, Label: "Pi\x1b[31m", VerificationCode: "123-456", State: "pending_approval"}
 	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
 	view := m.View().Content
-	if !strings.Contains(view, "Awaiting your approval: Pi\\u001b[31m wants to join. Verification code 123-456") || !strings.Contains(view, "Enter review request") {
+	if !strings.Contains(view, "Awaiting your approval: Pi\\u001b[31m wants to join this Orbit. Verification code 123-456") || !strings.Contains(view, "Enter review request") {
 		t.Fatalf("pending request not shown safely:\n%s", view)
 	}
 	press(m, "enter")
@@ -324,9 +330,9 @@ func TestOnboardingTrialInvitationPageShowsApprovalStatus(t *testing.T) {
 func TestOnboardingTrialJoinProposesInviterFolderName(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
-	fields := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", filepath.Join(home, "Orbit"), false)}
+	fields := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", "~/Orbit", false)}
 	proposeJoinNames(fields, "Trial")
-	if fields[1].input.Value() != "Trial" || fields[2].input.Value() != filepath.Join(home, "Trial") {
+	if fields[1].input.Value() != "Trial" || fields[2].input.Value() != "~/Trial" || expandHome(fields[2].input.Value()) != filepath.Join(home, "Trial") {
 		t.Fatalf("got %q %q", fields[1].input.Value(), fields[2].input.Value())
 	}
 	typed := []field{newField("Device name", "laptop", false), newField("Folder name", "Mine", false), newField("Local root", "/data/x", false)}
@@ -334,9 +340,67 @@ func TestOnboardingTrialJoinProposesInviterFolderName(t *testing.T) {
 	if typed[1].input.Value() != "Mine" || typed[2].input.Value() != "/data/x" {
 		t.Fatal("overwrote what the owner typed")
 	}
-	odd := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", filepath.Join(home, "Orbit"), false)}
+	odd := []field{newField("Device name", "laptop", false), newField("Folder name", "Orbit", false), newField("Local root", "~/Orbit", false)}
 	proposeJoinNames(odd, "a/b")
-	if odd[1].input.Value() != "a/b" || odd[2].input.Value() != filepath.Join(home, "Orbit") {
+	if odd[1].input.Value() != "a/b" || odd[2].input.Value() != "~/Orbit" {
 		t.Fatal("a name with a slash must not become a path")
+	}
+}
+
+// Owner request: "Orbit name" and "Folder" read as what they are, and the
+// folder follows the name until the owner edits the folder.
+func TestSetupFolderFollowsOrbitName(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	m, _ := loadedForm(t)
+	if m.flow.fields[1].label != "Orbit name" || m.flow.fields[2].label != "Folder" {
+		t.Fatalf("fields %q %q", m.flow.fields[1].label, m.flow.fields[2].label)
+	}
+	m.focusField(1)
+	m.flow.fields[1].input.SetValue("")
+	for _, r := range "Demo" {
+		press(m, string(r))
+	}
+	if got := m.flow.fields[2].input.Value(); got != "~/Demo" {
+		t.Fatalf("folder did not follow the name: %q", got)
+	}
+	if view := m.View().Content; !strings.Contains(view, "What this Orbit is called in the app.") {
+		t.Fatalf("focused field has no hint:\n%s", view)
+	}
+	m.focusField(2)
+	press(m, "x")
+	edited := m.flow.fields[2].input.Value()
+	m.focusField(1)
+	press(m, "s")
+	if got := m.flow.fields[2].input.Value(); got != edited || !strings.Contains(got, "x") {
+		t.Fatalf("an edited folder was replaced: %q", got)
+	}
+}
+
+// Owner request: R renames the highlighted Orbit (or device) for all devices.
+func TestRenameSelectedOrbit(t *testing.T) {
+	m, w := workflowModel()
+	m.width, m.height = 120, 40
+	id := strings.Repeat("a", 64)
+	m.section = 1
+	m.result = tc.Result{Items: []tc.NamedItem{{ID: id, Name: "Demo", Root: "/private/demo"}}}
+	m.restoreSelection()
+	press(m, "R")
+	if m.flow == nil || m.flow.screen != "rename_form" || m.flow.fields[0].input.Value() != "Demo" {
+		t.Fatalf("rename form not opened: %+v", m.flow)
+	}
+	if view := m.View().Content; !strings.Contains(view, "appears on all your devices") {
+		t.Fatalf("rename screen:\n%s", view)
+	}
+	m.flow.fields[0].input.SetValue("Projects")
+	cmd := keyCode(m, tea.KeyEnter)
+	for i := 0; cmd != nil && i < 5; i++ {
+		cmd = runReply(m, cmd)
+	}
+	if len(w.renamed) != 1 || w.renamed[0] != "folder "+id+" Projects" {
+		t.Fatalf("renamed %v", w.renamed)
+	}
+	if m.flow != nil || !strings.Contains(m.notice, "Renamed to Projects") {
+		t.Fatalf("flow %+v notice %q", m.flow, m.notice)
 	}
 }

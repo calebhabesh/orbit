@@ -379,6 +379,25 @@ request/operation guards remain durable. Approved status retrieval requires a
 fresh requester possession proof even after the original invitation expires;
 preparing a new enrollment request never renews an expired invitation.
 
+## Shared Orbit and device names — 2026-10-08
+
+Owner-approved. After a successful hello for a folder, the syncing device
+POSTs `/peer/v1/names` (mTLS, same folder authorization as inventory) with
+`protocol_version`, `device_id`, `folder_id`, `membership_revision`,
+`membership_digest`, an optional `folder` record and `devices` records. A
+record is `{id, name, clock, author}`: 64-hex IDs, canonical decimal clock ≥ 1,
+and a name of 1–128 bytes of printable UTF-8 without leading/trailing space.
+The server installs newer records, then answers with its own current records;
+the client installs newer ones from the reply. A record is newer when its clock
+is greater, or the clocks are equal and its author ID compares greater. Only
+the exchanged folder's name and names of devices that are active members there,
+authored by active members, are installed; others are skipped. Malformed
+records fail the exchange (`INVALID_REQUEST`). Names are display text: they
+are not part of membership digests, version envelopes or authorization, so a
+rename never pauses data exchange. A peer without the endpoint answers 404 and
+the client keeps its local names. A local rename queues a sync with each other
+member so the change spreads without waiting for reconciliation.
+
 ## T05 scoped sharing and membership rollout
 
 `share` creates a folder invitation restricted in the inviter's private record to

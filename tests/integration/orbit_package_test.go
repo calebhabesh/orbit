@@ -169,8 +169,8 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 	if !strings.Contains(outStr, "Orbit Personal File Manager v2.2.0") {
 		t.Errorf("missing Orbit brand string, got: %s", outStr)
 	}
-	if !strings.Contains(outStr, "Schema: SQLite user_version 13") {
-		t.Errorf("missing Schema 13, got: %s", outStr)
+	if !strings.Contains(outStr, "Schema: SQLite user_version 14") {
+		t.Errorf("missing Schema 14, got: %s", outStr)
 	}
 	if !strings.Contains(outStr, "pure-Go SQLite, zero Node runtime") {
 		t.Errorf("missing pure-Go runtime notice, got: %s", outStr)
@@ -189,8 +189,8 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 	if verInfo["product"] != "Orbit" {
 		t.Errorf("expected product Orbit, got: %v", verInfo["product"])
 	}
-	if verInfo["schema_version"] != float64(13) {
-		t.Errorf("expected schema_version 13, got: %v", verInfo["schema_version"])
+	if verInfo["schema_version"] != float64(14) {
+		t.Errorf("expected schema_version 14, got: %v", verInfo["schema_version"])
 	}
 	assets, ok := verInfo["embedded_assets"].(map[string]any)
 	if !ok || assets["total_files"].(float64) < 1 {
@@ -240,8 +240,8 @@ func TestOrbitVersionAndManifestMetadata(t *testing.T) {
 	if apiVer["product"] != "Orbit" {
 		t.Errorf("expected api product Orbit, got: %v", apiVer["product"])
 	}
-	if apiVer["schema_version"] != float64(13) {
-		t.Errorf("expected schema_version 13, got: %v", apiVer["schema_version"])
+	if apiVer["schema_version"] != float64(14) {
+		t.Errorf("expected schema_version 14, got: %v", apiVer["schema_version"])
 	}
 }
 
@@ -329,7 +329,7 @@ func TestOrbitInstallAndUninstallScriptLifecycle(t *testing.T) {
 }
 
 // TestOrbitLegacyStateAdoption verifies that an existing SQLite database at schema version 5
-// is cleanly adopted and migrated to schema 13 without data loss.
+// is cleanly adopted and migrated to schema 14 without data loss.
 func TestOrbitLegacyStateAdoption(t *testing.T) {
 	stateDir := testkit.NewDisposable(t)
 	dbPath := filepath.Join(stateDir, "metadata.sqlite")
@@ -359,7 +359,7 @@ func TestOrbitLegacyStateAdoption(t *testing.T) {
 	}
 	defer db.Close()
 
-	// Verify schema is now CurrentSchema (13)
+	// Verify schema is now CurrentSchema (14)
 	var finalVersion int
 	if err := db.QueryRowRaw(context.Background(), "PRAGMA user_version").Scan(&finalVersion); err != nil {
 		t.Fatal(err)

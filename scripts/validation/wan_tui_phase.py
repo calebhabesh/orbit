@@ -133,7 +133,9 @@ def redact(text, host, secrets):
 
 
 def root_review(ui, label, name, root):
-    for value in (label, name, str(root)):
+    # A join form hides Orbit name when the invitation carries one.
+    values = (label, name, str(root)) if 'Orbit name:' in ui.text() else (label, str(root))
+    for value in values:
         ui.replace(value)
         ui.send(b'\t')
     if 'Peer listen:' in ui.text():
@@ -144,7 +146,7 @@ def root_review(ui, label, name, root):
 def phase_create(host, ui, args, out):
     ui.wait('Join an existing Orbit [j]')
     ui.send(b'c')
-    ui.wait('Review setup inputs')
+    ui.wait('Connection choices:')
     root_review(ui, args.label, args.name, host.root / args.relative)
     review = ui.text()
     out['review_mode'] = 'packaged profile' if 'packaged profile' in review else 'other'
@@ -201,7 +203,7 @@ def phase_join(host, ui, args, out):
     out['secrets'] = [json.loads(invitation.read_text())['capability']]
     ui.replace(str(invitation))
     ui.send(b'\r')
-    ui.wait('Review setup inputs', 30)
+    ui.wait('Connection choices:', 30)
     root_review(ui, args.label, args.name, host.root / args.relative)
     ui.wait('Inviter operator:')
     if args.hosted and '(same operator and profile as this device)' not in ui.text():

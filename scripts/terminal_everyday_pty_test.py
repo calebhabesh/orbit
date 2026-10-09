@@ -71,7 +71,7 @@ input()
 """)
         extra=["--editor",f"'{sys.executable}' '{helper}'","--diff",f"'{sys.executable}' '{diff}'"]
         ua=UI(a,"everyday-offline-conflict-editor",extra=extra);active.append(ua);ua.wait("Join an existing Orbit [j]")
-        ua.send(b"c");ua.wait("Review setup inputs");ua.form("Laptop",a.data);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Overview]")
+        ua.send(b"c");ua.wait("Connection choices:");ua.form("Laptop",a.data);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Overview]")
         folder=a.query("folders",limit="20")["items"][0]["id"]
         inv=invite(ua,a,a.root/"invite.json")
         code="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(inv).encode()).decode().rstrip("=")

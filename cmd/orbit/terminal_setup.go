@@ -224,11 +224,11 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 				if err != nil {
 					return err
 				}
-				*name, err = ask("Folder name", *name)
+				*name, err = ask("Orbit name", *name)
 				if err != nil {
 					return err
 				}
-				*root, err = ask("Root to create or adopt", *root)
+				*root, err = ask("Folder on this device (created if missing)", *root)
 				if err != nil {
 					return err
 				}

@@ -34,6 +34,8 @@ func handleOrbitFolders(args []string, stdout, stderr io.Writer) error {
 			return handleOrbitFoldersResume(args[1:], stdout, stderr)
 		case "relocate":
 			return handleFoldersRelocate(args[1:], stdout, stderr)
+		case "rename":
+			return handleRename("folder", args[1:], stdout, stderr)
 		case "revalidate":
 			return handleOrbitFoldersRevalidate(args[1:], stdout, stderr)
 		case "remove":
@@ -632,4 +634,69 @@ func RenderOrbitStatusHuman(stdout io.Writer, res tc.Result, stateDir string) {
 				obs.Saved, obs.Stored, obs.Applied, directStr, onlineStr, obs.Availability, lastContact)
 		}
 	}
+}
+
+// handleRename renames an Orbit ("folders rename <orbit> <new name>") or a
+// device ("devices rename <device> <new name>") on every member device. The
+// target is a current name or 64-hex ID.
+func handleRename(kind string, args []string, stdout, stderr io.Writer) error {
+	flags := flag.NewFlagSet("orbit "+kind+"s rename", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stateDirFlag := flags.String("state", "", "explicit agent state directory")
+	jsonOutput := flags.Bool("json", false, "output structured JSON")
+	var positional []string
+	for len(args) > 0 {
+		if err := flags.Parse(args); err != nil {
+			return err
+		}
+		args = flags.Args()
+		if len(args) > 0 {
+			positional, args = append(positional, args[0]), args[1:]
+		}
+	}
+	if len(positional) != 2 {
+		return fmt.Errorf("usage: orbit %ss rename <current name or ID> <new name>", kind)
+	}
+	stateDir, err := launcher.DiscoverState(*stateDirFlag)
+	if err != nil {
+		return err
+	}
+	client := &controlclient.Client{StateDir: stateDir}
+	ctx := context.Background()
+	queryKind := "devices"
+	if kind == "folder" {
+		queryKind = "folders"
+	}
+	target := positional[0]
+	id := ""
+	if _, err := parseID(target); err == nil {
+		id = target
+	} else {
+		r, err := client.Query(ctx, tc.Query{Version: tc.Version, Kind: queryKind, Name: target, Limit: 2})
+		if err != nil {
+			code := RenderError(stderr, err, *jsonOutput)
+			return &CLIExitError{Code: code}
+		}
+		switch len(r.Items) {
+		case 0:
+			return fmt.Errorf("no %s named %q; list them with 'orbit %ss'", kind, target, kind)
+		case 1:
+			id = r.Items[0].ID
+		default:
+			return fmt.Errorf("more than one %s is named %q; use its ID", kind, target)
+		}
+	}
+	if err := client.Rename(ctx, kind, id, positional[1]); err != nil {
+		code := RenderError(stderr, err, *jsonOutput)
+		return &CLIExitError{Code: code}
+	}
+	if *jsonOutput {
+		return json.NewEncoder(stdout).Encode(map[string]string{"kind": kind, "id": id, "name": positional[1]})
+	}
+	what := "Orbit"
+	if kind == "device" {
+		what = "Device"
+	}
+	fmt.Fprintf(stdout, "%s renamed to %q; your other devices show it after their next sync.\n", what, positional[1])
+	return nil
 }

@@ -747,6 +747,13 @@ func (c *Controller) advanceSetup(ctx, work context.Context, record repository.T
 	if _, err = c.UpdateSettings(ctx, UpdateSettingsRequest{DeviceLabel: &plan.DeviceName, DefaultWorkspace: &job.Folder, WorkspaceNames: map[string]string{job.Folder: plan.FolderName}}); err != nil {
 		return block(err)
 	}
+	// A created Orbit's name is shared from here; a joined one keeps the
+	// invitation's name locally until the members' shared name arrives.
+	if m.Join == nil {
+		if err = c.db.RenameFolder(ctx, folder, plan.FolderName, c.options.LocalDevice); err != nil && !errors.Is(err, repository.ErrInvalidName) {
+			return block(err)
+		}
+	}
 	if err = c.saveSetupPhase(ctx, &record, job, "content_pending"); err != nil {
 		return *r, err
 	}

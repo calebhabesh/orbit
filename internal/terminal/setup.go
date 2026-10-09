@@ -27,6 +27,7 @@ type Workflows interface {
 	Mutate(context.Context, tc.Mutation) (tc.Result, error)
 	Setup(context.Context, tc.Mutation) (tc.Result, error)
 	ManageFolder(context.Context, string, string, string, string) error
+	Rename(ctx context.Context, kind, id, name string) error
 	RetirementPreview(context.Context, string, string) (control.RetireDevicePreviewResult, error)
 	SaveInvitation(context.Context, string, tc.Invitation) error
 	RetryWork(context.Context, control.WorkRetryRequest) (*control.WorkRetryResult, error)
@@ -48,7 +49,11 @@ type workflow struct {
 	builtin                                         *tc.BuiltinProfile
 	host                                            *tc.HostStartup
 	replaceOnType                                   bool
-	saved                                           string
+	// rootTouched: the owner edited Folder, so it stops following Orbit name.
+	rootTouched bool
+	// folderName and folderRoot describe the picked Orbit for invite screens.
+	folderName, folderRoot string
+	saved                  string
 	// joinPolicy is the connection the invitation proposes (F08).
 	joinPolicy *tc.NetworkPolicy
 	plan       tc.SetupIntent
@@ -119,13 +124,12 @@ func (m *model) openFlow(w *workflow) tea.Cmd {
 }
 func (m *model) closeFlow() tea.Cmd { m.flow = nil; return m.invalidate() }
 func (m *model) setupForm(kind string) tea.Cmd {
-	home, _ := os.UserHomeDir()
 	host, _ := os.Hostname()
 	if host == "" {
 		host = "Orbit Device"
 	}
 	return m.openFlow(&workflow{screen: "load_settings", kind: kind, fields: []field{
-		newField("Device name", host, false), newField("Folder name", "Orbit", false), newField("Local root", filepath.Join(home, "Orbit"), false),
+		newField("Device name", host, false), newField("Orbit name", "Orbit", false), newField("Folder", "~/Orbit", false),
 	}})
 }
 func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, error)) {
@@ -439,6 +443,16 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.notice = "Private invitation saved. Transfer deliberately to the receiving device."
 	case "folder":
 		f.result = r
+	case "rename":
+		name := safe(strings.TrimSpace(f.fields[0].input.Value()))
+		if f.kind == "rename_folder_screen" {
+			f.screen, f.kind = "folder", ""
+			f.notice = "Renamed to " + name + "; your other devices show it after their next sync."
+			return m.startQuery()
+		}
+		m.flow = nil
+		m.notice = "Renamed to " + name + "; your other devices show it after their next sync."
+		return m.invalidate()
 	case "pause", "resume", "relocate":
 		f.notice = "Local folder action completed: " + task
 		f.screen = "folder"
@@ -540,6 +554,7 @@ func (m *model) focusField(i int) tea.Cmd {
 		f.fields[j].input.Blur()
 	}
 	f.focus = i
+	f.fields[i].input.CursorEnd()
 	return f.fields[i].input.Focus()
 }
 func (m *model) previewSetup() tea.Cmd {
@@ -562,15 +577,12 @@ func (m *model) previewSetup() tea.Cmd {
 		}
 		*v.n = tc.Uint(n)
 	}
-	// Accept "~" and "~/path" for the local root, as a shell would.
-	if root := get(2); root == "~" || strings.HasPrefix(root, "~/") {
-		if home, err := os.UserHomeDir(); err == nil {
-			f.fields[2].input.SetValue(filepath.Join(home, strings.TrimPrefix(root, "~")))
-		}
-	}
+	// Accept "~" and "~/path" for the local root, as a shell would; the field
+	// keeps showing what the owner typed.
+	root := expandHome(get(2))
 	for i := range 3 {
-		if get(i) == "" || (i == 2 && !filepath.IsAbs(get(2))) {
-			f.err = "Device/folder names and an absolute local root are required."
+		if get(i) == "" || (i == 2 && !filepath.IsAbs(root)) {
+			f.err = "Enter a device name, an Orbit name, and a folder such as ~/Documents or /data/Documents."
 			// Focus the field with the problem (E03).
 			return m.focusField(i)
 		}
@@ -602,7 +614,7 @@ func (m *model) previewSetup() tea.Cmd {
 			policy.Generation = f.network.Generation + 1
 		}
 	}
-	f.plan = tc.SetupIntent{Network: &policy, DeviceName: get(0), FolderName: get(1), Root: filepath.Clean(get(2)), Settings: s}
+	f.plan = tc.SetupIntent{Network: &policy, DeviceName: get(0), FolderName: get(1), Root: filepath.Clean(root), Settings: s}
 	q := tc.Query{Version: tc.Version, Kind: "root_preview", Path: f.plan.Root, Name: f.kind, RootPlan: &f.plan}
 	if err := q.Validate(); err != nil {
 		f.err = "Names must fit 256 bytes and the reviewed settings must be finite."
@@ -657,6 +669,13 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 		if f.screen == "relocate_form" {
 			f.screen = "folder"
 			return m.invalidate()
+		}
+		if f.screen == "rename_form" {
+			if f.kind == "rename_folder_screen" {
+				f.screen, f.kind = "folder", ""
+				return m.invalidate()
+			}
+			return m.closeFlow()
 		}
 		if f.screen == "form" && f.kind == "join" {
 			f.screen = "invitation"
@@ -719,6 +738,8 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 		case "relocate_form":
 			f.screen = "relocate_review"
 			return nil
+		case "rename_form":
+			return m.submitRename()
 		}
 	}
 	if fld := &f.fields[f.focus]; fld.choices != nil {
@@ -739,9 +760,29 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 		f.fields[f.focus].input.SetValue("")
 	}
 	f.replaceOnType = false
+	before := f.fields[f.focus].input.Value()
 	var cmd tea.Cmd
 	f.fields[f.focus].input, cmd = f.fields[f.focus].input.Update(msg)
+	if f.screen == "form" && f.fields[f.focus].input.Value() != before {
+		switch f.focus {
+		case 1: // Folder follows Orbit name until the owner edits it.
+			if !f.rootTouched {
+				followName(f.fields, f.fields[1].input.Value())
+			}
+		case 2:
+			f.rootTouched = true
+		}
+	}
 	return cmd
+}
+
+// followName proposes ~/<name> as the Folder for a plain Orbit name.
+func followName(fields []field, name string) {
+	name = strings.TrimSpace(name)
+	if name == "" || name == "." || name == ".." || strings.ContainsAny(name, "/\\") || safe(name) != name {
+		return
+	}
+	fields[2].input.SetValue("~/" + name)
 }
 
 // moveField focuses the next (delta 1) or previous visible field, wrapping.
@@ -763,7 +804,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 	if k == "ctrl+c" {
 		return m.quit()
 	}
-	if f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" {
+	if f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" || f.screen == "rename_form" {
 		if f.busy {
 			if k == "esc" {
 				return m.closeFlow()
@@ -905,6 +946,9 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 			return m.startQuery()
 		}
 	case "folder":
+		if k == "R" {
+			return m.openRename("folder", f.folder, f.folderName, true)
+		}
 		if k == "N" {
 			return m.openFlow(&workflow{screen: "network", device: f.device})
 		}
@@ -979,6 +1023,11 @@ func (m *model) formIndices() []int {
 		return indices
 	}
 	indices := []int{0, 1, 2, 3, 4, 13}
+	// A joined Orbit already has its name (shared by its members); only
+	// invitations from builds that do not carry one ask for it.
+	if f.kind == "join" && f.invitation.FolderName != "" {
+		indices = []int{0, 2, 3, 4, 13}
+	}
 	if f.advanced {
 		indices = append(indices, 5, 6, 7, 8, 9, 10, 11, 12)
 	}
@@ -1000,9 +1049,74 @@ func proposeJoinNames(fields []field, folder string) {
 	if fields[1].input.Value() == "Orbit" {
 		fields[1].input.SetValue(safe(folder))
 	}
-	home, err := os.UserHomeDir()
-	plain := folder != "." && folder != ".." && !strings.ContainsAny(folder, "/\\") && safe(folder) == folder
-	if err == nil && plain && fields[2].input.Value() == filepath.Join(home, "Orbit") {
-		fields[2].input.SetValue(filepath.Join(home, folder))
+	if expandHome(fields[2].input.Value()) == expandHome("~/Orbit") {
+		followName(fields, folder)
 	}
+}
+
+// expandHome turns "~" and "~/path" into a path under the home directory.
+func expandHome(path string) string {
+	if path != "~" && !strings.HasPrefix(path, "~/") {
+		return path
+	}
+	home, err := os.UserHomeDir()
+	if err != nil || home == "" {
+		return path
+	}
+	return filepath.Join(home, strings.TrimPrefix(path, "~"))
+}
+
+// renameSelected opens Rename for the highlighted Orbit or device.
+func (m *model) renameSelected() tea.Cmd {
+	rows := m.rows()
+	if m.selected < 0 || m.selected >= len(rows) || strings.HasPrefix(rows[m.selected].key, "a:") {
+		return nil
+	}
+	r := rows[m.selected]
+	switch {
+	case r.folder != "":
+		return m.openRename("folder", r.folder, r.name, false)
+	case m.section == 3:
+		return m.openRename("device", r.key, r.name, false)
+	}
+	return nil
+}
+
+// openRename edits an Orbit's or a device's shared name. fromFolder returns
+// to the Orbit's management screen afterwards.
+func (m *model) openRename(kind, id, current string, fromFolder bool) tea.Cmd {
+	label := "Orbit name"
+	if kind == "device" {
+		label = "Device name"
+	}
+	fld := newField(label, current, false)
+	if fromFolder && m.flow != nil {
+		f := m.flow
+		f.fields, f.focus, f.err, f.task = []field{fld}, 0, "", kind
+		f.screen, f.kind = "rename_form", "rename_folder_screen"
+		return m.focusField(0)
+	}
+	w := &workflow{screen: "rename_form", fields: []field{fld}, task: kind, folder: id}
+	if kind == "device" {
+		w.device, w.folder = id, ""
+	}
+	cmd := m.openFlow(w)
+	return tea.Batch(cmd, m.focusField(0))
+}
+
+func (m *model) submitRename() tea.Cmd {
+	f := m.flow
+	name := strings.TrimSpace(f.fields[0].input.Value())
+	if name == "" || len(name) > 128 {
+		f.err = "Enter a name of 1 to 128 characters."
+		return nil
+	}
+	kind, id := f.task, f.folder
+	if kind == "device" {
+		id = f.device
+	}
+	w, _ := m.workflows()
+	f.task = "rename"
+	f.work = func(ctx context.Context) (tc.Result, error) { return tc.Result{}, w.Rename(ctx, kind, id, name) }
+	return m.invalidate()
 }

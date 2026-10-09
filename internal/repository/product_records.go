@@ -25,9 +25,10 @@ var (
 
 // --- Folder & Device Display Names ---
 
-// SetFolderDisplayName sets an owner-local display alias for a folder/workspace.
+// SetFolderDisplayName sets a local name for a folder whose name is not shared
+// yet; a shared name changes only through RenameFolder or a newer peer record.
 func (db *DB) SetFolderDisplayName(ctx context.Context, folder history.ID, name string) error {
-	res, err := db.db.ExecContext(ctx, `UPDATE folders SET display_name=? WHERE folder_id=?`, name, folder[:])
+	res, err := db.db.ExecContext(ctx, `UPDATE folders SET display_name=CASE WHEN name_clock=0 THEN ? ELSE display_name END WHERE folder_id=?`, name, folder[:])
 	if err != nil {
 		return fmt.Errorf("update folder display name: %w", err)
 	}
@@ -56,9 +57,10 @@ func (db *DB) GetFolderDisplayName(ctx context.Context, folder history.ID) (stri
 	return "", nil
 }
 
-// SetDeviceDisplayName sets a display alias for a known device.
+// SetDeviceDisplayName sets a local name for a device whose name is not shared.
 func (db *DB) SetDeviceDisplayName(ctx context.Context, device history.ID, name string) error {
-	res, err := db.db.ExecContext(ctx, `UPDATE devices SET display_name=? WHERE device_id=?`, name, device[:])
+	// Like folders, a shared device name is kept (enrollment labels are local).
+	res, err := db.db.ExecContext(ctx, `UPDATE devices SET display_name=CASE WHEN name_clock=0 THEN ? ELSE display_name END WHERE device_id=?`, name, device[:])
 	if err != nil {
 		return fmt.Errorf("update device display name: %w", err)
 	}

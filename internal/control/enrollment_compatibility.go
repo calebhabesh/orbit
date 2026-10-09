@@ -134,7 +134,7 @@ func (c *Controller) approveEnrollmentV2Compatibility(ctx context.Context, req A
 	}
 	_ = result
 	if req.SuggestedLabel != "" {
-		if err := c.db.SetDeviceDisplayName(ctx, terminalID(record.Wire.Requester), req.SuggestedLabel); err != nil {
+		if err := c.nameApprovedDevice(ctx, terminalID(record.Wire.Requester), printableLabel(record.Wire.Label), req.SuggestedLabel); err != nil {
 			return nil, err
 		}
 	}

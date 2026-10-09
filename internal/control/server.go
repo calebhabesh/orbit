@@ -205,6 +205,18 @@ func (s *Server) Handler() http.Handler {
 		}
 		writeJSON(w, http.StatusOK, reg)
 	})
+	mux.HandleFunc("POST /api/v1/folders/rename", func(w http.ResponseWriter, r *http.Request) {
+		var req FolderRenameRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		if err := s.ctrl.RenameFolder(r.Context(), req.Folder, req.Name); err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"status": "renamed"})
+	})
 	mux.HandleFunc("POST /api/v1/folders/pause", func(w http.ResponseWriter, r *http.Request) {
 		var req FolderPauseRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

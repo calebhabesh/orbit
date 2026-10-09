@@ -230,7 +230,7 @@ The local control API adds authenticated `GET /api/v1/browse`, `/search`,
 All require a selected, registered workspace and the local identity's active
 membership when a membership is configured. They retain bearer/browser-cookie,
 loopback Host/Origin and browser-session enforcement. Invitation possession
-cannot authenticate a data read. Current schema is 13 (T00 inventory); newer schemas are
+cannot authenticate a data read. Current schema is 14 (shared names, 2026-10-08); newer schemas are
 refused through `repository.CurrentSchema`.
 
 Directory queries accept `folder`, relative `path` (empty only for root),
@@ -406,6 +406,11 @@ systemd's `%h` home specifier, so the packaged per-user unit written by
 `install.sh user` is accepted for `~/.local/state/orbit` and nothing else.
 `start`/`restart` succeed only when the unit's `MainPID` is the recorded state
 owner. `orbit stop` is the Orbit entry for the existing graceful `orbit stop`.
+`ORBIT_SERVICE_UNIT=orbit-<name>.service` selects a second user unit instead of
+`orbit.service` (any other value is ignored); a unit Orbit writes under it carries
+the same variable in `Environment=`. It exists for the disposable owner trial
+(`scripts/trial`, [trial loop](trial-loop.md)), which runs beside the owner's own
+Orbit with its own home, state and unit.
 
 ### Self-healing attention and runnable actions (E02, 2026-10-08)
 

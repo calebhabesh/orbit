@@ -129,7 +129,9 @@ class UI:
         self.wait(text)
 
     def form(self, label, root, startup="manual"):
-        for value in (label, "Notes", str(root)):
+        # A join form hides Orbit name when the invitation carries one.
+        values = (label, "Notes", str(root)) if "Orbit name:" in self.screen.text() else (label, str(root))
+        for value in values:
             self.replace(value); self.send(b"\t")
         self.choose(startup); self.send(b"\t")
         # Keep loaded finite/network settings; Enter advances to the last
@@ -137,7 +139,7 @@ class UI:
         self.submit("Confirm adoption", presses=3)
 
     def invitation(self, code):
-        self.replace(code); self.send(b"\r"); self.wait("Review setup inputs")
+        self.replace(code); self.send(b"\r"); self.wait("Connection choices:")
 
     def back(self):
         self.send(b"\x1b"); time.sleep(.1); self.pump()
@@ -228,11 +230,11 @@ def run(binary, output):
         (a.data/"owner.txt").write_bytes(b"owner preexisting bytes")
         (b.data/"local.txt").write_bytes(b"joining preexisting bytes")
         ua=UI(a,"create-nonempty-back-edit");active.append(ua);ua.wait("Join an existing Orbit [j]")
-        ua.send(b"c");ua.wait("Review setup inputs")
+        ua.send(b"c");ua.wait("Connection choices:")
         # Invalid root retains draft and requires correction.
-        ua.replace("Laptop");ua.send(b"\t");ua.replace("Notes");ua.send(b"\t");ua.replace("relative-root");ua.submit("absolute local root")
+        ua.replace("Laptop");ua.send(b"\t");ua.replace("Notes");ua.send(b"\t");ua.replace("relative-root");ua.submit("folder such as ~/Documents")
         ua.replace(str(a.data));ua.submit("Confirm adoption");ua.wait("files=1")
-        ua.back();ua.wait("Review setup inputs");ua.send(b"\r");ua.wait("Confirm adoption");ua.send(b"\r");ua.wait("Locally ready",timeout=25)
+        ua.back();ua.wait("Connection choices:");ua.send(b"\r");ua.wait("Confirm adoption");ua.send(b"\r");ua.wait("Locally ready",timeout=25)
         created=a.query("folders",limit="20")["items"];assert len(created)==1
         folder=created[0]["id"]
         ua.back();ua.wait("[Overview]")
@@ -274,7 +276,7 @@ def run(binary, output):
         a.stop(daemons[0]);daemons[0]=a.start_daemon()
         second_a=a.root/"second";second_a.mkdir(mode=0o700);(second_a/"second.txt").write_bytes(b"second-folder bytes")
         second_b=b.root/"second";second_b.mkdir(mode=0o700)
-        ua.send(b"c");ua.wait("Review setup inputs");ua.form("Laptop",second_a);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Orbits]")
+        ua.send(b"c");ua.wait("Connection choices:");ua.form("Laptop",second_a);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Orbits]")
         # Select the second folder by its actual named-page position.
         items=a.query("folders",limit="20")["items"];second=next(it for it in items if it["root"]==str(second_a));idx=items.index(second)
         ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
@@ -299,7 +301,7 @@ def run(binary, output):
         a.data=relocated
         assert (a.data/"owner.txt").read_bytes()==b"owner preexisting bytes"
         # Actual startup error under an empty PATH does not change any host unit.
-        ua.back();ua.wait("[Orbits]");ua.send(b"c");ua.wait("Review setup inputs")
+        ua.back();ua.wait("[Orbits]");ua.send(b"c");ua.wait("Connection choices:")
         blocked=a.root/"startup-block";ua.form("Laptop",blocked,startup="login");ua.send(b"\r");ua.wait("SYSTEMD_UNAVAILABLE",timeout=25)
         blocked_ops=a.query("setups",limit="20")["items"];assert any(it["root"]==str(blocked) for it in blocked_ops)
         assert not blocked.exists(), "startup failure created unreviewed/root bytes"

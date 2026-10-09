@@ -29,7 +29,9 @@ def code_of(inv):
 
 def fill(ui, nav, label, root, confirm=True):
     """Type the three named fields, moving with nav; leave the rest default."""
-    for value in (label, "Notes", str(root)):
+    # A join form hides Orbit name when the invitation carries one.
+    values = (label, "Notes", str(root)) if "Orbit name:" in ui.screen.text() else (label, str(root))
+    for value in values:
         ui.replace(value)
         ui.send(nav)
     # Startup selector: typing is ignored, so a stray letter changes nothing.
@@ -48,12 +50,12 @@ def fill(ui, nav, label, root, confirm=True):
 def keyboard_variants(ua, a):
     seen = []
     for name, nav in (("arrows", DOWN), ("tab", TAB), ("enter", ENTER)):
-        ua.send(b"c"); ua.wait("Review setup inputs")
+        ua.send(b"c"); ua.wait("Connection choices:")
         root = a.root / f"root-{name}"; root.mkdir(mode=0o700)
         fill(ua, nav, f"Laptop-{name}", root)
         ua.wait(f"root-{name}")
         seen.append(name)
-        ua.back(); ua.wait("Review setup inputs"); ua.back(); ua.back()
+        ua.back(); ua.wait("Connection choices:"); ua.back(); ua.back()
         ua.wait("Create or join")
     return seen
 
@@ -66,7 +68,7 @@ def paste_variants(ub, inv):
     ub.send(b"\x1b[200~" + expired.encode() + b"\x1b[201~"); ub.send(ENTER); ub.wait("INVITATION_EXPIRED")
     ub.send(b"\x1b[200~" + code.encode() + b"\x1b[201~")
     ub.wait(f"{len(code):,} characters received")
-    ub.send(ENTER); ub.wait("Review setup inputs")
+    ub.send(ENTER); ub.wait("Connection choices:")
     ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
     # Unbracketed: typed characters, a failed attempt, then a typed re-paste
     # replaces the kept value instead of appending to it.
@@ -77,7 +79,7 @@ def paste_variants(ub, inv):
     for chunk in range(0, len(code), 256):
         ub.send(code[chunk:chunk + 256].encode())
     ub.wait(f"{len(code):,} characters received")
-    ub.send(ENTER); ub.wait("Review setup inputs")
+    ub.send(ENTER); ub.wait("Connection choices:")
     return ["bracketed replace after failure", "unbracketed replace after failure"]
 
 
@@ -122,7 +124,7 @@ def join_with_file(ub, b, saved):
     target = b.root / "orbit-invitation.json"
     _shutil.copyfile(saved, target); os.chmod(target, 0o600)
     ub.send(b"J"); ub.wait("Join invitation"); ub.wait("private file path")
-    ub.replace(str(target)); ub.send(ENTER); ub.wait("Review setup inputs")
+    ub.replace(str(target)); ub.send(ENTER); ub.wait("Connection choices:")
     ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
     target.unlink()
 
@@ -145,7 +147,7 @@ def run(binary, output):
         ua = UI(a, "e03-create-keys", size=(100, 32)); active.append(ua); ua.wait("Join an existing Orbit [j]")
         variants = keyboard_variants(ua, a)
         # Create for real with Enter only.
-        ua.send(b"c"); ua.wait("Review setup inputs")
+        ua.send(b"c"); ua.wait("Connection choices:")
         fill(ua, ENTER, "Laptop", a.data)
         ua.send(ENTER); ua.wait("Locally ready", timeout=25)
         ua.back(); ua.wait("[Overview]")
@@ -160,7 +162,7 @@ def run(binary, output):
         ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
         join_with_file(ub, b, saved); pastes.append("join prompt accepts a saved invitation file path")
         ub.send(b"J"); ub.wait("Join invitation")
-        ub.replace(code_of(inv)); ub.send(ENTER); ub.wait("Review setup inputs")
+        ub.replace(code_of(inv)); ub.send(ENTER); ub.wait("Connection choices:")
         fill(ub, ENTER, "Pi", b.data)
         ub.send(ENTER); ub.wait("Waiting for approval", timeout=25)
         request = b.query("setups", limit="20")["items"][0]["id"]
