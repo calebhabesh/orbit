@@ -30,7 +30,7 @@ const originFile = ".agent.origin"
 func unitActiveState(ctx context.Context, systemctl string) string {
 	ctx, cancel := context.WithTimeout(ctx, 1500*time.Millisecond)
 	defer cancel()
-	out, _ := exec.CommandContext(ctx, systemctl, "--user", "is-active", "orbit.service").Output()
+	out, _ := exec.CommandContext(ctx, systemctl, "--user", "is-active", serviceUnit()).Output()
 	s := strings.TrimSpace(string(out))
 	switch s {
 	case "active", "activating", "deactivating", "reloading", "failed", "inactive":
