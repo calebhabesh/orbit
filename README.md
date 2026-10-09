@@ -7,22 +7,78 @@
 and cross-network connectivity without a VPN.** Written in Go, with SQLite for
 causal history.
 
+## The problem
+
+You edit the same folder on a laptop, a Raspberry Pi and a cloud VM, sometimes
+while offline. Most simple sync tools silently keep whichever write arrived
+last. Orbit records *why* each version exists, so two edits made
+independently are preserved side by side until you choose a resolution, and an
+interrupted transfer or crash never leaves a half-written file behind.
+
+## What it does
+
 - **Own sync engine:** causal version history in SQLite, verified 1 MiB chunk
   transfer with resume, explicit conflict review (no silent "last writer
   wins"), and restore of earlier versions.
+- **Crash-safe publication:** verified contents are staged and published
+  through a durable recovery journal; fault-injection suites cover crashes,
+  abrupt VM resets and full disks.
 - **Secure by construction:** every device has its own key; peers are pinned
   with mutual TLS and approved with a verification code before they can sync.
 - **Works across networks:** direct LAN, TCP or QUIC-over-ICE paths first, an
   encrypted relay as fallback that only ever sees ciphertext, and a small
   operated connection service (`orbit-net`) with signed, expiring profiles.
   Self-hosting is supported.
-- **Release discipline:** reproducible amd64/arm64 tarball, `.deb` and `.rpm`
-  packages, fault-injection and design-gate suites, and native evidence for
-  each claim, including what was *not* tested.
 
-Read the [case study](docs/case-study.md) for the design and measured
-tradeoffs, or the [networking guide](docs/runbooks/networking.md) for what the
-connection service can and cannot see. Pre-built packages are on the
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Device["Each Linux device"]
+    TUI[Keyboard TUI / CLI] --> Control[Control operations]
+    Watcher[Watcher + scheduler] --> Workspace[Scan + journaled publication]
+    Control --> Workspace
+    Workspace --> Repo[(SQLite causal history<br/>+ immutable chunk store)]
+    Repl[Replication: inventory + chunks] --> Repo
+  end
+  Repl <-->|"mTLS: LAN / TCP / QUIC over ICE"| Peer[Other approved devices<br/>laptop · Pi · VPS replica]
+  Repl -.->|"rendezvous: signed leases"| Net[orbit-net connection service]
+  Repl -.->|"fallback: relay carries ciphertext only"| Net
+```
+
+See the [case study](docs/case-study.md) for module ownership, the conflict
+model and the measured tradeoffs.
+
+## Measured results
+
+- **Three hosts:** packaged builds on a Linux laptop, a Raspberry Pi 4B and an
+  Oracle Cloud VPS converged to matching contents, with late-arriving
+  conflicts preserved ([record](docs/evidence/terminal-t13-20261004/native-engine-final-candidate/three-host.json)).
+- **Across networks, no VPN:** home network to an Oracle VPS, a 4 MiB version
+  arrived over direct UDP in 6–9 s; with UDP blocked, 1 MB crossed the relay in
+  5–8 s each way with zero direct bytes ([runs](docs/evidence/wan-w16-20261006/native-hosted/summary.md)).
+- **Bug found only on real networks:** after losing UDP mid-session, the relay
+  path never recovered within 180 s; after the fix it recovers in about 5.5 s
+  ([fix evidence](docs/evidence/wan-w16-20261006/quota-fix/summary.md)).
+- **Failure testing:** 16 abrupt VM-reset cases and five storage-failure cases
+  keep protected file hashes intact ([reset](docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reset/abrupt-reset.json),
+  [disk full](docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/disk-full/abrupt-reset.json)).
+- **Chunk reuse:** a tail edit to a 1 GiB file fetched one 1 MiB chunk and
+  reused 1,023. This is one workload, not a general speedup; the
+  [measurements](docs/evidence/release-20261001/measured-results.md) also
+  record cases where a full-file baseline did better.
+
+Timings come from one home network and one cloud region. School, corporate,
+CGNAT and IPv6-only networks were not tested.
+
+## Design boundaries
+
+Orbit provides eventual consistency between trusted replicas. It does not use
+consensus, does not merge file contents automatically, and does not protect
+data from a peer you have approved. Renames are treated as delete plus create.
+The [scope](docs/portfolio-scope.md) lists every exclusion.
+
+Pre-built amd64/arm64 tarballs, `.deb` and `.rpm` packages are on the
 [Releases page](https://github.com/calebhabesh/orbit/releases).
 
 ## Overview
