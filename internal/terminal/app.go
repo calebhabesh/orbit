@@ -469,7 +469,7 @@ func (m *model) inspect() tea.Cmd {
 			}
 		}
 		if r.folder != "" {
-			return m.openFlow(&workflow{screen: "folder", folder: r.folder})
+			return m.openFlow(&workflow{screen: "folder", folder: r.folder, folderName: r.name})
 		}
 		return m.openFlow(&workflow{screen: "pick_folder", kind: "device_detail", device: r.key})
 	}

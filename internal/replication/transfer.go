@@ -164,6 +164,7 @@ func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 	if hello.DeviceID != hex.EncodeToString(syncer.peer[:]) {
 		return result, errors.New("authenticated peer returned a different device identity")
 	}
+	syncer.exchangeNames(ctx)
 	entries, err := syncer.inventory(ctx, device, folder, revision, digest)
 	if err != nil {
 		return result, err

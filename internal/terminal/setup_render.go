@@ -53,8 +53,14 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, receivedLine(f.fields[f.focus].input.Value()))
 		footer = "Enter verify  Ctrl-U clear  Esc back  Ctrl-C close"
 	case "form":
-		title = "Orbit | Review setup inputs"
-		lines = append(lines, "Supported existing contents will become shared.", "Connection choices: Automatic or Local network only; Ctrl-N changes mode.",
+		if f.kind == "join" {
+			title = "Orbit | Join " + invitedName(f.invitation.FolderName)
+			lines = append(lines, invitedBy(f.invitation)+" invited you to "+invitedName(f.invitation.FolderName)+". Choose where its files live on this device.")
+		} else {
+			title = "Orbit | Create your Orbit"
+			lines = append(lines, "An Orbit is a folder that stays in sync across your devices. Name it and choose where its files live here.")
+		}
+		lines = append(lines, "Connection choices: Automatic or Local network only; Ctrl-N changes mode.",
 			"Files received from other devices are saved owner-only (0600); the executable bit is kept.")
 		lines = append(lines, hostStartupLines(f.host)...)
 		for _, i := range m.formIndices() {
@@ -67,6 +73,9 @@ func (m *model) workflowView() tea.View {
 				value = "‹ " + safe(f.fields[i].input.Value()) + " ›"
 			}
 			lines = append(lines, m.theme().field(f.fields[i].label, value, f.fields[i].input.Value(), i == f.focus))
+			if i == f.focus && i < len(setupFieldHints) {
+				lines = append(lines, m.theme().muted("    "+setupFieldHints[i]))
+			}
 		}
 		lines = append(lines, "Metadata budget="+hb(f.settings.MetadataBudget)+" reserve="+hb(f.settings.ReserveBytes)+"; retention uses per-folder controls.")
 		footer = "↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced  Esc back"
@@ -80,7 +89,7 @@ func (m *model) workflowView() tea.View {
 		title = "Orbit | Confirm adoption"
 		p := f.plan
 		s := p.Settings
-		lines = append(lines, "Device: "+safe(p.DeviceName), "Folder: "+safe(p.FolderName), "Root: "+safe(p.Root), "Existing supported local contents become shared; nothing is erased.")
+		lines = append(lines, "Orbit "+safe(p.FolderName)+" will sync "+safe(homePath(p.Root))+" on "+safe(p.DeviceName)+".", "Files already in that folder become shared; nothing is deleted.")
 		if f.kind == "join" {
 			inviter, folder := safe(f.invitation.Inviter), safe(f.invitation.Folder)
 			if n := f.invitation.InviterName; n != "" {
@@ -203,14 +212,14 @@ func (m *model) workflowView() tea.View {
 	case "approval":
 		title = "Orbit | Exact request approval"
 		p := f.request
-		lines = append(lines, "Device: "+safe(p.Label), "Folder: "+safe(p.Folder), "Request: "+safe(p.ID), "Requester: "+safe(p.Requester), "Key pin: "+safe(p.KeyPin), "Verification code: "+safe(p.VerificationCode), "State: "+safe(p.State), "Compare with the joining device. Approval grants this folder only.", "Offline devices may still need membership updates.")
+		lines = append(lines, safe(orDefault(p.Label, "A device"))+" wants to join "+orbitLabel(f, p.Folder)+".", "Device: "+safe(p.Label), "Request: "+safe(p.ID), "Requester: "+safe(p.Requester), "Key pin: "+safe(p.KeyPin), "Verification code: "+safe(p.VerificationCode), "State: "+safe(p.State), "Compare with the joining device. Approval grants this folder only.", "Offline devices may still need membership updates.")
 		footer = "a approve exact request  x decline  Esc back  q quit"
 	case "approval_done":
 		title = "Orbit | Request decision"
 		lines = append(lines, "Decision durably recorded; receiver still observes its own readiness.")
 	case "invite_review":
 		title = "Orbit | Add device / share folder"
-		lines = append(lines, "Selected folder: "+safe(f.folder))
+		lines = append(lines, "Invite a device to "+orbitLabel(f, f.folder)+".")
 		if f.device != "" {
 			lines = append(lines, "Known device: "+safe(f.device), "Reuse its existing identity; separate local-root consent and approval required.")
 		}
@@ -222,7 +231,7 @@ func (m *model) workflowView() tea.View {
 	case "invitation_out":
 		title = "Orbit | Private invitation"
 		status, review := inviteStatus(f)
-		lines = append(lines, "Status: "+status, "")
+		lines = append(lines, "Inviting a device to "+orbitLabel(f, f.folder)+".", "Status: "+status, "")
 		reviewKey := ""
 		if review {
 			reviewKey = "Enter review request  "
@@ -256,6 +265,16 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, networkLines(f.result.Network)...)
 		lines = append(lines, "Observed connections are separate from saved/stored/applied/conflict state.", "Advanced policy/profile/timing review: orbit network preview; orbit network apply.")
 		footer = "r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit"
+	case "rename_form":
+		what := "this Orbit"
+		if f.task == "device" || f.device != "" && f.folder == "" {
+			what = "this device"
+		}
+		title = "Orbit | Rename"
+		lines = append(lines, "The new name for "+what+" appears on all your devices after their next sync.")
+		focusLine = len(lines)
+		lines = append(lines, m.theme().field(f.fields[0].label, f.fields[0].input.View(), "", true))
+		footer = "Enter rename  Esc back  Ctrl-C close"
 	case "save_invitation", "relocate_form":
 		title = "Orbit | " + f.screen
 		focusLine = len(lines)
@@ -285,7 +304,7 @@ func (m *model) workflowView() tea.View {
 				lines = append(lines, safe(a.Code)+": "+safe(a.Action))
 			}
 		}
-		footer = "v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  x unregister  t retire  N connection  r refresh  Esc back  q quit"
+		footer = "R rename  v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  x unregister  t retire  N connection  r refresh  Esc back  q quit"
 	case "folder_action":
 		title = "Orbit | Confirm local " + f.task
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
@@ -381,11 +400,51 @@ func (m *model) frame(title string, lines []string, footer string, focusLine, sc
 	return v
 }
 
+// setupFieldHints explain Device name, Orbit name and Folder while focused.
+var setupFieldHints = []string{
+	"How your other devices see this one.",
+	"What this Orbit is called in the app.",
+	"Where its files live on this device; created if missing.",
+}
+
+// orbitLabel names the picked Orbit ("Demo (~/Demo here)"), or "this Orbit".
+func orbitLabel(f *workflow, folder string) string {
+	if f.folderName == "" || folder != f.folder {
+		return "this Orbit"
+	}
+	if f.folderRoot == "" {
+		return safe(f.folderName)
+	}
+	return safe(f.folderName) + " (" + safe(homePath(f.folderRoot)) + " here)"
+}
+func orDefault(v, d string) string {
+	if v == "" {
+		return d
+	}
+	return v
+}
+
+func invitedName(name string) string {
+	if name == "" {
+		return "an Orbit"
+	}
+	return safe(name)
+}
+func invitedBy(inv tc.Invitation) string {
+	if inv.InviterName != "" {
+		return safe(inv.InviterName)
+	}
+	return "Another device"
+}
+
 func previewLines(p *tc.RootPreview) []string {
 	if p == nil {
 		return nil
 	}
 	lines := []string{fmt.Sprintf("Measured files=%d directories=%d size=%s; complete=%t", p.Files, p.Directories, hb(p.Bytes), p.Complete), fmt.Sprintf("Unsupported=%d unreadable=%d capacity known=%t available=%s", p.Unsupported, p.Unreadable, p.CapacityKnown, hb(p.AvailableBytes))}
+	if p.Missing {
+		lines = append(lines, safe(homePath(p.Root))+" does not exist yet; Orbit creates it when you confirm.")
+	}
 	for _, issue := range p.Issues {
 		lines = append(lines, safe(issue.Code)+": "+safe(issue.Path))
 	}
@@ -572,7 +631,7 @@ func inviteStatus(f *workflow) (string, bool) {
 		if p.Label != "" {
 			name = safe(p.Label)
 		}
-		return "Awaiting your approval: " + name + " wants to join. Verification code " + safe(p.VerificationCode) + "; check it matches that device, then press Enter.", true
+		return "Awaiting your approval: " + name + " wants to join " + orbitLabel(f, f.folder) + ". Verification code " + safe(p.VerificationCode) + "; check it matches that device, then press Enter.", true
 	}
 	if s := f.inviteSeen; s != nil {
 		name := "The device"
@@ -581,7 +640,7 @@ func inviteStatus(f *workflow) (string, bool) {
 		}
 		switch s.State {
 		case "approved":
-			return "Approved: " + name + " can now sync this folder.", false
+			return "Approved: " + name + " can now sync " + orbitLabel(f, f.folder) + ".", false
 		case "declined":
 			return "Declined: " + name + " was not added.", false
 		}

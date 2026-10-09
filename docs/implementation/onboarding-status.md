@@ -248,10 +248,37 @@ wait. Validation run: build, vet, `internal/terminal`, `internal/control`,
 `cmd/orbit`, and all four PTY suites pass. Not run: full `tests/terminal`,
 integration/packaging tests, race. Version is 2.2.0; packages are not built.
 
-Trial state: PC, laptop and Pi share `Trial` on 2.1.0 (Pi unattended with
-lingering). The owner wants fast iteration: next, a quick check target and a
-disposable-trial reset for the three hosts, so a full suite is not needed per
-change.
+**Fast trial loop (2026-10-08, uncommitted).** [Trial loop](../trial-loop.md):
+`make quick` (build, gofmt, vet and short tests of touched packages, the four
+PTY suites in parallel; 97 s measured) and `make trial-install|reset|fresh|status`
+(`scripts/trial`), a disposable `orbit-trial` instance per host with its own
+home `~/orbit-trial`, state and `orbit-trial.service`, selected by the new
+`ORBIT_SERVICE_UNIT` override (unit tests in `internal/control`). Checked on the
+PC: setup, `service enable/start` (owner `service`), reinstall-restart and reset,
+with `orbit.service` untouched. The trial build (`aa9cbaf-dirty`, 2.2.0) is
+installed on PC, laptop and Pi, not set up yet. Not run: the full suite.
+
+**Trial-driven changes (2026-10-08, uncommitted, installed in orbit-trial).**
+Owner-approved: setup forms say Device name / Orbit name / Folder with hints,
+show `~` as typed, the folder follows the name, and missing parent folders
+are created at confirmation. Orbit and device names are now shared by all
+members (schema 14, `/peer/v1/names`, see protocol and persistence); join no
+longer asks for the Orbit name; `R` and `orbit folders|devices rename` rename
+everywhere. Checks: `make quick` (all four PTY suites), `./internal/...`,
+`./cmd/...`, two-device name exchange and approval-name tests, full
+`tests/integration` (pass after fixing the approval alias being overwritten by
+the joiner's own name, and schema 14 expectations). Full `tests/terminal`
+(1714 s): W07 and W16 TUI rehearsals failed on the hidden join name field and
+pass after their scripts were updated (570 s rerun); W11 failed once with
+`disk quota exceeded` on a nearly full `/tmp` tmpfs and passes alone (85 s).
+Not run: race, packages, harness unit tests. Default installs were cleared and updated to 2.2.0
+packages (built before these changes); the owner trials with `orbit-trial`.
+
+Legacy trial state: PC, laptop and Pi still share the old `Trial` folder in
+their real 2.1.0 installs (Pi unattended with lingering). Orbit cannot remove a
+single folder; retiring it needs the owner's choice (pause it on PC/laptop; on
+the Pi, whose real install holds only `Trial`, stop and disable `orbit.service`
+and archive its state).
 
 Remove `overlap_profile`/`overlap_service_key` from the VPS `serve.json` after
 2027-01-04.

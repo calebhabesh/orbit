@@ -3848,6 +3848,9 @@ func handleOrbitDevices(args []string, stdout, stderr io.Writer) error {
 	if action == "requests" {
 		return handleOrbitRequests(restArgs, stdout, stderr)
 	}
+	if action == "rename" && len(restArgs) > 0 && !strings.HasPrefix(restArgs[0], "-") {
+		return handleRename("device", restArgs, stdout, stderr)
+	}
 
 	flags := flag.NewFlagSet("orbit devices "+action, flag.ContinueOnError)
 	flags.SetOutput(stderr)

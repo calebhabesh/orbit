@@ -5,6 +5,27 @@ prerequisite and address-entry portions of this handoff for new Automatic-mode
 work. Its relay/default-service journeys are planned, not implemented. Existing
 manual/private-network flows and all non-network terminal guarantees remain.
 
+## Owner amendment 2026-10-08 (names and folders)
+
+Approved by the owner during the 2.2.0 trial. Create and join forms label
+their fields **Device name** ("How your other devices see this one"), **Orbit
+name** ("What this Orbit is called in the app") and **Folder** ("Where its
+files live on this device; created if missing"); the focused field shows its
+hint. Folder defaults to `~/Orbit`, shows `~` as typed, and follows the Orbit
+name (`~/<name>`) until the owner edits it. A folder whose parents are missing
+is created with them on confirmation (the nearest existing ancestor is pinned
+at review). The create form opens with "An Orbit is a folder that stays in
+sync across your devices"; the join form names the inviter and the Orbit. The
+review reads "Orbit <name> will sync <folder> on <device>." Invitation and
+approval screens name the Orbit ("<device> wants to join Demo (~/Demo here)").
+*Shared names (same day):* an Orbit's name and each device's name are shared
+by every member ([protocol](protocol.md#shared-orbit-and-device-names--2026-10-08)).
+The join form no longer asks for the Orbit name when the invitation carries
+one; it shows "Join <name>" and asks for the device name and folder. `R` renames
+the highlighted Orbit (Orbits view, or the Orbit's screen) or device (Devices
+view); `orbit folders rename <name> <new>` and `orbit devices rename <name> <new>`
+do the same. Other devices show a rename after their next sync.
+
 ## Owner amendment 2026-10-08 (trial polish)
 
 Approved by the owner during the 2.1.0 trial; implemented in 2.2.0. These

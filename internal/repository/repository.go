@@ -20,7 +20,7 @@ import (
 	"github.com/calebhabesh/orbit/internal/history"
 )
 
-const CurrentSchema = 13
+const CurrentSchema = 14
 
 var (
 	ErrIncompatibleSchema     = errors.New("metadata schema is newer than this binary")
@@ -380,6 +380,23 @@ CREATE INDEX version_parent_lookup ON version_parents(folder_id,parent_author,pa
 		}
 		defer tx.Rollback()
 		if _, err := tx.ExecContext(ctx, schemaV13); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	// Shared Orbit and device names: a per-name Lamport clock and its author.
+	// Clock 0 is a local, unshared name (earlier schemas, enrollment labels).
+	14: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, `ALTER TABLE folders ADD COLUMN name_clock INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE folders ADD COLUMN name_author BLOB;
+ALTER TABLE devices ADD COLUMN name_clock INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE devices ADD COLUMN name_author BLOB;
+PRAGMA user_version = 14;`); err != nil {
 			return err
 		}
 		return tx.Commit()

@@ -264,7 +264,7 @@ while time.monotonic()<deadline:
    if b'Device name' in prompt:
     if reviews: assert b'Laptop' in prompt
     else: answer=b'Laptop'
-   elif b'Folder name' in prompt:
+   elif b'Orbit name' in prompt:
     if reviews: assert b'Notes' in prompt
     else: answer=b'Notes'
    elif b'Data budget bytes' in prompt and not invalid: answer=b'0';invalid=True

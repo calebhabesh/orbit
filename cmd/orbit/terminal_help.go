@@ -41,6 +41,8 @@ Management & Diagnostics:
   folders pause <name>     Pause local synchronization for a folder
   folders resume <name>    Resume local synchronization for a folder
   folders relocate <name>  Change the local filesystem path for a folder
+  folders rename <name> <new>  Rename an Orbit on all its devices
+  devices rename <name> <new>  Rename a device on all your devices
   retry --task ID | --all  Retry work that ran out of attempts (works while Orbit runs)
   service                  Manage background service (status, enable, start, stop, restart)
   stop                     Stop a background daemon started outside the service
@@ -130,6 +132,7 @@ Usage:
   orbit folders pause <name> [options]
   orbit folders resume <name> [options]
   orbit folders relocate <name> [options]
+  orbit folders rename <name> <new name> [options]
 
 Options:
   --state <path>      Explicit agent state directory
@@ -148,6 +151,7 @@ Description:
 Usage:
   orbit devices [options]
   orbit devices list [options]
+  orbit devices rename <name> <new name> [options]
   orbit devices invite --folder <name> --code [--long]
   orbit devices invite --folder <name> --out <private-file>
   orbit devices requests show --device <name> --review-file <private-review>

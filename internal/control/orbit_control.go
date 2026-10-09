@@ -49,7 +49,8 @@ func (c *Controller) UpdateSettings(ctx context.Context, req UpdateSettingsReque
 
 	if req.DeviceLabel != nil {
 		current.DeviceLabel = *req.DeviceLabel
-		_ = c.db.SetDeviceDisplayName(ctx, c.options.LocalDevice, *req.DeviceLabel)
+		// This device's own name is shared with its Orbits.
+		_ = c.db.RenameDevice(ctx, c.options.LocalDevice, *req.DeviceLabel, c.options.LocalDevice)
 	}
 	if req.DefaultWorkspace != nil {
 		current.DefaultWorkspace = *req.DefaultWorkspace
@@ -1095,13 +1096,7 @@ func (c *Controller) ApproveEnrollmentRequest(ctx context.Context, req ApproveEn
 		return nil, err
 	}
 
-	label := enrReq.SuggestedLabel
-	if req.SuggestedLabel != "" {
-		label = req.SuggestedLabel
-	}
-	if label != "" {
-		_ = c.db.SetDeviceDisplayName(ctx, enrReq.DeviceID, label)
-	}
+	_ = c.nameApprovedDevice(ctx, enrReq.DeviceID, enrReq.SuggestedLabel, req.SuggestedLabel)
 
 	endpointURL := req.Endpoint
 	if endpointURL != "" {
@@ -1478,7 +1473,7 @@ func (c *Controller) RenameDevice(ctx context.Context, req RenameDeviceRequest) 
 		return nil, &ControlError{Code: "INVALID_REQUEST", Message: "alias cannot be empty"}
 	}
 
-	if err := c.db.SetDeviceDisplayName(ctx, req.DeviceID, req.Alias); err != nil {
+	if err := c.renameDevice(ctx, req.DeviceID, req.Alias); err != nil {
 		return nil, err
 	}
 

@@ -42,10 +42,14 @@ func (db *DB) AdoptionCapacity(ctx context.Context, root string, size, entries u
 	if err = unix.Statfs(db.stateDir, &state); err != nil {
 		return 0, err
 	}
-	if err = unix.Statfs(root, &work); err != nil {
-		if err = unix.Statfs(filepath.Dir(root), &work); err != nil {
-			return 0, err
+	// A root that does not exist yet is measured at its nearest existing ancestor.
+	for dir := root; ; dir = filepath.Dir(dir) {
+		if err = unix.Statfs(dir, &work); err == nil || !errors.Is(err, unix.ENOENT) || dir == filepath.Dir(dir) {
+			break
 		}
+	}
+	if err != nil {
+		return 0, err
 	}
 	stateAvail := state.Bavail * uint64(state.Bsize)
 	workAvail := work.Bavail * uint64(work.Bsize)

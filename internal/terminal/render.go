@@ -107,6 +107,9 @@ func (m *model) footer() string {
 		return "↑/↓ select  Enter open  ← up  / search  o open  e edit  h history  c conflicts  y copy path  ] more  Tab views  ? help  q quit"
 	}
 	footer := "j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests  u setup  N connection"
+	if m.section == 1 || m.section == 3 {
+		footer += "  R rename"
+	}
 	if m.width < 60 {
 		footer = "j/k Enter / ? q"
 	}

@@ -47,13 +47,13 @@ const bashCompletionScript = `_orbit_completion() {
     case "${cmd}" in
         folders)
             if [[ ${cword} -eq 2 ]]; then
-                COMPREPLY=( $(compgen -W "list add share pause resume relocate" -- "${cur}") )
+                COMPREPLY=( $(compgen -W "list add share pause resume relocate rename" -- "${cur}") )
                 return 0
             fi
             ;;
         devices)
             if [[ ${cword} -eq 2 ]]; then
-                COMPREPLY=( $(compgen -W "list add invite requests approve decline endpoint" -- "${cur}") )
+                COMPREPLY=( $(compgen -W "list add invite requests approve decline endpoint rename" -- "${cur}") )
                 return 0
             fi
             ;;
@@ -135,6 +135,7 @@ _orbit() {
                 'pause:Pause synchronization'
                 'resume:Resume synchronization'
                 'relocate:Relocate folder to new path'
+                'rename:Rename an Orbit on all its devices'
             )
             _describe 'subcommand' subcmds
             ;;
@@ -145,6 +146,7 @@ _orbit() {
                 'add:Create an invitation'
                 'requests:Manage enrollment requests'
                 'endpoint:Configure peer endpoint'
+                'rename:Rename a device on all your devices'
             )
             _describe 'subcommand' subcmds
             ;;
@@ -215,8 +217,8 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'completion' -d 'Generate s
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'version' -d 'Display version metadata'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'help' -d 'Show command documentation'
 
-complete -c orbit -n '__fish_seen_subcommand_from folders' -a 'list add share pause resume relocate'
-complete -c orbit -n '__fish_seen_subcommand_from devices' -a 'list add invite requests approve decline endpoint'
+complete -c orbit -n '__fish_seen_subcommand_from folders' -a 'list add share pause resume relocate rename'
+complete -c orbit -n '__fish_seen_subcommand_from devices' -a 'list add invite requests approve decline endpoint rename'
 complete -c orbit -n '__fish_seen_subcommand_from service' -a 'status start stop restart enable disable'
 complete -c orbit -n '__fish_seen_subcommand_from completion' -a 'bash zsh fish'
 complete -c orbit -n '__fish_seen_subcommand_from network' -a 'status doctor automatic update set preview apply'

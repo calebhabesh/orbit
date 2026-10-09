@@ -311,3 +311,30 @@ func (c *Client) RetryWork(ctx context.Context, req control.WorkRetryRequest) (*
 	}
 	return &res, nil
 }
+
+// Rename gives an Orbit (kind "folder") or a device (kind "device") a new
+// shared name; every member device shows it after its next sync.
+func (c *Client) Rename(ctx context.Context, kind, id, name string) error {
+	ident, err := parseIdentity(id)
+	if err != nil {
+		return err
+	}
+	return c.WithController(ctx, func() error {
+		switch kind {
+		case "folder":
+			return c.Call(ctx, "POST", "/api/v1/folders/rename", control.FolderRenameRequest{Folder: ident, Name: name}, nil)
+		case "device":
+			return c.Call(ctx, "POST", "/api/v1/devices/alias", control.RenameDeviceRequest{DeviceID: ident, Alias: name}, nil)
+		}
+		return errors.New("INVALID_REQUEST")
+	}, func(ctrl *control.Controller) error {
+		switch kind {
+		case "folder":
+			return ctrl.RenameFolder(ctx, ident, name)
+		case "device":
+			_, err := ctrl.RenameDevice(ctx, control.RenameDeviceRequest{DeviceID: ident, Alias: name})
+			return err
+		}
+		return errors.New("INVALID_REQUEST")
+	})
+}

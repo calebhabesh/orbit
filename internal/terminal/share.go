@@ -38,6 +38,7 @@ func (m *model) pickerKey(k string) tea.Cmd {
 			f.screen = "progress"
 		case "pick_folder":
 			f.folder = it.ID
+			f.folderName, f.folderRoot = it.Name, it.Root
 			switch f.kind {
 			case "storage":
 				return m.everyday(f.folder, "storage", "")

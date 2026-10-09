@@ -96,6 +96,7 @@ type RootPreview struct {
 	CapacityKnown      bool    `json:"capacity_known"`
 	AvailableBytes     Uint    `json:"available_bytes"`
 	CapacityObservedAt string  `json:"capacity_observed_at"`
+	Missing            bool    `json:"missing,omitempty"` // created, with missing parents, on confirmation
 	Issues             []Issue `json:"issues"`
 	Cursor             string  `json:"cursor"`
 }

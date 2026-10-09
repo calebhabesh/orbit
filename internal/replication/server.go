@@ -120,6 +120,8 @@ func (server *Server) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 		server.handleStatus(writer, request)
 	case "/peer/v1/membership/get":
 		server.handleMembershipGet(writer, request)
+	case namesPath:
+		server.handleNames(writer, request)
 	case network.LANExchangePath:
 		if server.lan == nil {
 			writeWireError(writer, http.StatusNotFound, "INVALID_REQUEST", "unknown peer endpoint", false, "use a versioned peer endpoint")

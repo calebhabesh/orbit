@@ -378,6 +378,17 @@ startup removes abandoned stream pins after interrupted GC reconciliation.
 Startup relies on existing exclusive state ownership. A prepared lease is not
 a permission to consume bytes and does not bypass exact-version authorization.
 
+## Schema 14 shared names (2026-10-08)
+
+`folders` and `devices` gain `name_clock` (integer, default 0) and
+`name_author` (device ID). `display_name` with clock 0 is a local, unshared
+name: rows from earlier schemas, a joined Orbit's invitation name, and labels
+from enrollment requests. Creating an Orbit, an owner rename, and each
+device's own name set clock = previous + 1 with this device as author. Peer
+records install only when `(clock, author)` is greater. Local-name setters
+never replace a shared name. Downgrading to a build with schema 13 is refused
+as for any newer schema.
+
 ## O09 file mutation journals and recoverable file actions
 
 Schema 13 adds durable SQLite mutation tracking via `file_mutations` and

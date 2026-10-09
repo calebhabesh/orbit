@@ -63,7 +63,9 @@ def hide_transfer(ui):
 
 
 def root_review(ui, label, name, root):
-    for value in (label, name, str(root)):
+    # A join form hides Orbit name when the invitation carries one.
+    values = (label, name, str(root)) if 'Orbit name:' in ui.screen.text() else (label, str(root))
+    for value in values:
         ui.replace(value)
         ui.send(b'\t')
     assert 'Peer listen:' not in ui.screen.text(), 'ordinary address prompt'
@@ -95,11 +97,11 @@ def run(binary, profile, output, outage_marker):
         (a.data / 'owner.txt').write_bytes(b'verified owner relay bytes')
         (b.data / 'local.txt').write_bytes(b'verified joining relay bytes')
         ua = UI(a, 'relay-create-back-edit', size=(100, 36)); active.append(ua)
-        ua.wait('Join an existing Orbit [j]'); ua.send(b'c'); ua.wait('Review setup inputs')
+        ua.wait('Join an existing Orbit [j]'); ua.send(b'c'); ua.wait('Connection choices:')
         root_review(ua, 'Laptop', 'Notes', a.data)
         ua.wait('files=1'); ua.wait('Self-hosted automatic')
         ua.wait('contents stay encrypted in transit.')
-        ua.back(); ua.wait('Review setup inputs'); ua.send(b'\r'); ua.wait('Confirm adoption')
+        ua.back(); ua.wait('Connection choices:'); ua.send(b'\r'); ua.wait('Confirm adoption')
         ua.send(b'\r'); ua.wait('Locally ready', timeout=30)
         folder = a.query('folders', limit='20')['items'][0]['id']
         settings = a.query('settings')['settings']
@@ -121,7 +123,7 @@ def run(binary, profile, output, outage_marker):
         # Root-review error retains names and location before explicit correction.
         blocked = b.root / 'blocked'; blocked.mkdir(mode=0o700)
         (blocked / 'unsupported').symlink_to(b.data / 'local.txt')
-        root_review_values = ('Pi', 'Notes', str(blocked))
+        root_review_values = ('Pi', 'Notes', str(blocked)) if 'Orbit name:' in ub.screen.text() else ('Pi', str(blocked))
         for value in root_review_values:
             ub.replace(value); ub.send(b'\t')
         ub.submit('ROOT_REVIEW_INCOMPLETE')
@@ -175,7 +177,7 @@ def run(binary, profile, output, outage_marker):
         second_a, second_b = a.root / 'second', b.root / 'second'
         second_a.mkdir(mode=0o700); second_b.mkdir(mode=0o700)
         (second_a / 'second.txt').write_bytes(b'separate scoped folder bytes')
-        ua.send(b'c'); ua.wait('Review setup inputs'); root_review(ua, 'Laptop', 'Second', second_a)
+        ua.send(b'c'); ua.wait('Connection choices:'); root_review(ua, 'Laptop', 'Second', second_a)
         ua.send(b'\r'); ua.wait('Locally ready', timeout=30); ua.back(); ua.wait('[Overview]')
         ua.send(b'a'); ua.wait('Select folder')
         items = a.query('folders', limit='20')['items']; ua.wait('> ' + items[0]['name'])
@@ -229,9 +231,9 @@ def run(binary, profile, output, outage_marker):
         with outage_path.open('x') as trigger: trigger.write('stop disposable service only')
         ua = UI(a, 'service-outage-local-capture-draft', size=(100, 36)); active.append(ua)
         ua.overview(); ua.send(b'N'); ua.wait('Connection details'); ua.wait('SERVICE_UNAVAILABLE', timeout=25)
-        ua.back(); ua.wait('[Overview]'); ua.send(b'c'); ua.wait('Review setup inputs')
+        ua.back(); ua.wait('[Overview]'); ua.send(b'c'); ua.wait('Connection choices:')
         root_review(ua, 'Laptop', 'OfflineDraft', a.root / 'offline-draft')
-        ua.back(); ua.wait('Review setup inputs'); ua.wait('OfflineDraft')
+        ua.back(); ua.wait('Connection choices:'); ua.wait('OfflineDraft')
         ua.finish(); active.remove(ua)
         value = b'capture during development service outage'
         (a.data / 'outage.txt').write_bytes(value)
@@ -246,7 +248,7 @@ def run(binary, profile, output, outage_marker):
             root = Path(tempfile.mkdtemp(prefix='orbit-w07-fresh-')).resolve(); root.chmod(0o700)
             peer = Peer(root, binary, None); peers.append(peer)
             ui = UI(peer, 'fresh-local-only' if local_only else 'fresh-automatic-missing-profile', size=(100, 36)); active.append(ui)
-            ui.wait('Join an existing Orbit [j]'); ui.send(b'c'); ui.wait('Review setup inputs')
+            ui.wait('Join an existing Orbit [j]'); ui.send(b'c'); ui.wait('Connection choices:')
             ui.wait('automatic')
             assert not (peer.state / 'network.json').exists(), 'policy persisted before review'
             if local_only: ui.send(b'\x0e')

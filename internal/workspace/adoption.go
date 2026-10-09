@@ -32,7 +32,28 @@ type AdoptionWalk struct {
 	Hash     []byte              `json:"hash"`
 	Stat     unix.Stat_t         `json:"stat"`
 	Missing  bool                `json:"missing"`
+	// Create lists the missing directories from the nearest existing, pinned
+	// ancestor down to the root (empty in walks from before it existed: just
+	// the root itself).
+	Create []string `json:"create,omitempty"`
 }
+
+// missingParts returns the pinned ancestor and the directories to create.
+func (a AdoptionWalk) missingParts() (string, []string) {
+	parts := a.Create
+	if len(parts) == 0 {
+		parts = []string{filepath.Base(a.Preview.Root)}
+	}
+	ancestor := a.Preview.Root
+	for range parts {
+		ancestor = filepath.Dir(ancestor)
+	}
+	return ancestor, parts
+}
+
+// maxCreatedDepth bounds how many missing directories setup creates.
+const maxCreatedDepth = 16
+
 type AdoptionDirectory struct {
 	Path   string
 	Offset int64
@@ -61,9 +82,13 @@ func (w *Workspace) BeginAdoption(ctx context.Context, path string) (AdoptionWal
 		}
 	}
 	fd, st, err := openAbsoluteDirectory(abs)
-	if errors.Is(err, unix.ENOENT) {
-		fd, st, err = openAbsoluteDirectory(filepath.Dir(abs))
+	// A missing root is created at confirmation together with any missing
+	// parents, below the nearest existing ancestor pinned here.
+	for dir := abs; errors.Is(err, unix.ENOENT) && dir != filepath.Dir(dir) && len(a.Create) < maxCreatedDepth; {
 		a.Missing = true
+		a.Create = append([]string{filepath.Base(dir)}, a.Create...)
+		dir = filepath.Dir(dir)
+		fd, st, err = openAbsoluteDirectory(dir)
 	}
 	if err != nil {
 		return a, err
@@ -73,6 +98,7 @@ func (w *Workspace) BeginAdoption(ctx context.Context, path string) (AdoptionWal
 	a.Preview = tc.RootPreview{Root: abs, Device: tc.Uint(st.Dev), Inode: tc.Uint(st.Ino), Issues: []tc.Issue{}}
 	if a.Missing {
 		a.Preview.Complete = true
+		a.Preview.Missing = true
 	} else {
 		a.Stack = []AdoptionDirectory{{Path: ""}}
 	}
@@ -109,7 +135,7 @@ func adoptionStat(st unix.Stat_t) any {
 func (w *Workspace) AdoptionSlice(ctx context.Context, a *AdoptionWalk) error {
 	path := a.Preview.Root
 	if a.Missing {
-		path = filepath.Dir(path)
+		path, _ = a.missingParts()
 	}
 	fd, st, err := openAbsoluteDirectory(path)
 	if err != nil {
@@ -121,7 +147,8 @@ func (w *Workspace) AdoptionSlice(ctx context.Context, a *AdoptionWalk) error {
 	}
 	if a.Missing {
 		var s unix.Stat_t
-		if err := unix.Fstatat(fd, filepath.Base(a.Preview.Root), &s, unix.AT_SYMLINK_NOFOLLOW); !errors.Is(err, unix.ENOENT) {
+		_, parts := a.missingParts()
+		if err := unix.Fstatat(fd, parts[0], &s, unix.AT_SYMLINK_NOFOLLOW); !errors.Is(err, unix.ENOENT) {
 			return ErrRootUnavailable
 		}
 		return nil
@@ -308,16 +335,28 @@ func (w *Workspace) CreateAdoptionRoot(a AdoptionWalk) error {
 	if !a.Missing {
 		return nil
 	}
-	fd, st, err := openAbsoluteDirectory(filepath.Dir(a.Preview.Root))
+	ancestor, parts := a.missingParts()
+	fd, st, err := openAbsoluteDirectory(ancestor)
 	if err != nil {
 		return err
 	}
-	defer unix.Close(fd)
 	if tc.Uint(st.Dev) != a.Preview.Device || tc.Uint(st.Ino) != a.Preview.Inode {
+		unix.Close(fd)
 		return ErrRootUnavailable
 	}
-	if err = unix.Mkdirat(fd, filepath.Base(a.Preview.Root), 0o755); err != nil {
-		return err
+	for _, name := range parts {
+		if err = unix.Mkdirat(fd, name, 0o755); err == nil {
+			err = unix.Fsync(fd)
+		}
+		var child int
+		if err == nil {
+			child, err = unix.Openat(fd, name, unix.O_RDONLY|unix.O_DIRECTORY|unix.O_CLOEXEC|unix.O_NOFOLLOW, 0)
+		}
+		unix.Close(fd)
+		if err != nil {
+			return err
+		}
+		fd = child
 	}
-	return unix.Fsync(fd)
+	return unix.Close(fd)
 }
