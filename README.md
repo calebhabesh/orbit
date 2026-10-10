@@ -1,7 +1,7 @@
 # Orbit
 
 <p align="center">
-  <img src="docs/assets/orbit-logo.svg" width="560" alt="Orbit — Your folders, on every device. Colored ASCII sun, planets, and orbital rings from the Orbit TUI.">
+  <img src="docs/assets/orbit-logo.svg" width="560" alt="Orbit — Your folders, on every device. A stack of files circled by colored ASCII planets and orbital rings, from the Orbit TUI.">
 </p>
 
 [![CI](https://github.com/calebhabesh/orbit/actions/workflows/ci.yml/badge.svg)](https://github.com/calebhabesh/orbit/actions/workflows/ci.yml)

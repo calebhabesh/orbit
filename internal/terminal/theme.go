@@ -378,65 +378,91 @@ func besides(left, right []string) []string {
 
 func (m *model) theme() theme { return theme{plain: m.opts.Colorless} }
 
-// logoLarge and logoSmall are the Orbit mark: a sun with planets on nested
-// orbits, drawn in ASCII so it survives any terminal font.
-var logoLarge = []string{
-	`   +             _.----------o--._`,
-	`         .------'                 '------.     +`,
+// orbitLogo is the Orbit mark: a stack of files with planets on nested
+// orbits. The rings and planets are ASCII; the file stack at coreRow, coreCol
+// is drawn with the same box-drawing characters as the panels.
+type orbitLogo struct {
+	art              []string
+	coreRow, coreCol int
+}
+
+var logoLarge = orbitLogo{coreRow: 5, coreCol: 21, art: []string{
+	`   *             _.----------o--._             +`,
+	`         .------'                 '------.`,
 	`     .--'         _.-----------._         '--.`,
 	`   .'       .----'               '--O-.       '.`,
 	` .'       .'       _.o--------._       '.       '.`,
-	`/       .'      .-'   .:-=-:.   '-.      '.       \`,
-	`@       |      |    .=#%@@@%#=.    |      |       |`,
-	`\       '.      '-.   ':-=-:'   .-'      .'       /`,
+	`/       .'      .-'   ╭────╮    '-.      '.       \`,
+	`|       |      |     ╭│ ━━ ╰╮      |      |       |`,
+	`@       |      |     ││ ━━━ │      |      |       |`,
+	`|       |      |     │╰─────╯      |      |       |`,
+	`\       '.      '-.  ╰─────╯    .-'      .'       /`,
 	` '.       '.       '-----------'       .'       .'`,
 	`   '.       '----.               .----'       .'`,
 	`     '--.         '--@----------'         .--'`,
 	`         '------.                 .--O---'`,
-	`  *              '---------------'             +`,
-}
+	`   +             '---------------'             *`,
+}}
 
-var logoSmall = []string{
-	`   *       _.---------o-._`,
+var logoSmall = orbitLogo{coreRow: 3, coreCol: 14, art: []string{
+	`   *       _.---------o-._      +`,
 	`     .----'               '----.`,
 	`   .'       _.o--------._       '.`,
-	` .'      .-'   .:-=-:.   '-.      '.`,
-	` @      |    .=#%@@@%#=.    |      |`,
-	` '.      '-.   ':-=-:'   .-'      .'`,
+	` .'      .-'   ╭────╮    '-.      '.`,
+	` |      |     ╭│ ━━ ╰╮      |      |`,
+	` @      |     ││ ━━━ │      |      |`,
+	` |      |     │╰─────╯      |      |`,
+	` '.      '-.  ╰─────╯    .-'      .'`,
 	`   '.       '-----------'       .'`,
-	`     '--O-.               .----' +`,
-	`           '-------------'`,
+	`     '--O-.               .----'`,
+	`   +       '-------------'      *`,
+}}
+
+// coreShades colours the file stack cell by cell: f front page, b pages
+// behind it, y text lines.
+var coreShades = []string{
+	` ffffff`,
+	`bf yy ff`,
+	`bf yyy f`,
+	`bfffffff`,
+	`bbbbbbb`,
+}
+
+var coreColors = map[byte]color.Color{'f': lipgloss.Color("208"), 'b': cRed, 'y': lipgloss.Color("11")}
+
+// coreShade returns the stack's colour role at row i, cell j of l, or 0.
+func (l *orbitLogo) coreShade(i, j int) byte {
+	i, j = i-l.coreRow, j-l.coreCol
+	if i < 0 || i >= len(coreShades) || j < 0 || j >= len(coreShades[i]) || coreShades[i][j] == ' ' {
+		return 0
+	}
+	return coreShades[i][j]
 }
 
 // planetColors colour the planets in reading order.
 var planetColors = []color.Color{cGreen, cBlue, lipgloss.Color("5"), cRed, cYellow, lipgloss.Color("14")}
 
 // logo returns the mark that fits the space, or nil when none does.
-func logo(width, height int) []string {
+func logo(width, height int) *orbitLogo {
 	switch {
-	case width >= 56 && height >= 30:
-		return logoLarge
-	case width >= 42 && height >= 22:
-		return logoSmall
+	case width >= 56 && height >= 32:
+		return &logoLarge
+	case width >= 42 && height >= 24:
+		return &logoSmall
 	}
 	return nil
 }
 
 // banner is the welcome screen's mark with the product name beneath it.
 func (t theme) banner(width, height int) []string {
-	art := logo(width, height)
-	if art == nil {
+	l := logo(width, height)
+	if l == nil {
 		return nil
 	}
-	sunRow, sunCol := 0, 0
-	for i, line := range art {
-		if j := strings.Index(line, "@@@"); j >= 0 {
-			sunRow, sunCol = i, j+1
-		}
-	}
+	art := l.art
 	wide := 0
 	for _, line := range art {
-		wide = max(wide, len(line))
+		wide = max(wide, ansi.StringWidth(line))
 	}
 	centre := func(s string) string { return strings.Repeat(" ", max(0, (wide-len(s))/2)) + s }
 	name, tagline := centre("O R B I T"), centre("Your folders, on every device")
@@ -447,19 +473,15 @@ func (t theme) banner(width, height int) []string {
 	planet := 0
 	for i, line := range art {
 		var b strings.Builder
-		for j, r := range line {
+		for j, r := range []rune(line) {
 			c := cAccent
-			sun := i >= sunRow-1 && i <= sunRow+1 && j >= sunCol-5 && j <= sunCol+5
-			switch {
+			switch shade := l.coreShade(i, j); {
 			case r == ' ':
 				b.WriteRune(r)
 				continue
-			case sun && (r == '@' || r == '%'):
-				c = lipgloss.Color("11")
-			case sun && (r == '#' || r == '='):
-				c = cYellow
-			case sun:
-				c = cRed
+			case shade != 0:
+				b.WriteString(lipgloss.NewStyle().Foreground(coreColors[shade]).Render(string(r)))
+				continue
 			case r == 'o' || r == 'O' || r == '@':
 				c = planetColors[planet%len(planetColors)]
 				planet++
