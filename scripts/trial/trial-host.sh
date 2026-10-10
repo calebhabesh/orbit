@@ -83,7 +83,7 @@ exec "$real/.local/lib/orbit-trial/orbit" "$@"
 EOF
 	chmod 0755 "$WRAP.new"
 	mv -f "$WRAP.new" "$WRAP"
-	say "installed $("$BIN" version 2>/dev/null | head -2 | tr '\n' ' ')"
+	say "installed $("$BIN" version 2>/dev/null | sed -n '1,2p' | tr '\n' ' ')"
 	if unit_active; then
 		systemctl --user restart "$UNIT"
 		say "restarted $UNIT"
@@ -121,7 +121,7 @@ for f in json.load(sys.stdin).get("items",[]): print(f["root"])' 2>/dev/null |
 
 status() {
 	local v="not installed" d="stopped" u="none" s="not set up"
-	[ -x "$BIN" ] && v=$("$BIN" version 2>/dev/null | head -2 | tr '\n' ' ')
+	[ -x "$BIN" ] && v=$("$BIN" version 2>/dev/null | sed -n '1,2p' | tr '\n' ' ')
 	[ -e "$UNITDIR/$UNIT" ] && u="$(systemctl --user is-enabled "$UNIT" 2>/dev/null || true)/$(systemctl --user is-active "$UNIT" 2>/dev/null || true)"
 	[ -n "$(trial_pids)" ] && d="running"
 	[ -f "$STATE/config.json" ] && s="set up"
