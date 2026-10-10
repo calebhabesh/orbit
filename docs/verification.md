@@ -739,3 +739,16 @@ across views/forms, relative/private/exclusive review-file creation, Leave while
 removal is pending, enrollment invalidating an uncommitted removal proposal,
 legacy lowercase completed/aborted maintenance, durable removal learned by
 manual sync, and retirement of the reporting peer while exchanges drain.
+
+The first publication CI run also exposed a canceled WAN request returning
+response headers successfully. A deterministic HTTP client regression now
+requires caller cancellation to discard the response and close its body;
+100 race repetitions pass after reproducing the failure before the fix. The
+original direct/relay cancellation, redirect and target-pin fixture passes
+30 race repetitions, and the complete network race suite and core/package
+gates pass again. Their actual commands and logs are in the same publication
+evidence.
+Final GitHub verification of `0b4ac78` passes fast CI and all eight full-suite
+jobs: core, full terminal, packages and core race on each native architecture
+(amd64 and arm64). The trial binaries use that same source; the final
+documentation/evidence follow-up leaves application source unchanged.

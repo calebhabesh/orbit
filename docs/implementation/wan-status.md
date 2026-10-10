@@ -191,6 +191,14 @@ retain manual peers.json policy, membership checks, retry identities and deadlin
 bounds. Join manager work before SQLite shutdown and demonstrate M0 production
 manual sync/fair progress through that seam with focused race and `make check`.
 
+Follow-up, 2026-10-10: onboarding publication CI exposed a W01 request-cancellation
+race. Commit `0b4ac78` makes caller cancellation discard concurrent response
+headers and close the body. The deterministic regression fails before the fix
+and passes 100 race repetitions afterward; the original transport fixture passes
+30 race repetitions, and full core race jobs pass on native amd64 and arm64.
+Actual commands, failure evidence and corrected results are retained in the
+[publication evidence](../evidence/onboarding-publish-20261010/summary.md).
+
 ## W02 — Connection manager and preserved HTTPS
 
 State: **complete**. All W02 acceptance items have linked local production/manual
