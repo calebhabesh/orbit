@@ -1,11 +1,21 @@
 # Orbit onboarding and everyday-use status
 
-Updated: 2026-10-08. **E00–E10 complete.** The
+Updated: 2026-10-10 UTC. **E00–E13 complete; 2.3.0 installed in orbit-trial.** The
 [plan](../orbit-onboarding-implementation-plan.md) and
-[packet details](onboarding-packets.md) form the handoff. Orbit 2.1.0 is
-installed on the PC, laptop and Pi, and orbit-net 1.1.0 (short codes, 2 TiB
+[packet details](onboarding-packets.md) form the handoff. Orbit 2.3.0 with schema 15
+is installed as `orbit-trial` on the PC, laptop and Pi. PC/laptop trials run with
+their prior identity, roots and membership; the Pi trial remains unconfigured.
+The earlier default installs and historical evidence are unchanged. Orbit-net
+1.1.0 (short codes, 2 TiB
 monthly relay budget) runs on the hosted service. The owner's three-machine
 trial follows [the trial guide](../demo.md).
+
+The owner authorized publishing all pending changes on 2026-10-10 UTC.
+[Publication evidence](../evidence/onboarding-publish-20261010/summary.md)
+records the independent standards/spec reviews and final checks, including the
+readiness toast, global request badge, private CLI review file, resumable
+removal, and durable manual-sync removal corrections. Earlier dated entries
+below retain their original commit/install/check status as historical evidence.
 
 ## Packet tracker
 
@@ -22,6 +32,9 @@ trial follows [the trial guide](../demo.md).
 | E08 Files view | complete ([evidence](../evidence/onboarding-e08-20261008/summary.md)) | E02, E03, EG2 | [E08](onboarding-packets.md#e08--read-only-files-view-and-default-landing) |
 | E09 Relay budget | complete; deployed at E10 ([evidence](../evidence/onboarding-e09-20261008/summary.md)) | E00, EG4 | [E09](onboarding-packets.md#e09--monthly-relay-egress-budget-and-busy-relay-ux) |
 | E10 Trial readiness | complete ([evidence](../evidence/onboarding-e10-20261008/summary.md)) | E00–E09 | [E10](onboarding-packets.md#e10--integration-packaging-host-migration-and-trial-readiness) |
+| E11 Onboarding copy/colour | complete (see handoff, 2026-10-09) | E10 | [E11](onboarding-packets.md#e11--onboarding-copy-colour-and-readme-mark) |
+| E12 Post-confirm/approval polish | complete; broader regressions at E13 | E11 | [E12](onboarding-packets.md#e12--post-confirm-flow-and-approval-polish) |
+| E13 Real Leave/Remove Device | complete; installed/verified on all three trial hosts ([evidence](../evidence/onboarding-e13-20261009/summary.md)) | E12 | [E13](onboarding-packets.md#e13--real-leave-and-reviewed-remove-device) |
 
 | Gate | State | Owning packet |
 | --- | --- | --- |
@@ -237,6 +250,82 @@ the owner's confirmation: orbit-net 1.1.0 on the VPS with `relay_month_bytes`
 removed the port drop-ins. [Evidence](../evidence/onboarding-e10-20261008/summary.md).
 
 ## Handoff
+
+**E03/E08 trial correction (2026-10-09, uncommitted, installed).** Files had
+consumed left/right for directory navigation, trapping tab 5. Arrows now switch
+all five main views and wrap; Enter/`l` open directories and Backspace/Esc go up.
+Help/footers/specification agree. The navigation regression failed before the
+fix and passes after; full terminal unit/race, real keyboard PTY, formatting/vet
+and all three trial installations/preservation checks passed. Existing TUI
+processes need reopening. [Evidence](../evidence/onboarding-arrow-tabs-20261009/summary.md).
+
+**E13 complete (2026-10-09, uncommitted, installed in orbit-trial).** Owner selected real local Leave and authorized
+installation on all three orbit-trial hosts. Leave/Remove moved out of E12 into
+[E13](onboarding-packets.md#e13--real-leave-and-reviewed-remove-device), with
+schema 15, per-Orbit exchange cancellation/drain, pinned refusal codes, reviewed
+survivor retirement, resumable partial rollout and shared CLI/TUI controls.
+The old blocked handoff below is historical; the decision is resolved. New
+checks/install results are in [E13 evidence](../evidence/onboarding-e13-20261009/summary.md).
+Existing working-tree polish is preserved. No commit was requested.
+
+Acceptance: Leave preserves working bytes/history/recovery records, cancels and
+drains only this Orbit, and durably refuses new/incoming/retried activity.
+Remove requires the exact name and received-change review; survivors prepare
+the same retirement snapshot before membership advances. Pending rollout
+resumes after restart; a stale pending local review becomes needs_review before
+contacting an unavailable survivor. Actual retirement initiators persist per
+device; old manual removals identify their reporting peer. CLI/TUI share controls.
+
+Checks: focused E11–E13 race and final E13 race, broader core race with the
+corrected integration rerun, full repository/scheduler/workspace/terminal/CLI
+race, all five quick PTYs (final 125 s), integration/model/faults, 36 harness
+tests, package metadata/payload/install checks, final gofmt/vet. Full terminal
+run plus corrected reruns covers every former failure; W16's TUI rerun passed
+(343.200 s) after shortening its fixture socket under the longer TMPDIR.
+One uninterrupted successful make check/full terminal rerun is unexecuted;
+original failures and interrupted runs remain in the evidence.
+
+Final trial reinstall (9 s) and all three read-only verification helpers passed.
+PC/laptop are active with identity, roots, membership and history preserved;
+Pi executes the arm64 build natively and remains unconfigured/stopped. Previous
+binaries and owner-control metadata backups are retained privately on each host.
+Limitations: no Undo Leave; retired identity re-enrollment needs fresh state;
+all survivors must be reachable with the same accepted retiree metadata.
+Partial rollout with new remote retiree history may require reviewed recovery.
+No new physical WAN fault campaign, maximum-size/scale experiment, package
+container transaction emulation or owner walkthrough was run for E13.
+
+
+**E11/E12 onboarding polish (2026-10-09, uncommitted, 2.3.0).** Owner-approved
+design (grilling session, recorded in the
+[terminal UX amendment](../orbit-terminal-ux.md#owner-amendment-2026-10-09-onboarding-polish-230)).
+E11 done: Review & Create / Review & Join cards with `d` Details, Title Case
+titles, cyan labels, key-chip footers with green Enter, README ASCII mark.
+Owner README refinement (2026-10-09): the mark is now a centered image in
+`README.md`, backed by `docs/assets/orbit-logo.svg`. Its ASCII art and color
+roles come from the TUI banner; a dark backdrop preserves color contrast in
+light and dark README themes. Alternative text includes the product and tagline.
+Checks: Python ElementTree parsed the SVG; `rsvg-convert` rendered it;
+headless `chromium` rendered MarkdownIt previews in light, dark and 375 px
+layouts, visually checked; `git diff --check` passed. No runtime changes.
+E12 done: checklist/approval-wait/success card on Setting Up / Joining, Enter
+to the Overview with the new Orbit selected and a toast, Enter/x approve or
+reject on the invitation page, header join-request badge, version 2.3.0.
+Checks (TMPDIR under `~/.cache` because `/tmp` hit the user quota):
+`go test -short ./internal/terminal` ok (new `onboarding_e11_test.go`,
+`onboarding_e12_test.go`; T10/W07 readiness tests now assert under Details and
+that the card never says "is ready"); `make quick` exit 0 with pty, onboarding,
+everyday and keys PTY suites ok after updating their expected titles/phrases.
+Not run: `terminal_wan_pty_test.py`, `terminal_network_pty_test.py`,
+`wan_tui_phase.py` (expectations updated, unexecuted), full `tests/terminal`,
+integration (package names bumped to 2.3.0), packages, race.
+**E12 blocked part:** `orbit folders remove` only clears the local root; peer
+sync targets come from the peer endpoint/route files, so the device keeps
+exchanging that Orbit's metadata/content in the background, and other devices
+keep syncing with it. A TUI "Leave" on top of it would claim more than it does.
+Retirement (`peers retire`) is real but the TUI deliberately shows it as a
+reviewed-procedure preview. Owner decision needed before Leave, Remove device,
+the removed-device state and the `orbit leave`/`orbit remove-device` aliases.
 
 **2.2.0 trial polish (2026-10-08, uncommitted to hosts).** Owner requests from
 the 2.1.0 trial are implemented and committed but **not yet installed**: the

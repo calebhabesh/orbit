@@ -1,0 +1,30 @@
+go vet ./...
+go test ./cmd/orbit/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	2.301s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	1.305s
+ok  	github.com/calebhabesh/orbit/internal/control	30.656s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.015s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.002s
+ok  	github.com/calebhabesh/orbit/internal/history	(cached)
+?   	github.com/calebhabesh/orbit/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/network	117.174s
+ok  	github.com/calebhabesh/orbit/internal/pairing	(cached)
+ok  	github.com/calebhabesh/orbit/internal/protocol	(cached)
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	75.367s
+ok  	github.com/calebhabesh/orbit/internal/replication	102.837s
+ok  	github.com/calebhabesh/orbit/internal/repository	3.785s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	12.725s
+ok  	github.com/calebhabesh/orbit/internal/state	0.002s
+ok  	github.com/calebhabesh/orbit/internal/terminal	4.289s
+ok  	github.com/calebhabesh/orbit/internal/testkit	0.001s
+ok  	github.com/calebhabesh/orbit/internal/workspace	2.338s
+ok  	github.com/calebhabesh/orbit/model	(cached)
+CGO_ENABLED=0 go build -p=2 -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+go test ./tests/integration/...
+--- FAIL: TestOrbitPairing_DeviceDetailAndRename (0.03s)
+    orbit_pairing_test.go:537: PreviewDeviceRetirement failed: membership exceeds v1 limits or has zero required fields
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/integration	103.465s
+FAIL
+make: *** [Makefile:76: test-integration] Error 1

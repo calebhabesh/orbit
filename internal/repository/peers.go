@@ -16,7 +16,11 @@ import (
 )
 
 var (
-	ErrUnauthorized                 = errors.New("peer is not authorized for this folder")
+	ErrUnauthorized = errors.New("peer is not authorized for this folder")
+	// ErrFolderLeft: this device left the Orbit and no longer syncs it.
+	ErrFolderLeft = errors.New("this device left the folder")
+	// ErrPeerRetired: the requesting device was removed from the Orbit.
+	ErrPeerRetired                  = errors.New("peer was removed from this folder")
 	ErrMembershipMismatch           = errors.New("membership revision or digest mismatch")
 	ErrSnapshotExpired              = errors.New("inventory snapshot expired or unknown")
 	ErrSnapshotLimit                = errors.New("too many open inventory snapshots")
@@ -420,11 +424,24 @@ func (db *DB) DeleteResumableMaintenance(ctx context.Context, id string) error {
 func (db *DB) AuthorizePeer(ctx context.Context, folder, claimedDevice history.ID, pin history.Digest, revision uint64, digest history.Digest) error {
 	var currentRevision, currentDigest, storedPin []byte
 	err := db.db.QueryRowContext(ctx, `SELECT f.membership_revision,f.membership_digest,e.key_pin FROM folders f JOIN membership_entries e ON e.folder_id=f.folder_id AND e.revision=f.membership_revision WHERE f.folder_id=? AND e.device_id=? AND e.state='active'`, folder[:], claimedDevice[:]).Scan(&currentRevision, &currentDigest, &storedPin)
-	if errors.Is(err, sql.ErrNoRows) || !bytes.Equal(storedPin, pin[:]) {
+	if errors.Is(err, sql.ErrNoRows) {
+		// A removed device learns it was removed (E12); others stay generic.
+		var retired int
+		if db.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM folders f JOIN membership_entries e ON e.folder_id=f.folder_id AND e.revision=f.membership_revision WHERE f.folder_id=? AND e.device_id=? AND e.state='retired' AND EXISTS (SELECT 1 FROM membership_entries old WHERE old.folder_id=e.folder_id AND old.device_id=e.device_id AND old.state='active' AND old.key_pin=?)`, folder[:], claimedDevice[:], pin[:]).Scan(&retired) == nil && retired > 0 {
+			return ErrPeerRetired
+		}
+		return ErrUnauthorized
+	}
+	if err == nil && !bytes.Equal(storedPin, pin[:]) {
 		return ErrUnauthorized
 	}
 	if err != nil {
 		return err
+	}
+	if left, err := db.FolderLeft(ctx, folder); err != nil {
+		return err
+	} else if left {
+		return ErrFolderLeft
 	}
 	storedRevision, err := decodeUint(currentRevision)
 	if err != nil {
@@ -625,4 +642,9 @@ func (db *DB) HasMembershipFork(ctx context.Context, folder history.ID) (bool, e
 		return true, nil
 	}
 	return false, nil
+}
+
+func (db *DB) MaintenanceByID(ctx context.Context, id string) (phase string, raw []byte, err error) {
+	err = db.db.QueryRowContext(ctx, `SELECT phase,state FROM resumable_maintenance WHERE maintenance_id=?`, id).Scan(&phase, &raw)
+	return
 }

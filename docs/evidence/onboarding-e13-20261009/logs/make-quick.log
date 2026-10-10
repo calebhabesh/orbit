@@ -1,0 +1,25 @@
+scripts/quick_check.sh
+changes since HEAD: 71 file(s)
+
+== build (0s)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+
+== gofmt (0s)
+
+== vet ./cmd/orbit ./internal/control ./internal/control/terminalcontract ./internal/controlclient ./internal/replication ./internal/repository ./internal/scheduler ./internal/terminal ./internal/workspace (0s)
+
+== test -short ./cmd/orbit ./internal/control ./internal/control/terminalcontract ./internal/controlclient ./internal/replication ./internal/repository ./internal/scheduler ./internal/terminal ./internal/workspace (1s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit	1.365s
+ok  	github.com/calebhabesh/orbit/internal/control	24.184s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.008s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.003s
+ok  	github.com/calebhabesh/orbit/internal/replication	25.265s
+ok  	github.com/calebhabesh/orbit/internal/repository	4.614s
+--- FAIL: TestCoalescingCannotRedispatchRunningPeerSync (0.04s)
+    coalescing_test.go:28: sql: Scan error on column index 0, name "length(membership_digest)": converting NULL to int is unsupported
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/scheduler	13.517s
+ok  	github.com/calebhabesh/orbit/internal/terminal	4.333s
+ok  	github.com/calebhabesh/orbit/internal/workspace	3.163s
+FAIL
+make: *** [Makefile:56: quick] Error 1

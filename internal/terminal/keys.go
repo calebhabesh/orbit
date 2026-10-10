@@ -10,8 +10,9 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 		return m.flowKey(msg)
 	}
 	k := msg.String()
+	m.toast = ""
 	// An explicit view selection wins over the asynchronous initial landing.
-	if k == "1" || k == "2" || k == "3" || k == "4" || k == "5" || k == "tab" || k == "shift+tab" {
+	if k == "1" || k == "2" || k == "3" || k == "4" || k == "5" || k == "tab" || k == "shift+tab" || k == "left" || k == "right" {
 		if !m.search.Focused() {
 			m.firstLoad = true
 		}
@@ -60,6 +61,22 @@ func (m *model) key(msg tea.KeyPressMsg) tea.Cmd {
 		}
 	}
 	switch k {
+	case "L", "X":
+		rows := m.rows()
+		kind := "leave"
+		if k == "X" {
+			kind = "remove"
+		}
+		if len(rows) > 0 {
+			row := rows[m.selected]
+			if row.folder != "" {
+				return m.openFlow(&workflow{screen: "folder", folder: row.folder, folderName: row.name, kind: kind})
+			}
+			if k == "X" && m.section == 3 {
+				return m.openFlow(&workflow{screen: "pick_folder", kind: kind, device: row.key})
+			}
+		}
+		return m.openFlow(&workflow{screen: "pick_folder", kind: kind})
 	case "N":
 		return m.openFlow(&workflow{screen: "network"})
 	case "b":

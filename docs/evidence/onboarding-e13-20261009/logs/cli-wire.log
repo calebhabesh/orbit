@@ -1,0 +1,9 @@
+--- FAIL: TestOnboardingE13ParticipationCLIStoppedAndLive (0.33s)
+    --- FAIL: TestOnboardingE13ParticipationCLIStoppedAndLive/stopped (0.19s)
+        terminal_participation_test.go:95:  state directory "/home/ethioking/.cache/orbit-work-tmp/TestOnboardingE13ParticipationCLIStoppedAndLivestopped104837016/002" must not be accessible by group or other users (mode 0700)
+    --- FAIL: TestOnboardingE13ParticipationCLIStoppedAndLive/live (0.14s)
+        terminal_participation_test.go:95:  state directory "/home/ethioking/.cache/orbit-work-tmp/TestOnboardingE13ParticipationCLIStoppedAndLivelive3849649123/002" must not be accessible by group or other users (mode 0700)
+FAIL
+FAIL	github.com/calebhabesh/orbit/cmd/orbit	0.344s
+ok  	github.com/calebhabesh/orbit/internal/replication	0.297s
+FAIL

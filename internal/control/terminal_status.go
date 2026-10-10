@@ -144,6 +144,21 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 		}
 		folderHex := hex.EncodeToString(folder[:])
 
+		if by, e := c.db.RemovedBy(ctx, folder); e == nil && by != ([32]byte{}) {
+			name, _ := c.db.GetDeviceDisplayName(ctx, by)
+			if name == "" {
+				name = fmt.Sprintf("Device %x", by[:8])
+			}
+			message := "This device was removed by " + name
+			if reg, err := c.db.Root(ctx, folder); err == nil && reg.PauseReason == "DEVICE_REMOVED_REPORTED" {
+				message = "This device was removed; reported by " + name
+			}
+			allAttention = append(allAttention, tc.Attention{ID: attentionID("device_removed", folderHex), Folder: folderHex, Code: "DEVICE_REMOVED", Action: message + "; press Enter to Leave and keep the files"})
+			continue
+		}
+		if id, _, phase, _, e := c.db.GetResumableMaintenance(ctx, folder); e == nil && strings.HasPrefix(id, "remove-") && phase != "COMPLETED" && phase != "ABORTED" {
+			allAttention = append(allAttention, tc.Attention{ID: attentionID("removal_pending", id), Folder: folderHex, OperationID: strings.TrimPrefix(id, "remove-"), Code: "REMOVAL_PENDING", Action: "Device removal is pending; press Enter to resume the exact confirmed removal"})
+		}
 		// A. Root availability and paused state
 		reg, regErr := c.db.Root(ctx, folder)
 		if regErr == nil {
@@ -269,6 +284,24 @@ func (c *Controller) terminalAttention(ctx context.Context, q tc.Query) (tc.Resu
 				folderHex := ""
 				if task.Folder != (history.ID{}) {
 					folderHex = hex.EncodeToString(task.Folder[:])
+				}
+				if task.ErrorCode == "PEER_LEFT" && task.Peer != nil {
+					active, _, _, _, e := c.db.PeerMembers(ctx, task.Folder)
+					stillActive := false
+					for _, m := range active {
+						if m.Device == *task.Peer {
+							stillActive = true
+						}
+					}
+					if e == nil && !stillActive {
+						continue
+					}
+					name, _ := c.db.GetDeviceDisplayName(ctx, *task.Peer)
+					if name == "" {
+						name = fmt.Sprintf("Device %x", (*task.Peer)[:8])
+					}
+					allAttention = append(allAttention, tc.Attention{ID: attentionID("peer_left", folderHex, hex.EncodeToString((*task.Peer)[:])), Folder: folderHex, OperationID: hex.EncodeToString((*task.Peer)[:]), Code: "PEER_LEFT", Action: name + " left this Orbit; press Enter to review Remove Device"})
+					continue
 				}
 				allAttention = append(allAttention, tc.Attention{
 					ID:          attentionID("exhausted_work", task.ID),
@@ -760,5 +793,5 @@ var AttentionCodes = []string{
 	"ROOT_UNAVAILABLE", "FOLDER_PAUSED", "STALE_ROOT", "BLOCKED_PATH", "CONFLICT",
 	"STRUCTURAL_CONFLICT", "MEMBERSHIP_FORK", "OFFLINE", "EXHAUSTED_WORK",
 	"DISK_BUDGET", "METADATA_BUDGET", "AWAITING_APPROVAL", "INCOMPLETE_SETUP",
-	"EDITOR_RECOVERY",
+	"EDITOR_RECOVERY", "PEER_LEFT", "DEVICE_REMOVED", "REMOVAL_PENDING",
 }

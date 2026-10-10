@@ -1,0 +1,74 @@
+CGO_ENABLED=0 go build -p=2 -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -p=2 -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-09' -o bin/orbit-linux-arm64 ./cmd/orbit
+go run ./scripts/build_packages.go
+Building binary for linux/amd64 -> /home/ethioking/dev/orbit/bin/orbit-linux-amd64
+Building binary for linux/arm64 -> /home/ethioking/dev/orbit/bin/orbit-linux-arm64
+Generating orbit-v2.3.0-linux-amd64.tar.gz...
+Generating orbit_2.3.0_amd64.deb...
+Generating orbit-2.3.0-1.x86_64.rpm...
+Generating orbit-v2.3.0-linux-arm64.tar.gz...
+Generating orbit_2.3.0_arm64.deb...
+Generating orbit-2.3.0-1.aarch64.rpm...
+Generating SHA256SUMS...
+Release packaging complete! Generated artifacts:
+  - orbit-v2.3.0-linux-amd64.tar.gz (19091658 bytes)
+  - orbit-v2.3.0-linux-amd64.tar.gz (19091658 bytes)
+  - orbit_2.3.0_amd64.deb (19085960 bytes)
+  - orbit-2.3.0-1.x86_64.rpm (19091080 bytes)
+  - orbit-v2.3.0-linux-arm64.tar.gz (17857930 bytes)
+  - orbit-v2.3.0-linux-arm64.tar.gz (17857930 bytes)
+  - orbit_2.3.0_arm64.deb (17836320 bytes)
+  - orbit-2.3.0-1.aarch64.rpm (17840277 bytes)
+  - release-manifest.json (786 bytes)
+  - SHA256SUMS
+python3 scripts/terminal_package_test.py --dist dist
+[
+  {
+    "scenario": "all-package-checksums",
+    "result": "passed"
+  },
+  {
+    "scenario": "amd64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "amd64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "native amd64"
+  },
+  {
+    "scenario": "arm64-tar-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-deb-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "arm64-rpm-payload-and-entry",
+    "result": "passed",
+    "execution": "structure only; arm64 execution separate"
+  },
+  {
+    "scenario": "standalone-install-repeat-upgrade-uninstall",
+    "result": "passed",
+    "assertions": [
+      "custom unit preserved",
+      "identity/state preserved",
+      "ordinary bytes preserved",
+      "no user service changes"
+    ]
+  },
+  {
+    "scenario": "package-extracted-bare-PTY",
+    "result": "passed"
+  }
+]

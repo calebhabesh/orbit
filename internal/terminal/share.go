@@ -2,7 +2,6 @@ package terminal
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"time"
 
@@ -135,19 +134,10 @@ func (m *model) folderKey(k string) tea.Cmd {
 		return m.invalidate()
 	case "x":
 		f.screen = "unregister_preview"
-	case "t":
-		if f.device == "" {
-			f.err = "Inspect a device, select its shared folder, then preview retirement."
-			return nil
-		}
-		w, _ := m.workflows()
-		folder, device := f.folder, f.device
-		f.task = "retirement_preview"
-		f.work = func(ctx context.Context) (tc.Result, error) {
-			r, err := w.RetirementPreview(ctx, folder, device)
-			return tc.Result{Items: []tc.NamedItem{{Name: r.Warning, Root: r.Disclaimer}, {Name: r.DeviceName, Root: fmt.Sprintf("revision %d -> %d; %d surviving devices", r.CurrentRevision, r.NextRevision, r.RemainingCount)}}}, err
-		}
-		return m.invalidate()
+	case "L":
+		f.screen = "leave_review"
+	case "X", "t":
+		return m.pickRemovalDevice()
 	case "r":
 		return m.startQuery()
 	}

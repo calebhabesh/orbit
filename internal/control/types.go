@@ -840,15 +840,18 @@ type RetireDevicePreviewRequest struct {
 }
 
 type RetireDevicePreviewResult struct {
-	Folder          history.ID `json:"folder"`
-	DeviceID        history.ID `json:"device_id"`
-	DeviceName      string     `json:"device_name"`
-	CurrentRevision uint64     `json:"current_revision"`
-	NextRevision    uint64     `json:"next_revision"`
-	RemainingCount  int        `json:"remaining_count"`
-	SurvivingPeers  []string   `json:"surviving_peers"`
-	Warning         string     `json:"warning"`
-	Disclaimer      string     `json:"disclaimer"`
+	ReceivedChanges  int            `json:"received_changes"`
+	MembershipDigest history.Digest `json:"membership_digest"`
+	SnapshotDigest   history.Digest `json:"snapshot_digest"`
+	Folder           history.ID     `json:"folder"`
+	DeviceID         history.ID     `json:"device_id"`
+	DeviceName       string         `json:"device_name"`
+	CurrentRevision  uint64         `json:"current_revision"`
+	NextRevision     uint64         `json:"next_revision"`
+	RemainingCount   int            `json:"remaining_count"`
+	SurvivingPeers   []string       `json:"surviving_peers"`
+	Warning          string         `json:"warning"`
+	Disclaimer       string         `json:"disclaimer"`
 }
 
 type DetectForkRequest struct {

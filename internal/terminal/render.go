@@ -6,10 +6,12 @@ import (
 	"os/user"
 	"path/filepath"
 	"strings"
+	"time"
 	"unicode"
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/charmbracelet/x/ansi"
 )
 
@@ -80,9 +82,9 @@ var helpKeys = [][2]string{
 	{"q / Ctrl-C", "close interface (sync and committed work continue); Ctrl-C works anywhere"},
 	{"↑/↓ or j/k", "select rows; in forms, move between fields"},
 	{"1-5", "Overview, Orbits, Attention, Devices, Files"},
-	{"Files", "Enter/→ open · ←/Backspace up · o open in app · e edit · y copy path · h history · C conflicts · D deleted · / search folder"},
+	{"Files", "Enter open · Backspace/Esc up · o open in app · e edit · y copy path · h history · C conflicts · D deleted · / search folder"},
 	{"Tab / Shift-Tab", "next / previous view; in forms, next / previous field"},
-	{"←/→", "previous / next view (Files: up / open); in forms, change a ‹ choice ›"},
+	{"←/→", "previous / next view; in forms, change a ‹ choice ›"},
 	{"/", "search this page"},
 	{"Enter", "inspect; in forms, next field, then confirm on the last"},
 	{"Esc", "back"},
@@ -99,17 +101,18 @@ var helpKeys = [][2]string{
 	{"w", "requests"},
 	{"u", "unfinished setup"},
 	{"N", "connection details"},
+	{"L / X", "leave an Orbit / remove another device"},
 	{"", "Daemon stop: orbit service stop"},
 }
 
 func (m *model) footer() string {
 	if m.section == filesSection && !m.search.Focused() {
 		if m.width < 60 {
-			return "j/k Enter ← o e h ? q"
+			return "j/k Enter Backspace ←/→ ? q"
 		}
-		return "↑/↓ select  Enter open  ← up  / search  o open in app  e edit  y copy path  h history  C conflicts  D deleted  ] more  1-5 views  ? help  q quit"
+		return "↑/↓ select  Enter open  Backspace up  ←/→ views  / search  o open in app  e edit  y copy path  h history  C conflicts  D deleted  ] more  1-5 views  ? help  q quit"
 	}
-	footer := "j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests  u setup  N connection"
+	footer := "j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests  u setup  N connection  L leave  X remove device"
 	if m.section == 1 || m.section == 3 {
 		footer += "  R rename"
 	}
@@ -144,6 +147,9 @@ func (m *model) tabs(t theme) string {
 // statusLines describe the daemon, connection and transient notices.
 func (m *model) statusLines(counts bool) []string {
 	lines := []string{"Daemon: " + daemonLabel(m.result.Service), "Startup: " + startupLabel(m.result.Service)}
+	if m.toast != "" && time.Since(m.toastAt) < 8*time.Second {
+		lines = append([]string{m.theme().style(lipgloss.NewStyle().Foreground(cGreen).Bold(true), m.toast)}, lines...)
+	}
 	if counts && (m.section == 0 || m.section == filesSection) {
 		lines = append(lines, count(len(m.result.Items), "folder")+" · "+count(len(m.result.Attention), "attention item")+" · "+count(len(m.devices), "device"))
 	}
@@ -325,9 +331,9 @@ func (m *model) listTitle() string {
 // status, list and devices on the left and details of the selection on the right.
 func (m *model) panelLines() []string {
 	t := m.theme()
-	right := ""
+	right := m.requestBadge(t)
 	if !t.plain {
-		right = t.pill(daemonLabel(m.result.Service), m.startup())
+		right += t.pill(daemonLabel(m.result.Service), m.startup())
 	}
 	header := t.header(m.width, m.tabs(t), right)
 	footer := m.footerLines(t)
@@ -442,8 +448,14 @@ func (m *model) compactLines() []string {
 	// Keep focus and recovery text visible in narrow terminals through wrapping.
 	// Never split an escape sequence or a wide/combining grapheme at the edge.
 	output, _ := t.body(lines, m.width, -1)
+	if len(output) > 0 {
+		right := m.requestBadge(t)
+		if right == "" && !t.plain {
+			right = t.pill(daemonLabel(m.result.Service), m.startup())
+		}
+		output[0] = t.header(m.width, "", right)
+	}
 	if !t.plain && len(output) > 2 {
-		output[0] = t.header(m.width, "", t.pill(daemonLabel(m.result.Service), m.startup()))
 		output[1] = t.tab(sections[m.section], "", true) + " " + t.hints("1-5 views")
 	}
 	footerLines := m.footerLines(t)
@@ -539,4 +551,27 @@ func (m *model) previewLines(folder string) []string {
 		lines = append(lines, "  …")
 	}
 	return append(lines, "", "5 open in Files  Enter manage this Orbit")
+}
+
+// requestBadge flags join requests waiting for this device's approval in the
+// header on every screen (E12); w opens them.
+func (m *model) requestBadge(t theme) string {
+	seen := map[string]bool{}
+	for _, a := range m.result.Attention {
+		if a.Code == "AWAITING_APPROVAL" {
+			seen[a.ID] = true
+		}
+	}
+	count := tc.Uint(len(seen))
+	if m.joinRequestCount != nil {
+		count = *m.joinRequestCount
+	}
+	if count == 0 {
+		return ""
+	}
+	label := "1 join request"
+	if count > 1 {
+		label = fmt.Sprintf("%d join requests", count)
+	}
+	return t.style(lipgloss.NewStyle().Background(cYellow).Foreground(cBlack).Bold(true), " "+label+" · w ") + "  "
 }

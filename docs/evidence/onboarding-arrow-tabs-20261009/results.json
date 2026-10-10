@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-09",
+  "state": "complete",
+  "regression_before_fix": "expected_failure_both_directions",
+  "regression_after_fix": "passed",
+  "terminal_tests": "passed",
+  "terminal_race": "passed",
+  "keyboard_pty": "passed_all_five_tabs_both_directions",
+  "fmt_vet": "passed",
+  "trial_install": "passed_18s",
+  "committed": false,
+  "hosts": [
+    {
+      "host": "CalebPC",
+      "configured": true,
+      "binary_sha256": "defcf89603d98437154dba3a61b1f3393f05aeba50d149603d2f3e3ece067e2e",
+      "trial_unit": "active",
+      "version": "2.3.0",
+      "architecture": "amd64",
+      "schema": 15,
+      "preserved": [
+        "identity",
+        "folder roots",
+        "membership",
+        "recorded history",
+        "existing file manifest"
+      ]
+    },
+    {
+      "host": "CalebLaptop",
+      "configured": true,
+      "binary_sha256": "defcf89603d98437154dba3a61b1f3393f05aeba50d149603d2f3e3ece067e2e",
+      "trial_unit": "active",
+      "version": "2.3.0",
+      "architecture": "amd64",
+      "schema": 15,
+      "preserved": [
+        "identity",
+        "folder roots",
+        "membership",
+        "recorded history",
+        "existing file manifest"
+      ]
+    },
+    {
+      "host": "pi-server",
+      "configured": false,
+      "binary_sha256": "1fcacecc6f355117dc50b03fb4079ba1982f84f45af738368a6881d512796423",
+      "trial_unit": "unconfigured/stopped",
+      "version": "2.3.0",
+      "architecture": "arm64",
+      "schema": 15,
+      "preserved": []
+    }
+  ]
+}

@@ -31,7 +31,25 @@ func (c *Controller) terminalFolderManagement(ctx context.Context, q tc.Query) (
 	if err != nil {
 		return r, err
 	}
-	info := &tc.FolderManagement{Root: reg.Path, Paused: reg.Paused, MembershipDigest: hex.EncodeToString(digest[:]), Revision: tc.Uint(membership.Revision), Members: []tc.NamedItem{}}
+	info := &tc.FolderManagement{LocalDevice: hex.EncodeToString(c.options.LocalDevice[:]), Root: reg.Path, Paused: reg.Paused, MembershipDigest: hex.EncodeToString(digest[:]), Revision: tc.Uint(membership.Revision), Members: []tc.NamedItem{}}
+	if by, e := c.db.RemovedBy(ctx, folder); e != nil {
+		return r, e
+	} else if by != ([32]byte{}) {
+		info.RemovedBy, err = c.db.GetDeviceDisplayName(ctx, by)
+		if err != nil {
+			return r, err
+		}
+		if info.RemovedBy == "" {
+			info.RemovedBy = fmt.Sprintf("Device %x", by[:8])
+		}
+		if reg.PauseReason == "DEVICE_REMOVED_REPORTED" {
+			info.RemovalReporter, info.RemovedBy = info.RemovedBy, ""
+		}
+	}
+	info.Name, err = c.db.GetFolderDisplayName(ctx, folder)
+	if err != nil {
+		return r, err
+	}
 	// Membership is protocol-bounded; no filesystem or path inventory is copied.
 	for _, member := range membership.Active {
 		name, err := c.db.GetDeviceDisplayName(ctx, member.Device)

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/calebhabesh/orbit/internal/history"
 	"github.com/calebhabesh/orbit/internal/protocol"
@@ -137,6 +138,19 @@ func (t *EnrollmentTx) PendingEnrollmentCount(now int64) (int, error) {
 	}
 	var count int
 	err = t.tx.QueryRowContext(t.ctx, `SELECT count(*) FROM installation_metadata WHERE key LIKE 'enrollment/v2/request/%' AND json_extract(value,'$.result.state')='pending_approval'`).Scan(&count)
+	return count, err
+}
+
+// PendingJoinRequestCount summarizes both enrollment formats in SQLite;
+// completed replay history cannot hide pending requests behind a UI page.
+func (db *DB) PendingJoinRequestCount(ctx context.Context, now time.Time) (int, error) {
+	var count int
+	err := db.db.QueryRowContext(ctx, `SELECT
+  (SELECT count(*) FROM installation_metadata
+   WHERE key LIKE 'enrollment/v2/request/%'
+     AND json_extract(value,'$.result.state')='pending_approval'
+     AND json_extract(value,'$.expires')>?)
+  + (SELECT count(*) FROM enrollment_requests WHERE status='pending')`, now.Unix()).Scan(&count)
 	return count, err
 }
 func (t *EnrollmentTx) EnrollmentRequestPage(folder, after string, limit int) (map[string]json.RawMessage, error) {

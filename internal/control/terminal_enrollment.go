@@ -344,6 +344,16 @@ func (c *Controller) terminalRequests(ctx context.Context, q tc.Query) (tc.Resul
 	return r, err
 }
 
+func (c *Controller) attachJoinRequestCount(ctx context.Context, result *tc.Result, queryErr error) {
+	if queryErr != nil || result.Error != nil {
+		return
+	}
+	if count, err := c.db.PendingJoinRequestCount(ctx, c.options.Now()); err == nil {
+		value := tc.Uint(count)
+		result.JoinRequestCount = &value
+	}
+}
+
 // printableLabel keeps a remote device's chosen name displayable: the label
 // arrives from the joining device, so control and other non-printable runes
 // are dropped before it is shown in listings.

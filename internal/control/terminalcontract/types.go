@@ -373,6 +373,10 @@ type EnrollmentRequest struct {
 // Result is also the fixture/view vocabulary. Loading is a client observation,
 // never a successful engine mutation. Collections are [] rather than null.
 type FolderManagement struct {
+	Name             string      `json:"name"`
+	LocalDevice      string      `json:"local_device"`
+	RemovedBy        string      `json:"removed_by,omitempty"`
+	RemovalReporter  string      `json:"removal_reporter,omitempty"`
 	Root             string      `json:"root"`
 	Paused           bool        `json:"paused"`
 	MembershipDigest string      `json:"membership_digest"`
@@ -391,7 +395,27 @@ type Storage struct {
 	Reserve        Uint `json:"reserve"`
 }
 
+type RetirementReview struct {
+	DeviceName       string `json:"device_name"`
+	ReceivedChanges  int    `json:"received_changes"`
+	MembershipDigest string `json:"membership_digest"`
+	SnapshotDigest   string `json:"snapshot_digest"`
+	Warning          string `json:"warning"`
+	Disclaimer       string `json:"disclaimer"`
+}
+
+type RemovalResult struct {
+	DeviceID        string   `json:"device_id"`
+	State           string   `json:"state"`
+	OperationID     string   `json:"operation_id"`
+	ReceivedChanges int      `json:"received_changes"`
+	PendingDevices  []string `json:"pending_devices"`
+	Message         string   `json:"message"`
+}
+
 type Result struct {
+	Retirement       *RetirementReview      `json:"retirement,omitempty"`
+	Removal          *RemovalResult         `json:"removal,omitempty"`
 	Pairing          *network.PairingStatus `json:"pairing,omitempty"`
 	Network          *NetworkStatus         `json:"network,omitempty"`
 	CopyPlans        []CopyPlan             `json:"copy_plans,omitempty"`
@@ -417,6 +441,7 @@ type Result struct {
 	Requests         []EnrollmentRequest    `json:"requests"`
 	Observations     []Observation          `json:"observations"`
 	Attention        []Attention            `json:"attention"`
+	JoinRequestCount *Uint                  `json:"join_request_count,omitempty"`
 	Effects          []Effect               `json:"effects"`
 	Review           *Review                `json:"review,omitempty"`
 	Cursor           string                 `json:"cursor"`

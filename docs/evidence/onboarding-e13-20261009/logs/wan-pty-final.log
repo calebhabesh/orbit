@@ -1,0 +1,23 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:76: [
+          {
+            "scenario": "W07-keyboard-relay-onboarding",
+            "result": "passed",
+            "assertions": [
+              "production binary real PTY; no manual addresses/listeners/init/serve; relay fixture preserves LAN advertising=false",
+              "reviewed existing contents, Back/Edit, wrong pin, expired v3 paste, unsupported-root correction",
+              "private transfer, independently selected development operator and TLS trust",
+              "exact cross-device verification/approval, delayed exit and actual daemon restart",
+              "exact operation/attempt/request/root/identity retained; byte/hash/version-author oracles",
+              "second folder separate consent/attempt/root, relay observations separate from readiness",
+              "narrow/colorless/resize, masked paste, v3 reveal, deliberate revocation",
+              "termios and alt/bracketed-paste restoration; daemon capture/transfer after client exit",
+              "actual marked service outage retains new-folder drafts and daemon local capture",
+              "fresh Automatic/missing-profile and preannouncement Local-only review; local capture after quit"
+            ]
+          }
+        ]
+        
+--- PASS: TestWANW07RealPTYRelayOnboarding (175.84s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	175.840s

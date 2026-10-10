@@ -149,7 +149,7 @@ func (m *model) filesReset(fs filesState) tea.Cmd {
 func (m *model) filesKey(k string) (tea.Cmd, bool) {
 	fs := m.files
 	switch k {
-	case "enter", "right", "l":
+	case "enter", "l":
 		rows := m.rows()
 		if len(rows) == 0 {
 			return nil, true
@@ -166,7 +166,7 @@ func (m *model) filesKey(k string) (tea.Cmd, bool) {
 			return m.invalidate(), true
 		}
 		return nil, true
-	case "left", "backspace", "esc":
+	case "backspace", "esc":
 		switch {
 		case m.detail:
 			m.detail, m.files.detailPath = false, ""

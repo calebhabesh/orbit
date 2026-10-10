@@ -96,7 +96,8 @@ Required work:
 
 - **Convention** (record in the terminal UX): ↑/↓ and `j`/`k` move rows **and**
   form fields; Tab/Shift+Tab move between fields or panes (not into search);
-  ←/→ change a selector and move through the Files tree; Enter selects, advances
+  ←/→ change a selector in forms and switch all five main views (owner correction
+  2026-10-09); Enter/Backspace navigate the Files tree. Enter selects, advances
   to the next field and confirms on the last; Esc goes back; `/` searches;
   `?` opens help; `q` quits outside text fields; Ctrl+C quits anywhere. Number keys
   `1`–`5` switch views in tab-bar order in addition to existing letters.
@@ -230,7 +231,8 @@ Required work:
   deleted. Never a global "synced everywhere" mark; other devices appear as
   qualified observations with freshness in the detail pane.
 - Detail pane: last author device, versions, per-device observations.
-- Actions: Enter/→ open directory; ← or Backspace up; `o` open with the desktop
+- Actions: Enter/`l` open directory; Backspace/Esc up; ←/→ switch main views;
+  `o` open with the desktop
   default (`xdg-open`); `e` open in `$EDITOR` with the TUI suspended; `h` history
   and restore; `c` conflict review; `y` copy path; `/` search. No rename, move or
   delete. `.orbit-internal` is never listed. Names pass through `safe()`.
@@ -287,3 +289,74 @@ Required work:
 
 Acceptance evidence: packages verified by checksum; rehearsal transcript; host
 install record; workaround removal recorded; trial guide published in `docs/demo.md`.
+
+## E11 — Onboarding copy, colour and README mark
+
+Dependencies: E10. Owner-approved 2026-10-09 (see the terminal UX amendment).
+Change: plain Review & Create / Review & Join cards with `d` Details holding
+every previously shown reviewed detail; the full operator privacy statement
+inline only when joining switches operator; Title Case screen titles; cyan
+labels, bright values, key-chip footers with a green Enter; README ASCII mark.
+Owner refinement (2026-10-09): center the README mark as an SVG image using
+the TUI's cyan rings, yellow/red sun and colored planets. Preserve the ASCII
+art and tagline, provide alternative text, and keep it readable in both themes.
+
+Acceptance evidence: unit tests for card content, Details toggle, operator
+switch and titles; the four `make quick` PTY suites pass with updated
+expectations.
+
+## E12 — Post-confirm flow and approval polish
+
+Dependencies: E11. Change: Setting Up / Joining checklist, approval wait with
+the verification code, success card that never says "ready" without local
+readiness; Enter to the Overview with the Orbit selected and a one-time toast;
+Enter/x approve or reject on the invitation page as its own operation; header
+join-request badge; version 2.3.0. The approved Leave/Remove work moved to
+E13 because unregistering a root does not stop background sync.
+
+Acceptance evidence: unit tests for the success card, set-up-not-ready, toast
+and selection, inline approval and badge; PTY suites.
+
+
+## E13 — Real Leave and reviewed Remove Device
+
+Dependencies: E12. Owner selected the recommended real Leave and installation
+on orbit-trial on PC, laptop and Pi, 2026-10-09. Scope: one Orbit's participation;
+keep working files, immutable history and the device identity. No undo Leave,
+identity reset, filesystem deletion, or partition-tolerant retirement is added.
+
+Required work and acceptance:
+
+- `L` / `orbit leave` preview warns about unsent edits. Confirmation binds the
+  exact root, cancels/drains this Orbit's admitted exchanges and workspace
+  writers, unregisters the root, and durably refuses incoming/outgoing sync and
+  fresh/retried work after restart. Other Orbits with the same peer still work.
+- A pinned member sees nonretryable `PEER_LEFT`; one deduplicated attention item
+  opens Remove Device. Unauthorized identities cannot inspect Leave state.
+- `X` / `orbit remove-device` show the target name and count of recorded changes
+  received here, say its total is unknown, and require typing the exact name.
+  Bind execution to the reviewed membership and retirement snapshot; forbid
+  self-removal. All surviving devices must prepare the same retiree record set
+  before local membership advances. Recheck that set atomically at commit.
+- Persist exact intent and operation identity. An offline/mismatched survivor
+  leaves removal pending without unilateral retirement. Interrupted rollout
+  resumes after restart, including a survivor fetching its previously prepared
+  successor. No unreviewed automatic retirement or fork selection is allowed.
+  A changed local record set before commit requires a fresh review. Membership
+  changes before rollout also invalidate the uncommitted review. Leave waits
+  for pending removal to complete or abort so its exact rollout remains resumable.
+- On `DEVICE_REMOVED`, stop this Orbit's activity and show who removed this
+  device, with Leave keeping files. Other Orbits continue. Already admitted
+  remote requests may finish under the existing per-request authorization rule;
+  retirement rejects subsequent admission. Detection on an offline removed
+  device waits for contact with a surviving device.
+- Pending removal suspends cleanup; completed/aborted records release that
+  suspension while retaining idempotent replay. Preserve publication/recovery
+  records on Leave. Schema migration 15 preserves prior metadata.
+- Meaningful repository/control/wire/CLI/TUI tests, real two-daemon PTY lifecycle
+  scenarios, broader regression/race/package checks, and an actual trial install
+  and read-only host verification. Fault tests use marked disposable roots.
+
+Evidence belongs in `docs/evidence/onboarding-e13-20261009/`. Record failures and
+fixes, actual checks, unexecuted checks and host state separately. Preserve all
+historical P/O/T/W and E00–E10 evidence.

@@ -1,5 +1,9 @@
 # Orbit
 
+<p align="center">
+  <img src="docs/assets/orbit-logo.svg" width="560" alt="Orbit — Your folders, on every device. Colored ASCII sun, planets, and orbital rings from the Orbit TUI.">
+</p>
+
 [![CI](https://github.com/calebhabesh/orbit/actions/workflows/ci.yml/badge.svg)](https://github.com/calebhabesh/orbit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -177,3 +181,11 @@ not requirements (removed 2026-10-07) and are not claimed. The [scope](docs/port
 [protocol](docs/protocol.md), [persistence](docs/persistence.md),
 [operations](docs/operations.md) and [verification](docs/verification.md)
 own the guarantees and failure model.
+
+
+Leave one Orbit with `orbit leave Synced` (review) and `--yes` to confirm, or
+press **L** on its terminal screen. Sync stops in both directions here; files
+stay. To remove another device from one Orbit, press **X** and type its name,
+or see `orbit help remove-device` for the private review-file workflow.
+Removal shows changes received here and waits for surviving devices to agree.
+See [participation controls](docs/operations.md#leaving-an-orbit-and-removing-a-device--e13-2026-10-09).

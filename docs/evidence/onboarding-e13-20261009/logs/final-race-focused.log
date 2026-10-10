@@ -1,0 +1,7 @@
+ok  	github.com/calebhabesh/orbit/cmd/orbit	2.513s
+ok  	github.com/calebhabesh/orbit/internal/control	4.232s
+ok  	github.com/calebhabesh/orbit/internal/replication	2.187s
+ok  	github.com/calebhabesh/orbit/internal/repository	1.009s [no tests to run]
+ok  	github.com/calebhabesh/orbit/internal/scheduler	1.010s [no tests to run]
+ok  	github.com/calebhabesh/orbit/internal/terminal	1.170s
+ok  	github.com/calebhabesh/orbit/internal/workspace	2.210s

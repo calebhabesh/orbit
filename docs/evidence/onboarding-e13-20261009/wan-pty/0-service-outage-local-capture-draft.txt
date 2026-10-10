@@ -1,0 +1,258 @@
+Orbit | [Overview]  Orbits  Attention  Devices  Files                                               
+╭─ Status ─────────────────────────────╮╭─ Second ─────────────────────────────────────────────────╮
+│ Daemon: running (terminal)           ││ Name: Second                                             │
+│ Startup: manual (not enabled)        ││ Folder: ~/.cache/orbit-work-tmp/orbit-w07-pty-           │
+│ 2 folders · 0 attention items · 2    ││ tg968z38/second                                          │
+│ devices                              ││                                                          │
+│ Connection: Self-hosted automatic    ││ Enter opens the folder: copy status, history, sharing    │
+│ Services: SERVICE_UNAVAILABLE        ││ and storage.                                             │
+│ dbf194d44dd3: Connected via relay;   ││                                                          │
+│ recent                               ││ Files                                                    │
+╰──────────────────────────────────────╯│   second.txt   Saved here                                │
+╭─ Orbits ─────────────────────────────╮│                                                          │
+│ Search page:                         ││ 5 open in Files  Enter manage this Orbit                 │
+│ > Second  ~/.cache/orbit-work-tmp/o… ││                                                          │
+│   Notes  ~/.cache/orbit-work-tmp/or… ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+╰───────────────────────────── 1 of 2 ─╯│                                                          │
+╭─ Devices ────────────────────────────╮│                                                          │
+│ Laptop                               ││                                                          │
+│ Pi                                   ││                                                          │
+╰────────────────────────── d inspect ─╯╰──────────────────────────────────────────────────────────╯
+j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests
+u setup  N connection  L leave  X remove device                                                     
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Self-hosted automatic                                                                │
+│ Service configuration: SERVICE_UNAVAILABLE; ready=false                                          │
+│ Operator: Development directory loss fixture                                                     │
+│ Metadata: Development only; metadata expires in memory; no logs or folder data.                  │
+│ Profile: verified; expires=2026-10-09T23:40:35Z                                                  │
+│ Next action: Check device and service availability; a timeout does not identify a NAT or         │
+│ firewall type.                                                                                   │
+│ dbf194d44dd331f9ce43f4787151ec2f0cbb5a6b5552c6da0e224b397e9be903: Connected via relay;           │
+│ observed=2026-10-09T22:43:21.62666843Z; CONNECTED                                                │
+│ Freshness: recent; candidates LAN=0 public=0 expired=0; UDP=UNAVAILABLE                          │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Self-hosted automatic                                                                │
+│ Service configuration: SERVICE_UNAVAILABLE; ready=false                                          │
+│ Operator: Development directory loss fixture                                                     │
+│ Metadata: Development only; metadata expires in memory; no logs or folder data.                  │
+│ Profile: verified; expires=2026-10-09T23:40:35Z                                                  │
+│ Next action: Check device and service availability; a timeout does not identify a NAT or         │
+│ firewall type.                                                                                   │
+│ dbf194d44dd331f9ce43f4787151ec2f0cbb5a6b5552c6da0e224b397e9be903: Connected via relay;           │
+│ observed=2026-10-09T22:43:21.62666843Z; CONNECTED                                                │
+│ Freshness: recent; candidates LAN=0 public=0 expired=0; UDP=UNAVAILABLE                          │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      
+--- frame ---
+Orbit | [Overview]  Orbits  Attention  Devices  Files                                               
+╭─ Status ─────────────────────────────╮╭─ Second ─────────────────────────────────────────────────╮
+│ Daemon: running (terminal)           ││ Name: Second                                             │
+│ Startup: manual (not enabled)        ││ Folder: ~/.cache/orbit-work-tmp/orbit-w07-pty-           │
+│ 2 folders · 0 attention items · 2    ││ tg968z38/second                                          │
+│ devices                              ││                                                          │
+│ Connection: Self-hosted automatic    ││ Enter opens the folder: copy status, history, sharing    │
+│ Services: SERVICE_UNAVAILABLE        ││ and storage.                                             │
+│ dbf194d44dd3: Connected via relay;   ││                                                          │
+│ recent                               ││ Files                                                    │
+╰──────────────────────────────────────╯│   second.txt   Saved here                                │
+╭─ Orbits ─────────────────────────────╮│                                                          │
+│ Search page:                         ││ 5 open in Files  Enter manage this Orbit                 │
+│ > Second  ~/.cache/orbit-work-tmp/o… ││                                                          │
+│   Notes  ~/.cache/orbit-work-tmp/or… ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+╰───────────────────────────── 1 of 2 ─╯│                                                          │
+╭─ Devices ────────────────────────────╮│                                                          │
+│ Laptop                               ││                                                          │
+│ Pi                                   ││                                                          │
+╰────────────────────────── d inspect ─╯╰──────────────────────────────────────────────────────────╯
+j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests
+u setup  N connection  L leave  X remove device                                                     
+--- frame ---
+Orbit | Create Your Orbit                                                                           
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ An Orbit is a folder that stays in sync across your devices. Name it and choose where its files  │
+│ live here.                                                                                       │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│ > Device name: CalebPC                                                                           │
+│     How your other devices see this one.                                                         │
+│   Orbit name: Synced                                                                             │
+│   Folder: ~/Synced                                                                               │
+│     Files live in /home/ethioking/Synced                                                         │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│   Connection: ‹ self_hosted ›                                                                    │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            
+--- frame ---
+Orbit | Create Your Orbit                                                                           
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ An Orbit is a folder that stays in sync across your devices. Name it and choose where its files  │
+│ live here.                                                                                       │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│   Device name: Laptop                                                                            │
+│   Orbit name: OfflineDraft                                                                       │
+│   Folder: <disposable>/offline-draft             │
+│     Files live in <disposable>/offline-draft     │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│ > Connection: ‹ self_hosted ›                                                                    │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            
+--- frame ---
+Orbit | Create Your Orbit                                                                           
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ An Orbit is a folder that stays in sync across your devices. Name it and choose where its files  │
+│ live here.                                                                                       │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│   Device name: Laptop                                                                            │
+│   Orbit name: OfflineDraft                                                                       │
+│   Folder: <disposable>/offline-draft             │
+│     Files live in <disposable>/offline-draft     │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│ > Connection: ‹ self_hosted ›                                                                    │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            

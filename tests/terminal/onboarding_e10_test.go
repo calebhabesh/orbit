@@ -21,6 +21,16 @@ func TestOnboardingE10OfflinePeerSyncsAreNotAttention(t *testing.T) {
 	ctx := context.Background()
 	folder := f.folder("e10")
 	peer := history.ID{7}
+	current, approved, err := f.db.GetMembership(ctx, folder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	current.Revision++
+	current.PriorDigest = approved.Digest
+	current.Active = append(current.Active, protocol.ActiveMember{Device: peer, KeyPin: history.Digest{7}})
+	if _, err := f.db.ApproveMembership(ctx, current); err != nil {
+		t.Fatal(err)
+	}
 	exhaust := func(code string) string {
 		t.Helper()
 		id, err := f.db.EnqueueDurableTask(ctx, repository.DurableTask{Folder: folder, Peer: &peer, Kind: "sync", MaxAttempts: 5})

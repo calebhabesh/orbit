@@ -9,13 +9,14 @@ import (
 	"unicode/utf8"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/charmbracelet/x/ansi"
 )
 
 func (m *model) workflowView() tea.View {
 	f := m.flow
-	title := "Orbit | " + f.screen
+	title := "Orbit | " + titleWord(f.screen)
 	footer := "Esc back  q quit (daemon continues)"
 	lines := []string{}
 	focusLine := -1
@@ -35,14 +36,14 @@ func (m *model) workflowView() tea.View {
 	}
 	switch f.screen {
 	case "welcome":
-		title = "Orbit | Create or join"
+		title = "Orbit | Create or Join"
 		lines = append(lines, m.theme().banner(m.width-4, m.height)...)
-		lines = append(lines, "Create your Orbit [c / Enter]", "Join an existing Orbit [j]", "Existing folder contents are reviewed before adoption.", "Closing this interface leaves background sync running.")
+		lines = append(lines, "Create your Orbit [c / Enter]", "Join an existing Orbit [j]", "You review everything before anything is shared.", "Closing this interface leaves background sync running.")
 	case "load_settings":
 		title = "Orbit | Setup"
 		lines = append(lines, "Loading actual finite/network/startup settings…")
 	case "invitation":
-		title = "Orbit | Join invitation"
+		title = "Orbit | Join an Orbit"
 		lines = append(lines, "Type the XXXX-XXXX pairing code, paste a long invitation, or enter a private file path.", "The invitation is hidden and never included in status/logs.")
 		if digest, operator, privacy := m.pairingOperator(); digest != "" {
 			lines = append(lines, "Short codes contact: "+safe(operator), safe(privacy), "Pressing Enter with a short code accepts this one-time service exchange.")
@@ -56,7 +57,7 @@ func (m *model) workflowView() tea.View {
 			title = "Orbit | Join " + invitedName(f.invitation.FolderName)
 			lines = append(lines, invitedBy(f.invitation)+" invited you to "+invitedName(f.invitation.FolderName)+". Choose where its files live on this device.")
 		} else {
-			title = "Orbit | Create your Orbit"
+			title = "Orbit | Create Your Orbit"
 			lines = append(lines, "An Orbit is a folder that stays in sync across your devices. Name it and choose where its files live here.")
 		}
 		lines = append(lines, "Connection choices: Automatic or Local network only; Ctrl-N changes mode.",
@@ -82,106 +83,23 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Metadata budget="+hb(f.settings.MetadataBudget)+" reserve="+hb(f.settings.ReserveBytes)+"; retention uses per-folder controls.")
 		footer = "↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced  Esc back"
 	case "preview":
-		title = "Orbit | Measuring root"
+		title = "Orbit | Checking Folder"
 		lines = append(lines, "Bounded enumeration continues; adoption has not been confirmed.")
 		if f.result.Preview != nil {
 			lines = append(lines, previewLines(f.result.Preview)...)
 		}
 	case "review":
-		title = "Orbit | Confirm adoption"
-		p := f.plan
-		s := p.Settings
-		lines = append(lines, "Orbit "+safe(p.FolderName)+" will sync this folder on "+safe(p.DeviceName)+":", "  "+safe(p.Root), "Files already in that folder become shared; nothing is deleted.")
+		lines = append(lines, m.reviewLines()...)
+		title, footer = "Orbit | Review & Create", "Enter Create Orbit  Esc Back  d Details  arrows scroll  q Quit"
 		if f.kind == "join" {
-			inviter, folder := safe(f.invitation.Inviter), safe(f.invitation.Folder)
-			if n := f.invitation.InviterName; n != "" {
-				inviter = safe(n) + " (" + inviter + ")"
-			}
-			if n := f.invitation.FolderName; n != "" {
-				folder = safe(n) + " (" + folder + ")"
-			}
-			lines = append(lines, "Inviter: "+inviter, "Key pin: "+safe(f.invitation.KeyPin), "Invitation expires: "+expiresIn(f.invitation.ExpiresAt, time.Now()), "Invitation folder: "+folder)
+			title, footer = "Orbit | Review & Join", "Enter Join Orbit  Esc Back  d Details  arrows scroll  q Quit"
 		}
-		if p.Network != nil {
-			lines = append(lines, policyLines(*p.Network)...)
-			if b := f.builtin; b != nil && p.Network.Profile == b.Digest {
-				lines = append(lines, "Operator: "+safe(b.Operator)+" (packaged profile, expires "+safe(b.Expires)+")", "Privacy: "+safe(b.Privacy))
-			}
-		}
-		if f.invitation.Profile != nil {
-			same := f.network.Profile == f.invitation.Route.Profile || (f.builtin != nil && f.builtin.Digest == f.invitation.Route.Profile)
-			if p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile && same {
-				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator)+" (same operator and profile as this device)")
-			} else if p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile {
-				// Reviewing this screen accepts the inviter's operator (F08).
-				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator)+" — confirming uses this operator on this device too", "Privacy: "+safe(f.invitation.Profile.Privacy))
-			} else {
-				lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator), "Profile: "+safe(f.invitation.Route.Profile), "Select this operator independently with orbit network set before joining.")
-			}
-		}
-		lines = append(lines, previewLines(f.result.Preview)...)
-		lines = append(lines, fmt.Sprintf("Startup=%s; data=%s metadata=%s reserve=%s; concurrency=%d bandwidth=%s", safe(s.Startup), hb(s.DataBudget), hb(s.MetadataBudget), hb(s.ReserveBytes), s.Concurrency, bandwidth(s.BandwidthBytesPerSecond)))
-		if f.advanced {
-			lines = append(lines, "Peer listen: "+safe(s.PeerListen)+"; advertise: "+safe(s.AdvertisedPeer), "Enrollment listen: "+safe(s.EnrollmentListen)+"; advertise: "+safe(s.AdvertisedEnrollment))
-		}
-		footer = "Enter confirm exact review  Esc edit  arrows scroll  q quit"
 	case "progress":
-		title = "Orbit | Setup progress"
-		r := f.result
-		if r.Operation == nil {
-			lines = append(lines, "Loading durable operation…")
-		} else {
-			lines = append(lines, "State: "+safe(r.Operation.State)+" | "+phaseLabel(r.Operation.Phase))
-			for _, e := range r.Effects {
-				if e.State == "slowed_down" {
-					lines = append(lines, "Waiting; the inviting device asked us to slow down, so Orbit checks again a little later.")
-				}
-				if cause, ok := strings.CutPrefix(e.State, "reconnecting:"); ok {
-					lines = append(lines, "Can't reach the inviting device yet ("+safe(cause)+"); Orbit keeps trying every 15–25 seconds.",
-						"Keep Orbit running on the inviting device. Nothing is lost while waiting.")
-				}
-			}
-			if r.Operation.Phase == "awaiting_approval" && r.Join != nil {
-				// Say what is awaited and where (E04): the inviting device approves.
-				who := "this device"
-				if f.plan.DeviceName != "" {
-					who += " (" + safe(f.plan.DeviceName) + ")"
-				}
-				inviting := "the inviting device"
-				if n := f.invitation.InviterName; n != "" && f.invitation.Inviter == r.Join.Inviter {
-					inviting = safe(n)
-				}
-				lines = append(lines, "Awaiting approval: waiting for "+inviting+" to approve "+who+".",
-					"On the inviting device: open Attention (or press w), choose the request and compare this code: "+joinVerification(r))
-			}
-
-			if r.Readiness != nil {
-				rd := r.Readiness
-				lines = append(lines, fmt.Sprintf("Approved=%t membership current=%t root available=%t scan complete=%t", rd.Approved, rd.MembershipCurrent, rd.RootAvailable, rd.ScanComplete), fmt.Sprintf("Uncaptured=%d download pending=%d publication pending=%d conflicts=%d storage blocked=%t", rd.Uncaptured, rd.MissingContent, rd.PendingPublication, rd.Conflicts, rd.StorageBlocked))
-				if rd.Ready() && r.Operation.State == "completed" {
-					lines = append(lines, "Locally ready (observed). Other offline devices may remain pending.")
-				} else {
-					lines = append(lines, "Local readiness incomplete. Work remains pending.")
-				}
-			}
-			lines = append(lines, "Operation: "+safe(r.Operation.ID))
-			if r.Join != nil {
-				lines = append(lines, "Root: "+safe(r.Join.Root))
-				if r.Join.Request != "" {
-					lines = append(lines, "Request: "+safe(r.Join.Request))
-				}
-				if r.Join.Inviter != "" {
-					lines = append(lines, "Inviter: "+safe(r.Join.Inviter), "Key pin: "+safe(r.Join.KeyPin), "Compare verification code on inviter: "+joinVerification(r))
-				}
-			}
-			if r.Error != nil {
-				lines = append(lines, workflowError(r, nil))
-			}
-		}
-		lines = append(lines, networkLines(r.Network)...)
-		footer = "r refresh  a add device  N connection  J new join  Esc overview  q quit"
-	case "pick_folder", "pick_device", "setups":
-		title = "Orbit | Select " + strings.TrimPrefix(f.screen, "pick_")
+		var body []string
+		title, body, footer = m.progressLines()
+		lines = append(lines, body...)
+	case "pick_folder", "pick_device", "pick_removal_device", "setups":
+		title = "Orbit | " + map[string]string{"pick_folder": "Select Orbit", "pick_device": "Select Device", "pick_removal_device": "Select Device to Remove", "setups": "Select Setup"}[f.screen]
 		if f.device != "" {
 			lines = append(lines, "Selected device: "+safe(f.device), "Select a folder to inspect its sharing/contact state.")
 		}
@@ -198,7 +116,7 @@ func (m *model) workflowView() tea.View {
 		}
 		footer = "j/k select  Enter choose  ] next  [ first  Esc back  q quit"
 	case "requests":
-		title = "Orbit | Enrollment requests"
+		title = "Orbit | Join Requests"
 		for i, p := range f.result.Requests {
 			prefix := "  "
 			if i == f.selected {
@@ -212,15 +130,15 @@ func (m *model) workflowView() tea.View {
 		}
 		footer = "j/k select  Enter exact review  r refresh  ] next  [ first  Esc back"
 	case "approval":
-		title = "Orbit | Exact request approval"
+		title = "Orbit | Approve Device"
 		p := f.request
 		lines = append(lines, safe(orDefault(p.Label, "A device"))+" wants to join "+orbitLabel(f, p.Folder)+".", "Device: "+safe(p.Label), "Request: "+safe(p.ID), "Requester: "+safe(p.Requester), "Key pin: "+safe(p.KeyPin), "Verification code: "+safe(p.VerificationCode), "State: "+safe(p.State), "Compare with the joining device. Approval grants this folder only.", "Offline devices may still need membership updates.")
 		footer = "a approve exact request  x decline  Esc back  q quit"
 	case "approval_done":
-		title = "Orbit | Request decision"
+		title = "Orbit | Request Decision"
 		lines = append(lines, "Decision durably recorded; receiver still observes its own readiness.")
 	case "invite_review":
-		title = "Orbit | Add device / share folder"
+		title = "Orbit | Invite a Device"
 		lines = append(lines, "Invite a device to "+orbitLabel(f, f.folder)+".")
 		if f.device != "" {
 			lines = append(lines, "Known device: "+safe(f.device), "Reuse its existing identity; separate local-root consent and approval required.")
@@ -231,16 +149,26 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Invitation expires in one hour; it grants no file access before approval.")
 		footer = "Enter create scoped invitation  Esc back  q quit"
 	case "invitation_out":
-		title = "Orbit | Private invitation"
-		status, review := inviteStatus(f)
-		lines = append(lines, "Inviting a device to "+orbitLabel(f, f.folder)+".", "Status: "+status, "")
-		reviewKey := ""
-		if review {
-			reviewKey = "Enter review request  "
+		title = "Orbit | Invitation"
+		t := m.theme()
+		lines = append(lines, "Inviting a device to "+orbitLabel(f, f.folder)+".", "")
+		reviewKey, revokeKey := "", "x Revoke  "
+		if len(f.invitePending) > 0 {
+			p := f.invitePending[0]
+			name := orDefault(safe(p.Label), "A device")
+			lines = append(lines, t.style(lipgloss.NewStyle().Foreground(cYellow).Bold(true), "● "+name+" wants to join"), "",
+				t.row("Code", t.style(lipgloss.NewStyle().Background(cAccent).Foreground(cBlack).Bold(true), " "+safe(p.VerificationCode)+" ")),
+				"", "Check that "+name+" shows the same code, then approve.", "")
+			reviewKey, revokeKey = "Enter Approve  ", "x Reject  "
+		} else if s := f.inviteSeen; s != nil && s.State == "approved" {
+			lines = append(lines, t.style(lipgloss.NewStyle().Foreground(cGreen).Bold(true), "✓ "+orDefault(safe(s.Label), "The device")+" joined "+orbitLabel(f, f.folder)), "It can now sync files with this device.", "")
+		} else {
+			status, _ := inviteStatus(f)
+			lines = append(lines, "Status: "+status, "")
 		}
 		if p := f.result.Pairing; p != nil && p.Code != "" {
-			lines = append(lines, "Pairing code: "+p.Code, "Expires: "+expiresIn(p.Expires, time.Now()), "On the other device choose Join and type this code.", "Owner approval and verification-code comparison still follow.")
-			footer = reviewKey + "c copy code  r new code  v long invitation  s save file  x revoke  Esc back  q quit"
+			lines = append(lines, t.row("Pairing code", t.bold(p.Code)), t.row("Expires", expiresIn(p.Expires, time.Now())), "On the other device choose Join and type this code.", "You approve it here before it gets any files.")
+			footer = reviewKey + revokeKey + "c copy code  r new code  v long invitation  s save file  Esc back  q quit"
 			break
 		}
 		code, _ := tc.InvitationCode(f.invitation)
@@ -252,15 +180,15 @@ func (m *model) workflowView() tea.View {
 		if f.saved != "" {
 			lines = append(lines, savedTransferLines(f.saved)...)
 		}
-		footer = reviewKey + "c copy  v show  s save file  x revoke  Esc back  q quit"
+		footer = reviewKey + revokeKey + "c copy  v show  s save file  Esc back  q quit"
 	case "revoke_invitation_review":
-		title = "Orbit | Revoke invitation"
+		title = "Orbit | Revoke Invitation"
 		lines = append(lines, "Revoke this exact invitation for folder: "+safe(f.invitation.Folder), "Pending requests using it cannot be approved. Existing approved membership is preserved.")
 		footer = "Enter revoke exact invitation  Esc back  q quit"
 	case "invitation_revoked":
-		title = "Orbit | Invitation revoked"
+		title = "Orbit | Invitation Revoked"
 	case "network":
-		title = "Orbit | Connection details"
+		title = "Orbit | Connection Details"
 		if f.err != "" {
 			lines = append(lines, "Last successful observations retained; current connection state unavailable.")
 		}
@@ -278,12 +206,12 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, m.theme().field(f.fields[0].label, f.fields[0].input.View(), "", true))
 		footer = "Enter rename  Esc back  Ctrl-C close"
 	case "save_invitation", "relocate_form":
-		title = "Orbit | " + f.screen
+		title = "Orbit | " + map[string]string{"save_invitation": "Save Invitation", "relocate_form": "Move Folder"}[f.screen]
 		focusLine = len(lines)
 		lines = append(lines, m.theme().field(f.fields[0].label, f.fields[0].input.View(), "", true))
 		footer = "Enter continue  Esc back  Ctrl-C close"
 	case "folder", "retire":
-		title = "Orbit | Inspect folder and devices"
+		title = "Orbit | Orbit Details"
 		info := f.result.FolderManagement
 		if info == nil {
 			lines = append(lines, "Loading folder state…")
@@ -306,13 +234,13 @@ func (m *model) workflowView() tea.View {
 				lines = append(lines, safe(a.Code)+": "+safe(a.Action))
 			}
 		}
-		footer = "R rename  v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  x unregister  t retire  N connection  r refresh  Esc back  q quit"
+		footer = "R rename  v copy status  h history  D deleted  C conflicts  b storage  p pause  l relocate  a add device  s share  L leave  X remove device  N connection  r refresh  Esc back  q quit"
 	case "folder_action":
-		title = "Orbit | Confirm local " + f.task
+		title = "Orbit | Confirm " + titleWord(f.task)
 		lines = append(lines, "This action changes local synchronization for the selected folder.", "It does not erase remote files or change remote device membership.")
 		footer = "Enter confirm  Esc back  q quit"
 	case "retry_review":
-		title = "Orbit | Retry work"
+		title = "Orbit | Retry Work"
 		var item tc.Attention
 		for _, a := range m.result.Attention {
 			if a.OperationID == f.operation && a.Code == "EXHAUSTED_WORK" {
@@ -326,22 +254,60 @@ func (m *model) workflowView() tea.View {
 		lines = append(lines, "Retrying queues it again in the running daemon; nothing else changes.")
 		footer = "Enter retry  Esc back  q quit"
 	case "relocate_review":
-		title = "Orbit | Confirm relocation"
+		title = "Orbit | Confirm Move"
 		if info := f.result.FolderManagement; info != nil {
 			lines = append(lines, "Current: "+safe(info.Root), "Destination: "+safe(f.fields[0].input.Value()), "Uses the existing resumable relocation journal. Keep original/staging folders until recovery finishes.")
 		}
 		footer = "Enter relocate  Esc edit  q quit"
 	case "unregister_preview":
-		title = "Orbit | Unregister preview"
+		title = "Orbit | Unregister Folder"
 		lines = append(lines, "Scope: remove this device's local root registration only.", "Working files are preserved; remote copies and membership are unchanged.", "This does not erase a remote device or revoke its keys.", "Use the existing conservative procedure: orbit folders remove --folder "+safe(f.folder))
 		footer = "arrows scroll  Esc back  q quit"
-	case "retirement_preview":
-		title = "Orbit | Retirement preview"
-		for _, it := range f.result.Items {
-			lines = append(lines, safe(it.Name), safe(it.Root))
+	case "remove_resume_review":
+		title = "Orbit | Resume Device Removal"
+		lines = append(lines, "Resume the exact removal you already confirmed.", "Completed steps remain in effect; surviving devices still need to agree.", "Files on every device stay.", "Operation: "+safe(f.operation))
+		footer = "Enter Resume Removal  Esc Back"
+	case "leave_review":
+		title = "Orbit | Leave Orbit"
+		t := m.theme()
+		lines = append(lines, t.row("Orbit", t.bold(safe(f.folderName))), t.row("Files stay in", safe(f.folderRoot)), "", "This device will stop sending and receiving this Orbit's data.", "Your working files and captured history stay on this device.", "Unsynced edits may exist only here. Copy them before resetting this device.", "Other devices will be asked to remove this one from the Orbit.", "Rejoining requires a fresh enrollment; Leave has no undo.")
+		footer = "Enter Leave Orbit  Esc Back"
+	case "remove_form":
+		title = "Orbit | Remove Device"
+		if r := f.result.Retirement; r != nil {
+			lines = append(lines, m.theme().row("Device", safe(r.DeviceName)), m.theme().row("Orbit", safe(f.folderName)), fmt.Sprintf("%d recorded changes received here.", r.ReceivedChanges), "Total on that device: unknown.", "Unseen edits may exist only on that device.", "Files stay; other Orbits keep syncing.", "Surviving devices must agree before removal.", "This identity cannot rejoin this Orbit.", "")
+			focusLine = len(lines)
+			lines = append(lines, m.theme().field(f.fields[0].label, f.fields[0].input.View(), "", true))
 		}
-		lines = append(lines, "Preview only. Follow the conservative reviewed retirement procedure.", "orbit engine peers retire --help; docs/runbooks/membership-fork.md")
-		footer = "arrows scroll  Esc back  q quit"
+		footer = "Enter Remove Device  Esc Back"
+	case "remove_result":
+		title = "Orbit | Remove Device"
+		if r := f.result.Removal; r != nil {
+			lines = append(lines, safe(r.Message))
+			if r.State == "needs_review" {
+				footer = "r Review Again  Esc Back"
+			} else if r.State == "completed" {
+				lines = append(lines, "✓ Device removed from this Orbit.")
+				footer = "Enter Go to Overview  Esc Back"
+			} else {
+				lines = append(lines, "Removal is pending. Keep this operation to resume; completed steps remain in effect.", "Operation: "+safe(r.OperationID))
+				for _, name := range r.PendingDevices {
+					lines = append(lines, "Waiting for: "+safe(name))
+				}
+				footer = "r Retry Same Removal  Esc Back"
+			}
+		}
+	case "removed":
+		title = "Orbit | Device Removed"
+		if info := f.result.FolderManagement; info != nil {
+			message := "This device was removed by " + safe(info.RemovedBy) + "."
+			if info.RemovedBy == "" {
+				message = "This device was removed. Reported by " + safe(info.RemovalReporter) + "."
+			}
+			lines = append(lines, message, "Syncing has stopped for this Orbit. Your files stay in "+safe(info.Root)+".", "Leave to keep the files and remove this Orbit from the list.", "To join again, enroll a fresh device identity.")
+		}
+		footer = "Enter Leave Orbit  Esc Back"
+
 	}
 	if f.busy {
 		lines = append(lines, "Submitting exact operation; closing the client does not cancel admitted work.")
@@ -354,13 +320,17 @@ func (m *model) workflowView() tea.View {
 func (m *model) frame(title string, lines []string, footer string, focusLine, scroll int) tea.View {
 	t := m.theme()
 	title = strings.TrimPrefix(title, "Orbit | ")
-	right := ""
+	right := m.requestBadge(t)
 	if s := m.result.Service; s != nil && !t.plain {
-		right = t.pill(daemonLabel(s), startupLabel(s))
+		right += t.pill(daemonLabel(s), startupLabel(s))
 	}
 	heading := []string{t.header(m.width, t.bold(title), right)}
 	if t.plain {
-		heading = strings.Split(ansi.Wrap("Orbit | "+title, max(1, m.width), ""), "\n")
+		headingText := "Orbit | " + title
+		if right != "" {
+			headingText += " | " + strings.TrimSpace(right)
+		}
+		heading = strings.Split(ansi.Wrap(headingText, max(1, m.width), ""), "\n")
 	}
 	tail := t.footer(footer, m.width)
 	// A revealed invitation is copied from the terminal, so no border may
@@ -670,4 +640,276 @@ func inviteStatus(f *workflow) (string, bool) {
 		return "Waiting for the other device to enter the code.", false
 	}
 	return "Waiting for the other device to use this invitation.", false
+}
+
+// reviewLines is the confirmation card for creating or joining: what syncs,
+// where, and how devices connect, in plain words. d appends every reviewed
+// detail (identities, key pin, full operator privacy text, budgets).
+func (m *model) reviewLines() []string {
+	f, t := m.flow, m.theme()
+	p := f.plan
+	s := p.Settings
+	join := f.kind == "join"
+	var lines []string
+	if join {
+		lines = append(lines, t.row("Invited by", t.bold(invitedBy(f.invitation))))
+	}
+	lines = append(lines, t.row("Orbit", t.bold(safe(p.FolderName))))
+	folder := safe(homePath(p.Root))
+	if pv := f.result.Preview; pv != nil && pv.Missing {
+		folder += t.muted("  (new folder, created when you confirm)")
+	}
+	lines = append(lines, t.row("Folder", folder), t.row("Device", safe(p.DeviceName)))
+	// Joining under a different operator than this device uses is the one
+	// case that needs the full privacy statement before confirming (F08).
+	switchOperator := false
+	if join && f.invitation.Profile != nil && p.Network != nil && f.invitation.Route != nil && p.Network.Profile == f.invitation.Route.Profile {
+		switchOperator = f.network.Profile != f.invitation.Route.Profile && (f.builtin == nil || f.builtin.Digest != f.invitation.Route.Profile)
+	}
+	if p.Network != nil {
+		operator := ""
+		if b := f.builtin; b != nil && p.Network.Profile == b.Digest {
+			operator = b.Operator
+		}
+		if switchOperator {
+			operator = f.invitation.Profile.Operator
+		}
+		lines = append(lines, t.row("Connects", connectsSummary(p.Network.Mode, operator)))
+		if p.Network.Mode == "automatic" || p.Network.Mode == "self_hosted" {
+			lines = append(lines, t.row("", t.good("✓ ")+"File contents stay encrypted between your devices; the service never sees file names or contents."))
+		}
+	}
+	if join {
+		expires := expiresIn(f.invitation.ExpiresAt, time.Now())
+		if at, err := time.Parse(time.RFC3339Nano, f.invitation.ExpiresAt); err == nil && time.Until(at) < 10*time.Minute {
+			expires = t.warn(expires)
+		}
+		lines = append(lines, t.row("Expires", expires))
+	}
+	if switchOperator {
+		lines = append(lines, "", t.warn("▲ Joining uses "+safe(f.invitation.Profile.Operator)+"'s Orbit service on this device too:"), t.warn(safe(f.invitation.Profile.Privacy)))
+	} else if join && f.invitation.Profile != nil && (p.Network == nil || f.invitation.Route == nil || p.Network.Profile != f.invitation.Route.Profile) {
+		lines = append(lines, "", t.warn("▲ The inviter uses another Orbit service ("+safe(f.invitation.Profile.Operator)+"). Choose it with orbit network set before joining."))
+	}
+	lines = append(lines, "")
+	if pv := f.result.Preview; pv != nil && !pv.Missing && pv.Files+pv.Directories > 0 {
+		lines = append(lines, fmt.Sprintf("The folder already has %s (%s). They become shared; nothing is deleted.", plural(uint64(pv.Files), "file"), hb(pv.Bytes)))
+	} else if join {
+		lines = append(lines, "Files from "+invitedBy(f.invitation)+" arrive here after it approves this device.")
+	} else {
+		lines = append(lines, "Anything you put in this folder syncs to the devices you invite.")
+	}
+	if pv := f.result.Preview; pv != nil && pv.Unsupported+pv.Unreadable > 0 {
+		lines = append(lines, t.warn(fmt.Sprintf("▲ %d unsupported and %d unreadable items will not sync.", pv.Unsupported, pv.Unreadable)))
+	}
+	if !f.details {
+		return lines
+	}
+	lines = append(lines, "", t.bold("Details"))
+	if join {
+		inviter, folder := safe(f.invitation.Inviter), safe(f.invitation.Folder)
+		if n := f.invitation.InviterName; n != "" {
+			inviter = safe(n) + " (" + inviter + ")"
+		}
+		if n := f.invitation.FolderName; n != "" {
+			folder = safe(n) + " (" + folder + ")"
+		}
+		lines = append(lines, "Inviter: "+inviter, "Key pin: "+safe(f.invitation.KeyPin), "Invitation folder: "+folder)
+	}
+	lines = append(lines, "Root: "+safe(p.Root))
+	if p.Network != nil {
+		lines = append(lines, policyLines(*p.Network)...)
+		if b := f.builtin; b != nil && p.Network.Profile == b.Digest {
+			lines = append(lines, "Operator: "+safe(b.Operator)+" (packaged profile, expires "+safe(b.Expires)+")", "Privacy: "+safe(b.Privacy))
+		}
+	}
+	if join && f.invitation.Profile != nil {
+		lines = append(lines, "Inviter operator: "+safe(f.invitation.Profile.Operator))
+		if f.invitation.Route != nil {
+			lines = append(lines, "Inviter profile: "+safe(f.invitation.Route.Profile))
+		}
+	}
+	lines = append(lines, previewLines(f.result.Preview)...)
+	lines = append(lines, fmt.Sprintf("Startup=%s; data=%s metadata=%s reserve=%s; concurrency=%d bandwidth=%s", safe(s.Startup), hb(s.DataBudget), hb(s.MetadataBudget), hb(s.ReserveBytes), s.Concurrency, bandwidth(s.BandwidthBytesPerSecond)))
+	if f.advanced {
+		lines = append(lines, "Peer listen: "+safe(s.PeerListen)+"; advertise: "+safe(s.AdvertisedPeer), "Enrollment listen: "+safe(s.EnrollmentListen)+"; advertise: "+safe(s.AdvertisedEnrollment))
+	}
+	return lines
+}
+
+// connectsSummary says in plain words how this device reaches the others.
+func connectsSummary(mode, operator string) string {
+	switch mode {
+	case "automatic":
+		if operator != "" {
+			return "Anywhere (local network or internet), via the Orbit service run by " + safe(operator)
+		}
+		return "Anywhere (local network or internet), via the Orbit service"
+	case "self_hosted":
+		return "Anywhere, via your own Orbit service"
+	case "local_only":
+		return "Local network only; no internet services"
+	}
+	return connectionMode(mode)
+}
+
+func plural(n uint64, word string) string {
+	if n == 1 {
+		return "1 " + word
+	}
+	return strconv.FormatUint(n, 10) + " " + word + "s"
+}
+
+// titleWord capitalises each word of a short action name ("keep_copies" →
+// "Keep Copies") for screen titles.
+func titleWord(s string) string {
+	words := strings.Fields(strings.ReplaceAll(s, "_", " "))
+	for i, w := range words {
+		words[i] = strings.ToUpper(w[:1]) + w[1:]
+	}
+	return strings.Join(words, " ")
+}
+
+// progressLines shows a setup or join after confirmation: a checklist while it
+// runs, the verification code while the inviter decides, and a success card
+// once this device is ready. d appends the recorded operation details.
+func (m *model) progressLines() (title string, lines []string, footer string) {
+	f, t := m.flow, m.theme()
+	r := f.result
+	join := f.kind == "join" || (r.Operation != nil && r.Operation.Kind == "join") || r.Join != nil
+	title, footer = "Orbit | Setting Up", "Esc Overview  a Invite a device  d Details  q Quit"
+	if join {
+		title, footer = "Orbit | Joining", "Esc Overview  d Details  q Quit"
+	}
+	name, device, root := orDefault(safe(f.plan.FolderName), "Your Orbit"), orDefault(safe(f.plan.DeviceName), "this device"), f.plan.Root
+	if root == "" && r.Join != nil {
+		root = r.Join.Root
+	}
+	inviter := "the inviting device"
+	if n := f.invitation.InviterName; n != "" && (r.Join == nil || f.invitation.Inviter == r.Join.Inviter) {
+		inviter = safe(n)
+	}
+	if r.Operation == nil {
+		return title, []string{"Loading…"}, footer
+	}
+	op, rd := r.Operation, r.Readiness
+	done := op.State == "completed"
+	switch {
+	case r.Error != nil:
+		lines = append(lines, workflowError(r, nil))
+		footer = "r Retry  " + footer
+	case done:
+		head := name + " is set up on " + device
+		if rd != nil && rd.Ready() {
+			head = name + " is ready on " + device
+		}
+		if join {
+			head = "Joined! " + head
+		}
+		lines = append(lines, t.style(lipgloss.NewStyle().Foreground(cGreen).Bold(true), "✓ "+head), "")
+		if root != "" {
+			lines = append(lines, t.row("Folder", safe(homePath(root))))
+		}
+		if join {
+			lines = append(lines, t.row("Syncs with", inviter))
+			lines = append(lines, "", "Files you put in this folder now sync with your other devices.")
+			footer = "Enter Go to Overview  d Details  q Quit"
+		} else {
+			lines = append(lines, "", "Next: invite another device so this folder has somewhere to sync.")
+			footer = "Enter Go to Overview  a Invite a device  d Details  q Quit"
+		}
+		lines = append(lines, outstandingLines(t, rd)...)
+	case op.Phase == "awaiting_approval":
+		lines = append(lines, t.warn("◌ Waiting for "+inviter+" to approve "+device), "",
+			"On "+inviter+", open Orbit and press w (or Enter on the invitation page).",
+			"Check that it shows this code:", "",
+			"    "+t.style(lipgloss.NewStyle().Background(cAccent).Foreground(cBlack).Bold(true), " "+joinVerification(r)+" "), "")
+		lines = append(lines, phaseNotes(r)...)
+		lines = append(lines, t.muted("Nothing is shared until it's approved. You can close this screen; Orbit keeps waiting."))
+	default:
+		lines = append(lines, t.warn("◌ "+phaseLabel(op.Phase)+"…"), "")
+		check := func(ok bool, label string) string {
+			if ok {
+				return t.good("✓ ") + label
+			}
+			return t.muted("· ") + label
+		}
+		if rd != nil {
+			if join {
+				lines = append(lines, check(rd.Approved, "Approved by "+inviter))
+			}
+			lines = append(lines, check(rd.RootAvailable, "Folder ready"), check(rd.ScanComplete, "Files checked"),
+				check(rd.MissingContent == 0 && rd.PendingPublication == 0 && rd.Uncaptured == 0, "Files in sync"))
+		}
+		lines = append(lines, phaseNotes(r)...)
+	}
+	if !f.details {
+		return title, lines, footer
+	}
+	lines = append(lines, "", t.bold("Details"), "State: "+safe(op.State)+" | "+phaseLabel(op.Phase))
+	if rd != nil {
+		lines = append(lines, fmt.Sprintf("Approved=%t membership current=%t root available=%t scan complete=%t", rd.Approved, rd.MembershipCurrent, rd.RootAvailable, rd.ScanComplete), fmt.Sprintf("Uncaptured=%d download pending=%d publication pending=%d conflicts=%d storage blocked=%t", rd.Uncaptured, rd.MissingContent, rd.PendingPublication, rd.Conflicts, rd.StorageBlocked))
+		if rd.Ready() && done {
+			lines = append(lines, "Locally ready (observed). Other offline devices may remain pending.")
+		} else {
+			lines = append(lines, "Local readiness incomplete. Work remains pending.")
+		}
+	}
+	lines = append(lines, "Operation: "+safe(op.ID))
+	if r.Join != nil {
+		lines = append(lines, "Root: "+safe(r.Join.Root))
+		if r.Join.Request != "" {
+			lines = append(lines, "Request: "+safe(r.Join.Request))
+		}
+		if r.Join.Inviter != "" {
+			lines = append(lines, "Inviter: "+safe(r.Join.Inviter), "Key pin: "+safe(r.Join.KeyPin), "Compare verification code on inviter: "+joinVerification(r))
+		}
+	}
+	lines = append(lines, networkLines(r.Network)...)
+	return title, lines, footer
+}
+
+// phaseNotes explains waits the daemon reports while a join continues.
+func phaseNotes(r tc.Result) []string {
+	var lines []string
+	for _, e := range r.Effects {
+		if e.State == "slowed_down" {
+			lines = append(lines, "Waiting; the inviting device asked us to slow down, so Orbit checks again a little later.")
+		}
+		if cause, ok := strings.CutPrefix(e.State, "reconnecting:"); ok {
+			lines = append(lines, "Can't reach the inviting device yet ("+safe(cause)+"); Orbit keeps trying every 15–25 seconds.",
+				"Keep Orbit running on the inviting device. Nothing is lost while waiting.")
+		}
+	}
+	return lines
+}
+
+// outstandingLines lists what still keeps a set-up Orbit from being ready.
+func outstandingLines(t theme, rd *tc.Readiness) []string {
+	if rd == nil || rd.Ready() {
+		return nil
+	}
+	var waits []string
+	add := func(n tc.Uint, one, many string) {
+		switch {
+		case n == 1:
+			waits = append(waits, "1 "+one)
+		case n > 1:
+			waits = append(waits, fmt.Sprintf("%d %s", n, many))
+		}
+	}
+	add(rd.MissingContent, "file to download", "files to download")
+	add(rd.PendingPublication+rd.Uncaptured, "change to share", "changes to share")
+	add(rd.Conflicts, "conflict", "conflicts")
+	add(rd.Unsupported+rd.Unreadable, "item that can't sync", "items that can't sync")
+	if rd.StorageBlocked {
+		waits = append(waits, "storage is full")
+	}
+	if !rd.Approved || !rd.MembershipCurrent {
+		waits = append(waits, "membership update")
+	}
+	if len(waits) == 0 {
+		return nil
+	}
+	return []string{"", t.warn("▲ Still in progress: " + strings.Join(waits, ", "))}
 }

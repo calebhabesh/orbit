@@ -38,6 +38,8 @@ func handleOrbitFolders(args []string, stdout, stderr io.Writer) error {
 			return handleRename("folder", args[1:], stdout, stderr)
 		case "revalidate":
 			return handleOrbitFoldersRevalidate(args[1:], stdout, stderr)
+		case "leave":
+			return handleOrbitLeave(args[1:], stdout, stderr)
 		case "remove":
 			return handleFoldersRemove(args[1:], stdout, stderr)
 		default:

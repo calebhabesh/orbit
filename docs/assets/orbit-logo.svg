@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="432" viewBox="0 0 640 432" role="img" aria-labelledby="title description">
+  <title id="title">Orbit</title>
+  <desc id="description">The Orbit terminal logo: cyan ASCII orbital rings surround a yellow sun and colorful planets. Your folders, on every device.</desc>
+  <!-- ASCII artwork and color roles match internal/terminal/theme.go. -->
+  <rect x="1" y="1" width="638" height="430" rx="20" fill="#0d1117" stroke="#30363d"/>
+  <g font-family="DejaVu Sans Mono, monospace" font-size="18">
+    <text y="48"><tspan x="76.10" fill="#94a3b8">+</tspan><tspan x="227.86" fill="#22d3ee">_.----------</tspan><tspan x="357.94" fill="#4ade80" font-weight="bold">o</tspan><tspan x="368.78" fill="#22d3ee">--._</tspan></text>
+    <text y="72"><tspan x="141.14" fill="#22d3ee">.------'</tspan><tspan x="412.14" fill="#22d3ee">'------.</tspan><tspan x="553.06" fill="#94a3b8">+</tspan></text>
+    <text y="96"><tspan x="97.78" fill="#22d3ee">.--'</tspan><tspan x="238.70" fill="#22d3ee">_.-----------._</tspan><tspan x="498.86" fill="#22d3ee">'--.</tspan></text>
+    <text y="120"><tspan x="76.10" fill="#22d3ee">.'</tspan><tspan x="173.66" fill="#22d3ee">.----'</tspan><tspan x="401.30" fill="#22d3ee">'--</tspan><tspan x="433.82" fill="#60a5fa" font-weight="bold">O</tspan><tspan x="444.66" fill="#22d3ee">-.</tspan><tspan x="542.22" fill="#22d3ee">'.</tspan></text>
+    <text y="144"><tspan x="54.42" fill="#22d3ee">.'</tspan><tspan x="151.98" fill="#22d3ee">.'</tspan><tspan x="249.54" fill="#22d3ee">_.</tspan><tspan x="271.22" fill="#c084fc" font-weight="bold">o</tspan><tspan x="282.06" fill="#22d3ee">--------._</tspan><tspan x="466.34" fill="#22d3ee">'.</tspan><tspan x="563.90" fill="#22d3ee">'.</tspan></text>
+    <text y="168"><tspan x="43.58" fill="#22d3ee">/</tspan><tspan x="130.30" fill="#22d3ee">.'</tspan><tspan x="217.02" fill="#22d3ee">.-'</tspan><tspan x="282.06" fill="#f87171" font-weight="bold">.:-</tspan><tspan x="314.58" fill="#fbbf24" font-weight="bold">=</tspan><tspan x="325.42" fill="#f87171" font-weight="bold">-:.</tspan><tspan x="390.46" fill="#22d3ee">'-.</tspan><tspan x="488.02" fill="#22d3ee">'.</tspan><tspan x="585.58" fill="#22d3ee">\</tspan></text>
+    <text y="192"><tspan x="43.58" fill="#f87171" font-weight="bold">@</tspan><tspan x="130.30" fill="#22d3ee">|</tspan><tspan x="206.18" fill="#22d3ee">|</tspan><tspan x="260.38" fill="#f87171" font-weight="bold">.</tspan><tspan x="271.22" fill="#fbbf24" font-weight="bold">=#</tspan><tspan x="292.90" fill="#fde047" font-weight="bold">%@@@%</tspan><tspan x="347.10" fill="#fbbf24" font-weight="bold">#=</tspan><tspan x="368.78" fill="#f87171" font-weight="bold">.</tspan><tspan x="422.98" fill="#22d3ee">|</tspan><tspan x="498.86" fill="#22d3ee">|</tspan><tspan x="585.58" fill="#22d3ee">|</tspan></text>
+    <text y="216"><tspan x="43.58" fill="#22d3ee">\</tspan><tspan x="130.30" fill="#22d3ee">'.</tspan><tspan x="217.02" fill="#22d3ee">'-.</tspan><tspan x="282.06" fill="#f87171" font-weight="bold">':-</tspan><tspan x="314.58" fill="#fbbf24" font-weight="bold">=</tspan><tspan x="325.42" fill="#f87171" font-weight="bold">-:'</tspan><tspan x="390.46" fill="#22d3ee">.-'</tspan><tspan x="488.02" fill="#22d3ee">.'</tspan><tspan x="585.58" fill="#22d3ee">/</tspan></text>
+    <text y="240"><tspan x="54.42" fill="#22d3ee">'.</tspan><tspan x="151.98" fill="#22d3ee">'.</tspan><tspan x="249.54" fill="#22d3ee">'-----------'</tspan><tspan x="466.34" fill="#22d3ee">.'</tspan><tspan x="563.90" fill="#22d3ee">.'</tspan></text>
+    <text y="264"><tspan x="76.10" fill="#22d3ee">'.</tspan><tspan x="173.66" fill="#22d3ee">'----.</tspan><tspan x="401.30" fill="#22d3ee">.----'</tspan><tspan x="542.22" fill="#22d3ee">.'</tspan></text>
+    <text y="288"><tspan x="97.78" fill="#22d3ee">'--.</tspan><tspan x="238.70" fill="#22d3ee">'--</tspan><tspan x="271.22" fill="#fbbf24" font-weight="bold">@</tspan><tspan x="282.06" fill="#22d3ee">----------'</tspan><tspan x="498.86" fill="#22d3ee">.--'</tspan></text>
+    <text y="312"><tspan x="141.14" fill="#22d3ee">'------.</tspan><tspan x="412.14" fill="#22d3ee">.--</tspan><tspan x="444.66" fill="#67e8f9" font-weight="bold">O</tspan><tspan x="455.50" fill="#22d3ee">---'</tspan></text>
+    <text y="336"><tspan x="65.26" fill="#94a3b8">*</tspan><tspan x="227.86" fill="#22d3ee">'---------------'</tspan><tspan x="553.06" fill="#94a3b8">+</tspan></text>
+    <text x="320" y="368" text-anchor="middle" fill="#22d3ee" font-weight="bold">O R B I T</text>
+    <text x="320" y="400" text-anchor="middle" fill="#94a3b8" font-size="16">Your folders, on every device</text>
+  </g>
+</svg>

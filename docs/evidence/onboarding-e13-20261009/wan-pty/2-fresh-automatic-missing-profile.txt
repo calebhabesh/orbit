@@ -1,0 +1,258 @@
+Orbit | Create or Join                                                                              
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│    +             _.----------o--._                                                               │
+│          .------'                 '------.     +                                                 │
+│      .--'         _.-----------._         '--.                                                   │
+│    .'       .----'               '--O-.       '.                                                 │
+│  .'       .'       _.o--------._       '.       '.                                               │
+│ /       .'      .-'   .:-=-:.   '-.      '.       \                                              │
+│ @       |      |    .=#%@@@%#=.    |      |       |                                              │
+│ \       '.      '-.   ':-=-:'   .-'      .'       /                                              │
+│  '.       '.       '-----------'       .'       .'                                               │
+│    '.       '----.               .----'       .'                                                 │
+│      '--.         '--@----------'         .--'                                                   │
+│          '------.                 .--O---'                                                       │
+│   *              '---------------'             +                                                 │
+│                                                                                                  │
+│                      O R B I T                                                                   │
+│            Your folders, on every device                                                         │
+│                                                                                                  │
+│ Create your Orbit [c / Enter]                                                                    │
+│ Join an existing Orbit [j]                                                                       │
+│ You review everything before anything is shared.                                                 │
+│ Closing this interface leaves background sync running.                                           │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc back  q quit (daemon continues)                                                                 
+--- frame ---
+Orbit | Create Your Orbit                                                                           
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ An Orbit is a folder that stays in sync across your devices. Name it and choose where its files  │
+│ live here.                                                                                       │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│ > Device name: CalebPC                                                                           │
+│     How your other devices see this one.                                                         │
+│   Orbit name: Synced                                                                             │
+│   Folder: ~/Synced                                                                               │
+│     Files live in /home/ethioking/Synced                                                         │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│   Connection: ‹ automatic ›                                                                      │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            
+--- frame ---
+Orbit | Create Your Orbit                                                                           
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ An Orbit is a folder that stays in sync across your devices. Name it and choose where its files  │
+│ live here.                                                                                       │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│ > Device name: CalebPC                                                                           │
+│     How your other devices see this one.                                                         │
+│   Orbit name: Synced                                                                             │
+│   Folder: ~/Synced                                                                               │
+│     Files live in /home/ethioking/Synced                                                         │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│   Connection: ‹ automatic ›                                                                      │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            
+--- frame ---
+Orbit | Review & Create                                                                             
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Orbit:      Local                                                                                │
+│ Folder:     ~/.cache/orbit-work-tmp/orbit-w07-fresh-ntk_s2f1/Notes界                             │
+│ Device:     Fresh                                                                                │
+│ Connects:   Anywhere (local network or internet), via the Orbit service                          │
+│             ✓ File contents stay encrypted between your devices; the service never sees file     │
+│ names or contents.                                                                               │
+│                                                                                                  │
+│ Anything you put in this folder syncs to the devices you invite.                                 │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter Create Orbit  Esc Back  d Details  arrows scroll  q Quit                                      
+--- frame ---
+Orbit | Joining                                                                                     
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ✓ Joined! Local is ready on Fresh                                                                │
+│                                                                                                  │
+│ Folder:     ~/.cache/orbit-work-tmp/orbit-w07-fresh-ntk_s2f1/Notes界                             │
+│ Syncs with: the inviting device                                                                  │
+│                                                                                                  │
+│ Files you put in this folder now sync with your other devices.                                   │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter Go to Overview  d Details  q Quit                                                             
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Automatic                                                                            │
+│ Service configuration: PROFILE_MISSING_OR_EXPIRED; ready=false                                   │
+│ Next action: Review an updated signed service profile; local capture remains available.          │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Automatic                                                                            │
+│ Service configuration: PROFILE_MISSING_OR_EXPIRED; ready=false                                   │
+│ Next action: Review an updated signed service profile; local capture remains available.          │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      

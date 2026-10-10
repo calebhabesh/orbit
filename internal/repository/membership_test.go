@@ -246,9 +246,9 @@ func TestRetirementSnapshotStorageAndAdmission(t *testing.T) {
 	if err := db.AuthorizePeer(ctx, folder, nodeA, digest('a'), 2, rev2Digest(t, rev2)); err != nil {
 		t.Fatalf("active peer authorize: %v", err)
 	}
-	// Retired nodeB fails with ErrUnauthorized
-	if err := db.AuthorizePeer(ctx, folder, nodeB, digest('b'), 2, rev2Digest(t, rev2)); err != repository.ErrUnauthorized {
-		t.Fatalf("expected ErrUnauthorized for retired peer, got: %v", err)
+	// A formerly approved, correctly pinned retired nodeB learns it was removed.
+	if err := db.AuthorizePeer(ctx, folder, nodeB, digest('b'), 2, rev2Digest(t, rev2)); err != repository.ErrPeerRetired {
+		t.Fatalf("expected ErrPeerRetired for retired peer, got: %v", err)
 	}
 	// Stale revision 1 fails with ErrMembershipMismatch
 	if err := db.AuthorizePeer(ctx, folder, nodeA, digest('a'), 1, app1.Digest); err != repository.ErrMembershipMismatch {

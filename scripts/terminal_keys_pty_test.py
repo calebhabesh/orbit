@@ -20,7 +20,15 @@ import time
 
 from terminal_onboarding_pty_test import Peer, UI, invite
 
-DOWN, ENTER, TAB, RIGHT = b"\x1b[B", b"\r", b"\t", b"\x1b[C"
+DOWN, ENTER, TAB, RIGHT, LEFT = b"\x1b[B", b"\r", b"\t", b"\x1b[C", b"\x1b[D"
+
+
+def view_arrow_cycle(ui):
+    for key, views in ((RIGHT, ['Orbits', 'Attention', 'Devices', 'Files', 'Overview']),
+                       (LEFT, ['Files', 'Devices', 'Attention', 'Orbits', 'Overview'])):
+        for view in views:
+            ui.send(key)
+            ui.wait(f'[{view}]')
 
 
 def code_of(inv):
@@ -44,7 +52,7 @@ def fill(ui, nav, label, root, confirm=True):
     # Enter for those moves too.
     if nav != ENTER:
         ui.send(nav + nav)
-    ui.submit("Confirm adoption", presses=3)
+    ui.submit("Review &", presses=3)
 
 
 def keyboard_variants(ua, a):
@@ -56,7 +64,7 @@ def keyboard_variants(ua, a):
         ua.wait(f"root-{name}")
         seen.append(name)
         ua.back(); ua.wait("Connection choices:"); ua.back(); ua.back()
-        ua.wait("Create or join")
+        ua.wait("Create or join a folder")
     return seen
 
 
@@ -64,15 +72,15 @@ def paste_variants(ub, inv):
     code = code_of(inv)
     expired = code_of(dict(inv, expires_at="2000-01-01T00:00:00Z"))
     # Bracketed: a failed paste, then a second bracketed paste replaces it.
-    ub.send(b"j"); ub.wait("Join invitation")
+    ub.send(b"j"); ub.wait("Join an Orbit")
     ub.send(b"\x1b[200~" + expired.encode() + b"\x1b[201~"); ub.send(ENTER); ub.wait("INVITATION_EXPIRED")
     ub.send(b"\x1b[200~" + code.encode() + b"\x1b[201~")
     ub.wait(f"{len(code):,} characters received")
     ub.send(ENTER); ub.wait("Connection choices:")
-    ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
+    ub.back(); ub.wait("Join an Orbit"); ub.back(); ub.wait("[Overview]")
     # Unbracketed: typed characters, a failed attempt, then a typed re-paste
     # replaces the kept value instead of appending to it.
-    ub.send(b"J"); ub.wait("Join invitation")
+    ub.send(b"J"); ub.wait("Join an Orbit")
     for chunk in range(0, len(expired), 256):
         ub.send(expired[chunk:chunk + 256].encode())
     ub.send(ENTER); ub.wait("INVITATION_EXPIRED")
@@ -84,7 +92,7 @@ def paste_variants(ub, inv):
 
 
 def open_invitation(ui):
-    ui.send(b"a"); ui.wait("Select folder"); ui.wait("> Notes"); ui.send(ENTER)
+    ui.send(b"a"); ui.wait("Select Orbit"); ui.wait("> Notes"); ui.send(ENTER)
     ui.wait("characters and stays hidden")
 
 
@@ -123,17 +131,17 @@ def join_with_file(ub, b, saved):
     """The join prompt accepts a file path (the SSH fallback)."""
     target = b.root / "orbit-invitation.json"
     _shutil.copyfile(saved, target); os.chmod(target, 0o600)
-    ub.send(b"J"); ub.wait("Join invitation"); ub.wait("private file path")
+    ub.send(b"J"); ub.wait("Join an Orbit"); ub.wait("private file path")
     ub.replace(str(target)); ub.send(ENTER); ub.wait("Connection choices:")
-    ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
+    ub.back(); ub.wait("Join an Orbit"); ub.back(); ub.wait("[Overview]")
     target.unlink()
 
 
 def approve_with_arrows(ua, a, request):
-    ua.send(b"w"); ua.wait("Enrollment requests")
+    ua.send(b"w"); ua.wait("Join Requests")
     requests = a.query("requests", limit="20")["requests"]
     index = next(i for i, p in enumerate(requests) if p["id"] == request)
-    ua.send(DOWN * index + ENTER); ua.wait("Exact request approval")
+    ua.send(DOWN * index + ENTER); ua.wait("Approve Device")
     ua.send(b"a"); ua.wait("Exact request approve completed")
 
 
@@ -149,8 +157,9 @@ def run(binary, output):
         # Create for real with Enter only.
         ua.send(b"c"); ua.wait("Connection choices:")
         fill(ua, ENTER, "Laptop", a.data)
-        ua.send(ENTER); ua.wait("Locally ready", timeout=25)
+        ua.send(ENTER); ua.wait("is ready on", timeout=25)
         ua.back(); ua.wait("[Overview]")
+        view_arrow_cycle(ua)
         reveals = []
         for columns, rows in ((80, 24), (200, 50)):
             ur = UI(a, f"e05-reveal-{columns}", size=(columns, rows)); active.append(ur); ur.overview()
@@ -159,19 +168,19 @@ def run(binary, output):
         inv = invite(ua, a, a.root / "invite.json")
         ub = UI(b, "e03-join-paste", size=(100, 32)); active.append(ub); ub.wait("Join an existing Orbit [j]")
         pastes = paste_variants(ub, inv)
-        ub.back(); ub.wait("Join invitation"); ub.back(); ub.wait("[Overview]")
+        ub.back(); ub.wait("Join an Orbit"); ub.back(); ub.wait("[Overview]")
         join_with_file(ub, b, saved); pastes.append("join prompt accepts a saved invitation file path")
-        ub.send(b"J"); ub.wait("Join invitation")
+        ub.send(b"J"); ub.wait("Join an Orbit")
         ub.replace(code_of(inv)); ub.send(ENTER); ub.wait("Connection choices:")
         fill(ub, ENTER, "Pi", b.data)
-        ub.send(ENTER); ub.wait("Waiting for approval", timeout=25)
+        ub.send(ENTER); ub.wait("Check that it shows this code", timeout=25)
         request = b.query("setups", limit="20")["items"][0]["id"]
         request = b.query("operation", id=request)["join"]["request"]
         approve_with_arrows(ua, a, request)
-        ub.wait("Locally ready", timeout=40)
+        ub.wait("is ready on", timeout=40)
         assert inv["capability"].encode() not in ub.raw, "capability shown"
         results = [dict(scenario="e03-keyboard-paste", result="passed",
-                        assertions=[f"setup form via {v} only" for v in variants] + pastes + reveals + ["approval with arrow keys only", "selector ignores typing"])]
+                        assertions=[f"setup form via {v} only" for v in variants] + pastes + reveals + ["approval with arrow keys only", "selector ignores typing", "left/right cycle through all five tabs, including Files"])]
         if output:
             out = Path(output); out.mkdir(mode=0o700, parents=True, exist_ok=True)
             (out / "results.json").write_text(json.dumps(results, indent=2) + "\n")

@@ -1,0 +1,13 @@
+scripts/trial/trial.sh status
+[CalebPC] Orbit Personal File Manager v2.3.0 Commit: b962168-dirty (built 2026-10-09) | daemon running | unit enabled/active | set up
+[CalebPC]     Synced               /home/ethioking/orbit-trial/Synced  (fef6ef266fd25daaa0b31b220421a3072fd5076e64500404b5a4bc7705f05bec)
+[CalebPC]   Workspace Replicas (Membership Revision: 2):
+[CalebPC]     [active]  CalebLaptop          device=1895102314c4b03ed591bfc03ede61e7e840ece0c27e94fec1b261b61e005b05 pin=8ab442861e163cdedd93b9ab0820715993478966f2a4426357917aa36748d242 endpoint=no endpoint
+[CalebPC]     [active]  CalebPC              device=e6bbd0458380f236802b2cf0e4969e73efef305a8117834b881a2639292deeda pin=0d6a812089424dd1c3df2a5e3b37021041e3fe18858b94baa1055c7d870e2883 endpoint=no endpoint
+[pi-server] Orbit Personal File Manager v2.3.0 Commit: b962168-dirty (built 2026-10-09) | daemon stopped | unit none | not set up
+[CalebLaptop] Orbit Personal File Manager v2.3.0 Commit: b962168-dirty (built 2026-10-09) | daemon running | unit enabled/active | set up
+[CalebLaptop]     Synced               /home/caleb2002/orbit-trial/Synced  (fef6ef266fd25daaa0b31b220421a3072fd5076e64500404b5a4bc7705f05bec)
+[CalebLaptop]   Workspace Replicas (Membership Revision: 2):
+[CalebLaptop]     [active]  CalebLaptop          device=1895102314c4b03ed591bfc03ede61e7e840ece0c27e94fec1b261b61e005b05 pin=8ab442861e163cdedd93b9ab0820715993478966f2a4426357917aa36748d242 endpoint=no endpoint
+[CalebLaptop]     [active]  CalebPC              device=e6bbd0458380f236802b2cf0e4969e73efef305a8117834b881a2639292deeda pin=0d6a812089424dd1c3df2a5e3b37021041e3fe18858b94baa1055c7d870e2883 endpoint=no endpoint
+done in 2s on: local laptop rpi

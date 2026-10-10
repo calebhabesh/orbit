@@ -278,7 +278,7 @@ func TestRevokedPeerFailsCurrentMembership(t *testing.T) {
 	request := fixture.hello(fixture.clientID.DeviceID, FolderHandshake{FolderID: fixture.handshake().FolderID, Revision: "2", MembershipDigest: hex.EncodeToString(approved.Digest[:])})
 	_, err = fixture.client.Hello(context.Background(), request)
 	var wire *WireError
-	if !errors.As(err, &wire) || wire.Body.Code != "UNAUTHORIZED" {
+	if !errors.As(err, &wire) || wire.Body.Code != DeviceRemovedCode {
 		t.Fatalf("revoked request error = %#v", err)
 	}
 }

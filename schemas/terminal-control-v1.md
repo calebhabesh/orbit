@@ -8,6 +8,12 @@ Authoritative typed fields are in
 and fingerprints are in [validate.go](../internal/control/terminalcontract/validate.go).
 The owning semantic contracts remain protocol, persistence and operations.
 
+E12 refinement (2026-10-09): successful query/mutation results include optional
+`join_request_count`, a canonical decimal string summarizing unexpired local
+approval requests across both enrollment formats. It is independent of the
+current page and folder. The TUI retains the latest observed count across tabs,
+refreshes it within its single query lane, and leaves form drafts untouched.
+
 ## Version, codec and transport
 
 The terminal control namespace is `/control/terminal/v1` on authenticated
@@ -478,3 +484,32 @@ Decoders before 2.2.0 reject invitations that carry them. A join whose
 enrollment connection fails for a retryable reason keeps its phase, state
 `running`, no error, and one effect `reconnecting:<CAUSE>` (a service code,
 `TIMEOUT` or `UNREACHABLE`); an identity mismatch still blocks.
+
+
+## E13 participation management — 2026-10-09
+
+Additive capability: `participation_management_v1`. `FolderManagement` adds
+`name`, `local_device` (64-hex), optional `removed_by` (display name), or
+`removal_reporter` when the original removal actor is unknown.
+`Result.retirement` is a review with `device_name`, numeric `received_changes`,
+64-hex `membership_digest`/`snapshot_digest`, `warning` and `disclaimer`.
+`Result.removal` has `device_id`, `state` (`completed`, `pending`, `needs_review`),
+`operation_id`, numeric `received_changes`, `pending_devices` and `message`.
+The integer counts match the compatibility result types; they are not uint64
+revision/counter fields. There is no implicit mutation from a progress poll.
+
+Shared authenticated compatibility operations (bounded by the control server):
+
+- `POST /api/v1/orbits/leave`: `LeaveOrbitRequest` (`folder` native ID byte
+  array, `expected_root`); success `{"state":"left"}`. Replay succeeds for an already left
+  root; a changed registered root refuses the old request.
+- `POST /api/v1/peers/remove`: `RemoveDeviceRequest` (`folder`, `device_id`,
+  `operation_id`, `confirm_name`, `membership_digest`, `snapshot_digest`). ID and
+  digest fields use the existing compatibility native byte arrays; operation ID
+  is 64-hex. Returns `RemovalResult`. Exact request replay preserves intent.
+- `POST /api/v1/peers/remove/resume`: `ResumeRemovalRequest` (`folder`,
+  `operation_id`) resumes the saved owner-confirmed request, returning the same
+  result vocabulary. The folder must match the saved scope.
+
+CLI and TUI call these through `controlclient`; stopped-state execution invokes
+the same controller methods. There is no erase/reset operation in these routes.

@@ -2,9 +2,9 @@
 
 Date: 2026-10-08. During the first Orbit 2.0.0 owner trial (PC creates, laptop
 joins over Automatic mode) the owner hit repeated onboarding friction and approved
-the changes below. This plan is the implementation handoff; nothing in it is
-implemented yet. The owner will run the next trial (PC, laptop and Pi) only after
-this plan's trial-readiness packet, E10, is complete.
+the changes below. This plan records the original implementation handoff. E00–E10 are now complete;
+the 2026-10-09 extension E11–E13 adds onboarding polish and participation controls.
+The tracker records current evidence and trial installations.
 
 Approved by the owner on 2026-10-08:
 
@@ -73,6 +73,7 @@ copied correctly.
 | C Familiar onboarding | E03–E05 | Standard keys; join with Automatic defaults; long invitation shown/copied whole |
 | D New capability | E06–E08 | Short pairing code; approval wait within service limits; Files view |
 | E Service and release | E09–E10 | Monthly relay budget; packaged trial build installed and rehearsed |
+| F Polish and participation | E11–E13 | Short review cards, clear approval/success flow, real Leave and reviewed removal |
 
 | Packet | Deliverable | Dependencies |
 | --- | --- | --- |
@@ -87,6 +88,9 @@ copied correctly.
 | E08 | Read-only Files view and default landing; EG2 | E02, E03 |
 | E09 | Monthly relay egress budget and busy-relay UX; EG4 | E00 |
 | E10 | Integration, packaging, host migration and trial readiness | E00–E09 |
+| E11 | Onboarding copy, colour and README mark | E10 |
+| E12 | Post-confirm flow and approval polish | E11 |
+| E13 | Real Leave, reviewed Remove Device and trial install | E12 |
 
 ```mermaid
 flowchart LR

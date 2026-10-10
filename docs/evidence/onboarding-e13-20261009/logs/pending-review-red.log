@@ -1,0 +1,5 @@
+--- FAIL: TestOnboardingE13PendingRemovalRequiresFreshReviewBeforeContactingSurvivors (0.03s)
+    onboarding_e13_test.go:231: stale pending removal must require a fresh review {4200000000000000000000000000000000000000000000000000000000000000 pending 3333333333333333333333333333333333333333333333333333333333333333 1 [Device 4300000000000000] Waiting for Device 4300000000000000: state directory "/home/ethioking/.cache/orbit-work-tmp/TestOnboardingE13PendingRemovalRequiresFreshReviewBeforeContacti58218397/001" must not be accessible by group or other users (mode 0700). Connect/sync surviving devices, then retry this operation.} <nil>
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/control	0.036s
+FAIL

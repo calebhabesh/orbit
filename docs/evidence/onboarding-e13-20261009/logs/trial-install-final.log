@@ -1,0 +1,9 @@
+scripts/trial/trial.sh install
+building linux/amd64
+building linux/arm64
+[CalebPC] installed Orbit Personal File Manager v2.3.0 Commit: b962168-dirty (built 2026-10-09) 
+[CalebPC] restarted orbit-trial.service
+[CalebLaptop] installed Orbit Personal File Manager v2.3.0 Commit: b962168-dirty (built 2026-10-09) 
+[CalebLaptop] restarted orbit-trial.service
+[pi-server] installed Orbit Personal File Manager v2.3.0 Commit: b962168-dirty (built 2026-10-09) 
+done in 9s on: local laptop rpi

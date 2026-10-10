@@ -140,7 +140,7 @@ def root_review(ui, label, name, root):
         ui.send(b'\t')
     if 'Peer listen:' in ui.text():
         raise RuntimeError('ordinary journey showed a manual address prompt')
-    ui.submit('Confirm adoption')
+    ui.submit('Review &')
 
 
 def phase_create(host, ui, args, out):
@@ -148,12 +148,16 @@ def phase_create(host, ui, args, out):
     ui.send(b'c')
     ui.wait('Connection choices:')
     root_review(ui, args.label, args.name, host.root / args.relative)
+    ui.send(b'd')
+    ui.wait('Details')
+    if args.hosted:
+        ui.wait('packaged profile')
     review = ui.text()
     out['review_mode'] = 'packaged profile' if 'packaged profile' in review else 'other'
     if args.hosted and out['review_mode'] != 'packaged profile':
         raise RuntimeError('hosted create review did not show the packaged profile operator')
     ui.send(b'\r')
-    ui.wait('Locally ready', 60)
+    ui.wait('is ready on', 60)
     folders = host.query('folders', limit='20')['items']
     out['folder'] = next(f['id'] for f in folders if f['root'] == str(host.root / args.relative))
     ui.back()
@@ -170,14 +174,14 @@ def overview(ui):
 def phase_invite(host, ui, args, out):
     overview(ui)
     ui.send(b'a')
-    ui.wait('Select folder')
+    ui.wait('Select Orbit')
     items = host.query('folders', limit='20')['items']
     ui.wait('> ' + items[0]['name'])
     index = next(i for i, it in enumerate(items) if it['id'] == args.folder)
     ui.send(b'j' * index + b'\r')
-    ui.wait('Private invitation', 60)
+    ui.wait('Inviting a device to', 60)
     ui.send(b's')
-    ui.wait('save_invitation')
+    ui.wait('Save Invitation')
     target = host.root / args.invitation
     ui.replace(str(target))
     ui.send(b'\r')
@@ -198,18 +202,24 @@ def phase_invite(host, ui, args, out):
 def phase_join(host, ui, args, out):
     ui.wait('Join an existing Orbit [j]')
     ui.send(b'j')
-    ui.wait('Join invitation')
+    ui.wait('Join an Orbit')
     invitation = host.root / args.invitation
     out['secrets'] = [json.loads(invitation.read_text())['capability']]
     ui.replace(str(invitation))
     ui.send(b'\r')
     ui.wait('Connection choices:', 30)
     root_review(ui, args.label, args.name, host.root / args.relative)
-    ui.wait('Inviter operator:')
-    if args.hosted and '(same operator and profile as this device)' not in ui.text():
-        raise RuntimeError('joiner did not review the same packaged operator')
+    ui.wait('Invited by')
+    if args.hosted:
+        ui.send(b'd')
+        ui.wait('Inviter operator:')
+        ui.wait('Inviter profile:')
+        invited_profile = json.loads(invitation.read_text())['route']['profile']
+        selected_profile = host.query('network_status')['network']['policy']['profile']
+        if selected_profile != invited_profile:
+            raise RuntimeError('joiner did not review the same packaged operator')
     ui.send(b'\r')
-    ui.wait('Waiting for approval', 90)
+    ui.wait('Check that it shows this code', 90)
     setup = next(it for it in host.query('setups', limit='20')['items'] if it['root'] == str(host.root / args.relative))
     operation = host.query('operation', id=setup['id'])
     out['operation'] = operation['operation']['id']
@@ -222,12 +232,12 @@ def phase_join(host, ui, args, out):
 def phase_approve(host, ui, args, out):
     overview(ui)
     ui.send(b'w')
-    ui.wait('Enrollment requests')
+    ui.wait('Join Requests')
     requests = host.query('requests', limit='20')['requests']
     ui.wait('> ' + requests[0]['label'])
     index = next(i for i, r in enumerate(requests) if r['id'] == args.request)
     ui.send(b'j' * index + b'\r')
-    ui.wait('Exact request approval')
+    ui.wait('Approve Device')
     code = requests[index]['verification_code']
     if code not in ui.text():
         raise RuntimeError('approval review did not show the verification code')
@@ -240,7 +250,7 @@ def phase_approve(host, ui, args, out):
 def phase_observe(host, ui, args, out):
     overview(ui)
     ui.send(b'N')
-    ui.wait('Connection details')
+    ui.wait('Connection Details')
     deadline = time.monotonic() + 60
     while time.monotonic() < deadline:
         ui.pump(.1)

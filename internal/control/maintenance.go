@@ -49,6 +49,11 @@ func (c *Controller) PauseFolder(ctx context.Context, folder history.ID, reason 
 
 // ResumeFolder unpauses a folder.
 func (c *Controller) ResumeFolder(ctx context.Context, folder history.ID) error {
+	if left, err := c.db.FolderLeft(ctx, folder); err != nil {
+		return err
+	} else if left {
+		return repository.ErrFolderLeft
+	}
 	return c.ws.Resume(ctx, folder)
 }
 

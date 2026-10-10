@@ -13,6 +13,8 @@ import (
 // for the chosen screen, so an approval request ID can never open a generic
 // operation view. Every code in control.AttentionCodes must appear here.
 var attentionRoutes = map[string]string{
+	"REMOVAL_PENDING": "removal", "PEER_LEFT": "remove",
+	"DEVICE_REMOVED":      "folder",
 	"AWAITING_APPROVAL":   "requests",
 	"EXHAUSTED_WORK":      "retry",
 	"CONFLICT":            "review",
@@ -33,6 +35,10 @@ var attentionRoutes = map[string]string{
 // the item's details instead of guessing at an operation.
 func (m *model) openAttention(a tc.Attention) tea.Cmd {
 	switch attentionRoutes[a.Code] {
+	case "removal":
+		return m.openFlow(&workflow{screen: "remove_resume_review", folder: a.Folder, operation: a.OperationID})
+	case "remove":
+		return m.openFlow(&workflow{screen: "folder", folder: a.Folder, device: a.OperationID, kind: "remove"})
 	case "requests":
 		return m.openFlow(&workflow{screen: "requests", folder: a.Folder})
 	case "retry":

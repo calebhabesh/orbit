@@ -1,0 +1,290 @@
+go test -timeout=45m ./tests/terminal/...
+2026/10/09 18:22:48 http: TLS handshake error from 127.0.0.1:47558: remote error: tls: bad certificate
+2026/10/09 18:22:49 http: TLS handshake error from 192.168.50.171:32808: tls: client didn't provide a certificate
+PASS
+PASS
+PASS
+--- FAIL: TestOnboardingE08RealPTYFilesViewMatchesCLI (109.73s)
+    onboarding_e08_test.go:129: CLI listing: [docs/|Saved here plan.md|Saved here tab\u0009name.txt|Saved here]
+    onboarding_e08_test.go:131: orbit files:
+        NAME           SIZE  MODIFIED          STATE HERE
+        docs/                                  Saved here
+        plan.md        5     2026-10-09 18:27  Saved here
+        tab\tname.txt  2     2026-10-09 18:27  Saved here
+    onboarding_e08_test.go:186: timeout waiting for 'j/k Enter'; screen:
+         ◉ ORBIT                                                  
+          Files   1-5  views                                      
+        Files | 1–5 views                                         
+        Search folder:                                            
+        Connection: Manual/private network                        
+        Services: MANUAL                                          
+        Editor closed. Orbit records the saved file on its next   
+        scan.                                                     
+          docs/  Saved here                                       
+        ▌ plan.md  Saved here                                     
+          tab\u0009name.txt  Saved here                           
+         j/k  Enter ← o e h ? q                                   
+                                                                  
+                                                                  
+                                                                  
+                                                                  
+                                                                  
+                                                                  
+                                                                  
+                                                                  
+        --- landing ---
+         ◉ ORBIT    1 Overview  2 Orbits  3 Attention  4 Devices  5 Files                        ● running (terminal) · startup manual (not enabled)
+        ╭─ Status ─────────────────────────────────────────────────────────────────────────╮╭─ Details ────────────────────────────────────────────╮
+        │ 1 folder · 0 attention items · 1 device                                          ││ Path: docs                                           │
+        │ Connection: Manual/private network                                               ││ State here: Saved here                               │
+        │ Services: MANUAL                                                                 ││ This device has recorded this version and it is in   │
+        ╰──────────────────────────────────────────────────────────────────────────────────╯│ the folder.                                          │
+        ╭─ Files: Notes ───────────────────────────────────────────────────────────────────╮│                                                      │
+        │ ▌ docs/                                                        Saved here        ││ Enter or →: open directory · o open · y copy path    │
+        │   plan.md                               5 B  2026-10-09 18:27  Saved here        ││                                                      │
+        │   tab\u0009name.txt                     2 B  2026-10-09 18:27  Saved here        ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        ╰───────────────────────────────────────────────────────────────────────── 1 of 3 ─╯╰──────────────────────────────────────────────────────╯
+         ↑/↓  select   Enter  open  ← up   /  search   o  open in app   e  edit   y  copy path   h  history   C  conflicts   D  deleted   ]  more   
+         1-5  views   ?  help   q  quit                                                                                                             
+        --- paged and searched 10,000 entries ---
+         ◉ ORBIT    1 Overview  2 Orbits  3 Attention  4 Devices  5 Files                        ● running (terminal) · startup manual (not enabled)
+        ╭─ Status ─────────────────────────────────────────────────────────────────────────╮╭─ Details ────────────────────────────────────────────╮
+        │ 1 folder · 0 attention items · 1 device                                          ││ Path: docs/f09999.txt                                │
+        │ Connection: Manual/private network                                               ││ State here: Saved here                               │
+        │ Services: MANUAL                                                                 ││ This device has recorded this version and it is in   │
+        ╰──────────────────────────────────────────────────────────────────────────────────╯│ the folder.                                          │
+        ╭─ Files: Notes · search “f09999” ─────────────────────────────────────────────────╮│ Size: 5 B                                            │
+        │ Search folder: f09999                                                            ││ Modified: 2026-10-09 18:27                           │
+        │ ▌ docs/f09999.txt                       5 B  2026-10-09 18:27  Saved here        ││                                                      │
+        │                                                                                  ││ Enter: versions and other devices · o open · e edit  │
+        │                                                                                  ││ · h history · y copy path                            │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        ╰───────────────────────────────────────────────────────────────────────── 1 of 1 ─╯╰──────────────────────────────────────────────────────╯
+         ↑/↓  select   Enter  open  ← up   /  search   o  open in app   e  edit   y  copy path   h  history   C  conflicts   D  deleted   ]  more   
+         1-5  views   ?  help   q  quit                                                                                                             
+        --- after editor ---
+         ◉ ORBIT    1 Overview  2 Orbits  3 Attention  4 Devices  5 Files                        ● running (terminal) · startup manual (not enabled)
+        ╭─ Status ─────────────────────────────────────────────────────────────────────────╮╭─ Details ────────────────────────────────────────────╮
+        │ 1 folder · 0 attention items · 1 device                                          ││ Path: plan.md                                        │
+        │ Connection: Manual/private network                                               ││ State here: Saved here                               │
+        │ Services: MANUAL                                                                 ││ This device has recorded this version and it is in   │
+        │ Editor closed. Orbit records the saved file on its next scan.                    ││ the folder.                                          │
+        ╰──────────────────────────────────────────────────────────────────────────────────╯│ Size: 5 B                                            │
+        ╭─ Files: Notes ───────────────────────────────────────────────────────────────────╮│ Modified: 2026-10-09 18:27                           │
+        │   docs/                                                        Saved here        ││                                                      │
+        │ ▌ plan.md                               5 B  2026-10-09 18:27  Saved here        ││ Enter: versions and other devices · o open · e edit  │
+        │   tab\u0009name.txt                     2 B  2026-10-09 18:27  Saved here        ││ · h history · y copy path                            │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                      │
+        │                                                                                  ││                                                       
+                                                                                                                                                    
+                                                                                                                                                    
+                                                                                                                                                    
+                                                                                                                                                    
+    onboarding_e08_test.go:188: PTY: exit status 1
+--- FAIL: TestOnboardingE10OfflinePeerSyncsAreNotAttention (0.23s)
+    onboarding_e10_test.go:36: peer was removed from this folder
+--- FAIL: TestWANW11BinaryReviewedTimingAndRestart (0.59s)
+    wan_timing_test.go:24: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestWANW07RealPTYRelayOnboarding (0.08s)
+    wan_tui_test.go:39: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestWANW13PackagedSelfHostRehearsal (0.43s)
+    wan_w13_test.go:299: orbit-net dev (unknown, unknown)
+    wan_w13_test.go:337: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestWANW14OneStepNetworkAndInvitationCode (0.06s)
+    wan_w14_cli_test.go:70: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestWANW16NativeRunnerRehearsal (0.45s)
+    wan_w16_test.go:66: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06OutputEscapingAndControlCharacters (0.18s)
+    commands_context_test.go:461: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06PathSafetyAndLiteralPaths (0.19s)
+    commands_context_test.go:365: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06AmbiguousAndOutsideRootContext (0.19s)
+    commands_context_test.go:199: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT04TwoDeviceCLIInterruptedJoinAndEdits (0.21s)
+    setup_cli_test.go:33: build: exit status 1 # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06LiveAndStoppedAdapterParity (0.22s)
+    commands_context_test.go:527: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT07_CLI_StatusAndDoctor_Parity (0.22s)
+    status_diagnostics_test.go:632: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06StaleAndUnavailableRoot (0.22s)
+    commands_context_test.go:310: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06ShellCompletionsAndHelpWalkthrough (0.22s)
+    commands_context_test.go:653: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestTerminalT06ContextResolutionCwdAndName (0.23s)
+    commands_context_test.go:49: build orbit binary: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	1505.348s
+FAIL
+make: *** [Makefile:103: test-terminal] Error 1

@@ -1152,6 +1152,44 @@ func (s *Server) Handler() http.Handler {
 		}
 		writeJSON(w, http.StatusOK, res)
 	})
+	mux.HandleFunc("POST /api/v1/orbits/leave", func(w http.ResponseWriter, r *http.Request) {
+		var req LeaveOrbitRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		if err := s.ctrl.LeaveOrbit(r.Context(), req); err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"state": "left"})
+	})
+	mux.HandleFunc("POST /api/v1/peers/remove/resume", func(w http.ResponseWriter, r *http.Request) {
+		var req ResumeRemovalRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		out, err := s.ctrl.ResumeRemoval(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, out)
+	})
+	mux.HandleFunc("POST /api/v1/peers/remove", func(w http.ResponseWriter, r *http.Request) {
+		var req RemoveDeviceRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, &ControlError{Code: "INVALID_REQUEST", Message: err.Error()})
+			return
+		}
+		res, err := s.ctrl.RemoveDevice(r.Context(), req)
+		if err != nil {
+			writeError(w, err)
+			return
+		}
+		writeJSON(w, http.StatusOK, res)
+	})
 	mux.HandleFunc("POST /api/v1/peers/retire/preview", func(w http.ResponseWriter, r *http.Request) {
 		var req RetireDevicePreviewRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

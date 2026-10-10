@@ -1,0 +1,10 @@
+CGO_ENABLED=0 go build -p=2 -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit
+go test -race -timeout=30m ./cmd/... ./internal/... ./model/... ./tests/integration/... ./tests/designgates/... ./tests/faults/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	4.178s
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	1.102s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	1.786s
+# github.com/calebhabesh/orbit/internal/terminal [github.com/calebhabesh/orbit/internal/terminal.test]
+internal/terminal/setup.go:364:36: r.Removal.DeviceID undefined (type *terminalcontract.RemovalResult has no field or method DeviceID)
+internal/terminal/setup.go:365:25: r.Removal.DeviceID undefined (type *terminalcontract.RemovalResult has no field or method DeviceID)
+make: *** [Makefile:47: test-race-core] Terminated

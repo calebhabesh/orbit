@@ -95,6 +95,9 @@ func (c *Client) Call(ctx context.Context, method, path string, input, output an
 	// advances its job for up to 30 s before replying. Wait past those bounds
 	// so a slow enrollment round trip is not reported as a failure.
 	callTimeout, headerTimeout := 15*time.Second, 12*time.Second
+	if path == "/api/v1/peers/remove" || path == "/api/v1/peers/remove/resume" {
+		callTimeout, headerTimeout = 30*time.Second, 30*time.Second
+	}
 	switch v := input.(type) {
 	case tc.Query:
 		if v.Kind == "network_doctor" {

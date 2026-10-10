@@ -21,7 +21,7 @@ import (
 )
 
 func terminalResult() tc.Result {
-	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, tc.NetworkCapability, tc.NetworkDiagnosticsCapability, "lifecycle_settings_v1", "enrollment_v2", tc.RoutedEnrollmentCapability, tc.ShortPairingCapability, tc.PackagedProfileCapability, "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
+	return tc.Result{Version: tc.Version, Capabilities: []string{tc.Capability, tc.NetworkCapability, tc.NetworkDiagnosticsCapability, "lifecycle_settings_v1", "enrollment_v2", tc.RoutedEnrollmentCapability, tc.ShortPairingCapability, tc.PackagedProfileCapability, "reviewed_setup_v1", "folder_sharing_v1", "context_v1", "reviewed_content_v1", "onboarding_management_v1", "everyday_management_v1", "participation_management_v1"}, State: "completed", Items: []tc.NamedItem{}, Requests: []tc.EnrollmentRequest{}, Observations: []tc.Observation{}, Attention: []tc.Attention{}, Effects: []tc.Effect{}, Versions: []tc.VersionSummary{}}
 }
 func terminalError(code string) error {
 	return &ControlError{Code: code, Message: code, Action: "inspect state and obtain a fresh review"}
@@ -79,7 +79,8 @@ func (c *Controller) terminalSnapshot(ctx context.Context, kind string) (tc.Resu
 	}
 	return r, generation(r.Service), nil
 }
-func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (tc.Result, error) {
+func (c *Controller) TerminalQuery(ctx context.Context, q tc.Query) (out tc.Result, resultErr error) {
+	defer func() { c.attachJoinRequestCount(ctx, &out, resultErr) }()
 	if err := q.Validate(); err != nil {
 		return tc.Result{}, err
 	}
@@ -189,7 +190,8 @@ func (c *Controller) replayTerminal(record repository.TerminalRecord, fingerprin
 	}
 	return r, nil
 }
-func (c *Controller) TerminalMutate(ctx context.Context, m tc.Mutation) (tc.Result, error) {
+func (c *Controller) TerminalMutate(ctx context.Context, m tc.Mutation) (out tc.Result, resultErr error) {
+	defer func() { c.attachJoinRequestCount(ctx, &out, resultErr) }()
 	fingerprint, err := m.Fingerprint()
 	if err != nil {
 		return tc.Result{}, err

@@ -22,6 +22,8 @@ type workflowFixture struct {
 	calls    int
 	retried  []control.WorkRetryRequest
 	renamed  []string
+	left     []control.LeaveOrbitRequest
+	removed  []control.RemoveDeviceRequest
 }
 
 func (w *workflowFixture) Query(ctx context.Context, q tc.Query) (tc.Result, error) {
@@ -185,9 +187,9 @@ func TestTerminalT10LateRepliesAndResumeReadiness(t *testing.T) {
 	if m.flow != nil {
 		t.Fatal("late progress resurrected abandoned flow")
 	}
-	m.flow = &workflow{screen: "progress", result: tc.Result{Operation: &tc.Operation{State: "running", Phase: "awaiting_approval"}, Readiness: &tc.Readiness{Approved: true, MembershipCurrent: false}}}
+	m.flow = &workflow{screen: "progress", details: true, result: tc.Result{Operation: &tc.Operation{State: "running", Phase: "awaiting_approval"}, Readiness: &tc.Readiness{Approved: true, MembershipCurrent: false}}}
 	view := m.View().Content
-	if !strings.Contains(view, "Waiting for approval") || strings.Contains(view, "Locally ready") || !strings.Contains(view, "readiness incomplete") {
+	if !strings.Contains(view, "Waiting for approval") || strings.Contains(view, "Locally ready") || strings.Contains(view, "is ready") || !strings.Contains(view, "readiness incomplete") {
 		t.Fatal("invented readiness")
 	}
 	// Reopening uses the actual operation identity from bounded discovery.
@@ -306,23 +308,33 @@ func TestOnboardingTrialInvitationPageShowsApprovalStatus(t *testing.T) {
 	req := tc.EnrollmentRequest{ID: "req-1", Folder: inv.Folder, Label: "Pi\x1b[31m", VerificationCode: "123-456", State: "pending_approval"}
 	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
 	view := m.View().Content
-	if !strings.Contains(view, "Awaiting your approval: Pi\\u001b[31m wants to join this Orbit. Verification code 123-456") || !strings.Contains(view, "Enter review request") {
+	if !strings.Contains(view, "Pi\\u001b[31m wants to join") || !strings.Contains(view, "123-456") || !strings.Contains(view, "Enter Approve") || !strings.Contains(view, "x Reject") {
 		t.Fatalf("pending request not shown safely:\n%s", view)
 	}
+	// E12: Enter approves right here as its own operation; the invitation's
+	// operation is kept for r (new code).
 	press(m, "enter")
-	if m.flow.screen != "approval" || m.flow.request.ID != "req-1" || m.flow.mutation.OperationID != "" {
-		t.Fatalf("Enter did not open a fresh review of the request: %+v", m.flow.request)
+	if m.flow.screen != "invitation_out" || m.flow.mutation.Approval == nil || m.flow.mutation.Approval.Request != "req-1" || m.flow.mutation.Approval.Decision != "approve" || m.flow.mutation.OperationID == "invite-op" {
+		t.Fatalf("Enter did not approve the request as its own operation: %+v", m.flow.mutation)
 	}
-	m.flow.screen = "invitation_out"
-	req.State = "approved"
-	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
-	if view = m.View().Content; !strings.Contains(view, "Approved: Pi") || strings.Contains(view, "Enter review request") {
+	m.acceptFlow("approve", tc.Result{}, nil)
+	if m.flow.screen != "invitation_out" || m.flow.mutation.OperationID != "invite-op" {
+		t.Fatalf("approval left the invitation page or lost its operation: %s %+v", m.flow.screen, m.flow.mutation)
+	}
+	if view = m.View().Content; !strings.Contains(view, "joined this Orbit") || strings.Contains(view, "Enter Approve") {
 		t.Fatalf("approval not reflected:\n%s", view)
 	}
 	req.State = "declined"
 	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
 	if view = m.View().Content; !strings.Contains(view, "Declined: Pi") {
 		t.Fatalf("decline not reflected:\n%s", view)
+	}
+	// x rejects a pending request instead of revoking the invitation.
+	req.ID, req.State = "req-2", "pending_approval"
+	m.acceptFlow("invitation_out", tc.Result{Requests: []tc.EnrollmentRequest{req}}, nil)
+	press(m, "x")
+	if m.flow.screen != "invitation_out" || m.flow.mutation.Approval == nil || m.flow.mutation.Approval.Decision != "decline" {
+		t.Fatalf("x did not reject: %s %+v", m.flow.screen, m.flow.mutation)
 	}
 }
 
@@ -442,4 +454,13 @@ func TestSeparateHomeShowsAbsolutePaths(t *testing.T) {
 	if got := folderLocation("~/Demo"); got != "Files live in "+filepath.Join(account, "Demo") {
 		t.Fatalf("location %q", got)
 	}
+}
+
+func (w *workflowFixture) LeaveOrbit(_ context.Context, req control.LeaveOrbitRequest) error {
+	w.left = append(w.left, req)
+	return nil
+}
+func (w *workflowFixture) RemoveDevice(_ context.Context, req control.RemoveDeviceRequest) (control.RemoveDeviceResult, error) {
+	w.removed = append(w.removed, req)
+	return control.RemoveDeviceResult{State: "pending", OperationID: req.OperationID, Message: "Waiting for Laptop"}, nil
 }

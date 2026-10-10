@@ -51,6 +51,29 @@ func (db *DB) EnqueueDurableTask(ctx context.Context, task DurableTask) (string,
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
+	// A folder this device left takes no new work (2.3.0).
+	var left int
+	if err := db.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM folders WHERE folder_id=? AND (left_ns IS NOT NULL OR removed_by IS NOT NULL)`, task.Folder[:]).Scan(&left); err != nil {
+		return "", err
+	} else if left > 0 {
+		return "", ErrFolderLeft
+	}
+
+	if task.Kind == "sync" && task.Peer != nil {
+		var configured, active int
+		err := db.db.QueryRowContext(ctx, `SELECT COALESCE(length(membership_digest),0) FROM folders WHERE folder_id=?`, task.Folder[:]).Scan(&configured)
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return "", err
+		}
+		if configured > 0 {
+			if err = db.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM folders f JOIN membership_entries e ON e.folder_id=f.folder_id AND e.revision=f.membership_revision WHERE f.folder_id=? AND e.device_id=? AND e.state='active'`, task.Folder[:], (*task.Peer)[:]).Scan(&active); err != nil {
+				return "", err
+			}
+			if active == 0 {
+				return "", ErrPeerRetired
+			}
+		}
+	}
 	var activeCount int
 	if err := db.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM durable_work_tasks WHERE state IN ('queued', 'running', 'retry')`).Scan(&activeCount); err != nil {
 		return "", err
@@ -148,7 +171,7 @@ func (db *DB) UpdateDurableTaskState(ctx context.Context, taskID string, state s
 	_, err := db.db.ExecContext(ctx, `UPDATE durable_work_tasks SET
 		state=?, attempts=?, last_error=?, error_code=?, retry_after_ns=?, updated_ns=?,
 		age_counter=CASE WHEN ?='running' THEN 0 ELSE age_counter END
-		WHERE task_id=?`,
+		WHERE task_id=? AND state!='canceled'`,
 		state, attempts, lastError, errorCode, retryAfterNS, time.Now().UnixNano(), state, taskID)
 	return err
 }
@@ -245,6 +268,19 @@ func (db *DB) CountQueuedDurableTasks(ctx context.Context) (int, error) {
 func (db *DB) RetryDurableTask(ctx context.Context, taskID string) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
+	var stopped int
+	if err := db.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM folders f JOIN durable_work_tasks t ON t.folder_id=f.folder_id WHERE t.task_id=? AND (f.left_ns IS NOT NULL OR f.removed_by IS NOT NULL)`, taskID).Scan(&stopped); err != nil {
+		return err
+	}
+	if stopped > 0 {
+		return ErrFolderLeft
+	}
+	if err := db.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM durable_work_tasks t JOIN folders f ON f.folder_id=t.folder_id JOIN membership_entries e ON e.folder_id=f.folder_id AND e.revision=f.membership_revision AND e.device_id=t.peer_id WHERE t.task_id=? AND t.task_kind='sync' AND e.state='retired'`, taskID).Scan(&stopped); err != nil {
+		return err
+	}
+	if stopped > 0 {
+		return ErrPeerRetired
+	}
 	res, err := db.db.ExecContext(ctx, `UPDATE durable_work_tasks SET state='queued', attempts=0, last_error=NULL, error_code=NULL, retry_after_ns=0, updated_ns=? WHERE task_id=?`, time.Now().UnixNano(), taskID)
 	if err != nil {
 		return err
@@ -262,7 +298,7 @@ func (db *DB) RetryDurableTask(ctx context.Context, taskID string) error {
 func (db *DB) RetryAllExhaustedTasks(ctx context.Context, folder *history.ID) (int, error) {
 	db.mu.Lock()
 	defer db.mu.Unlock()
-	query := `UPDATE durable_work_tasks SET state='queued', attempts=0, last_error=NULL, error_code=NULL, retry_after_ns=0, updated_ns=? WHERE state IN ('exhausted', 'retry')`
+	query := `UPDATE durable_work_tasks SET state='queued', attempts=0, last_error=NULL, error_code=NULL, retry_after_ns=0, updated_ns=? WHERE state IN ('exhausted', 'retry') AND NOT EXISTS (SELECT 1 FROM folders f WHERE f.folder_id=durable_work_tasks.folder_id AND (f.left_ns IS NOT NULL OR f.removed_by IS NOT NULL)) AND NOT EXISTS (SELECT 1 FROM folders f JOIN membership_entries e ON e.folder_id=f.folder_id AND e.revision=f.membership_revision WHERE f.folder_id=durable_work_tasks.folder_id AND e.device_id=durable_work_tasks.peer_id AND e.state='retired' AND durable_work_tasks.task_kind='sync')`
 	var args []any
 	args = append(args, time.Now().UnixNano())
 	if folder != nil {

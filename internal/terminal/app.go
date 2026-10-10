@@ -65,6 +65,11 @@ type model struct {
 	unfinished                              []tc.NamedItem
 	files                                   filesState
 	preview                                 orbitPreview
+	// toast is a one-time success line on the Overview (E12); focusRoot
+	// selects the Orbit at that root once the Overview lists it.
+	toast, focusRoot string
+	toastAt          time.Time
+	joinRequestCount *tc.Uint
 }
 
 func newModel(ctx context.Context, client Queries, opts Options) *model {
@@ -102,7 +107,7 @@ func (m *model) invalidate() tea.Cmd {
 }
 func (m *model) startQuery() tea.Cmd {
 	if m.flow != nil {
-		return m.startFlowQuery()
+		return m.startFlowQuery(false)
 	}
 	if m.pending != 0 || m.quitting || m.toolRunning {
 		return nil
@@ -214,7 +219,14 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.pending = 0
 		m.cancel = nil
+		if !m.quitting && msg.generation == m.generation && msg.err == nil && msg.result.Error == nil && msg.result.JoinRequestCount != nil {
+			count := *msg.result.JoinRequestCount
+			m.joinRequestCount = &count
+		}
 		if !m.quitting && msg.generation == m.generation && m.flow != nil {
+			if msg.task == "request_badge" {
+				return m, nil
+			}
 			cmd := m.acceptFlow(msg.task, msg.result, msg.err)
 			if cmd != nil {
 				return m, cmd
@@ -272,6 +284,9 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.startQuery()
 		}
 	case refreshMsg:
+		if m.flow != nil {
+			return m, tea.Batch(m.startFlowQuery(true), m.tick())
+		}
 		return m, tea.Batch(m.startQuery(), m.tick())
 	case filesDone:
 		m.toolRunning = false
@@ -306,7 +321,7 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.PasteMsg:
 		if m.flow != nil {
 			f := m.flow
-			if !f.busy && (f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" || (f.daily != nil && len(f.fields) > 0 && f.fields[f.focus].input.Focused())) {
+			if !f.busy && (f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" || f.screen == "remove_form" || f.screen == "rename_form" || (f.daily != nil && len(f.fields) > 0 && f.fields[f.focus].input.Focused())) {
 				text := msg.Content
 				limit := 4096
 				if f.screen == "invitation" {
@@ -393,6 +408,14 @@ func (m *model) quit() tea.Cmd {
 
 func (m *model) restoreSelection() {
 	rows := m.rows()
+	if m.focusRoot != "" {
+		for _, r := range rows {
+			if r.subtitle == homePath(safe(m.focusRoot)) && !strings.HasPrefix(r.key, "a:") {
+				m.selectedKey, m.focusRoot = r.key, ""
+				break
+			}
+		}
+	}
 	for i, r := range rows {
 		if r.key == m.selectedKey {
 			m.selected = i

@@ -768,3 +768,41 @@ Pre-WAN binaries ignore all network files: rolling back opens the same database,
 identity and peers and keeps explicit manual endpoints working (W14 mixed-version
 test). An Automatic-only install rolled back to a pre-WAN binary has no manual
 addresses and stays local until its owner configures them or reinstalls W14.
+
+
+## Schema 15 participation state — 2026-10-09 (E13)
+
+The transactional migration adds nullable `folders.left_ns`, nullable
+`folders.removed_by`, and `retirement_reviews(folder_id, digest, proposal)` plus
+`retirement_actors(folder_id, device_id, initiator)`.
+It preserves existing IDs, counters, roots, membership and immutable history.
+Older binaries refuse schema 15; do not downgrade an upgraded database in place.
+
+Leave persists its marker, clears only the registered root fields and cancels
+unfinished durable tasks in one transaction. It keeps publications, recovery
+journals, scaffolds, deletion proposals, projections, recorded history, keys,
+routes and every working file. The per-folder exchange barrier cancels/drains
+admitted transfers and scans before the writer-gated workspace Leave commits;
+other folders proceed. Enqueue, retry and completion cannot revive canceled work
+for a left/removed folder. Root registration cannot undo the marker.
+
+Each committed reviewed retirement keeps its initiating device keyed by the
+retired device, so later preparations do not change attribution. Legacy manual
+retirements have no recorded initiator; their notices identify the reporting
+peer separately (`DEVICE_REMOVED_REPORTED` pause reason).
+
+A learned removal persists its reporter and pauses the still-visible root while
+canceling work. Workspace publication/recovery refuses a left/removed folder,
+including after restart; recovery records remain available for inspection rather
+than being replayed or discarded. Existing content retention/budget rules still
+apply; preserved metadata is not a promise of perpetual retained chunks.
+
+Removal preparations persist the exact proposal and successor digest. Commit
+rechecks every locally accepted retiree counter/envelope digest within the same
+transaction as membership/snapshot approval. The initiator retains an exact
+`remove-<operation-id>` resumable maintenance record (`PROPOSED`, `ROLLING_OUT`,
+`COMPLETED`, or `ABORTED`). Replay binds the original request, and a changed local
+snapshot before advancement ends that intent as `ABORTED`/`needs_review`.
+Pending maintenance suspends cleanup; completed/aborted rows do not. Records are
+kept for replay, so cleanup handles both historical lowercase phases and these
+uppercase phases. No new causal encoding or retention guarantee is introduced.

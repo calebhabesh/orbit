@@ -1,0 +1,4 @@
+ok  	github.com/calebhabesh/orbit/internal/terminal	1.144s
+ok  	github.com/calebhabesh/orbit/internal/control	5.980s
+ok  	github.com/calebhabesh/orbit/internal/replication	3.398s
+ok  	github.com/calebhabesh/orbit/cmd/orbit	2.419s

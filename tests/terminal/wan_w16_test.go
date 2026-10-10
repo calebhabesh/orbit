@@ -125,22 +125,25 @@ func w16RehearsalRun(t *testing.T, base, dist, ip, profile, roots, name string, 
 	}
 	third := ""
 	if len(extra) > 0 {
-		run := filepath.Join(dir, "run")
-		if err := os.Mkdir(run, 0700); err != nil {
-			t.Fatal(err)
-		}
-		socket := filepath.Join(run, "shell.sock")
+		// Keep the socket directly in the marked, private fixture root. Nested
+		// journey paths exceed Linux's Unix socket limit with a longer TMPDIR.
+		socket := filepath.Join(base, "s.sock")
 		shell := exec.Command("python3", "scripts/validation/wan_netns_shell.py", socket, "--idle", "900")
 		shell.Dir = "../.."
 		if err := shell.Start(); err != nil {
 			t.Fatal(err)
 		}
 		t.Cleanup(func() { _ = shell.Process.Kill(); _ = shell.Wait() })
+		ready := false
 		for i := 0; i < 100; i++ {
 			if _, err := os.Stat(socket); err == nil {
+				ready = true
 				break
 			}
 			time.Sleep(50 * time.Millisecond)
+		}
+		if !ready {
+			t.Fatalf("namespace shell did not create its socket: %s", socket)
 		}
 		third = `,"third":{"host":"local","role":"Third","physical_network":"fixture-c","shell":"` + socket + `"}`
 	}

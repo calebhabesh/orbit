@@ -38,6 +38,8 @@ Setup & Sharing:
   devices requests         Review, approve, or decline enrollment requests
 
 Management & Diagnostics:
+  leave <name> --yes       Stop syncing this Orbit here, keep files
+  remove-device <device>   Review removal from one Orbit (--folder); confirm name
   folders pause <name>     Pause local synchronization for a folder
   folders resume <name>    Resume local synchronization for a folder
   folders relocate <name>  Change the local filesystem path for a folder
@@ -120,6 +122,31 @@ Description:
   folder identity, root directory, relative path, and context generation.
   If the current directory is outside a synced folder, candidates are listed.
   Use '--' to pass literal paths with leading dashes or special characters.`)
+
+	case "leave":
+		fmt.Fprintln(stdout, `orbit leave - Stop participating in one Orbit here
+
+Usage: orbit leave <Orbit> [--state <path>] [--json] [--yes]
+
+Without --yes this previews the action. Confirming stops incoming and outgoing
+sync for this Orbit and keeps every working file and recorded history. Other
+Orbits continue. Unsent edits may exist only here; other devices must remove
+this device from the Orbit. There is no Undo Leave; rejoining requires fresh
+enrollment. 'folders remove' only unregisters a root and is a separate action.`)
+
+	case "remove-device":
+		fmt.Fprintln(stdout, `orbit remove-device - Review and remove a device from one Orbit
+
+Usage:
+  orbit remove-device <device> --folder <Orbit> --review-file <private-file>
+  orbit remove-device --request-file <private-file> --confirm-name <exact-name>
+
+The review counts recorded changes received here; unseen changes may exist only
+on the removed device. Every surviving device must agree on the exact received
+history and be reachable. Files stay on all devices; other Orbits keep syncing.
+The retired identity cannot rejoin this Orbit. Use --state and --json as needed.
+A pending result exits 3. Resume with the same request file and exact name;
+if history changed before removal started, create and confirm a fresh review.`)
 
 	case "folders":
 		fmt.Fprintln(stdout, `orbit folders - Manage synced folders and local roots

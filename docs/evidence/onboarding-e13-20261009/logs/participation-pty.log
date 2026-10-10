@@ -1,0 +1,26 @@
+[
+  {
+    "scenario": "leave",
+    "result": "passed",
+    "assertions": [
+      "real PTY confirmation",
+      "name check",
+      "working bytes retained",
+      "identities retained",
+      "per-Orbit sync stop",
+      "terminal restored"
+    ]
+  },
+  {
+    "scenario": "remove",
+    "result": "passed",
+    "assertions": [
+      "real PTY confirmation",
+      "name check",
+      "working bytes retained",
+      "identities retained",
+      "per-Orbit sync stop",
+      "terminal restored"
+    ]
+  }
+]

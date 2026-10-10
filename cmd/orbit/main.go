@@ -3305,6 +3305,10 @@ func handleOrbit(args []string, stdout, stderr io.Writer) error {
 		return handleOrbitStatus(args[1:], stdout, stderr)
 	case "network":
 		return handleOrbitNetwork(args[1:], stdout, stderr)
+	case "leave":
+		return handleOrbitLeave(args[1:], stdout, stderr)
+	case "remove-device":
+		return handleOrbitRemoveDevice(args[1:], stdout, stderr)
 	case "setup":
 		return handleOrbitSetup(args[1:], stdout, stderr)
 	case "init":

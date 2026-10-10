@@ -167,11 +167,11 @@ func TestOnboardingE08NavigationPagingAndSearch(t *testing.T) {
 			t.Fatalf("unbounded page %d", q.Limit)
 		}
 	}
-	e08Key(m, "left")
+	e08Key(m, "backspace")
 	if m.files.dir != "" || m.selectedKey != "file:big" {
 		t.Fatalf("up: %+v selected %q", m.files, m.selectedKey)
 	}
-	e08Key(m, "right")
+	e08Key(m, "enter")
 	e08Key(m, "backspace")
 	if m.files.dir != "" {
 		t.Fatal("backspace goes up")

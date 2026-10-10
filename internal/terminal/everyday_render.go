@@ -19,7 +19,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 	f := m.flow
 	d := f.daily
 	r := f.result
-	title := "Orbit | " + strings.TrimPrefix(f.screen, "day_")
+	title := "Orbit | " + titleWord(strings.TrimPrefix(f.screen, "day_"))
 	lines := []string{}
 	focus := -1
 	footer := "j/k scroll  r refresh  ? help  Esc back  q quit"
@@ -28,7 +28,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 	}
 	switch f.screen {
 	case "day_status":
-		title = "Orbit | Qualified copy status"
+		title = "Orbit | Copy Status"
 		for _, it := range r.Items {
 			lines = append(lines, "Folder: "+safe(it.Name), "Root: "+safe(it.Root))
 		}
@@ -48,7 +48,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 			lines = append(lines, safe(a.Code+": "+a.Path), safe(a.Action))
 		}
 	case "day_storage", "day_maintenance":
-		title = "Orbit | Storage and retention"
+		title = "Orbit | Storage & Retention"
 		if s := r.Storage; s != nil {
 			lines = append(lines, "Objects="+hb(s.Objects)+" / data budget="+hb(s.DataBudget), "Metadata="+hb(s.Metadata)+" / budget="+hb(s.MetadataBudget), "Staging="+hb(s.Staging)+" recovery="+hb(s.Recovery)+" quarantine="+hb(s.Quarantine), "Free space reserve="+hb(s.Reserve))
 		}
@@ -58,7 +58,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 		lines = append(lines, "History availability depends on retained verified bytes, not a deletion timer.", "Preview only: inspection never runs cleanup.", "Maintenance: orbit storage --help", "Root/recovery: docs/runbooks/terminal-recovery.md", "Retirement: docs/runbooks/membership-fork.md")
 		footer = "m maintenance preview  j/k scroll  r refresh  ? help  Esc back  q quit"
 	case "day_paths":
-		title = "Orbit | Find path history"
+		title = "Orbit | File History"
 		lines = append(lines, "Search known paths; ordinary editing stays in your applications.")
 		if f.fields[0].input.Focused() {
 			focus = len(lines)
@@ -71,7 +71,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 			lines = append(lines, "Time is informational; restore uses exact source and current reviewed parents.")
 		}
 		if f.screen == "day_deleted" {
-			title = "Orbit | Deleted files"
+			title = "Orbit | Deleted Files"
 			lines = append(lines, "Known deleted paths; bytes may be pending, expired, unavailable or corrupt.")
 		}
 		if f.screen == "day_conflicts" {
@@ -116,7 +116,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 	case "day_load_review", "day_load_session":
 		lines = append(lines, "Loading exact review; no replacement committed.")
 	case "day_review":
-		title = "Orbit | Review versions: " + safe(d.path)
+		title = "Orbit | Review Versions: " + safe(d.path)
 		if d.review != nil {
 			lines = append(lines, "Folder: "+safe(d.review.Context.FolderName), "Root: "+safe(d.review.Context.Root), fmt.Sprintf("Exact heads=%d working captured=%t", len(d.review.Heads), d.review.WorkingCaptured))
 		}
@@ -134,7 +134,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 		lines = append(lines, "Unavailable bytes disable content actions; peer fetch unsupported.", "New arrivals require fresh review. Time never selects a winner.")
 		footer = "Enter preview  e editor  d diff  K keep copies  c copy  h history  r fresh review  ? help  Esc back  q quit"
 	case "day_destination", "day_copies":
-		title = "Orbit | Separate copy destinations"
+		title = "Orbit | Copy Destinations"
 		lines = append(lines, "Root-relative destinations; existing files cause collision refusal.")
 		for i, field := range f.fields {
 			value := safe(field.input.Value())
@@ -146,7 +146,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 		}
 		footer = "↑/↓ or Tab move  Enter next/preview  Esc review  Ctrl-C close"
 	case "day_confirm":
-		title = "Orbit | Confirm reviewed " + safe(d.action)
+		title = "Orbit | Confirm " + titleWord(safe(d.action))
 		if d.review != nil {
 			lines = append(lines, "Folder: "+safe(d.review.Context.FolderName), "Root: "+safe(d.review.Context.Root), "Original path: "+safe(d.review.Context.Path), fmt.Sprintf("Exact heads=%d working captured=%t", len(d.review.Heads), d.review.WorkingCaptured), "Replace: "+safe(strings.Join(d.review.ReplacementPaths, ", ")))
 		}
@@ -165,7 +165,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 		lines = append(lines, "Current working bytes are protected by capture/publication checks.", "Each copy is individually durable; publication can remain pending.", "Enter commits only this review. Changed state refuses the action.")
 		footer = "Enter confirm exact result  r fresh review  j/k scroll  ? help  Esc back  q quit"
 	case "day_editor", "day_recovery":
-		title = "Orbit | Retained editor session"
+		title = "Orbit | Editor Session"
 		if d.session != nil {
 			lines = append(lines, "State: "+safe(d.session.State), "Result: "+safe(d.session.ResultPath), "Expires: "+safe(d.session.ExpiresAt))
 		}
@@ -176,7 +176,7 @@ func (m *model) dailyLines() (string, []string, string, int) {
 			footer = "e new session  n renew original  x discard reviewed  r fresh review  ? help  Esc back  q quit"
 		}
 	case "day_operation":
-		title = "Orbit | Durable content operation"
+		title = "Orbit | Content Operation"
 		if r.Operation != nil {
 			lines = append(lines, "State: "+safe(r.Operation.State)+" | phase: "+safe(r.Operation.Phase))
 		}

@@ -95,6 +95,7 @@ def main():
             assert Path(name).name == name
             assert hashlib.sha256((dist/name).read_bytes()).hexdigest() == digest
         results.append({'scenario':'all-package-checksums', 'result':'passed'})
+        manifest = json.loads((dist/'release-manifest.json').read_text())
         qemu = None
         if args.emulate_arm64:
             qemu = root/'qemu-aarch64-static'
@@ -113,16 +114,16 @@ def main():
             for kind in ['tar','deb','rpm']:
                 target=root/f'{arch}-{kind}';target.mkdir()
                 if kind=='tar':
-                    with tarfile.open(dist/f'orbit-v2.2.0-linux-{arch}.tar.gz') as archive:
+                    with tarfile.open(dist/f'orbit-v2.3.0-linux-{arch}.tar.gz') as archive:
                         archive.extractall(target, filter='data')
                     binary=target/'orbit'; share=target/'share';desktop=target/'desktop/orbit.desktop';unit=target/'systemd/orbit.service'
                 elif kind=='deb':
-                    members=dict(deb_members((dist/f'orbit_2.2.0_{arch}.deb').read_bytes()))
+                    members=dict(deb_members((dist/f'orbit_2.3.0_{arch}.deb').read_bytes()))
                     with tarfile.open(fileobj=io.BytesIO(members['data.tar.gz'])) as archive:
                         archive.extractall(target,filter='data')
                     binary=target/'usr/bin/orbit';share=target/'usr/share';desktop=share/'applications/orbit.desktop';unit=target/'usr/lib/systemd/user/orbit.service'
                 else:
-                    unpack_cpio(rpm_payload((dist/f'orbit-2.2.0-1.{rpmarch}.rpm').read_bytes()),target)
+                    unpack_cpio(rpm_payload((dist/f'orbit-2.3.0-1.{rpmarch}.rpm').read_bytes()),target)
                     binary=target/'usr/bin/orbit';share=target/'usr/share';desktop=share/'applications/orbit.desktop';unit=target/'usr/lib/systemd/user/orbit.service'
                 assert unit.is_file() and not unit.is_symlink(), 'single regular service unit'
                 assert 'Terminal=true' in desktop.read_text() and 'Exec=orbit\n' in desktop.read_text()
@@ -130,6 +131,9 @@ def main():
                     assert (share/name).stat().st_size > 0
                 if arch==host or (qemu and arch=='arm64'):
                     prefix = [] if arch==host else [qemu]
+                    version = json.loads(run([*prefix,binary,'version','--json']))
+                    for field in ['version','commit','built','schema_version','config_format_version']:
+                        assert version[field] == manifest[field], (arch, kind, field, version[field], manifest[field])
                     state=root/f'state-{arch}-{kind}'
                     run([*prefix,binary,'init','--state',state])
                     original=(state/'config.json').read_bytes()
@@ -170,8 +174,8 @@ def main():
         results.append({'scenario':'package-extracted-bare-PTY','result':'passed'})
         if args.containers:
             for image,package,install,remove in [
-                ('debian:bookworm-slim','orbit_2.2.0_amd64.deb','dpkg -i','dpkg -r orbit'),
-                ('fedora:43','orbit-2.2.0-1.x86_64.rpm','rpm -i --nosignature','rpm -e orbit')]:
+                ('debian:bookworm-slim','orbit_2.3.0_amd64.deb','dpkg -i','dpkg -r orbit'),
+                ('fedora:43','orbit-2.3.0-1.x86_64.rpm','rpm -i --nosignature','rpm -e orbit')]:
                 script='''set -eu
 same_bytes() { test "$(sha256sum "$1" | cut -d ' ' -f 1)" = "$(sha256sum "$2" | cut -d ' ' -f 1)"; }
 mkdir -m 700 /tmp/orbit-t12

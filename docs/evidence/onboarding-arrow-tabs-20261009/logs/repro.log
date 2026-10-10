@@ -1,0 +1,8 @@
+--- FAIL: TestTopLevelArrowsCycleThroughAllFiveViews (0.00s)
+    --- FAIL: TestTopLevelArrowsCycleThroughAllFiveViews/right (0.00s)
+        app_test.go:83: right at step 5: selected tab 5, want 1
+    --- FAIL: TestTopLevelArrowsCycleThroughAllFiveViews/left (0.00s)
+        app_test.go:83: left at step 2: selected tab 5, want 4
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/terminal	0.017s
+FAIL

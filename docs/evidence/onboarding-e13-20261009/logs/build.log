@@ -1,0 +1,1 @@
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-08' -o bin/orbit ./cmd/orbit

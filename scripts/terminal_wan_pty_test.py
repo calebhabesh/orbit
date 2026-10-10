@@ -70,7 +70,7 @@ def root_review(ui, label, name, root):
         ui.send(b'\t')
     assert 'Peer listen:' not in ui.screen.text(), 'ordinary address prompt'
     # Enter advances field by field and confirms on the last (E03).
-    ui.submit('Confirm adoption')
+    ui.submit('Review &')
 
 
 def oracle(peer, folder, name, value, author):
@@ -99,10 +99,10 @@ def run(binary, profile, output, outage_marker):
         ua = UI(a, 'relay-create-back-edit', size=(100, 36)); active.append(ua)
         ua.wait('Join an existing Orbit [j]'); ua.send(b'c'); ua.wait('Connection choices:')
         root_review(ua, 'Laptop', 'Notes', a.data)
-        ua.wait('files=1'); ua.wait('Self-hosted automatic')
-        ua.wait('contents stay encrypted in transit.')
-        ua.back(); ua.wait('Connection choices:'); ua.send(b'\r'); ua.wait('Confirm adoption')
-        ua.send(b'\r'); ua.wait('Locally ready', timeout=30)
+        ua.wait('already has 1 file'); ua.wait('your own Orbit service')
+        ua.wait('File contents stay encrypted between your devices')
+        ua.back(); ua.wait('Connection choices:'); ua.send(b'\r'); ua.wait('Review &')
+        ua.send(b'\r'); ua.wait('is ready on', timeout=30)
         folder = a.query('folders', limit='20')['items'][0]['id']
         settings = a.query('settings')['settings']
         assert not settings['advertised_peer'] and not settings['advertised_enrollment'], 'direct endpoints configured'
@@ -110,7 +110,7 @@ def run(binary, profile, output, outage_marker):
         inv = invite(ua, a, a.root / 'invite.json')
         assert inv['version'] == '3' and not inv['peer_endpoint'] and not inv['enrollment_endpoint']
         ub = UI(b, 'relay-join-expiry-pin-root-review', size=(100, 36)); active.append(ub)
-        ub.wait('Join an existing Orbit [j]'); ub.send(b'j'); ub.wait('Join invitation')
+        ub.wait('Join an existing Orbit [j]'); ub.send(b'j'); ub.wait('Join an Orbit')
         expired = dict(inv, expires_at='2000-01-01T00:00:00Z')
         ub.replace(code(expired)); ub.send(b'\r'); ub.wait('INVITATION_EXPIRED')
         wrong = dict(inv, key_pin='ff' * 32, route=dict(inv['route'], pin='ff' * 32))
@@ -128,8 +128,8 @@ def run(binary, profile, output, outage_marker):
             ub.replace(value); ub.send(b'\t')
         ub.submit('ROOT_REVIEW_INCOMPLETE')
         # The rejected root is focused (E03); correct it and confirm.
-        ub.replace(str(b.data)); ub.submit('Confirm adoption')
-        ub.wait('Inviter operator:'); ub.send(b'\r'); ub.wait('Waiting for approval', timeout=35)
+        ub.replace(str(b.data)); ub.submit('Review &')
+        ub.wait('Invited by'); ub.send(b'\r'); ub.wait('Check that it shows this code', timeout=35)
         operation = b.query('setups', limit='20')['items'][0]['id']
         before = b.query('operation', id=operation); request = before['join']['request']
         assert not before['readiness']['approved']
@@ -138,8 +138,8 @@ def run(binary, profile, output, outage_marker):
         # Actual daemon stop/relaunch; reuse exact reviewed attempt and operation.
         b.checked(); b.run('stop', '--state', str(b.state))
         ub = UI(b, 'relay-resume-resize-colorless', size=(40, 16)); active.append(ub)
-        ub.wait('Waiting for approval', timeout=30)
-        resize(ub, 100, 36); ub.wait('Waiting for approval')
+        ub.wait('Check that it shows this code', timeout=30)
+        resize(ub, 100, 36); ub.wait('Check that it shows this code')
         after = b.query('operation', id=operation)
         assert after['join']['attempt'] == before['join']['attempt'] and after['join']['request'] == request
         assert after['operation']['id'] == operation and after['join']['root'] == str(b.data)
@@ -147,7 +147,7 @@ def run(binary, profile, output, outage_marker):
         assert verification == before['requests'][0]['verification_code']
         wait_bytes(a.data, b.data, 'owner.txt', b'verified owner relay bytes', active)
         wait_bytes(a.data, b.data, 'local.txt', b'verified joining relay bytes', active)
-        ub.wait('Locally ready', timeout=55)
+        ub.wait('is ready on', timeout=55)
         oracle(b, folder, 'owner.txt', b'verified owner relay bytes', a.device)
         oracle(a, folder, 'local.txt', b'verified joining relay bytes', b.device)
         saved = json.loads((b.state / 'peer-routes.json').read_text())
@@ -163,7 +163,7 @@ def run(binary, profile, output, outage_marker):
         left = a.query('history', folder=folder, path='owner.txt', limit='20')['versions']
         right = b.query('history', folder=folder, path='owner.txt', limit='20')['versions']
         assert {json.dumps(v['version'], sort_keys=True) for v in left} == {json.dumps(v['version'], sort_keys=True) for v in right}
-        ub.send(b'N'); ub.wait('Connection details'); ub.wait('Connected via relay', timeout=30)
+        ub.send(b'N'); ub.wait('Connection Details'); ub.wait('Connected via relay', timeout=30)
         ub.wait('observed='); assert 'Observed connections are separate' in ub.screen.text()
         ub.back(); ub.wait('[Overview]'); ua.back(); ua.wait('[Overview]')
         # Let the existing finite enrollment admission bucket refill after the
@@ -178,15 +178,15 @@ def run(binary, profile, output, outage_marker):
         second_a.mkdir(mode=0o700); second_b.mkdir(mode=0o700)
         (second_a / 'second.txt').write_bytes(b'separate scoped folder bytes')
         ua.send(b'c'); ua.wait('Connection choices:'); root_review(ua, 'Laptop', 'Second', second_a)
-        ua.send(b'\r'); ua.wait('Locally ready', timeout=30); ua.back(); ua.wait('[Overview]')
-        ua.send(b'a'); ua.wait('Select folder')
+        ua.send(b'\r'); ua.wait('is ready on', timeout=30); ua.back(); ua.wait('[Overview]')
+        ua.send(b'a'); ua.wait('Select Orbit')
         items = a.query('folders', limit='20')['items']; ua.wait('> ' + items[0]['name'])
         idx = next(i for i, it in enumerate(items) if it['root'] == str(second_a))
         second = items[idx]['id']; ua.send(b'j' * idx + b'\r')
-        ua.wait('Private invitation'); ua.send(b's'); ua.wait('save_invitation')
+        ua.wait('Inviting a device to'); ua.send(b's'); ua.wait('Save Invitation')
         transfer = a.root / 'second-invite.json'; ua.replace(str(transfer)); ua.send(b'\r'); ua.wait('Private invitation saved'); ua.back()
         inv2 = json.loads(transfer.read_text()); assert inv2['folder'] == second
-        ub.send(b'J'); ub.wait('Join invitation'); ub.invitation(str(transfer))
+        ub.send(b'J'); ub.wait('Join an Orbit'); ub.invitation(str(transfer))
         root_review(ub, 'Pi', 'Second', second_b); ub.send(b'\r')
         time.sleep(1); ub.pump()
         prepared = next(it for it in b.query('setups', limit='20')['items'] if it['root'] == str(second_b))
@@ -194,24 +194,24 @@ def run(binary, profile, output, outage_marker):
         if diagnostic.get('error', {}).get('code') == 'SETUP_BLOCKED':
             message = re.sub(r'https?://\S+|[A-Za-z0-9_+/=-]{40,}', '<REDACTED>', diagnostic['error']['message'])
             raise AssertionError('second-folder category: ' + message)
-        ub.wait('Waiting for approval', timeout=60)
+        ub.wait('Check that it shows this code', timeout=60)
         pending = b.query('setups', limit='20')['items']
         op2 = next(it['id'] for it in pending if it['root'] == str(second_b))
         second_join = b.query('operation', id=op2)
         assert second_join['join']['attempt'] != before['join']['attempt']
         approve(ua, a, second_join['join']['request'])
         wait_bytes(second_a, second_b, 'second.txt', b'separate scoped folder bytes', active)
-        ub.wait('Locally ready', timeout=55)
+        ub.wait('is ready on', timeout=55)
         # Verify invitation reveal labeling and revoke through existing controller.
         ua.back(); ua.wait('[Overview]')
-        ua.send(b'a'); ua.wait('Select folder'); ua.wait('> ' + a.query('folders', limit='20')['items'][0]['name']); ua.send(b'\r')
-        ua.wait('Private invitation')
-        ua.send(b's'); ua.wait('save_invitation')
+        ua.send(b'a'); ua.wait('Select Orbit'); ua.wait('> ' + a.query('folders', limit='20')['items'][0]['name']); ua.send(b'\r')
+        ua.wait('Inviting a device to')
+        ua.send(b's'); ua.wait('Save Invitation')
         revoked_file = a.root / 'revoked-transfer.json'; ua.replace(str(revoked_file)); ua.send(b'\r'); ua.wait('Private invitation saved')
         revoked_inv = json.loads(revoked_file.read_text())
         assert revoked_inv['capability'].encode() not in ua.raw
         reveal(ua)  # deliberate transfer excluded from evidence
-        hide_transfer(ua); ua.send(b'x'); ua.wait('Revoke invitation'); ua.send(b'\r'); ua.wait('Invitation revoked')
+        hide_transfer(ua); ua.send(b'x'); ua.wait('Revoke Invitation'); ua.send(b'\r'); ua.wait('Invitation revoked')
         invitations = json.loads(a.run('orbit', 'invite', 'list', '--state', str(a.state), '--folder', revoked_inv['folder'], '--json'))['invitations']
         verifier = hashlib.sha256(bytes.fromhex(revoked_inv['capability'])).digest()
         assert any(inv['Digest'] == verifier.hex() and inv['Revoked'] for inv in invitations), 'revocation not durable'
@@ -230,7 +230,7 @@ def run(binary, profile, output, outage_marker):
         assert marker.is_file() and not marker.is_symlink(), 'disposable service marker required'
         with outage_path.open('x') as trigger: trigger.write('stop disposable service only')
         ua = UI(a, 'service-outage-local-capture-draft', size=(100, 36)); active.append(ua)
-        ua.overview(); ua.send(b'N'); ua.wait('Connection details'); ua.wait('SERVICE_UNAVAILABLE', timeout=25)
+        ua.overview(); ua.send(b'N'); ua.wait('Connection Details'); ua.wait('SERVICE_UNAVAILABLE', timeout=25)
         ua.back(); ua.wait('[Overview]'); ua.send(b'c'); ua.wait('Connection choices:')
         root_review(ua, 'Laptop', 'OfflineDraft', a.root / 'offline-draft')
         ua.back(); ua.wait('Connection choices:'); ua.wait('OfflineDraft')
@@ -253,9 +253,9 @@ def run(binary, profile, output, outage_marker):
             assert not (peer.state / 'network.json').exists(), 'policy persisted before review'
             if local_only: ui.send(b'\x0e')
             root_review(ui, 'Fresh', 'Local', peer.data)
-            ui.wait('Local network only' if local_only else 'Connection: Automatic')
-            ui.send(b'\r'); ui.wait('Locally ready', timeout=30)
-            ui.send(b'N'); ui.wait('Connection details')
+            ui.wait('Local network only' if local_only else 'Anywhere (local network or internet)')
+            ui.send(b'\r'); ui.wait('is ready on', timeout=30)
+            ui.send(b'N'); ui.wait('Connection Details')
             ui.wait('LOCAL_ONLY' if local_only else 'PROFILE_MISSING_OR_EXPIRED')
             policy = peer.query('network_status')['network']['policy']
             assert policy['mode'] == ('local_only' if local_only else 'automatic')
