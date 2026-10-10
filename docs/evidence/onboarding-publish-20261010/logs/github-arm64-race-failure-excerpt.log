@@ -1,0 +1,17 @@
+2026-10-10T01:16:49.9311103Z --- FAIL: TestWANW01TransportCancellationRedirectAndBinding (8.36s)
+2026-10-10T01:16:49.9311778Z     --- FAIL: TestWANW01TransportCancellationRedirectAndBinding/direct/cancel (1.39s)
+2026-10-10T01:16:49.9312838Z         wan_transport_test.go:601: cancellation succeeded
+2026-10-10T01:16:49.9313197Z FAIL
+2026-10-10T01:16:49.9313685Z FAIL	github.com/calebhabesh/orbit/internal/replication	273.370s
+2026-10-10T01:16:49.9314177Z ok  	github.com/calebhabesh/orbit/internal/repository	107.058s
+2026-10-10T01:16:49.9314672Z ok  	github.com/calebhabesh/orbit/internal/scheduler	23.171s
+2026-10-10T01:16:49.9315181Z ok  	github.com/calebhabesh/orbit/internal/state	1.025s
+2026-10-10T01:16:49.9315621Z ok  	github.com/calebhabesh/orbit/internal/terminal	27.568s
+2026-10-10T01:16:49.9316071Z ok  	github.com/calebhabesh/orbit/internal/testkit	1.012s
+2026-10-10T01:16:49.9316524Z ok  	github.com/calebhabesh/orbit/internal/workspace	35.761s
+2026-10-10T01:16:49.9317203Z ok  	github.com/calebhabesh/orbit/model	3.967s
+2026-10-10T01:16:49.9317737Z ok  	github.com/calebhabesh/orbit/tests/integration	211.975s
+2026-10-10T01:16:49.9318169Z ok  	github.com/calebhabesh/orbit/tests/designgates	1.908s
+2026-10-10T01:16:49.9318628Z ok  	github.com/calebhabesh/orbit/tests/faults	67.211s
+2026-10-10T01:16:49.9318950Z FAIL
+2026-10-10T01:16:50.0665517Z make: *** [Makefile:47: test-race-core] Error 1

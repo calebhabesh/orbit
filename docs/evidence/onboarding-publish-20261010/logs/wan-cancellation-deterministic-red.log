@@ -1,0 +1,5 @@
+--- FAIL: TestWANW01TransportCancellationWinsCompletedResponse (0.00s)
+    transport_test.go:89: canceled request returned response=true, error=<nil>
+FAIL
+FAIL	github.com/calebhabesh/orbit/internal/network	0.004s
+FAIL
