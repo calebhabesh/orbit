@@ -244,6 +244,9 @@ valid direct path. Expiration, overload, profile incompatibility and blocked rou
 are distinct typed failures. A fresh connection is not a claim that files are
 stored/applied. The [UX](orbit-wan-ux.md) owns their human presentation.
 
+Peer transports return the caller's context error when cancellation coincides
+with response delivery, closing the discarded response body before returning.
+
 Support exports redact invitation/ICE/relay credentials, private filenames and
 full endpoint details by default. Logs use bounded IDs and aggregate diagnostics;
 the operator declares exact retention and visible metadata. Local-only stops

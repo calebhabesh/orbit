@@ -108,10 +108,20 @@ type Transport struct {
 	routeTrust        *tls.Config
 }
 
-func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
+func (t *Transport) RoundTrip(r *http.Request) (response *http.Response, err error) {
 	if r == nil || r.URL == nil || r.URL.Scheme != "https" || r.URL.User != nil {
 		return nil, errors.New("TLS_REQUIRED")
 	}
+	// Response headers can win the adapter's select at the same time as caller
+	// cancellation. The peer operation must still observe the canceled request.
+	defer func() {
+		if canceled := r.Context().Err(); canceled != nil && response != nil {
+			if response.Body != nil {
+				_ = response.Body.Close()
+			}
+			response, err = nil, canceled
+		}
+	}()
 	if t.quic != nil && t.routeManager != nil {
 		ready, useQUIC, err := t.selectRoute(r.Context())
 		if err != nil {

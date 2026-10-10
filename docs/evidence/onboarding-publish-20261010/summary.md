@@ -83,3 +83,65 @@ in light, dark and 375 px Markdown previews. Physical WAN fault campaigns,
 maximum-size/scale experiments, package container transaction emulation, and an
 owner Leave/removal walkthrough remain unexecuted. Existing E13 recovery and
 offline-notification limitations still apply.
+
+## Publication and trial verification
+
+Source `f93575a041075df5611e1291f92ef36a9a608a83` and the previously unpushed
+commit were pushed to `main`. Follow-up
+`dae0ea884c45d022a24cf8aa991bc05d81468afd` changes only the trial shell helper:
+the two-line version display now consumes the entire output instead of closing
+the pipe early with `head`. `bash -n` and status calls on all three hosts pass.
+The initial Pi status call failed once; ten direct retries passed before this
+robustness correction. No root cause is inferred from that one failed call.
+
+The GitHub README and SVG were fetched through the authenticated read API;
+the SVG is byte-identical to the local file. The rendered README API response
+contains the centered image, its 560 px width, and descriptive alternative text.
+
+Private consistent metadata and prior-binary backups were taken immediately
+before `make trial-install`. Installation passed (6 s), followed by all three
+read-only verification helpers and `make trial-status`. The PC and laptop run
+`dae0ea8`, 2.3.0/schema 15, preserving identity, root, membership, recorded history
+and four ordinary files per host. Both report observed Ready with zero missing
+content, pending publication, conflicts or attention items. The Pi executes the
+native arm64 binary and remains unconfigured/stopped. Private backup manifests
+stay on their hosts. Public verification summaries and binary checksums are in
+[results](results.json); install and status logs are retained here.
+
+`gh workflow run full.yml --ref main` dispatched the
+[full native amd64/arm64 suite](https://github.com/calebhabesh/orbit/actions/runs/38011309012)
+for `f93575a`. The shell-only follow-up started
+[fast CI](https://github.com/calebhabesh/orbit/actions/runs/38011492958).
+Final conclusions are recorded after these runs finish.
+
+## WAN cancellation correction found by full CI
+
+The first native arm64 race job failed in the existing
+`TestWANW01TransportCancellationRedirectAndBinding/direct/cancel`: a canceled
+request returned a successful response ([filtered job log](logs/github-arm64-race-failure-excerpt.log)).
+The other arm64 core, integration, repository, workspace, terminal and fault
+race packages passed. Thirty focused direct-cancellation repetitions passed
+locally (23.427 s), so that initial loop did not reliably reproduce the timing.
+
+The deterministic `TestWANW01TransportCancellationWinsCompletedResponse`
+exercises the real Orbit transport and HTTP client with an adapter delivering
+response headers after canceling the caller. Before correction:
+`go test -race -count=1 ./internal/network -run '^TestWANW01TransportCancellationWinsCompletedResponse$'`
+fails in 0.004 s with `response=true, error=<nil>`
+([red log](logs/wan-cancellation-deterministic-red.log)). The transport now
+checks the caller context at return, closes the discarded body, and returns
+the context error. This check covers direct, relay and QUIC responses.
+
+The same regression with `-count=100` passes in 1.015 s
+([green log](logs/wan-cancellation-deterministic-green.log)). Both standards and
+spec reviewers found no concrete issue in the correction; the WAN architecture
+and protocol now record cancellation taking precedence over concurrent response
+delivery. The original direct/relay cancellation, redirect and pin-binding
+fixture, full network race suite, and core/package gates are rerun on the fix.
+
+`go test -race -count=30 ./internal/replication -run '^TestWANW01TransportCancellationRedirectAndBinding$'`
+passes all direct/relay cancellation, redirect and target-pin cases (181.557 s,
+[log](logs/wan-cancellation-fix-full-fixture.log)).
+`go test -race -count=1 ./internal/network` passes the complete network race
+suite (122.478 s, [log](logs/network-race-cancellation-final.log)). The core and
+package gates continue on this frozen source, followed by a fresh full CI matrix.

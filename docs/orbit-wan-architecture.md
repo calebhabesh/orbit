@@ -61,7 +61,9 @@ type Manager interface {
 }
 ```
 
-Transport instances are reusable, bounded and context-cancellable. Their target
+Transport instances are reusable, bounded and context-cancellable. If caller
+cancellation and response delivery coincide, the transport returns the context
+error and closes the discarded response body before returning. Their target
 identity/pin is immutable. Replication supplies the reviewed certificate/pin in its TLS configuration; clone
 it and the root pool, retain its verifier and additionally check the immutable
 target pin. The RoundTripper rejects http:// requests before dialing. A request's own context controls its attempt; manager

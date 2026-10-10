@@ -1,0 +1,164 @@
+{
+  "source_commit": "f93575a041075df5611e1291f92ef36a9a608a83",
+  "trial_commit": "dae0ea884c45d022a24cf8aa991bc05d81468afd",
+  "published_readme": "https://github.com/calebhabesh/orbit/blob/main/README.md",
+  "readme_rendered_centered_logo": true,
+  "readme_svg_matches_local": true,
+  "local_checks": {
+    "core_and_packages": "passed",
+    "terminal_unit_race": "passed",
+    "focused_e11_e13_race": "passed",
+    "quick_five_ptys": "passed",
+    "trial_shell_syntax": "passed",
+    "trial_status_all_hosts": "passed",
+    "trial_backup_install_verify": "passed",
+    "wan_cancellation_deterministic_100_race": "passed",
+    "wan_transport_original_fixture_30_race": "passed",
+    "complete_network_race": "passed"
+  },
+  "trial_hosts": [
+    {
+      "host": "CalebPC",
+      "version": "2.3.0",
+      "commit": "dae0ea8",
+      "schema": 15,
+      "goarch": "amd64",
+      "binary_sha256": "3fe0bfffd53aba9786636eeef71451eafdebb96c8d3bd94d8f8d246c6abf790b",
+      "configured": true,
+      "trial_unit": "active",
+      "preserved": [
+        "identity",
+        "folder roots",
+        "membership",
+        "recorded history",
+        "existing file manifest"
+      ],
+      "preserved_file_count": 4,
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "attention_count": 0,
+      "join_request_count": "0"
+    },
+    {
+      "host": "CalebLaptop",
+      "version": "2.3.0",
+      "commit": "dae0ea8",
+      "schema": 15,
+      "goarch": "amd64",
+      "binary_sha256": "3fe0bfffd53aba9786636eeef71451eafdebb96c8d3bd94d8f8d246c6abf790b",
+      "configured": true,
+      "trial_unit": "active",
+      "preserved": [
+        "identity",
+        "folder roots",
+        "membership",
+        "recorded history",
+        "existing file manifest"
+      ],
+      "preserved_file_count": 4,
+      "readiness": {
+        "approved": true,
+        "membership_current": true,
+        "root_available": true,
+        "scan_complete": true,
+        "unsupported": "0",
+        "unreadable": "0",
+        "uncaptured": "0",
+        "missing_content": "0",
+        "pending_publication": "0",
+        "conflicts": "0",
+        "storage_blocked": false
+      },
+      "attention_count": 0,
+      "join_request_count": "0"
+    },
+    {
+      "host": "pi-server",
+      "version": "2.3.0",
+      "commit": "dae0ea8",
+      "schema": 15,
+      "goarch": "arm64",
+      "binary_sha256": "7487b03172d5b113cd786cc55fed67e04f105d781c40d7ec112b4107fae50e19",
+      "configured": false,
+      "trial_unit": "unconfigured/stopped",
+      "preserved": [],
+      "preserved_file_count": null
+    }
+  ],
+  "ci": {
+    "fast": {
+      "id": 38011492958,
+      "head_sha": "dae0ea884c45d022a24cf8aa991bc05d81468afd",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/calebhabesh/orbit/actions/runs/38011492958",
+      "jobs": [
+        {
+          "name": "Fast checks",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "initial_full_suite": {
+      "id": 38011309012,
+      "head_sha": "f93575a041075df5611e1291f92ef36a9a608a83",
+      "status": "in_progress",
+      "conclusion": "",
+      "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012",
+      "jobs": [
+        {
+          "name": "check-core (arm64) try 1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "test-terminal (amd64) try 1",
+          "status": "in_progress",
+          "conclusion": ""
+        },
+        {
+          "name": "test-terminal-packages (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "test-terminal-packages (arm64) try 1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "test-race-core (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "test-race-core (arm64) try 1",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "check-core (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "test-terminal (arm64) try 1",
+          "status": "in_progress",
+          "conclusion": ""
+        }
+      ]
+    }
+  }
+}
