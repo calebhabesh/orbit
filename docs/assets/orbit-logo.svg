@@ -2,7 +2,6 @@
   <title id="title">Orbit</title>
   <desc id="description">The Orbit terminal logo: cyan ASCII orbital rings surround a yellow sun and colorful planets. Your folders, on every device.</desc>
   <!-- ASCII artwork and color roles match internal/terminal/theme.go. -->
-  <rect x="1" y="1" width="638" height="430" rx="20" fill="#0d1117" stroke="#30363d"/>
   <g font-family="DejaVu Sans Mono, monospace" font-size="18">
     <text y="48"><tspan x="76.10" fill="#94a3b8">+</tspan><tspan x="227.86" fill="#22d3ee">_.----------</tspan><tspan x="357.94" fill="#4ade80" font-weight="bold">o</tspan><tspan x="368.78" fill="#22d3ee">--._</tspan></text>
     <text y="72"><tspan x="141.14" fill="#22d3ee">.------'</tspan><tspan x="412.14" fill="#22d3ee">'------.</tspan><tspan x="553.06" fill="#94a3b8">+</tspan></text>
