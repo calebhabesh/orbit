@@ -16,6 +16,11 @@ records the independent standards/spec reviews and final checks, including the
 readiness toast, global request badge, private CLI review file, resumable
 removal, and durable manual-sync removal corrections. Earlier dated entries
 below retain their original commit/install/check status as historical evidence.
+Published application source `0b4ac78` passes fast CI and all eight full-suite
+jobs on native amd64/arm64, including full terminal and core race checks. That
+build is installed on all three trial hosts; PC/laptop remain Ready with their
+existing identity, roots, membership, recorded history and files preserved.
+The publication follow-up contains only documentation and verification evidence.
 
 ## Packet tracker
 

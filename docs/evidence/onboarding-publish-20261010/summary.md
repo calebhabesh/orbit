@@ -112,7 +112,7 @@ stay on their hosts. Public verification summaries and binary checksums are in
 [full native amd64/arm64 suite](https://github.com/calebhabesh/orbit/actions/runs/38011309012)
 for `f93575a`. The shell-only follow-up started
 [fast CI](https://github.com/calebhabesh/orbit/actions/runs/38011492958).
-Final conclusions are recorded after these runs finish.
+The first full run's failure and the corrected runs are recorded below.
 
 ## WAN cancellation correction found by full CI
 
@@ -144,4 +144,53 @@ passes all direct/relay cancellation, redirect and target-pin cases (181.557 s,
 [log](logs/wan-cancellation-fix-full-fixture.log)).
 `go test -race -count=1 ./internal/network` passes the complete network race
 suite (122.478 s, [log](logs/network-race-cancellation-final.log)). The core and
-package gates continue on this frozen source, followed by a fresh full CI matrix.
+package gates pass again on the corrected source with
+`make check-core test-terminal-packages`
+([final log](logs/release-cancellation-final.log)).
+That local command began with the correction already present, before its commit
+was created; its early build metadata therefore names `dae0ea8`. The application
+source remained fixed throughout the run. The subsequent trial install and
+GitHub jobs build the committed `0b4ac78` source.
+
+The correction is published as
+`0b4ac78f35392706a3d3b7446c41cf87f92548e9`. Fresh private backups preceded
+another successful `make trial-install`, followed by all three verification
+helpers and `make trial-status`
+([install log](logs/trial-install-cancellation-final.log),
+[status log](logs/trial-after-cancellation-final.log)). All three installed
+binaries report `0b4ac78`; the PC and laptop remain Ready with the same identity,
+root, membership, recorded history and four ordinary files each. Their status
+reports no missing content, pending publication, conflicts or attention items.
+The Pi remains unconfigured/stopped. Final host checksums are in
+[results](results.json).
+
+The corrected source starts
+[fast CI](https://github.com/calebhabesh/orbit/actions/runs/38013224728), which
+passes, and a fresh
+[full native amd64/arm64 matrix](https://github.com/calebhabesh/orbit/actions/runs/38013228435).
+The earlier full run ended canceled after its arm64 cancellation failure; five
+jobs passed and the two unfinished terminal jobs were canceled by the new full
+dispatch. It is retained as failure evidence, not credited as a full pass.
+The fresh full run completes successfully with all eight jobs passing.
+
+The corrected native arm64 race job passes, including complete network
+(121.685 s), replication (276.867 s), control (1016.847 s), repository,
+workspace, terminal, integration, model and fault packages
+([package summaries](logs/github-arm64-race-corrected-excerpt.log)).
+
+## Final GitHub verification
+
+Both final workflows pass for
+`0b4ac78f35392706a3d3b7446c41cf87f92548e9`:
+[fast CI](https://github.com/calebhabesh/orbit/actions/runs/38013224728) and
+[the full suite](https://github.com/calebhabesh/orbit/actions/runs/38013228435).
+The full suite runs `make check-core`, `make test-terminal`,
+`make test-terminal-packages`, and `make test-race-core` on each native
+architecture. All eight jobs pass, including both full terminal suites and both
+core race suites. Exact job URLs, start/end times and conclusions are in
+[results](results.json).
+
+The final follow-up commit contains only documentation and evidence. The
+application source remains identical to the tested and installed `0b4ac78`
+source. Historical failed or canceled runs remain labeled separately; the
+unexecuted physical campaigns and E13 recovery limitations above remain.

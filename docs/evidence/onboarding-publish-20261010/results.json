@@ -1,6 +1,6 @@
 {
-  "source_commit": "f93575a041075df5611e1291f92ef36a9a608a83",
-  "trial_commit": "dae0ea884c45d022a24cf8aa991bc05d81468afd",
+  "source_commit": "0b4ac78f35392706a3d3b7446c41cf87f92548e9",
+  "trial_commit": "0b4ac78f35392706a3d3b7446c41cf87f92548e9",
   "published_readme": "https://github.com/calebhabesh/orbit/blob/main/README.md",
   "readme_rendered_centered_logo": true,
   "readme_svg_matches_local": true,
@@ -14,16 +14,17 @@
     "trial_backup_install_verify": "passed",
     "wan_cancellation_deterministic_100_race": "passed",
     "wan_transport_original_fixture_30_race": "passed",
-    "complete_network_race": "passed"
+    "complete_network_race": "passed",
+    "core_and_packages_after_cancellation_fix": "passed"
   },
   "trial_hosts": [
     {
       "host": "CalebPC",
       "version": "2.3.0",
-      "commit": "dae0ea8",
+      "commit": "0b4ac78",
       "schema": 15,
       "goarch": "amd64",
-      "binary_sha256": "3fe0bfffd53aba9786636eeef71451eafdebb96c8d3bd94d8f8d246c6abf790b",
+      "binary_sha256": "9f9d9f67fa599ce32c25d77745997b598c75bd23d962b6fb57324cb4a562ac55",
       "configured": true,
       "trial_unit": "active",
       "preserved": [
@@ -53,10 +54,10 @@
     {
       "host": "CalebLaptop",
       "version": "2.3.0",
-      "commit": "dae0ea8",
+      "commit": "0b4ac78",
       "schema": 15,
       "goarch": "amd64",
-      "binary_sha256": "3fe0bfffd53aba9786636eeef71451eafdebb96c8d3bd94d8f8d246c6abf790b",
+      "binary_sha256": "9f9d9f67fa599ce32c25d77745997b598c75bd23d962b6fb57324cb4a562ac55",
       "configured": true,
       "trial_unit": "active",
       "preserved": [
@@ -86,10 +87,10 @@
     {
       "host": "pi-server",
       "version": "2.3.0",
-      "commit": "dae0ea8",
+      "commit": "0b4ac78",
       "schema": 15,
       "goarch": "arm64",
-      "binary_sha256": "7487b03172d5b113cd786cc55fed67e04f105d781c40d7ec112b4107fae50e19",
+      "binary_sha256": "c366e8dd89a2eab36b0f8e72d42aac2a900ff8d35f129588e8aa2b0305830a40",
       "configured": false,
       "trial_unit": "unconfigured/stopped",
       "preserved": [],
@@ -97,7 +98,80 @@
     }
   ],
   "ci": {
-    "fast": {
+    "initial_full_suite": {
+      "id": 38011309012,
+      "head_sha": "f93575a041075df5611e1291f92ef36a9a608a83",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012",
+      "jobs": [
+        {
+          "name": "check-core (arm64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T00:58:46Z",
+          "completedAt": "2026-10-10T01:03:50Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724190"
+        },
+        {
+          "name": "test-terminal (amd64) try 1",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "startedAt": "2026-10-10T00:58:44Z",
+          "completedAt": "2026-10-10T01:27:29Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724332"
+        },
+        {
+          "name": "test-terminal-packages (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T00:58:44Z",
+          "completedAt": "2026-10-10T00:59:39Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724362"
+        },
+        {
+          "name": "test-terminal-packages (arm64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T00:58:46Z",
+          "completedAt": "2026-10-10T00:59:34Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724363"
+        },
+        {
+          "name": "test-race-core (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T00:58:44Z",
+          "completedAt": "2026-10-10T01:18:15Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724375"
+        },
+        {
+          "name": "test-race-core (arm64) try 1",
+          "status": "completed",
+          "conclusion": "failure",
+          "startedAt": "2026-10-10T00:58:46Z",
+          "completedAt": "2026-10-10T01:16:52Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724383"
+        },
+        {
+          "name": "check-core (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T00:58:44Z",
+          "completedAt": "2026-10-10T01:04:13Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724389"
+        },
+        {
+          "name": "test-terminal (arm64) try 1",
+          "status": "completed",
+          "conclusion": "cancelled",
+          "startedAt": "2026-10-10T00:58:46Z",
+          "completedAt": "2026-10-10T01:27:28Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012/job/114091724398"
+        }
+      ]
+    },
+    "initial_fast": {
       "id": 38011492958,
       "head_sha": "dae0ea884c45d022a24cf8aa991bc05d81468afd",
       "status": "completed",
@@ -111,54 +185,99 @@
         }
       ]
     },
-    "initial_full_suite": {
-      "id": 38011309012,
-      "head_sha": "f93575a041075df5611e1291f92ef36a9a608a83",
-      "status": "in_progress",
-      "conclusion": "",
-      "url": "https://github.com/calebhabesh/orbit/actions/runs/38011309012",
+    "fast": {
+      "id": 38013224728,
+      "head_sha": "0b4ac78f35392706a3d3b7446c41cf87f92548e9",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/calebhabesh/orbit/actions/runs/38013224728",
       "jobs": [
         {
-          "name": "check-core (arm64) try 1",
+          "name": "Fast checks",
           "status": "completed",
-          "conclusion": "success"
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:11Z",
+          "completedAt": "2026-10-10T01:31:24Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013224728/job/114097711730"
+        }
+      ]
+    },
+    "full_suite": {
+      "id": 38013228435,
+      "head_sha": "0b4ac78f35392706a3d3b7446c41cf87f92548e9",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435",
+      "jobs": [
+        {
+          "name": "test-race-core (arm64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:34Z",
+          "completedAt": "2026-10-10T01:45:39Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784188"
         },
         {
           "name": "test-terminal (amd64) try 1",
-          "status": "in_progress",
-          "conclusion": ""
-        },
-        {
-          "name": "test-terminal-packages (amd64) try 1",
           "status": "completed",
-          "conclusion": "success"
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:32Z",
+          "completedAt": "2026-10-10T02:04:13Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784315"
         },
         {
           "name": "test-terminal-packages (arm64) try 1",
           "status": "completed",
-          "conclusion": "success"
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:34Z",
+          "completedAt": "2026-10-10T01:28:25Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784338"
+        },
+        {
+          "name": "check-core (arm64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:34Z",
+          "completedAt": "2026-10-10T01:32:44Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784349"
         },
         {
           "name": "test-race-core (amd64) try 1",
           "status": "completed",
-          "conclusion": "success"
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:32Z",
+          "completedAt": "2026-10-10T01:47:24Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784374"
         },
         {
-          "name": "test-race-core (arm64) try 1",
+          "name": "test-terminal (arm64) try 1",
           "status": "completed",
-          "conclusion": "failure"
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:34Z",
+          "completedAt": "2026-10-10T02:04:01Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784426"
+        },
+        {
+          "name": "test-terminal-packages (amd64) try 1",
+          "status": "completed",
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:32Z",
+          "completedAt": "2026-10-10T01:28:33Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784444"
         },
         {
           "name": "check-core (amd64) try 1",
           "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "name": "test-terminal (arm64) try 1",
-          "status": "in_progress",
-          "conclusion": ""
+          "conclusion": "success",
+          "startedAt": "2026-10-10T01:27:32Z",
+          "completedAt": "2026-10-10T01:32:04Z",
+          "url": "https://github.com/calebhabesh/orbit/actions/runs/38013228435/job/114097784465"
         }
       ]
     }
-  }
+  },
+  "initial_source_commit": "f93575a041075df5611e1291f92ef36a9a608a83",
+  "initial_trial_commit": "dae0ea884c45d022a24cf8aa991bc05d81468afd",
+  "verified_at_utc": "2026-10-10T02:05:10.373629+00:00",
+  "verification_followup_scope": "Documentation and evidence only; application source remains the tested source_commit."
 }
