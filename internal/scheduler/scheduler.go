@@ -326,6 +326,11 @@ func (s *Scheduler) dispatchLoop() {
 func (s *Scheduler) executeTask(task *repository.DurableTask) {
 	defer s.wg.Done()
 	defer s.notifyWork()
+	// Work queued before this device left the folder is dropped, not failed.
+	if left, err := s.db.FolderLeft(s.ctx, task.Folder); err == nil && left {
+		_ = s.queue.Cancel(context.Background(), task.ID)
+		return
+	}
 
 	taskCtx, taskCancel := context.WithCancel(s.ctx)
 	s.mu.Lock()
@@ -351,6 +356,16 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 	case <-taskCtx.Done():
 		_ = s.queue.UpdateState(context.Background(), task.ID, "queued", task.Attempts, "", "", 0)
 		return
+	}
+	if left, err := s.db.FolderLeft(taskCtx, task.Folder); err != nil || left {
+		_ = s.queue.Cancel(context.Background(), task.ID)
+		return
+	}
+	if task.Kind == "sync" && task.Peer != nil {
+		if retired, err := s.db.IsDeviceRetired(taskCtx, task.Folder, *task.Peer); err != nil || retired {
+			_ = s.queue.Cancel(context.Background(), task.ID)
+			return
+		}
 	}
 	// Checked under the folder gate: a join that started after dispatch still
 	// keeps this task off its working tree. The attempt is not charged.
@@ -434,6 +449,14 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 	default:
 		execErr = fmt.Errorf("unknown task kind: %s", task.Kind)
 	}
+	// Membership can change while the task runs. A retired peer's old
+	// response cannot revive its work or end our own participation.
+	if task.Kind == "sync" && task.Peer != nil {
+		if retired, err := s.db.IsDeviceRetired(context.Background(), task.Folder, *task.Peer); err == nil && retired {
+			_ = s.queue.Cancel(context.Background(), task.ID)
+			return
+		}
+	}
 
 	if execErr == nil {
 		_ = s.queue.UpdateState(context.Background(), task.ID, "completed", task.Attempts, "", "", 0)
@@ -449,6 +472,17 @@ func (s *Scheduler) executeTask(task *repository.DurableTask) {
 		return
 	}
 
+	// A pinned peer's explicit removal refusal ends activity for this Orbit.
+	var ending *replication.WireError
+	if task.Peer != nil && errors.As(execErr, &ending) && ending.Body.Code == replication.DeviceRemovedCode {
+		_ = replication.RecordDeviceRemoval(context.Background(), s.db, task.Folder, *task.Peer, execErr)
+		_ = s.queue.Cancel(context.Background(), task.ID)
+		return
+	}
+	if left, _ := s.db.FolderLeft(context.Background(), task.Folder); left {
+		_ = s.queue.Cancel(context.Background(), task.ID)
+		return
+	}
 	// Error handling
 	if errors.Is(execErr, context.Canceled) {
 		// Was canceled or stopped

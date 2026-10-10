@@ -1,0 +1,8 @@
+=== RUN   TestWANW16NativeRunnerRehearsal
+=== RUN   TestWANW16NativeRunnerRehearsal/tui-three-host
+    wan_w16_test.go:193: cleaned private rehearsal root: /home/ethioking/orbit-validation-1g0cn5l4
+    wan_w16_test.go:193: cleaned private rehearsal root: /home/ethioking/orbit-validation-yporo3wf
+--- PASS: TestWANW16NativeRunnerRehearsal (343.20s)
+    --- PASS: TestWANW16NativeRunnerRehearsal/tui-three-host (342.23s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	343.200s

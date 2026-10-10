@@ -48,7 +48,7 @@ func (db *DB) SetRetentionPolicy(ctx context.Context, folder history.ID, policy 
 
 func (db *DB) IsCleanupSuspended(ctx context.Context, folder history.ID) (bool, string, error) {
 	var pendingMaint int
-	err := db.db.QueryRowContext(ctx, `SELECT count(*) FROM resumable_maintenance WHERE folder_id=? AND phase != 'completed'`, folder[:]).Scan(&pendingMaint)
+	err := db.db.QueryRowContext(ctx, `SELECT count(*) FROM resumable_maintenance WHERE folder_id=? AND lower(phase) NOT IN ('completed','aborted')`, folder[:]).Scan(&pendingMaint)
 	if err != nil {
 		return false, "", err
 	}

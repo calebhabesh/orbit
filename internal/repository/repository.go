@@ -20,7 +20,7 @@ import (
 	"github.com/calebhabesh/orbit/internal/history"
 )
 
-const CurrentSchema = 14
+const CurrentSchema = 15
 
 var (
 	ErrIncompatibleSchema     = errors.New("metadata schema is newer than this binary")
@@ -75,6 +75,8 @@ type DB struct {
 	metadataBudgetBytes   uint64
 	freeSpaceReserveBytes uint64
 	mu                    sync.Mutex
+	exchangeMu            sync.Mutex
+	exchanges             map[history.ID]*folderExchange
 }
 
 func Open(ctx context.Context, stateDir string) (*DB, error) {
@@ -397,6 +399,23 @@ ALTER TABLE folders ADD COLUMN name_author BLOB;
 ALTER TABLE devices ADD COLUMN name_clock INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE devices ADD COLUMN name_author BLOB;
 PRAGMA user_version = 14;`); err != nil {
+			return err
+		}
+		return tx.Commit()
+	},
+	// Leaving an Orbit on this device (2.3.0): left_ns marks a folder this
+	// device stopped syncing; its root is unregistered and peers are refused.
+	15: func(ctx context.Context, db *sql.DB) error {
+		tx, err := db.BeginTx(ctx, nil)
+		if err != nil {
+			return err
+		}
+		defer tx.Rollback()
+		if _, err := tx.ExecContext(ctx, `ALTER TABLE folders ADD COLUMN left_ns INTEGER;
+ALTER TABLE folders ADD COLUMN removed_by BLOB;
+CREATE TABLE retirement_reviews (folder_id BLOB PRIMARY KEY, digest BLOB NOT NULL, proposal BLOB NOT NULL);
+CREATE TABLE retirement_actors (folder_id BLOB NOT NULL, device_id BLOB NOT NULL, initiator BLOB NOT NULL, PRIMARY KEY(folder_id,device_id));
+PRAGMA user_version = 15;`); err != nil {
 			return err
 		}
 		return tx.Commit()

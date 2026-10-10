@@ -120,10 +120,26 @@ func (syncer *Syncer) common() (string, string, string, string) {
 
 func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 	var result SyncResult
+	ctx, release, err := syncer.repo.BeginFolderExchange(ctx, syncer.folder)
+	if err != nil {
+		return result, err
+	}
+	defer release()
+	result, err = syncer.sync(ctx)
+	release()
+	// The durable refusal must survive cancellation of the caller's request.
+	if endingErr := RecordDeviceRemoval(context.Background(), syncer.repo, syncer.folder, syncer.peer, err); endingErr != nil {
+		err = errors.Join(err, endingErr)
+	}
+	return result, err
+}
+
+func (syncer *Syncer) sync(ctx context.Context) (SyncResult, error) {
+	var result SyncResult
+	var err error
 	// Only an exact-membership rejection permits fetching configuration. Failed
 	// transport/authentication never bypasses data authorization.
 	var hello HelloResponse
-	var err error
 	for step := 0; step < 64; step++ {
 		device, folder, revision, digest := syncer.common()
 		hello, err = syncer.client.Hello(ctx, HelloRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, Folders: []FolderHandshake{syncer.handshake()}, Limits: Limits{MetadataBytes: strconv.FormatInt(MaxMetadataBytes, 10), InventoryPage: strconv.Itoa(MaxInventoryPage)}})
@@ -148,10 +164,19 @@ func (syncer *Syncer) Sync(ctx context.Context) (SyncResult, error) {
 		if getErr != nil {
 			return result, getErr
 		}
-		if !additiveMembership(current, m) {
-			return result, repository.ErrMembershipMismatch
+		var approved repository.ApprovedMembership
+		var approveErr error
+		if additiveMembership(current, m) {
+			approved, approveErr = syncer.repo.ApproveMembership(ctx, m, next.Snapshots...)
+		} else {
+			review, e := syncer.repo.RetirementReview(ctx, syncer.folder)
+			candidate, _ := protocol.MembershipDigest(m)
+			reviewed, _ := protocol.MembershipDigest(review.Membership)
+			if e != nil || candidate != reviewed {
+				return result, repository.ErrMembershipMismatch
+			}
+			approved, approveErr = syncer.repo.CommitRetirement(ctx, review)
 		}
-		approved, approveErr := syncer.repo.ApproveMembership(ctx, m)
 		if approveErr != nil {
 			return result, approveErr
 		}

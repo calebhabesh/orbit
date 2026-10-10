@@ -1,0 +1,14 @@
+=== RUN   TestWANW07RealPTYRelayOnboarding
+    wan_tui_test.go:71: W07 PTY: exit status 1
+        Traceback (most recent call last):
+          File "/home/ethioking/dev/orbit/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 305, in <module>
+            run(Path(args.binary).resolve(strict=True), Path(args.profile).resolve(strict=True), args.output, args.outage_marker)
+            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          File "/home/ethioking/dev/orbit/tests/terminal/../../scripts/terminal_wan_pty_test.py", line 121, in run
+            assert ua.pairing_code, 'short pairing code absent'
+                   ^^^^^^^^^^^^^^^
+        AssertionError: short pairing code absent
+--- FAIL: TestWANW07RealPTYRelayOnboarding (5.23s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	5.228s
+FAIL

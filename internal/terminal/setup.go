@@ -43,7 +43,7 @@ type workflow struct {
 	screen, kind, folder, device, operation, cursor string
 	fields                                          []field
 	focus, selected, scroll                         int
-	advanced, reveal                                bool
+	advanced, reveal, details                       bool
 	settings                                        tc.Settings
 	network                                         tc.NetworkPolicy
 	builtin                                         *tc.BuiltinProfile
@@ -64,14 +64,18 @@ type workflow struct {
 	// can approve from the invitation page, and the last one seen, so the page
 	// can say it was approved once it leaves the pending list.
 	invitePending []tc.EnrollmentRequest
-	inviteSeen    *tc.EnrollmentRequest
-	result        tc.Result
-	items         []tc.NamedItem
-	retirement    *control.RetireDevicePreviewResult
-	err, notice   string
-	work          func(context.Context) (tc.Result, error)
-	task          string
-	busy          bool
+	// inviteMutation holds the invitation's operation while an approval made
+	// on the invitation page runs as its own.
+	inviteMutation *tc.Mutation
+	inviteSeen     *tc.EnrollmentRequest
+	result         tc.Result
+	items          []tc.NamedItem
+	retirement     *control.RetireDevicePreviewResult
+	removalRequest *control.RemoveDeviceRequest
+	err, notice    string
+	work           func(context.Context) (tc.Result, error)
+	task           string
+	busy           bool
 }
 
 func newField(label, value string, secret bool) field {
@@ -159,6 +163,7 @@ func (m *model) flowCommand(ctx context.Context) (string, func() (tc.Result, err
 			if err != nil {
 				return out, err
 			}
+			out.JoinRequestCount = r.JoinRequestCount
 			for _, req := range r.Requests {
 				if req.Folder == folder {
 					out.Requests = append(out.Requests, req)
@@ -342,8 +347,25 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.focus = 0
 		return m.focusField(0)
 	case "retirement_preview":
-		f.screen = "retirement_preview"
 		f.result = r
+		if r.Retirement == nil {
+			f.err = "Removal review unavailable."
+			return nil
+		}
+		f.screen = "remove_form"
+		f.fields = []field{newField("Type the device name", "", false)}
+		f.focus = 0
+		return m.focusField(0)
+	case "leave":
+		name := f.folderName
+		m.notice = "Left " + safe(name) + "; files kept in " + safe(f.folderRoot)
+		return m.closeFlow()
+	case "remove_device":
+		f.result.Removal = r.Removal
+		if r.Removal != nil && r.Removal.DeviceID != "" {
+			f.device = r.Removal.DeviceID
+		}
+		f.screen = "remove_result"
 	case "preview":
 		f.result = r
 		if r.Preview == nil {
@@ -413,6 +435,14 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 	case "approval":
 		// Never silently replace a reviewed request with a freshly polled one.
 	case "approve", "decline":
+		if f.inviteMutation != nil {
+			// Decided from the invitation page: stay there and show the outcome.
+			f.mutation, f.inviteMutation = *f.inviteMutation, nil
+			seen := f.request
+			seen.State = map[string]string{"approve": "approved", "decline": "declined"}[task]
+			f.inviteSeen, f.invitePending = &seen, nil
+			return nil
+		}
 		f.result = r
 		f.screen = "approval_done"
 		f.notice = "Exact request " + task + " completed. Other devices may still need membership updates."
@@ -443,6 +473,22 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		f.notice = "Private invitation saved. Transfer deliberately to the receiving device."
 	case "folder":
 		f.result = r
+		if r.FolderManagement != nil {
+			f.folderRoot = r.FolderManagement.Root
+			if r.FolderManagement.Name != "" {
+				f.folderName = r.FolderManagement.Name
+			}
+			if r.Context != nil && r.Context.FolderName != "" {
+				f.folderName = r.Context.FolderName
+			}
+			if r.FolderManagement.RemovedBy != "" || r.FolderManagement.RemovalReporter != "" {
+				f.screen = "removed"
+			} else if f.kind == "leave" {
+				f.screen = "leave_review"
+			} else if f.kind == "remove" {
+				return m.pickRemovalDevice()
+			}
+		}
 	case "rename":
 		name := safe(strings.TrimSpace(f.fields[0].input.Value()))
 		if f.kind == "rename_folder_screen" {
@@ -670,7 +716,7 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 			f.screen = "folder"
 			return m.invalidate()
 		}
-		if f.screen == "rename_form" {
+		if f.screen == "rename_form" || f.screen == "remove_form" {
 			if f.kind == "rename_folder_screen" {
 				f.screen, f.kind = "folder", ""
 				return m.invalidate()
@@ -740,6 +786,8 @@ func (m *model) formKey(msg tea.KeyPressMsg) tea.Cmd {
 			return nil
 		case "rename_form":
 			return m.submitRename()
+		case "remove_form":
+			return m.submitRemoval()
 		}
 	}
 	if fld := &f.fields[f.focus]; fld.choices != nil {
@@ -817,7 +865,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 	if k == "ctrl+c" {
 		return m.quit()
 	}
-	if f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" || f.screen == "rename_form" {
+	if f.screen == "form" || f.screen == "invitation" || f.screen == "save_invitation" || f.screen == "relocate_form" || f.screen == "rename_form" || f.screen == "remove_form" {
 		if f.busy {
 			if k == "esc" {
 				return m.closeFlow()
@@ -847,7 +895,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 	if f.busy || (m.pending != 0 && f.screen == "preview") {
 		return nil
 	}
-	if f.screen != "pick_folder" && f.screen != "pick_device" && f.screen != "setups" && f.screen != "requests" && f.screen != "invitation_out" && f.screen != "welcome" {
+	if f.screen != "pick_folder" && f.screen != "pick_device" && f.screen != "pick_removal_device" && f.screen != "setups" && f.screen != "requests" && f.screen != "invitation_out" && f.screen != "welcome" {
 		if k == "down" || k == "j" {
 			f.scroll++
 			return nil
@@ -869,7 +917,18 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 		if k == "enter" {
 			return m.submitSetup()
 		}
+		if k == "d" {
+			f.details = !f.details
+			return nil
+		}
 	case "progress":
+		if k == "d" {
+			f.details = !f.details
+			return nil
+		}
+		if k == "enter" && f.result.Operation != nil && f.result.Operation.State == "completed" {
+			return m.finishSetup()
+		}
 		if k == "r" && f.err != "" && f.mutation.OperationID != "" && (f.mutation.Kind == "setup" || f.mutation.Kind == "adopt" || f.mutation.Kind == "join") {
 			return m.submitSetup()
 		}
@@ -898,13 +957,17 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 			return m.makeInvitation()
 		}
 	case "invitation_out":
-		if k == "enter" && len(f.invitePending) > 0 {
-			// Review the waiting device's request without leaving for Requests.
+		if (k == "enter" || k == "x") && len(f.invitePending) > 0 {
+			// Approve or reject the waiting device right here (E12). The
+			// approval is its own operation; the invitation's is kept for r.
+			if f.inviteMutation == nil {
+				saved := f.mutation
+				f.inviteMutation = &saved
+				f.mutation = tc.Mutation{}
+			}
 			f.request = f.invitePending[0]
-			f.screen = "approval"
 			f.err = ""
-			f.mutation = tc.Mutation{} // the approval is its own operation
-			return m.invalidate()
+			return m.decideRequest(k == "enter")
 		}
 		if k == "r" && f.mutation.Invite != nil {
 			id, err := newID()
@@ -974,6 +1037,35 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 		if k == "enter" {
 			return m.manageFolder("relocate")
 		}
+	case "remove_resume_review":
+		if k == "enter" {
+			return m.resumeRemoval()
+		}
+	case "leave_review":
+		if k == "enter" {
+			return m.leaveOrbit()
+		}
+	case "removed":
+		if k == "L" || k == "enter" {
+			f.screen = "leave_review"
+			return nil
+		}
+	case "pick_removal_device":
+		return m.removalPickerKey(k)
+	case "remove_result":
+		if k == "r" && f.result.Removal != nil && f.result.Removal.State == "needs_review" {
+			f.removalRequest = nil
+			return m.previewRemoval()
+		}
+		if k == "r" && f.result.Removal != nil && f.result.Removal.State != "completed" {
+			if f.removalRequest != nil {
+				return m.submitRemoval()
+			}
+			return m.resumeRemoval()
+		}
+		if k == "enter" && f.result.Removal != nil && f.result.Removal.State == "completed" {
+			return m.closeFlow()
+		}
 	case "retry_review":
 		if k == "enter" {
 			return m.retryWork()
@@ -984,7 +1076,7 @@ func (m *model) flowKey(msg tea.KeyPressMsg) tea.Cmd {
 
 // One serialized lane runs both queries and explicit actions. Replies remain
 // matched to request+generation even when Esc abandons a submitted operation.
-func (m *model) startFlowQuery() tea.Cmd {
+func (m *model) startFlowQuery(refreshBadge bool) tea.Cmd {
 	f := m.flow
 	if m.pending != 0 || m.quitting || m.toolRunning {
 		return nil
@@ -997,7 +1089,18 @@ func (m *model) startFlowQuery() tea.Cmd {
 	task, run := m.flowCommand(ctx)
 	if run == nil {
 		cancel()
-		return nil
+		if !refreshBadge {
+			return nil
+		}
+		// Idle forms also refresh the global badge through the same query lane.
+		// Only refresh ticks start this poll; opening a frozen review stays idle.
+		// The reply updates no workflow state or draft fields.
+		ctx, cancel = context.WithTimeout(m.ctx, 5*time.Second)
+		task = "request_badge"
+		client := m.client
+		run = func() (tc.Result, error) {
+			return client.Query(ctx, tc.Query{Version: tc.Version, Kind: "capabilities"})
+		}
 	}
 	m.dirty = false
 	m.request++
@@ -1146,4 +1249,24 @@ func (m *model) submitRename() tea.Cmd {
 	f.task = "rename"
 	f.work = func(ctx context.Context) (tc.Result, error) { return tc.Result{}, w.Rename(ctx, kind, id, name) }
 	return m.invalidate()
+}
+
+// finishSetup leaves a completed setup or join for the Overview, with the new
+// Orbit selected and a one-time success toast (E12).
+func (m *model) finishSetup() tea.Cmd {
+	f := m.flow
+	name := orDefault(safe(f.plan.FolderName), "Your Orbit")
+	m.toast, m.toastAt = "✓ "+name+" is set up", time.Now()
+	if f.result.Readiness != nil && f.result.Readiness.Ready() {
+		m.toast = "✓ " + name + " is ready"
+	}
+	if f.kind == "join" || f.result.Join != nil {
+		m.toast = "✓ Joined " + name
+	}
+	m.focusRoot = f.plan.Root
+	if m.focusRoot == "" && f.result.Join != nil {
+		m.focusRoot = f.result.Join.Root
+	}
+	m.flow, m.firstLoad = nil, true
+	return m.changeSection(0)
 }

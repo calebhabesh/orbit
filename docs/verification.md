@@ -712,3 +712,30 @@ The [W15 tracker](implementation/wan-status.md#w15--integrated-failures-security
 owns executed campaign status and remaining limitations. WG6, physical WAN/N10,
 inherited T13 technical checks and deferred P17 owner use/explanation retain
 separate acceptance requirements.
+
+
+## E13 participation evidence — 2026-10-09
+
+`TestOnboardingE13…` covers local Leave persistence, cancellation/drain and
+other-folder isolation; stale roots/reviews, exact-name confirmation and replay;
+all folder data/membership endpoint refusals and unauthorized privacy; offline
+and divergent survivors, interrupted three-device mTLS retirement rollout,
+prepared catch-up/resume and cleanup suspension release; live/stopped CLI parity;
+keyboard forms/paste/pickers and removed-by display; pending publication journals
+preserved without restart replay. `terminal_participation_pty_test.py` exercises
+real two-daemon create/join/approve, both-direction Leave refusal, one peer-left
+attention item, real removal and removed-device Leave with byte/identity oracles.
+
+The packet's [evidence](evidence/onboarding-e13-20261009/summary.md) records actual
+commands/results and wider quick/WAN/network/full/race/package/host verification.
+These tests do not prove every distributed failure model, instantaneous offline
+removal notification, a maximum-size retirement artifact, or an owner walkthrough
+of Leave/removal on personal trial data. No personal folder or existing workload
+is a fault-test target.
+
+The [publication review and checks](evidence/onboarding-publish-20261010/summary.md)
+add regressions for observed readiness, a global unexpired join-request count
+across views/forms, relative/private/exclusive review-file creation, Leave while
+removal is pending, enrollment invalidating an uncommitted removal proposal,
+legacy lowercase completed/aborted maintenance, durable removal learned by
+manual sync, and retirement of the reporting peer while exchanges drain.

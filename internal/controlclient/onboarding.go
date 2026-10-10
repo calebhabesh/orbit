@@ -338,3 +338,17 @@ func (c *Client) Rename(ctx context.Context, kind, id, name string) error {
 		return errors.New("INVALID_REQUEST")
 	})
 }
+
+func (c *Client) LeaveOrbit(ctx context.Context, req control.LeaveOrbitRequest) error {
+	return c.WithController(ctx, func() error { return c.Call(ctx, "POST", "/api/v1/orbits/leave", req, nil) }, func(ctrl *control.Controller) error { return ctrl.LeaveOrbit(ctx, req) })
+}
+
+func (c *Client) RemoveDevice(ctx context.Context, req control.RemoveDeviceRequest) (out control.RemoveDeviceResult, err error) {
+	err = c.WithController(ctx, func() error { return c.Call(ctx, "POST", "/api/v1/peers/remove", req, &out) }, func(ctrl *control.Controller) error { out, err = ctrl.RemoveDevice(ctx, req); return err })
+	return
+}
+
+func (c *Client) ResumeRemoval(ctx context.Context, req control.ResumeRemovalRequest) (out control.RemoveDeviceResult, err error) {
+	err = c.WithController(ctx, func() error { return c.Call(ctx, "POST", "/api/v1/peers/remove/resume", req, &out) }, func(ctrl *control.Controller) error { out, err = ctrl.ResumeRemoval(ctx, req); return err })
+	return
+}

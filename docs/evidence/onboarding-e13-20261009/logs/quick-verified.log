@@ -1,0 +1,27 @@
+scripts/quick_check.sh
+changes since HEAD: 98 file(s)
+
+== build (0s)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+
+== gofmt (2s)
+
+== vet ./cmd/orbit ./internal/control ./internal/control/terminalcontract ./internal/controlclient ./internal/replication ./internal/repository ./internal/scheduler ./internal/terminal ./internal/workspace (2s)
+
+== test -short ./cmd/orbit ./internal/control ./internal/control/terminalcontract ./internal/controlclient ./internal/replication ./internal/repository ./internal/scheduler ./internal/terminal ./internal/workspace (3s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit	2.309s
+ok  	github.com/calebhabesh/orbit/internal/control	43.943s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	(cached)
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.003s
+ok  	github.com/calebhabesh/orbit/internal/replication	36.586s
+ok  	github.com/calebhabesh/orbit/internal/repository	(cached)
+ok  	github.com/calebhabesh/orbit/internal/scheduler	23.473s
+ok  	github.com/calebhabesh/orbit/internal/terminal	(cached)
+ok  	github.com/calebhabesh/orbit/internal/workspace	11.555s
+
+== PTY suites in parallel: onboarding everyday participation (48s)
+  onboarding: ok
+  everyday: ok
+  participation: ok
+not run here (make check): tests/integration tests/terminal 
+quick check passed in 135s

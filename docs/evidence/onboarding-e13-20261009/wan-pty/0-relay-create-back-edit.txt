@@ -1,0 +1,669 @@
+                       │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter Go to Overview  d Details  q Quit                                                             
+--- frame ---
+Orbit | [Overview]  Orbits  Attention  Devices  Files                                               
+╭─ Status ─────────────────────────────╮╭─ Notes ──────────────────────────────────────────────────╮
+│ Daemon: running (terminal)           ││ Name: Notes                                              │
+│ Startup: manual (not enabled)        ││ Folder: ~/.cache/orbit-work-tmp/orbit-w07-pty-           │
+│ 2 folders · 0 attention items · 2    ││ tg968z38/Notes界                                         │
+│ devices                              ││                                                          │
+│ Connection: Self-hosted automatic    ││ Enter opens the folder: copy status, history, sharing    │
+│ Services: SERVICE_READY              ││ and storage.                                             │
+│ dbf194d44dd3: Connected via relay;   ││                                                          │
+│ recent                               ││ Files                                                    │
+╰──────────────────────────────────────╯│   local.txt   Saved here                                 │
+╭─ Orbits ─────────────────────────────╮│   owner.txt   Saved here                                 │
+│ Search page:                         ││                                                          │
+│   Second  ~/.cache/orbit-work-tmp/o… ││ 5 open in Files  Enter manage this Orbit                 │
+│ > Notes  ~/.cache/orbit-work-tmp/or… ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+╰───────────────────────────── 2 of 2 ─╯│                                                          │
+╭─ Devices ────────────────────────────╮│                                                          │
+│ Laptop                               ││                                                          │
+│ Pi                                   ││                                                          │
+╰────────────────────────── d inspect ─╯╰──────────────────────────────────────────────────────────╯
+j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests
+u setup  N connection  L leave  X remove device                                                     
+--- frame ---
+Orbit | Select Orbit                                                                                
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Second  <disposable>/second                    │
+│   Notes  <disposable>/Notes界                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+--- frame ---
+Orbit | Select Orbit                                                                                
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Second  <disposable>/second                    │
+│   Notes  <disposable>/Notes界                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+--- frame ---
+Orbit | Invitation                                                                                  
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Inviting a device to Second (~/.cache/orbit-work-tmp/orbit-w07-pty-tg968z38/second here).        │
+│                                                                                                  │
+│ Status: Waiting for the other device to enter the code.                                          │
+│                                                                                                  │
+│ Pairing code: PK1B-325H                                                                          │
+│ Expires:    6:52 PM (9 min left)                                                                 │
+│ On the other device choose Join and type this code.                                              │
+│ You approve it here before it gets any files.                                                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+x Revoke  c copy code  r new code  v long invitation  s save file  Esc back  q quit                 
+--- frame ---
+Orbit | Save Invitation                                                                             
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Private output file (absolute): tg968z38/state/invitation-1de488c5-6ea78a56.json               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter continue  Esc back  Ctrl-C close                                                              
+--- frame ---
+Orbit | Invitation                                                                                  
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Private invitation saved. Transfer deliberately to the receiving device.                         │
+│ Inviting a device to Second (~/.cache/orbit-work-tmp/orbit-w07-pty-tg968z38/second here).        │
+│                                                                                                  │
+│ Status: Waiting for the other device to enter the code.                                          │
+│                                                                                                  │
+│ Pairing code: PK1B-325H                                                                          │
+│ Expires:    6:52 PM (9 min left)                                                                 │
+│ On the other device choose Join and type this code.                                              │
+│ You approve it here before it gets any files.                                                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+x Revoke  c copy code  r new code  v long invitation  s save file  Esc back  q quit                 
+--- frame ---
+Orbit | Join Requests | 1 join request · w                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Pi | pending_approval | code 614e1-637c7-73140-c4098                                           │
+│   Pi | approved | code 92641-eedf0-fb7f7-b9e4e                                                   │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+j/k select  Enter exact review  r refresh  ] next  [ first  Esc back                                
+--- frame ---
+Orbit | Join Requests | 1 join request · w                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Pi | pending_approval | code 614e1-637c7-73140-c4098                                           │
+│   Pi | approved | code 92641-eedf0-fb7f7-b9e4e                                                   │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+j/k select  Enter exact review  r refresh  ] next  [ first  Esc back                                
+--- frame ---
+Orbit | Approve Device | 1 join request · w                                                         
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Pi wants to join this Orbit.                                                                     │
+│ Device: Pi                                                                                       │
+│ Request: 46520501e12c132f41a4e0d5dc30d48383e322384e1e152c160974e76942a0bd                        │
+│ Requester: dbf194d44dd331f9ce43f4787151ec2f0cbb5a6b5552c6da0e224b397e9be903                      │
+│ Key pin: f79d967eb25631999e1676cf5a8f9025046c6e5119b298ebaa097d47fed5a078                        │
+│ Verification code: 614e1-637c7-73140-c4098                                                       │
+│ State: pending_approval                                                                          │
+│ Compare with the joining device. Approval grants this folder only.                               │
+│ Offline devices may still need membership updates.                                               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+a approve exact request  x decline  Esc back  q quit                                                
+--- frame ---
+Orbit | Request Decision | 1 join request · w                                                       
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Exact request approve completed. Other devices may still need membership updates.                │
+│ Decision durably recorded; receiver still observes its own readiness.                            │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc back  q quit (daemon continues)                                                                 
+--- frame ---
+Orbit | [Overview]  Orbits  Attention  Devices  Files                                               
+╭─ Status ─────────────────────────────╮╭─ Notes ──────────────────────────────────────────────────╮
+│ Daemon: running (terminal)           ││ Name: Notes                                              │
+│ Startup: manual (not enabled)        ││ Folder: ~/.cache/orbit-work-tmp/orbit-w07-pty-           │
+│ 2 folders · 0 attention items · 2    ││ tg968z38/Notes界                                         │
+│ devices                              ││                                                          │
+│ Connection: Self-hosted automatic    ││ Enter opens the folder: copy status, history, sharing    │
+│ Services: SERVICE_READY              ││ and storage.                                             │
+│ dbf194d44dd3: Connected via relay;   ││                                                          │
+│ recent                               ││ Files                                                    │
+╰──────────────────────────────────────╯│   local.txt   Saved here                                 │
+╭─ Orbits ─────────────────────────────╮│   owner.txt   Saved here                                 │
+│ Search page:                         ││                                                          │
+│   Second  ~/.cache/orbit-work-tmp/o… ││ 5 open in Files  Enter manage this Orbit                 │
+│ > Notes  ~/.cache/orbit-work-tmp/or… ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+╰───────────────────────────── 2 of 2 ─╯│                                                          │
+╭─ Devices ────────────────────────────╮│                                                          │
+│ Laptop                               ││                                                          │
+│ Pi                                   ││                                                          │
+╰────────────────────────── d inspect ─╯╰──────────────────────────────────────────────────────────╯
+j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests
+u setup  N connection  L leave  X remove device                                                     
+--- frame ---
+Orbit | Select Orbit                                                                                
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Second  <disposable>/second                    │
+│   Notes  <disposable>/Notes界                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+--- frame ---
+Orbit | Select Orbit                                                                                
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Second  <disposable>/second                    │
+│   Notes  <disposable>/Notes界                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+j/k select  Enter choose  ] next  [ first  Esc back  q quit                                         
+--- frame ---
+Orbit | Invitation                                                                                  
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Inviting a device to Second (~/.cache/orbit-work-tmp/orbit-w07-pty-tg968z38/second here).        │
+│                                                                                                  │
+│ Status: Waiting for the other device to enter the code.                                          │
+│                                                                                                  │
+│ Pairing code: R4M1-ZCQV                                                                          │
+│ Expires:    6:53 PM (9 min left)                                                                 │
+│ On the other device choose Join and type this code.                                              │
+│ You approve it here before it gets any files.                                                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+x Revoke  c copy code  r new code  v long invitation  s save file  Esc back  q quit                 
+--- frame ---
+Orbit | Save Invitation                                                                             
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ > Private output file (absolute): tg968z38/state/invitation-1de488c5-86baa2b0.json               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter continue  Esc back  Ctrl-C close                                                              
+--- frame ---
+Orbit | Invitation                                                                                  
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Private invitation saved. Transfer deliberately to the receiving device.                         │
+│ Inviting a device to Second (~/.cache/orbit-work-tmp/orbit-w07-pty-tg968z38/second here).        │
+│                                                                                                  │
+│ Status: Waiting for the other device to enter the code.                                          │
+│                                                                                                  │
+│ Pairing code: R4M1-ZCQV                                                                          │
+│ Expires:    6:53 PM (9 min left)                                                                 │
+│ On the other device choose Join and type this code.                                              │
+│ You approve it here before it gets any files.                                                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+x Revoke  c copy code  r new code  v long invitation  s save file  Esc back  q quit                 
+--- frame ---
+Orbit | Revoke Invitation                                                                           
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Private invitation saved. Transfer deliberately to the receiving device.                         │
+│ Revoke this exact invitation for folder:                                                         │
+│ 1de488c533d1fde318cae4a49b5fdd8fba7861b7d31df5aa7eb1d19d75b6bf49                                 │
+│ Pending requests using it cannot be approved. Existing approved membership is preserved.         │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter revoke exact invitation  Esc back  q quit                                                     
+--- frame ---
+Orbit | Invitation Revoked                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Invitation revoked; request a fresh invitation for a new attempt.                                │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc back  q quit (daemon continues)                                                                 

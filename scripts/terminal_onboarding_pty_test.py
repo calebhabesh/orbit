@@ -136,7 +136,7 @@ class UI:
         self.choose(startup); self.send(b"\t")
         # Keep loaded finite/network settings; Enter advances to the last
         # field and confirms there (E03).
-        self.submit("Confirm adoption", presses=3)
+        self.submit("Review &", presses=3)
 
     def invitation(self, code):
         self.replace(code); self.send(b"\r"); self.wait("Connection choices:")
@@ -186,20 +186,21 @@ def wait_bytes(a, b, name, value, uis):
 
 
 def invite(ui, peer, path, device=None):
-    ui.send(b"s" if device else b"a"); ui.wait("Select folder"); ui.wait("> Notes")
+    ui.send(b"s" if device else b"a"); ui.wait("Select Orbit"); ui.wait("> Notes")
     ui.send(b"\r")
     if device:
-        ui.wait("Select device")
+        ui.wait("Select Device")
         items=peer.query("devices",limit="20")["items"]
         ui.wait("> "+items[0]["name"])
         index=next(i for i,it in enumerate(items) if it["id"]==device)
         ui.send(b"j"*index+b"\r")
         # Sharing with a known device keeps its explicit review.
         ui.wait("Reviewed membership revision:"); ui.send(b"\r")
-    ui.wait("Private invitation")
-    short = re.search(r'Pairing code: ([0-9A-Z]{4}-[0-9A-Z]{4})', ui.screen.text())
+    ui.wait("Inviting a device to")
+    ui.wait("Expires:")
+    short = re.search(r'Pairing code:\s+([0-9A-Z]{4}-[0-9A-Z]{4})', ui.screen.text())
     ui.pairing_code = short.group(1) if short else None
-    ui.send(b"s"); ui.wait("save_invitation")
+    ui.send(b"s"); ui.wait("Save Invitation")
     ui.replace(str(path)); ui.send(b"\r"); ui.wait("Private invitation saved")
     invitation=json.loads(path.read_text())
     assert path.stat().st_mode & 0o077 == 0
@@ -209,11 +210,11 @@ def invite(ui, peer, path, device=None):
 
 
 def approve(ui, peer, expected_request):
-    ui.send(b"w"); ui.wait("Enrollment requests")
+    ui.send(b"w"); ui.wait("Join Requests")
     requests=peer.query("requests",limit="20")["requests"]
     ui.wait("> "+requests[0]["label"])
     index=next(i for i,p in enumerate(requests) if p["id"]==expected_request)
-    ui.send(b"j"*index+b"\r"); ui.wait("Exact request approval")
+    ui.send(b"j"*index+b"\r"); ui.wait("Approve Device")
     code=requests[index]["verification_code"]
     assert code in ui.screen.text(), "review did not show transcript verification"
     ui.send(b"a"); ui.wait("Exact request approve completed")
@@ -233,70 +234,70 @@ def run(binary, output):
         ua.send(b"c");ua.wait("Connection choices:")
         # Invalid root retains draft and requires correction.
         ua.replace("Laptop");ua.send(b"\t");ua.replace("Notes");ua.send(b"\t");ua.replace("relative-root");ua.submit("folder such as ~/Documents")
-        ua.replace(str(a.data));ua.submit("Confirm adoption");ua.wait("files=1")
-        ua.back();ua.wait("Connection choices:");ua.send(b"\r");ua.wait("Confirm adoption");ua.send(b"\r");ua.wait("Locally ready",timeout=25)
+        ua.replace(str(a.data));ua.submit("Review &");ua.wait("already has 1 file")
+        ua.back();ua.wait("Connection choices:");ua.send(b"\r");ua.wait("Review &");ua.send(b"\r");ua.wait("is ready on",timeout=25)
         created=a.query("folders",limit="20")["items"];assert len(created)==1
         folder=created[0]["id"]
         ua.back();ua.wait("[Overview]")
         inv=invite(ua,a,a.root/"invite.json")
         code="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(inv).encode()).decode().rstrip("=")
-        ub=UI(b,"join-private-errors-delayed-approval");active.append(ub);ub.wait("Join an existing Orbit [j]");ub.send(b"j");ub.wait("Join invitation")
+        ub=UI(b,"join-private-errors-delayed-approval");active.append(ub);ub.wait("Join an existing Orbit [j]");ub.send(b"j");ub.wait("Join an Orbit")
         expired=dict(inv,expires_at="2000-01-01T00:00:00Z")
         expired_code="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(expired).encode()).decode().rstrip("=")
         ub.replace(expired_code);ub.send(b"\r");ub.wait("INVITATION_EXPIRED")
         wrong=dict(inv,key_pin="ff"*32)
         wrong_code="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(wrong).encode()).decode().rstrip("=")
         ub.replace(wrong_code);ub.send(b"\r");ub.wait("IDENTITY_MISMATCH")
-        ub.invitation("\n".join(code[i:i+40] for i in range(0,len(code),40)));ub.form("Pi",b.data);ub.send(b"\r");ub.wait("Waiting for approval",timeout=25)
+        ub.invitation("\n".join(code[i:i+40] for i in range(0,len(code),40)));ub.form("Pi",b.data);ub.send(b"\r");ub.wait("Check that it shows this code",timeout=25)
         pending=b.query("setups",limit="20")["items"];assert len(pending)==1
         operation=pending[0]["id"];before=b.query("operation",id=operation)
         request=before["join"]["request"];assert not before["readiness"]["approved"]
-        assert b"Locally ready" not in ub.raw and inv["capability"].encode() not in ub.raw
+        assert b"is ready on" not in ub.raw and inv["capability"].encode() not in ub.raw
         ub.finish();active.remove(ub)
         # Pending approval survives client exit and a real daemon restart.
         b.stop(daemons[1]);daemons[1]=b.start_daemon()
-        ub=UI(b,"resume-after-daemon-restart",size=(40,16));active.append(ub);ub.wait("Waiting for approval")
+        ub=UI(b,"resume-after-daemon-restart",size=(40,16));active.append(ub);ub.wait("Check that it shows this code")
         after=b.query("operation",id=operation)
         assert after["join"]["request"]==request and after["join"]["attempt"]==before["join"]["attempt"]
         verification=approve(ua,a,request)
         assert verification==before["requests"][0]["verification_code"], "cross-device verification mismatch"
         wait_bytes(a.data,b.data,"owner.txt",b"owner preexisting bytes",active)
         wait_bytes(a.data,b.data,"local.txt",b"joining preexisting bytes",active)
-        ub.wait("Locally ready",timeout=40)
+        ub.wait("is ready on",timeout=40)
         ub.back();ub.wait("Overview |")
         ua.back();ua.wait("[Overview]")
         # Local pause/resume uses actual root state, and relocation preserves bytes.
-        ua.send(b"2");ua.wait("[Orbits]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
-        ua.send(b"p");ua.wait("Confirm local pause");ua.send(b"\r");ua.wait("Local pause=true")
+        ua.send(b"2");ua.wait("[Orbits]");ua.wait("> Notes");ua.send(b"\r");ua.wait("Orbit Details");ua.wait("Local pause=")
+        ua.send(b"p");ua.wait("Confirm Pause");ua.send(b"\r");ua.wait("Local pause=true")
         assert a.query("folder_management",folder=folder)["folder_management"]["paused"]
-        ua.send(b"p");ua.wait("Confirm local resume");ua.send(b"\r");ua.wait("Local pause=false")
-        ua.send(b"x");ua.wait("Unregister preview");ua.wait("Working files are preserved");ua.back();ua.wait("[Orbits]")
+        ua.send(b"p");ua.wait("Confirm Resume");ua.send(b"\r");ua.wait("Local pause=false")
+        ua.send(b"x");ua.wait("Unregister Folder");ua.wait("Working files are preserved");ua.back();ua.wait("[Orbits]")
         # Separate second folder and exact known-device invitation. Restart only
         # the fixture inviter to reset its real process-local admission bucket.
         a.stop(daemons[0]);daemons[0]=a.start_daemon()
         second_a=a.root/"second";second_a.mkdir(mode=0o700);(second_a/"second.txt").write_bytes(b"second-folder bytes")
         second_b=b.root/"second";second_b.mkdir(mode=0o700)
-        ua.send(b"c");ua.wait("Connection choices:");ua.form("Laptop",second_a);ua.send(b"\r");ua.wait("Locally ready",timeout=25);ua.back();ua.wait("[Orbits]")
+        ua.send(b"c");ua.wait("Connection choices:");ua.form("Laptop",second_a);ua.send(b"\r");ua.wait("is ready on",timeout=25);ua.back();ua.wait("[Orbits]")
         # Select the second folder by its actual named-page position.
         items=a.query("folders",limit="20")["items"];second=next(it for it in items if it["root"]==str(second_a));idx=items.index(second)
-        ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
+        ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Orbit Details");ua.wait("Local pause=")
         # share shortcut on detail skips folder selection.
-        ua.send(b"s");ua.wait("Select device");devices=a.query("devices",limit="20")["items"];ua.wait("> "+devices[0]["name"]);idx=next(i for i,it in enumerate(devices) if it["id"]==b.device)
-        ua.send(b"j"*idx+b"\r");ua.wait("Reviewed membership revision:");ua.send(b"\r");ua.wait("Private invitation")
-        transfer=a.root/"second-invite.json";ua.send(b"s");ua.wait("save_invitation");ua.replace(str(transfer));ua.send(b"\r");ua.wait("Private invitation saved");ua.back();ua.wait("[Orbits]")
+        ua.send(b"s");ua.wait("Select Device");devices=a.query("devices",limit="20")["items"];ua.wait("> "+devices[0]["name"]);idx=next(i for i,it in enumerate(devices) if it["id"]==b.device)
+        ua.send(b"j"*idx+b"\r");ua.wait("Reviewed membership revision:");ua.send(b"\r");ua.wait("Inviting a device to")
+        transfer=a.root/"second-invite.json";ua.send(b"s");ua.wait("Save Invitation");ua.replace(str(transfer));ua.send(b"\r");ua.wait("Private invitation saved");ua.back();ua.wait("[Orbits]")
         inv2=json.loads(transfer.read_text());assert inv2["folder"]==second["id"] and inv2["folder"]!=folder
         code2="orbit-invitation:v2:"+base64.urlsafe_b64encode(json.dumps(inv2).encode()).decode().rstrip("=")
-        ub.send(b"J");ub.wait("Join invitation");ub.invitation(code2);ub.form("Pi",second_b);ub.send(b"\r");ub.wait("Waiting for approval",timeout=25)
+        ub.send(b"J");ub.wait("Join an Orbit");ub.invitation(code2);ub.form("Pi",second_b);ub.send(b"\r");ub.wait("Check that it shows this code",timeout=25)
         ops=b.query("setups",limit="20")["items"];op2=next(it["id"] for it in ops if it["root"]==str(second_b));join2=b.query("operation",id=op2)
         assert join2["join"]["request"]!=request and join2["join"]["attempt"]!=before["join"]["attempt"]
         approve(ua,a,join2["join"]["request"])
-        wait_bytes(second_a,second_b,"second.txt",b"second-folder bytes",active);ub.wait("Locally ready",timeout=40)
+        wait_bytes(second_a,second_b,"second.txt",b"second-folder bytes",active);ub.wait("is ready on",timeout=40)
         # Existing relocation control runs from a reviewed local source/destination.
         ua.back();ua.wait("[Orbits]")
         items=a.query("folders",limit="20")["items"];idx=next(i for i,it in enumerate(items) if it["id"]==folder)
-        ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Inspect folder");ua.wait("Local pause=")
+        ua.send(b"k"*len(items)+b"j"*idx+b"\r");ua.wait("Orbit Details");ua.wait("Local pause=")
         relocated=a.root/"relocated-notes"
-        ua.send(b"l");ua.wait("relocate_form");ua.replace(str(relocated));ua.send(b"\r");ua.wait("Confirm relocation");ua.send(b"\r");ua.wait("Local folder action completed: relocate",timeout=30)
+        ua.send(b"l");ua.wait("Move Folder");ua.replace(str(relocated));ua.send(b"\r");ua.wait("Confirm Move");ua.send(b"\r");ua.wait("Local folder action completed: relocate",timeout=30)
         assert a.query("folder_management",folder=folder)["folder_management"]["root"]==str(relocated)
         a.data=relocated
         assert (a.data/"owner.txt").read_bytes()==b"owner preexisting bytes"

@@ -1,0 +1,386 @@
+Orbit | Joining                         
+◌ Waiting for the inviting device to    
+approve this device                     
+                                        
+On the inviting device, open Orbit and  
+press w (or Enter on the invitation     
+page).                                  
+Check that it shows this code:          
+                                        
+     92641-eedf0-fb7f7-b9e4e            
+                                        
+Nothing is shared until it's approved.  
+You can close this screen; Orbit keeps  
+waiting.                                
+Esc Overview  d Details  q Quit         
+                                        
+--- frame ---
+Orbit | Joining                                                                                     
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ◌ Waiting for the inviting device to approve this device                                         │
+│                                                                                                  │
+│ On the inviting device, open Orbit and press w (or Enter on the invitation page).│                
+│ Check that it shows this code:                                                                   │
+│                                                                                                  │
+│      92641-eedf0-fb7f7-b9e4e                                                                     │
+│                                                                                                  │
+│ Nothing is shared until it's approved. You can close this screen; Orbit keeps waiting.           │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc Overview  d Details  q Quit                                                                     
+--- frame ---
+Orbit | Joining                                                                                     
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ✓ Joined! Your Orbit is ready on this device                                                     │
+│                                                                                                  │
+│ Folder:     ~/.cache/orbit-work-tmp/orbit-w07-pty-dyta596h/Notes界                               │
+│ Syncs with: the inviting device                                                                  │
+│                                                                                                  │
+│ Files you put in this folder now sync with your other devices.                                   │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter Go to Overview  d Details  q Quit                                                             
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Self-hosted automatic                                                                │
+│ Service configuration: SERVICE_READY; ready=true                                                 │
+│ Operator: Development directory loss fixture                                                     │
+│ Metadata: Development only; metadata expires in memory; no logs or folder data.                  │
+│ Profile: verified; expires=2026-10-09T23:40:35Z                                                  │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ bccfa4d5b5706fdecd3568b36577df28718079a06ff7fda0a2ef2fb28f79e4f5: Connected via relay;           │
+│ observed=2026-10-09T22:41:34.095707125Z; CONNECTED                                               │
+│ Freshness: recent; candidates LAN=0 public=0 expired=0; UDP=UNAVAILABLE                          │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Self-hosted automatic                                                                │
+│ Service configuration: SERVICE_READY; ready=true                                                 │
+│ Operator: Development directory loss fixture                                                     │
+│ Metadata: Development only; metadata expires in memory; no logs or folder data.                  │
+│ Profile: verified; expires=2026-10-09T23:40:35Z                                                  │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ bccfa4d5b5706fdecd3568b36577df28718079a06ff7fda0a2ef2fb28f79e4f5: Connected via relay;           │
+│ observed=2026-10-09T22:41:34.095707125Z; CONNECTED                                               │
+│ Freshness: recent; candidates LAN=0 public=0 expired=0; UDP=UNAVAILABLE                          │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      
+--- frame ---
+Orbit | Connection Details                                                                          
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Connection: Self-hosted automatic                                                                │
+│ Service configuration: SERVICE_READY; ready=true                                                 │
+│ Operator: Development directory loss fixture                                                     │
+│ Metadata: Development only; metadata expires in memory; no logs or folder data.                  │
+│ Profile: verified; expires=2026-10-09T23:40:35Z                                                  │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ bccfa4d5b5706fdecd3568b36577df28718079a06ff7fda0a2ef2fb28f79e4f5: Connected via relay;           │
+│ observed=2026-10-09T22:41:34.095707125Z; CONNECTED                                               │
+│ Freshness: recent; candidates LAN=0 public=0 expired=0; UDP=UNAVAILABLE                          │
+│ Next action: No connection action needed; inspect folder copies separately.                      │
+│ Observed connections are separate from saved/stored/applied/conflict state.                      │
+│ Advanced policy/profile/timing review: orbit network preview; orbit network apply.               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+r refresh cached observations  d explicit doctor (20s)  arrows scroll  Esc cancel/back  q quit      
+--- frame ---
+Orbit | [Overview]  Orbits  Attention  Devices  Files                                               
+╭─ Status ─────────────────────────────╮╭─ Notes ──────────────────────────────────────────────────╮
+│ Daemon: running (terminal)           ││ Name: Notes                                              │
+│ Startup: manual (not enabled)        ││ Folder: ~/.cache/orbit-work-tmp/orbit-w07-pty-           │
+│ 1 folder · 0 attention items · 2     ││ dyta596h/Notes界                                         │
+│ devices                              ││                                                          │
+│ Connection: Self-hosted automatic    ││ Enter opens the folder: copy status, history, sharing    │
+│ Services: SERVICE_READY              ││ and storage.                                             │
+│ bccfa4d5b570: Connected via relay;   ││                                                          │
+│ recent                               ││ Files                                                    │
+╰──────────────────────────────────────╯│   local.txt   Saved here                                 │
+╭─ Orbits ─────────────────────────────╮│   owner.txt   Saved here                                 │
+│ Search page:                         ││                                                          │
+│ > Notes  ~/.cache/orbit-work-tmp/or… ││ 5 open in Files  Enter manage this Orbit                 │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+╰───────────────────────────── 1 of 1 ─╯│                                                          │
+╭─ Devices ────────────────────────────╮│                                                          │
+│ Laptop                               ││                                                          │
+│ Pi                                   ││                                                          │
+╰────────────────────────── d inspect ─╯╰──────────────────────────────────────────────────────────╯
+j/k select  Enter inspect  / search  ? help  q quit  |  c create  J join  a add  s share  w requests
+u setup  N connection  L leave  X remove device                                                     
+--- frame ---
+Orbit | Join an Orbit                                                                               
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Type the XXXX-XXXX pairing code, paste a long invitation, or enter a private file path.          │
+│ The invitation is hidden and never included in status/logs.                                      │
+│ Short codes contact: Development directory loss fixture                                          │
+│ Development only; metadata expires in memory; no logs or folder data.                            │
+│ Pressing Enter with a short code accepts this one-time service exchange.                         │
+│ > Private invitation:                                                                            │
+│ Nothing received yet. Paste the whole code; a new paste replaces it.                             │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter verify  Ctrl-U clear  Esc back  Ctrl-C close                                                  
+--- frame ---
+Orbit | Join Second                                                                                 
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Laptop invited you to Second. Choose where its files live on this device.                        │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│ > Device name: CalebPC                                                                           │
+│     How your other devices see this one.                                                         │
+│   Folder: ~/Second                                                                               │
+│     Files live in /home/ethioking/Second                                                         │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│   Connection: ‹ self_hosted ›                                                                    │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            
+--- frame ---
+Orbit | Joining                                                                                     
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ◌ Waiting for Laptop to approve Pi                                                               │
+│                                                                                                  │
+│ On Laptop, open Orbit and press w (or Enter on the invitation page).                             │
+│ Check that it shows this code:                                                                   │
+│                                                                                                  │
+│      614e1-637c7-73140-c4098                                                                     │
+│                                                                                                  │
+│ Nothing is shared until it's approved. You can close this screen; Orbit keeps waiting.           │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc Overview  d Details  q Quit                                                                     
+--- frame ---
+Orbit | Joining                                                                                     
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ✓ Joined! Second is ready on Pi                                                                  │
+│                                                                                                  │
+│ Folder:     ~/.cache/orbit-work-tmp/orbit-w07-pty-dyta596h/second                                │
+│ Syncs with: Laptop                                                                               │
+│                                                                                                  │
+│ Files you put in this folder now sync with your other devices.                                   │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter Go to Overview  d Details  q Quit                                                             

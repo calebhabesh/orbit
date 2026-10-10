@@ -81,7 +81,31 @@ func (server *Server) Serve(ctx context.Context, listener net.Listener) error {
 	}
 }
 
+type exchangeReleasesKey struct{}
+
+func (server *Server) holdExchange(request *http.Request, folder history.ID) error {
+	ctx, release, err := server.repo.BeginFolderExchange(request.Context(), folder)
+	if err != nil {
+		return err
+	}
+	releases, ok := request.Context().Value(exchangeReleasesKey{}).(*[]func())
+	if !ok {
+		release()
+		return repository.ErrUnauthorized
+	}
+	*releases = append(*releases, release)
+	*request = *request.WithContext(ctx)
+	return nil
+}
+
 func (server *Server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	var releases []func()
+	request = request.WithContext(context.WithValue(request.Context(), exchangeReleasesKey{}, &releases))
+	defer func() {
+		for i := len(releases) - 1; i >= 0; i-- {
+			releases[i]()
+		}
+	}()
 	if !server.allowRequest(time.Now()) {
 		writeWireError(writer, http.StatusTooManyRequests, "RETRY_EXHAUSTED", "peer request rate limit reached", true, "retry with backoff")
 		return
@@ -118,6 +142,8 @@ func (server *Server) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 		server.handleReceipts(writer, request)
 	case "/peer/v1/status":
 		server.handleStatus(writer, request)
+	case retirementPath:
+		server.handleRetirement(writer, request)
 	case "/peer/v1/membership/get":
 		server.handleMembershipGet(writer, request)
 	case namesPath:
@@ -200,7 +226,13 @@ func (server *Server) authorize(request *http.Request, deviceText, folderText, r
 	if err != nil {
 		return device, folder, repository.ErrMembershipMismatch
 	}
-	return device, folder, server.repo.AuthorizePeer(request.Context(), folder, device, pin, revision, digest)
+	if err := server.repo.AuthorizePeer(request.Context(), folder, device, pin, revision, digest); err != nil {
+		if errors.Is(err, repository.ErrPeerRetired) {
+			err = server.removalError(request.Context(), folder, device)
+		}
+		return device, folder, err
+	}
+	return device, folder, server.holdExchange(request, folder)
 }
 
 func (server *Server) handleLAN(writer http.ResponseWriter, request *http.Request) {
@@ -514,6 +546,14 @@ func (server *Server) handleMembershipGet(writer http.ResponseWriter, request *h
 		return
 	}
 
+	if left, err := server.repo.FolderLeft(request.Context(), folder); err != nil || left {
+		server.writeAuthorizationError(writer, repository.ErrFolderLeft)
+		return
+	}
+	if err := server.holdExchange(request, folder); err != nil {
+		server.writeAuthorizationError(writer, err)
+		return
+	}
 	// Retired device check: retired devices cannot fetch membership updates (Invariant I24)
 	retired, err := server.repo.IsDeviceRetired(request.Context(), folder, device)
 	if err != nil {
@@ -521,7 +561,7 @@ func (server *Server) handleMembershipGet(writer http.ResponseWriter, request *h
 		return
 	}
 	if retired {
-		writeWireError(writer, http.StatusForbidden, "RETIRED_MEMBER", "retired device cannot fetch membership updates (Invariant I24)", false, "enroll under fresh cryptographic identity")
+		server.writeAuthorizationError(writer, server.removalError(request.Context(), folder, device))
 		return
 	}
 
@@ -576,6 +616,19 @@ func parseWireVersion(folder history.ID, wire VersionIDWire) (history.VersionID,
 }
 
 func (server *Server) writeAuthorizationError(writer http.ResponseWriter, err error) {
+	if errors.Is(err, repository.ErrFolderLeft) {
+		writeWireError(writer, http.StatusForbidden, PeerLeftCode, "this device left the folder", false, "remove this device from the Orbit")
+		return
+	}
+	if errors.Is(err, repository.ErrPeerRetired) {
+		by := ""
+		var removed *peerRemovalError
+		if errors.As(err, &removed) && removed.by != ([32]byte{}) {
+			by = hex.EncodeToString(removed.by[:])
+		}
+		writeJSON(writer, http.StatusForbidden, ErrorResponse{ProtocolVersion: ProtocolVersion, Code: DeviceRemovedCode, Message: "this device was removed from the Orbit", Action: "leave the Orbit on this device; files stay", RemovedBy: by})
+		return
+	}
 	if errors.Is(err, repository.ErrMembershipMismatch) {
 		writeWireError(writer, http.StatusConflict, "MEMBERSHIP_MISMATCH", "folder membership does not match", false, "import and approve the same membership revision")
 		return
@@ -592,4 +645,21 @@ func writeJSON(writer http.ResponseWriter, status int, value any) {
 
 func writeWireError(writer http.ResponseWriter, status int, code, message string, retryable bool, action string) {
 	writeJSON(writer, status, ErrorResponse{ProtocolVersion: ProtocolVersion, Code: code, Message: message, Retryable: retryable, Action: action})
+}
+
+// Wire codes for membership ending (2.3.0): the serving device left the
+// folder, or removed the requesting device from it. Neither is retryable.
+const (
+	PeerLeftCode      = "PEER_LEFT"
+	DeviceRemovedCode = "DEVICE_REMOVED"
+)
+
+// Removal attribution comes from the exact prepared retirement, not the relay.
+type peerRemovalError struct{ by history.ID }
+
+func (e *peerRemovalError) Error() string { return repository.ErrPeerRetired.Error() }
+func (e *peerRemovalError) Unwrap() error { return repository.ErrPeerRetired }
+func (server *Server) removalError(ctx context.Context, folder, device history.ID) error {
+	by, _ := server.repo.RetirementActor(ctx, folder, device)
+	return &peerRemovalError{by: by}
 }

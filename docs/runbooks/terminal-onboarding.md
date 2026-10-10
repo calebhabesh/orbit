@@ -17,6 +17,8 @@ its actual durable operation, including blocked work. On the overview:
 | w | List enrollment requests and inspect the exact request |
 | u | Page through unfinished setups and reopen their actual operation |
 | Enter | Inspect the selected folder, attention item or device |
+| L | Review Leave for one Orbit; confirm to stop sync here and keep files |
+| X | Review Remove Device for one Orbit; type the exact device name |
 
 Forms retain entered values through validation and root/control errors. Tab and
 Shift-Tab move between fields; Enter requests a measured root preview. Ctrl-A
@@ -67,9 +69,12 @@ last-contact/stored/applied/direct observations; an absent report is unknown.
 explicit destination and calls the existing resumable relocation control.
 Keep original/staging roots until recovery finishes. **x** explains local
 unregistration and points to the existing removal procedure, preserving working
-files. Device inspection selects a folder; **t** obtains a retirement preview
-and retains the conservative reviewed retirement procedure. Neither preview
-erases remote bytes. A known membership fork stays paused and links to the
+files. In 2.3.0, **L** provides real Leave, **X** provides exact-name-reviewed
+Remove Device, and legacy **t** opens the same device removal flow. The review
+counts recorded changes received here; unseen edits may remain only on the
+departing device. All survivors must agree; pending operations resume from
+Attention. Leave/removal do not erase remote bytes. See
+[participation operations](../operations.md#leaving-an-orbit-and-removing-a-device--e13-2026-10-09). A known membership fork stays paused and links to the
 [membership-fork runbook](membership-fork.md).
 
 While a text field is focused, ordinary j/k/q/? are text. Ctrl-C closes the

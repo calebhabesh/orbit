@@ -430,3 +430,49 @@ A persistent fork never chooses a winning branch or overwrites earlier revisions
 The [reviewed recovery procedure](runbooks/membership-fork.md) preserves the old
 paused groups/history and adopts selected recovered bytes into a separate group.
 Recreating selected working content is not a merge of immutable causal histories.
+
+
+## E13 participation ending and reviewed retirement — 2026-10-09
+
+Local **Leave** is separate from immutable membership retirement. The leaving
+member cancels/drains this folder's exchanges and workspace writers, unregisters
+its root and persists a refusal marker. Correctly pinned enrolled members get
+nonretryable `PEER_LEFT`; unknown/wrong-pin identities still get `UNAUTHORIZED`.
+Other folders retain their membership and exchange permissions. Leave does not
+change ancestry, retire an identity, publish deletions or erase working files.
+
+**Remove Device** is an explicit owner maintenance action through the shared
+controller. Its review binds the current membership digest and canonical
+retirement snapshot, counts recorded retiree changes received locally, and
+warns that unseen edits cannot be counted or imported. Self-removal is refused.
+The initiator proposes exactly one retirement, keeping surviving active pins
+and older retirements unchanged. Every survivor must be reachable and prepare
+that exact snapshot against its own accepted retiree metadata. Preparation
+changes no membership and ordinary sync may continue; commit rechecks the
+record set atomically with the existing immutable successor approval. A changed
+set refuses commit. This is a conservative procedure, not distributed consensus.
+
+The initiator persists exact intent before rollout. Missing/mismatched survivors
+leave it pending before local advancement; partial rollout retains committed
+steps and the same operation for retry. A pinned survivor may fetch/install a
+retirement successor only when it already has a matching persisted preparation
+and its retiree record set still matches. Unprepared removal/rekey/fork updates
+remain rejected. The normal exact-membership gates continue to cover data.
+
+If a survivor accepts additional retiree metadata between preparation and its
+commit after another survivor advanced, the snapshot cannot be expanded on the
+advanced branch. Keep both histories/files and use reviewed group recovery;
+the partial result explains this rather than promising that retry imports those
+edits. This release does not add a distributed lock or rollback for that race.
+
+A historically pinned retired requester gets nonretryable `DEVICE_REMOVED`,
+with an optional `removed_by` device ID from the committed reviewed retirement.
+Attribution survives later reviews. Legacy manual retirements omit it; the
+removed device identifies the serving member as the reporter, without claiming
+it initiated removal. On observing this refusal
+the removed device stops this folder's exchanges/work and keeps its root visible
+for the removal notice and explicit Leave. This observation needs contact with a
+survivor; an offline device cannot learn immediately. Retirement continues the
+existing per-request authorization semantics: already admitted requests can
+finish, while subsequent admission is denied. The retired ID cannot be revived;
+rejoining uses fresh enrollment under a new identity. Leave has no undo.

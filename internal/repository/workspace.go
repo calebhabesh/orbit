@@ -39,6 +39,11 @@ func (db *DB) StateDir() string { return db.stateDir }
 // CheckRootCandidate is a read-only preflight used before workspace creates
 // its marker. RegisterRoot repeats these checks at the durable commit boundary.
 func (db *DB) CheckRootCandidate(ctx context.Context, folder history.ID, path string) error {
+	if left, err := db.FolderLeft(ctx, folder); err != nil {
+		return err
+	} else if left {
+		return ErrFolderLeft
+	}
 	if path == "" || !filepath.IsAbs(path) {
 		return errors.New("root path must be absolute")
 	}
@@ -71,6 +76,11 @@ func (db *DB) CheckRootCandidate(ctx context.Context, folder history.ID, path st
 func (db *DB) RegisterRoot(ctx context.Context, registration RootRegistration) error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
+	if left, err := db.FolderLeft(ctx, registration.Folder); err != nil {
+		return err
+	} else if left {
+		return ErrFolderLeft
+	}
 	if registration.Path == "" || !filepath.IsAbs(registration.Path) || registration.RegistrationID == ([32]byte{}) {
 		return errors.New("absolute root path and registration identity are required")
 	}
@@ -291,6 +301,43 @@ func (db *DB) UnregisterFolder(ctx context.Context, folder history.ID) error {
 		return err
 	}
 	return tx.Commit()
+}
+
+// LeaveFolder stops this device syncing folder (2.3.0): it unregisters the
+// root if one is registered, preserving every working file, marks the folder
+// left so peers are refused and no new work is queued, and cancels its
+// pending work. Membership and history are unchanged; nothing is deleted.
+func (db *DB) LeaveFolder(ctx context.Context, folder history.ID, now time.Time) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	tx, err := db.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	result, err := tx.ExecContext(ctx, `UPDATE folders SET root_path=NULL, root_device=NULL, root_inode=NULL, registration_id=NULL, paused=0, pause_reason=NULL, left_ns=COALESCE(left_ns, ?) WHERE folder_id=?`, now.UnixNano(), folder[:])
+	if err != nil {
+		return err
+	}
+	if affected, err := result.RowsAffected(); err != nil {
+		return err
+	} else if affected == 0 {
+		return ErrFolderUnknown
+	}
+	if _, err := tx.ExecContext(ctx, `UPDATE durable_work_tasks SET state='canceled', updated_ns=? WHERE folder_id=? AND state NOT IN ('completed','canceled')`, now.UnixNano(), folder[:]); err != nil {
+		return err
+	}
+	return tx.Commit()
+}
+
+// FolderLeft reports whether this device left folder.
+func (db *DB) FolderLeft(ctx context.Context, folder history.ID) (bool, error) {
+	var ended bool
+	err := db.db.QueryRowContext(ctx, `SELECT left_ns IS NOT NULL OR removed_by IS NOT NULL FROM folders WHERE folder_id=?`, folder[:]).Scan(&ended)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	return ended, err
 }
 
 type Projection struct {

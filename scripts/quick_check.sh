@@ -5,7 +5,7 @@
 # Not a release gate: run `make check` (or CI) once at the end of a batch.
 #
 #   QUICK_BASE=main~3 make quick       compare against another revision
-#   PTY="onboarding keys" make quick   pick PTY suites (pty onboarding everyday keys | all | none)
+#   PTY="onboarding keys" make quick   pick PTY suites (pty onboarding everyday keys participation | all | none)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 start=$SECONDS
@@ -43,7 +43,7 @@ else
 	echo "no Go packages under cmd/ internal/ model/ changed"
 fi
 
-# PTY suites: default to all four when terminal-facing code changed.
+# PTY suites: default to all five when terminal-facing code changed.
 suites=${PTY:-auto}
 if [ "$suites" = auto ]; then
 	if echo "$changed" | grep -qE '^(cmd/orbit|internal/(terminal|control|controlclient|launcher))/|^scripts/terminal_.*pty'; then
@@ -52,7 +52,7 @@ if [ "$suites" = auto ]; then
 		suites=none
 	fi
 fi
-[ "$suites" = all ] && suites="pty onboarding everyday keys"
+[ "$suites" = all ] && suites="pty onboarding everyday keys participation"
 if [ "$suites" != none ]; then
 	pids=()
 	names=()

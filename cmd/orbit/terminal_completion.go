@@ -35,7 +35,7 @@ const bashCompletionScript = `_orbit_completion() {
         cur=${COMP_WORDS[COMP_CWORD]}; prev=${COMP_WORDS[COMP_CWORD-1]}
     fi
 
-    local commands="tui status context folders files devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help"
+    local commands="tui status context folders files devices conflicts history deleted restore setup join leave remove-device network retry service stop storage doctor engine completion version help"
     local common_flags="--state --folder --json --help"
 
     if [[ ${cword} -eq 1 ]]; then
@@ -47,7 +47,7 @@ const bashCompletionScript = `_orbit_completion() {
     case "${cmd}" in
         folders)
             if [[ ${cword} -eq 2 ]]; then
-                COMPREPLY=( $(compgen -W "list add share pause resume relocate rename" -- "${cur}") )
+                COMPREPLY=( $(compgen -W "list add share pause resume relocate rename leave" -- "${cur}") )
                 return 0
             fi
             ;;
@@ -109,6 +109,8 @@ _orbit() {
         'network:Review connection policy, diagnostics and cached routes'
         'setup:Create or adopt a synced folder'
         'join:Join an existing Orbit using a private invitation'
+        'leave:Stop syncing one Orbit here and keep files'
+        'remove-device:Review and remove a device from one Orbit'
         'retry:Retry work that ran out of attempts'
         'service:Manage background daemon service'
         'stop:Stop a daemon started outside the service'
@@ -187,7 +189,7 @@ _orbit "$@"
 
 const fishCompletionScript = `function __fish_orbit_no_subcommand
     for i in (commandline -opc)
-        if contains -- $i tui status context folders files devices conflicts history deleted restore setup join network retry service stop storage doctor engine completion version help
+        if contains -- $i tui status context folders files devices conflicts history deleted restore setup join leave remove-device network retry service stop storage doctor engine completion version help
             return 1
         end
     end
@@ -207,6 +209,8 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'restore' -d 'Restore a his
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'engine' -d 'Low-level engine commands'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'setup' -d 'Create or adopt a synced folder'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'join' -d 'Join an existing Orbit'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'leave' -d 'Stop syncing here and keep files'
+complete -c orbit -n '__fish_orbit_no_subcommand' -a 'remove-device' -d 'Review and remove a device'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'network' -d 'Status, diagnostics and policy controls'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'retry' -d 'Retry work that ran out of attempts'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'service' -d 'Manage background daemon service'
@@ -217,7 +221,7 @@ complete -c orbit -n '__fish_orbit_no_subcommand' -a 'completion' -d 'Generate s
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'version' -d 'Display version metadata'
 complete -c orbit -n '__fish_orbit_no_subcommand' -a 'help' -d 'Show command documentation'
 
-complete -c orbit -n '__fish_seen_subcommand_from folders' -a 'list add share pause resume relocate rename'
+complete -c orbit -n '__fish_seen_subcommand_from folders' -a 'list add share pause resume relocate rename leave'
 complete -c orbit -n '__fish_seen_subcommand_from devices' -a 'list add invite requests approve decline endpoint rename'
 complete -c orbit -n '__fish_seen_subcommand_from service' -a 'status start stop restart enable disable'
 complete -c orbit -n '__fish_seen_subcommand_from completion' -a 'bash zsh fish'

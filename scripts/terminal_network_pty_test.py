@@ -33,7 +33,7 @@ ui = UI(peer, 'W12-connection-doctor', size=(100, 45))
 try:
     ui.overview()
     ui.send(b'N')
-    ui.wait('Connection details')
+    ui.wait('Connection Details')
     ui.wait('Connected via relay')
     ui.wait('Freshness: recent')
     ui.send(b'd')

@@ -44,3 +44,32 @@ legacy latest-membership inspection remains. Older closed decoders reject the
 new fields safely; automatic rollout needs a T05-capable peer, while exact-agreement
 legacy data exchange remains compatible. Membership's existing canonical encoding
 and exact-revision data authorization are unchanged.
+
+
+## E13 participation/retirement extension — 2026-10-09
+
+`PEER_LEFT` (403, nonretryable) is returned only after member/key authentication
+when the serving device left this folder. `DEVICE_REMOVED` (403, nonretryable)
+is returned for the requesting retired ID authenticated by its historical pin.
+Its additive optional `removed_by` is a 64-hex device ID. Older closed decoders
+may reject the enriched error safely; upgrade survivors before using removal.
+
+`POST /peer/v1/membership/retirement` accepts strict `RetirementRequest`:
+`protocol_version`, 64-hex `device_id`, `action` (`prepare` or `commit`) and
+`proposal`. The proposal fields are `initiator`, `device_name`, `membership`,
+`snapshot`; membership/snapshot use the existing native artifact JSON also used
+by `MembershipGetResponse` (byte arrays/native revisions), not the decimal-string
+base data wrappers. Canonical membership/retirement digest encodings are unchanged.
+The exact structs are in `replication/retirement.go`,
+`repository/retirement_review.go` and `protocol/membership.go`; normal peer body
+limits apply. Success has `protocol_version`, `state` (`prepared`/`completed`)
+and 64-hex `digest`. Mismatched reviews return `RETIREMENT_CHANGED` (409,
+nonretryable); competing intents return `MEMBERSHIP_FORK` (409, nonretryable).
+
+The TLS requester must be the proposal initiator, a pinned active member of
+its immutable predecessor who remains active now. Preparation alone gives no
+data authorization. Commit requires the persisted exact proposal and an atomic
+accepted-retiree-set recheck. Duplicate exact commits succeed. Missing support on
+an older survivor leaves removal pending rather than falling back to unreviewed
+retirement. Only an already prepared matching successor can use automatic
+membership-get catch-up. Protocol/persistence own these semantics.

@@ -1,0 +1,258 @@
+Orbit | Create or Join                                                                              
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│    +             _.----------o--._                                                               │
+│          .------'                 '------.     +                                                 │
+│      .--'         _.-----------._         '--.                                                   │
+│    .'       .----'               '--O-.       '.                                                 │
+│  .'       .'       _.o--------._       '.       '.                                               │
+│ /       .'      .-'   .:-=-:.   '-.      '.       \                                              │
+│ @       |      |    .=#%@@@%#=.    |      |       |                                              │
+│ \       '.      '-.   ':-=-:'   .-'      .'       /                                              │
+│  '.       '.       '-----------'       .'       .'                                               │
+│    '.       '----.               .----'       .'                                                 │
+│      '--.         '--@----------'         .--'                                                   │
+│          '------.                 .--O---'                                                       │
+│   *              '---------------'             +                                                 │
+│                                                                                                  │
+│                      O R B I T                                                                   │
+│            Your folders, on every device                                                         │
+│                                                                                                  │
+│ Create your Orbit [c / Enter]                                                                    │
+│ Join an existing Orbit [j]                                                                       │
+│ You review everything before anything is shared.                                                 │
+│ Closing this interface leaves background sync running.                                           │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc back  q quit (daemon continues)                                                                 
+--- frame ---
+Orbit | Join an Orbit                                                                               
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Type the XXXX-XXXX pairing code, paste a long invitation, or enter a private file path.          │
+│ The invitation is hidden and never included in status/logs.                                      │
+│ Short codes contact: Development directory loss fixture                                          │
+│ Development only; metadata expires in memory; no logs or folder data.                            │
+│ Pressing Enter with a short code accepts this one-time service exchange.                         │
+│ > Private invitation:                                                                            │
+│ Nothing received yet. Paste the whole code; a new paste replaces it.                             │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter verify  Ctrl-U clear  Esc back  Ctrl-C close                                                  
+--- frame ---
+Orbit | Join an Orbit                                                                               
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Error: INVITATION_EXPIRED: Ask the inviter for a new invitation; explicitly review a new join    │
+│ attempt.                                                                                         │
+│ Type the XXXX-XXXX pairing code, paste a long invitation, or enter a private file path.          │
+│ The invitation is hidden and never included in status/logs.                                      │
+│ Short codes contact: Development directory loss fixture                                          │
+│ Development only; metadata expires in memory; no logs or folder data.                            │
+│ Pressing Enter with a short code accepts this one-time service exchange.                         │
+│ > Private invitation: ************************************************                           │
+│ 2,552 characters received. A new paste replaces it; Ctrl-U clears.                               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter verify  Ctrl-U clear  Esc back  Ctrl-C close                                                  
+--- frame ---
+Orbit | Join an Orbit                                                                               
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Error: IDENTITY_MISMATCH: Stop and verify the inviter identity; request a new invitation from    │
+│ the intended device.                                                                             │
+│ Type the XXXX-XXXX pairing code, paste a long invitation, or enter a private file path.          │
+│ The invitation is hidden and never included in status/logs.                                      │
+│ Short codes contact: Development directory loss fixture                                          │
+│ Development only; metadata expires in memory; no logs or folder data.                            │
+│ Pressing Enter with a short code accepts this one-time service exchange.                         │
+│ > Private invitation: ************************************************                           │
+│ 2,566 characters received. A new paste replaces it; Ctrl-U clears.                               │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter verify  Ctrl-U clear  Esc back  Ctrl-C close                                                  
+--- frame ---
+Orbit | Join Notes                                                                                  
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Laptop invited you to Notes. Choose where its files live on this device.                         │
+│ Connection choices: Automatic or Local network only; Ctrl-N changes mode.                        │
+│ Files received from other devices are saved owner-only (0600); the executable bit is kept.       │
+│ Startup: this looks like a desktop, so Orbit starts when you log in.                             │
+│ The Orbit user service on this account serves a different state directory, so this one starts    │
+│ manually.                                                                                        │
+│ > Device name: CalebPC                                                                           │
+│     How your other devices see this one.                                                         │
+│   Folder: ~/Notes                                                                                │
+│     Files live in /home/ethioking/Notes                                                          │
+│   Startup: ‹ manual ›                                                                            │
+│   Data budget (bytes): 10737418240  ≈ 10 GiB                                                     │
+│   Connection: ‹ self_hosted ›                                                                    │
+│ Metadata budget=256 MiB reserve=512 MiB; retention uses per-folder controls.                     │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+↑/↓ or Tab move  ←/→ change choice  Enter next/preview  Ctrl-R re-check startup  Ctrl-A advanced    
+Esc back                                                                                            
+--- frame ---
+Orbit | Review & Join                                                                               
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Invited by: Laptop                                                                               │
+│ Orbit:      Notes                                                                                │
+│ Folder:     ~/.cache/orbit-work-tmp/orbit-w07-pty-dyta596h/Notes界                               │
+│ Device:     Pi                                                                                   │
+│ Connects:   Anywhere, via your own Orbit service                                                 │
+│             ✓ File contents stay encrypted between your devices; the service never sees file     │
+│ names or contents.                                                                               │
+│ Expires:    7:40 PM (59 min left)                                                                │
+│                                                                                                  │
+│ The folder already has 1 file (28 B). They become shared; nothing is deleted.                    │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Enter Join Orbit  Esc Back  d Details  arrows scroll  q Quit                                        
+--- frame ---
+Orbit | Joining                                                                                     
+╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ◌ Waiting for Laptop to approve Pi                                                               │
+│                                                                                                  │
+│ On Laptop, open Orbit and press w (or Enter on the invitation page).                             │
+│ Check that it shows this code:                                                                   │
+│                                                                                                  │
+│      92641-eedf0-fb7f7-b9e4e                                                                     │
+│                                                                                                  │
+│ Nothing is shared until it's approved. You can close this screen; Orbit keeps waiting.           │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+│                                                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+Esc Overview  d Details  q Quit                                                                     

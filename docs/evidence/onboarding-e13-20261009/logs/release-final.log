@@ -1,0 +1,23 @@
+scripts/quick_check.sh
+changes since HEAD: 126 file(s)
+
+== build (0s)
+CGO_ENABLED=0 go build -p=2 -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+
+== gofmt (3s)
+
+== vet ./cmd/orbit ./internal/control ./internal/control/terminalcontract ./internal/controlclient ./internal/replication ./internal/repository ./internal/scheduler ./internal/terminal ./internal/workspace (3s)
+
+== test -short ./cmd/orbit ./internal/control ./internal/control/terminalcontract ./internal/controlclient ./internal/replication ./internal/repository ./internal/scheduler ./internal/terminal ./internal/workspace (5s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit	1.351s
+ok  	github.com/calebhabesh/orbit/internal/control	27.402s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.006s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.002s
+ok  	github.com/calebhabesh/orbit/internal/replication	23.902s
+ok  	github.com/calebhabesh/orbit/internal/repository	3.280s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	12.776s
+ok  	github.com/calebhabesh/orbit/internal/terminal	4.059s
+ok  	github.com/calebhabesh/orbit/internal/workspace	2.246s
+
+== PTY suites in parallel: pty onboarding everyday keys participation (47s)
+  pty: ok

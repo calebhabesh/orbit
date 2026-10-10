@@ -1529,16 +1529,31 @@ func (c *Controller) PreviewDeviceRetirement(ctx context.Context, req RetireDevi
 		devName = fmt.Sprintf("Device %x", req.DeviceID[:8])
 	}
 
+	versions, err := c.db.VersionsByAuthor(ctx, req.Folder, req.DeviceID)
+	if err != nil {
+		return nil, err
+	}
+	snapshotDigest, err := protocol.RetirementSnapshotDigest(protocol.RetirementSnapshot{Folder: req.Folder, ConfigurationRev: cur.Revision, RetiredDevice: req.DeviceID, AcceptedByRetiree: versions})
+	if err != nil {
+		return nil, err
+	}
+	app, err := c.db.Membership(ctx, req.Folder)
+	if err != nil {
+		return nil, err
+	}
 	return &RetireDevicePreviewResult{
-		Folder:          req.Folder,
-		DeviceID:        req.DeviceID,
-		DeviceName:      devName,
-		CurrentRevision: cur.Revision,
-		NextRevision:    cur.Revision + 1,
-		RemainingCount:  len(remaining),
-		SurvivingPeers:  remaining,
-		Warning:         "Permanent action: Device cannot rejoin this workspace under this cryptographic identity (Invariant I24).",
-		Disclaimer:      "Retirement preserves this device's recorded history on remaining replicas. It cannot remotely erase files or data on the retired device's physical disk.",
+		ReceivedChanges:  len(versions),
+		MembershipDigest: app.Digest,
+		SnapshotDigest:   snapshotDigest,
+		Folder:           req.Folder,
+		DeviceID:         req.DeviceID,
+		DeviceName:       devName,
+		CurrentRevision:  cur.Revision,
+		NextRevision:     cur.Revision + 1,
+		RemainingCount:   len(remaining),
+		SurvivingPeers:   remaining,
+		Warning:          "Permanent action: Device cannot rejoin this workspace under this cryptographic identity (Invariant I24).",
+		Disclaimer:       "Changes this device has not received may remain only on the removed device. Removal keeps files on every device; it cannot remotely erase data.",
 	}, nil
 }
 

@@ -5,6 +5,80 @@ prerequisite and address-entry portions of this handoff for new Automatic-mode
 work. Its relay/default-service journeys are planned, not implemented. Existing
 manual/private-network flows and all non-network terminal guarantees remain.
 
+## Owner amendment 2026-10-09 (onboarding polish, 2.3.0)
+
+Approved by the owner after the 2.2.0 trial (packets E11/E12). These supersede
+conflicting text below.
+
+- **Plain review cards.** The create and join confirmation screens are titled
+  **Review & Create** / **Review & Join** (no "adoption"). They show Invited by
+  (join), Orbit, Folder ("new folder, created when you confirm"), Device,
+  Connects ("Anywhere (local network or internet), via the Orbit service run by
+  <operator>", "Local network only; no internet services"), a one-line privacy
+  summary and, for joins, Expires (yellow under 10 minutes). Footer:
+  `Enter Create Orbit` / `Enter Join Orbit`, `Esc Back`, `d Details`.
+  **d** appends every reviewed detail: inviter ID, key pin, folder ID, root,
+  connection policy, the operator's full privacy statement, root measurement
+  and budgets. When joining would switch this device to the inviter's
+  *different* operator, the full privacy statement shows on the card in yellow
+  (F08); a profile this device cannot select keeps its blocking explanation.
+- **After confirming.** *Setting Up* / *Joining* shows a checklist (Approved by
+  <inviter> for joins, Folder ready, Files checked, Files in sync). While the
+  inviter decides it shows "Waiting for <inviter> to approve <device>" and the
+  verification code as a large chip. When the operation completes:
+  "✓ <Orbit> is ready on <device>" only if local readiness holds, otherwise
+  "✓ <Orbit> is set up on <device>" plus a yellow "Still in progress: …" list;
+  joins prefix "Joined!" and name who they sync with. Creator footer:
+  `Enter Go to Overview  a Invite a device`. Enter opens the Overview with the
+  new Orbit selected and a one-time green toast ("✓ <Orbit> is ready" /
+  "✓ Joined <Orbit>") that clears on the next key or after 8 s. The former
+  readiness booleans, operation ID and connection lines are under **d**.
+- **Approving on the invitation page.** When a join request arrives while the
+  invitation page is open it shows "● <device> wants to join", the verification
+  code chip and `Enter Approve  x Reject` (x revokes the invitation only when
+  no request is pending). The decision is its own operation; the page stays
+  open and shows "✓ <device> joined <Orbit>". The `w` requests screen and its
+  exact approval screen remain.
+- **Request badge.** Every screen's header shows a yellow
+  "N join request(s) · w" chip while approval requests are pending.
+- **Visual language.** Labels are cyan, values bright, names bold; grey is for
+  hints only. Footer keys are chips; Enter is green and its action bold green.
+  Every screen title is Title Case (Join Requests, Approve Device, Invite a
+  Device, Orbit Details, Copy Status, …).
+
+## Owner amendment 2026-10-09 (real Leave and Remove Device, E13)
+
+The owner chose the recommended real Leave and trial installation. This corrects
+Q10's earlier assumption that folder unregistration ended participation.
+
+- **L Leave:** select an Orbit, read the files-kept/unsent-edits/no-undo review,
+  Enter confirms; Esc returns. Stop sending and receiving this Orbit's data,
+  cancel/drain its admitted work and preserve files/history across restart.
+  Other Orbits keep syncing. Peers get one attention prompt to Remove Device.
+- **X Remove Device:** select an Orbit/device, excluding this local device.
+  Show the exact device name, the number of recorded changes received here,
+  its unknown total, and the warning that unseen edits may exist only there.
+  Type its name exactly (pasting works). Surviving devices must agree on that
+  received history. Offline/different survivors leave a pending operation;
+  **r** retries it, including after closing/reopening the interface. Completed
+  steps remain in effect during partial rollout. A stale local review asks for
+  a fresh review rather than silently changing the approved snapshot.
+  Leave waits while a removal is pending, so its confirmed operation can resume.
+- **Device Removed:** show who removed this device and its files-kept path.
+  Enter opens the Leave review. The notice waits for authenticated peer contact
+  when the removed device was offline. Its root stays visible until Leave.
+- `orbit leave` and `orbit remove-device` use these same operations. Legacy
+  `folders remove` / lowercase `x` keep the distinct **Unregister Folder**
+  compatibility preview; neither is described as ending background sync.
+- The request badge also appears as plain text on colorless workflow screens.
+
+## Owner correction 2026-10-09 (Files tab arrows)
+
+Left/right switch between all five main views, including Files, and wrap at
+the ends. Files uses Enter (or `l`) to open a directory and Backspace/Esc to go
+up. Focused search fields and modal forms keep their cursor/selector keys.
+This resolves the Files tab trapping arrows under the earlier tree binding.
+
 ## Owner amendment 2026-10-08 (keys, paths and mark)
 
 Found in the PC–laptop trial. **Keys:** views are chosen with `1`–`5`, Tab /
@@ -14,8 +88,8 @@ opened a file in Files. The tab bar shows `1 Overview 2 Orbits 3 Attention
 device, `s` share, `w` requests, `u` unfinished setup, `N` connection, `b`
 storage, `R` rename, `r` refresh, `/` search, `?` help, `q` quit. Files adds
 `o` open in app, `e` edit, `y` copy path, `h` history, `C` conflicts, `D`
-deleted (matching an Orbit's own screen: `v h D C`); ←/→ there move up/into
-folders. Workflow screens are modal and keep their own letters (for example
+deleted (matching an Orbit's own screen: `v h D C`); Enter opens folders and
+Backspace/Esc goes up (2026-10-09 correction). Workflow screens are modal and keep their own letters (for example
 `a` approve, `c` copy code). **Paths:** `~` abbreviates only when `$HOME` is
 the account's own home. A separate instance with its own HOME (orbit-trial)
 shows absolute paths, proposes `<HOME>/<name>`, and expands a typed `~` to the
@@ -94,7 +168,7 @@ They supersede the conflicting text below.
   several folders it first lists them; with one it opens that folder. Columns
   are name, size, modified and the state here: Saved here, Arriving,
   Downloading, Content missing, Conflict or Blocked ([EG2](implementation/onboarding-gates.md#eg2--files-view-truthfulness-e08)).
-  Enter or → opens a directory, ← / Backspace / Esc go up; Enter on a file shows
+  Enter or `l` opens a directory, Backspace / Esc go up; Enter on a file shows
   its versions and each other device's last report with its age. `o` opens with
   the desktop default (`xdg-open`; without a desktop session it says to use `e`),
   `e` opens the working copy in `$EDITOR` with the interface suspended, `h`
@@ -105,7 +179,7 @@ They supersede the conflicting text below.
   attention item is open; a screen already in use is never switched. `orbit
   files [path] [--search text] [--json]` lists the same entries and states.
 - **Keys.** ↑/↓ (and `j`/`k`) move rows and form fields; Tab/Shift+Tab move
-  between fields or panes; ←/→ change selectors and move through the Files tree;
+  between fields or panes; ←/→ change selectors in forms and switch main views;
   Enter selects, advances and confirms; Esc goes back. Fixed choices are selectors
   with defaults, never typed words. Number keys switch views.
   *As implemented (E03, 2026-10-08):* in lists ↑/↓ or `j`/`k` move rows; in

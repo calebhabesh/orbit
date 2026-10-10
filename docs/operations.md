@@ -1020,3 +1020,45 @@ Operator switches need explicit replacement. `ORBIT_DISABLE_PACKAGED_PROFILE=1`
 runs a process as if no profile were packaged (used by tests and for diagnosing
 a manual-only host); it cannot add trust. Rolling back to a pre-WAN package
 keeps identity, history and manual peers; see persistence for details.
+
+
+## Leaving an Orbit and removing a device — E13, 2026-10-09
+
+In the terminal, `L` opens Leave for the selected Orbit; Enter confirms and Esc
+cancels. `X` opens Remove Device for one Orbit, excluding this local device.
+Review the received-change count and type the device name exactly. These actions
+keep working files. Unsent edits can exist only on the departing device.
+
+CLI equivalents (against a running daemon or stopped state):
+
+```sh
+orbit leave Synced                 # review
+orbit leave Synced --yes           # stop this Orbit's sync here, keep files
+orbit remove-device Laptop --folder Synced --review-file /private/review.json
+orbit remove-device --request-file /private/review.json --confirm-name Laptop
+```
+
+The review file's parent must be private (0700), and the file is created 0600
+without overwriting an existing file. A pending result exits 3; retry the exact
+request or open the removal attention item in the TUI. Connect and sync all
+surviving devices first. A fresh received-history review is required if that set
+changed before local retirement. Partial rollout can leave survivors on different
+revisions until resumed; normal data exchange stays gated on exact agreement.
+If new retiree history reaches a survivor after another has already committed,
+the partial result calls for reviewed recovery with files/history preserved;
+ordinary retry cannot expand an irrevocable retirement snapshot.
+
+`orbit folders remove` remains root unregistration and does not stop background
+exchange. It is not an alias for Leave. Other devices must explicitly remove a
+member that left; they see one `PEER_LEFT` attention item. A removed device learns
+who removed it on its next authenticated contact, stops this Orbit and offers
+Leave. This applies to one Orbit, not all memberships of that device. Leave has
+no undo and a retired identity cannot rejoin; preserve any unsynced files before
+enrolling a fresh identity in a separate private state. Keep the original state
+if its other Orbits are still in use. No identity reset or folder deletion is automatic.
+
+Schema 15 is forward-only. Keep a consistent pre-upgrade metadata backup and old
+binary for recovery; restoring a backup uses the existing reviewed recovery
+procedure, including counter/identity safeguards. Do not start an older binary
+on schema 15. Trial installs update only orbit-trial and preserve its configured
+roots, membership, identities and startup state; an unconfigured Pi stays so.

@@ -1,0 +1,280 @@
+go vet ./...
+go test ./cmd/orbit/... ./internal/... ./model/...
+ok  	github.com/calebhabesh/orbit/cmd/orbit	2.431s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/config	1.447s
+ok  	github.com/calebhabesh/orbit/internal/control	60.647s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.016s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.003s
+ok  	github.com/calebhabesh/orbit/internal/history	(cached)
+?   	github.com/calebhabesh/orbit/internal/launcher	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/network	(cached)
+ok  	github.com/calebhabesh/orbit/internal/pairing	(cached)
+ok  	github.com/calebhabesh/orbit/internal/protocol	(cached)
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	72.441s
+ok  	github.com/calebhabesh/orbit/internal/replication	146.319s
+ok  	github.com/calebhabesh/orbit/internal/repository	11.805s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	22.114s
+ok  	github.com/calebhabesh/orbit/internal/state	(cached)
+ok  	github.com/calebhabesh/orbit/internal/terminal	4.027s
+ok  	github.com/calebhabesh/orbit/internal/testkit	(cached)
+ok  	github.com/calebhabesh/orbit/internal/workspace	12.823s
+ok  	github.com/calebhabesh/orbit/model	(cached)
+CGO_ENABLED=0 go build -p=2 -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=b962168 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+go test ./tests/integration/...
+--- FAIL: TestOrbitRecoveryCandidate1ConfigWriteAndRestart (0.48s)
+    orbit_recovery_test.go:31: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestOrbitRecoveryCandidate2KeyRotation (0.09s)
+    orbit_recovery_test.go:116: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestOrbitRecoveryCandidate3TransactionalAuthorAlignment (0.09s)
+    orbit_recovery_test.go:195: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestOrbitRecoveryCandidate5RunbookWorkflow (0.08s)
+    orbit_recovery_test.go:435: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestOrbitRecoveryLiveResetFenced (0.08s)
+    orbit_recovery_test.go:552: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestInitAndVersionFromBuiltCLI (0.08s)
+    p00_cli_test.go:20: build CLI: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP04CLIRegisterScanInspect (0.07s)
+    p04_cli_test.go:23: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP06CLITwoPeerTransfer (0.07s)
+    p06_cli_test.go:31: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP07CLIBidirectionalReconciliation (0.07s)
+    p07_cli_test.go:26: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP08CLIResolutionRestoreControlReplay (0.07s)
+    p08_cli_test.go:28: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP09ThreePeerForwardingAndMembershipLifecycle (0.07s)
+    p09_cli_test.go:31: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP10StorageAccountingAndCLI (0.08s)
+    p10_cli_test.go:37: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP10RetentionExpiryAndCrashSafeGC (0.09s)
+    p10_cli_test.go:122: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP10LongOfflinePeerNoResurrectedDeletions (0.08s)
+    p10_cli_test.go:369: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP11IntegrityScanAndQuarantineAffectedVersions (0.09s)
+    p11_cli_test.go:35: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP11PeerAssistedRepairAndInvariantPreservation (0.09s)
+    p11_cli_test.go:162: build: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP12EqualSizeTimestampPreservingEdits (0.07s)
+    p12_continuous_test.go:190: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP12WatcherFeedbackSuppression (0.07s)
+    p12_continuous_test.go:280: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP12RootUnavailablePauseFolderNoDeletions (0.08s)
+    p12_continuous_test.go:343: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP12WorkStatusRetryCancelAndList (0.09s)
+    p12_continuous_test.go:412: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP12ContinuousServeProfilesAndShutdown (0.08s)
+    p12_continuous_test.go:525: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP12NotificationLossRecoveredByReconciliationScan (0.08s)
+    p12_continuous_test.go:678: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP13CLIDiagnosticsAndDoctor (0.07s)
+    p13_control_test.go:30: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP13SupportExportSanitizationAndRedaction (0.07s)
+    p13_control_test.go:95: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP13FolderLifecycleAndZeroReplicatedDeletes (0.08s)
+    p13_control_test.go:225: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP13MaintenanceBackupCheckRecoveryAndReset (0.09s)
+    p13_control_test.go:350: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP13LoopbackControlSecurityAndBootstrap (0.08s)
+    p13_control_test.go:427: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+--- FAIL: TestP14EmbeddedWebInterfaceAndSPARouting (0.07s)
+    p14_web_test.go:47: build orbit: exit status 1
+        # github.com/calebhabesh/orbit/internal/replication
+        internal/replication/server.go:231:49: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+        internal/replication/server.go:564:81: not enough arguments in call to server.removalError
+        	have (context.Context, history.ID)
+        	want (context.Context, history.ID, history.ID)
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/integration	102.124s
+FAIL
+make: *** [Makefile:76: test-integration] Error 1

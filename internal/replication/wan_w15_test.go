@@ -304,7 +304,7 @@ func TestWANW15RouteSwitchPublicationGCConflictAndRetirement(t *testing.T) {
 		// Reusing a previously authenticated TCP pool must recheck current folder authority.
 		_, e = f.newSyncer(TransferOptions{}).Sync(f.ctx)
 		var refused *WireError
-		if !errors.As(e, &refused) || refused.Body.Code != "UNAUTHORIZED" {
+		if !errors.As(e, &refused) || refused.Body.Code != DeviceRemovedCode {
 			t.Fatal("retired device did not receive exact authorization refusal", e)
 		}
 		senderManager.NetworkChanged()

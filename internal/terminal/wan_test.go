@@ -94,7 +94,7 @@ func TestWANW07PollingPreservesSelectionAndLateContexts(t *testing.T) {
 func TestWANW07ObservedRelaySeparateFromReadiness(t *testing.T) {
 	m, _ := workflowModel()
 	n := &tc.NetworkStatus{Policy: tc.NetworkPolicy{Mode: "automatic"}, Ready: true, Code: "SERVICE_READY", Observations: []tc.NetworkObservation{{Device: "Pi", Route: "relay", ObservedAt: time.Now().UTC().Format(time.RFC3339Nano)}}}
-	m.flow = &workflow{screen: "progress", result: tc.Result{Network: n, Operation: &tc.Operation{State: "running", Phase: "awaiting_approval"}, Readiness: &tc.Readiness{}}}
+	m.flow = &workflow{screen: "progress", details: true, result: tc.Result{Network: n, Operation: &tc.Operation{State: "running", Phase: "awaiting_approval"}, Readiness: &tc.Readiness{}}}
 	m.width, m.height = 120, 40
 	v := m.View().Content
 	if !strings.Contains(v, "Connected via relay") || !strings.Contains(v, "readiness incomplete") || strings.Contains(v, "Locally ready") {

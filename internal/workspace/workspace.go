@@ -273,6 +273,11 @@ func (root *openedRoot) close() {
 }
 
 func (workspace *Workspace) openRoot(ctx context.Context, folder history.ID) (*openedRoot, error) {
+	if left, err := workspace.repo.FolderLeft(ctx, folder); err != nil {
+		return nil, err
+	} else if left {
+		return nil, repository.ErrFolderLeft
+	}
 	if err := workspace.recoverRelocation(ctx, folder); err != nil {
 		return nil, err
 	}
@@ -372,6 +377,16 @@ func (workspace *Workspace) Scan(ctx context.Context, folder history.ID) (ScanRe
 }
 
 func (workspace *Workspace) ScanWithOptions(ctx context.Context, folder history.ID, opts ScanOptions) (ScanResult, error) {
+	ctx, exchangeRelease, exchangeErr := workspace.repo.BeginFolderExchange(ctx, folder)
+	if exchangeErr != nil {
+		return ScanResult{}, exchangeErr
+	}
+	defer exchangeRelease()
+	if left, err := workspace.repo.FolderLeft(ctx, folder); err != nil {
+		return ScanResult{}, err
+	} else if left {
+		return ScanResult{}, repository.ErrFolderLeft
+	}
 	ctx, release, holdErr := workspace.enterFolder(ctx, folder)
 	if holdErr != nil {
 		return ScanResult{}, holdErr
@@ -1218,6 +1233,11 @@ func (workspace *Workspace) Recover(ctx context.Context, folder history.ID) erro
 		return holdErr
 	}
 	defer release()
+	if left, err := workspace.repo.FolderLeft(ctx, folder); err != nil {
+		return err
+	} else if left {
+		return repository.ErrFolderLeft
+	}
 	if err := workspace.RecoverFileMutations(ctx, folder); err != nil {
 		return err
 	}
@@ -1645,4 +1665,15 @@ func (workspace *Workspace) Revalidate(ctx context.Context, folder history.ID) e
 		_ = workspace.repo.ResumeFolder(ctx, folder)
 	}
 	return nil
+}
+
+// Leave drains working-tree writers before unregistering the root. Journals,
+// recovery copies and captured history remain available for recovery.
+func (workspace *Workspace) Leave(ctx context.Context, folder history.ID, now time.Time) error {
+	ctx, release, err := workspace.enterFolder(ctx, folder)
+	if err != nil {
+		return err
+	}
+	defer release()
+	return workspace.repo.LeaveFolder(ctx, folder, now)
 }

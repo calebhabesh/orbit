@@ -1,0 +1,15 @@
+=== RUN   TestTerminalT06ContextResolutionCwdAndName
+=== PAUSE TestTerminalT06ContextResolutionCwdAndName
+=== RUN   TestTerminalT06AmbiguousAndOutsideRootContext
+=== PAUSE TestTerminalT06AmbiguousAndOutsideRootContext
+=== RUN   TestTerminalT06StaleAndUnavailableRoot
+=== PAUSE TestTerminalT06StaleAndUnavailableRoot
+=== RUN   TestTerminalT06PathSafetyAndLiteralPaths
+=== PAUSE TestTerminalT06PathSafetyAndLiteralPaths
+=== RUN   TestTerminalT06OutputEscapingAndControlCharacters
+=== PAUSE TestTerminalT06OutputEscapingAndControlCharacters
+=== RUN   TestTerminalT06LiveAndStoppedAdapterParity
+=== PAUSE TestTerminalT06LiveAndStoppedAdapterParity
+=== RUN   TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== PAUSE TestTerminalT06ShellCompletionsAndHelpWalkthrough
+=== RUN   TestOnboardingE08RealPTYFilesViewMatchesCLI

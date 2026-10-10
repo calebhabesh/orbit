@@ -138,6 +138,7 @@ type StatusResponse struct {
 }
 
 type ErrorResponse struct {
+	RemovedBy       string `json:"removed_by,omitempty"`
 	ProtocolVersion string `json:"protocol_version"`
 	Code            string `json:"code"`
 	Message         string `json:"message"`

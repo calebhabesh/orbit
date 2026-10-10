@@ -142,7 +142,7 @@ def wait(text,limit=20):
 wait('Orbit')
 time.sleep(1)
 os.write(master,b'3'); wait('1 of 1')
-os.write(master,b'\r'); wait('Retry work')
+os.write(master,b'\r'); wait('Retry Work')
 print('--- retry review ---'); print(screen.text())
 os.write(master,b'\r'); wait('re-queued')
 print('--- after Enter ---'); print(screen.text())

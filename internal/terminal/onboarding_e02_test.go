@@ -15,7 +15,7 @@ import (
 // the generic operation screen.
 func TestOnboardingE02F09EnterRoutesEveryAttentionCode(t *testing.T) {
 	want := map[string]string{
-		"requests": "requests", "retry": "retry_review", "review": "day_load_review",
+		"remove": "folder", "removal": "remove_resume_review", "requests": "requests", "retry": "retry_review", "review": "day_load_review",
 		"session": "day_load_session", "progress": "progress", "folder": "folder", "storage": "day_storage",
 	}
 	folder, id := strings.Repeat("f", 64), strings.Repeat("e", 64)

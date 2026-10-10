@@ -315,3 +315,23 @@ or unfinished setup keeps the existing Overview/setup routing. An explicit view
 selection wins over a late initial response. Local file opening/editing uses
 the existing constrained tool boundary. State labels and aged peer reports are
 defined by EG2, not inferred from connection status.
+
+
+## E13 participation controls — 2026-10-09
+
+`Controller.LeaveOrbit`, `RemoveDevice` and `ResumeRemoval` own the shared
+CLI/TUI operations, exposed over authenticated local compatibility routes and
+stopped-state adapters. The optional terminal capability is
+`participation_management_v1`. Rendering and key handlers do not edit SQLite,
+peer routes or membership themselves. Folder management adds name, local device
+and removal reporter observations; typed retirement/removal results keep forms
+and retry displays separate from daemon work.
+
+Repository participation barriers own live per-folder exchange admission,
+cancellation and drain; workspace owns writer gates and preserved recovery;
+scheduler owns durable cancellation and learned removal. Pinned replication
+owns the retirement prepare/commit RPC and matching prepared successor catch-up.
+The repository validates the one-target transition, exact accepted retiree set,
+immutable approval and replay. See the E13 amendments in protocol/persistence.
+The old T10 conservative preview remains the distinct **Unregister Folder**
+compatibility action; it no longer labels itself Leave.

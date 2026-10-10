@@ -1,7 +1,7 @@
 GO ?= go
-VERSION ?= 2.2.0
+VERSION ?= 2.3.0
 COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "release")
-DATE ?= 2026-10-08
+DATE ?= 2026-10-09
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
 GOFLAGS ?=
 
@@ -95,6 +95,10 @@ test-terminal-keys-pty: build
 
 test-terminal-everyday-pty: build
 	python3 scripts/terminal_everyday_pty_test.py --binary bin/orbit
+
+.PHONY: test-terminal-participation-pty
+test-terminal-participation-pty: build
+	python3 scripts/terminal_participation_pty_test.py --binary bin/orbit
 
 test-legacy-browser: build
 	$(GO) test ./tests/integration -run '^(TestP14|TestP15EmbeddedUI|TestOrbitSession)'

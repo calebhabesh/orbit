@@ -34,7 +34,7 @@ func TestOnboardingE06NegotiatesShortCodeAndShowsFailure(t *testing.T) {
 			m.flow.result.Pairing.Error = "PAIRING_UNAVAILABLE"
 		}
 		view := m.View().Content
-		for _, want := range []string{"ABCD-2345", status[state], "Owner approval", "v long invitation"} {
+		for _, want := range []string{"ABCD-2345", status[state], "You approve it here", "v long invitation"} {
 			if !strings.Contains(view, want) {
 				t.Fatalf("%s missing %q: %s", state, want, view)
 			}

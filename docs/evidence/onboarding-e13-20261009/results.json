@@ -1,0 +1,94 @@
+{
+  "packet": "E13",
+  "date": "2026-10-09",
+  "state": "complete",
+  "focused_race": "passed",
+  "quick_all_five_pty": "passed_final_retry_fix_run_125s",
+  "wan_pty": "passed",
+  "network_pty": "passed",
+  "integration_race": "passed_after_preview_fix",
+  "full_terminal": "passed_combined: complete original run + fifteen corrected reruns + W16 CLI + W16 TUI socket-fix rerun (343.200s)",
+  "release_targets": "passed",
+  "trial_backups": "passed_all_hosts",
+  "trial_install": "passed_all_three_hosts_final_refresh_9s",
+  "physical_wan_campaign": "unexecuted",
+  "package_container_transactions": "unexecuted",
+  "committed": false,
+  "package_metadata": "CurrentSchema_and_2026-10-09_date; final_rebuilt_payload_manifest_consistency_checks_passed",
+  "fmt_vet": "passed_final_tree",
+  "hosts": [
+    {
+      "host": "CalebPC",
+      "binary_sha256": "7767edeb281b75217860bbf7cd1dd3153c6c2c2cb35a3fd1a1906c7596c98456",
+      "configured": true,
+      "trial_unit": "active",
+      "version": "2.3.0",
+      "arch": "amd64",
+      "schema_version": 15,
+      "database_schema": 15,
+      "preserved": [
+        "identity",
+        "folder roots",
+        "membership",
+        "recorded history",
+        "existing file manifest"
+      ]
+    },
+    {
+      "host": "CalebLaptop",
+      "binary_sha256": "7767edeb281b75217860bbf7cd1dd3153c6c2c2cb35a3fd1a1906c7596c98456",
+      "configured": true,
+      "trial_unit": "active",
+      "version": "2.3.0",
+      "arch": "amd64",
+      "schema_version": 15,
+      "database_schema": 15,
+      "preserved": [
+        "identity",
+        "folder roots",
+        "membership",
+        "recorded history",
+        "existing file manifest"
+      ]
+    },
+    {
+      "host": "pi-server",
+      "binary_sha256": "0fce799961d35328258588f51d3ab955fa7d3303a5f0fc3b43528ecec60fc89e",
+      "configured": false,
+      "trial_unit": "unconfigured/stopped",
+      "version": "2.3.0",
+      "arch": "arm64",
+      "schema_version": 15,
+      "database_schema": null,
+      "preserved": []
+    }
+  ],
+  "package_manifest": {
+    "browser_runtime_required": false,
+    "built": "2026-10-09",
+    "commit": "b962168",
+    "config_format_version": 1,
+    "embedded_assets": {
+      "digest_sha256": "1d6c5084c2ba29bb4fe64e4d67a053ae0dab396dcd0d770aaafbaf103f24b67d",
+      "total_files": 3
+    },
+    "legacy_browser_entry": "orbit legacy-browser",
+    "license": "MIT",
+    "node_runtime_required": false,
+    "ordinary_entry": "terminal",
+    "packaged_profile": {
+      "authority": "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36",
+      "digest": "9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681",
+      "epoch": 2,
+      "expires": "2027-10-07T16:41:45Z",
+      "operator": "Caleb Habesh"
+    },
+    "product": "Orbit",
+    "pure_go_sqlite": true,
+    "release": "1",
+    "schema_version": 15,
+    "version": "2.3.0"
+  },
+  "stale_pending_review": "regression_reproduced_and_fixed; final_E13_control_wire_CLI_race_and_all_five_PTYs_passed",
+  "one_uninterrupted_make_check": "unexecuted_after_fixes; combined evidence covers every target"
+}

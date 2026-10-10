@@ -48,9 +48,12 @@ func (t theme) muted(text string) string {
 func (t theme) accent(text string) string {
 	return t.style(lipgloss.NewStyle().Foreground(cAccent).Bold(true), text)
 }
-func (t theme) good(text string) string { return t.fg(cGreen, text) }
-func (t theme) warn(text string) string { return t.fg(cYellow, text) }
-func (t theme) bad(text string) string  { return t.fg(cRed, text) }
+
+// label colors a field name; values stay in the bright foreground.
+func (t theme) label(text string) string { return t.fg(cAccent, text) }
+func (t theme) good(text string) string  { return t.fg(cGreen, text) }
+func (t theme) warn(text string) string  { return t.fg(cYellow, text) }
+func (t theme) bad(text string) string   { return t.fg(cRed, text) }
 
 // brand is the header badge.
 func (t theme) brand() string {
@@ -104,29 +107,41 @@ func (t theme) header(width int, middle, right string) string {
 }
 
 // keyPattern recognises key names inside free-form footer hint strings.
-var keyPattern = regexp.MustCompile(`^(?:[a-zA-Z?/\[\]@]|Enter|Esc|Tab|Shift-Tab|Ctrl-[A-Z]|arrows|[a-zA-Z](?:/[a-zA-Z])+)$`)
+var keyPattern = regexp.MustCompile(`^(?:[a-zA-Z?/\[\]@]|Enter|Esc|Tab|Shift-Tab|Ctrl-[A-Z]|arrows|[0-9]-[0-9]|↑/↓|←/→|[a-zA-Z](?:/[a-zA-Z])+)$`)
 
-// hints styles a footer: key names in the accent color, descriptions muted.
-func (t theme) hints(footer string) string {
+// key renders one key name as a pill; Enter, the primary action, is green.
+func (t theme) key(k string) string {
 	if t.plain {
-		return footer
+		return k
 	}
-	var b strings.Builder
-	for i, field := range strings.Split(footer, " ") {
-		if i > 0 {
-			b.WriteByte(' ')
-		}
-		switch {
-		case field == "":
-		case field == "|":
-			b.WriteString(t.muted("│"))
-		case keyPattern.MatchString(field):
-			b.WriteString(t.accent(field))
-		default:
-			b.WriteString(t.muted(field))
-		}
+	bg, fg := lipgloss.Color("8"), cBright
+	if k == "Enter" {
+		bg, fg = cGreen, cBlack
 	}
-	return b.String()
+	return lipgloss.NewStyle().Background(bg).Foreground(fg).Bold(true).Render(" " + k + " ")
+}
+
+// hints styles one footer group ("Enter Create Orbit"): a leading key name
+// becomes a pill and the description follows; other text stays plain.
+func (t theme) hints(group string) string {
+	if t.plain {
+		return group
+	}
+	group = strings.TrimSpace(group)
+	if group == "|" {
+		return t.muted("│")
+	}
+	k, desc, _ := strings.Cut(group, " ")
+	if !keyPattern.MatchString(k) {
+		return group
+	}
+	if desc == "" {
+		return t.key(k)
+	}
+	if k == "Enter" {
+		desc = t.style(lipgloss.NewStyle().Foreground(cGreen).Bold(true), desc)
+	}
+	return t.key(k) + " " + desc
 }
 
 // footer wraps key hints to width, keeping each "key description" group whole.
@@ -135,7 +150,7 @@ func (t theme) footer(text string, width int) []string {
 	var groups []string
 	for _, part := range strings.Split(text, "  ") {
 		if part = strings.TrimSpace(part); part != "" {
-			groups = append(groups, part)
+			groups = append(groups, t.hints(part))
 		}
 	}
 	var lines []string
@@ -156,9 +171,7 @@ func (t theme) footer(text string, width int) []string {
 	}
 	var out []string
 	for _, l := range lines {
-		for _, w := range strings.Split(ansi.Wrap(l, width, ""), "\n") {
-			out = append(out, t.hints(w))
-		}
+		out = append(out, strings.Split(ansi.Wrap(l, width, ""), "\n")...)
 	}
 	return out
 }
@@ -254,7 +267,7 @@ func (t theme) line(segments []string, selected bool) []string {
 		out[0] = t.bold(raw[:loc[0]]) + t.accent(raw[loc[0]:])
 	case kvLine.MatchString(raw):
 		parts := kvLine.FindStringSubmatch(raw)
-		out[0] = t.muted(parts[1]+":") + " " + t.value(parts[2])
+		out[0] = t.label(parts[1]+":") + " " + t.value(parts[2])
 		for i := 1; i < len(segments); i++ {
 			out[i] = t.inline(segments[i])
 		}
@@ -460,6 +473,21 @@ func (t theme) banner(width, height int) []string {
 	return append(out, "", t.accent(name), t.muted(tagline), "")
 }
 
+// row renders one aligned label/value line of a summary card.
+func (t theme) row(label, value string) string {
+	pad := strings.Repeat(" ", max(1, 12-ansi.StringWidth(label)))
+	if t.plain {
+		if label == "" {
+			return pad + value
+		}
+		return label + ":" + strings.Repeat(" ", max(1, 11-ansi.StringWidth(label))) + value
+	}
+	if !strings.Contains(value, "\x1b") {
+		value = t.fg(cBright, value)
+	}
+	return t.label(label) + pad + value
+}
+
 // field renders one form input. The focused field carries the "> " marker in
 // plain mode and an accent bar in color; byte-sized values gain a readable hint.
 func (t theme) field(label, value, raw string, focused bool) string {
@@ -479,7 +507,7 @@ func (t theme) field(label, value, raw string, focused bool) string {
 	if focused {
 		return t.accent("▌ "+label+":") + " " + value + t.muted(hint)
 	}
-	return "  " + t.muted(label+":") + " " + t.fg(cBright, value) + t.muted(hint)
+	return "  " + t.label(label+":") + " " + t.fg(cBright, value) + t.muted(hint)
 }
 
 // humanBytes formats a byte count with binary units (1.5 GiB).

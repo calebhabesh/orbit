@@ -67,6 +67,26 @@ func TestTerminalT09FocusedInputAndKeyboard(t *testing.T) {
 	}
 }
 
+func TestTopLevelArrowsCycleThroughAllFiveViews(t *testing.T) {
+	for _, direction := range []struct {
+		name string
+		code rune
+		step int
+	}{{"right", tea.KeyRight, 1}, {"left", tea.KeyLeft, -1}} {
+		t.Run(direction.name, func(t *testing.T) {
+			m := shellFixture()
+			m.firstLoad = true
+			for i := 0; i < 2*len(sections); i++ {
+				want := (m.section + direction.step + len(sections)) % len(sections)
+				m.Update(tea.KeyPressMsg{Code: direction.code})
+				if m.section != want {
+					t.Fatalf("%s at step %d: selected tab %d, want %d", direction.name, i+1, m.section+1, want+1)
+				}
+			}
+		})
+	}
+}
+
 func TestTerminalT09CorrelatedCancellationAndBoundedPolling(t *testing.T) {
 	started := make(chan tc.Query, 1)
 	m := shellFixture()
