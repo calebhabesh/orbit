@@ -1,0 +1,8 @@
+cpu: AMD Ryzen 7 9700X 8-Core Processor             
+BenchmarkFinalR01BodyReadCount-16    	643420197	         3.781 ns/op
+BenchmarkFinalR01BodyReadCount-16    	633786823	         3.752 ns/op
+BenchmarkFinalR01BodyReadCount-16    	624331950	         3.750 ns/op
+BenchmarkFinalR01RequestBucket-16    	21281341	       112.8 ns/op
+BenchmarkFinalR01RequestBucket-16    	22638847	       112.2 ns/op
+BenchmarkFinalR01RequestBucket-16    	21353061	       112.0 ns/op
+ok  	github.com/calebhabesh/orbit/internal/network	17.932s

@@ -530,6 +530,11 @@ func networkLines(n *tc.NetworkStatus) []string {
 		}
 		lines = append(lines, safe(o.Device)+": "+label+"; observed="+safe(o.ObservedAt)+"; "+safe(o.Code))
 		lines = append(lines, "Freshness: "+safe(o.Freshness)+fmt.Sprintf("; candidates LAN=%d public=%d expired=%d; UDP=%s", o.LANCandidates, o.PublicCandidates, o.ExpiredCandidates, safe(o.UDPCode)), "Next action: "+safe(o.Action))
+		for _, window := range []string{"24h", "30d"} {
+			if share := tc.RouteShare(n.RouteUsage, window, o.Device); share != "" {
+				lines = append(lines, safe(share))
+			}
+		}
 	}
 	return lines
 }

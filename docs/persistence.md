@@ -473,6 +473,11 @@ for restart, and records the observed effect. Ambiguous effects become blocked
 work survives client waiting cancellation. Explicit operation cancellation and
 setup-job extension remain later packet work.
 
+Route accounting (R01) lives in owner-only `route-usage.json`, replaced the same
+way. It holds bucket totals per peer device ID, purpose and route class (no
+addresses or file names), kept 90 days, and is diagnostic only. A damaged or
+missing file starts empty and never blocks capture or sync.
+
 Schema compatibility is not full binary rollback safety: an older binary does
 not understand these ledger records or `runtime.json` budgets. Before adopting
 an older binary, reconcile pending terminal operations and explicitly migrate

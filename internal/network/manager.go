@@ -13,6 +13,7 @@ import (
 
 	"github.com/calebhabesh/orbit/internal/protocol"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -29,6 +30,8 @@ type ManagerOptions struct {
 	Generation  uint64
 	Now         func() time.Time
 	DialContext func(context.Context, string, string) (net.Conn, error)
+	// RouteUsage receives per-peer route accounting; nil keeps it in memory.
+	RouteUsage *RouteUsage
 }
 
 type manualRoute struct {
@@ -81,6 +84,7 @@ type ConnectionManager struct {
 	sources              map[Target]candidateSource
 	pools                map[poolKey]*managedPool
 	observations         map[Target]Observation
+	usage                *RouteUsage
 	requests             map[*requestWork]bool
 	connections          map[*ownedConn]bool
 	relaySlots           map[Target]chan struct{}
@@ -102,8 +106,11 @@ func NewManager(opts ManagerOptions) *ConnectionManager {
 	if opts.Generation == 0 {
 		opts.Generation = 1
 	}
+	if opts.RouteUsage == nil {
+		opts.RouteUsage = NewRouteUsage(opts.Now)
+	}
 	lifetime, cancel := context.WithCancel(context.Background())
-	return &ConnectionManager{timing: (protocol.RouteTiming{}).Effective(), candidateRevisions: map[Target]uint64{}, directCooldowns: map[Target]directCooldown{}, iceFailures: map[Target]error{}, quicSlots: make(chan struct{}, MaxActivePeerSlots), lifetime: lifetime, cancel: cancel, now: opts.Now, dial: opts.DialContext, generation: opts.Generation,
+	return &ConnectionManager{usage: opts.RouteUsage, timing: (protocol.RouteTiming{}).Effective(), candidateRevisions: map[Target]uint64{}, directCooldowns: map[Target]directCooldown{}, iceFailures: map[Target]error{}, quicSlots: make(chan struct{}, MaxActivePeerSlots), lifetime: lifetime, cancel: cancel, now: opts.Now, dial: opts.DialContext, generation: opts.Generation,
 		lan: map[lanKey]candidateLease{}, public: map[Target]candidateLease{}, sources: map[Target]candidateSource{}, peerDials: map[Target]int{}, routes: map[Target]manualRoute{}, pools: map[poolKey]*managedPool{}, observations: map[Target]Observation{},
 		requests: map[*requestWork]bool{}, connections: map[*ownedConn]bool{}, relaySlots: map[Target]chan struct{}{}, done: make(chan struct{}), dataListener: NewStreamListener(), enrollmentListener: NewStreamListener()}
 }
@@ -282,6 +289,10 @@ func (m *ConnectionManager) Transport(ctx context.Context, target Target, trust 
 	m.pools[key] = p
 	return &borrowedPool{pool: p, verify: trust.VerifyConnection}, nil
 }
+
+// RouteUsage is this device's per-peer route accounting (RG2).
+func (m *ConnectionManager) RouteUsage() *RouteUsage { return m.usage }
+
 func (m *ConnectionManager) Observe(target Target) Observation {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -484,6 +495,7 @@ func (p *managedPool) roundTrip(r *http.Request, verify func(tls.ConnectionState
 	var verifyMu sync.Mutex
 	var verifyErr error
 	actualRoute := "direct"
+	var remote net.Addr
 	ctx = httptrace.WithClientTrace(ctx, &httptrace.ClientTrace{GotConn: func(info httptrace.GotConnInfo) {
 		conn, ok := info.Conn.(*tls.Conn)
 		var err error
@@ -491,8 +503,10 @@ func (p *managedPool) roundTrip(r *http.Request, verify func(tls.ConnectionState
 			err = errors.New("TLS_REQUIRED")
 		} else {
 			err = verify(conn.ConnectionState())
+			remote = conn.RemoteAddr()
 			if owned, ok := conn.NetConn().(*ownedConn); ok {
 				actualRoute = owned.route
+				remote = owned.Conn.RemoteAddr()
 				if retiring, ok := owned.Conn.(interface{ Retired() bool }); ok && retiring.Retired() {
 					err = ErrStale
 				}
@@ -544,7 +558,15 @@ func (p *managedPool) roundTrip(r *http.Request, verify func(tls.ConnectionState
 		cancel()
 		return nil, err
 	}
-	body := &managedBody{ReadCloser: response.Body, manager: m, pool: p, work: w}
+	// RG2: count the completed request and its body bytes by the socket that
+	// carried it; the response body is counted as it is read.
+	class := routeClass(actualRoute, remote)
+	sent := uint64(0)
+	if r.ContentLength > 0 {
+		sent = uint64(r.ContentLength)
+	}
+	m.usage.add(p.key.target, class, 1, sent, 0)
+	body := &managedBody{ReadCloser: response.Body, manager: m, pool: p, work: w, class: class}
 	w.body = body
 	response.Body = body
 	closed := m.closed
@@ -565,14 +587,17 @@ func (m *ConnectionManager) releaseLocked(p *managedPool, w *requestWork) {
 
 type managedBody struct {
 	io.ReadCloser
-	manager *ConnectionManager
-	pool    *managedPool
-	work    *requestWork
-	once    sync.Once
+	manager  *ConnectionManager
+	pool     *managedPool
+	work     *requestWork
+	once     sync.Once
+	class    string
+	received atomic.Uint64
 }
 
 func (b *managedBody) Read(p []byte) (int, error) {
 	n, err := b.ReadCloser.Read(p)
+	b.received.Add(uint64(n))
 	if err != nil {
 		b.Close()
 	}
@@ -583,6 +608,7 @@ func (b *managedBody) Close() error {
 	b.once.Do(func() {
 		err = b.ReadCloser.Close()
 		b.work.cancel()
+		b.manager.usage.add(b.pool.key.target, b.class, 0, 0, b.received.Load())
 		b.manager.mu.Lock()
 		b.manager.releaseLocked(b.pool, b.work)
 		b.manager.mu.Unlock()

@@ -462,6 +462,34 @@ retained observations as unavailable currently. TUI exit restores terminal modes
 and leaves accepted daemon work running. Hosted/default profiles, direct traversal,
 roaming and inherited T13 native lifecycle checks remain later acceptance.
 
+## R01 route accounting (RG2)
+
+`network.RouteUsage` counts what actually carried each peer request. The count
+is taken in `managedPool.roundTrip`, the same point that sets the dated
+observation. When a response arrives it adds one request and the request body
+length, and the response body is counted as it is read. The class comes from
+the socket. A relay `ownedConn` is `relay`. An HTTP/3 response, native or ICE,
+is `quic`. Other direct TCP is `lan` when the dialed remote address is private
+(RFC 1918 or ULA), loopback or link-local, and `wan_tcp` otherwise. RFC 6598
+shared space (CGNAT, overlay VPNs such as Tailscale) therefore counts as
+`wan_tcp`. Counted bytes are HTTP bodies only, excluding TLS, HTTP framing and
+relay WebSocket framing (0.22% in E09). Service control traffic, doctor probes
+and served (incoming) requests are not counted: peer sync is pull-based, so
+every data byte is counted once, by the device that received it.
+
+Buckets are keyed by UTC start, peer device ID, purpose and class, and carry no
+address or file name. Hour buckets merge into UTC days after 48 hours, so a
+24-hour window is exact to the hour. Buckets go after 90 days, and the total is
+bounded at 40,000 (oldest dropped first). The daemon restores
+`route-usage.json` (owner-only, atomic replace) at start and saves it every five
+minutes when changed and once after the connection manager closes. A crash can
+lose at most five minutes of counts. A damaged file is reported as a "route
+accounting limitation" and replaced; accounting never blocks sync.
+`network_status` reports `route_usage` for "24h" (since the hour 24 hours ago)
+and "30d" (since the UTC day 30 days ago). Measured cost: about 3.7 ns per body
+read and 105 ns per request; a 1-GiB LAN pull took 17.3 s with about 1 ms of
+counting, under 0.01% (R01 evidence).
+
 ## W08 direct TCP and local discovery integration
 
 The daemon starts an optional peer-data TCP listener in nonmanual modes, bound to

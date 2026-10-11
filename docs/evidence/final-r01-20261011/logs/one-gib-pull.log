@@ -1,0 +1,5 @@
+=== RUN   TestFinalR01OneGiBPull
+    final_r01_test.go:163: R01 1 GiB pull: 17.286s (59 MiB/s); lan requests=1334 sent=543958 received=1073885780 (+0.0134% over file bytes)
+--- PASS: TestFinalR01OneGiBPull (21.74s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/replication	21.739s

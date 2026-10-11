@@ -316,6 +316,9 @@ func (c *Controller) terminalNetworkQuery(ctx context.Context, q tc.Query) (tc.R
 		}
 		status.Observations = append(status.Observations, tc.NetworkObservation{Device: device, Pin: hex.EncodeToString(target.Pin[:]), Purpose: string(target.Purpose), Route: o.Route, Code: o.Code, ObservedAt: when, Generation: tc.Uint(o.Generation), Freshness: freshness, Action: networkAction(o.Code), LANCandidates: tc.Uint(summary.LAN), PublicCandidates: tc.Uint(summary.Public), ExpiredCandidates: tc.Uint(summary.Expired), UDPCode: udp})
 	}
+	if c.options.Network != nil {
+		status.RouteUsage = routeUsage(c.options.Network.RouteUsage(), c.options.Now(), q.ID)
+	}
 
 	return r, nil
 }
@@ -402,4 +405,31 @@ func (c *Controller) packagedStatus(status *tc.NetworkStatus, policy tc.NetworkP
 		}
 	}
 	return nil
+}
+
+// routeUsage reports RG2 accounting for the last 24 hours (hour buckets) and
+// 30 days (day buckets), optionally for one device.
+func routeUsage(u *network.RouteUsage, now time.Time, device string) []tc.NetworkRouteUsage {
+	out := []tc.NetworkRouteUsage{}
+	if u == nil {
+		return out
+	}
+	windows := []struct {
+		name  string
+		since time.Time
+	}{{"24h", now.UTC().Add(-24 * time.Hour).Truncate(time.Hour)}, {"30d", now.UTC().Add(-30 * 24 * time.Hour).Truncate(24 * time.Hour)}}
+	for _, w := range windows {
+		for _, peer := range u.Window(w.since) {
+			if device != "" && peer.Device != device {
+				continue
+			}
+			r := tc.NetworkRouteUsage{Device: peer.Device, Purpose: peer.Purpose, Window: w.name, Since: w.since.Format(time.RFC3339), Routes: []tc.NetworkRouteTotals{}}
+			for _, class := range network.RouteClasses {
+				t := peer.Routes[class]
+				r.Routes = append(r.Routes, tc.NetworkRouteTotals{Route: class, Requests: tc.Uint(t.Requests), BytesSent: tc.Uint(t.Sent), BytesReceived: tc.Uint(t.Received)})
+			}
+			out = append(out, r)
+		}
+	}
+	return out
 }

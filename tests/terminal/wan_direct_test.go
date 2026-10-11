@@ -20,6 +20,7 @@ import (
 	"github.com/calebhabesh/orbit/internal/config"
 	tc "github.com/calebhabesh/orbit/internal/control/terminalcontract"
 	"github.com/calebhabesh/orbit/internal/controlclient"
+	"github.com/calebhabesh/orbit/internal/network"
 	"github.com/calebhabesh/orbit/internal/testkit"
 )
 
@@ -152,6 +153,22 @@ func verifyBinaryLocalOnlyTransport(t *testing.T, quic bool) {
 			if result.Network.Observations[0].ObservedAt == "" {
 				t.Fatal("undated observation")
 			}
+			// R01: the daemon's route accounting counts this traffic in the
+			// matching class, as observed by this device.
+			class := map[string]string{"direct": network.RouteLAN, "quic": network.RouteQUIC}[expected]
+			counted := false
+			for _, u := range result.Network.RouteUsage {
+				for _, r := range u.Routes {
+					if u.Window == "24h" && r.Route == class && r.Requests > 0 && r.BytesReceived > 0 {
+						counted = true
+					} else if r.Route != class && r.Requests > 0 {
+						t.Fatal("route usage misclassified", r.Route, "want", class)
+					}
+				}
+			}
+			if !counted {
+				t.Fatal("route usage missing", class, result.Network.RouteUsage)
+			}
 		}
 	}
 	// Local-only consumes the same approved logical peers and pins, with no
@@ -208,6 +225,13 @@ func verifyBinaryLocalOnlyTransport(t *testing.T, quic bool) {
 	}
 	stopA()
 	stopB()
+	// R01: shutdown saves the rollup (restore: TestFinalR01RouteUsageSurvivesRestart).
+	for _, n := range []*w05Node{a, b} {
+		records, e := config.LoadRouteUsage(n.f.state)
+		if e != nil || len(records) == 0 {
+			t.Fatal("route usage not persisted at shutdown", e)
+		}
+	}
 	a.f.open()
 	b.f.open()
 	w05AssertFiles(t, a, b, folder, rootA, rootB)

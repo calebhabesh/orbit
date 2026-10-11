@@ -77,6 +77,23 @@ type NetworkObservation struct {
 	ObservedAt        string `json:"observed_at"`
 	Generation        Uint   `json:"generation"`
 }
+
+// NetworkRouteUsage is one peer's route accounting over a window ("24h" or
+// "30d"). Since is the start of the first hour or day bucket counted.
+type NetworkRouteUsage struct {
+	Device  string               `json:"device"`
+	Purpose string               `json:"purpose"`
+	Window  string               `json:"window"`
+	Since   string               `json:"since"`
+	Routes  []NetworkRouteTotals `json:"routes"` // lan, wan_tcp, quic, relay
+}
+type NetworkRouteTotals struct {
+	Route         string `json:"route"`
+	Requests      Uint   `json:"requests"`
+	BytesSent     Uint   `json:"bytes_sent"`
+	BytesReceived Uint   `json:"bytes_received"`
+}
+
 type NetworkPreview struct {
 	Policy  NetworkPolicy `json:"policy"`
 	Review  Review        `json:"review"`
@@ -166,6 +183,10 @@ type NetworkStatus struct {
 	Operator        string                `json:"operator"`
 	Privacy         string                `json:"privacy"`
 	Observations    []NetworkObservation  `json:"observations"`
+	// RouteUsage (RG2) reports completed peer requests this device made and
+	// their body bytes by the socket that carried them, per peer and window.
+	// It is this device's observation, not the peer's or the service's.
+	RouteUsage []NetworkRouteUsage `json:"route_usage,omitempty"`
 	// W14 packaged defaults. ProfileUpdate is "available" when the packaged
 	// profile is a newer epoch of the selected authority that needs review
 	// (changed operator/privacy text); same-text updates apply at startup.

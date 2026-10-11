@@ -69,6 +69,7 @@ func handleOrbitNetwork(args []string, out, errOut io.Writer) error {
 	device := flags.String("device", "", "exact reviewed device ID for a single peer probe")
 	timeout := flags.Duration("timeout", 20*time.Second, "finite explicit doctor budget (1s to 20s)")
 	jsonOut := flags.Bool("json", false, "structured output")
+	routes := flags.Bool("routes", false, "status: per-peer route accounting for the last 24 hours and 30 days")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
@@ -305,6 +306,14 @@ func handleOrbitNetwork(args []string, out, errOut io.Writer) error {
 		if len(n.Observations) > 0 {
 			fmt.Fprintln(out, routeShare(n.Observations))
 		}
+		for _, window := range []string{"24h", "30d"} {
+			if line := tc.RouteShare(n.RouteUsage, window, ""); line != "" {
+				fmt.Fprintln(out, line)
+			}
+		}
+		if *routes {
+			printRouteUsage(out, n.RouteUsage)
+		}
 		for _, o := range n.Observations {
 			fmt.Fprintf(out, "Device %s: %s; code=%s; observed=%s\n", o.Device, o.Route, o.Code, o.ObservedAt)
 			fmt.Fprintf(out, "  Freshness: %s; candidates LAN=%d public=%d expired=%d; UDP=%s\n  Next action: %s\n", o.Freshness, o.LANCandidates, o.PublicCandidates, o.ExpiredCandidates, o.UDPCode, o.Action)
@@ -417,4 +426,19 @@ func routeShare(observations []tc.NetworkObservation) string {
 		}
 	}
 	return fmt.Sprintf("Routes: %d direct, %d relay, %d not connected (latest observation per device)", direct, relay, other)
+}
+
+// printRouteUsage lists RG2 route accounting per peer and window.
+func printRouteUsage(out io.Writer, usage []tc.NetworkRouteUsage) {
+	if len(usage) == 0 {
+		fmt.Fprintln(out, "Route accounting: no completed peer requests in the last 30 days (observed by this device)")
+		return
+	}
+	fmt.Fprintln(out, "Route accounting (completed peer requests this device made; body bytes sent+received):")
+	for _, u := range usage {
+		fmt.Fprintf(out, "Device %s (%s), %s since %s:\n", u.Device, u.Purpose, tc.RouteWindowLabel(u.Window), u.Since)
+		for _, r := range u.Routes {
+			fmt.Fprintf(out, "  %-7s requests=%d sent=%s received=%s\n", r.Route, r.Requests, tc.HumanBytes(uint64(r.BytesSent)), tc.HumanBytes(uint64(r.BytesReceived)))
+		}
+	}
 }

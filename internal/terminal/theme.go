@@ -533,20 +533,7 @@ func (t theme) field(label, value, raw string, focused bool) string {
 }
 
 // humanBytes formats a byte count with binary units (1.5 GiB).
-func humanBytes(n uint64) string {
-	const unit = 1024
-	if n < unit {
-		return strconv.FormatUint(n, 10) + " B"
-	}
-	div, exp := uint64(unit), 0
-	for v := n / unit; v >= unit && exp < 4; v /= unit {
-		div *= unit
-		exp++
-	}
-	value := strconv.FormatFloat(float64(n)/float64(div), 'f', 1, 64)
-	value = strings.TrimSuffix(value, ".0")
-	return value + " " + string("KMGTP"[exp]) + "iB"
-}
+func humanBytes(n uint64) string { return tc.HumanBytes(n) }
 
 func hb(n tc.Uint) string { return humanBytes(uint64(n)) }
 

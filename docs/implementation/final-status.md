@@ -1,7 +1,6 @@
 # Final-scope status
 
-Updated: 2026-10-11. **R00 complete; R01 and R02 eligible** (default order: R01,
-then R02). The [plan](../orbit-final-implementation-plan.md),
+Updated: 2026-10-11. **R00 and R01 complete; R02 eligible.** The [plan](../orbit-final-implementation-plan.md),
 [packets](final-packets.md) and [gates](final-gates.md) form the handoff.
 
 Current deployment for reference: hosted `orbit-net` 1.1.0 serves any device,
@@ -14,7 +13,7 @@ as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
 | Packet | State | Dependencies | Acceptance owner |
 | --- | --- | --- | --- |
 | R00 Baseline/interim cap | complete (cap not applied, owner's choice) | repository | [R00](final-packets.md#r00--baseline-interim-protection-and-gate-scoping) |
-| R01 Route accounting | eligible | R00 | [R01](final-packets.md#r01--route-accounting-rg2) |
+| R01 Route accounting | complete | R00 | [R01](final-packets.md#r01--route-accounting-rg2) |
 | R02 Service allowlist | eligible | R00 | [R02](final-packets.md#r02--service-admission-allowlist-rg1) |
 | R03 One-command self-hosting | blocked on R02 | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
 | R04 No default service | blocked on R02 | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
@@ -24,7 +23,7 @@ as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
 | Gate | State | Owning packet |
 | --- | --- | --- |
 | RG1 Service admission | open (R00 scoped) | R02 |
-| RG2 Route accounting | open (R00 scoped) | R01 |
+| RG2 Route accounting | closed (R01) | R01 |
 | RG3 Release default | open (R00 scoped) | R04 |
 | RG4 Measurement method | open (R00 scoped) | R05 |
 
@@ -60,7 +59,25 @@ Complete 2026-10-11 at `b2172e2`. Evidence: `docs/evidence/final-r00-20261011/`.
   overhead; the "one device is the owner's PC" attribution is inferred, since
   metrics have no IDs; `make check` was not run (milestone M1 is reached at R02).
 
+## R01 — Route accounting
+
+Complete 2026-10-11 (base `4de12fd`). Evidence: `docs/evidence/final-r01-20261011/`.
+
+- Commands: the `TestFinalR01` set across network, config, control, contract,
+  replication, terminal and cmd/orbit (all pass); `BenchmarkFinalR01*` ×3; the
+  opt-in 1-GiB pull (pass, 17.3 s); W08/W09 production-binary daemon tests with
+  the new route-usage assertions (pass, 95 s); `make quick` (pass, 110 s).
+- Result: per-peer `lan`/`wan_tcp`/`quic`/`relay` request and byte counts, a
+  durable 90-day rollup, `orbit network status --routes`, `route_usage` in JSON,
+  and qualified share lines in status, doctor and TUI Connection details.
+  Counting overhead is under 0.01% on a 1-GiB pull.
+- Limitations: in-process fixtures (not namespaces), a faked public address for
+  `wan_tcp`, microbenchmark-based overhead, own requests only; `make check` not
+  run (M1 at R02).
+
 ## Handoff log
 
+- 2026-10-11: R01 complete; RG2 closed. Next: R02 (service allowlist, RG1), using
+  the R00 RG1 scoping.
 - 2026-10-11: R00 complete. Next: R01 (route accounting), then R02. Both are
   eligible and touch separate modules.

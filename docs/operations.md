@@ -965,7 +965,8 @@ real legacy/routed CLI journeys are recorded in W11 follow-up evidence.
 ## W12 diagnostics, privacy and support export
 
 `orbit network status` is a passive read of the daemon's cached policy/profile,
-service readiness and route observations. `orbit network doctor` is an explicit
+service readiness, route observations and route accounting (R01: this
+device's completed peer requests per class, `--routes` for per-peer detail). `orbit network doctor` is an explicit
 bounded action; it tests service DNS/TLS, authenticated directory, pinned direct
 and relay TLS, and reviewed UDP STUN targets. It does not probe on status refresh,
 fan out to every peer, send peer HTTP, or infer a NAT/firewall type. `TIMEOUT`,

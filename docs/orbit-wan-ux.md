@@ -231,6 +231,15 @@ fields describe connectivity only; capture, peer-stored/applied copies,
 membership and file conflict state remain separate. A relay route is useful
 status and does not create an attention error.
 
+Route accounting (R01, 2026-10-11) adds how this device's peer traffic actually
+travelled. Status, doctor and Connection details show one qualified line per
+window, for example "Peer traffic observed by this device, last 30 days: 4 MiB
+in 2 requests; 25% direct (LAN 25%, WAN TCP 0%, QUIC 0%), 75% relayed".
+`orbit network status --routes` lists each peer's requests and bytes per class
+for the last 24 hours and 30 days, and `--json` carries the same `route_usage`.
+The numbers are this device's own completed requests, so two devices can report
+different shares for the same pair. A peer's uploads show up on that peer.
+
 `orbit network status` reads the cached view and never starts a network probe.
 `orbit network doctor --device ID` is the deliberate action. It has a finite
 budget and reports separate service DNS/TLS, authenticated directory, pinned

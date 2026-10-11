@@ -1,0 +1,24 @@
+{
+  "packet": "R01",
+  "run": "20261011",
+  "base_revision": "4de12fd",
+  "classification": {
+    "fixture": "in-process two-device sync fixtures (production manager, peer server, relay service); not network namespaces",
+    "pulled_bytes": 3145728,
+    "lan": {"requests": 9, "sent": 3431, "received": 3147780, "other_classes": 0},
+    "wan_tcp": {"requests": 9, "sent": 3431, "received": 3147780, "other_classes": 0, "note": "loopback socket reporting a 203.0.113.7 remote address"},
+    "quic": {"requests": 9, "sent": 3431, "received": 3147781, "other_classes": 0},
+    "relay": {"requests": 9, "sent": 3431, "received": 3147784, "other_classes": 0, "note": "production rendezvous relay"}
+  },
+  "binary_daemons": {"lan": "pass", "quic": "pass", "persisted_at_shutdown": true},
+  "restart_persistence": "pass (TestFinalR01RouteUsageSurvivesRestart, 0600 file)",
+  "overhead": {
+    "body_read_count_ns": [3.655, 3.767, 3.663],
+    "request_bucket_ns": [104.6, 107.2, 104.8],
+    "one_gib_pull": {"seconds": 17.286, "mib_per_second": 59, "requests": 1334, "sent": 543958, "received": 1073885780, "counted_over_file_percent": 0.0134},
+    "estimated_counting_ms": 1.1,
+    "estimated_overhead_percent_upper_bound": 0.01,
+    "estimate_basis": "1334 requests x 105 ns + at most 262144 body reads (1 GiB / 4 KiB) x 3.7 ns"
+  },
+  "make_quick": "pass (110 s, PTY suites pty/onboarding/everyday/keys/participation ok)"
+}

@@ -225,7 +225,42 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 		return err
 	}
 
-	manager := network.NewManager(network.ManagerOptions{Generation: uint64(networkPolicy.Generation)})
+	// RG2 route accounting: restored from the owner-only record, saved every
+	// five minutes when it changed and once more after the manager closes. A
+	// damaged record is reported and replaced; accounting never blocks sync.
+	usage := network.NewRouteUsage(nil)
+	if records, e := config.LoadRouteUsage(stateDir); e == nil {
+		e = usage.Restore(records)
+		if e != nil && opts.Ready != nil {
+			fmt.Fprintf(opts.Ready, "route accounting limitation: %v\n", e)
+		}
+	} else if opts.Ready != nil {
+		fmt.Fprintf(opts.Ready, "route accounting limitation: %v\n", e)
+	}
+	saveUsage := func() {
+		if records, dirty := usage.Records(); dirty {
+			if e := config.SaveRouteUsage(stateDir, records); e != nil && opts.Ready != nil {
+				fmt.Fprintf(opts.Ready, "route accounting limitation: %v\n", e)
+			}
+		}
+	}
+	usageCtx, usageCancel := context.WithCancel(ctx)
+	usageDone := make(chan struct{})
+	go func() {
+		defer close(usageDone)
+		ticker := time.NewTicker(5 * time.Minute)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-usageCtx.Done():
+				return
+			case <-ticker.C:
+				saveUsage()
+			}
+		}
+	}()
+	defer func() { usageCancel(); <-usageDone; saveUsage() }()
+	manager := network.NewManager(network.ManagerOptions{Generation: uint64(networkPolicy.Generation), RouteUsage: usage})
 	if err := manager.ConfigureTiming(networkPolicy.Timing); err != nil {
 		return err
 	}

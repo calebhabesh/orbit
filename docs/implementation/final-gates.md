@@ -73,6 +73,17 @@ Evidence needed: per-operation listed/unlisted tests; new-device pairing test;
 
 ## RG2 — Route accounting (R01)
 
+**Closed 2026-10-11 (R01).** Selected: count completed peer requests this device
+made and their HTTP body bytes at `managedPool.roundTrip`, classed by the
+carrying socket (`relay` tunnel; `quic` for HTTP/3 native or ICE; direct TCP
+`lan` for private/ULA/loopback/link-local remote addresses, else `wan_tcp`).
+Hour buckets for 48 h, then UTC days, 90-day retention, at most 40,000 buckets,
+in owner-only `route-usage.json`. Shown as qualified shares ("observed by this
+device") for 24 h and 30 d. Evidence: `docs/evidence/final-r01-20261011/`.
+Owning specification: `docs/orbit-wan-architecture.md` "R01 route accounting".
+Limitations: fixtures are in-process, not namespaces; served requests and
+framing are excluded; RFC 6598 counts as `wan_tcp`.
+
 Question: what Orbit counts so direct versus relayed use is visible and honest.
 
 Candidates: HTTP body bytes and request counts of completed peer requests

@@ -1,0 +1,26 @@
+--- PASS: TestFinalR01RouteClassification (0.00s)
+--- PASS: TestFinalR01RouteUsageBucketsWindowsAndRetention (0.00s)
+--- PASS: TestFinalR01RouteUsageRestoreRejectsDamage (0.00s)
+--- PASS: TestFinalR01RouteUsageBound (0.04s)
+ok  	github.com/calebhabesh/orbit/internal/network	0.040s
+--- PASS: TestFinalR01RouteUsageSurvivesRestart (0.00s)
+ok  	github.com/calebhabesh/orbit/internal/config	0.002s
+--- PASS: TestFinalR01StatusRouteUsageWindows (0.00s)
+ok  	github.com/calebhabesh/orbit/internal/control	0.002s
+--- PASS: TestFinalR01RouteShareQualifiedSummary (0.00s)
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.002s
+    final_r01_test.go:71: lan: requests=9 sent=3431 received=3147780 (pulled 3145728)
+--- PASS: TestFinalR01RouteAccountingLANTCP (0.06s)
+    final_r01_test.go:105: wan_tcp: requests=9 sent=3431 received=3147780 (pulled 3145728)
+--- PASS: TestFinalR01RouteAccountingWANTCP (0.05s)
+    final_r01_test.go:111: quic: requests=9 sent=3431 received=3147781 (pulled 3145728)
+--- PASS: TestFinalR01RouteAccountingQUIC (0.06s)
+    final_r01_test.go:118: relay: requests=9 sent=3431 received=3147784 (pulled 3145728)
+--- PASS: TestFinalR01RouteAccountingRelay (1.65s)
+    final_r01_test.go:126: set ORBIT_FINAL_R01_GIB=1
+--- SKIP: TestFinalR01OneGiBPull (0.00s)
+ok  	github.com/calebhabesh/orbit/internal/replication	1.820s
+--- PASS: TestFinalR01ConnectionDetailsShowRouteShare (0.00s)
+ok  	github.com/calebhabesh/orbit/internal/terminal	0.015s
+--- PASS: TestFinalR01NetworkStatusRoutesOutput (0.00s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit	0.014s
