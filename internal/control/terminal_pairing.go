@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
+	"os"
 	"strings"
 	"time"
 
@@ -77,6 +78,9 @@ func (c *Controller) pairingClient(digest string) (*network.ServiceClient, func(
 	selection, err := config.LoadNetworkProfile(c.db.StateDir(), uint64(c.options.Now().Unix()))
 	if err != nil || profileDigest(selection) != digest {
 		builtin, ok := network.BuiltinProfile()
+		if !ok && errors.Is(err, os.ErrNotExist) {
+			return nil, nil, &ControlError{Code: "NO_SERVICE_CONFIGURED", Message: "short pairing codes travel through an Orbit service, and this device has none configured", Action: "Set up the inviting device's service here first (orbit network set --mode self_hosted --profile-file ... --service-roots ...), or paste the full invitation code instead (orbit devices invite shows it)."}
+		}
 		if !ok || profileDigest(builtin) != digest {
 			return nil, nil, terminalError("PROFILE_OPERATOR_MISMATCH")
 		}

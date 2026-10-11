@@ -1,0 +1,15 @@
+# result lines only; the first W07 run's failing frame (old 'automatic' expectation) is summarized in commands.md
+=== RUN   TestWANW06BinaryLocalCaptureAndPrivateInputs
+--- PASS: TestWANW06BinaryLocalCaptureAndPrivateInputs (1.53s)
+=== RUN   TestWANW07RealPTYRelayOnboarding
+--- FAIL: TestWANW07RealPTYRelayOnboarding (177.83s)
+=== RUN   TestWANW14OneStepNetworkAndInvitationCode
+--- PASS: TestWANW14OneStepNetworkAndInvitationCode (6.79s)
+=== RUN   TestWANW14MixedVersionUpgradeAndRollback
+--- SKIP: TestWANW14MixedVersionUpgradeAndRollback (0.00s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/tests/terminal	186.151s
+FAIL
+=== RUN   TestWANW07RealPTYRelayOnboarding
+--- PASS: TestWANW07RealPTYRelayOnboarding (174.92s)
+ok  	github.com/calebhabesh/orbit/tests/terminal	174.920s

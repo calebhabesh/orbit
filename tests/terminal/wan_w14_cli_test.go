@@ -67,7 +67,7 @@ func TestWANW14OneStepNetworkAndInvitationCode(t *testing.T) {
 	if err := os.Chmod(base, 0700); err != nil {
 		t.Fatal(err)
 	}
-	cli := w06CLI{t: t, binary: buildOrbitBinary(t, base)}
+	cli := w06CLI{t: t, binary: buildHostedOrbitBinary(t, base)}
 	dirs := []string{filepath.Join(base, "state-a"), filepath.Join(base, "state-b")}
 	t.Cleanup(func() {
 		for _, dir := range dirs {

@@ -35,6 +35,22 @@ func buildOrbitBinary(t *testing.T, base string) string {
 	return binary
 }
 
+// buildHostedOrbitBinary builds an owner build that embeds the hosted release
+// profile (-tags orbit_hosted); public builds carry none since R04.
+func buildHostedOrbitBinary(t *testing.T, base string) string {
+	t.Helper()
+	binary := filepath.Join(base, "hosted", "orbit")
+	if err := os.MkdirAll(filepath.Dir(binary), 0700); err != nil {
+		t.Fatal(err)
+	}
+	build := exec.Command("go", "build", "-tags", "orbit_hosted", "-o", binary, "./cmd/orbit")
+	build.Dir = "../.."
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("build hosted orbit binary: %v\n%s", err, string(out))
+	}
+	return binary
+}
+
 // TestTerminalT06ContextResolutionCwdAndName verifies:
 // - cwd inside root resolves registered folder, root, and relative path
 // - cwd in subdirectory of root infers relative path

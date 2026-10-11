@@ -231,6 +231,17 @@ fields describe connectivity only; capture, peer-stored/applied copies,
 membership and file conflict state remain separate. A relay route is useful
 status and does not create an attention error.
 
+No default service (R04, 2026-10-11). Public builds carry no packaged
+profile. Fresh CLI and TUI setup proposes **Local network**; the form's hint
+names Self-hosted with `orbit-net init`. Choosing Automatic with no stored or
+packaged profile reports `NO_SERVICE_CONFIGURED` with the self-hosting step
+instead of waiting silently. `orbit network automatic` explains the same.
+Short pairing codes need a service: without one, the CLI, TUI and controller
+point to the full invitation code or to configuring the inviter's service.
+Owner builds (`-tags orbit_hosted`, the default for `make trial-*`) embed the
+hosted profile. Existing installs keep their stored, reviewed selection,
+because it does not depend on the embedded file.
+
 Route accounting (R01, 2026-10-11) adds how this device's peer traffic actually
 travelled. Status, doctor and Connection details show one qualified line per
 window, for example "Peer traffic observed by this device, last 30 days: 4 MiB

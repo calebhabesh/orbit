@@ -1,6 +1,15 @@
 # Connecting devices across networks
 
-Orbit's default **Automatic** connection mode lets two devices on different
+> **Since R04 (2026-10-11), public Orbit builds include no connection
+> service.** A fresh install starts on the **Local network**. To connect
+> across networks, run your own service with `orbit-net init`
+> ([Run your own Orbit service](../orbit-net-operator.md#run-your-own-orbit-service))
+> and choose **Self-hosted** on each device. Automatic and Self-hosted behave
+> the same way; the only difference is who runs the service. The hosted
+> service below now serves only its operator's devices. The tests and
+> measurements on this page used it as a hosted default before that change.
+
+Orbit's **Automatic** connection mode lets two devices on different
 networks pair and sync with no VPN, router change, IP address or account. This
 page covers what Automatic does, which networks it has been tested on, who
 runs the connection service and what it sees, and the alternatives.

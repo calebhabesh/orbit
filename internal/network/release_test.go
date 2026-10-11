@@ -6,15 +6,27 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"os"
 	"testing"
 )
+
+// hostedProfile reads the owner's signed release selection from the
+// repository; only orbit_hosted builds embed it (R04).
+func hostedProfile(t *testing.T) []byte {
+	t.Helper()
+	b, err := os.ReadFile("release-profile.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return b
+}
 
 // The deployed release profile (epoch 2, signed 2026-10-07) is the packaged default.
 const w14ReleaseDigest = "9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681"
 
 func TestWANW14PackagedReleaseProfile(t *testing.T) {
 	t.Setenv(DisablePackagedProfileEnv, "")
-	s, err := DecodeBuiltinProfile(releaseProfileJSON)
+	s, err := DecodeBuiltinProfile(hostedProfile(t))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,13 +42,15 @@ func TestWANW14PackagedReleaseProfile(t *testing.T) {
 		t.Fatal("packaged profile accepted at expiry")
 	}
 	got, ok := BuiltinProfile()
-	if gd, _ := got.Digest(); !ok || gd != digest {
-		t.Fatal("BuiltinProfile does not return the embedded selection")
+	if gd, _ := got.Digest(); HostedBuild && (!ok || gd != digest) {
+		t.Fatal("hosted build does not return the embedded selection")
+	} else if !HostedBuild && ok {
+		t.Fatal("public build carries a packaged service profile")
 	}
 
 	// Tampered text or a different signer is never a packaged default.
 	var tampered ProfileSelection
-	_ = json.Unmarshal(releaseProfileJSON, &tampered)
+	_ = json.Unmarshal(hostedProfile(t), &tampered)
 	tampered.Profile.Privacy += " Edited."
 	b, _ := json.Marshal(tampered)
 	if _, err = DecodeBuiltinProfile(b); err == nil {
@@ -65,7 +79,7 @@ func TestWANW14PackagedReleaseProfile(t *testing.T) {
 }
 
 func TestWANW14ReviewOperatorChange(t *testing.T) {
-	release, err := DecodeBuiltinProfile(releaseProfileJSON)
+	release, err := DecodeBuiltinProfile(hostedProfile(t))
 	if err != nil {
 		t.Fatal(err)
 	}

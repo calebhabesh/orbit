@@ -249,14 +249,16 @@ def run(binary, profile, output, outage_marker):
             peer = Peer(root, binary, None); peers.append(peer)
             ui = UI(peer, 'fresh-local-only' if local_only else 'fresh-automatic-missing-profile', size=(100, 36)); active.append(ui)
             ui.wait('Join an existing Orbit [j]'); ui.send(b'c'); ui.wait('Connection choices:')
-            ui.wait('automatic')
+            ui.wait('local_only'); ui.wait('orbit-net init')
             assert not (peer.state / 'network.json').exists(), 'policy persisted before review'
-            if local_only: ui.send(b'\x0e')
+            # R04: without a packaged service the default is Local network;
+            # Ctrl-N cycles local_only -> manual -> self_hosted -> automatic.
+            if not local_only: ui.send(b'\x0e\x0e\x0e')
             root_review(ui, 'Fresh', 'Local', peer.data)
             ui.wait('Local network only' if local_only else 'Anywhere (local network or internet)')
             ui.send(b'\r'); ui.wait('is ready on', timeout=30)
             ui.send(b'N'); ui.wait('Connection Details')
-            ui.wait('LOCAL_ONLY' if local_only else 'PROFILE_MISSING_OR_EXPIRED')
+            ui.wait('LOCAL_ONLY' if local_only else 'NO_SERVICE_CONFIGURED')
             policy = peer.query('network_status')['network']['policy']
             assert policy['mode'] == ('local_only' if local_only else 'automatic')
             peer.device = json.loads((peer.state / 'config.json').read_text())['device_id']

@@ -19,12 +19,14 @@ func TestWANW07ReviewedPrivacyAndAdvancedFocus(t *testing.T) {
 			s := config.DefaultRuntimeSettings()
 			return tc.Result{Settings: &s}, nil
 		}
-		return tc.Result{Network: &tc.NetworkStatus{Policy: tc.NetworkPolicy{Mode: "manual", Generation: 1}}}, nil
+		// A build with a packaged service (orbit_hosted) proposes Automatic; R04
+		// public builds propose Local network (TestFinalR04FreshSetupDefaults).
+		return tc.Result{Network: &tc.NetworkStatus{Policy: tc.NetworkPolicy{Mode: "manual", Generation: 1}, Builtin: &tc.BuiltinProfile{Digest: strings.Repeat("d", 64)}}}, nil
 	}
 	runReply(m, m.setupForm("setup"))
 	f := m.flow
 	if f.fields[13].input.Value() != "automatic" {
-		t.Fatal("fresh setup must review Automatic")
+		t.Fatal("fresh setup with a packaged service must review Automatic")
 	}
 	view := m.View().Content
 	if strings.Contains(view, "Peer listen") || strings.Contains(view, "Advertised peer") {

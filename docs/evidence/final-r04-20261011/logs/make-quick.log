@@ -1,0 +1,26 @@
+scripts/quick_check.sh
+changes since HEAD: 30 file(s)
+
+== build (0s)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=dbfacd4 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+
+== gofmt (0s)
+
+== vet ./cmd/orbit ./internal/app ./internal/control ./internal/control/terminalcontract ./internal/network ./internal/terminal (0s)
+
+== test -short ./cmd/orbit ./internal/app ./internal/control ./internal/control/terminalcontract ./internal/network ./internal/terminal (1s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit	1.239s
+?   	github.com/calebhabesh/orbit/internal/app	[no test files]
+ok  	github.com/calebhabesh/orbit/internal/control	12.669s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.005s
+ok  	github.com/calebhabesh/orbit/internal/network	(cached)
+ok  	github.com/calebhabesh/orbit/internal/terminal	3.994s
+
+== PTY suites in parallel: pty onboarding everyday keys participation (14s)
+  pty: ok
+  onboarding: ok
+  everyday: ok
+  keys: ok
+  participation: ok
+not run here (make check): tests/terminal 
+quick check passed in 98s

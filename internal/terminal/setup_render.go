@@ -60,7 +60,12 @@ func (m *model) workflowView() tea.View {
 			title = "Orbit | Create Your Orbit"
 			lines = append(lines, "An Orbit is a folder that stays in sync across your devices. Name it and choose where its files live here.")
 		}
-		lines = append(lines, "Connection choices: Automatic or Local network only; Ctrl-N changes mode.",
+		choices := "Connection choices: Automatic or Local network only; Ctrl-N changes mode."
+		if f.builtin == nil {
+			// R04: no packaged service; across networks means your own service.
+			choices = "Connection choices: Local network, or Self-hosted with your own Orbit service (orbit-net init); Ctrl-N changes mode."
+		}
+		lines = append(lines, choices,
 			"Files received from other devices are saved owner-only (0600); the executable bit is kept.")
 		lines = append(lines, hostStartupLines(f.host)...)
 		for _, i := range m.formIndices() {

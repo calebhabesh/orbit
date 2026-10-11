@@ -199,7 +199,7 @@ func handleOrbitSetup(args []string, stdout, stderr io.Writer) error {
 			policy.Mode = *connection
 			policy.LANAdvertising = policy.Mode != "manual"
 		} else if freshInstall && *runtimeFile == "" {
-			policy.Mode = "automatic"
+			policy.Mode = tc.FreshConnectionMode(networkResult.Network.Builtin)
 			policy.LANAdvertising = true
 		}
 		if policy.Mode == "manual" || policy.Mode == "local_only" {

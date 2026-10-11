@@ -227,6 +227,9 @@ func (c *Controller) terminalNetworkQuery(ctx context.Context, q tc.Query) (tc.R
 				// expose the qualified state alongside it.
 				status.Code = "PROFILE_MISSING_OR_EXPIRED"
 				status.ProfileState = "missing"
+				if _, packaged := network.BuiltinProfile(); !packaged && active.Mode == "automatic" {
+					status.Code = "NO_SERVICE_CONFIGURED"
+				}
 			} else if e.Error() == "PROFILE_EXPIRED" {
 				status.Code = "PROFILE_EXPIRED"
 				status.ProfileState = "expired"

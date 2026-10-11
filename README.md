@@ -129,8 +129,9 @@ keeps the commands as they were run.
 frozen browser compatibility interface; keep its bootstrap URL private.
 
 Devices on different networks pair and sync with no VPN, port forwarding or
-typed address. The default Automatic mode uses a preconfigured Orbit connection
-service to find peers, prefers direct LAN, TCP or QUIC/UDP paths, and falls back
+typed address once they share an Orbit connection service. Public builds ship
+without one (fresh installs start on the local network); run your own with
+`orbit-net init`. With a service, Orbit finds peers, prefers direct LAN, TCP or QUIC/UDP paths, and falls back
 to an encrypted relay that cannot read your files. Local-only, manual/private
 network (LAN, Tailscale, WireGuard) and self-hosted modes are explicit
 alternatives. The [networking guide](docs/runbooks/networking.md) lists the

@@ -1,0 +1,4 @@
+Orbit services see device addresses and connection metadata; file contents stay encrypted in transit.
+Identity, keys, approvals, history and files are unchanged.
+Policy operation: 02570a79ffc90afe34a34c951ab6eb0a911e17e93ab3858caf44a6c5111ec271; state=completed
+automatic SERVICE_UNAVAILABLE Caleb Habesh verified 9138a47874a2

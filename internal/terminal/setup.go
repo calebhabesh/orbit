@@ -308,7 +308,7 @@ func (m *model) acceptFlow(task string, r tc.Result, err error) tea.Cmd {
 		// Fresh devices, and devices with no folders yet when a packaged
 		// profile exists, are offered Automatic (F08).
 		if mode == "manual" && (m.opts.FreshInstall || (len(m.result.Items) == 0 && f.builtin != nil)) {
-			mode = "automatic"
+			mode = tc.FreshConnectionMode(f.builtin)
 		}
 		f.result.Network = r.Network
 		s := f.settings
@@ -579,6 +579,8 @@ func workflowError(r tc.Result, err error) string {
 		action = "Sync keeps running; run orbit service start from a terminal to hand the daemon over to the service."
 	case "SERVICE_UNAVAILABLE", "UNAVAILABLE", "DEVICE_OFFLINE":
 		action = "Waiting for a connection; saved local work and the reviewed attempt are retained. Retry later or open Connection details."
+	case "NO_SERVICE_CONFIGURED":
+		action = tc.NoServiceAction
 	case "PROFILE_MISSING_OR_EXPIRED", "PROFILE_MISMATCH", "NETWORK_REVIEW_REQUIRED":
 		action = "Review connection configuration with orbit network automatic (or orbit network set); keep names, root and existing identity."
 	case "PROFILE_EPOCH_MISMATCH":

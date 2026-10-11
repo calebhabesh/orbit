@@ -135,7 +135,7 @@ func handleOrbitNetwork(args []string, out, errOut io.Writer) error {
 					return errors.New("the running Orbit daemon predates this version; restart it (orbit service restart, or stop and rerun) and try again")
 				}
 				if packaged == nil || packaged.Expired {
-					return errors.New("this Orbit build has no current packaged service profile; review one with --profile-file")
+					return errors.New("this Orbit build has no packaged service. Run your own (orbit-net init) and review it with orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem, or review a release profile with --profile-file")
 				}
 				if current.Network.Policy.Mode == "automatic" && current.Network.Policy.Profile == packaged.Digest && changes == 0 {
 					fmt.Fprintf(out, "Already using Automatic with %q.\n", packaged.Operator)

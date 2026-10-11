@@ -430,6 +430,10 @@ func ServeWithOptions(ctx context.Context, stateDir string, opts ServeOptions) e
 	}
 	if e := activateNetwork(); e != nil {
 		networkError = "PROFILE_MISSING_OR_EXPIRED"
+		if _, packaged := network.BuiltinProfile(); errors.Is(e, os.ErrNotExist) && !packaged && networkPolicy.Mode == "automatic" {
+			// R04: nothing to wait for; say so instead of waiting silently.
+			networkError = "NO_SERVICE_CONFIGURED"
+		}
 		if !errors.Is(e, os.ErrNotExist) {
 			networkError = "PROFILE_INVALID"
 			switch e.Error() {

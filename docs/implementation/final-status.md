@@ -1,6 +1,6 @@
 # Final-scope status
 
-Updated: 2026-10-11. **R00–R03 complete (M1 check passed); R04 eligible.** The [plan](../orbit-final-implementation-plan.md),
+Updated: 2026-10-11. **R00–R04 complete; R05 eligible.** The [plan](../orbit-final-implementation-plan.md),
 [packets](final-packets.md) and [gates](final-gates.md) form the handoff.
 
 Current deployment for reference: hosted `orbit-net` 1.1.0 serves any device,
@@ -16,15 +16,15 @@ as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
 | R01 Route accounting | complete | R00 | [R01](final-packets.md#r01--route-accounting-rg2) |
 | R02 Service allowlist | complete | R00 | [R02](final-packets.md#r02--service-admission-allowlist-rg1) |
 | R03 One-command self-hosting | complete | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
-| R04 No default service | eligible | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
-| R05 Measurement | blocked on R01, R04 | R01, R04 | [R05](final-packets.md#r05--measurement-campaign-rg4) |
+| R04 No default service | complete | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
+| R05 Measurement | eligible | R01, R04 | [R05](final-packets.md#r05--measurement-campaign-rg4) |
 | R06 Write-up/release | blocked on R03, R05 | R03, R05 | [R06](final-packets.md#r06--write-up-and-release) |
 
 | Gate | State | Owning packet |
 | --- | --- | --- |
 | RG1 Service admission | closed (R02) | R02 |
 | RG2 Route accounting | closed (R01) | R01 |
-| RG3 Release default | open (R00 scoped) | R04 |
+| RG3 Release default | closed (R04) | R04 |
 | RG4 Measurement method | open (R00 scoped) | R05 |
 
 ## Handoff log (planning)
@@ -110,7 +110,28 @@ Complete 2026-10-11 (base `618a886`). Evidence: `docs/evidence/final-r03-2026101
   publishes no direct candidates, so the drop rules were not exercised;
   certificate renewal and unit install are manual.
 
+## R04 — Public builds without a default service
+
+Complete 2026-10-11 (base `dbfacd4`). Evidence: `docs/evidence/final-r04-20261011/`.
+
+- Commands: build both variants; `TestFinalR04*`; tagged and untagged release
+  tests; 2.3 → public → 2.3 upgrade/rollback in an empty namespace; the owner
+  hosted-profile adoption from file; W06/W07/W14 terminal tests (W07 PTY
+  failed first on its old expectation, fixed and passed); `PTY=all make
+  quick`; hosted-tag short tests; PC `orbit-trial` public-build rehearsal
+  (public build, then owner build restored).
+- Result: public builds start on Local network and say "No Orbit service
+  configured" with the self-hosting step; owner devices keep the VPS through
+  their stored selection.
+- Limitations: 2.x installs in the wild keep the embedded profile until
+  2027-10-07; laptop/Pi trials not reinstalled.
+
 ## Handoff log
+
+- 2026-10-11: R04 complete; RG3 closed. PC `orbit-trial` runs the R04 owner
+  build (`dbfacd4-dirty`, hosted). Next: R05 measurement (RG4). The rootless
+  namespace fixture needs public-like addresses for direct-path cells, since
+  the directory never publishes private candidates.
 
 - 2026-10-11: R03 complete. Next: R04 (no default service, RG3). Plan: split
   the embedded profile behind a build tag (`orbit_hosted` for owner builds),

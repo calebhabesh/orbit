@@ -1,0 +1,11 @@
+== network interfaces (expect loopback only)
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+== legacy: adopt the packaged release profile (Automatic)
+automatic verified Caleb Habesh SERVICE_UNAVAILABLE
+== public build: packaged profile
+{'available': False}
+== public build: stored selection after upgrade
+automatic verified Caleb Habesh SERVICE_UNAVAILABLE 9138a47874a209af7aa20607a106b4a2afc5c230c616e574fc4803a1d08ab681
+== rollback: legacy build opens the same state
+automatic verified Caleb Habesh DAEMON_STOPPED
+device identity unchanged

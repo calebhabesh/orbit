@@ -64,7 +64,7 @@ func TestWANW14MixedVersionUpgradeAndRollback(t *testing.T) {
 	base := testkit.NewDisposable(t)
 	os.Chmod(base, 0700)
 	legacy := buildLegacyOrbit(t, base)
-	current := buildOrbitBinary(t, base)
+	current := buildHostedOrbitBinary(t, base)
 	dirs := [2]string{filepath.Join(base, "state-old"), filepath.Join(base, "state-new")}
 	roots := [2]string{filepath.Join(base, "root-old"), filepath.Join(base, "root-new")}
 	binaries := [2]string{legacy, current}

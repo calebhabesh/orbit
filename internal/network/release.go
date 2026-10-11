@@ -1,7 +1,6 @@
 package network
 
 import (
-	_ "embed"
 	"errors"
 	"os"
 	"sync"
@@ -14,11 +13,11 @@ import (
 // operators always goes through a reviewed profile selection instead.
 const ReleaseAuthority = "9af3cf8a979f1b635a56831259d7645a62fb7c19db2de8be51e6afb0ce423b36"
 
-// The signed release selection shipped in every ordinary build. Operators
-// replace this file (and nothing else) when a new epoch is published.
-//
-//go:embed release-profile.json
-var releaseProfileJSON []byte
+// releaseProfileJSON is the packaged release selection. Public builds carry
+// none (R04, 2026-10-11): they start with no default service, and an owner
+// adds one by review (self-hosted, or the release profile from a file).
+// Builds tagged orbit_hosted embed release-profile.json, the owner's hosted
+// service; see release_hosted.go and release_public.go.
 
 type builtinState struct {
 	loaded   bool

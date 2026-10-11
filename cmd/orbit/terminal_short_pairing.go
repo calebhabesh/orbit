@@ -22,7 +22,7 @@ func resolvePairingCLI(client *controlclient.Client, code, digest string, n *tc.
 		digest, operator, privacy = n.Builtin.Digest, n.Builtin.Operator, n.Builtin.Privacy
 	}
 	if digest == "" {
-		return tc.Invitation{}, errors.New("short-code input requires a selected operator or --pairing-profile REVIEWED_DIGEST; use orbit network status to inspect the operator/privacy text")
+		return tc.Invitation{}, errors.New("short codes travel through an Orbit service, and this device has none selected: paste the full invitation code (orbit devices invite --code --long on the inviting device), set up the inviting device's service first (orbit network set --mode self_hosted ...), or pass --pairing-profile REVIEWED_DIGEST")
 	}
 	if interactive {
 		fmt.Fprintf(out, "Pairing through %s. %s\n", EscapeTerminal(operator), EscapeTerminal(privacy))

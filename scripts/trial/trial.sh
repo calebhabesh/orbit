@@ -35,7 +35,9 @@ build() {
 	[ -z "$(git -C "$repo" status --porcelain --untracked-files=no)" ] || commit="$commit-dirty"
 	version=$(sed -n 's/^VERSION ?= //p' "$repo/Makefile")
 	mkdir -p "$out"
-	(cd "$repo" && CGO_ENABLED=0 GOOS=linux GOARCH="$arch" go build -trimpath \
+	# Trial builds are the owner's: they embed the hosted service profile
+	# (-tags orbit_hosted). TRIAL_TAGS= builds the public variant (R04).
+	(cd "$repo" && CGO_ENABLED=0 GOOS=linux GOARCH="$arch" go build -trimpath -tags "${TRIAL_TAGS-orbit_hosted}" \
 		-ldflags "-X main.version=$version -X main.commit=$commit -X main.date=$(date +%F)" \
 		-o "$out/orbit-$arch" ./cmd/orbit)
 }

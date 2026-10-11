@@ -221,3 +221,15 @@ func ShapeError(err error) error {
 	}
 	return err
 }
+
+// FreshConnectionMode is the connection a fresh install proposes: Automatic
+// with a current packaged service profile, otherwise Local network (R04).
+func FreshConnectionMode(builtin *BuiltinProfile) string {
+	if builtin != nil && !builtin.Expired {
+		return "automatic"
+	}
+	return "local_only"
+}
+
+// NoServiceAction explains a device with no Orbit service configured.
+const NoServiceAction = "No Orbit service configured. Local network connections work. To connect across networks, run your own service (orbit-net init; see docs/orbit-net-operator.md) and review it on each device with orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem."

@@ -17,7 +17,7 @@ func (m *model) parseInvitation() tea.Cmd {
 	if code, err := pairing.Normalize(raw); err == nil {
 		profile, _, _ := m.pairingOperator()
 		if profile == "" {
-			f.err = "Short codes need an Orbit operator. Select one with orbit network, or use a long invitation file."
+			f.err = "Short codes travel through an Orbit service, and this device has none. Paste the full invitation code instead, or set up the inviting device's service first (orbit network set --mode self_hosted ...)."
 			return nil
 		}
 		id, err := newID()

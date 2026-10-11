@@ -1,0 +1,18 @@
+== before
+version 2.3.0 deae7c5-dirty packaged True
+automatic SERVICE_READY Caleb Habesh verified 9138a47874a2
+device 350b0105ac49
+[CalebPC] restarted orbit-trial.service
+done in 1s on: local
+== public build installed
+version 2.3.0 dbfacd4-dirty packaged False
+(status poll while the restarted daemon was starting; retried)
+automatic SERVICE_READY Caleb Habesh verified 9138a47874a2
+device 350b0105ac49
+[CalebPC] restarted orbit-trial.service
+done in 1s on: local
+== owner (hosted) build restored
+version 2.3.0 dbfacd4-dirty packaged True
+(status poll while the restarted daemon was starting; retried)
+automatic SERVICE_READY Caleb Habesh verified 9138a47874a2
+device 350b0105ac49

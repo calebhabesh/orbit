@@ -129,7 +129,9 @@ func run() error {
 		binTarget := filepath.Join(binDir, fmt.Sprintf("orbit-linux-%s", arch.GoArch))
 
 		fmt.Printf("Building binary for linux/%s -> %s\n", arch.GoArch, binTarget)
-		cmd := exec.Command("go", "build", "-trimpath",
+		// ORBIT_BUILD_TAGS=orbit_hosted builds the owner's packages with the
+		// hosted service profile; public packages carry none (R04).
+		cmd := exec.Command("go", "build", "-trimpath", "-tags", os.Getenv("ORBIT_BUILD_TAGS"),
 			"-ldflags", fmt.Sprintf("-X main.version=%s -X main.commit=%s -X main.date=%s", PackageVersion, buildCommit, buildDate),
 			"-o", binTarget, "./cmd/orbit")
 		cmd.Env = append(os.Environ(), "CGO_ENABLED=0", "GOOS=linux", "GOARCH="+arch.GoArch)
@@ -209,20 +211,36 @@ func run() error {
 		assetDigest = hex.EncodeToString(h.Sum(nil))
 	}
 
-	// Ordinary packages carry the signed release profile compiled into the
-	// binary. Refuse to package one that is invalid or expires within 30 days:
-	// devices need time to receive the next epoch before this one lapses.
-	packaged, err := network.EmbeddedProfile()
-	if err != nil {
-		return fmt.Errorf("packaged release profile invalid: %w", err)
-	}
-	packagedDigest, err := packaged.Digest()
-	if err != nil {
-		return err
-	}
-	packagedExpires := time.Unix(int64(packaged.Profile.Expires), 0).UTC()
-	if time.Until(packagedExpires) < 30*24*time.Hour {
-		return fmt.Errorf("packaged release profile expires %s; sign and package the next epoch first (docs/orbit-net-operator.md)", packagedExpires.Format(time.RFC3339))
+	// Public packages carry no service profile (R04). Owner packages
+	// (ORBIT_BUILD_TAGS=orbit_hosted) carry the hosted release profile; refuse
+	// one that is invalid or expires within 30 days, since devices need time to
+	// receive the next epoch before this one lapses. The manifest describes the
+	// binaries actually built, not this process.
+	var packagedProfile any
+	if strings.Contains(os.Getenv("ORBIT_BUILD_TAGS"), "orbit_hosted") {
+		data, err := os.ReadFile(filepath.Join(repoRoot, "internal/network/release-profile.json"))
+		if err != nil {
+			return err
+		}
+		packaged, err := network.DecodeBuiltinProfile(data)
+		if err != nil {
+			return fmt.Errorf("packaged release profile invalid: %w", err)
+		}
+		packagedDigest, err := packaged.Digest()
+		if err != nil {
+			return err
+		}
+		packagedExpires := time.Unix(int64(packaged.Profile.Expires), 0).UTC()
+		if time.Until(packagedExpires) < 30*24*time.Hour {
+			return fmt.Errorf("packaged release profile expires %s; sign and package the next epoch first (docs/orbit-net-operator.md)", packagedExpires.Format(time.RFC3339))
+		}
+		packagedProfile = map[string]any{
+			"operator":  packaged.Profile.Operator,
+			"authority": packaged.Authority,
+			"epoch":     uint64(packaged.Profile.Epoch),
+			"expires":   packagedExpires.Format(time.RFC3339),
+			"digest":    packagedDigest,
+		}
 	}
 
 	manifestData := map[string]any{
@@ -242,14 +260,8 @@ func run() error {
 			"total_files":   assetCount,
 			"digest_sha256": assetDigest,
 		},
-		"packaged_profile": map[string]any{
-			"operator":  packaged.Profile.Operator,
-			"authority": packaged.Authority,
-			"epoch":     uint64(packaged.Profile.Epoch),
-			"expires":   packagedExpires.Format(time.RFC3339),
-			"digest":    packagedDigest,
-		},
-		"license": "MIT",
+		"packaged_profile": packagedProfile,
+		"license":          "MIT",
 	}
 	manifestBytes, err := json.MarshalIndent(manifestData, "", "  ")
 	if err != nil {

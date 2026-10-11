@@ -126,6 +126,27 @@ cost below as a reference line in `--routes` output only if R01 decides to.
 
 ## RG3 — Release default (R04)
 
+**Closed 2026-10-11 (R04).** Selected: candidate 1.
+
+- Public builds embed no profile. The embed moved to `release_hosted.go`
+  (`//go:build orbit_hosted`); `release_public.go` carries none.
+- Owner builds use `-tags orbit_hosted`: `make trial-*` by default,
+  `ORBIT_BUILD_TAGS=orbit_hosted` for packages.
+- Fresh setup proposes Local network. Automatic with nothing stored or
+  packaged reports `NO_SERVICE_CONFIGURED`.
+- Existing installs keep their stored release selection. A real 2.3 →
+  public → 2.3 run in an empty network namespace kept Automatic, verified,
+  same digest and same identity. A public build on the owner's PC
+  `orbit-trial` stayed `SERVICE_READY` against the VPS.
+- Fresh owner devices adopt the hosted profile with `orbit network set
+  --mode automatic --profile-file <owner-only copy of internal/network/release-profile.json>`
+  (verified in an empty namespace: `logs/owner-adopt-from-file.log`).
+
+Evidence: `docs/evidence/final-r04-20261011/`. Owning specification:
+`docs/orbit-wan-ux.md` "No default service". Limitations: epoch advances for
+the owner's devices now come from owner builds or a reviewed file, not public
+packages; 2.x installs in the wild keep the embedded profile until it expires.
+
 Question: how public builds ship without a default service while the owner's
 devices keep theirs.
 

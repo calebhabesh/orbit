@@ -376,14 +376,15 @@ func TestWANW06BinaryLocalCaptureAndPrivateInputs(t *testing.T) {
 	if err = json.Unmarshal(data, &m); err != nil {
 		t.Fatal(err)
 	}
-	if m.Setup.Network == nil || m.Setup.Network.Mode != "automatic" || !m.Setup.Network.AwaitingProfile {
-		t.Fatal("fresh default was not reviewed Automatic")
+	// R04: a build without a packaged service proposes Local network.
+	if m.Setup.Network == nil || m.Setup.Network.Mode != "local_only" || m.Setup.Network.AwaitingProfile {
+		t.Fatal("fresh default without a packaged service was not reviewed Local network", m.Setup.Network)
 	}
 	r := cli.ok("setup", "--state", dir, "--request-file", review, "--timeout", "0", "--json")
 	w06Wait(t, dir, r.Operation.ID)
 	status := cli.ok("network", "status", "--state", dir, "--json")
-	if status.Network.Ready || status.Network.Code != "PROFILE_MISSING_OR_EXPIRED" {
-		t.Fatal("missing hosted default claimed ready", status.Network)
+	if status.Network.Ready || status.Network.Code != "LOCAL_ONLY" {
+		t.Fatal("local-only fresh setup reported a service", status.Network)
 	}
 	// A plain non-TTY mutation never waits for hidden prompts or exposes argv secrets.
 	_, out, err := cli.call("", "setup", "--state", dir, "--root", root)
