@@ -558,13 +558,8 @@ func (workspace *Workspace) walk(ctx context.Context, root *openedRoot, director
 			}
 			if !opts.FullContent {
 				projection, err := workspace.repo.Projection(ctx, root.registration.Folder, path)
-				if err == nil && projection.Kind == history.KindFile && projection.Digest != (history.Digest{}) {
-					if projection.ObservedSize == uint64(stat.Size) &&
-						projection.ObservedMtimeNS == stat.Mtim.Nano() &&
-						projection.ObservedInode == uint64(stat.Ino) &&
-						((stat.Mode&0o111 != 0) == projection.Executable) {
-						continue
-					}
+				if err == nil && observationUnchanged(projection, stat) {
+					continue
 				}
 			}
 			envelope, changed, err := workspace.captureFile(ctx, root, path)
@@ -662,6 +657,28 @@ func (workspace *Workspace) captureFileOnce(ctx context.Context, root *openedRoo
 		_ = workspace.repo.UpdateObservedStat(ctx, root.registration.Folder, path, uint64(named.Size), named.Mtim.Nano(), named.Ctim.Nano(), uint64(named.Ino))
 	}
 	return envelope, err == nil, err
+}
+
+// racyWindow covers filesystem timestamp granularity: a write landing in the
+// same timestamp tick as the recorded observation leaves mtime and ctime
+// unchanged, so an observation this fresh is never trusted without hashing.
+const racyWindow = 2 * time.Second
+
+// observationUnchanged reports whether a quick scan may skip hashing a file.
+// ctime is required because writers can restore size and mtime (cp -p,
+// touch -r), but only the kernel sets ctime.
+func observationUnchanged(projection repository.Projection, stat unix.Stat_t) bool {
+	if projection.Kind != history.KindFile || projection.Digest == (history.Digest{}) {
+		return false
+	}
+	if projection.ObservedCtimeNS == 0 || projection.LastScannedNS-projection.ObservedCtimeNS < racyWindow.Nanoseconds() {
+		return false
+	}
+	return projection.ObservedSize == uint64(stat.Size) &&
+		projection.ObservedMtimeNS == stat.Mtim.Nano() &&
+		projection.ObservedCtimeNS == stat.Ctim.Nano() &&
+		projection.ObservedInode == uint64(stat.Ino) &&
+		(stat.Mode&0o111 != 0) == projection.Executable
 }
 
 func sameObservation(a, b unix.Stat_t) bool {

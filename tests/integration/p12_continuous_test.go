@@ -244,7 +244,8 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// 4. Quick scan (full=false): stat matches, skips hashing, captures 0 changes
+	// 4. Quick scan (full=false): size and mtime match, but the write changed
+	// ctime, so the quick scan rehashes and captures the edit
 	cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
@@ -254,11 +255,11 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 	if err := json.Unmarshal(out, &res2); err != nil {
 		t.Fatalf("unmarshal quick scan: %v\n%s", err, out)
 	}
-	if res2.CapturedCount != 0 {
-		t.Fatalf("expected quick scan to skip unchanged stat, got %d captured", res2.CapturedCount)
+	if res2.CapturedCount != 1 {
+		t.Fatalf("expected quick scan to detect equal-size edit by ctime, got %d captured", res2.CapturedCount)
 	}
 
-	// 5. Full-content scan (full=true): forces full hash check and detects mutated bytes!
+	// 5. Full-content scan (full=true): rehashes everything and finds nothing new
 	cmd = exec.Command(binary, "engine", "work", "scan", "--state", state, "--folder", folder, "--full", "--json")
 	out, err = cmd.CombinedOutput()
 	if err != nil {
@@ -268,8 +269,8 @@ func TestP12EqualSizeTimestampPreservingEdits(t *testing.T) {
 	if err := json.Unmarshal(out, &res3); err != nil {
 		t.Fatalf("unmarshal full scan: %v\n%s", err, out)
 	}
-	if res3.CapturedCount != 1 {
-		t.Fatalf("expected full scan to detect equal-size edit, got %d captured", res3.CapturedCount)
+	if res3.CapturedCount != 0 {
+		t.Fatalf("expected full scan to find nothing new, got %d captured", res3.CapturedCount)
 	}
 }
 

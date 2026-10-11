@@ -140,6 +140,15 @@ A scan records success/failure per subtree. Only successfully and completely enu
 
 Notifications are hints. Periodic scans reconcile missed notifications and restart gaps. Stat metadata may optimize scheduling; it is not a cryptographic content identity. Define periodic full-content verification so same-size edits with restored timestamps are eventually found under the supported writer model.
 
+Quick scans skip hashing only when size, mtime, ctime, inode and executable bit
+all match the recorded observation, and that observation was recorded at least
+2 s after the file's ctime. ctime catches in-place edits that restore size and
+mtime (`cp -p`, `touch -r`), because only the kernel sets it. The 2 s window
+covers timestamp granularity: a write in the same tick as the recorded
+observation would otherwise leave every field equal, so a fresh observation is
+rehashed once before it is trusted. Daily full-content scans remain the backstop
+for writers that bypass ctime (direct block-device or filesystem tooling).
+
 P04's initial scanner hashes every supported regular file on every explicit
 scan. This is deliberately more conservative than the later notification and
 daily full-content schedule in P12. It suppresses an unchanged observation by

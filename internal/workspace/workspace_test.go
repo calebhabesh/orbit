@@ -1005,22 +1005,23 @@ func TestDualScanCadenceAndEqualSizeTimestampPreservingEdits(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Quick scan (FullContent: false) checks stat: size & mtime match, so it skips hashing!
+	// Quick scan (FullContent: false): size and mtime match, but the write
+	// changed ctime, so the quick scan rehashes and captures the edit.
 	res3, err := work.ScanWithOptions(ctx, folder, ScanOptions{FullContent: false})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(res3.Captured) != 0 {
-		t.Fatalf("quick scan captured %d items, want 0 (stat-preserving edit)", len(res3.Captured))
+	if len(res3.Captured) != 1 {
+		t.Fatalf("quick scan captured %d items, want 1 (stat-preserving edit)", len(res3.Captured))
 	}
 
-	// Full-content scan (FullContent: true) forces re-hashing: detects the edit and captures!
+	// Full-content scan (FullContent: true) rehashes and finds nothing new.
 	res4, err := work.ScanWithOptions(ctx, folder, ScanOptions{FullContent: true})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(res4.Captured) != 1 {
-		t.Fatalf("full-content scan captured = %d, want 1 (detected edit)", len(res4.Captured))
+	if len(res4.Captured) != 0 {
+		t.Fatalf("full-content scan captured = %d, want 0 (already captured)", len(res4.Captured))
 	}
 
 	// Subsequent scan: no authoring of echo version (Invariant I17)
