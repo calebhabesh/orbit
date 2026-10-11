@@ -1,0 +1,10 @@
+=== RUN   TestFinalR00IdleDeviceControlCost
+    final_r00_test.go:100: R00 idle window=5m0s in=16856 out=13758 bytes; per hour in=202272 out=165096 total=367368; announces=4 challenges=4; records=2 controls=2
+--- PASS: TestFinalR00IdleDeviceControlCost (300.02s)
+=== RUN   TestFinalR00FullDirectoryRefusesNewDevice
+    final_r00_test.go:144: R00 full directory: records=128 controls=2 refused announces=3 in 25s; ready=false
+    final_r00_test.go:160: R00 full directory: ready 5.08s after a slot freed
+--- PASS: TestFinalR00FullDirectoryRefusesNewDevice (30.09s)
+PASS
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	330.119s
+exit=0

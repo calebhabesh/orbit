@@ -1,0 +1,56 @@
+Sun Oct 11 05:48:18 UTC 2026
+orbit-net 1.1.0 (0da2e7d, 2026-10-08)
+active
+NRestarts=0
+ActiveEnterTimestamp=Thu 2026-10-08 17:39:13 UTC
+{
+  "listen": "10.0.0.187:8443",
+  "origin": "https://connect.calebhabesh.com:8443",
+  "profile": "/etc/orbit-net/profile-2.json",
+  "service_key": "<redacted path>",
+  "tls_cert": "/etc/orbit-net/tls/fullchain.pem",
+  "tls_key": "<redacted path>",
+  "stun_listen": "132.145.111.200:3478",
+  "metrics_listen": "127.0.0.1:9464",
+  "relay_bps": 4194304,
+  "relay_device_bps": 2097152,
+  "relay_session_bytes": 17179869184,
+  "stun_bind": "10.0.0.187:3478",
+  "overlap_profile": "/etc/orbit-net/profile.json",
+  "overlap_service_key": "<redacted path>",
+  "relay_month_bytes": 2199023255552
+}
+{"version":1,"month":"2026-10","bytes":6282792}
+orbit_net_build_info{version="1.1.0"} 1
+orbit_net_profile_expiry_seconds{epoch="1"} 7393759
+orbit_net_profile_valid{epoch="1"} 1
+orbit_net_profile_expiry_seconds{epoch="2"} 31229607
+orbit_net_profile_valid{epoch="2"} 1
+orbit_net_certificate_expiry_seconds 7390441
+orbit_net_certificate_reloads_total 0
+orbit_net_certificate_reload_failures_total 0
+orbit_net_connections_active 2
+orbit_net_connections_refused_total 0
+orbit_net_directory_records 2
+orbit_net_sessions 0
+orbit_net_relay_sessions 0
+orbit_net_controls 2
+orbit_net_websockets_pending 2
+orbit_net_challenges 0
+orbit_net_rate_keys 0
+orbit_net_source_buckets 0
+orbit_net_refusals_total{reason="quota"} 4
+orbit_net_refusals_total{reason="invalid"} 347
+orbit_net_refusals_total{reason="expired"} 0
+orbit_net_refusals_total{reason="untrusted"} 0
+orbit_net_refusals_total{reason="budget"} 0
+orbit_net_refusals_total{reason="other"} 375
+orbit_net_relay_bytes_total 6998788
+orbit_net_relay_month_bytes 6335236
+orbit_net_relay_month_limit_bytes 2199023255552
+orbit_net_relay_limit_bytes_per_second 4194304
+orbit_net_relay_device_limit_bytes_per_second 2097152
+orbit_net_stun_answered_total 57
+orbit_net_stun_dropped_total{reason="rate"} 0
+orbit_net_stun_dropped_total{reason="invalid"} 7
+orbit_net_stun_dropped_total{reason="table_full"} 0

@@ -1,0 +1,59 @@
+{
+  "packet": "R00",
+  "run": "20261011",
+  "revision": "b2172e21e1534a146e0bf0b1af39738bbe7b195c",
+  "go": "go1.27.2-X:nodwarf5 linux/amd64",
+  "vps_snapshot": {
+    "time_utc": "2026-10-11T05:48:18Z",
+    "orbit_net": "1.1.0 (0da2e7d, 2026-10-08)",
+    "active_since_utc": "2026-10-08T17:39:13Z",
+    "restarts": 0,
+    "directory_records": 2,
+    "controls": 2,
+    "relay_month_bytes": 6335236,
+    "relay_month_limit_bytes": 2199023255552,
+    "relay_bytes_total_since_start": 6998788,
+    "stun_answered_total": 57,
+    "stun_dropped": {"rate": 0, "invalid": 7, "table_full": 0},
+    "refusals": {"quota": 4, "invalid": 347, "expired": 0, "untrusted": 0, "budget": 0, "other": 375},
+    "connections_refused_total": 0
+  },
+  "interim_relay_cap": {
+    "applied": false,
+    "reason": "owner chose to keep 2 TiB on 2026-10-11: within the 10 TB/month free egress, so $0 either way; R06 deploys the allowlist"
+  },
+  "fixture": {
+    "idle_device_control_cost": {
+      "test": "TestFinalR00IdleDeviceControlCost",
+      "result": "pass",
+      "window_seconds": 300,
+      "wire_bytes_in": 16856,
+      "wire_bytes_out": 13758,
+      "bytes_per_hour_total": 367368,
+      "announces": 4,
+      "challenges": 4,
+      "records": 2,
+      "controls": 2,
+      "scope": "raw TLS bytes at the service socket, both directions, for one ready RelayRuntime (both purposes, one offline paired peer); excludes STUN, lookups and dials"
+    },
+    "full_directory": {
+      "test": "TestFinalR00FullDirectoryRefusesNewDevice",
+      "result": "pass",
+      "prefilled_records": 127,
+      "records_after_start": 128,
+      "controls": 2,
+      "refused_announces_in_25s": 3,
+      "ready_while_full": false,
+      "ready_after_slot_freed_seconds": 5.08
+    },
+    "fixed_limits": {
+      "MaxRecords": 128,
+      "MaxServiceControls": 128,
+      "records_per_online_device": 2,
+      "controls_per_online_device": 2,
+      "online_devices_at_capacity": 64,
+      "global_challenges": 128,
+      "challenges_per_actor": 2
+    }
+  }
+}
