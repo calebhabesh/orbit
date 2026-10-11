@@ -82,7 +82,9 @@ Commands:
   alert --config FILE --test      send one test notification
   devices list|add|remove --config FILE
                                  edit allowed_devices_file (admission allowlist);
-                                 add takes the device's "device=... pin=..." line
+                                 add takes the device's "device=... pin=..." line;
+                                 with sponsorship, list shows sponsored devices
+                                 and remove also revokes
   version                         print build information
 
 SIGHUP reloads the TLS certificate and key and the admission allowlist;

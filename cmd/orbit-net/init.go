@@ -42,7 +42,7 @@ const initPrivacy = "Self-hosted Orbit service for the operator's own devices. I
 // directory: offline authority key (in offline/, to move off the host), service
 // key, signed self_hosted profile, TLS pair (self-signed unless supplied), the
 // CA file devices review, and serve.json with personal budgets and allowlist
-// admission. It prints the device and allowlist steps.
+// admission with member sponsorship. It prints the device and allowlist steps.
 func initService(args []string, out, errOut io.Writer) error {
 	flags := flag.NewFlagSet("orbit-net init", flag.ContinueOnError)
 	flags.SetOutput(errOut)
@@ -160,7 +160,7 @@ func initService(args []string, out, errOut io.Writer) error {
 	if err != nil {
 		return err
 	}
-	cfg := serveConfig{Listen: *listen, Origin: httpsOrigin, Profile: filepath.Join(target, "profile.json"), ServiceKey: filepath.Join(target, "service.key"), TLSCert: filepath.Join(target, certName), TLSKey: filepath.Join(target, keyName), STUNListen: *stun, STUNBind: *stunBind, MetricsListen: "127.0.0.1:9464", RelayBPS: initRelayBPS, RelayDeviceBPS: initRelayDeviceBPS, RelaySessionBytes: initSessionBytes, RelayMonthBytes: initMonthBytes, Admission: "allowlist", AllowedDevicesFile: filepath.Join(target, "allowed-devices.json")}
+	cfg := serveConfig{Listen: *listen, Origin: httpsOrigin, Profile: filepath.Join(target, "profile.json"), ServiceKey: filepath.Join(target, "service.key"), TLSCert: filepath.Join(target, certName), TLSKey: filepath.Join(target, keyName), STUNListen: *stun, STUNBind: *stunBind, MetricsListen: "127.0.0.1:9464", RelayBPS: initRelayBPS, RelayDeviceBPS: initRelayDeviceBPS, RelaySessionBytes: initSessionBytes, RelayMonthBytes: initMonthBytes, Admission: "allowlist", AllowedDevicesFile: filepath.Join(target, "allowed-devices.json"), Sponsorship: true}
 	if target == abs {
 		// Run in place: keep the monthly relay count beside the configuration.
 		// Under the packaged unit, $STATE_DIRECTORY holds it instead.
@@ -172,7 +172,7 @@ func initService(args []string, out, errOut io.Writer) error {
 	}
 	// Validate everything serve checks except the not-yet-written allowlist.
 	check := cfg
-	check.Admission, check.AllowedDevicesFile, check.RelayState = "", "", ""
+	check.Admission, check.AllowedDevicesFile, check.RelayState, check.Sponsorship = "", "", "", false
 	for _, name := range []*string{&check.Profile, &check.ServiceKey, &check.TLSCert, &check.TLSKey} {
 		*name = filepath.Join(abs, strings.TrimPrefix(*name, target+string(filepath.Separator)))
 	}
@@ -193,6 +193,7 @@ func initService(args []string, out, errOut io.Writer) error {
   %-21s TLS pair for %s
   service-ca.pem        %s
   serve.json            personal budgets (4 MiB/s relay, 200 GiB/month), admission allowlist
+                        with member sponsorship
   offline/authority.key profile authority: move it OFF this host and back it up (needed for the next epoch)
 
 Ports: %s/tcp for HTTPS/WSS%s. Devices reach the service at %s.
@@ -201,8 +202,10 @@ Ports: %s/tcp for HTTPS/WSS%s. Devices reach the service at %s.
      orbit network set --mode self_hosted --profile-file profile.json --service-roots %s
    then read its identity line ("device=... pin=...") from: orbit status
 
-2. Allow each device (the first one before starting):
+2. Allow your first device before starting:
      orbit-net devices add --config %s 'device=<64 hex> pin=<64 hex>'
+   Devices that later join its orbits are admitted automatically (member
+   sponsorship); "orbit-net devices remove" revokes one.
 
 3. Check and start:
      orbit-net serve --config %s --check

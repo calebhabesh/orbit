@@ -14,6 +14,12 @@ import (
 // reserve, release and attach whose target is a listed device, plus claiming a
 // pairing mailbox a listed device created. Everything else is refused with
 // NOT_ADMITTED before any allocation or rate state.
+//
+// Member sponsorship (optional) removes the per-device operator step: a served
+// device sends a signed "sponsor" operation for each peer in its orbits, and
+// the service lists that peer too. Peers are already pinned by authenticated
+// orbit membership, so a listed device vouches only for devices its owner
+// admitted to an orbit. The operator can revoke a sponsored device.
 
 const (
 	MaxAllowedDevices     = 64
@@ -29,9 +35,28 @@ type AllowedDevice struct {
 	Pin    string `json:"pin"`
 }
 
-// Admission is immutable once built; reload installs a new one.
+// SponsoredDevice is a device a listed device vouched for (member
+// sponsorship): Sponsor is the vouching device and Added the Unix time.
+type SponsoredDevice struct {
+	Device  string `json:"device"`
+	Pin     string `json:"pin"`
+	Sponsor string `json:"sponsor"`
+	Added   uint64 `json:"added"`
+}
+
+// SponsorStore keeps the sponsored devices across restarts. The service is
+// its only writer; it saves the whole list before admitting a new device.
+type SponsorStore interface {
+	SaveSponsored([]SponsoredDevice) error
+}
+
+// Admission is immutable once built; reload and sponsorship install a new one.
 type Admission struct {
-	listed map[actor]bool // nil: open admission
+	listed     map[actor]bool // nil: open admission
+	static     map[string]bool
+	sponsoring bool
+	sponsored  []SponsoredDevice
+	revoked    map[string]bool
 }
 
 // OpenAdmission serves every device.
@@ -43,7 +68,7 @@ func NewAllowlist(devices []AllowedDevice) (*Admission, error) {
 	if len(devices) == 0 || len(devices) > MaxAllowedDevices {
 		return nil, errors.New("allowlist needs 1 to 64 devices")
 	}
-	listed := map[actor]bool{}
+	listed, static := map[actor]bool{}, map[string]bool{}
 	for _, d := range devices {
 		if p.NetworkHex(d.Device, 32) != nil || p.NetworkHex(d.Pin, 32) != nil {
 			return nil, errors.New("allowlist entries need a 64-hex device ID and key pin")
@@ -53,8 +78,91 @@ func NewAllowlist(devices []AllowedDevice) (*Admission, error) {
 			return nil, errors.New("allowlist repeats device " + d.Device)
 		}
 		listed[a] = true
+		static[d.Device] = true
 	}
-	return &Admission{listed: listed}, nil
+	return &Admission{listed: listed, static: static}, nil
+}
+
+// WithSponsorship lets listed devices vouch for the other devices in their
+// orbits, which then get full service like listed ones. sponsored is the
+// stored list; entries for revoked or statically listed devices, malformed
+// entries and any beyond the 64-device limit are dropped (the caller saves the
+// pruned list). Revoked devices cannot be sponsored again.
+func (a *Admission) WithSponsorship(sponsored []SponsoredDevice, revoked []string) (*Admission, error) {
+	if a.Open() {
+		return nil, errors.New("sponsorship needs allowlist admission")
+	}
+	if len(revoked) > MaxRevokedDevices {
+		return nil, errors.New("at most 256 revoked devices")
+	}
+	next := &Admission{listed: map[actor]bool{}, static: a.static, sponsoring: true, sponsored: []SponsoredDevice{}, revoked: map[string]bool{}}
+	for _, id := range revoked {
+		if p.NetworkHex(id, 32) != nil {
+			return nil, errors.New("revoked entries need a 64-hex device ID")
+		}
+		next.revoked[id] = true
+	}
+	for x := range a.listed {
+		if a.static[x.device] {
+			next.listed[x] = true
+		}
+	}
+	seen := map[string]bool{}
+	for _, d := range sponsored {
+		if p.NetworkHex(d.Device, 32) != nil || p.NetworkHex(d.Pin, 32) != nil || p.NetworkHex(d.Sponsor, 32) != nil || next.static[d.Device] || next.revoked[d.Device] || seen[d.Device] || len(next.listed) >= MaxAllowedDevices {
+			continue
+		}
+		seen[d.Device] = true
+		next.listed[actor{d.Device, d.Pin}] = true
+		next.sponsored = append(next.sponsored, d)
+	}
+	return next, nil
+}
+
+// MaxRevokedDevices bounds the operator's revocation list.
+const MaxRevokedDevices = 256
+
+// Sponsoring reports whether listed devices may vouch for others.
+func (a *Admission) Sponsoring() bool { return a != nil && a.sponsoring }
+
+// Sponsored returns a copy of the sponsored devices.
+func (a *Admission) Sponsored() []SponsoredDevice {
+	if a == nil {
+		return nil
+	}
+	return append([]SponsoredDevice(nil), a.sponsored...)
+}
+
+// sponsor admits t on behalf of the listed device by. It returns the same
+// policy when t is already listed, or a refusal code.
+func (a *Admission) sponsor(t actor, by string, now uint64) (*Admission, string) {
+	switch {
+	case a.listed[t]:
+		return a, ""
+	case a.revoked[t.device]:
+		return nil, p.NetworkNotAdmitted
+	case a.static[t.device]:
+		// The operator listed this device with another key pin.
+		return nil, p.NetworkIdentityMismatch
+	}
+	next := &Admission{listed: map[actor]bool{}, static: a.static, sponsoring: true, sponsored: []SponsoredDevice{}, revoked: a.revoked}
+	for x := range a.listed {
+		if x.device != t.device {
+			next.listed[x] = true
+		}
+	}
+	// A device that made a new identity replaces its earlier sponsored pin.
+	for _, d := range a.sponsored {
+		if d.Device != t.device {
+			next.sponsored = append(next.sponsored, d)
+		}
+	}
+	if len(next.listed) >= MaxAllowedDevices {
+		return nil, p.NetworkQuota
+	}
+	next.listed[t] = true
+	next.sponsored = append(next.sponsored, SponsoredDevice{Device: t.device, Pin: t.pin, Sponsor: by, Added: now})
+	return next, ""
 }
 
 // Open reports whether every device is admitted.

@@ -84,6 +84,13 @@ func (p *prepared) metricsText(listener *rendezvous.CappedListener, stun *rendez
 	}
 	metric("orbit_net_admission_allowlist", "gauge", "Whether admission is limited to an allowlist (RG1).", allowlist)
 	metric("orbit_net_admission_allowed_devices", "gauge", "Devices on the admission allowlist (limit 64; 0 when open).", m.AllowlistSize)
+	sponsoring := 0
+	if m.Sponsoring {
+		sponsoring = 1
+	}
+	metric("orbit_net_admission_sponsorship", "gauge", "Whether listed devices may admit their orbit peers (member sponsorship).", sponsoring)
+	metric("orbit_net_admission_sponsored_devices", "gauge", "Allowlisted devices admitted by member sponsorship (part of allowed_devices).", m.SponsoredSize)
+	metric("orbit_net_admission_sponsored_total", "counter", "Devices admitted by member sponsorship since start.", m.SponsoredAdmitted)
 	metric("orbit_net_admission_reloads_total", "counter", "Successful SIGHUP admission reloads.", p.admissionReloads.Load())
 	metric("orbit_net_admission_reload_failures_total", "counter", "Rejected admission reloads; the previous policy stays active.", p.admissionFailures.Load())
 	metric("orbit_net_relay_bytes_total", "counter", "Relay payload bytes written to receiving devices, both forwarding directions; excludes TLS/WebSocket framing.", m.RelayBytes)

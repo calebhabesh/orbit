@@ -88,6 +88,9 @@ type Options struct {
 	RelayBudget *RelayBudget
 	// Admission is the device allowlist (RG1); nil admits every device.
 	Admission *Admission
+	// Sponsors stores devices admitted by member sponsorship; it is required
+	// when Admission is sponsoring.
+	Sponsors SponsorStore
 }
 
 type Service struct {
@@ -121,6 +124,7 @@ type Service struct {
 	stats                              counters
 	budget                             *RelayBudget
 	admission                          *Admission
+	sponsors                           SponsorStore
 }
 
 func New(opts Options) (*Service, error) {
@@ -149,10 +153,13 @@ func New(opts Options) (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	if opts.Admission.Sponsoring() && opts.Sponsors == nil {
+		return nil, errors.New("sponsoring admission needs a sponsor store")
+	}
 	if opts.Admission == nil {
 		opts.Admission = OpenAdmission()
 	}
-	service := &Service{admission: opts.Admission, served: served, relaySlots: make(chan struct{}, 2*(network.MaxServiceDataTunnels+MaxUnknownOffers)), relayLimits: limits, bandwidth: newByteLimiter(limits.ServiceBytesPerSecond), deviceBandwidth: map[actor]*byteLimiter{}, selection: opts.Selection, origin: opts.Origin, digest: digest, epoch: nonce(), relayOrigin: relay, key: append(ed25519.PrivateKey{}, opts.ServiceKey...), now: opts.Now, budget: opts.RelayBudget,
+	service := &Service{admission: opts.Admission, sponsors: opts.Sponsors, served: served, relaySlots: make(chan struct{}, 2*(network.MaxServiceDataTunnels+MaxUnknownOffers)), relayLimits: limits, bandwidth: newByteLimiter(limits.ServiceBytesPerSecond), deviceBandwidth: map[actor]*byteLimiter{}, selection: opts.Selection, origin: opts.Origin, digest: digest, epoch: nonce(), relayOrigin: relay, key: append(ed25519.PrivateKey{}, opts.ServiceKey...), now: opts.Now, budget: opts.RelayBudget,
 		challenges: map[string]challenge{}, records: map[routeKey]record{}, operations: map[string]replay{}, sessions: map[string]*session{}, controls: map[routeKey]*control{}, rates: map[actor]bucket{}, sources: map[string]bucket{}, active: make(chan struct{}, network.MaxServiceControls), pending: map[controlConn]bool{}, controlSlots: make(chan struct{}, network.MaxServiceControls)}
 	lifetime, cancel := context.WithCancel(context.Background())
 	service.cancel = cancel
@@ -439,6 +446,37 @@ func (s *Service) lookup(q p.NetworkProof, now uint64) (any, string) {
 	}
 	return out, ""
 }
+
+// sponsor lists the target for the sending (listed) device; see Admission.
+// UNSUPPORTED_CAPABILITY tells clients this service does not take sponsorship.
+func (s *Service) sponsor(q p.NetworkProof, now uint64) (any, string) {
+	if code := s.intent(q, "sponsor", now); code != "" {
+		return nil, code
+	}
+	if !s.admission.Sponsoring() || s.sponsors == nil || q.Purpose != "peer_data" {
+		return nil, p.NetworkUnsupported
+	}
+	if old, code := s.cached(q, now); old != nil || code != "" {
+		return old, code
+	}
+	if who(q) == target(q) {
+		return nil, p.NetworkInvalidRequest
+	}
+	next, code := s.admission.sponsor(target(q), q.Sender, now)
+	if code != "" {
+		return nil, code
+	}
+	if next != s.admission {
+		if s.sponsors.SaveSponsored(next.sponsored) != nil {
+			return nil, p.NetworkServiceUnavailable
+		}
+		s.admission = next
+		s.stats.sponsored.Add(1)
+	}
+	out := result(q, "accepted")
+	s.remember(q, out, now)
+	return out, ""
+}
 func (s *Service) offer(r p.NetworkOfferRequest, now uint64) (any, string) {
 	q := r.Proof
 	if err := r.Verify(s.selection.Private(), now); err != nil {
@@ -642,7 +680,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		request = &p.PairingRequest{}
 	case "/network/v1/offer", "/network/v1/accept":
 		request = &p.NetworkOfferRequest{}
-	case "/network/v1/authenticate", "/network/v1/lookup", "/network/v1/reserve", "/network/v1/release":
+	case "/network/v1/authenticate", "/network/v1/lookup", "/network/v1/reserve", "/network/v1/release", "/network/v1/sponsor":
 		request = &p.NetworkLookupRequest{}
 	default:
 		s.failure(w, p.NetworkUnsupported)
@@ -705,6 +743,8 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch kind {
 		case "lookup":
 			out, code = s.lookup(v.Proof, now)
+		case "sponsor":
+			out, code = s.sponsor(v.Proof, now)
 		case "authenticate":
 			code = s.intent(v.Proof, kind, now)
 			out = result(v.Proof, "accepted")

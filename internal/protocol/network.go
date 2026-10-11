@@ -322,7 +322,7 @@ func (p NetworkProof) Canonical(private bool) ([]byte, error) {
 		if p.Target != "" || p.TargetPin != "" || p.Session != "" || p.Role != "" {
 			return nil, errors.New("INVALID_PROOF")
 		}
-	case "lookup":
+	case "lookup", "sponsor":
 		if p.Session != "" || p.Role != "" {
 			return nil, errors.New("INVALID_PROOF")
 		}
@@ -333,7 +333,7 @@ func (p NetworkProof) Canonical(private bool) ([]byte, error) {
 				return nil, e
 			}
 		}
-		if p.Kind != "lookup" {
+		if p.Kind != "lookup" && p.Kind != "sponsor" {
 			if NetworkHex(p.Session, 32) != nil || (p.Role != "initiator" && p.Role != "responder") {
 				return nil, errors.New("INVALID_PROOF")
 			}

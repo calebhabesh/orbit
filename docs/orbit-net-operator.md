@@ -34,15 +34,16 @@ the result the way `serve --check` does:
   `--tls-cert/--tls-key`;
 - `service-ca.pem` for devices to review;
 - `serve.json` with personal budgets (4 MiB/s relay, 200 GiB/month) and
-  allowlist admission.
+  allowlist admission with member sponsorship.
 
 It prints the next steps:
 
 1. Copy `profile.json` and `service-ca.pem` to each device and run
    `orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem`.
-2. Read each device's identity line (`device=… pin=…`) from `orbit status` and
-   run `orbit-net devices add --config …/serve.json '<line>'` (the first device
-   before starting; later ones after they pair, see [Admission](#admission-serve-only-your-devices)).
+2. Read the first device's identity line (`device=… pin=…`) from `orbit status`
+   and run `orbit-net devices add --config …/serve.json '<line>'` before
+   starting. Devices that later join its Orbits are admitted automatically
+   ([Member sponsorship](#member-sponsorship-no-per-device-step)).
 3. `orbit-net serve --config …/serve.json --check`, then
    `orbit-net serve --config …/serve.json`. Alternatively, install the files
    under `/etc/orbit-net` (`init --config-dir /etc/orbit-net` writes those
@@ -186,11 +187,49 @@ the 128 challenges, 16 controls and 16 directory records. Everything else is
 refused with `NOT_ADMITTED` before any rate or allocation state. STUN stays
 unauthenticated and rate-limited as before.
 
-Adding a device: invite it as usual. It can pair and be approved through the
+Adding a device: invite it as usual. With [member sponsorship](#member-sponsorship-no-per-device-step)
+that is all. Without it, the device can pair and be approved through the
 service, but its first sync (bootstrap) needs peer data, so it waits until you
 run `devices add` and reload. The join resumes on its own; restarting the new
 device's daemon makes it ask at once instead of within ten minutes. Devices on
 the same LAN sync directly regardless.
+
+### Member sponsorship: no per-device step
+
+With `"sponsorship": true` (the `orbit-net init` default) you list only your
+first device. Each served device then vouches for the peers in its Orbits: when
+it registers a peer it sends one signed `sponsor` request naming that peer's
+device ID and key pin, and the service lists the peer too. A sponsored device
+vouches for its own peers in turn, so every device in your Orbits gets the
+relay without SSH or a reload.
+
+```json
+"admission": "allowlist",
+"allowed_devices_file": "/etc/orbit-net/allowed-devices.json",
+"sponsorship": true,
+"sponsored_devices_file": "/var/lib/orbit-net/sponsored-devices.json"
+```
+
+The service alone writes `sponsored_devices_file` (owner-only JSON listing each
+device, its pin, the device that sponsored it and when). If it is unset, the
+file goes beside `relay_state` or in `$STATE_DIRECTORY`. `devices list` shows
+the sponsored devices; `devices remove <id>` also *revokes* the device. A
+revoked ID goes in the allowlist file's `"revoked"` list and cannot be
+sponsored again until you `devices add` it. Reload as usual. Turning
+sponsorship on or off needs a restart, not a reload.
+
+Trust: a peer is pinned by authenticated Orbit membership, so a listed device
+can only vouch for a device someone admitted to one of its Orbits. Anyone you
+share an Orbit with can therefore bring their devices onto your relay. That is
+the intended scope ("everyone in my Orbits"); revoke a device or turn
+sponsorship off if it is too wide. Listed and sponsored devices together are
+capped at 64. A device that makes a new identity replaces its earlier
+sponsored pin. A refused device that gains a peer (it just joined) asks again
+after 5 s and then at 20 s intervals, so a join through the service resumes
+within seconds. A service without sponsorship answers
+`UNSUPPORTED_CAPABILITY`, and clients stop asking. Metrics:
+`orbit_net_admission_sponsorship`, `orbit_net_admission_sponsored_devices`,
+`orbit_net_admission_sponsored_total`.
 
 Unlisted clients: Orbit after R02 backs off for ten minutes per refused
 purpose. A 2.3 client keeps retrying its data control about every 8 seconds

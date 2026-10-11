@@ -46,7 +46,7 @@ func TestFinalR03InitCreatesCheckedService(t *testing.T) {
 	if out, err = k.run("devices", "add", "--config", cfg, "device="+r02Hex(5)+" pin="+r02Hex(6)); err != nil {
 		t.Fatal(err, out)
 	}
-	if out, err = k.run("serve", "--config", cfg, "--check"); err != nil || !strings.Contains(out, "self_hosted") || !strings.Contains(out, "admission allowlist (1 devices)") {
+	if out, err = k.run("serve", "--config", cfg, "--check"); err != nil || !strings.Contains(out, "self_hosted") || !strings.Contains(out, "admission allowlist (1 devices, 0 by member sponsorship)") {
 		t.Fatal("initialized service rejected", err, out)
 	}
 	if out, err = k.run("profile", "verify", "--profile", filepath.Join(dir, "profile.json")); err != nil || !strings.Contains(out, "environment: self_hosted") || !strings.Contains(out, "stun:        10.20.30.40:3478") {

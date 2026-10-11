@@ -62,6 +62,11 @@ type serveConfig struct {
 	Admission          string          `json:"admission,omitempty"`
 	AllowedDevices     []allowedDevice `json:"allowed_devices,omitempty"`
 	AllowedDevicesFile string          `json:"allowed_devices_file,omitempty"`
+	// Sponsorship lets listed devices admit the other devices in their orbits
+	// (member sponsorship). The service keeps them in sponsored_devices_file;
+	// empty uses sponsored-devices.json beside relay_state.
+	Sponsorship          bool   `json:"sponsorship,omitempty"`
+	SponsoredDevicesFile string `json:"sponsored_devices_file,omitempty"`
 }
 
 // defaultRelayMonthBytes is a finite starting point (2 TiB). The operator sets
@@ -237,15 +242,26 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 			warnings = append(warnings, "relay_state is not set and no StateDirectory is available; the monthly relay count restarts at zero with the service")
 		}
 	}
-	admission, err := loadAdmission(cfg)
+	if cfg.Sponsorship {
+		path, ok := sponsoredDevicesPath(cfg)
+		if !ok {
+			return nil, errors.New("sponsorship needs sponsored_devices_file (or relay_state or a StateDirectory beside which to keep it)")
+		}
+		cfg.SponsoredDevicesFile = path
+	}
+	admission, err := loadAdmission(cfg, nil)
 	if err != nil {
 		return nil, err
+	}
+	var sponsors rendezvous.SponsorStore
+	if admission.Sponsoring() {
+		sponsors = sponsorFile(cfg.SponsoredDevicesFile)
 	}
 	budget, err := rendezvous.OpenRelayBudget(cfg.RelayState, uint64(cfg.RelayMonthBytes), nil)
 	if err != nil {
 		return nil, fmt.Errorf("relay budget state: %w", err)
 	}
-	service, err := rendezvous.New(rendezvous.Options{Selection: selection, Origin: cfg.Origin, ServiceKey: key, Overlap: overlap, RelayBudget: budget, Admission: admission, Relay: rendezvous.RelayLimits{ServiceBytesPerSecond: cfg.RelayBPS, DeviceBytesPerSecond: cfg.RelayDeviceBPS, SessionBytes: cfg.RelaySessionBytes}})
+	service, err := rendezvous.New(rendezvous.Options{Selection: selection, Origin: cfg.Origin, ServiceKey: key, Overlap: overlap, RelayBudget: budget, Admission: admission, Sponsors: sponsors, Relay: rendezvous.RelayLimits{ServiceBytesPerSecond: cfg.RelayBPS, DeviceBytesPerSecond: cfg.RelayDeviceBPS, SessionBytes: cfg.RelaySessionBytes}})
 	if err != nil {
 		return nil, fmt.Errorf("profile, origin or service key rejected: %w", err)
 	}
@@ -357,6 +373,9 @@ func admissionLabel(a *rendezvous.Admission) string {
 	if a.Open() {
 		return "open"
 	}
+	if a.Sponsoring() {
+		return fmt.Sprintf("allowlist (%d devices, %d by member sponsorship)", a.Size(), len(a.Sponsored()))
+	}
 	return fmt.Sprintf("allowlist (%d devices)", a.Size())
 }
 
@@ -374,8 +393,17 @@ func (p *prepared) reloadAdmission(errOut io.Writer) {
 		err = decoder.Decode(&cfg)
 	}
 	var a *rendezvous.Admission
+	if err == nil && cfg.Sponsorship != p.cfg.Sponsorship {
+		err = errors.New("turning sponsorship on or off needs a restart")
+	}
 	if err == nil {
-		a, err = loadAdmission(cfg)
+		// The running service owns the sponsored list; reload keeps it.
+		cfg.SponsoredDevicesFile = p.cfg.SponsoredDevicesFile
+		a, err = loadAdmission(cfg, p.service.Admission())
+	}
+	if err == nil && a.Sponsoring() {
+		// Saves the list without devices the operator revoked or listed.
+		err = sponsorFile(cfg.SponsoredDevicesFile).SaveSponsored(a.Sponsored())
 	}
 	if err != nil {
 		p.admissionFailures.Add(1)

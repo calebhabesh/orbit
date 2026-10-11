@@ -97,6 +97,20 @@ actors are bounded to 32 challenges, 16 controls and 16 directory records. The
 client pauses the refused purpose for ten minutes and reports `NOT_ADMITTED`
 in network status; enrollment continues.
 
+Member sponsorship (optional, after R06). `POST /network/v1/sponsor` carries a
+`NetworkLookupRequest` whose proof has kind `sponsor`, purpose `peer_data` and
+the sponsored peer's device and pin as target (no session or role; canonical
+form as for `lookup`). Only an admitted sender passes `admitOrigin`. A service
+that is not sponsoring answers `UNSUPPORTED_CAPABILITY`. Self-sponsorship is
+`INVALID_REQUEST`, a revoked target `NOT_ADMITTED`, an operator-listed device
+under another pin `IDENTITY_MISMATCH`, and a full 64-device list `QUOTA_EXCEEDED`.
+Otherwise the service saves the sponsored list before installing the policy
+that lists the target (a failed save is `SERVICE_UNAVAILABLE`) and answers
+`accepted`, also when the target was already listed. Clients sponsor each
+peer-data peer they register once per runtime, after their own peer-data
+record is accepted. A refused client that registers a new peer re-asks after
+5 s, then up to three times 20 s apart, before the ten-minute pause applies.
+
 Initially all service operations require authenticated device proof; lookup of a
 known identity/pin is rate limited rather than treated as folder authorization.
 Device IDs and pins are not private lookup capabilities. Someone who knows them

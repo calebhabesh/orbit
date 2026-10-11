@@ -10,7 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
+	"time"
 
 	"github.com/calebhabesh/orbit/internal/rendezvous"
 )
@@ -31,12 +33,54 @@ type allowedDevice struct {
 type allowlistFile struct {
 	Version string          `json:"version"`
 	Devices []allowedDevice `json:"devices"`
+	// Revoked lists device IDs removed from member sponsorship; they cannot
+	// be sponsored again until the operator adds them.
+	Revoked []string `json:"revoked,omitempty"`
 }
 
-// loadAdmission builds the policy the configuration names.
-func loadAdmission(cfg serveConfig) (*rendezvous.Admission, error) {
+// sponsoredFile is the service-owned record of sponsored devices.
+type sponsoredFile struct {
+	Version string                       `json:"version"`
+	Devices []rendezvous.SponsoredDevice `json:"devices"`
+}
+
+// sponsorFile stores sponsored devices; only the running service writes it.
+type sponsorFile string
+
+func (f sponsorFile) SaveSponsored(devices []rendezvous.SponsoredDevice) error {
+	if devices == nil {
+		devices = []rendezvous.SponsoredDevice{}
+	}
+	return writePrivateJSON(string(f), sponsoredFile{Version: "1", Devices: devices})
+}
+
+// readSponsored returns the stored list; a missing file is an empty list.
+func readSponsored(path string) ([]rendezvous.SponsoredDevice, error) {
+	data, err := readPrivatePath(path, maxAllowlistBytes)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read sponsored_devices_file: %w", err)
+	}
+	var f sponsoredFile
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err = decoder.Decode(&f); err != nil || f.Version != "1" {
+		return nil, errors.New(`sponsored_devices_file is not a version "1" sponsored device list`)
+	}
+	return f.Devices, nil
+}
+
+// loadAdmission builds the policy the configuration names. With sponsorship,
+// current (the running policy, on reload) supplies the sponsored devices;
+// otherwise they come from the sponsored devices file.
+func loadAdmission(cfg serveConfig, current *rendezvous.Admission) (*rendezvous.Admission, error) {
 	switch cfg.Admission {
 	case "", "open":
+		if cfg.Sponsorship {
+			return nil, errors.New(`sponsorship needs "admission": "allowlist"`)
+		}
 		if len(cfg.AllowedDevices) > 0 || cfg.AllowedDevicesFile != "" {
 			return nil, errors.New(`allowed_devices and allowed_devices_file need "admission": "allowlist"`)
 		}
@@ -49,12 +93,13 @@ func loadAdmission(cfg serveConfig) (*rendezvous.Admission, error) {
 		return nil, errors.New("allowlist admission needs exactly one of allowed_devices or allowed_devices_file")
 	}
 	devices := cfg.AllowedDevices
+	var revoked []string
 	if cfg.AllowedDevicesFile != "" {
 		f, err := readAllowlist(cfg.AllowedDevicesFile)
 		if err != nil {
 			return nil, err
 		}
-		devices = f.Devices
+		devices, revoked = f.Devices, f.Revoked
 	}
 	list := make([]rendezvous.AllowedDevice, 0, len(devices))
 	for _, d := range devices {
@@ -66,6 +111,18 @@ func loadAdmission(cfg serveConfig) (*rendezvous.Admission, error) {
 	a, err := rendezvous.NewAllowlist(list)
 	if err != nil {
 		return nil, fmt.Errorf("allowlist: %w", err)
+	}
+	if !cfg.Sponsorship {
+		return a, nil
+	}
+	var sponsored []rendezvous.SponsoredDevice
+	if current.Sponsoring() {
+		sponsored = current.Sponsored()
+	} else if sponsored, err = readSponsored(cfg.SponsoredDevicesFile); err != nil {
+		return nil, err
+	}
+	if a, err = a.WithSponsorship(sponsored, revoked); err != nil {
+		return nil, fmt.Errorf("sponsorship: %w", err)
 	}
 	return a, nil
 }
@@ -88,8 +145,10 @@ func readAllowlist(path string) (allowlistFile, error) {
 }
 
 // writeAllowlist replaces the file atomically with owner-only permissions.
-func writeAllowlist(path string, f allowlistFile) error {
-	data, err := json.MarshalIndent(f, "", "  ")
+func writeAllowlist(path string, f allowlistFile) error { return writePrivateJSON(path, f) }
+
+func writePrivateJSON(path string, v any) error {
+	data, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -116,6 +175,24 @@ func writeAllowlist(path string, f allowlistFile) error {
 	}
 	defer d.Close()
 	return d.Sync()
+}
+
+func withoutDevice(ids []string, id string) []string {
+	return slices.DeleteFunc(ids, func(x string) bool { return x == id })
+}
+
+// sponsoredDevicesPath resolves sponsored_devices_file as serve does.
+func sponsoredDevicesPath(cfg serveConfig) (string, bool) {
+	switch {
+	case cfg.SponsoredDevicesFile != "":
+		return cfg.SponsoredDevicesFile, true
+	case cfg.RelayState != "":
+		return filepath.Join(filepath.Dir(cfg.RelayState), "sponsored-devices.json"), true
+	}
+	if dir := os.Getenv("STATE_DIRECTORY"); dir != "" && !strings.Contains(dir, ":") {
+		return filepath.Join(dir, "sponsored-devices.json"), true
+	}
+	return "", false
 }
 
 var (
@@ -184,6 +261,25 @@ func devices(args []string, out, errOut io.Writer) error {
 		for _, d := range f.Devices {
 			fmt.Fprintf(out, "device=%s pin=%s %s\n", d.Device, d.Pin, d.Label)
 		}
+		if !cfg.Sponsorship {
+			return nil
+		}
+		sponsoredPath, ok := sponsoredDevicesPath(cfg)
+		if !ok {
+			fmt.Fprintln(out, "member sponsorship is on; set sponsored_devices_file to list sponsored devices here")
+			return nil
+		}
+		sponsored, err := readSponsored(sponsoredPath)
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(out, "%d sponsored device(s) in %s\n", len(sponsored), sponsoredPath)
+		for _, d := range sponsored {
+			fmt.Fprintf(out, "device=%s pin=%s sponsor=%s added=%s\n", d.Device, d.Pin, d.Sponsor, time.Unix(int64(d.Added), 0).UTC().Format(time.RFC3339))
+		}
+		if len(f.Revoked) > 0 {
+			fmt.Fprintf(out, "%d revoked device(s): %s\n", len(f.Revoked), strings.Join(f.Revoked, " "))
+		}
 		return nil
 	case "add":
 		d, err := parseIdentity(strings.Join(flags.Args(), " "))
@@ -197,6 +293,7 @@ func devices(args []string, out, errOut io.Writer) error {
 			}
 		}
 		f.Devices = append(f.Devices, d)
+		f.Revoked = withoutDevice(f.Revoked, d.Device)
 	case "remove":
 		if flags.NArg() != 1 || !bareHex.MatchString(strings.ToLower(flags.Arg(0))) {
 			return errors.New("devices remove needs one 64-hex device ID")
@@ -207,10 +304,21 @@ func devices(args []string, out, errOut io.Writer) error {
 				kept = append(kept, d)
 			}
 		}
-		if len(kept) == len(f.Devices) {
+		listed := len(kept) != len(f.Devices)
+		f.Devices = kept
+		// With member sponsorship a removed device stays out: its orbit peers
+		// would otherwise sponsor it again.
+		if cfg.Sponsorship {
+			if slices.Contains(f.Revoked, id) {
+				return fmt.Errorf("device %s is already revoked", id)
+			}
+			if len(f.Revoked) >= rendezvous.MaxRevokedDevices {
+				return errors.New("the revoked list is full (256 devices)")
+			}
+			f.Revoked = append(f.Revoked, id)
+		} else if !listed {
 			return fmt.Errorf("device %s is not listed", id)
 		}
-		f.Devices = kept
 	default:
 		return errors.New("devices requires list, add or remove")
 	}

@@ -31,3 +31,6 @@ node_modules/
 # Python validation caches
 __pycache__/
 *.pyc
+# Stray `go build ./cmd/...` outputs at the repo root
+/orbit
+/orbit-net

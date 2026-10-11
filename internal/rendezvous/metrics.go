@@ -13,6 +13,7 @@ type counters struct {
 	relayBytes                                atomic.Uint64
 	budget                                    atomic.Uint64
 	notAdmitted                               atomic.Uint64
+	sponsored                                 atomic.Uint64
 }
 
 func (c *counters) refused(code string) {
@@ -60,6 +61,11 @@ type Metrics struct {
 	Allowlist          bool
 	AllowlistSize      int
 	RefusedNotAdmitted uint64
+	// Member sponsorship: devices currently listed by sponsorship, and the
+	// total admitted that way since start.
+	Sponsoring        bool
+	SponsoredSize     int
+	SponsoredAdmitted uint64
 }
 
 func (s *Service) Metrics() Metrics {
@@ -83,6 +89,7 @@ func (s *Service) Metrics() Metrics {
 	m.RefusedUntrusted, m.RefusedOther, m.RelayBytes = s.stats.untrusted.Load(), s.stats.other.Load(), s.stats.relayBytes.Load()
 	m.RefusedBudget = s.stats.budget.Load()
 	m.Allowlist, m.AllowlistSize, m.RefusedNotAdmitted = !s.admission.Open(), s.admission.Size(), s.stats.notAdmitted.Load()
+	m.Sponsoring, m.SponsoredSize, m.SponsoredAdmitted = s.admission.Sponsoring(), len(s.admission.sponsored), s.stats.sponsored.Load()
 	if s.budget != nil {
 		m.RelayMonth, m.RelayMonthBytes, m.RelayMonthLimit = s.budget.Snapshot()
 	}

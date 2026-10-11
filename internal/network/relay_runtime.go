@@ -21,6 +21,11 @@ type RelayRuntime struct {
 	retryAfter       time.Time
 	retryCode        string
 	refusedUntil     map[Purpose]time.Time
+	admissionGrace   int
+	admissionWake    chan struct{}
+	sponsorPending   map[string]string
+	sponsorWake      chan struct{}
+	sponsorOff       bool
 	lookupCache      map[Target]p.NetworkAnnouncement
 	ctx              context.Context
 	cancel           context.CancelFunc
@@ -44,7 +49,7 @@ func NewRelayRuntime(ctx context.Context, client *ServiceClient, manager *Connec
 	if stamp := uint64(time.Now().UnixNano()); stamp > generation {
 		generation = stamp
 	}
-	r := &RelayRuntime{changes: map[Purpose]chan struct{}{PeerData: make(chan struct{}, 1), Enrollment: make(chan struct{}, 1)}, lookupCache: map[Target]p.NetworkAnnouncement{}, ctx: life, cancel: cancel, client: client, manager: manager, generation: generation, profile: profile, pins: map[Purpose]map[string]string{PeerData: {}, Enrollment: {}}, endpoints: map[Purpose]*RelayEndpoint{}, ready: map[Purpose]bool{}, refusedUntil: map[Purpose]time.Time{}}
+	r := &RelayRuntime{changes: map[Purpose]chan struct{}{PeerData: make(chan struct{}, 1), Enrollment: make(chan struct{}, 1)}, lookupCache: map[Target]p.NetworkAnnouncement{}, ctx: life, cancel: cancel, client: client, manager: manager, generation: generation, profile: profile, pins: map[Purpose]map[string]string{PeerData: {}, Enrollment: {}}, endpoints: map[Purpose]*RelayEndpoint{}, ready: map[Purpose]bool{}, refusedUntil: map[Purpose]time.Time{}, admissionWake: make(chan struct{}, 1), sponsorPending: map[string]string{}, sponsorWake: make(chan struct{}, 1)}
 	if len(iceOptions) > 0 {
 		if iceOptions[0] != nil {
 			copyOptions := *iceOptions[0]
@@ -69,6 +74,8 @@ func NewRelayRuntime(ctx context.Context, client *ServiceClient, manager *Connec
 		r.wg.Add(1)
 		go r.run(purpose)
 	}
+	r.wg.Add(1)
+	go r.sponsorPeers()
 	return r, nil
 }
 func (r *RelayRuntime) run(purpose Purpose) {
@@ -142,6 +149,12 @@ func (r *RelayRuntime) run(purpose Purpose) {
 					// expiring record withdraws readiness.
 					r.mu.Lock()
 					r.ready[purpose] = err == nil || (transientServiceFailure(err) && time.Now().Before(acceptedUntil))
+					if purpose == PeerData && err == nil && len(r.sponsorPending) > 0 {
+						select {
+						case r.sponsorWake <- struct{}{}:
+						default:
+						}
+					}
 					r.mu.Unlock()
 					delay := ReannounceInterval
 					if err != nil {
@@ -187,8 +200,12 @@ func (r *RelayRuntime) run(purpose Purpose) {
 			delay = wait
 		}
 		r.mu.Unlock()
+		admissionWake := r.admissionWake
 		if wait := r.admissionWait(purpose); wait > delay {
 			delay = wait
+		}
+		if purpose != PeerData {
+			admissionWake = nil
 		}
 		timer := time.NewTimer(delay)
 		select {
@@ -196,6 +213,18 @@ func (r *RelayRuntime) run(purpose Purpose) {
 			timer.Stop()
 			return
 		case <-timer.C:
+		case <-admissionWake:
+			// A new orbit peer shortened the refusal wait (peerAdded).
+			timer.Stop()
+			if wait := r.admissionWait(purpose); wait > 0 {
+				timer = time.NewTimer(wait)
+				select {
+				case <-r.ctx.Done():
+					timer.Stop()
+					return
+				case <-timer.C:
+				}
+			}
 		}
 	}
 }
@@ -232,6 +261,9 @@ func (r *RelayRuntime) Register(target Target) error {
 	peers[id] = pin
 	if target.Purpose == PeerData && r.ice != nil {
 		r.ice.addPeer(id, pin)
+	}
+	if target.Purpose == PeerData {
+		r.peerAdded(id, pin)
 	}
 	return nil
 }
@@ -387,7 +419,93 @@ func (r *RelayRuntime) recordAdmission(purpose Purpose, err error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if !time.Now().Before(r.refusedUntil[purpose]) {
-		r.refusedUntil[purpose] = time.Now().Add(NotAdmittedRetry)
+		wait := NotAdmittedRetry
+		if purpose == PeerData && r.admissionGrace > 0 {
+			wait = admissionGraceRetry
+			r.admissionGrace--
+		}
+		r.refusedUntil[purpose] = time.Now().Add(wait)
+	}
+}
+
+// Member sponsorship. A served device asks the service to admit each orbit
+// peer it registers; a service without sponsorship answers
+// UNSUPPORTED_CAPABILITY once and is not asked again. A device that is itself
+// refused and gains a peer (it just joined an orbit, so the peer is about to
+// sponsor it) asks again after 5 seconds, then up to three times 20 seconds
+// apart, instead of waiting the full NotAdmittedRetry.
+const (
+	admissionFirstRetry  = 5 * time.Second
+	admissionGraceRetry  = 20 * time.Second
+	admissionGraceTries  = 3
+	sponsorRetryInterval = time.Minute
+)
+
+// peerAdded runs under r.mu.
+func (r *RelayRuntime) peerAdded(id, pin string) {
+	if !r.sponsorOff {
+		r.sponsorPending[id] = pin
+		select {
+		case r.sponsorWake <- struct{}{}:
+		default:
+		}
+	}
+	if until := r.refusedUntil[PeerData]; time.Now().Before(until) {
+		r.admissionGrace = admissionGraceTries
+		if soon := time.Now().Add(admissionFirstRetry); soon.Before(until) {
+			r.refusedUntil[PeerData] = soon
+			select {
+			case r.admissionWake <- struct{}{}:
+			default:
+			}
+		}
+	}
+}
+
+func (r *RelayRuntime) sponsorPeers() {
+	defer r.wg.Done()
+	ticker := time.NewTicker(sponsorRetryInterval)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-r.ctx.Done():
+			return
+		case <-r.sponsorWake:
+		case <-ticker.C:
+		}
+		// Only a served device can sponsor: wait for its peer-data record.
+		if !r.purposeReady(PeerData) || r.serviceCooldown() != nil {
+			continue
+		}
+		r.mu.Lock()
+		pending := map[string]string{}
+		for id, pin := range r.sponsorPending {
+			pending[id] = pin
+		}
+		r.mu.Unlock()
+		for id, pin := range pending {
+			err := r.client.Sponsor(r.ctx, id, pin)
+			r.recordServiceFailure(err)
+			var service *ServiceError
+			code := ""
+			if errors.As(err, &service) {
+				code = service.Code
+			}
+			r.mu.Lock()
+			switch {
+			case err == nil, code == p.NetworkNotAdmitted, code == p.NetworkIdentityMismatch, code == p.NetworkInvalidRequest:
+				// Admitted, revoked by the operator or not acceptable: done.
+				delete(r.sponsorPending, id)
+			case code == p.NetworkUnsupported:
+				r.sponsorOff = true
+				clear(r.sponsorPending)
+			}
+			stop := r.sponsorOff
+			r.mu.Unlock()
+			if stop || r.ctx.Err() != nil || r.serviceCooldown() != nil {
+				break
+			}
+		}
 	}
 }
 func (r *RelayRuntime) admissionWait(purpose Purpose) time.Duration {

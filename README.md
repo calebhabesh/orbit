@@ -42,8 +42,8 @@ interrupted transfer or crash never leaves a half-written file behind.
 On one LAN: install a package from the
 [Releases page](https://github.com/calebhabesh/orbit/releases) on two Linux
 devices and run `orbit`. Create an Orbit on one; on the other choose Join and
-paste the invitation code. A fresh install uses the **Local network**. Orbit
-2.4 includes no hosted service.
+paste the invitation code. A fresh install uses the **Local network**. Since
+2.4, release builds include no hosted service.
 
 Across networks, run your own service on any reachable host:
 
@@ -51,9 +51,10 @@ Across networks, run your own service on any reachable host:
 orbit-net init --dir ~/orbit-service --origin https://203.0.113.10:8443 --stun 203.0.113.10:3478
 # on each device (files copied from the service directory):
 orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem
-# on the service host, for each device's "device=… pin=…" line from `orbit status`:
+# on the service host, once, for your first device's "device=… pin=…" line from `orbit status`:
 orbit-net devices add --config ~/orbit-service/serve.json 'device=… pin=…'
 orbit-net serve --config ~/orbit-service/serve.json
+# devices that join that device's Orbits are admitted automatically (member sponsorship)
 ```
 
 See [Run your own Orbit service](docs/orbit-net-operator.md#run-your-own-orbit-service).

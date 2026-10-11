@@ -463,6 +463,26 @@ func (c *ServiceClient) Announce(ctx context.Context, purpose, operation string,
 	}
 	return validResult(q, out)
 }
+
+// Sponsor asks an allowlisted service to admit an orbit peer this device has
+// pinned (member sponsorship). UNSUPPORTED_CAPABILITY means the service does
+// not take sponsorship.
+func (c *ServiceClient) Sponsor(ctx context.Context, device, pin string) error {
+	work, done, err := c.beginSigned(ctx)
+	if err != nil {
+		return err
+	}
+	defer done()
+	q, err := c.proof(work, p.NetworkProof{Kind: "sponsor", Purpose: string(PeerData), Target: device, TargetPin: pin}, nil)
+	if err != nil {
+		return err
+	}
+	var out p.NetworkResult
+	if err = c.post(work, "sponsor", p.NetworkLookupRequest{Proof: q}, &out); err != nil {
+		return err
+	}
+	return validResult(q, out)
+}
 func validResult(q p.NetworkProof, r p.NetworkResult) error {
 	if r.Version != "1" || r.Operation != q.Operation || (r.State != "accepted" && r.State != "replayed" && r.State != "released") {
 		return errors.New(p.NetworkInvalidRequest)
