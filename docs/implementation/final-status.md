@@ -176,6 +176,40 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
 
 ## Handoff log
 
+- 2026-10-11: Post-release reliability fixes (owner-requested review against
+  Syncthing; uncommitted at time of writing).
+  - **Clock skew (root cause of the flaky `TestFinalR00*` /
+    `TestSponsorshipRuntimeJoinNeedsNoOperator` failures).** Every expiry cap
+    was exact, so a device 1 s ahead of the service had every announcement
+    refused, and one 1 s behind refused challenges, relay attachments and peer
+    offers. LAN announcements, pairing mailboxes and routed enrollment
+    challenges had the same edge between devices. In CI the fixture clock
+    (updated every 50 ms) trailed the announce retry, which stays aligned to
+    the start of each second, so `INVALID_ANNOUNCEMENT` repeated for 90 s.
+    `protocol.WithinLifetime` now allows `MaxClockSkew` (30 s) on upper bounds
+    only, and issuers request lifetime minus 30 s, so deployed orbit-net
+    1.3.0 needs no redeploy. Spec: WAN protocol "Clock skew".
+  - **Quick scans and ctime.** The stat shortcut ignored ctime, so an in-place
+    edit restoring size and mtime (`cp -p`, `touch -r`) waited up to 24 h for
+    the full-content scan. It now also requires matching ctime and an
+    observation at least 2 s newer than ctime (timestamp granularity). Spec:
+    persistence. `TestDualScanCadence…` and `TestP12EqualSize…` now expect the
+    quick scan to capture the edit.
+  - `TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration` failed 1 in 10
+    under `-race` before these changes (enrollment renewals from repeated
+    `NetworkChanged` used up the budget the peer-data renewal waited on); the
+    test now wakes only the peer-data worker.
+  - Evidence: stress of the two flaky tests, 24 concurrent `-race` processes
+    with GOMAXPROCS=2 and `-count=2`: before 6 failures in 96 runs
+    (4 R00 `INVALID_ANNOUNCEMENT` traces, 2 sponsorship), after 0 in 96
+    (two rounds). `TestRuntimeToleratesServiceClockSkew` (service ±10 s) fails
+    on the old code and passes now. W15 test: old 1/10 fail, now 20/20 pass.
+    `make quick` passed; `make test-race-core` passed (22 packages ok,
+    unchanged packages from the Go test cache).
+  - Not done: ignore patterns (excluded by the final plan; owner decision).
+    Skew beyond a lifetime (30 s relay tickets, 60 s challenges) still needs
+    NTP. Not yet deployed to trial devices.
+
 - 2026-10-11: v2.5.0 published (tag `68ead0b`; Orbit packages plus
   orbit-net 1.3.0 tarballs, checksums verified after download). Known issue:
   `TestFinalR00*` and `TestSponsorshipRuntimeJoinNeedsNoOperator` fail about
