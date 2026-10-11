@@ -415,7 +415,7 @@ func (c *ServiceClient) proof(ctx context.Context, q p.NetworkProof, payload []b
 	if err != nil {
 		return q, err
 	}
-	if ch.Version != "1" || ch.Profile != c.digest || ch.Origin != c.origin || p.NetworkHex(ch.Challenge, 32) != nil || uint64(ch.Expires) <= uint64(c.now().Unix()) || uint64(ch.Expires)-uint64(c.now().Unix()) > 60 {
+	if ch.Version != "1" || ch.Profile != c.digest || ch.Origin != c.origin || p.NetworkHex(ch.Challenge, 32) != nil || !p.WithinLifetime(uint64(ch.Expires), uint64(c.now().Unix()), 60) {
 		return q, errors.New(p.NetworkInvalidRequest)
 	}
 	q.Version = "1"
@@ -823,7 +823,7 @@ func (c *ServiceClient) Reannounce(ctx context.Context, mode, purpose string, ne
 		}
 		generation = a.Generation
 		if a.Expires == 0 {
-			a.Expires = p.NetworkUint(c.now().Unix() + 600)
+			a.Expires = p.NetworkUint(c.now().Unix() + 600 - p.MaxClockSkew)
 		}
 		operation := randomNetworkID()
 		// Retry uncertain delivery with identical mutation bytes and a fresh proof.

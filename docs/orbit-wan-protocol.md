@@ -247,6 +247,7 @@ These are initial finite bounds to verify/tune, not measured service capacity.
 | Discovery datagram | 1,200 bytes; pagination is not UDP amplification |
 | Candidates | 16 per device/purpose, 8 per offer, 32 active peer slots per daemon; retain configured peers and schedule them fairly |
 | Authentication | Challenge 60 s, replay window 5 min, bounded caches |
+| Clock skew | Expiry caps accept up to 30 s beyond the stated lifetime; issuers request lifetime minus 30 s; an expiry in the checker's past is always refused |
 | Candidate lease | 10 min; reannounce every 2 min with jitter |
 | Relay reservations | 30 s to attach; 10 s inner handshake deadline |
 | Control heartbeat | 25 s; stale connection checked within 75 s |
@@ -263,6 +264,26 @@ Operator deployment must choose finite aggregate/per-device bandwidth and egress
 budgets (initial test profile 20/5 MiB/s), connection/FD/memory ceilings and monitoring.
 Refusal produces bounded typed backpressure. W15 measures actual memory/FD/Pi
 behavior; increase a bound only with evidence and matching configuration/spec edits.
+
+## Clock skew (2026-10-11)
+
+Devices and the service check each other's expiry times against their own
+clocks. Before this rule every upper bound was exact: a device whose clock ran
+1 s ahead of the service had every announcement refused, and one 1 s behind
+refused the service's challenges, relay attachments and peer offers, so it was
+never served. LAN announcements, pairing mailboxes and routed enrollment
+challenges had the same edge between devices.
+
+`protocol.MaxClockSkew` (30 s) now applies everywhere an expiry is checked
+(`protocol.WithinLifetime`): an expiry may be up to the stated lifetime plus
+30 s ahead of the checker's clock. Issuers that set their own expiry
+(announcements, LAN announcements, pairing mailboxes) request the lifetime
+minus 30 s, so a strict checker that predates the rule (orbit-net 1.3.0) also
+accepts a device up to 30 s ahead. Lower bounds are unchanged: an expired
+record, challenge or ticket is refused whatever the skew, so a device more than
+a lifetime (30 s for relay tickets, 60 s for challenges) behind the issuer
+still fails and needs NTP. `TestRuntimeToleratesServiceClockSkew` runs the
+production runtime against a service 10 s ahead and 10 s behind.
 
 ## Failure and privacy
 

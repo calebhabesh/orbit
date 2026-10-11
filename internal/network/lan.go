@@ -248,7 +248,7 @@ func (d *LANDiscovery) sign(iface LocalInterface, generation uint64) (p.LANAnnou
 	if len(candidates) == 0 {
 		return p.LANAnnouncement{}, nil, false
 	}
-	a := p.LANAnnouncement{Version: "1", Device: d.device, Pin: d.pin, Key: hex.EncodeToString(d.key.Public().(ed25519.PublicKey)), Generation: p.NetworkUint(generation), Expires: p.NetworkUint(time.Now().Unix() + 600), Capabilities: lanCapabilities(candidates), Candidates: candidates}
+	a := p.LANAnnouncement{Version: "1", Device: d.device, Pin: d.pin, Key: hex.EncodeToString(d.key.Public().(ed25519.PublicKey)), Generation: p.NetworkUint(generation), Expires: p.NetworkUint(time.Now().Unix() + 600 - p.MaxClockSkew), Capabilities: lanCapabilities(candidates), Candidates: candidates}
 	b, err := a.Canonical()
 	if err != nil {
 		return p.LANAnnouncement{}, nil, false

@@ -123,7 +123,7 @@ func (r *RelayRuntime) run(purpose Purpose) {
 					if purpose == PeerData && r.iceOptions != nil {
 						capabilities = append(capabilities, "quic_ice_v1")
 					}
-					announcement := p.NetworkAnnouncement{Generation: p.NetworkUint(generation), Expires: p.NetworkUint(time.Now().Unix() + 600), Candidates: candidates, Capabilities: capabilities, Relay: true}
+					announcement := p.NetworkAnnouncement{Generation: p.NetworkUint(generation), Expires: p.NetworkUint(time.Now().Unix() + 600 - p.MaxClockSkew), Candidates: candidates, Capabilities: capabilities, Relay: true}
 					operation := randomNetworkID()
 					err := r.serviceCooldown()
 					if err == nil && r.admissionWait(purpose) > 0 {

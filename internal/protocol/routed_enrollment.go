@@ -224,7 +224,7 @@ func (s RoutedEnrollmentStatus) Verify(key ed25519.PublicKey, now uint64) error 
 	if e != nil {
 		return e
 	}
-	if uint64(s.Expires) <= now || uint64(s.Expires)-now > 60 {
+	if !WithinLifetime(uint64(s.Expires), now, 60) {
 		return errors.New("CHALLENGE_EXPIRED")
 	}
 	signature, e := hex.DecodeString(s.Signature)

@@ -370,7 +370,7 @@ func (p NetworkProof) Verify(private bool, now uint64) error {
 	if e != nil {
 		return e
 	}
-	if uint64(p.Expires) <= now || uint64(p.Expires)-now > 60 {
+	if !WithinLifetime(uint64(p.Expires), now, 60) {
 		return errors.New("CHALLENGE_EXPIRED")
 	}
 	_, key, e := NetworkCertificate(p.CertificateDER, p.SenderPin, now)
@@ -384,6 +384,19 @@ func (p NetworkProof) Verify(private bool, now uint64) error {
 	return nil
 }
 
+// MaxClockSkew is how far, in seconds, an issuer's clock may run ahead of the
+// checker's. Expiry caps allow it so devices and services without exactly
+// synchronized clocks still accept each other's records; issuers subtract it
+// from the lifetime they request so strict older checkers also accept them.
+// An expiry already in the checker's past is never accepted.
+const MaxClockSkew = 30
+
+// WithinLifetime reports whether expires is after now and at most lifetime
+// seconds (plus MaxClockSkew) ahead of it.
+func WithinLifetime(expires, now, lifetime uint64) bool {
+	return expires > now && expires-now <= lifetime+MaxClockSkew
+}
+
 type NetworkAnnouncement struct {
 	Generation   NetworkUint        `json:"generation"`
 	Expires      NetworkUint        `json:"expires"`
@@ -393,7 +406,7 @@ type NetworkAnnouncement struct {
 }
 
 func (a NetworkAnnouncement) Canonical(now uint64, public bool) ([]byte, error) {
-	if a.Generation == 0 || uint64(a.Expires) <= now || uint64(a.Expires)-now > 600 || a.Candidates == nil || len(a.Candidates) > NetworkMaxCandidates || a.Capabilities == nil || len(a.Capabilities) > 5 {
+	if a.Generation == 0 || !WithinLifetime(uint64(a.Expires), now, 600) || a.Candidates == nil || len(a.Candidates) > NetworkMaxCandidates || a.Capabilities == nil || len(a.Capabilities) > 5 {
 		return nil, errors.New("INVALID_ANNOUNCEMENT")
 	}
 	f := []string{strconv.FormatUint(uint64(a.Generation), 10), strconv.FormatUint(uint64(a.Expires), 10), strconv.Itoa(len(a.Candidates))}
@@ -459,7 +472,7 @@ func (t RelayAttachment) Verify(key ed25519.PublicKey, now uint64, private bool)
 	if e != nil {
 		return e
 	}
-	if uint64(t.Expires) <= now || uint64(t.Expires)-now > 30 {
+	if !WithinLifetime(uint64(t.Expires), now, 30) {
 		return errors.New("ATTACHMENT_EXPIRED")
 	}
 	sig, e := hex.DecodeString(t.Signature)

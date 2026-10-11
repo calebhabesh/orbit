@@ -343,7 +343,7 @@ func (c *EnrollmentClient) StatusV3(ctx context.Context, w p.RoutedEnrollmentReq
 	if err = c.post(ctx, "/enrollment/v3/status", q, &challenge); err != nil {
 		return out, err
 	}
-	if challenge.Version != "3" || uint64(challenge.Expires) <= uint64(time.Now().Unix()) || uint64(challenge.Expires)-uint64(time.Now().Unix()) > 60 {
+	if challenge.Version != "3" || !p.WithinLifetime(uint64(challenge.Expires), uint64(time.Now().Unix()), 60) {
 		return out, enrollmentError("INVALID_REQUEST")
 	}
 	q.Nonce = challenge.Challenge

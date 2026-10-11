@@ -61,7 +61,7 @@ func (c *ServiceClient) StartPairing(ctx context.Context, operation string, invi
 	if len(c.pairOffers) >= 4 || len(invitation) > 16<<10 {
 		return PairingStatus{}, ErrBackpressure
 	}
-	expires := c.now().Add(10 * time.Minute)
+	expires := c.now().Add(10*time.Minute - p.MaxClockSkew*time.Second)
 	if until.Before(expires) {
 		expires = until
 	}

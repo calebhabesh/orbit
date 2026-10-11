@@ -79,7 +79,7 @@ func (s *Service) pairing(q p.PairingRequest, r *http.Request, now uint64) (any,
 		if count >= MaxPairingPerKey {
 			return nil, p.NetworkQuota
 		}
-		if q.Session == "" || uint64(q.Expires) <= now || uint64(q.Expires)-now > 600 || len(q.Data) != 64 {
+		if q.Session == "" || !p.WithinLifetime(uint64(q.Expires), now, 600) || len(q.Data) != 64 {
 			return nil, p.NetworkInvalidRequest
 		}
 		m = &mailbox{owner: who(q.Proof), session: q.Session, profile: q.Proof.Profile, state: "open", first: q.Data, expires: uint64(q.Expires)}

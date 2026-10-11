@@ -42,7 +42,7 @@ func (a LANAnnouncement) Canonical() ([]byte, error) {
 	return append([]byte("orbit-lan-v1\n"), b...), err
 }
 func (a LANAnnouncement) Verify(now uint64) error {
-	if uint64(a.Expires) <= now || uint64(a.Expires) > now+600 {
+	if !WithinLifetime(uint64(a.Expires), now, 600) {
 		return errors.New("EXPIRED_LAN_ANNOUNCEMENT")
 	}
 	b, err := a.Canonical()

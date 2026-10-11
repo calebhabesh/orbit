@@ -137,13 +137,17 @@ func TestWANW15RejectedAnnouncementKeepsAcceptedOfferGeneration(t *testing.T) {
 	// A semantic refusal withdraws readiness: dial/lookup then do no service work.
 	refusal.Store(p.NetworkIdentityMismatch)
 	// Change signals coalesce while a renewal is running; keep requesting one
-	// with the quota cooldown cleared until the refusal is observed.
+	// with the quota cooldown cleared until the refusal is observed. Wake only
+	// the peer-data worker: NetworkChanged also renews enrollment, and those
+	// renewals spend the paced budget the peer-data renewal is waiting for.
 	for runtime.purposeReady(PeerData) && ctx.Err() == nil {
 		runtime.mu.Lock()
 		runtime.retryAfter = time.Time{}
 		runtime.mu.Unlock()
-		runtime.NetworkChanged()
-		// Each signal also renews enrollment, spending the paced budget.
+		select {
+		case runtime.changes[PeerData] <- struct{}{}:
+		default:
+		}
 		time.Sleep(500 * time.Millisecond)
 	}
 	if runtime.purposeReady(PeerData) {
