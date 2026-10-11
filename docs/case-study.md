@@ -11,7 +11,10 @@ connect directly when they can, or through its encrypted relay when they cannot.
 
 Orbit is finished as a distributed systems and networking project, not a
 public product (decision of 2026-10-11). It costs nothing to operate. The
-author's connection service now admits only the author's devices. Public
+author's connection service now admits only the author's devices: one is
+listed by hand, and listed devices vouch for the devices that join their
+Orbits (member sponsorship, orbit-net 1.3.0), so adding a device needs no
+step on the server. Public
 builds (2.4.0) ship with no default service, so anyone else uses the local
 network or runs their own service with one command (`orbit-net init`). The
 last stage of work measured how the system behaves rather than adding
