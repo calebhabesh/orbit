@@ -168,7 +168,9 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
   peers, so only the first device is listed by hand. `devices remove` revokes.
   `orbit-net init` enables it. Deployed to the VPS (1.3.0). The laptop and Pi
   trials joined and were served with no VPS step (40–90 s).
-- Commands: package tests, `make quick`, VPS deploy, trial joins (see evidence).
+- Commands: package tests, `make quick`, VPS deploy, trial joins (see evidence);
+  full-terminal race run `go test -race -timeout=240m ./tests/terminal/...` at
+  `e11114c` (pass, 2,279 s, no data races; closes the R06 limitation).
 - Limitations: anyone sharing an Orbit with the owner can bring their devices
   onto the relay (documented); joiner readiness on real devices is 40–90 s.
 
