@@ -1,5 +1,17 @@
 # Approved portfolio scope
 
+## Owner-directed final scope — 2026-10-11
+
+Orbit is finished as a distributed systems and networking project, not a
+product for public users, and must cost its maintainer nothing to operate. The
+owner's hosted `orbit-net` serves only the owner's devices; public builds ship
+without a default service, and others use LAN mode or self-host `orbit-net`.
+Remaining work is route accounting, admission control, one-command self-hosting,
+a measurement campaign and an updated case study. Public relay capacity, a
+relay-only role, new product features, other platforms, TURN and router port
+mapping are excluded. The [final plan](orbit-final-implementation-plan.md) and
+[tracker](implementation/final-status.md) own this work. Planned, not implemented.
+
 ## Owner-directed native WAN amendment — 2026-10-05
 
 The owner selected a comprehensive native-networking build and simple Syncthing-like

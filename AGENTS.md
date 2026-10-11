@@ -1,10 +1,14 @@
 # Implementation guidance
 
-**Current selected work (2026-10-08): Orbit onboarding and everyday use.** Start with
-[the onboarding plan](docs/orbit-onboarding-implementation-plan.md) and
-[its tracker](docs/implementation/onboarding-status.md), then implement the first
-eligible E packet (initially E00) when assigned a build task. Either 6.1 Sol Medium
-or 3.8 Flash High can implement any eligible E packet. The WAN, terminal and P/O
+**Current selected work (2026-10-11): final scope — private service, measurement
+and write-up.** Start with [the final plan](docs/orbit-final-implementation-plan.md)
+and [its tracker](docs/implementation/final-status.md), then implement the first
+eligible R packet (initially R00) when assigned a build task. Either 6.1 Sol Medium
+or 3.8 Flash High can implement any eligible R packet. Change the hosted
+`orbit-net` deployment only with explicit owner confirmation.
+
+The [onboarding plan](docs/orbit-onboarding-implementation-plan.md) (E00–E13,
+[tracker](docs/implementation/onboarding-status.md)), WAN, terminal and P/O
 plans below are delivered or historical baselines; preserve their evidence.
 
 For the selected **Orbit native WAN expansion**, start with
