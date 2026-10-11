@@ -257,7 +257,7 @@ listed devices; ask the operator to add this device (orbit-net devices add), or
 use Local network or your own service. LAN connections still work." Pairing
 toward a listed device still works. With member sponsorship (the default for
 `orbit-net init`, and on the author's service) the listed device it joins
-vouches for it, and the first sync starts within seconds. Without sponsorship
+vouches for it, and the first sync starts within about a minute. Without sponsorship
 the first sync waits, resumably, until the operator lists it.
 
 `orbit network status` reads the cached view and never starts a network probe.

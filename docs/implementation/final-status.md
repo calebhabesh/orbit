@@ -3,10 +3,11 @@
 Updated: 2026-10-11. **All packets R00–R06 complete; all gates closed. Final scope finished.** The [plan](../orbit-final-implementation-plan.md),
 [packets](final-packets.md) and [gates](final-gates.md) form the handoff.
 
-Current deployment for reference: hosted `orbit-net` 1.1.0 serves any device,
-relaying under a 2 TiB monthly budget (2026-10-11 read-only snapshot: 2 directory
-records, 2 controls, about 6.3 MB relayed this month). Orbit 2.3.0 is installed
-as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
+Current deployment: hosted `orbit-net` 1.3.0 serves its allowlist (the PC
+`orbit-trial`) plus devices admitted by member sponsorship (the laptop and Pi
+trials), relaying under a 2 TiB monthly budget. Orbit 2.5.0 (owner build) is
+`orbit-trial` on PC, laptop and Pi, joined in one Orbit. Hosted changes need
+owner confirmation.
 
 ## Packet tracker
 
@@ -158,7 +159,22 @@ Complete 2026-10-11. Evidence: `docs/evidence/final-r06-20261011/`.
 - Limitations: a full-terminal race run was not executed; laptop/Pi trial
   identities must be allowlisted once they exist; nothing pushed.
 
+## S01 — Member sponsorship (owner-directed follow-up)
+
+Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
+`docs/evidence/sponsorship-20261011/`.
+
+- Result: with `"sponsorship": true`, served devices sponsor their orbit
+  peers, so only the first device is listed by hand. `devices remove` revokes.
+  `orbit-net init` enables it. Deployed to the VPS (1.3.0). The laptop and Pi
+  trials joined and were served with no VPS step (40–90 s).
+- Commands: package tests, `make quick`, VPS deploy, trial joins (see evidence).
+- Limitations: anyone sharing an Orbit with the owner can bring their devices
+  onto the relay (documented); joiner readiness on real devices is 40–90 s.
+
 ## Handoff log
+
+- 2026-10-11: S01 member sponsorship deployed; laptop and Pi trials joined.
 
 - 2026-10-11: R06 complete. The final scope (R00–R06) is finished; RG1–RG4 are
   closed. Remaining items are future work only (plan "Scope boundaries"):
