@@ -182,6 +182,23 @@ devices would then come from `orbit network set`/review, not from packages.
 
 ## RG4 — Measurement method (R05)
 
+**Closed 2026-10-11 (R05).** Selected method:
+
+- Production binaries and an `orbit-net init` service in rootless
+  namespaces (synthetic public 11.77/16, nftables masquerade homes, `tc
+  netem delay 20ms` uplinks).
+- Five connectivity cells: LAN, port-preserving NAT, public TCP, symmetric
+  NAT, UDP blocked. 10 reconnect repetitions each (first sync, direct
+  upgrade within 180 s, settled route).
+- Throughput by route (3 repetitions), chunk reuse (tail and prefix) and
+  faults (SIGKILL resume, partition with concurrent edits, WAN address change).
+- Medians with ranges and n, every failure recorded.
+- Physical cells cite W16; the hotspot/CGNAT cell is unexecuted.
+
+Evidence: `docs/evidence/final-r05-20261011/`. Limitations: concurrency on one
+host affects timing; emulated NATs are Linux conntrack behaviour; ICE
+completion depends on request duration (recorded as a design limitation).
+
 Question: what to measure and how, so results are reproducible and honest.
 
 Candidates:

@@ -1,0 +1,146 @@
+{
+  "packet": "R05",
+  "cell": "eim",
+  "netem": "delay 20ms",
+  "phases": [
+    "faults",
+    "throughput"
+  ],
+  "reps": 0,
+  "started_at": 1791735859.3640223,
+  "success": true,
+  "results": {
+    "join_seconds": 39.085625268984586,
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "NOT_TESTED",
+          "device": "ee740d2305f34e6b35091d46df9752d0f2b00893781b95e00ca2556c0bd55a39",
+          "pin": "4eaa179294ce75f8388658667e59536c1d25e73013d847ac2a801ef6a2489782",
+          "purpose": "peer_data",
+          "route": "quic",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T16:25:01.176681433Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "settle_before_bulk": {
+      "route": "quic",
+      "seconds": 6.102743726107292
+    },
+    "large": [
+      {
+        "seconds": 14.594071361934766,
+        "bytes": 67108864,
+        "routes": {
+          "quic": {
+            "requests": 72,
+            "received": 67118518
+          }
+        }
+      },
+      {
+        "seconds": 15.087927271961235,
+        "bytes": 67108864,
+        "routes": {
+          "quic": {
+            "requests": 73,
+            "received": 67119092
+          }
+        }
+      },
+      {
+        "seconds": 15.078900236054324,
+        "bytes": 67108864,
+        "routes": {
+          "quic": {
+            "requests": 74,
+            "received": 67119665
+          }
+        }
+      }
+    ],
+    "small": [
+      {
+        "seconds": 100.61868202593178,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 455,
+            "received": 588681
+          },
+          "relay": {
+            "requests": 540,
+            "received": 1076289
+          }
+        }
+      },
+      {
+        "seconds": 153.1114118649857,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 589,
+            "received": 800135
+          },
+          "relay": {
+            "requests": 951,
+            "received": 1257284
+          }
+        }
+      },
+      {
+        "seconds": 200.51892443106044,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 1344,
+            "received": 1835074
+          },
+          "relay": {
+            "requests": 1018,
+            "received": 764819
+          }
+        }
+      }
+    ],
+    "kill_resume": {
+      "file_bytes": 67108864,
+      "received_before_kill": 20718395,
+      "received_after_restart": 47556503,
+      "remaining_at_kill": 46390469,
+      "resume_seconds": 73.76159699005075
+    },
+    "partition": {
+      "heal_to_converged_seconds": 22.428374973940663,
+      "heads_each": 2,
+      "identical": true
+    },
+    "roaming": {
+      "bytes": 33554432,
+      "after_change_seconds": 84.11762409005314,
+      "routes": {
+        "quic": {
+          "requests": 645,
+          "received": 33663112
+        },
+        "relay": {
+          "requests": 315,
+          "received": 266705
+        }
+      }
+    }
+  },
+  "finished_at": 1791736867.6948428
+}

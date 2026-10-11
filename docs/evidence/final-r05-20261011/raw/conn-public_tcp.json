@@ -1,0 +1,486 @@
+{
+  "packet": "R05",
+  "cell": "public_tcp",
+  "netem": "delay 20ms",
+  "phases": [
+    "doctor",
+    "reconnect",
+    "resources"
+  ],
+  "reps": 10,
+  "started_at": 1791706735.6397207,
+  "success": true,
+  "results": {
+    "join_seconds": 41.412888939958066,
+    "resources_idle_b": {
+      "pid": 3822698,
+      "name": "orbit",
+      "rss_kib": 36316,
+      "hwm_kib": 36316,
+      "cpu_seconds": 0.2,
+      "fds": 23,
+      "threads": 20
+    },
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "2",
+          "expired_candidates": "0",
+          "udp_code": "NOT_TESTED",
+          "device": "6f73cb232bf236010013ac0a601c1008e8130d098c90f4bf819cd669ae78d69e",
+          "pin": "900e14293df1cf63f0699155ab5b660ef2fed04dec82864ef24e52e63f94ec37",
+          "purpose": "peer_data",
+          "route": "direct",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T08:19:42.970989444Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "doctor_b": {
+      "probes": [
+        {
+          "kind": "service_dns_tcp",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:44.873670325Z"
+        },
+        {
+          "kind": "service_tls",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:44.89431578Z"
+        },
+        {
+          "kind": "directory",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:44.93596234Z"
+        },
+        {
+          "kind": "direct_tls",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:45.016809957Z"
+        },
+        {
+          "kind": "relay_inner_tls",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:47.018116933Z"
+        },
+        {
+          "kind": "udp_stun",
+          "code": "UNAVAILABLE",
+          "observed_at": "2026-10-11T08:19:47.768755599Z"
+        }
+      ],
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "2",
+          "expired_candidates": "0",
+          "udp_code": "NOT_TESTED",
+          "device": "6f73cb232bf236010013ac0a601c1008e8130d098c90f4bf819cd669ae78d69e",
+          "pin": "900e14293df1cf63f0699155ab5b660ef2fed04dec82864ef24e52e63f94ec37",
+          "purpose": "peer_data",
+          "route": "direct",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T08:19:42.970989444Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "a_candidates": [
+      [
+        "0",
+        "0",
+        "ICE_PROBE_DEFERRED"
+      ]
+    ],
+    "reconnect": [
+      {
+        "seconds": 3.501429512980394,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 8,
+            "received": 265102
+          }
+        },
+        "first_sync_since_restart_seconds": 3.5786322959465906,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 66.59834184695501,
+        "keepalive_transfers": 8,
+        "settled": {
+          "seconds": 4.001529311994091,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 17,
+              "received": 270248
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 34,
+            "received": 2375033
+          },
+          "relay": {
+            "requests": 148,
+            "received": 15004337
+          }
+        },
+        "rep_direct_share": 0.13665817575665862
+      },
+      {
+        "seconds": 4.001843123929575,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 18,
+            "received": 270820
+          }
+        },
+        "first_sync_since_restart_seconds": 4.080365128000267,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 66.96210129302926,
+        "keepalive_transfers": 7,
+        "settled": {
+          "seconds": 4.001496240030974,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 26,
+              "received": 275410
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 52,
+            "received": 2385357
+          },
+          "relay": {
+            "requests": 265,
+            "received": 12975117
+          }
+        },
+        "rep_direct_share": 0.1552918874769099
+      },
+      {
+        "seconds": 4.001401339075528,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 27,
+            "received": 275982
+          }
+        },
+        "first_sync_since_restart_seconds": 4.06661530805286,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 67.31158559198957,
+        "keepalive_transfers": 6,
+        "settled": {
+          "seconds": 4.0015102460747585,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 34,
+              "received": 279998
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 68,
+            "received": 2394533
+          },
+          "relay": {
+            "requests": 373,
+            "received": 10940836
+          }
+        },
+        "rep_direct_share": 0.1795625602861083
+      },
+      {
+        "seconds": 11.503383663017303,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 67,
+            "received": 297734
+          }
+        },
+        "first_sync_since_restart_seconds": 11.575590022024699,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 67.35035869397689,
+        "keepalive_transfers": 6,
+        "settled": {
+          "seconds": 4.001528225024231,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 42,
+              "received": 284585
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 84,
+            "received": 2403708
+          },
+          "relay": {
+            "requests": 443,
+            "received": 10982171
+          }
+        },
+        "rep_direct_share": 0.17957042641727153
+      },
+      {
+        "seconds": 11.503550486988388,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 43,
+            "received": 285157
+          }
+        },
+        "first_sync_since_restart_seconds": 11.577513811993413,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 67.35987392894458,
+        "keepalive_transfers": 6,
+        "settled": {
+          "seconds": 4.501776751945727,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 50,
+              "received": 289174
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 100,
+            "received": 2412885
+          },
+          "relay": {
+            "requests": 499,
+            "received": 11015475
+          }
+        },
+        "rep_direct_share": 0.17968575462677497
+      },
+      {
+        "seconds": 12.003483957028948,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 99,
+            "received": 316086
+          }
+        },
+        "first_sync_since_restart_seconds": 12.073007378960028,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 68.34964310599025,
+        "keepalive_transfers": 6,
+        "settled": {
+          "seconds": 4.001580580021255,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 58,
+              "received": 293762
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 116,
+            "received": 2422060
+          },
+          "relay": {
+            "requests": 635,
+            "received": 11092284
+          }
+        },
+        "rep_direct_share": 0.179221425768058
+      },
+      {
+        "seconds": 12.003476577927358,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 59,
+            "received": 294334
+          }
+        },
+        "first_sync_since_restart_seconds": 12.076225764933042,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 68.35439228999894,
+        "keepalive_transfers": 6,
+        "settled": {
+          "seconds": 4.501629915903322,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 66,
+              "received": 298350
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 132,
+            "received": 2431237
+          },
+          "relay": {
+            "requests": 675,
+            "received": 11116412
+          }
+        },
+        "rep_direct_share": 0.17945822186565358
+      },
+      {
+        "seconds": 12.503786512999795,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 131,
+            "received": 334438
+          }
+        },
+        "first_sync_since_restart_seconds": 12.578297725995071,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 68.72494958189782,
+        "keepalive_transfers": 5,
+        "settled": {
+          "seconds": 10.003084092983045,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 143,
+              "received": 341322
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 216,
+            "received": 2478223
+          },
+          "relay": {
+            "requests": 817,
+            "received": 9100434
+          }
+        },
+        "rep_direct_share": 0.2140337173819036
+      },
+      {
+        "seconds": 19.005234795971774,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 217,
+            "received": 382137
+          }
+        },
+        "first_sync_since_restart_seconds": 19.087979329982772,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 84.68961184401996,
+        "keepalive_transfers": 4,
+        "settled": {
+          "seconds": 19.505412971018814,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 231,
+              "received": 390600
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 385,
+            "received": 2572765
+          },
+          "relay": {
+            "requests": 667,
+            "received": 6921744
+          }
+        },
+        "rep_direct_share": 0.27097399138807493
+      },
+      {
+        "seconds": 13.503637057961896,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 80,
+            "received": 306376
+          }
+        },
+        "first_sync_since_restart_seconds": 13.589249570970424,
+        "upgraded_route": "direct",
+        "upgrade_since_restart_seconds": 74.95664645999204,
+        "keepalive_transfers": 6,
+        "settled": {
+          "seconds": 9.502961820107885,
+          "bytes": 262144,
+          "routes": {
+            "wan_tcp": {
+              "requests": 88,
+              "received": 310967
+            }
+          }
+        },
+        "settled_observation": "direct",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "wan_tcp": {
+            "requests": 176,
+            "received": 2456471
+          },
+          "relay": {
+            "requests": 582,
+            "received": 11068011
+          }
+        },
+        "rep_direct_share": 0.181631429580815
+      }
+    ],
+    "resources_after_b": {
+      "pid": 3846639,
+      "name": "orbit",
+      "rss_kib": 37428,
+      "hwm_kib": 39304,
+      "cpu_seconds": 1.57,
+      "fds": 23,
+      "threads": 22
+    }
+  },
+  "finished_at": 1791707564.2704551
+}

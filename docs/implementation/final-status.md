@@ -1,6 +1,6 @@
 # Final-scope status
 
-Updated: 2026-10-11. **R00–R04 complete; R05 eligible.** The [plan](../orbit-final-implementation-plan.md),
+Updated: 2026-10-11. **R00–R05 complete; R06 eligible (VPS switch owner-approved 2026-10-11).** The [plan](../orbit-final-implementation-plan.md),
 [packets](final-packets.md) and [gates](final-gates.md) form the handoff.
 
 Current deployment for reference: hosted `orbit-net` 1.1.0 serves any device,
@@ -17,15 +17,15 @@ as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
 | R02 Service allowlist | complete | R00 | [R02](final-packets.md#r02--service-admission-allowlist-rg1) |
 | R03 One-command self-hosting | complete | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
 | R04 No default service | complete | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
-| R05 Measurement | eligible | R01, R04 | [R05](final-packets.md#r05--measurement-campaign-rg4) |
-| R06 Write-up/release | blocked on R03, R05 | R03, R05 | [R06](final-packets.md#r06--write-up-and-release) |
+| R05 Measurement | complete | R01, R04 | [R05](final-packets.md#r05--measurement-campaign-rg4) |
+| R06 Write-up/release | eligible | R03, R05 | [R06](final-packets.md#r06--write-up-and-release) |
 
 | Gate | State | Owning packet |
 | --- | --- | --- |
 | RG1 Service admission | closed (R02) | R02 |
 | RG2 Route accounting | closed (R01) | R01 |
 | RG3 Release default | closed (R04) | R04 |
-| RG4 Measurement method | open (R00 scoped) | R05 |
+| RG4 Measurement method | closed (R05) | R05 |
 
 ## Handoff log (planning)
 
@@ -126,7 +126,27 @@ Complete 2026-10-11 (base `dbfacd4`). Evidence: `docs/evidence/final-r04-2026101
 - Limitations: 2.x installs in the wild keep the embedded profile until
   2027-10-07; laptop/Pi trials not reinstalled.
 
+## R05 — Measurement campaign
+
+Complete 2026-10-11 (base `8ef117d`). Evidence: `docs/evidence/final-r05-20261011/`.
+
+- Commands: `measure_netns.py`, five connectivity cells × 10 repetitions,
+  plus three bulk runs (throughput, chunks, faults), all success;
+  `summarize_r05.py`. Two discarded attempts (driver bugs; tmpfs quota) are
+  recorded.
+- Result: direct upgrade 10/10 on LAN (15 s), port-preserving NAT (73 s) and
+  public TCP (68 s); 0/10 on symmetric NAT and UDP-blocked (relay). Throughput
+  12.6 / 4.2 / 1.6 MiB/s (LAN / NAT QUIC / relay). Chunk tail append 4.6%,
+  prefix insertion 101.6%. SIGKILL resume refetched about 1.2 MB. Partition
+  converged to identical heads in 22 s. Roaming completed.
+- Limitations: emulation on one host with concurrent runs; physical cells
+  cited from W16 (single runs); hotspot/CGNAT, IPv6-only and fresh Pi samples
+  unexecuted; small-file sync slows as the folder grows (finding).
+
 ## Handoff log
+
+- 2026-10-11: R05 complete; RG4 closed. Owner approved the R06 VPS switch
+  (allowlist with the PC `orbit-trial` device, keep 2 TiB). Next: R06.
 
 - 2026-10-11: R04 complete; RG3 closed. PC `orbit-trial` runs the R04 owner
   build (`dbfacd4-dirty`, hosted). Next: R05 measurement (RG4). The rootless

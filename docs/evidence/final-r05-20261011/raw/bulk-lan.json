@@ -1,0 +1,157 @@
+{
+  "packet": "R05",
+  "cell": "lan",
+  "netem": "delay 20ms",
+  "phases": [
+    "chunks",
+    "resources",
+    "throughput"
+  ],
+  "reps": 0,
+  "started_at": 1791735839.3647695,
+  "success": true,
+  "results": {
+    "join_seconds": 43.665454171947204,
+    "resources_idle_b": {
+      "pid": 483369,
+      "name": "orbit",
+      "rss_kib": 35200,
+      "hwm_kib": 35200,
+      "cpu_seconds": 0.24,
+      "fds": 22,
+      "threads": 21
+    },
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "2",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "ICE_PROBE_DEFERRED",
+          "device": "28e97f6e4c15cf3b0b017941b2d167b1b3af9ff4003e551b475e35ea400cd30e",
+          "pin": "41c0606eb3b57c6b8571cb84cc44d0666063169c610821855fab2436600bc47b",
+          "purpose": "peer_data",
+          "route": "quic",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T16:24:46.583823347Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "settle_before_bulk": {
+      "route": "quic",
+      "seconds": 1.1104690260253847
+    },
+    "large": [
+      {
+        "seconds": 5.081093848100863,
+        "bytes": 67108864,
+        "routes": {
+          "quic": {
+            "requests": 72,
+            "received": 67118519
+          }
+        }
+      },
+      {
+        "seconds": 5.075949735939503,
+        "bytes": 67108864,
+        "routes": {
+          "quic": {
+            "requests": 73,
+            "received": 67119092
+          }
+        }
+      },
+      {
+        "seconds": 4.580501145101152,
+        "bytes": 67108864,
+        "routes": {
+          "quic": {
+            "requests": 74,
+            "received": 67119665
+          }
+        }
+      }
+    ],
+    "small": [
+      {
+        "seconds": 18.518285806989297,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 1101,
+            "received": 1632278
+          }
+        }
+      },
+      {
+        "seconds": 39.61940844601486,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 2229,
+            "received": 2189439
+          }
+        }
+      },
+      {
+        "seconds": 81.61319912190083,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 2289,
+            "received": 2201705
+          }
+        }
+      }
+    ],
+    "resources_after_b": {
+      "pid": 483369,
+      "name": "orbit",
+      "rss_kib": 46384,
+      "hwm_kib": 48852,
+      "cpu_seconds": 27.82,
+      "fds": 19,
+      "threads": 24
+    },
+    "chunk_base": {
+      "seconds": 47.057886393973604,
+      "bytes": 33554432,
+      "routes": {
+        "quic": {
+          "requests": 990,
+          "received": 34066396
+        }
+      }
+    },
+    "chunk_tail_append": {
+      "seconds": 31.359198641963303,
+      "bytes": 34603008,
+      "routes": {
+        "quic": {
+          "requests": 958,
+          "received": 1587139
+        }
+      }
+    },
+    "chunk_prefix_insert": {
+      "seconds": 42.4052866299171,
+      "bytes": 34603009,
+      "routes": {
+        "quic": {
+          "requests": 972,
+          "received": 35165999
+        }
+      }
+    }
+  },
+  "finished_at": 1791736168.4795678
+}

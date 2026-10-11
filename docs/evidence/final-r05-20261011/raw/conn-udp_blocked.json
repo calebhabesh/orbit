@@ -1,0 +1,436 @@
+{
+  "packet": "R05",
+  "cell": "udp_blocked",
+  "netem": "delay 20ms",
+  "phases": [
+    "doctor",
+    "reconnect",
+    "resources"
+  ],
+  "reps": 10,
+  "started_at": 1791706715.6367652,
+  "success": true,
+  "results": {
+    "join_seconds": 43.6733155149268,
+    "resources_idle_b": {
+      "pid": 3821648,
+      "name": "orbit",
+      "rss_kib": 34272,
+      "hwm_kib": 34272,
+      "cpu_seconds": 0.22,
+      "fds": 22,
+      "threads": 21
+    },
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "UNAVAILABLE",
+          "device": "06003dd9ac4c3b0c026d4fb9ac6de8c632a775f4a4ee9ea3034780fef748a8c7",
+          "pin": "e834481a382bb037706fdf284d7e45002d152a31adc1a53805a5329f3d395f23",
+          "purpose": "peer_data",
+          "route": "relay",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T08:19:23.166934983Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "doctor_b": {
+      "probes": [
+        {
+          "kind": "service_dns_tcp",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:27.313708147Z"
+        },
+        {
+          "kind": "service_tls",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:27.334365775Z"
+        },
+        {
+          "kind": "directory",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:19:27.376106524Z"
+        },
+        {
+          "kind": "direct_tls",
+          "code": "UNAVAILABLE",
+          "observed_at": "2026-10-11T08:19:27.376182499Z"
+        },
+        {
+          "kind": "relay_inner_tls",
+          "code": "QUOTA_EXCEEDED",
+          "observed_at": "2026-10-11T08:19:28.087198391Z"
+        },
+        {
+          "kind": "udp_stun",
+          "code": "UNAVAILABLE",
+          "observed_at": "2026-10-11T08:19:28.83828913Z"
+        }
+      ],
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "UNAVAILABLE",
+          "device": "06003dd9ac4c3b0c026d4fb9ac6de8c632a775f4a4ee9ea3034780fef748a8c7",
+          "pin": "e834481a382bb037706fdf284d7e45002d152a31adc1a53805a5329f3d395f23",
+          "purpose": "peer_data",
+          "route": "relay",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T08:19:23.166934983Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "a_candidates": [
+      [
+        "0",
+        "0",
+        "ICE_PROBE_DEFERRED"
+      ]
+    ],
+    "reconnect": [
+      {
+        "seconds": 3.5012748709414154,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 8,
+            "received": 265102
+          }
+        },
+        "first_sync_since_restart_seconds": 3.5742757559055462,
+        "upgraded_route": null,
+        "keepalive_transfers": 20,
+        "settled": {
+          "seconds": 6.001981938956305,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 40,
+              "received": 283002
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "ICE_PROBE_DEFERRED",
+        "rep_routes": {
+          "relay": {
+            "requests": 727,
+            "received": 42818860
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 4.50165361398831,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 31,
+            "received": 278089
+          }
+        },
+        "first_sync_since_restart_seconds": 4.566470733960159,
+        "upgraded_route": null,
+        "keepalive_transfers": 18,
+        "settled": {
+          "seconds": 6.002124693943188,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 63,
+              "received": 298968
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "ICE_PROBE_DEFERRED",
+        "rep_routes": {
+          "relay": {
+            "requests": 1512,
+            "received": 39077104
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 8.00245496199932,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 50,
+            "received": 289202
+          }
+        },
+        "first_sync_since_restart_seconds": 8.080847581033595,
+        "upgraded_route": null,
+        "keepalive_transfers": 19,
+        "settled": {
+          "seconds": 10.003173229983076,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 89,
+              "received": 315981
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 2382,
+            "received": 41671699
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 6.001940506976098,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 71,
+            "received": 301261
+          }
+        },
+        "first_sync_since_restart_seconds": 6.0739628239534795,
+        "upgraded_route": null,
+        "keepalive_transfers": 15,
+        "settled": {
+          "seconds": 6.001984518021345,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 87,
+              "received": 310447
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 1637,
+            "received": 32871252
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 18.50537799508311,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 89,
+            "received": 311708
+          }
+        },
+        "first_sync_since_restart_seconds": 18.58048812195193,
+        "upgraded_route": null,
+        "keepalive_transfers": 12,
+        "settled": {
+          "seconds": 12.003625157056376,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 233,
+              "received": 397184
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 2424,
+            "received": 27028260
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 19.005516839097254,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 300,
+            "received": 411426
+          }
+        },
+        "first_sync_since_restart_seconds": 19.074961047968827,
+        "upgraded_route": null,
+        "keepalive_transfers": 12,
+        "settled": {
+          "seconds": 7.502451742999256,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 115,
+              "received": 326549
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 3039,
+            "received": 27374319
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 20.50582984194625,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 230,
+            "received": 391525
+          }
+        },
+        "first_sync_since_restart_seconds": 20.579585694009438,
+        "upgraded_route": null,
+        "keepalive_transfers": 10,
+        "settled": {
+          "seconds": 17.504628677968867,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 251,
+              "received": 403527
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 2634,
+            "received": 22961640
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 25.50729690596927,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 379,
+            "received": 475998
+          }
+        },
+        "first_sync_since_restart_seconds": 25.578011472942308,
+        "upgraded_route": null,
+        "keepalive_transfers": 10,
+        "settled": {
+          "seconds": 16.50471320003271,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 253,
+              "received": 381451
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 3195,
+            "received": 23284122
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 10.002950437017716,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 141,
+            "received": 339888
+          }
+        },
+        "first_sync_since_restart_seconds": 10.085372123052366,
+        "upgraded_route": null,
+        "keepalive_transfers": 9,
+        "settled": {
+          "seconds": 16.504845864954405,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 277,
+              "received": 389547
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 2644,
+            "received": 20867946
+          }
+        },
+        "rep_direct_share": 0.0
+      },
+      {
+        "seconds": 18.505076529923826,
+        "bytes": 262144,
+        "routes": {
+          "relay": {
+            "requests": 153,
+            "received": 344664
+          }
+        },
+        "first_sync_since_restart_seconds": 18.583633825997822,
+        "upgraded_route": null,
+        "keepalive_transfers": 9,
+        "settled": {
+          "seconds": 21.00596941902768,
+          "bytes": 262144,
+          "routes": {
+            "relay": {
+              "requests": 322,
+              "received": 437549
+            }
+          }
+        },
+        "settled_observation": "relay",
+        "udp_code": "UNAVAILABLE",
+        "rep_routes": {
+          "relay": {
+            "requests": 3302,
+            "received": 21237892
+          }
+        },
+        "rep_direct_share": 0.0
+      }
+    ],
+    "resources_after_b": {
+      "pid": 3883459,
+      "name": "orbit",
+      "rss_kib": 41612,
+      "hwm_kib": 43544,
+      "cpu_seconds": 4.66,
+      "fds": 23,
+      "threads": 22
+    }
+  },
+  "finished_at": 1791708936.9083228
+}

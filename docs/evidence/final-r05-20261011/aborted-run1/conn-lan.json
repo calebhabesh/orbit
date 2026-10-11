@@ -1,0 +1,106 @@
+{
+  "packet": "R05",
+  "cell": "lan",
+  "netem": "delay 20ms",
+  "phases": [
+    "doctor",
+    "reconnect",
+    "resources"
+  ],
+  "reps": 10,
+  "started_at": 1791705859.4658988,
+  "success": false,
+  "results": {
+    "join_seconds": 51.44929474592209,
+    "resources_idle_b": {
+      "pid": 3790886,
+      "name": "orbit",
+      "rss_kib": 34388,
+      "hwm_kib": 34388,
+      "cpu_seconds": 0.28,
+      "fds": 22,
+      "threads": 21
+    },
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "ICE_PROBE_DEFERRED",
+          "device": "54d5a06fbd72b882783f10ebcb2986afa8ece440ad011bdff9b90fb1b8e6ec43",
+          "pin": "ae96b6a5c65958afc6c0099861b3bbd08b800b8fe22593e2dc94295e8bc8b833",
+          "purpose": "peer_data",
+          "route": "relay",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T08:05:17.560044959Z",
+          "generation": "5"
+        }
+      ]
+    },
+    "doctor_b": {
+      "probes": [
+        {
+          "kind": "service_dns_tcp",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:05:18.701369086Z"
+        },
+        {
+          "kind": "service_tls",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:05:18.722072819Z"
+        },
+        {
+          "kind": "directory",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:05:18.763868504Z"
+        },
+        {
+          "kind": "direct_tls",
+          "code": "UNAVAILABLE",
+          "observed_at": "2026-10-11T08:05:18.763938929Z"
+        },
+        {
+          "kind": "relay_inner_tls",
+          "code": "QUOTA_EXCEEDED",
+          "observed_at": "2026-10-11T08:05:18.931936561Z"
+        },
+        {
+          "kind": "udp_stun",
+          "code": "VERIFIED",
+          "observed_at": "2026-10-11T08:05:18.952206294Z"
+        }
+      ],
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "ICE_PROBE_DEFERRED",
+          "device": "54d5a06fbd72b882783f10ebcb2986afa8ece440ad011bdff9b90fb1b8e6ec43",
+          "pin": "ae96b6a5c65958afc6c0099861b3bbd08b800b8fe22593e2dc94295e8bc8b833",
+          "purpose": "peer_data",
+          "route": "relay",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T08:05:17.560044959Z",
+          "generation": "5"
+        }
+      ]
+    },
+    "a_candidates": [
+      [
+        "0",
+        "0",
+        "ICE_PROBE_DEFERRED"
+      ]
+    ]
+  },
+  "error": "OSError: [Errno 122] Disk quota exceeded",
+  "finished_at": 1791706415.6822278
+}

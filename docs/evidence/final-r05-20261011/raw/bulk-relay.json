@@ -1,0 +1,107 @@
+{
+  "packet": "R05",
+  "cell": "udp_blocked",
+  "netem": "delay 20ms",
+  "phases": [
+    "throughput"
+  ],
+  "reps": 0,
+  "started_at": 1791735879.3629537,
+  "success": true,
+  "results": {
+    "join_seconds": 41.62736134789884,
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "UNAVAILABLE",
+          "device": "7e987d32ffa2efe95931f7dd4a1e6866f196de5c748004f9aa44edceed069ebf",
+          "pin": "f15ba3cbbc8329e370324f55a2e87cffb364ffef99b0fa243b753a13b3bcb9f9",
+          "purpose": "peer_data",
+          "route": "relay",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-11T16:25:23.413982402Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "settle_before_bulk": {
+      "route": null,
+      "seconds": 195.41885137499776
+    },
+    "large": [
+      {
+        "seconds": 39.109105480019934,
+        "bytes": 67108864,
+        "routes": {
+          "relay": {
+            "requests": 91,
+            "received": 67129496
+          }
+        }
+      },
+      {
+        "seconds": 39.59028000908438,
+        "bytes": 67108864,
+        "routes": {
+          "relay": {
+            "requests": 92,
+            "received": 67126040
+          }
+        }
+      },
+      {
+        "seconds": 40.10324585007038,
+        "bytes": 67108864,
+        "routes": {
+          "relay": {
+            "requests": 93,
+            "received": 67130648
+          }
+        }
+      }
+    ],
+    "small": [
+      {
+        "seconds": 102.71872588794213,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "relay": {
+            "requests": 1029,
+            "received": 1641695
+          }
+        }
+      },
+      {
+        "seconds": 162.96217010193504,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "relay": {
+            "requests": 1868,
+            "received": 2102261
+          }
+        }
+      },
+      {
+        "seconds": 193.63497102598194,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "relay": {
+            "requests": 2552,
+            "received": 2556264
+          }
+        }
+      }
+    ]
+  },
+  "finished_at": 1791736700.334658
+}

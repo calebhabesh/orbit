@@ -122,8 +122,17 @@ class Device:
         return r
 
     def start(self):
+        # The CLI launcher may have started a detached daemon for this state;
+        # stop it so the supervised process is the one that owns the state.
+        self.cli('stop', check=False)
         self.proc = self.ns.popen([self.orbit_bin, 'serve', '--state', str(self.state), '--control-listen', '127.0.0.1:0'], self.env, self.log)
-        wait(self.name + ' control', lambda: self.query('capabilities'), 30)
+        wait(self.name + ' control', lambda: self.proc.poll() is None and self.agent_pid() == self.proc.pid and self.query('capabilities'), 30)
+
+    def agent_pid(self):
+        try:
+            return int((self.state / '.agent.pid').read_text().strip())
+        except (OSError, ValueError):
+            return None
 
     def stop(self):
         if self.proc and self.proc.poll() is None:
@@ -273,6 +282,7 @@ def inner(args):
                 p.kill()
         for n in ns.values():
             n.holder.kill()
+            n.holder.wait()
         out['finished_at'] = time.time()
         Path(args.out).write_text(json.dumps(out, indent=2))
     return 0 if out['success'] else 1
