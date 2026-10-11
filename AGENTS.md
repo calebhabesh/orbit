@@ -1,11 +1,11 @@
 # Implementation guidance
 
-**Current selected work (2026-10-11): final scope — private service, measurement
-and write-up.** Start with [the final plan](docs/orbit-final-implementation-plan.md)
-and [its tracker](docs/implementation/final-status.md), then implement the first
-eligible R packet (initially R00) when assigned a build task. Either 6.1 Sol Medium
-or 3.8 Flash High can implement any eligible R packet. Change the hosted
-`orbit-net` deployment only with explicit owner confirmation.
+**Final scope complete (2026-10-11): private service, measurement and
+write-up.** All packets R00–R06 in [the final plan](docs/orbit-final-implementation-plan.md)
+are delivered ([tracker](docs/implementation/final-status.md)). There is no
+eligible packet; new work needs owner direction. Public builds carry no service
+(owner builds use `-tags orbit_hosted`). The hosted `orbit-net` admits only
+allowlisted owner devices; change it only with explicit owner confirmation.
 
 The [onboarding plan](docs/orbit-onboarding-implementation-plan.md) (E00–E13,
 [tracker](docs/implementation/onboarding-status.md)), WAN, terminal and P/O

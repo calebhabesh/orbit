@@ -1,0 +1,22 @@
+== PC
+(eval):cd:2: no such file or directory: <scratch>/r06/pkg/pc/desktop/\n<scratch>/r06/pkg/pc/icons/\n<scratch>/r06/pkg/pc/share/\n<scratch>/r06/pkg/pc/systemd/
+Orbit Personal File Manager v2.2.0
+== laptop
+zsh:cd:1: too many arguments
+Orbit Personal File Manager v2.2.0
+== rpi
+Unpacking orbit (2.4.0) over (2.2.0) ...
+Setting up orbit (2.4.0) ...
+Orbit Personal File Manager v2.4.0
+== PC (retry)
+2. Check service and status: orbit status
+3. Choose manual, login, or unattended startup; see the installed runbooks.
+4. Review existing state/units before enabling startup; no service is enabled by installation.
+Orbit Personal File Manager v2.4.0
+== laptop (retry)
+zsh:cd:1: no such file or directory: /tmp/orbit-240
+Orbit Personal File Manager v2.2.0
+== laptop (retry 2)
+3. Choose manual, login, or unattended startup; see the installed runbooks.
+4. Review existing state/units before enabling startup; no service is enabled by installation.
+Orbit Personal File Manager v2.4.0

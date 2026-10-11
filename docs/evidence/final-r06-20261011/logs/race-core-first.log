@@ -1,0 +1,28 @@
+ok  	github.com/calebhabesh/orbit/cmd/orbit	5.951s
+WARNING: DATA RACE
+WARNING: DATA RACE
+WARNING: DATA RACE
+--- FAIL: TestFinalR02BinarySIGHUPReloadsAllowlist (0.34s)
+FAIL
+FAIL	github.com/calebhabesh/orbit/cmd/orbit-net	0.483s
+ok  	github.com/calebhabesh/orbit/internal/config	1.617s
+ok  	github.com/calebhabesh/orbit/internal/control	592.041s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	1.045s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	1.012s
+ok  	github.com/calebhabesh/orbit/internal/history	1.009s
+ok  	github.com/calebhabesh/orbit/internal/network	125.781s
+ok  	github.com/calebhabesh/orbit/internal/pairing	1.018s
+ok  	github.com/calebhabesh/orbit/internal/protocol	1.239s
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	304.753s
+ok  	github.com/calebhabesh/orbit/internal/replication	197.264s
+ok  	github.com/calebhabesh/orbit/internal/repository	68.703s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	19.809s
+ok  	github.com/calebhabesh/orbit/internal/state	1.012s
+ok  	github.com/calebhabesh/orbit/internal/terminal	15.613s
+ok  	github.com/calebhabesh/orbit/internal/testkit	1.006s
+ok  	github.com/calebhabesh/orbit/internal/workspace	23.782s
+ok  	github.com/calebhabesh/orbit/model	2.819s
+ok  	github.com/calebhabesh/orbit/tests/integration	133.089s
+ok  	github.com/calebhabesh/orbit/tests/designgates	1.687s
+ok  	github.com/calebhabesh/orbit/tests/faults	37.849s
+FAIL

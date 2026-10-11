@@ -1,0 +1,8 @@
+Policy operation: 7ea59579b55d72cb7ab5145ac879f257adeb97a9549864b538bdbd0b309fee02; state=completed
+status SERVICE_UNAVAILABLE
+status NOT_ADMITTED
+action: This Orbit service serves only its operator's listed devices; ask the operator to add this device (orbit-net devices add), or use Local network or your own service. LAN connections still work.
+orbit_net_refusals_total{reason="not_admitted"} 1
+# HELP orbit_net_admission_allowed_devices Devices on the admission allowlist (limit 64; 0 when open).
+# TYPE orbit_net_admission_allowed_devices gauge
+orbit_net_admission_allowed_devices 1

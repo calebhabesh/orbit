@@ -1,0 +1,8 @@
+== make check 17:20:58
+check exit=0
+== test-race-core 18:01:32
+race-core exit=2
+== test-terminal-release 18:11:25
+terminal-release exit=0
+== demo 18:13:54
+demo exit=0

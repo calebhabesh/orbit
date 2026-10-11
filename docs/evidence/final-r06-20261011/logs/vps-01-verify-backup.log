@@ -1,0 +1,11 @@
+== verify
+86ef652bad95cddc4da2e06b3687ebf2f33d588207675d9ae362985169e97ca4
+orbit-net 1.2.0 (11b17da, 2026-10-11)
+== backups
+-rw------- 1 orbit-net orbit-net      627 Oct  8 17:39 /etc/orbit-net/serve.json.bak-20261011
+-rwxr-xr-x 1 root      root      12516598 Oct  8 17:39 /usr/local/bin/orbit-net.bak-20261011
+-rwxr-xr-x 1 root      root      12516598 Oct  8 17:39 /usr/local/lib/orbit-net-alert/orbit-net.bak-20261011
+d559069b64d7eaa4  /usr/local/bin/orbit-net
+d559069b64d7eaa4  /usr/local/bin/orbit-net.bak-20261011
+c96dd869f259a76e  /etc/orbit-net/serve.json
+c96dd869f259a76e  /etc/orbit-net/serve.json.bak-20261011

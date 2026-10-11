@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"testing"
 	"time"
@@ -18,6 +19,23 @@ import (
 	"github.com/calebhabesh/orbit/internal/rendezvous"
 	"github.com/calebhabesh/orbit/internal/testkit"
 )
+
+// lockedBuffer collects a child's output; os/exec copies into it concurrently.
+type lockedBuffer struct {
+	mu sync.Mutex
+	b  bytes.Buffer
+}
+
+func (l *lockedBuffer) Write(p []byte) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.Write(p)
+}
+func (l *lockedBuffer) String() string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.String()
+}
 
 func r02Hex(b byte) string { return strings.Repeat(fmt.Sprintf("%02x", b), 32) }
 
@@ -174,7 +192,7 @@ func TestFinalR02BinarySIGHUPReloadsAllowlist(t *testing.T) {
 	if err := testkit.ValidateDestructiveTarget(root, binary); err != nil {
 		t.Fatal(err)
 	}
-	var logs bytes.Buffer
+	var logs lockedBuffer
 	cmd := exec.Command(binary, "serve", "--config", cfg)
 	cmd.Stderr, cmd.Stdout = &logs, &logs
 	if err := cmd.Start(); err != nil {
@@ -275,7 +293,7 @@ func TestFinalR02OldClientAgainstAllowlist(t *testing.T) {
 			if err := testkit.ValidateDestructiveTarget(root, binary); err != nil {
 				t.Fatal(err)
 			}
-			var logs bytes.Buffer
+			var logs lockedBuffer
 			service := exec.Command(binary, "serve", "--config", cfg)
 			service.Stderr = &logs
 			if err := service.Start(); err != nil {

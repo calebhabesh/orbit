@@ -9,7 +9,9 @@
 
 **Peer-to-peer file sync for Linux, with its own sync engine, a keyboard TUI
 and cross-network connectivity without a VPN.** Written in Go, with SQLite for
-causal history.
+causal history. It is a finished distributed systems and networking project,
+free to use and to operate, not a hosted product: run it on your LAN, or run
+your own connection service with one command.
 
 ## The problem
 
@@ -31,8 +33,30 @@ interrupted transfer or crash never leaves a half-written file behind.
   with mutual TLS and approved with a verification code before they can sync.
 - **Works across networks:** direct LAN, TCP or QUIC-over-ICE paths first, an
   encrypted relay as fallback that only ever sees ciphertext, and a small
-  operated connection service (`orbit-net`) with signed, expiring profiles.
-  Self-hosting is supported.
+  connection service (`orbit-net`) with signed, expiring profiles and an
+  allowlist of your devices. `orbit-net init` sets one up; each device counts
+  how much of its traffic went direct versus relayed.
+
+## Try it
+
+On one LAN: install a package from the
+[Releases page](https://github.com/calebhabesh/orbit/releases) on two Linux
+devices and run `orbit`. Create an Orbit on one; on the other choose Join and
+paste the invitation code. A fresh install uses the **Local network**. Orbit
+2.4 includes no hosted service.
+
+Across networks, run your own service on any reachable host:
+
+```sh
+orbit-net init --dir ~/orbit-service --origin https://203.0.113.10:8443 --stun 203.0.113.10:3478
+# on each device (files copied from the service directory):
+orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem
+# on the service host, for each device's "device=… pin=…" line from `orbit status`:
+orbit-net devices add --config ~/orbit-service/serve.json 'device=… pin=…'
+orbit-net serve --config ~/orbit-service/serve.json
+```
+
+See [Run your own Orbit service](docs/orbit-net-operator.md#run-your-own-orbit-service).
 
 ## Architecture
 
@@ -67,13 +91,19 @@ model and the measured tradeoffs.
 - **Failure testing:** 16 abrupt VM-reset cases and five storage-failure cases
   keep protected file hashes intact ([reset](docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/reset/abrupt-reset.json),
   [disk full](docs/evidence/terminal-t13-20261004/reproduction-final-candidate/clean-release/disk-full/abrupt-reset.json)).
+- **Emulated network matrix (10 repetitions per cell):** direct upgrade 10/10
+  on a LAN, through port-preserving NAT (QUIC hole punching) and to a public TCP
+  peer; 0/10 through symmetric NAT or blocked UDP, which stay on the relay. The
+  first sync after a restart was always relayed. 64 MiB moved at 12.6 / 4.2 /
+  1.6 MiB/s over LAN QUIC / NAT QUIC / relay ([R05 record](docs/evidence/final-r05-20261011/summary.md)).
 - **Chunk reuse:** a tail edit to a 1 GiB file fetched one 1 MiB chunk and
   reused 1,023. This is one workload, not a general speedup; the
   [measurements](docs/evidence/release-20261001/measured-results.md) also
   record cases where a full-file baseline did better.
 
-Timings come from one home network and one cloud region. School, corporate,
-CGNAT and IPv6-only networks were not tested.
+Physical timings come from one home network and one cloud region; the
+repeated cells are emulated in network namespaces on one host. School,
+corporate, CGNAT and IPv6-only networks were not tested.
 
 ## Design boundaries
 

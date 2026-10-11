@@ -1,0 +1,24 @@
+== restart 2026-10-11T16:43:52Z
+active
+NRestarts=0
+ActiveEnterTimestamp=Sun 2026-10-11 16:43:52 UTC
+Stopped orbit-net.service - Orbit connection service.
+orbit-net.service: Consumed 5min 38.853s CPU time, 11.0M memory peak, 0B memory swap peak.
+Starting orbit-net.service - Orbit connection service...
+orbit-net: configuration valid for https://connect.calebhabesh.com:8443, profile epoch 2 (release) until 2027-10-07T16:41:45Z; admission allowlist (1 devices)
+Started orbit-net.service - Orbit connection service.
+orbit-net: serving https://connect.calebhabesh.com:8443 on 10.0.0.187:8443 (profile epoch 2, release)
+== metrics
+orbit_net_build_info{version="1.2.0"} 1
+orbit_net_profile_valid{epoch="1"} 1
+orbit_net_profile_valid{epoch="2"} 1
+orbit_net_directory_records 2
+orbit_net_controls 2
+orbit_net_refusals_total{reason="not_admitted"} 0
+orbit_net_admission_allowlist 1
+orbit_net_admission_allowed_devices 1
+orbit_net_admission_reloads_total 0
+orbit_net_admission_reload_failures_total 0
+orbit_net_relay_month_bytes 6335236
+orbit_net_relay_month_limit_bytes 2199023255552
+healthz 200

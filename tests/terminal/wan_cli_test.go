@@ -498,8 +498,9 @@ func TestWANW06BinaryGuidedFirstDevice(t *testing.T) {
 		t.Fatal("missing guided setup operation")
 	}
 	w06Wait(t, dir, result.Operation.ID)
+	// R04: a build without a packaged service guides to Local network.
 	policy, err := config.LoadNetworkPolicy(dir)
-	if err != nil || policy.Mode != "automatic" || !policy.AwaitingProfile {
+	if err != nil || policy.Mode != "local_only" || policy.AwaitingProfile || !policy.LANAdvertising {
 		t.Fatal(policy, err)
 	}
 }

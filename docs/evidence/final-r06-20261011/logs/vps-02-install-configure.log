@@ -1,0 +1,14 @@
+== install binaries
+orbit-net 1.2.0 (11b17da, 2026-10-11)
+orbit-net 1.2.0 (11b17da, 2026-10-11)
+== serve.json: add admission
+admission allowlist relay_month_bytes 2199023255552
+== allowlist
+1 allowed device(s) in /etc/orbit-net/allowed-devices.json; reload the service (systemctl reload orbit-net) to apply
+1 allowed device(s) in /etc/orbit-net/allowed-devices.json
+device=350b0105ac496681d87ae7d93a0c3a994f1b9425e5e70adbc1c41dd9dac2fe0a pin=b973c61e8fd4d7553d4897ca72fca675f5c9a6a241854ee39df1e44b634d03ff CalebPC-orbit-trial
+-rw------- 1 orbit-net orbit-net 255 Oct 11 16:43 /etc/orbit-net/allowed-devices.json
+-rw------- 1 orbit-net orbit-net 720 Oct 11 16:43 /etc/orbit-net/serve.json
+== check
+orbit-net: warning: relay_state is not set and no StateDirectory is available; the monthly relay count restarts at zero with the service
+orbit-net: configuration valid for https://connect.calebhabesh.com:8443, profile epoch 2 (release) until 2027-10-07T16:41:45Z; admission allowlist (1 devices)

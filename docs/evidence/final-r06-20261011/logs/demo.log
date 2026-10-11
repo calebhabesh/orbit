@@ -1,0 +1,12 @@
+[Step 5] Operator performs reviewed conflict resolution via CLI
+       Resolving 'architecture.md' by selecting Head 1 with token b5b6baf43995...
+       ✓ Resolution committed atomically to causal version DAG
+       ✓ Both Node A and Node B converged with 0 remaining conflicts
+
+[Step 6] Demonstration complete: Clean process shutdown and disposable teardown
+       ✓ All invariants verified: authenticated TLS, verified chunk transfer,
+       ✓ causal concurrency preservation, reviewed resolution, and convergence.
+
+[PASS] Local multi-process demo completed successfully.
+
+       Cleaning up disposable environment: /tmp/orbit-demo-<n>

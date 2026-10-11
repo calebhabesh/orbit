@@ -1,0 +1,8 @@
+--- PASS: TestTerminalT13LargeDirectoryAndStreamedMergeResources (31.03s)
+--- PASS: TestTerminalT13NativeHarnessRefusesUnsafeActions (0.05s)
+--- PASS: TestTerminalT13StatusKeepsRunningAndStartupSeparate (0.37s)
+--- PASS: TestTerminalT13ReadinessRetainsQuarantineAndConcurrentHeads (0.43s)
+--- PASS: TestTerminalT13RetiredIdentityApprovalHasRecoveryAction (13.82s)
+--- PASS: TestTerminalT13ReplacementBootstrapsRetiredHistory (26.08s)
+PASS
+ok  	github.com/calebhabesh/orbit/tests/terminal	147.171s
