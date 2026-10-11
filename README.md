@@ -137,6 +137,11 @@ alternatives. The [networking guide](docs/runbooks/networking.md) lists the
 networks tested, who runs the service, what it can see, and when its profile
 expires.
 
+To run the connection service yourself, `orbit-net init --dir DIR --origin
+https://HOST:8443` creates a complete self-hosted service: keys, signed profile,
+TLS, budgets and an allowlist of your devices. It prints the one command each
+device runs. See [Run your own Orbit service](docs/orbit-net-operator.md#run-your-own-orbit-service).
+
 Use the TUI's Create/Join forms to review existing contents, finite budgets and
 the connection service's operator and privacy text. On the inviter, Add device creates
 a private invitation; the receiver submits a request, and the owner compares the

@@ -1,0 +1,13 @@
+scripts/quick_check.sh
+changes since HEAD: 10 file(s)
+
+== build (0s)
+CGO_ENABLED=0 go build  -trimpath -ldflags '-X main.version=2.3.0 -X main.commit=618a886 -X main.date=2026-10-09' -o bin/orbit ./cmd/orbit
+
+== gofmt (0s)
+
+== vet ./cmd/orbit-net (0s)
+
+== test -short ./cmd/orbit-net (0s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	0.331s
+quick check passed in 1s

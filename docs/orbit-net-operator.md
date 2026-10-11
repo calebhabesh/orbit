@@ -14,6 +14,45 @@ their side is one reviewed command (see [Self-hosted devices](#self-hosted-devic
 | Operator (provisioning) | Host, DNS, TLS, firewall, keys, signed profile, monitoring, rotation, incidents |
 | Device owner (installation) | Install Orbit; for self-hosting, review the operator's profile and CA once per device |
 
+## Run your own Orbit service
+
+The short path (R03) for one person's devices on a host they control. A home
+server, a small VPS or a LAN machine all work. The rest of this guide is the
+full reference.
+
+```sh
+orbit-net init --dir ~/orbit-service --origin https://203.0.113.10:8443 --stun 203.0.113.10:3478
+```
+
+`init` creates an owner-only directory holding the files below, then checks
+the result the way `serve --check` does:
+
+- an Ed25519 profile authority (in `offline/`: move it off the host and back it
+  up, since you need it to sign the next epoch);
+- a service key and a signed `self_hosted` profile (one year);
+- a self-signed TLS certificate for the host, or your own via
+  `--tls-cert/--tls-key`;
+- `service-ca.pem` for devices to review;
+- `serve.json` with personal budgets (4 MiB/s relay, 200 GiB/month) and
+  allowlist admission.
+
+It prints the next steps:
+
+1. Copy `profile.json` and `service-ca.pem` to each device and run
+   `orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem`.
+2. Read each device's identity line (`device=… pin=…`) from `orbit status` and
+   run `orbit-net devices add --config …/serve.json '<line>'` (the first device
+   before starting; later ones after they pair, see [Admission](#admission-serve-only-your-devices)).
+3. `orbit-net serve --config …/serve.json --check`, then
+   `orbit-net serve --config …/serve.json`. Alternatively, install the files
+   under `/etc/orbit-net` (`init --config-dir /etc/orbit-net` writes those
+   paths) and use the packaged unit.
+
+Open the HTTPS port over TCP and, with `--stun`, the STUN port over UDP. Only
+devices on your allowlist get anything beyond pairing. Egress is bounded by
+`relay_month_bytes`; relayed data is end-to-end encrypted. Behind 1:1 NAT
+(cloud private addresses), add `--listen <private-ip>:8443 --stun-bind <private-ip>:3478`.
+
 ## What you need
 
 - A Linux host (amd64 or arm64) with systemd, reachable from the devices. For a

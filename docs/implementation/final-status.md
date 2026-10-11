@@ -1,6 +1,6 @@
 # Final-scope status
 
-Updated: 2026-10-11. **R00–R02 complete (milestone M1 check passed); R03 and R04 eligible.** The [plan](../orbit-final-implementation-plan.md),
+Updated: 2026-10-11. **R00–R03 complete (M1 check passed); R04 eligible.** The [plan](../orbit-final-implementation-plan.md),
 [packets](final-packets.md) and [gates](final-gates.md) form the handoff.
 
 Current deployment for reference: hosted `orbit-net` 1.1.0 serves any device,
@@ -15,7 +15,7 @@ as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
 | R00 Baseline/interim cap | complete (cap not applied, owner's choice) | repository | [R00](final-packets.md#r00--baseline-interim-protection-and-gate-scoping) |
 | R01 Route accounting | complete | R00 | [R01](final-packets.md#r01--route-accounting-rg2) |
 | R02 Service allowlist | complete | R00 | [R02](final-packets.md#r02--service-admission-allowlist-rg1) |
-| R03 One-command self-hosting | eligible | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
+| R03 One-command self-hosting | complete | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
 | R04 No default service | eligible | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
 | R05 Measurement | blocked on R01, R04 | R01, R04 | [R05](final-packets.md#r05--measurement-campaign-rg4) |
 | R06 Write-up/release | blocked on R03, R05 | R03, R05 | [R06](final-packets.md#r06--write-up-and-release) |
@@ -96,7 +96,26 @@ Complete 2026-10-11 (base `86678f2`). Evidence: `docs/evidence/final-r02-2026101
   bootstrap through the service waits for the operator's `devices add`; the
   VPS still runs open 1.1.0 (R06).
 
+## R03 — One-command self-hosting
+
+Complete 2026-10-11 (base `618a886`). Evidence: `docs/evidence/final-r03-20261011/`.
+
+- Commands: `TestFinalR03*` (pass); `scripts/validation/selfhost_netns.py`
+  rootless namespace runs with and without the A↔B drop (both pass);
+  `make quick` (pass).
+- Result: `orbit-net init` creates a complete owner-only self-hosted service
+  and prints the device and allowlist steps. Two fresh devices with direct
+  paths blocked joined (38 s) and synced both ways through it, 100% relay.
+- Limitations: one host in namespaces; with private addressing the directory
+  publishes no direct candidates, so the drop rules were not exercised;
+  certificate renewal and unit install are manual.
+
 ## Handoff log
+
+- 2026-10-11: R03 complete. Next: R04 (no default service, RG3). Plan: split
+  the embedded profile behind a build tag (`orbit_hosted` for owner builds),
+  report `NO_SERVICE_CONFIGURED` with the self-hosting step, default fresh
+  setup to Local network, and give short pairing codes a clear error.
 
 - 2026-10-11: R02 complete; RG1 closed; `make check` passed. Next: R03
   (`orbit-net init` drafted: `cmd/orbit-net/init.go`, unit tests, rootless

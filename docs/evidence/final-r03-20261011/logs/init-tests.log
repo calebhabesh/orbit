@@ -1,0 +1,3 @@
+--- PASS: TestFinalR03InitCreatesCheckedService (0.00s)
+--- PASS: TestFinalR03InitRefusesBadInputs (0.00s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	0.004s

@@ -1,0 +1,287 @@
+{
+  "packet": "R03",
+  "started_at": 1791702706.419074,
+  "block_direct": false,
+  "netem": "",
+  "success": true,
+  "steps": {
+    "init": {
+      "seconds": 0.0031398789724335074,
+      "stdout": "Created a self-hosted Orbit service in <scratch>/r03run2/svc\n  profile.json          signed self_hosted profile, epoch 1, digest 16f3d0c7019a67752831f7135b67c23999bf3179ea2e1f6d30f2b46837991f53, expires 2027-10-11\n  service.key           online service key (stays on the host)\n  tls/cert.pem, key.pem TLS pair for 10.77.0.2\n  service-ca.pem        service-ca.pem (the self-signed certificate devices trust for this service only)\n  serve.json            personal budgets (4 MiB/s relay, 200 GiB/month), admission allowlist\n  offline/authority.key profile authority: move it OFF this host and back it up (needed for the next epoch)\n\nPorts: 8443/tcp for HTTPS/WSS and 3478/udp for STUN. Devices reach the service at https://10.77.0.2:8443.\n\n1. On each of your devices (profile.json and the CA file copied, owner-only):\n     orbit network set --mode self_hosted --profile-file profile.json --service-roots service-ca.pem\n   then read its identity line (\"device=... pin=...\") from: orbit status\n\n2. Allow each device (the first one before starting):\n     orbit-net devices add --config <scratch>/r03run2/svc/serve.json 'device=<64 hex> pin=<64 hex>'\n\n3. Check and start:\n     orbit-net serve --config <scratch>/r03run2/svc/serve.json --check\n     orbit-net serve --config <scratch>/r03run2/svc/serve.json\n   (or install serve.json and its files under /etc/orbit-net and use the orbit-net unit;\n    see \"Run your own Orbit service\" in orbit-net-operator.md)\n",
+      "modes": {
+        "offline": "0o700",
+        "offline/authority.key": "0o600",
+        "profile.json": "0o600",
+        "serve.json": "0o600",
+        "service-ca.pem": "0o600",
+        "service.key": "0o600",
+        "tls": "0o700",
+        "tls/cert.pem": "0o600",
+        "tls/key.pem": "0o600"
+      }
+    },
+    "check_before_devices": {
+      "returncode": 1,
+      "stderr": "orbit-net: read allowed_devices_file: no such file or directory\n"
+    },
+    "devices_add": [
+      "1 allowed device(s) in <scratch>/r03run2/svc/allowed-devices.json; reload the service (systemctl reload orbit-net) to apply",
+      "2 allowed device(s) in <scratch>/r03run2/svc/allowed-devices.json; reload the service (systemctl reload orbit-net) to apply"
+    ],
+    "check": "orbit-net: warning: serving a self_hosted profile; clients must review it explicitly with custom trust\norbit-net: configuration valid for https://10.77.0.2:8443, profile epoch 1 (self_hosted) until 2027-10-11T07:11:47Z; admission allowlist (2 devices)",
+    "ready_seconds": 0.07631428400054574,
+    "join_seconds": 42.662420197040774,
+    "a_to_b_seconds": 5.404301919043064e-05,
+    "b_to_a_8mib_seconds": 7.572295735008083
+  },
+  "nft": [],
+  "routes": {
+    "a": {
+      "code": "SERVICE_READY",
+      "observations": [
+        "relay"
+      ],
+      "route_usage": [
+        {
+          "device": "709a699a1785293be3fe0bdc6bd4718e5f9a2864af2660c1eee1349dfd4e1e3d",
+          "purpose": "peer_data",
+          "window": "24h",
+          "since": "2026-10-10T07:00:00Z",
+          "routes": [
+            {
+              "route": "lan",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "wan_tcp",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "quic",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "relay",
+              "requests": "15",
+              "bytes_sent": "6493",
+              "bytes_received": "8392257"
+            }
+          ]
+        },
+        {
+          "device": "709a699a1785293be3fe0bdc6bd4718e5f9a2864af2660c1eee1349dfd4e1e3d",
+          "purpose": "peer_data",
+          "window": "30d",
+          "since": "2026-09-11T00:00:00Z",
+          "routes": [
+            {
+              "route": "lan",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "wan_tcp",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "quic",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "relay",
+              "requests": "15",
+              "bytes_sent": "6493",
+              "bytes_received": "8392257"
+            }
+          ]
+        }
+      ]
+    },
+    "b": {
+      "code": "SERVICE_READY",
+      "observations": [
+        "relay"
+      ],
+      "route_usage": [
+        {
+          "device": "4b716af6f4c4f86d892049b06417bce653f19ed4956b7201cc610fce663173e6",
+          "purpose": "enrollment",
+          "window": "24h",
+          "since": "2026-10-10T07:00:00Z",
+          "routes": [
+            {
+              "route": "lan",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "wan_tcp",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "quic",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "relay",
+              "requests": "4",
+              "bytes_sent": "3795",
+              "bytes_received": "2428"
+            }
+          ]
+        },
+        {
+          "device": "4b716af6f4c4f86d892049b06417bce653f19ed4956b7201cc610fce663173e6",
+          "purpose": "peer_data",
+          "window": "24h",
+          "since": "2026-10-10T07:00:00Z",
+          "routes": [
+            {
+              "route": "lan",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "wan_tcp",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "quic",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "relay",
+              "requests": "29",
+              "bytes_sent": "13545",
+              "bytes_received": "10360"
+            }
+          ]
+        },
+        {
+          "device": "4b716af6f4c4f86d892049b06417bce653f19ed4956b7201cc610fce663173e6",
+          "purpose": "enrollment",
+          "window": "30d",
+          "since": "2026-09-11T00:00:00Z",
+          "routes": [
+            {
+              "route": "lan",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "wan_tcp",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "quic",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "relay",
+              "requests": "4",
+              "bytes_sent": "3795",
+              "bytes_received": "2428"
+            }
+          ]
+        },
+        {
+          "device": "4b716af6f4c4f86d892049b06417bce653f19ed4956b7201cc610fce663173e6",
+          "purpose": "peer_data",
+          "window": "30d",
+          "since": "2026-09-11T00:00:00Z",
+          "routes": [
+            {
+              "route": "lan",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "wan_tcp",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "quic",
+              "requests": "0",
+              "bytes_sent": "0",
+              "bytes_received": "0"
+            },
+            {
+              "route": "relay",
+              "requests": "29",
+              "bytes_sent": "13545",
+              "bytes_received": "10360"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "service_metrics": [
+    "orbit_net_build_info{version=\"dev\"} 1",
+    "orbit_net_profile_expiry_seconds{epoch=\"1\"} 31535948",
+    "orbit_net_profile_valid{epoch=\"1\"} 1",
+    "orbit_net_certificate_expiry_seconds 31535947",
+    "orbit_net_certificate_reloads_total 0",
+    "orbit_net_certificate_reload_failures_total 0",
+    "orbit_net_connections_active 12",
+    "orbit_net_connections_refused_total 0",
+    "orbit_net_directory_records 4",
+    "orbit_net_sessions 3",
+    "orbit_net_relay_sessions 3",
+    "orbit_net_controls 4",
+    "orbit_net_websockets_pending 10",
+    "orbit_net_challenges 0",
+    "orbit_net_rate_keys 2",
+    "orbit_net_source_buckets 2",
+    "orbit_net_refusals_total{reason=\"quota\"} 0",
+    "orbit_net_refusals_total{reason=\"invalid\"} 0",
+    "orbit_net_refusals_total{reason=\"expired\"} 0",
+    "orbit_net_refusals_total{reason=\"untrusted\"} 0",
+    "orbit_net_refusals_total{reason=\"budget\"} 0",
+    "orbit_net_refusals_total{reason=\"not_admitted\"} 0",
+    "orbit_net_refusals_total{reason=\"other\"} 0",
+    "orbit_net_admission_allowlist 1",
+    "orbit_net_admission_allowed_devices 2",
+    "orbit_net_admission_reloads_total 0",
+    "orbit_net_admission_reload_failures_total 0",
+    "orbit_net_relay_bytes_total 8474731",
+    "orbit_net_relay_month_bytes 8460142",
+    "orbit_net_relay_month_limit_bytes 214748364800",
+    "orbit_net_relay_limit_bytes_per_second 4194304",
+    "orbit_net_relay_device_limit_bytes_per_second 2097152",
+    "orbit_net_stun_answered_total 2",
+    "orbit_net_stun_dropped_total{reason=\"rate\"} 0",
+    "orbit_net_stun_dropped_total{reason=\"invalid\"} 0",
+    "orbit_net_stun_dropped_total{reason=\"table_full\"} 0"
+  ],
+  "finished_at": 1791702759.580801
+}

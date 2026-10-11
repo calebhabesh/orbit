@@ -31,6 +31,8 @@ func run(args []string, out, errOut io.Writer) error {
 	switch args[0] {
 	case "serve":
 		return serve(args[1:], errOut)
+	case "init":
+		return initService(args[1:], out, errOut)
 	case "keygen":
 		return keygen(args[1:], out, errOut)
 	case "key":
@@ -66,6 +68,9 @@ func run(args []string, out, errOut io.Writer) error {
 const usage = `orbit-net operates Orbit's connection service.
 
 Commands:
+  init --dir DIR --origin https://HOST[:PORT] [--stun IP:PORT]
+                                 create a complete self-hosted service (keys,
+                                 profile, TLS, serve.json) and print the steps
   serve --config FILE [--check]   run rendezvous/relay (and optional STUN)
   keygen --out FILE               create an Ed25519 key; prints its public key
   key verify --file FILE --authority HEX
