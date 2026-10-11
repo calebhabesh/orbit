@@ -23,6 +23,10 @@ import (
 // against the production Service on a local TLS listener; nothing here
 // contacts an operated service.
 
+// readyDeadline bounds waits for eventual readiness; the measured times are
+// logged, not asserted.
+const readyDeadline = 90 * time.Second
+
 func r00Runtime(t *testing.T, f *fixture, id int) (*network.RelayRuntime, device) {
 	t.Helper()
 	d := identity(t, id, nil)
@@ -81,7 +85,9 @@ func TestFinalR00IdleDeviceControlCost(t *testing.T) {
 	})
 	liveClock(t, f)
 	r, _ := r00Runtime(t, f, 1)
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	// Generous: the race-core CI job runs every package's race-instrumented
+	// tests at once, and a starved runtime can take tens of seconds.
+	ctx, cancel := context.WithTimeout(context.Background(), readyDeadline)
 	defer cancel()
 	if err := r.WaitReady(ctx); err != nil {
 		t.Fatal(err)
@@ -152,7 +158,7 @@ func TestFinalR00FullDirectoryRefusesNewDevice(t *testing.T) {
 	}
 	f.s.mu.Unlock()
 	start := time.Now()
-	ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), readyDeadline)
 	defer cancel()
 	if err = r.WaitReady(ctx); err != nil {
 		t.Fatal("device did not recover after a slot freed", err)
