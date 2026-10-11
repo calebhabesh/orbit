@@ -55,6 +55,14 @@ func (s *Service) pairing(q p.PairingRequest, r *http.Request, now uint64) (any,
 		}
 	}
 	m := s.mailboxes[q.Mailbox]
+	// RG1: only listed devices open mailboxes; an unlisted joiner may use one
+	// a listed device opened.
+	if q.Action == "create" && !s.admission.listedActor(who(q.Proof)) {
+		return nil, p.NetworkNotAdmitted
+	}
+	if m != nil && !s.admission.listedActor(m.owner) {
+		return nil, p.PairingUnavailable
+	}
 	if q.Action == "create" {
 		if m != nil {
 			return nil, p.PairingUsed

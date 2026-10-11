@@ -685,6 +685,10 @@ func (c *ServiceClient) Control(ctx context.Context, purpose string, known map[s
 	var ack p.NetworkResult
 	if err != nil || kind != websocket.MessageText || p.NetworkDecode(b, &ack) != nil || validResult(q, ack) != nil {
 		_ = conn.CloseNow()
+		var failure p.NetworkFailure
+		if err == nil && kind == websocket.MessageText && p.NetworkDecode(b, &failure) == nil && failure.Version == "1" && failure.Code == p.NetworkNotAdmitted {
+			return nil, &ServiceError{Code: failure.Code}
+		}
 		return nil, errors.New(p.NetworkInvalidRequest)
 	}
 	control := &ServiceControl{conn: conn, events: make(chan p.NetworkOfferRequest, 8), done: make(chan struct{}), pins: knownCopy}

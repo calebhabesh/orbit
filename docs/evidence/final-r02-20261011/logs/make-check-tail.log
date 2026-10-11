@@ -1,0 +1,24 @@
+ok  	github.com/calebhabesh/orbit/tests/terminal	2100.459s
+ok  	github.com/calebhabesh/orbit/cmd/orbit	1.268s
+ok  	github.com/calebhabesh/orbit/internal/config	0.058s
+ok  	github.com/calebhabesh/orbit/internal/control	12.824s
+ok  	github.com/calebhabesh/orbit/internal/control/terminalcontract	0.007s
+ok  	github.com/calebhabesh/orbit/internal/controlclient	0.004s
+ok  	github.com/calebhabesh/orbit/internal/history	0.003s
+ok  	github.com/calebhabesh/orbit/internal/network	115.117s
+ok  	github.com/calebhabesh/orbit/internal/pairing	0.002s
+ok  	github.com/calebhabesh/orbit/internal/protocol	0.039s
+ok  	github.com/calebhabesh/orbit/internal/rendezvous	297.089s
+ok  	github.com/calebhabesh/orbit/internal/replication	98.134s
+ok  	github.com/calebhabesh/orbit/internal/repository	1.735s
+ok  	github.com/calebhabesh/orbit/internal/scheduler	11.600s
+ok  	github.com/calebhabesh/orbit/internal/state	0.004s
+ok  	github.com/calebhabesh/orbit/internal/terminal	4.107s
+ok  	github.com/calebhabesh/orbit/internal/testkit	0.002s
+ok  	github.com/calebhabesh/orbit/internal/workspace	1.041s
+ok  	github.com/calebhabesh/orbit/model	0.307s
+ok  	github.com/calebhabesh/orbit/tests/integration	86.845s
+ok  	github.com/calebhabesh/orbit/model	0.253s
+ok  	github.com/calebhabesh/orbit/tests/designgates	0.530s
+ok  	github.com/calebhabesh/orbit/tests/faults	1.065s
+exit=0

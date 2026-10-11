@@ -60,8 +60,10 @@ func (s *Service) serveControl(w http.ResponseWriter, r *http.Request) {
 	if _, expired := s.profile(req.Proof.Profile, now); expired != "" {
 		code = expired
 	}
-	if _, exists := s.controls[key]; exists || len(s.controls) >= network.MaxServiceControls {
-		code = p.NetworkQuota
+	if code == "" {
+		if _, exists := s.controls[key]; exists || len(s.controls) >= network.MaxServiceControls || (!s.admission.listedActor(key.actor) && s.unlistedControls() >= MaxUnlistedControls) {
+			code = p.NetworkQuota
+		}
 	}
 	entry := &control{conn: c, events: make(chan p.NetworkOfferRequest, 8), profile: req.Proof.Profile}
 	if code == "" {
@@ -70,6 +72,14 @@ func (s *Service) serveControl(w http.ResponseWriter, r *http.Request) {
 	s.mu.Unlock()
 	if code != "" {
 		s.stats.refused(code)
+		if code == p.NetworkNotAdmitted {
+			// RG1: name the refusal so new clients back off; older clients
+			// read it as an invalid acknowledgement, as before.
+			failure, _ := json.Marshal(p.NetworkFailure{Version: "1", Code: code})
+			work, end := context.WithTimeout(ctx, 2*time.Second)
+			_ = c.Write(work, websocket.MessageText, failure)
+			end()
+		}
 		return
 	}
 	defer func() {

@@ -1,0 +1,15 @@
+=== RUN   TestFinalR02ServeCheckValidatesAdmission
+--- PASS: TestFinalR02ServeCheckValidatesAdmission (0.00s)
+=== RUN   TestFinalR02DevicesCommandEditsAllowlist
+--- PASS: TestFinalR02DevicesCommandEditsAllowlist (0.00s)
+=== RUN   TestFinalR02MetricsReportAdmission
+--- PASS: TestFinalR02MetricsReportAdmission (0.00s)
+=== RUN   TestFinalR02BinarySIGHUPReloadsAllowlist
+    final_r02_test.go:219: orbit-net: warning: serving a self_hosted profile; clients must review it explicitly with custom trust
+        orbit-net: serving https://10.20.30.40:8443 on 127.0.0.1:33659 (profile epoch 1, self_hosted)
+        orbit-net: admission reloaded: allowlist (2 devices)
+        orbit-net: certificate reloaded; valid until 2027-01-09T07:08:14Z
+        orbit-net: admission reload failed; keeping current policy: allowlist: allowlist entries need a 64-hex device ID and key pin
+        orbit-net: certificate reloaded; valid until 2027-01-09T07:08:14Z
+--- PASS: TestFinalR02BinarySIGHUPReloadsAllowlist (0.31s)
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	0.313s

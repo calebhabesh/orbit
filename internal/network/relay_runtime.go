@@ -20,6 +20,7 @@ type RelayRuntime struct {
 	iceOptions       *ICEOptions
 	retryAfter       time.Time
 	retryCode        string
+	refusedUntil     map[Purpose]time.Time
 	lookupCache      map[Target]p.NetworkAnnouncement
 	ctx              context.Context
 	cancel           context.CancelFunc
@@ -43,7 +44,7 @@ func NewRelayRuntime(ctx context.Context, client *ServiceClient, manager *Connec
 	if stamp := uint64(time.Now().UnixNano()); stamp > generation {
 		generation = stamp
 	}
-	r := &RelayRuntime{changes: map[Purpose]chan struct{}{PeerData: make(chan struct{}, 1), Enrollment: make(chan struct{}, 1)}, lookupCache: map[Target]p.NetworkAnnouncement{}, ctx: life, cancel: cancel, client: client, manager: manager, generation: generation, profile: profile, pins: map[Purpose]map[string]string{PeerData: {}, Enrollment: {}}, endpoints: map[Purpose]*RelayEndpoint{}, ready: map[Purpose]bool{}}
+	r := &RelayRuntime{changes: map[Purpose]chan struct{}{PeerData: make(chan struct{}, 1), Enrollment: make(chan struct{}, 1)}, lookupCache: map[Target]p.NetworkAnnouncement{}, ctx: life, cancel: cancel, client: client, manager: manager, generation: generation, profile: profile, pins: map[Purpose]map[string]string{PeerData: {}, Enrollment: {}}, endpoints: map[Purpose]*RelayEndpoint{}, ready: map[Purpose]bool{}, refusedUntil: map[Purpose]time.Time{}}
 	if len(iceOptions) > 0 {
 		if iceOptions[0] != nil {
 			copyOptions := *iceOptions[0]
@@ -118,14 +119,18 @@ func (r *RelayRuntime) run(purpose Purpose) {
 					announcement := p.NetworkAnnouncement{Generation: p.NetworkUint(generation), Expires: p.NetworkUint(time.Now().Unix() + 600), Candidates: candidates, Capabilities: capabilities, Relay: true}
 					operation := randomNetworkID()
 					err := r.serviceCooldown()
-					if err == nil {
+					if err == nil && r.admissionWait(purpose) > 0 {
+						err = &ServiceError{Code: p.NetworkNotAdmitted}
+					} else if err == nil {
 						err = r.client.Announce(announceCtx, string(purpose), operation, announcement)
 						r.recordServiceFailure(err)
+						r.recordAdmission(purpose, err)
 					}
 					r.recordServiceFailure(err)
-					if err != nil && announceCtx.Err() == nil && r.serviceCooldown() == nil {
+					if err != nil && announceCtx.Err() == nil && r.serviceCooldown() == nil && r.admissionWait(purpose) <= 0 {
 						err = r.client.Announce(announceCtx, string(purpose), operation, announcement)
 						r.recordServiceFailure(err)
+						r.recordAdmission(purpose, err)
 					}
 					// Offers must bind the service-accepted generation, never a refused renewal.
 					if err == nil {
@@ -166,6 +171,7 @@ func (r *RelayRuntime) run(purpose Purpose) {
 			r.ready[purpose] = false
 			r.mu.Unlock()
 		}
+		r.recordAdmission(purpose, err)
 		// A refused control (the service still holds this device's previous
 		// channel until its heartbeat drops it, and closes the new one without
 		// a typed reason) backs off 2, 4, then 8 seconds instead of spending a
@@ -181,6 +187,9 @@ func (r *RelayRuntime) run(purpose Purpose) {
 			delay = wait
 		}
 		r.mu.Unlock()
+		if wait := r.admissionWait(purpose); wait > delay {
+			delay = wait
+		}
 		timer := time.NewTimer(delay)
 		select {
 		case <-r.ctx.Done():
@@ -354,6 +363,38 @@ func (r *RelayRuntime) ICE(ctx context.Context, t Target) (*QUICEndpoint, net.Ad
 // A quota refusal needs a quiet refill, shared by all targets using this client.
 // RelayBudgetRetry spaces relay attempts after a RELAY_BUDGET refusal.
 const RelayBudgetRetry = time.Hour
+
+// NotAdmittedRetry spaces service work after a NOT_ADMITTED refusal.
+const NotAdmittedRetry = 10 * time.Minute
+
+// ServiceRefusal reports a standing NOT_ADMITTED refusal of this device's
+// peer-data work, or "".
+func (r *RelayRuntime) ServiceRefusal() string {
+	if r.admissionWait(PeerData) > 0 {
+		return p.NetworkNotAdmitted
+	}
+	return ""
+}
+
+// RG1: an allowlisted service refuses an unlisted device's peer-data work but
+// still serves its enrollment path, so NOT_ADMITTED pauses only the refused
+// purpose. It asks again every ten minutes (a daemon restart asks at once).
+func (r *RelayRuntime) recordAdmission(purpose Purpose, err error) {
+	var service *ServiceError
+	if !errors.As(err, &service) || service.Code != p.NetworkNotAdmitted {
+		return
+	}
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if !time.Now().Before(r.refusedUntil[purpose]) {
+		r.refusedUntil[purpose] = time.Now().Add(NotAdmittedRetry)
+	}
+}
+func (r *RelayRuntime) admissionWait(purpose Purpose) time.Duration {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return time.Until(r.refusedUntil[purpose])
+}
 
 // Refused local retries do not extend the deadline or send more service traffic.
 func (r *RelayRuntime) serviceCooldown() error {

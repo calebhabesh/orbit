@@ -56,6 +56,12 @@ type serveConfig struct {
 	// RelayState is the private file holding this month's count; empty uses
 	// $STATE_DIRECTORY/relay-month.json from systemd's StateDirectory=.
 	RelayState string `json:"relay_state,omitempty"`
+	// Admission (RG1) is "open" (default) or "allowlist"; an allowlist comes
+	// from allowed_devices or an owner-only allowed_devices_file. SIGHUP
+	// re-reads both.
+	Admission          string          `json:"admission,omitempty"`
+	AllowedDevices     []allowedDevice `json:"allowed_devices,omitempty"`
+	AllowedDevicesFile string          `json:"allowed_devices_file,omitempty"`
 }
 
 // defaultRelayMonthBytes is a finite starting point (2 TiB). The operator sets
@@ -127,23 +133,27 @@ func serve(args []string, errOut io.Writer) error {
 	if err != nil {
 		return err
 	}
+	p.configFile = *configFile
 	defer p.service.Close()
 	for _, warning := range p.warnings {
 		fmt.Fprintln(errOut, "orbit-net: warning:", warning)
 	}
 	if *check {
-		fmt.Fprintf(errOut, "orbit-net: configuration valid for %s, profile epoch %d (%s) until %s\n", p.cfg.Origin, p.selection.Profile.Epoch, p.selection.Environment, time.Unix(int64(p.selection.Profile.Expires), 0).UTC().Format(time.RFC3339))
+		fmt.Fprintf(errOut, "orbit-net: configuration valid for %s, profile epoch %d (%s) until %s; admission %s\n", p.cfg.Origin, p.selection.Profile.Epoch, p.selection.Environment, time.Unix(int64(p.selection.Profile.Expires), 0).UTC().Format(time.RFC3339), admissionLabel(p.service.Admission()))
 		return nil
 	}
 	return p.run(errOut)
 }
 
 type prepared struct {
-	cfg       serveConfig
-	selection network.ProfileSelection
-	service   *rendezvous.Service
-	cert      *certificateHolder
-	warnings  []string
+	configFile string
+	cfg        serveConfig
+	selection  network.ProfileSelection
+	service    *rendezvous.Service
+	cert       *certificateHolder
+	warnings   []string
+	// admissionReloads/Failures count SIGHUP admission reloads (RG1).
+	admissionReloads, admissionFailures atomic.Uint64
 }
 
 // prepare validates every operator input before any socket is opened.
@@ -227,11 +237,15 @@ func prepare(cfg serveConfig, now time.Time) (*prepared, error) {
 			warnings = append(warnings, "relay_state is not set and no StateDirectory is available; the monthly relay count restarts at zero with the service")
 		}
 	}
+	admission, err := loadAdmission(cfg)
+	if err != nil {
+		return nil, err
+	}
 	budget, err := rendezvous.OpenRelayBudget(cfg.RelayState, uint64(cfg.RelayMonthBytes), nil)
 	if err != nil {
 		return nil, fmt.Errorf("relay budget state: %w", err)
 	}
-	service, err := rendezvous.New(rendezvous.Options{Selection: selection, Origin: cfg.Origin, ServiceKey: key, Overlap: overlap, RelayBudget: budget, Relay: rendezvous.RelayLimits{ServiceBytesPerSecond: cfg.RelayBPS, DeviceBytesPerSecond: cfg.RelayDeviceBPS, SessionBytes: cfg.RelaySessionBytes}})
+	service, err := rendezvous.New(rendezvous.Options{Selection: selection, Origin: cfg.Origin, ServiceKey: key, Overlap: overlap, RelayBudget: budget, Admission: admission, Relay: rendezvous.RelayLimits{ServiceBytesPerSecond: cfg.RelayBPS, DeviceBytesPerSecond: cfg.RelayDeviceBPS, SessionBytes: cfg.RelaySessionBytes}})
 	if err != nil {
 		return nil, fmt.Errorf("profile, origin or service key rejected: %w", err)
 	}
@@ -339,7 +353,42 @@ func (h *certificateHolder) get(*tls.ClientHelloInfo) (*tls.Certificate, error) 
 	return h.current.Load(), nil
 }
 
+func admissionLabel(a *rendezvous.Admission) string {
+	if a.Open() {
+		return "open"
+	}
+	return fmt.Sprintf("allowlist (%d devices)", a.Size())
+}
+
+// reloadAdmission re-reads the configuration's admission fields (and the
+// allowlist file). A rejected reload keeps the current policy.
+func (p *prepared) reloadAdmission(errOut io.Writer) {
+	if p.configFile == "" {
+		return
+	}
+	data, err := readPrivatePath(p.configFile, maxConfigBytes)
+	var cfg serveConfig
+	if err == nil {
+		decoder := json.NewDecoder(bytes.NewReader(data))
+		decoder.DisallowUnknownFields()
+		err = decoder.Decode(&cfg)
+	}
+	var a *rendezvous.Admission
+	if err == nil {
+		a, err = loadAdmission(cfg)
+	}
+	if err != nil {
+		p.admissionFailures.Add(1)
+		fmt.Fprintln(errOut, "orbit-net: admission reload failed; keeping current policy:", err)
+		return
+	}
+	p.service.SetAdmission(a)
+	p.admissionReloads.Add(1)
+	fmt.Fprintln(errOut, "orbit-net: admission reloaded:", admissionLabel(a))
+}
+
 func (p *prepared) reload(errOut io.Writer) {
+	p.reloadAdmission(errOut)
 	u, _ := url.Parse(p.cfg.Origin)
 	cert, err := loadCertificate(p.cfg.TLSCert, p.cfg.TLSKey, u.Hostname(), time.Now())
 	if err != nil {

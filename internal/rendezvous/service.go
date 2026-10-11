@@ -86,6 +86,8 @@ type Options struct {
 	Relay   RelayLimits
 	// RelayBudget, when set, is the monthly relay egress allowance (E09).
 	RelayBudget *RelayBudget
+	// Admission is the device allowlist (RG1); nil admits every device.
+	Admission *Admission
 }
 
 type Service struct {
@@ -118,6 +120,7 @@ type Service struct {
 	served                             map[string]*servedProfile
 	stats                              counters
 	budget                             *RelayBudget
+	admission                          *Admission
 }
 
 func New(opts Options) (*Service, error) {
@@ -146,7 +149,10 @@ func New(opts Options) (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	service := &Service{served: served, relaySlots: make(chan struct{}, 2*(network.MaxServiceDataTunnels+MaxUnknownOffers)), relayLimits: limits, bandwidth: newByteLimiter(limits.ServiceBytesPerSecond), deviceBandwidth: map[actor]*byteLimiter{}, selection: opts.Selection, origin: opts.Origin, digest: digest, epoch: nonce(), relayOrigin: relay, key: append(ed25519.PrivateKey{}, opts.ServiceKey...), now: opts.Now, budget: opts.RelayBudget,
+	if opts.Admission == nil {
+		opts.Admission = OpenAdmission()
+	}
+	service := &Service{admission: opts.Admission, served: served, relaySlots: make(chan struct{}, 2*(network.MaxServiceDataTunnels+MaxUnknownOffers)), relayLimits: limits, bandwidth: newByteLimiter(limits.ServiceBytesPerSecond), deviceBandwidth: map[actor]*byteLimiter{}, selection: opts.Selection, origin: opts.Origin, digest: digest, epoch: nonce(), relayOrigin: relay, key: append(ed25519.PrivateKey{}, opts.ServiceKey...), now: opts.Now, budget: opts.RelayBudget,
 		challenges: map[string]challenge{}, records: map[routeKey]record{}, operations: map[string]replay{}, sessions: map[string]*session{}, controls: map[routeKey]*control{}, rates: map[actor]bucket{}, sources: map[string]bucket{}, active: make(chan struct{}, network.MaxServiceControls), pending: map[controlConn]bool{}, controlSlots: make(chan struct{}, network.MaxServiceControls)}
 	lifetime, cancel := context.WithCancel(context.Background())
 	service.cancel = cancel
@@ -324,6 +330,10 @@ func (s *Service) admitOrigin(q p.NetworkProof, canonical []byte, now uint64, or
 	// A cryptographically valid proof is one-use even on quota refusal.
 	// Otherwise denied requests strand both challenge slots for a minute.
 	delete(s.challenges, q.Challenge)
+	// RG1: refuse before any rate or allocation state for unlisted devices.
+	if !s.admission.admits(q) {
+		return p.NetworkNotAdmitted
+	}
 	b, exists := s.rates[who(q)]
 	if !exists && len(s.rates) >= 1024 {
 		return p.NetworkQuota
@@ -377,6 +387,9 @@ func (s *Service) challenge(r p.NetworkChallengeRequest, now uint64) (any, strin
 	if count >= 2 || len(s.challenges) >= 128 {
 		return nil, p.NetworkQuota
 	}
+	if !s.admission.listedActor(a) && s.unlistedChallenges() >= MaxUnlistedChallenges {
+		return nil, p.NetworkQuota
+	}
 	n := nonce()
 	s.challenges[n] = challenge{a, now + 60}
 	return p.NetworkChallengeResult{Version: "1", Profile: r.Profile, Origin: s.origin, Challenge: n, Expires: p.NetworkUint(now + 60)}, ""
@@ -396,7 +409,7 @@ func (s *Service) announce(r p.NetworkAnnounceRequest, now uint64) (any, string)
 	if old, ok := s.records[key]; ok && old.announcement.Generation >= r.Announcement.Generation {
 		return nil, p.NetworkStaleGeneration
 	}
-	if _, ok := s.records[key]; !ok && len(s.records) >= MaxRecords {
+	if _, ok := s.records[key]; !ok && (len(s.records) >= MaxRecords || (!s.admission.listedActor(key.actor) && s.unlistedRecords() >= MaxUnlistedRecords)) {
 		return nil, p.NetworkQuota
 	}
 	s.records[key] = record{r.Proof, r.Announcement}

@@ -26,6 +26,9 @@ func networkAction(code string) string {
 	case "RELAY_BUDGET":
 		// The operator's monthly relay allowance is spent (E09).
 		return "Relay unavailable until " + rendezvous.NextMonth(time.Now()).Format("2 January 2006") + " (the service's monthly relay limit); direct connections still work and Orbit keeps trying them."
+	case "NOT_ADMITTED":
+		// RG1: the service operator's allowlist does not list this device.
+		return "This Orbit service serves only its operator's listed devices; ask the operator to add this device (orbit-net devices add), or use Local network or your own service. LAN connections still work."
 	case "PEER_OFFLINE":
 		return "Wait for the device to come online; captured changes remain saved locally."
 	case "NETWORK_RESTART_REQUIRED":

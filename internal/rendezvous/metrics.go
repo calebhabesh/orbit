@@ -12,6 +12,7 @@ type counters struct {
 	quota, invalid, expired, untrusted, other atomic.Uint64
 	relayBytes                                atomic.Uint64
 	budget                                    atomic.Uint64
+	notAdmitted                               atomic.Uint64
 }
 
 func (c *counters) refused(code string) {
@@ -20,6 +21,8 @@ func (c *counters) refused(code string) {
 		c.quota.Add(1)
 	case p.NetworkRelayBudget:
 		c.budget.Add(1)
+	case p.NetworkNotAdmitted:
+		c.notAdmitted.Add(1)
 	case p.NetworkInvalidRequest, p.NetworkUnsupported:
 		c.invalid.Add(1)
 	case p.NetworkProfileExpired:
@@ -53,6 +56,10 @@ type Metrics struct {
 	RefusedBudget                    uint64
 	RelayMonthBytes, RelayMonthLimit uint64
 	RelayMonth                       string
+	// Admission (RG1): AllowlistSize is 0 under open admission.
+	Allowlist          bool
+	AllowlistSize      int
+	RefusedNotAdmitted uint64
 }
 
 func (s *Service) Metrics() Metrics {
@@ -75,6 +82,7 @@ func (s *Service) Metrics() Metrics {
 	m.RefusedQuota, m.RefusedInvalid, m.RefusedExpired = s.stats.quota.Load(), s.stats.invalid.Load(), s.stats.expired.Load()
 	m.RefusedUntrusted, m.RefusedOther, m.RelayBytes = s.stats.untrusted.Load(), s.stats.other.Load(), s.stats.relayBytes.Load()
 	m.RefusedBudget = s.stats.budget.Load()
+	m.Allowlist, m.AllowlistSize, m.RefusedNotAdmitted = !s.admission.Open(), s.admission.Size(), s.stats.notAdmitted.Load()
 	if s.budget != nil {
 		m.RelayMonth, m.RelayMonthBytes, m.RelayMonthLimit = s.budget.Snapshot()
 	}

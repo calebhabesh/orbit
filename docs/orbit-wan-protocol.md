@@ -84,6 +84,19 @@ relay hints. Stale/invalid records are ignored and diagnosed. A service's observ
 source IP is an observation, not proof that a TCP/UDP peer listener is reachable.
 Only tested reachability or a successful pinned handshake validates a usable path.
 
+Service admission (R02, RG1). An operator may serve only an allowlist of
+(device, pin) pairs. The check runs in `admitOrigin` after the proof verifies
+and before any rate bucket or allocation. A refused signed operation fails with
+`NOT_ADMITTED` (HTTP 403, not retryable). A refused control channel receives one
+`NetworkFailure` frame with that code before closing; 2.3 clients read it as an
+invalid acknowledgement, as before. Unlisted devices may use only the
+enrollment purpose toward a listed device: announce, authenticate, lookup,
+offer, accept, reserve, release and attach, plus pairing-mailbox claims on
+mailboxes a listed device created. Mailbox creation is listed-only. Unlisted
+actors are bounded to 32 challenges, 16 controls and 16 directory records. The
+client pauses the refused purpose for ten minutes and reports `NOT_ADMITTED`
+in network status; enrollment continues.
+
 Initially all service operations require authenticated device proof; lookup of a
 known identity/pin is rate limited rather than treated as folder authorization.
 Device IDs and pins are not private lookup capabilities. Someone who knows them

@@ -1,0 +1,70 @@
+// r02client runs one unlisted device's production RelayRuntime against an
+// Orbit service for a fixed window (R02 old-client fixture). Inputs are a
+// ProfileSelection JSON and the service's PEM root.
+package main
+
+import (
+	"context"
+	"crypto/ed25519"
+	"crypto/rand"
+	"crypto/sha256"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"math/big"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/calebhabesh/orbit/internal/network"
+	p "github.com/calebhabesh/orbit/internal/protocol"
+)
+
+func main() {
+	selectionFile := flag.String("selection", "", "")
+	rootsFile := flag.String("roots", "", "")
+	window := flag.Duration("window", time.Minute, "")
+	flag.Parse()
+	var selection network.ProfileSelection
+	b, err := os.ReadFile(*selectionFile)
+	if err == nil {
+		err = p.NetworkDecode(b, &selection)
+	}
+	if err != nil {
+		panic(err)
+	}
+	roots := x509.NewCertPool()
+	pem, _ := os.ReadFile(*rootsFile)
+	roots.AppendCertsFromPEM(pem)
+	pub, key, _ := ed25519.GenerateKey(rand.Reader)
+	tpl := &x509.Certificate{SerialNumber: big.NewInt(1), Subject: pkix.Name{CommonName: "r02"}, NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(24 * time.Hour), KeyUsage: x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign, ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth}, BasicConstraintsValid: true, IsCA: true}
+	der, _ := x509.CreateCertificate(rand.Reader, tpl, tpl, pub, key)
+	leaf, _ := x509.ParseCertificate(der)
+	id := sha256.Sum256([]byte(hex.EncodeToString(pub)))
+	var origin string
+	for _, o := range selection.Profile.Origins {
+		if strings.HasPrefix(o, "https://") {
+			origin = o
+		}
+	}
+	c, err := network.NewServiceClient(network.ServiceClientOptions{Selection: selection, Origin: origin, Device: hex.EncodeToString(id[:]), Certificate: tls.Certificate{Certificate: [][]byte{der}, PrivateKey: key, Leaf: leaf}, Roots: roots})
+	if err != nil {
+		panic(err)
+	}
+	m := network.NewManager(network.ManagerOptions{})
+	digest, _ := selection.Digest()
+	r, err := network.NewRelayRuntime(context.Background(), c, m, 1, digest)
+	if err != nil {
+		panic(err)
+	}
+	time.Sleep(*window)
+	_ = r.Close()
+	_ = m.Close()
+	_ = c.Close()
+	b, _ = json.Marshal(map[string]any{"ready": r.Ready(), "window_seconds": window.Seconds()})
+	fmt.Println(string(b))
+}

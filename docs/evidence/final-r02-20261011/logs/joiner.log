@@ -1,0 +1,4 @@
+=== RUN   TestFinalR02UnlistedJoinerEnrollsThroughAllowlist
+    final_r02_test.go:53: approved but unlisted: join SERVICE_UNAVAILABLE (retryable); network code=NOT_ADMITTED action="This Orbit service serves only its operator's listed devices; ask the operator to add this device (orbit-net devices add), or use Local network or your own service. LAN connections still work."
+--- PASS: TestFinalR02UnlistedJoinerEnrollsThroughAllowlist (36.08s)
+ok  	github.com/calebhabesh/orbit/tests/terminal	36.081s

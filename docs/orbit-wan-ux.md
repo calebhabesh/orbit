@@ -240,6 +240,13 @@ for the last 24 hours and 30 days, and `--json` carries the same `route_usage`.
 The numbers are this device's own completed requests, so two devices can report
 different shares for the same pair. A peer's uploads show up on that peer.
 
+A service that serves only its operator's devices (R02 allowlist) shows
+`NOT_ADMITTED` with the action "This Orbit service serves only its operator's
+listed devices; ask the operator to add this device (orbit-net devices add), or
+use Local network or your own service. LAN connections still work." Pairing
+toward a listed device still works. The new device's first sync waits,
+resumably, until the operator lists it.
+
 `orbit network status` reads the cached view and never starts a network probe.
 `orbit network doctor --device ID` is the deliberate action. It has a finite
 budget and reports separate service DNS/TLS, authenticated directory, pinned

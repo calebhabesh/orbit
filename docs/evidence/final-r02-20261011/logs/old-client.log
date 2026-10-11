@@ -1,0 +1,16 @@
+=== RUN   TestFinalR02OldClientAgainstAllowlist
+=== RUN   TestFinalR02OldClientAgainstAllowlist/2.3
+=== PAUSE TestFinalR02OldClientAgainstAllowlist/2.3
+=== RUN   TestFinalR02OldClientAgainstAllowlist/current
+=== PAUSE TestFinalR02OldClientAgainstAllowlist/current
+=== CONT  TestFinalR02OldClientAgainstAllowlist/2.3
+=== CONT  TestFinalR02OldClientAgainstAllowlist/current
+=== NAME  TestFinalR02OldClientAgainstAllowlist/2.3
+    final_r02_test.go:310: R02 2.3 client, 2m0s unlisted: refusals map[budget:0 expired:0 invalid:0 not_admitted:17 other:0 quota:0 untrusted:0]; not_admitted per minute=8.5; client={"ready":false,"window_seconds":120}
+=== NAME  TestFinalR02OldClientAgainstAllowlist/current
+    final_r02_test.go:310: R02 current client, 2m0s unlisted: refusals map[budget:0 expired:0 invalid:0 not_admitted:1 other:0 quota:0 untrusted:0]; not_admitted per minute=0.5; client={"ready":false,"window_seconds":120}
+--- PASS: TestFinalR02OldClientAgainstAllowlist (0.22s)
+    --- PASS: TestFinalR02OldClientAgainstAllowlist/2.3 (120.06s)
+    --- PASS: TestFinalR02OldClientAgainstAllowlist/current (120.08s)
+PASS
+ok  	github.com/calebhabesh/orbit/cmd/orbit-net	120.297s

@@ -250,6 +250,8 @@ func (c *Controller) terminalNetworkQuery(ctx context.Context, q tc.Query) (tc.R
 			if c.options.Relay != nil && c.options.Relay.Ready() {
 				status.Ready = true
 				status.Code = "SERVICE_READY"
+			} else if c.options.Relay != nil && c.options.Relay.ServiceRefusal() != "" {
+				status.Code = c.options.Relay.ServiceRefusal()
 			}
 		}
 	}

@@ -9,6 +9,28 @@ evidence in `docs/evidence/final-r00-20261011/`); the gates stay open.
 
 ## RG1 — Service admission (R02)
 
+**Closed 2026-10-11 (R02).** Selected:
+
+- `admission: open|allowlist` in `serve.json`, the list inline or in an
+  owner-only `allowed_devices_file` (at most 64), re-read on SIGHUP with the old
+  policy kept on failure.
+- The check runs in `admitOrigin` after proof verification, before rate state.
+- Unlisted devices get only the enrollment purpose toward a listed device, plus
+  mailbox claims, within their own share: 32 challenges, 16 controls, 16
+  records. Mailbox creation is listed-only.
+- Refusal code `NOT_ADMITTED` (403); control refusals carry one typed frame.
+- New clients pause the refused purpose for 10 minutes. 2.3 clients retry their
+  data control about every 8 s (8.5/min measured), all refused before
+  allocation.
+- New-device flow: pair and approve through the service, then the operator runs
+  `orbit-net devices add` + reload before bootstrap completes. The join resumes.
+- STUN unchanged.
+
+Evidence: `docs/evidence/final-r02-20261011/`. Owning specifications:
+`docs/orbit-net-operator.md` "Admission", `docs/orbit-wan-protocol.md`.
+Limitations: the 2.3 retry cost persists until epoch 2 expires; bootstrap of a
+new device needs the operator step (or LAN).
+
 Question: how the owner's `orbit-net` serves only the owner's devices, and what
 other devices observe.
 

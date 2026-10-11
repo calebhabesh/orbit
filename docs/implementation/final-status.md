@@ -1,6 +1,6 @@
 # Final-scope status
 
-Updated: 2026-10-11. **R00 and R01 complete; R02 eligible.** The [plan](../orbit-final-implementation-plan.md),
+Updated: 2026-10-11. **R00–R02 complete (milestone M1 check passed); R03 and R04 eligible.** The [plan](../orbit-final-implementation-plan.md),
 [packets](final-packets.md) and [gates](final-gates.md) form the handoff.
 
 Current deployment for reference: hosted `orbit-net` 1.1.0 serves any device,
@@ -14,15 +14,15 @@ as `orbit-trial` on PC, laptop and Pi. Hosted changes need owner confirmation.
 | --- | --- | --- | --- |
 | R00 Baseline/interim cap | complete (cap not applied, owner's choice) | repository | [R00](final-packets.md#r00--baseline-interim-protection-and-gate-scoping) |
 | R01 Route accounting | complete | R00 | [R01](final-packets.md#r01--route-accounting-rg2) |
-| R02 Service allowlist | eligible | R00 | [R02](final-packets.md#r02--service-admission-allowlist-rg1) |
-| R03 One-command self-hosting | blocked on R02 | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
-| R04 No default service | blocked on R02 | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
+| R02 Service allowlist | complete | R00 | [R02](final-packets.md#r02--service-admission-allowlist-rg1) |
+| R03 One-command self-hosting | eligible | R02 | [R03](final-packets.md#r03--one-command-self-hosting) |
+| R04 No default service | eligible | R02 | [R04](final-packets.md#r04--release-builds-without-a-default-service-rg3) |
 | R05 Measurement | blocked on R01, R04 | R01, R04 | [R05](final-packets.md#r05--measurement-campaign-rg4) |
 | R06 Write-up/release | blocked on R03, R05 | R03, R05 | [R06](final-packets.md#r06--write-up-and-release) |
 
 | Gate | State | Owning packet |
 | --- | --- | --- |
-| RG1 Service admission | open (R00 scoped) | R02 |
+| RG1 Service admission | closed (R02) | R02 |
 | RG2 Route accounting | closed (R01) | R01 |
 | RG3 Release default | open (R00 scoped) | R04 |
 | RG4 Measurement method | open (R00 scoped) | R05 |
@@ -75,8 +75,32 @@ Complete 2026-10-11 (base `4de12fd`). Evidence: `docs/evidence/final-r01-2026101
   `wan_tcp`, microbenchmark-based overhead, own requests only; `make check` not
   run (M1 at R02).
 
+## R02 — Service admission allowlist
+
+Complete 2026-10-11 (base `86678f2`). Evidence: `docs/evidence/final-r02-20261011/`.
+
+- Commands: `TestFinalR02*` in rendezvous (4), cmd/orbit-net (4 plus the
+  opt-in old-client fixture) and tests/terminal (1), all pass; the 2.3 client
+  (built from `7be6a77` in a temporary worktree, since removed) against a real
+  allowlisted `orbit-net`; `make check` exit 0 (tests/terminal 2,100 s,
+  packages built) at milestone M1.
+- Result: `admission: allowlist` with `orbit-net devices list|add|remove` and
+  SIGHUP reload. Unlisted devices are limited to pairing toward listed devices
+  within their own small share; `NOT_ADMITTED` is typed for signed requests
+  and controls. New clients pause 10 minutes; a 2.3 client retries
+  8.5 times/min, all refused before allocation.
+- Milestone M1: the allowlist refuses an unlisted device on a local fixture
+  while listed devices sync. The interim cap was not applied (owner's choice,
+  R00).
+- Limitations: 2.3 retry cost until epoch 2 expires (2027-10-07); new-device
+  bootstrap through the service waits for the operator's `devices add`; the
+  VPS still runs open 1.1.0 (R06).
+
 ## Handoff log
 
+- 2026-10-11: R02 complete; RG1 closed; `make check` passed. Next: R03
+  (`orbit-net init` drafted: `cmd/orbit-net/init.go`, unit tests, rootless
+  namespace driver `scripts/validation/selfhost_netns.py`), then R04.
 - 2026-10-11: R01 complete; RG2 closed. Next: R02 (service allowlist, RG1), using
   the R00 RG1 scoping.
 - 2026-10-11: R00 complete. Next: R01 (route accounting), then R02. Both are

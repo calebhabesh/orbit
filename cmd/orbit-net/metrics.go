@@ -75,9 +75,17 @@ func (p *prepared) metricsText(listener *rendezvous.CappedListener, stun *rendez
 	metric("orbit_net_challenges", "gauge", "Outstanding challenges (limit 128).", m.Challenges)
 	metric("orbit_net_rate_keys", "gauge", "Per-device metadata rate buckets (limit 1024).", m.RateKeys)
 	metric("orbit_net_source_buckets", "gauge", "Pre-auth source buckets (limit 128).", m.SourceBuckets)
-	for _, r := range []reasonValue{{"quota", m.RefusedQuota}, {"invalid", m.RefusedInvalid}, {"expired", m.RefusedExpired}, {"untrusted", m.RefusedUntrusted}, {"budget", m.RefusedBudget}, {"other", m.RefusedOther}} {
+	for _, r := range []reasonValue{{"quota", m.RefusedQuota}, {"invalid", m.RefusedInvalid}, {"expired", m.RefusedExpired}, {"untrusted", m.RefusedUntrusted}, {"budget", m.RefusedBudget}, {"not_admitted", m.RefusedNotAdmitted}, {"other", m.RefusedOther}} {
 		metric("orbit_net_refusals_total", "counter", "Refused requests by stable reason class.", r.value, fmt.Sprintf("reason=%q", r.reason))
 	}
+	allowlist := 0
+	if m.Allowlist {
+		allowlist = 1
+	}
+	metric("orbit_net_admission_allowlist", "gauge", "Whether admission is limited to an allowlist (RG1).", allowlist)
+	metric("orbit_net_admission_allowed_devices", "gauge", "Devices on the admission allowlist (limit 64; 0 when open).", m.AllowlistSize)
+	metric("orbit_net_admission_reloads_total", "counter", "Successful SIGHUP admission reloads.", p.admissionReloads.Load())
+	metric("orbit_net_admission_reload_failures_total", "counter", "Rejected admission reloads; the previous policy stays active.", p.admissionFailures.Load())
 	metric("orbit_net_relay_bytes_total", "counter", "Relay payload bytes written to receiving devices, both forwarding directions; excludes TLS/WebSocket framing.", m.RelayBytes)
 	if m.RelayMonthLimit > 0 {
 		metric("orbit_net_relay_month_bytes", "gauge", "Relay payload bytes forwarded this UTC month (the monthly budget's count).", m.RelayMonthBytes)

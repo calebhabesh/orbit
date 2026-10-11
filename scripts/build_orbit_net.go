@@ -59,6 +59,7 @@ func run() error {
 		"lib/systemd/system/orbit-net-alert.service":        "packaging/systemd/orbit-net-alert.service",
 		"lib/systemd/system/orbit-net-alert.timer":          "packaging/systemd/orbit-net-alert.timer",
 		"share/doc/orbit-net/alert.example.json":            "packaging/orbit-net/alert.example.json",
+		"share/doc/orbit-net/allowed-devices.example.json":  "packaging/orbit-net/allowed-devices.example.json",
 		"lib/sysusers.d/orbit-net.conf":                     "packaging/sysusers/orbit-net.conf",
 		"share/doc/orbit-net/orbit-net-operator.md":         "docs/orbit-net-operator.md",
 		"share/doc/orbit-net/serve.example.json":            "packaging/orbit-net/serve.example.json",

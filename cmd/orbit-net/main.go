@@ -51,6 +51,8 @@ func run(args []string, out, errOut io.Writer) error {
 		return errors.New("profile requires sign or verify")
 	case "alert":
 		return alert(args[1:], out, errOut)
+	case "devices":
+		return devices(args[1:], out, errOut)
 	case "version":
 		fmt.Fprintf(out, "orbit-net %s (%s, %s)\n", version, commit, date)
 		return nil
@@ -73,8 +75,12 @@ Commands:
   alert --config FILE --state FILE
                                  one monitoring check; notifies on firing/recovery
   alert --config FILE --test      send one test notification
+  devices list|add|remove --config FILE
+                                 edit allowed_devices_file (admission allowlist);
+                                 add takes the device's "device=... pin=..." line
   version                         print build information
 
-SIGHUP reloads the TLS certificate and key; SIGINT/SIGTERM drain and stop.
+SIGHUP reloads the TLS certificate and key and the admission allowlist;
+SIGINT/SIGTERM drain and stop.
 See docs/orbit-net-operator.md for provisioning, rotation and monitoring.
 `

@@ -576,7 +576,10 @@ const (
 	NetworkQuota               = "QUOTA_EXCEEDED"
 	// NetworkRelayBudget refuses relay data because the operator's monthly
 	// relay allowance is spent; it resets at the next UTC month (E09).
-	NetworkRelayBudget        = "RELAY_BUDGET"
+	NetworkRelayBudget = "RELAY_BUDGET"
+	// NetworkNotAdmitted refuses a device the operator's allowlist does not
+	// list (RG1). Not retryable until the operator adds the device.
+	NetworkNotAdmitted        = "NOT_ADMITTED"
 	NetworkUnavailable        = "ROUTE_UNAVAILABLE"
 	NetworkServiceUnavailable = "SERVICE_UNAVAILABLE"
 	NetworkCanceled           = "CANCELED"

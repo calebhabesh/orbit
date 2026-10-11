@@ -111,6 +111,56 @@ same check before every start. TLS must terminate at `orbit-net`: requests with
 forwarding headers are refused, so do not place a TLS-terminating proxy or CDN in
 front of it. A TCP/UDP passthrough load balancer is fine.
 
+## Admission: serve only your devices
+
+By default (`"admission": "open"`) the service serves any device that holds
+its signed profile. To serve only your own devices (R02):
+
+```json
+"admission": "allowlist",
+"allowed_devices_file": "/etc/orbit-net/allowed-devices.json"
+```
+
+(or an inline `"allowed_devices": [{"device": "<64 hex>", "pin": "<64 hex>"}]`,
+never both). The file is owner-only JSON (`{"version": "1", "devices": [...]}`,
+see `allowed-devices.example.json`), with at most 64 devices. `--check` rejects
+a malformed, group-readable or empty list. Manage it with:
+
+```sh
+sudo -u orbit-net orbit-net devices list   --config /etc/orbit-net/serve.json
+sudo -u orbit-net orbit-net devices add    --config /etc/orbit-net/serve.json --label laptop 'device=<64 hex> pin=<64 hex>'
+sudo -u orbit-net orbit-net devices remove --config /etc/orbit-net/serve.json <device id>
+sudo systemctl reload orbit-net   # SIGHUP: re-reads admission and the certificate
+```
+
+`add` takes the identity line that `orbit status` (Workspace Replicas) or
+`orbit devices` prints on any device of the Orbit. A reload that fails
+validation keeps the previous list (`orbit_net_admission_reload_failures_total`).
+Removing a device withdraws its directory records, control channels and relay
+sessions at once.
+
+What an unlisted device gets: only the pairing path toward a listed device.
+That path is claiming a short-code mailbox a listed device opened, plus
+enrollment-purpose announce, control, lookup, offer, reservation and relay
+toward a listed device. Unlisted devices also get their own small share: 32 of
+the 128 challenges, 16 controls and 16 directory records. Everything else is
+refused with `NOT_ADMITTED` before any rate or allocation state. STUN stays
+unauthenticated and rate-limited as before.
+
+Adding a device: invite it as usual. It can pair and be approved through the
+service, but its first sync (bootstrap) needs peer data, so it waits until you
+run `devices add` and reload. The join resumes on its own; restarting the new
+device's daemon makes it ask at once instead of within ten minutes. Devices on
+the same LAN sync directly regardless.
+
+Unlisted clients: Orbit after R02 backs off for ten minutes per refused
+purpose. A 2.3 client keeps retrying its data control about every 8 seconds
+(measured 8.5 refused attempts/minute). Each attempt is a TLS handshake plus
+one signed request, all refused before allocation. 2.x release builds embed
+the hosted profile until epoch 2 expires (2027-10-07). Metrics:
+`orbit_net_admission_allowlist`, `orbit_net_admission_allowed_devices`,
+`orbit_net_refusals_total{reason="not_admitted"}`.
+
 ## Budgets and capacity
 
 Every value is a finite ceiling, not an availability or bandwidth promise.
@@ -250,6 +300,7 @@ owner to review it; treat it as a new operator.
 | TLS key and chain | Per your certificate process |
 | Directory leases, sessions, rate buckets, live relays | No; memory only, rebuilt by devices after restart |
 | `relay-month.json` | Optional; losing it restarts this month's relay count at zero |
+| `allowed-devices.json` | Yes; without it an allowlisted service refuses to start |
 
 ### Verify an offline authority backup
 
