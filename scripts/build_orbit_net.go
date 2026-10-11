@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	version        = "1.2.0"
+	version        = "1.3.0"
 	fixedTimestamp = 1790208000 // 2026-09-23T00:00:00Z for reproducible archives
 )
 
