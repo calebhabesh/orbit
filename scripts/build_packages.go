@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	PackageVersion = "2.3.0"
+	PackageVersion = "2.4.0"
 	PackageRelease = "1"
 	PackageName    = "orbit"
 	FixedTimestamp = 1790208000 // 2026-09-23T00:00:00Z for reproducible builds
@@ -119,7 +119,7 @@ func run() error {
 	}
 	buildDate := os.Getenv("ORBIT_BUILD_DATE")
 	if buildDate == "" {
-		buildDate = "2026-10-09"
+		buildDate = "2026-10-11"
 	}
 
 	// 1. Build binaries for amd64 and arm64
