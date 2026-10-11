@@ -225,7 +225,7 @@ the intended scope ("everyone in my Orbits"); revoke a device or turn
 sponsorship off if it is too wide. Listed and sponsored devices together are
 capped at 64. A device that makes a new identity replaces its earlier
 sponsored pin. A refused device that gains a peer (it just joined) asks again
-after 5 s and then at 20 s intervals, so a join through the service resumes
+after 5 s and then at 20 s intervals (six times), so a join through the service resumes
 within about a minute (40–90 s measured on the author's devices). A service without sponsorship answers
 `UNSUPPORTED_CAPABILITY`, and clients stop asking. Metrics:
 `orbit_net_admission_sponsorship`, `orbit_net_admission_sponsored_devices`,

@@ -109,7 +109,8 @@ that lists the target (a failed save is `SERVICE_UNAVAILABLE`) and answers
 `accepted`, also when the target was already listed. Clients sponsor each
 peer-data peer they register once per runtime, after their own peer-data
 record is accepted. A refused client that registers a new peer re-asks after
-5 s, then up to three times 20 s apart, before the ten-minute pause applies.
+5 s, then up to six times 20 s apart, before the ten-minute pause applies. A
+sponsorship that fails transiently is retried after 5 s.
 
 Initially all service operations require authenticated device proof; lookup of a
 known identity/pin is rate limited rather than treated as folder authorization.

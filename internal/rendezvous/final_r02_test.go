@@ -238,6 +238,19 @@ func TestFinalR02UnlistedRuntimeBacksOffAndKeepsPairingPath(t *testing.T) {
 	if r.ServiceRefusal() != p.NetworkNotAdmitted {
 		t.Fatal("runtime did not learn NOT_ADMITTED")
 	}
+	// Under a loaded race run the enrollment path can still be starting.
+	enrolled := func() (bool, bool) {
+		f.s.mu.Lock()
+		defer f.s.mu.Unlock()
+		_, record := f.s.records[routeKey{actor{d.id, d.pin}, "enrollment"}]
+		_, control := f.s.controls[routeKey{actor{d.id, d.pin}, "enrollment"}]
+		return record, control
+	}
+	for deadline := time.Now().Add(readyDeadline); time.Now().Before(deadline); time.Sleep(100 * time.Millisecond) {
+		if record, control := enrolled(); record && control {
+			break
+		}
+	}
 	before := f.s.Metrics().RefusedNotAdmitted
 	window := 30 * time.Second
 	time.Sleep(window)

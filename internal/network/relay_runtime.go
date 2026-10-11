@@ -432,12 +432,15 @@ func (r *RelayRuntime) recordAdmission(purpose Purpose, err error) {
 // peer it registers; a service without sponsorship answers
 // UNSUPPORTED_CAPABILITY once and is not asked again. A device that is itself
 // refused and gains a peer (it just joined an orbit, so the peer is about to
-// sponsor it) asks again after 5 seconds, then up to three times 20 seconds
-// apart, instead of waiting the full NotAdmittedRetry.
+// sponsor it) asks again after 5 seconds, then up to six times 20 seconds
+// apart, instead of waiting the full NotAdmittedRetry. A sponsorship that
+// fails transiently (local backpressure, quota, an unavailable service) is
+// retried after 5 seconds.
 const (
 	admissionFirstRetry  = 5 * time.Second
 	admissionGraceRetry  = 20 * time.Second
-	admissionGraceTries  = 3
+	admissionGraceTries  = 6
+	sponsorQuickRetry    = 5 * time.Second
 	sponsorRetryInterval = time.Minute
 )
 
@@ -464,15 +467,17 @@ func (r *RelayRuntime) peerAdded(id, pin string) {
 
 func (r *RelayRuntime) sponsorPeers() {
 	defer r.wg.Done()
-	ticker := time.NewTicker(sponsorRetryInterval)
-	defer ticker.Stop()
+	timer := time.NewTimer(sponsorRetryInterval)
+	defer timer.Stop()
 	for {
 		select {
 		case <-r.ctx.Done():
 			return
 		case <-r.sponsorWake:
-		case <-ticker.C:
+		case <-timer.C:
 		}
+		timer.Stop()
+		timer.Reset(sponsorRetryInterval)
 		// Only a served device can sponsor: wait for its peer-data record.
 		if !r.purposeReady(PeerData) || r.serviceCooldown() != nil {
 			continue
@@ -505,6 +510,13 @@ func (r *RelayRuntime) sponsorPeers() {
 			if stop || r.ctx.Err() != nil || r.serviceCooldown() != nil {
 				break
 			}
+		}
+		r.mu.Lock()
+		retry := len(r.sponsorPending) > 0
+		r.mu.Unlock()
+		if retry {
+			timer.Stop()
+			timer.Reset(sponsorQuickRetry)
 		}
 	}
 }
