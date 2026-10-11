@@ -176,6 +176,17 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
 
 ## Handoff log
 
+- 2026-10-11: v2.5.0 published (tag `68ead0b`; Orbit packages plus
+  orbit-net 1.3.0 tarballs, checksums verified after download). Known issue:
+  `TestFinalR00*` and `TestSponsorshipRuntimeJoinNeedsNoOperator` fail about
+  1 in 6 CI `test-race-core` jobs (all packages race-instrumented at once).
+  A fresh relay runtime is sometimes slow to announce, and once a refused
+  purpose did not recover within 90 s. The pre-sponsorship commit `218a52d`
+  fails at the same rate. It does not reproduce locally (GOMAXPROCS=1, -race).
+  Next: capture a request trace at every failure point, not only the recovery
+  wait. The stray `orbit-net` binary was removed from the tree. It stays in
+  history (`56162eb`; Go build paths only, no secrets): rewriting would change
+  every commit ID cited in evidence since 2026-10-08 and in released binaries.
 - 2026-10-11: S01 member sponsorship deployed; laptop and Pi trials joined.
 
 - 2026-10-11: R06 complete. The final scope (R00–R06) is finished; RG1–RG4 are
