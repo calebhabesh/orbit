@@ -208,7 +208,15 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
     unchanged packages from the Go test cache).
   - Not done: ignore patterns (excluded by the final plan; owner decision).
     Skew beyond a lifetime (30 s relay tickets, 60 s challenges) still needs
-    NTP. Not yet deployed to trial devices.
+    NTP.
+  - Live check: `make trial-install` put `e6c9c62` on the PC, laptop and Pi
+    `orbit-trial`s; all three report `SERVICE_READY` against the deployed
+    orbit-net 1.3.0 (shorter announcement lifetimes accepted, no VPS change).
+    A file written on the PC reached both in about 10 s. An in-place edit
+    keeping size, mtime and inode (`dd conv=notrunc` plus `touch -d`) reached
+    both in about 15 s; before this change it waited for the daily full scan.
+    The test file's deletion also propagated.
+  - `make test-terminal` at `e6c9c62`: pass (2,137 s).
 
 - 2026-10-11: v2.5.0 published (tag `68ead0b`; Orbit packages plus
   orbit-net 1.3.0 tarballs, checksums verified after download). Known issue:
