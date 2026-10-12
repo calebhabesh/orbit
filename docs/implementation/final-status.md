@@ -176,6 +176,17 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
 
 ## Handoff log
 
+- 2026-10-11: v2.5.1 published (tag `f5cab75`): the clock-skew and quick-scan
+  fixes below. On the tag, `full.yml` (run 38188186247, amd64 and arm64)
+  passed, the draft release built, and the downloaded assets passed
+  `SHA256SUMS` and report v2.5.1 `f5cab75` with no packaged service. Packaging
+  tests and `terminal_package_test.py --dist dist` passed locally after the
+  version bump. orbit-net is unchanged (1.3.0 stays deployed; its tarballs are
+  on the v2.5.0 release). The PC, laptop and Pi `orbit-trial`s run `f5cab75`,
+  all `SERVICE_READY`. This resolves the v2.5.0 known issue about flaky CI race
+  tests. Still open, not trivial: ignore patterns (excluded by the final plan),
+  and clocks off by more than a record lifetime (needs NTP).
+
 - 2026-10-11: Post-release reliability fixes (owner-requested review against
   Syncthing; uncommitted at time of writing).
   - **Clock skew (root cause of the flaky `TestFinalR00*` /
