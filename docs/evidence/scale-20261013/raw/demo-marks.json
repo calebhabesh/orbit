@@ -1,0 +1,52 @@
+{
+  "marks": [
+    {
+      "t": 2.0,
+      "label": "intro"
+    },
+    {
+      "t": 8.22,
+      "label": "write"
+    },
+    {
+      "t": 17.42,
+      "label": "replicated in 4.0s"
+    },
+    {
+      "t": 22.18,
+      "label": "partition"
+    },
+    {
+      "t": 38.79,
+      "label": "heal"
+    },
+    {
+      "t": 75.69,
+      "label": "conflict on all devices after 28.2s"
+    },
+    {
+      "t": 75.69,
+      "label": "review"
+    },
+    {
+      "t": 96.82,
+      "label": "resolved everywhere after 3.4s"
+    },
+    {
+      "t": 104.19,
+      "label": "crash"
+    },
+    {
+      "t": 130.2,
+      "label": "pi caught up 8.5s after restart"
+    },
+    {
+      "t": 136.7,
+      "label": "end"
+    }
+  ],
+  "orbit": [
+    "Orbit Personal File Manager v2.5.1+receipts",
+    "Commit: 247216f-dirty (built unknown)"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "packet": "scale",
+  "devices": 20,
+  "per_home": 2,
+  "homes": 10,
+  "netem": "delay 20ms",
+  "seed": 1,
+  "started_at": 1791889471.2598596,
+  "success": false,
+  "results": {},
+  "error": "RuntimeError: d00 orbit ('requests', 'approve', '--request') exit 1: orbit: INTERNAL_ERROR: membership exceeds v1 limits or has zero required fields (action: inspect error logs and retry operation)\n ",
+  "finished_at": 1791891696.223698
+}

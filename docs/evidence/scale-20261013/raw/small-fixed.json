@@ -1,0 +1,115 @@
+{
+  "packet": "R05",
+  "cell": "eim",
+  "netem": "delay 20ms",
+  "phases": [
+    "throughput"
+  ],
+  "reps": 0,
+  "started_at": 1791900783.6843524,
+  "success": true,
+  "results": {
+    "join_seconds": 40.13879001799978,
+    "b_network_after_join": {
+      "probes": [],
+      "code": "SERVICE_READY",
+      "observations": [
+        {
+          "freshness": "recent",
+          "action": "No connection action needed; inspect folder copies separately.",
+          "lan_candidates": "0",
+          "public_candidates": "0",
+          "expired_candidates": "0",
+          "udp_code": "NOT_TESTED",
+          "device": "95518a9e5c70e5fc293a10e24bbbe198a45b9db59cfe0494451fdc5ad46304e4",
+          "pin": "dc838253e7c30250fa78d3b0c313f246b7232f3ee2549c3ea49150b15e130be8",
+          "purpose": "peer_data",
+          "route": "quic",
+          "code": "CONNECTED",
+          "observed_at": "2026-10-13T14:13:46.464547821Z",
+          "generation": "4"
+        }
+      ]
+    },
+    "settle_before_bulk": {
+      "route": "quic",
+      "seconds": 5.1023383810006635
+    },
+    "large": [
+      {
+        "seconds": 6.010227099000986,
+        "bytes": 8388608,
+        "routes": {
+          "quic": {
+            "requests": 14,
+            "received": 8392754
+          }
+        }
+      },
+      {
+        "seconds": 4.509742263999215,
+        "bytes": 8388608,
+        "routes": {
+          "quic": {
+            "requests": 14,
+            "received": 8393289
+          }
+        }
+      },
+      {
+        "seconds": 5.009794921999855,
+        "bytes": 8388608,
+        "routes": {
+          "quic": {
+            "requests": 14,
+            "received": 8393824
+          }
+        }
+      }
+    ],
+    "small": [
+      {
+        "seconds": 41.522943791000216,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 909,
+            "received": 1615963
+          }
+        }
+      },
+      {
+        "seconds": 49.02480268900035,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 280,
+            "received": 337080
+          },
+          "relay": {
+            "requests": 641,
+            "received": 1571357
+          }
+        }
+      },
+      {
+        "seconds": 47.52250453100169,
+        "files": 300,
+        "bytes": 1228800,
+        "routes": {
+          "quic": {
+            "requests": 151,
+            "received": 317325
+          },
+          "relay": {
+            "requests": 765,
+            "received": 1440513
+          }
+        }
+      }
+    ]
+  },
+  "finished_at": 1791900985.9261293
+}

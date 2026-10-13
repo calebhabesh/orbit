@@ -1,0 +1,3 @@
+{"delay_ms": 20, "before_label": "v2.5.1: one receipt request per version", "after_label": "batched, 128 per request",
+ "before": [{"versions": 300, "seconds": 6.380, "requests": 307}, {"versions": 600, "seconds": 12.704, "requests": 611}, {"versions": 900, "seconds": 19.139, "requests": 917}],
+ "after": [{"versions": 300, "seconds": 0.281, "requests": 10}, {"versions": 600, "seconds": 0.476, "requests": 16}, {"versions": 900, "seconds": 0.723, "requests": 25}]}

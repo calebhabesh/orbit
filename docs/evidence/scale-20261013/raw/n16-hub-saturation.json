@@ -1,0 +1,495 @@
+{
+  "packet": "scale",
+  "devices": 16,
+  "per_home": 2,
+  "homes": 8,
+  "netem": "delay 20ms",
+  "seed": 1,
+  "started_at": 1791906674.5325277,
+  "success": false,
+  "results": {
+    "join": [
+      {
+        "device": "d01",
+        "members_before": 1,
+        "seconds": 43.61461486000189,
+        "steps": {
+          "request": 0.5131486860009318,
+          "seen_by_d00": 0.5453300629997102,
+          "approved": 0.5594415199993819,
+          "completed": 43.61455554599888,
+          "phases": [
+            [
+              0.59,
+              "running",
+              null
+            ],
+            [
+              43.61,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d02",
+        "members_before": 2,
+        "seconds": 74.60368156000186,
+        "steps": {
+          "request": 31.579442902002484,
+          "seen_by_d00": 31.614383088999602,
+          "approved": 31.630749817999458,
+          "completed": 74.60361485300018,
+          "phases": [
+            [
+              31.67,
+              "running",
+              null
+            ],
+            [
+              74.6,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d03",
+        "members_before": 3,
+        "seconds": 74.32173534800313,
+        "steps": {
+          "request": 30.62212723000266,
+          "seen_by_d00": 30.658406653001293,
+          "approved": 30.67456977999973,
+          "completed": 74.32168015299976,
+          "phases": [
+            [
+              30.71,
+              "running",
+              null
+            ],
+            [
+              67.37,
+              "blocked",
+              null
+            ],
+            [
+              73.25,
+              "running",
+              null
+            ],
+            [
+              74.32,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d04",
+        "members_before": 4,
+        "seconds": 65.69743052400008,
+        "steps": {
+          "request": 24.751793228999304,
+          "seen_by_d00": 24.7856495240012,
+          "approved": 24.80090717799976,
+          "completed": 65.69737228200029,
+          "phases": [
+            [
+              24.84,
+              "running",
+              null
+            ],
+            [
+              65.7,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d05",
+        "members_before": 5,
+        "seconds": 69.52397166999799,
+        "steps": {
+          "request": 31.69862052299868,
+          "seen_by_d00": 31.73397617199953,
+          "approved": 31.74926051500006,
+          "completed": 69.52391649499987,
+          "phases": [
+            [
+              31.78,
+              "running",
+              null
+            ],
+            [
+              69.52,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d06",
+        "members_before": 6,
+        "seconds": 70.25764802300182,
+        "steps": {
+          "request": 30.45557379800084,
+          "seen_by_d00": 30.490561160000652,
+          "approved": 30.505769556002633,
+          "completed": 70.2575929270024,
+          "phases": [
+            [
+              30.54,
+              "running",
+              null
+            ],
+            [
+              70.26,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d07",
+        "members_before": 7,
+        "seconds": 68.8317614669977,
+        "steps": {
+          "request": 31.468476137000835,
+          "seen_by_d00": 31.50305804099844,
+          "approved": 31.51801160999821,
+          "completed": 68.8317056800006,
+          "phases": [
+            [
+              31.56,
+              "running",
+              null
+            ],
+            [
+              68.83,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d08",
+        "members_before": 8,
+        "seconds": 172.55720502400072,
+        "steps": {
+          "request": 64.43091062800158,
+          "seen_by_d00": 64.46667118200276,
+          "approved": 64.48208045000138,
+          "completed": 172.5571459820021,
+          "phases": [
+            [
+              64.52,
+              "running",
+              null
+            ],
+            [
+              153.86,
+              "blocked",
+              null
+            ],
+            [
+              159.74,
+              "running",
+              null
+            ],
+            [
+              172.56,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d09",
+        "members_before": 9,
+        "seconds": 68.49647430500045,
+        "steps": {
+          "request": 2.010255307999614,
+          "seen_by_d00": 2.044722406000801,
+          "approved": 2.061731851998047,
+          "completed": 68.49641508199784,
+          "phases": [
+            [
+              2.1,
+              "running",
+              null
+            ],
+            [
+              68.5,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d10",
+        "members_before": 10,
+        "seconds": 99.21963685399896,
+        "steps": {
+          "request": 33.02991910699711,
+          "seen_by_d00": 33.064494739999645,
+          "approved": 33.08318952699847,
+          "completed": 99.21956768199743,
+          "phases": [
+            [
+              33.12,
+              "running",
+              null
+            ],
+            [
+              99.22,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d11",
+        "members_before": 11,
+        "seconds": 143.5070660900019,
+        "steps": {
+          "request": 67.42293776400038,
+          "seen_by_d00": 67.45881597599873,
+          "approved": 67.47510953100209,
+          "completed": 143.50699361100123,
+          "phases": [
+            [
+              67.51,
+              "running",
+              null
+            ],
+            [
+              143.51,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d12",
+        "members_before": 12,
+        "seconds": 293.5144948649977,
+        "steps": {
+          "request": 177.9163448090003,
+          "seen_by_d00": 177.95185100600065,
+          "approved": 177.9675268789979,
+          "completed": 293.5144388379995,
+          "phases": [
+            [
+              178.0,
+              "running",
+              null
+            ],
+            [
+              258.25,
+              "blocked",
+              null
+            ],
+            [
+              264.13,
+              "running",
+              null
+            ],
+            [
+              265.2,
+              "blocked",
+              null
+            ],
+            [
+              271.07,
+              "running",
+              null
+            ],
+            [
+              293.51,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d13",
+        "members_before": 13,
+        "seconds": 243.27479269999822,
+        "steps": {
+          "request": 39.40100353999878,
+          "seen_by_d00": 39.4378239079997,
+          "approved": 39.45301652700073,
+          "completed": 243.2747382259986,
+          "phases": [
+            [
+              39.49,
+              "running",
+              null
+            ],
+            [
+              243.27,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d14",
+        "members_before": 14,
+        "seconds": 153.10092818699923,
+        "steps": {
+          "request": 56.794230199000594,
+          "seen_by_d00": 56.82834098600142,
+          "approved": 56.84414624499914,
+          "completed": 153.100860939001,
+          "phases": [
+            [
+              56.88,
+              "running",
+              null
+            ],
+            [
+              100.14,
+              "blocked",
+              null
+            ],
+            [
+              104.96,
+              "running",
+              null
+            ],
+            [
+              107.1,
+              "blocked",
+              null
+            ],
+            [
+              112.46,
+              "running",
+              null
+            ],
+            [
+              133.33,
+              "blocked",
+              null
+            ],
+            [
+              134.94,
+              "running",
+              null
+            ],
+            [
+              135.47,
+              "blocked",
+              null
+            ],
+            [
+              139.22,
+              "running",
+              null
+            ],
+            [
+              153.1,
+              "completed",
+              null
+            ]
+          ]
+        }
+      },
+      {
+        "device": "d15",
+        "members_before": 15,
+        "seconds": 483.04447215000255,
+        "steps": {
+          "request": 151.1881203890007,
+          "seen_by_d00": 151.22339230500074,
+          "approved": 151.24198288800108,
+          "completed": 483.04439365000144,
+          "phases": [
+            [
+              151.28,
+              "running",
+              null
+            ],
+            [
+              453.63,
+              "blocked",
+              null
+            ],
+            [
+              458.43,
+              "running",
+              null
+            ],
+            [
+              483.04,
+              "completed",
+              null
+            ]
+          ]
+        }
+      }
+    ],
+    "service_metrics": {
+      "after_join": {
+        "orbit_net_build_info{version=\"2.5.1\"}": 1.0,
+        "orbit_net_profile_expiry_seconds{epoch=\"1\"}": 31533862.0,
+        "orbit_net_profile_valid{epoch=\"1\"}": 1.0,
+        "orbit_net_certificate_expiry_seconds": 31533861.0,
+        "orbit_net_certificate_reloads_total": 0.0,
+        "orbit_net_certificate_reload_failures_total": 0.0,
+        "orbit_net_connections_active": 60.0,
+        "orbit_net_connections_refused_total": 0.0,
+        "orbit_net_directory_records": 32.0,
+        "orbit_net_sessions": 10.0,
+        "orbit_net_relay_sessions": 8.0,
+        "orbit_net_controls": 32.0,
+        "orbit_net_websockets_pending": 48.0,
+        "orbit_net_challenges": 0.0,
+        "orbit_net_rate_keys": 11.0,
+        "orbit_net_source_buckets": 8.0,
+        "orbit_net_refusals_total{reason=\"quota\"}": 215.0,
+        "orbit_net_refusals_total{reason=\"invalid\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"expired\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"untrusted\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"budget\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"not_admitted\"}": 0.0,
+        "orbit_net_refusals_total{reason=\"other\"}": 904.0,
+        "orbit_net_admission_allowlist": 1.0,
+        "orbit_net_admission_allowed_devices": 16.0,
+        "orbit_net_admission_sponsorship": 1.0,
+        "orbit_net_admission_sponsored_devices": 0.0,
+        "orbit_net_admission_sponsored_total": 0.0,
+        "orbit_net_admission_reloads_total": 0.0,
+        "orbit_net_admission_reload_failures_total": 0.0,
+        "orbit_net_relay_bytes_total": 28121961.0,
+        "orbit_net_relay_month_bytes": 27888948.0,
+        "orbit_net_relay_month_limit_bytes": 214748364800.0,
+        "orbit_net_relay_limit_bytes_per_second": 4194304.0,
+        "orbit_net_relay_device_limit_bytes_per_second": 2097152.0,
+        "orbit_net_stun_answered_total": 357.0,
+        "orbit_net_stun_dropped_total{reason=\"rate\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"invalid\"}": 0.0,
+        "orbit_net_stun_dropped_total{reason=\"table_full\"}": 0.0
+      }
+    },
+    "join_total_seconds": 2123.565913627004
+  },
+  "error": "RuntimeError: timeout: fanout/002.bin everywhere (None)",
+  "finished_at": 1791909987.9097128
+}

@@ -179,7 +179,10 @@ Endpoint configuration becomes validated durable control state with a safe
 refresh mechanism; avoid rewriting configuration that still requires a manual
 restart while the UI reports immediate success. Preserve legacy `peers.json`
 import/configuration support deliberately. Each required pull direction must
-be configured and tested, including forwarding through a hub.
+be configured and tested, including forwarding through a hub. A joined device
+pins and syncs with its inviter only, so when one device invites everyone the
+group is a star through it; at 10–16 relayed members the hub's signalling budget
+saturates ([scale record](evidence/scale-20261013/summary.md)).
 
 ## Browsing and content
 

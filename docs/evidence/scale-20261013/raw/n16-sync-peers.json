@@ -1,0 +1,133 @@
+{
+  "d00": {
+    "sync_tasks_by_peer": {
+      "1CCFFBFF": 53,
+      "297235A4": 48,
+      "2F92494B": 111,
+      "450A8554": 155,
+      "555A25EE": 459,
+      "6EDB91AD": 221,
+      "7948D257": 88,
+      "8B41BF29": 215,
+      "A03FCC2A": 95,
+      "C9CC6643": 72,
+      "D1F2B638": 84,
+      "E69D5B80": 44,
+      "EF712CD6": 270,
+      "F1FD1C09": 46,
+      "F5C225A1": 189
+    },
+    "errors": [
+      [
+        "F1FD1C09",
+        "completed",
+        "QUOTA_EXCEEDED",
+        29
+      ],
+      [
+        "450A8554",
+        "completed",
+        "QUOTA_EXCEEDED",
+        26
+      ],
+      [
+        "C9CC6643",
+        "exhausted",
+        "QUOTA_EXCEEDED",
+        26
+      ],
+      [
+        "2F92494B",
+        "completed",
+        "QUOTA_EXCEEDED",
+        25
+      ],
+      [
+        "D1F2B638",
+        "exhausted",
+        "QUOTA_EXCEEDED",
+        24
+      ],
+      [
+        "E69D5B80",
+        "exhausted",
+        "QUOTA_EXCEEDED",
+        24
+      ],
+      [
+        "297235A4",
+        "exhausted",
+        "QUOTA_EXCEEDED",
+        21
+      ],
+      [
+        "8B41BF29",
+        "completed",
+        "QUOTA_EXCEEDED",
+        19
+      ]
+    ]
+  },
+  "d03": {
+    "sync_tasks_by_peer": {
+      "CC4038EA": 485
+    },
+    "errors": [
+      [
+        "CC4038EA",
+        "completed",
+        "ROUTE_UNAVAILABLE",
+        7
+      ],
+      [
+        "CC4038EA",
+        "completed",
+        "QUOTA_EXCEEDED",
+        3
+      ],
+      [
+        "CC4038EA",
+        "exhausted",
+        "ROUTE_UNAVAILABLE",
+        1
+      ]
+    ]
+  },
+  "d09": {
+    "sync_tasks_by_peer": {
+      "CC4038EA": 321
+    },
+    "errors": [
+      [
+        "CC4038EA",
+        "completed",
+        "ROUTE_UNAVAILABLE",
+        9
+      ],
+      [
+        "CC4038EA",
+        "completed",
+        "QUOTA_EXCEEDED",
+        3
+      ],
+      [
+        "CC4038EA",
+        "exhausted",
+        "ROUTE_UNAVAILABLE",
+        3
+      ],
+      [
+        "CC4038EA",
+        "exhausted",
+        "QUOTA_EXCEEDED",
+        2
+      ]
+    ]
+  },
+  "device_ids": {
+    "d00": "CC4038EA",
+    "d03": "EF712CD6",
+    "d08": "D1F2B638"
+  },
+  "note": "Joined devices pin only the inviter certificate (one enrolled-*.crt each); d00 invited all 15, so replication is a star through d00."
+}
