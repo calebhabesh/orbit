@@ -238,6 +238,20 @@ func (syncer *Syncer) sync(ctx context.Context) (SyncResult, error) {
 	}); err != nil {
 		return result, err
 	}
+	// Receipts are re-asserted every round (a lost receipt is repaired this
+	// way) in batches, so an idle round costs O(versions/128) requests.
+	var receipts []history.VersionID
+	flush := func() error {
+		if len(receipts) == 0 {
+			return nil
+		}
+		if err := syncer.sendReceipts(ctx, receipts); err != nil {
+			return err
+		}
+		result.ReceiptsSent += len(receipts)
+		receipts = receipts[:0]
+		return nil
+	}
 	if err := visit(func(entry InventoryEntry) error {
 		if entry.Availability != "ready" {
 			return nil
@@ -259,12 +273,16 @@ func (syncer *Syncer) sync(ctx context.Context) (SyncResult, error) {
 			result.ChunksReused += reused
 			result.VersionsStored++
 		}
-		if err := syncer.sendReceipt(ctx, id); err != nil {
-			return err
+		receipts = append(receipts, id)
+		// Newly stored content is acknowledged as promptly as before.
+		if !ready || len(receipts) == MaxVersionBatch {
+			return flush()
 		}
-		result.ReceiptsSent++
 		return nil
 	}); err != nil {
+		return result, err
+	}
+	if err := flush(); err != nil {
 		return result, err
 	}
 
@@ -610,21 +628,32 @@ func (syncer *Syncer) waitChunkRetry(ctx context.Context) error {
 	}
 }
 
-func (syncer *Syncer) sendReceipt(ctx context.Context, id history.VersionID) error {
-	ready, err := syncer.repo.CanIssueDurableReceipt(ctx, id)
-	if err != nil || !ready {
-		return fmt.Errorf("cannot issue receipt before durable readiness: %w", err)
+// sendReceipts sends one durable-receipt request for at most MaxVersionBatch
+// versions, each of which must be durably ready.
+func (syncer *Syncer) sendReceipts(ctx context.Context, ids []history.VersionID) error {
+	versions := make([]VersionIDWire, len(ids))
+	for i, id := range ids {
+		ready, err := syncer.repo.CanIssueDurableReceipt(ctx, id)
+		if err != nil || !ready {
+			return fmt.Errorf("cannot issue receipt before durable readiness: %w", err)
+		}
+		versions[i] = wireVersion(id)
 	}
 	if err := syncer.callHook(HookBeforeReceipt); err != nil {
 		return err
 	}
 	device, folder, revision, digest := syncer.common()
-	response, err := syncer.client.Receipts(ctx, ReceiptsRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, FolderID: folder, Revision: revision, MembershipDigest: digest, Versions: []VersionIDWire{wireVersion(id)}})
+	response, err := syncer.client.Receipts(ctx, ReceiptsRequest{ProtocolVersion: ProtocolVersion, DeviceID: device, FolderID: folder, Revision: revision, MembershipDigest: digest, Versions: versions})
 	if err != nil {
 		return err
 	}
-	if len(response.Accepted) != 1 || response.Accepted[0] != wireVersion(id) {
-		return errors.New("peer did not confirm the durable receipt")
+	if len(response.Accepted) != len(versions) {
+		return errors.New("peer did not confirm the durable receipts")
+	}
+	for i, v := range versions {
+		if response.Accepted[i] != v {
+			return errors.New("peer did not confirm the durable receipts")
+		}
 	}
 	return syncer.callHook(HookAfterReceipt)
 }

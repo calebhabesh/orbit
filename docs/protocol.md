@@ -253,6 +253,8 @@ Prioritize current heads and unresolved conflicts, then fetch advertised retaine
 
 A direct durable receipt is issued only after verified required content and accepted metadata meet [persistence](persistence.md) durability boundaries. A tombstone/directory needs durable metadata, not file chunks. Lost receipts can be reissued idempotently. No receipt is sent merely after parsing a message or writing an unflushed temporary file.
 
+Each sync round re-asserts receipts for every content-ready version in the peer's inventory, which repairs receipts lost to a crash or dropped response. Re-assertions travel in batches of at most 128 versions per `POST /peer/v1/receipts` (the endpoint's existing bound); a version stored in the current round is acknowledged immediately, together with any pending re-assertions. One request per version made an idle round cost O(versions) round trips (2026-10-13, [scale record](evidence/scale-20261013/summary.md)).
+
 Receipt of a successor does not imply possession of ancestor payloads. A receipt records historical storage, not permanent retention or present liveness. Poll authorized availability to choose repair/fetch sources. Do not forward a peer's alleged receipt as direct proof from that peer; forwarded claims, if displayed, must be labeled indirect. In a hub topology the client may know only that the hub stored its version until it obtains direct status from the other device. Causal convergence does not require global status omniscience.
 
 ## 8. Enrollment, retirement and old histories
