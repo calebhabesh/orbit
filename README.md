@@ -13,6 +13,20 @@ causal history. It is a finished distributed systems and networking project,
 free to use and to operate, not a hosted product: run it on your LAN, or run
 your own connection service with one command.
 
+## Demo
+
+<p align="center">
+  <a href="docs/assets/orbit-demo.mp4"><img src="docs/assets/demo-conflict.png" width="900" alt="Three Orbit terminal interfaces side by side, laptop, desktop and Raspberry Pi, each flagging packing.txt as a conflict after the laptop edited it offline, above a narrator shell showing the commands that caused it."></a>
+</p>
+
+Three devices in two NAT homes and a self-hosted relay, running Orbit binaries
+built from `main` in Linux network namespaces ([recorder](scripts/demo/record_demo.py),
+[captions](docs/assets/orbit-demo.vtt)). A new file reaches both peers in 4 s.
+The laptop loses internet while it and the desktop edit the same file; when it
+reconnects, all three devices flag the conflict and keep both versions. The
+desktop selects one; the Pi daemon is killed mid-transfer and catches up 8.5 s
+after restart with matching hashes.
+
 ## The problem
 
 You edit the same folder on a laptop, a Raspberry Pi and a cloud VM, sometimes
@@ -97,10 +111,29 @@ model and the measured tradeoffs.
   peer; 0/10 through symmetric NAT or blocked UDP, which stay on the relay. The
   first sync after a restart was always relayed. 64 MiB moved at 12.6 / 4.2 /
   1.6 MiB/s over LAN QUIC / NAT QUIC / relay ([R05 record](docs/evidence/final-r05-20261011/summary.md)).
+- **Scale and churn (2026-10-13):** with 10 devices in emulated NAT homes, a
+  30-minute soak of 53 daemon SIGKILLs, 35 home outages and 38 concurrent
+  edits ended with every device holding exactly the expected 382 files and the
+  same 10 preserved conflict versions. The campaign also measured where scaling
+  breaks: devices sync with the device that invited them, so one inviter
+  becomes a hub whose relay signalling is rate-limited. An edit reaches all
+  devices in 6.5 s (p50) at 5 devices, 39 s at 10, and at 16 one edit reached
+  no peer within 10 minutes. Protocol v1 caps a folder at 16 members
+  ([scale record](docs/evidence/scale-20261013/summary.md)).
+- **Fix found by measurement (on `main`, after 2.5.1):** every sync round
+  re-sent one receipt request per stored version, so syncing slowed as a folder
+  grew. Batching them made an idle round over 900 versions 26× cheaper (19.1 s → 0.72 s at 20 ms per
+  request), and three successive 300-file batches stopped slowing down
+  (41 → 73 → 83 s before, 41 → 49 → 48 s after).
 - **Chunk reuse:** a tail edit to a 1 GiB file fetched one 1 MiB chunk and
   reused 1,023. This is one workload, not a general speedup; the
   [measurements](docs/evidence/release-20261001/measured-results.md) also
   record cases where a full-file baseline did better.
+
+<p align="center">
+  <img src="docs/evidence/scale-20261013/charts/soak-timeline.png" width="49%" alt="Churn soak timeline: 10 devices over 30 minutes with SIGKILL and home-outage windows shaded; after all faults heal every device holds identical contents.">
+  <img src="docs/evidence/scale-20261013/charts/round-cost.png" width="49%" alt="Batched receipts: an idle sync round over 900 versions drops from 19.1 s to 0.72 s, and successive 300-file batches no longer slow down.">
+</p>
 
 Physical timings come from one home network and one cloud region; the
 repeated cells are emulated in network namespaces on one host. School,

@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:08.200
+Three Orbit devices in two NAT homes with a self-hosted orbit-net relay. Production binaries run in Linux network namespaces.
+
+00:00:08.200 --> 00:00:22.100
+A file written on the laptop reaches the desktop and the Pi in 4.0 seconds.
+
+00:00:22.100 --> 00:00:38.700
+The laptop's home router loses its internet link. The laptop and the desktop edit the same file.
+
+00:00:38.700 --> 00:01:15.600
+The link returns. 28 seconds later, all three devices report the concurrent edits as a conflict. Neither edit is lost.
+
+00:01:15.600 --> 00:01:44.100
+On the desktop, both versions are reviewed and one is selected. The other stays in history. The resolution reaches every device 3.4 seconds after confirmation.
+
+00:01:44.100 --> 00:02:17.500
+The Pi daemon is killed with SIGKILL while the laptop writes an 8 MiB file. After restarting, the Pi catches up in 8.5 seconds and the hashes match.
