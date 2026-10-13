@@ -205,6 +205,18 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
 
 ## Handoff log
 
+- 2026-10-13: v2.5.2 published (tag `aead171`): batched durable receipts
+  (S02). On the tag, `full.yml` (run 38481874115, amd64 and arm64) and the
+  release workflow (run 38481874085) passed; the downloaded assets passed
+  `SHA256SUMS` and report v2.5.2 `aead171` with no packaged service. Before the
+  bump: full terminal suite pass (2,140.9 s); after it, packaging tests and
+  `terminal_package_test.py --dist dist` pass. orbit-net unchanged (1.3.0).
+  The `orbit-trial` devices were not upgraded. Known: `Makefile` `DATE` is
+  still 2026-10-11, so 2.5.2 binaries report that build date; scheduled
+  `full.yml` on `main` failed 2026-10-12 and 2026-10-13 on timing flakes
+  (`TestWANW16NativeRunnerRehearsal/tui-three-host`;
+  `TestWANW09QUICAdmissionAndALPN` slot release within 1 s under `-race`,
+  arm64), not on this change.
 - 2026-10-11: v2.5.1 published (tag `f5cab75`): the clock-skew and quick-scan
   fixes below. On the tag, `full.yml` (run 38188186247, amd64 and arm64)
   passed, the draft release built, and the downloaded assets passed
