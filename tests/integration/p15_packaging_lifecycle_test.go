@@ -56,8 +56,8 @@ func TestP15VersionAndBuildMetadata(t *testing.T) {
 	}
 
 	str := string(out)
-	if !strings.Contains(str, "orbit 2.5.1") {
-		t.Errorf("version output missing 'orbit 2.5.1', got: %s", str)
+	if !strings.Contains(str, "orbit 2.5.2") {
+		t.Errorf("version output missing 'orbit 2.5.2', got: %s", str)
 	}
 	if platform := runtime.GOOS + "/" + runtime.GOARCH; !strings.Contains(str, platform) {
 		t.Errorf("version output missing %q, got: %s", platform, str)
@@ -455,12 +455,12 @@ func TestP15PackagingOutputsAndChecksums(t *testing.T) {
 	}
 
 	expectedPackages := []string{
-		"orbit-v2.5.1-linux-amd64.tar.gz",
-		"orbit_2.5.1_amd64.deb",
-		"orbit-2.5.1-1.x86_64.rpm",
-		"orbit-v2.5.1-linux-arm64.tar.gz",
-		"orbit_2.5.1_arm64.deb",
-		"orbit-2.5.1-1.aarch64.rpm",
+		"orbit-v2.5.2-linux-amd64.tar.gz",
+		"orbit_2.5.2_amd64.deb",
+		"orbit-2.5.2-1.x86_64.rpm",
+		"orbit-v2.5.2-linux-arm64.tar.gz",
+		"orbit_2.5.2_arm64.deb",
+		"orbit-2.5.2-1.aarch64.rpm",
 	}
 
 	for _, p := range expectedPackages {
@@ -492,7 +492,7 @@ func TestP15PackagingOutputsAndChecksums(t *testing.T) {
 	}
 
 	// Verify tar.gz contents
-	tarGzPath := filepath.Join(distDir, "orbit-v2.5.1-linux-amd64.tar.gz")
+	tarGzPath := filepath.Join(distDir, "orbit-v2.5.2-linux-amd64.tar.gz")
 	f, err := os.Open(tarGzPath)
 	if err != nil {
 		t.Fatalf("open tar.gz: %v", err)

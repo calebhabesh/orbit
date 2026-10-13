@@ -120,10 +120,10 @@ model and the measured tradeoffs.
   devices in 6.5 s (p50) at 5 devices, 39 s at 10, and at 16 one edit reached
   no peer within 10 minutes. Protocol v1 caps a folder at 16 members
   ([scale record](docs/evidence/scale-20261013/summary.md)).
-- **Fix found by measurement (on `main`, after 2.5.1):** every sync round
-  re-sent one receipt request per stored version, so syncing slowed as a folder
-  grew. Batching them made an idle round over 900 versions 26× cheaper (19.1 s → 0.72 s at 20 ms per
-  request), and three successive 300-file batches stopped slowing down
+- **Fix found by measurement (2.5.2):** every sync round re-sent one receipt
+  request per stored version, so syncing slowed as a folder grew. Batching
+  them made an idle round over 900 versions 26× cheaper (19.1 s → 0.72 s at 20
+  ms per request), and three successive 300-file batches stopped slowing down
   (41 → 73 → 83 s before, 41 → 49 → 48 s after).
 - **Chunk reuse:** a tail edit to a 1 GiB file fetched one 1 MiB chunk and
   reused 1,023. This is one workload, not a general speedup; the

@@ -1,5 +1,5 @@
 GO ?= go
-VERSION ?= 2.5.1
+VERSION ?= 2.5.2
 COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "release")
 DATE ?= 2026-10-11
 LDFLAGS ?= -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.date=$(DATE)
