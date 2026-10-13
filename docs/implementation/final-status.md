@@ -174,6 +174,35 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
 - Limitations: anyone sharing an Orbit with the owner can bring their devices
   onto the relay (documented); joiner readiness on real devices is 40–90 s.
 
+## S02 — Scale, churn and demo (owner-directed follow-up)
+
+2026-10-13. Evidence:
+`docs/evidence/scale-20261013/` ([summary](../evidence/scale-20261013/summary.md)).
+
+- Result: new rootless N-device driver (`scripts/validation/scale_netns.py`)
+  measured 5/10/16 devices and a 30-minute 10-device churn soak (53 SIGKILLs,
+  35 home outages, 38 concurrent edits) that converged exactly. It confirmed the
+  16-member protocol cap and found the scaling limit: a joined device syncs only
+  with its inviter, so one inviter is a hub whose relayed signalling hits the
+  service's per-device bucket (292 `quota`, 2,611 `other` refusals at N=10).
+  Fanout p50 grows from 6.5 s (N=5) to 39 s (N=10); at N=16 an edit reached no
+  peer in 600 s. Limits and peering unchanged (owner decision); candidate fixes
+  are listed in the evidence summary.
+- Fix: durable receipts are re-asserted in batches of up to 128
+  (`replication.Syncer.sendReceipts`) instead of one request per version; idle
+  round over 900 versions 19.1 s → 0.72 s at 20 ms per request; successive
+  300-file batches no longer slow down. No wire change (server already took
+  1..128). `TestSyncerBatchesReceiptReassertion` guards it.
+- Demo: `scripts/demo/record_demo.py` records three namespaced devices in the
+  real TUI (`docs/assets/orbit-demo.mp4`, captions, poster), README Demo section.
+- Commands and results: see the evidence `commands.md`. Tests: `make quick`
+  (pass), `make test` (18 packages pass), `make test-faults` and
+  `tests/designgates` (pass), `make test-integration` (pass, 92 s), and
+  `TestWANW05DaemonSIGKILLRoutedEnrollmentBoundaries` (pass, 92 s; uses the
+  receipt hooks). `make test-terminal` (full terminal suite, pass, 2,140.9 s).
+- Limitations: scale/soak ran release 2.5.1 (before the fix); one campaign per
+  size; one host; inline README video needs a GitHub `user-attachments` upload.
+
 ## Handoff log
 
 - 2026-10-11: v2.5.1 published (tag `f5cab75`): the clock-skew and quick-scan

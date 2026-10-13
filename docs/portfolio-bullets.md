@@ -36,6 +36,16 @@ These drafts describe the implemented project and recorded validation.
   NAT and public TCP, and 0/10 through symmetric NAT or blocked UDP
   ([R05 record](evidence/final-r05-20261011/summary.md),
   [allowlist](evidence/final-r02-20261011/summary.md)).
+- Stress-tested the system at scale with a new N-device namespace harness: a
+  30-minute 10-device churn soak (53 daemon SIGKILLs, 35 home outages, 38
+  concurrent edits) converged to identical files and identical preserved
+  conflict versions on every device. The same campaign located the scaling
+  limit (replication follows the invitation graph, so a single inviter becomes
+  a rate-limited relay hub; fanout p50 6.5 s at 5 devices, 39 s at 10, stalled
+  at 16) and a sync-round cost that grew with folder size; batching durable
+  receipts made an idle round 26× cheaper and stopped 300-file batches slowing
+  down (41 → 73 → 83 s before, 41 → 49 → 48 s after)
+  ([scale record](evidence/scale-20261013/summary.md)).
 - Found and fixed defects that only showed up natively: relay recovery after
   losing UDP mid-session, which previously never recovered in 180 s and now
   takes about 5.5 s
