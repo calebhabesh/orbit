@@ -15,9 +15,7 @@ your own connection service with one command.
 
 ## Demo
 
-<p align="center">
-  <a href="docs/assets/orbit-demo.mp4"><img src="docs/assets/demo-conflict.png" width="900" alt="Three Orbit terminal interfaces side by side, laptop, desktop and Raspberry Pi, each flagging packing.txt as a conflict after the laptop edited it offline, above a narrator shell showing the commands that caused it."></a>
-</p>
+https://github.com/user-attachments/assets/f434d6c2-7424-4200-9b14-4a22924034e8
 
 Three devices in two NAT homes and a self-hosted relay, running Orbit binaries
 built from `main` in Linux network namespaces ([recorder](scripts/demo/record_demo.py),

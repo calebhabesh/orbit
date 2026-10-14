@@ -1,0 +1,12 @@
+{
+  "repository": "calebhabesh/orbit",
+  "purpose": "GitHub README players; committed MP4s are the source files.",
+  "videos": [
+    {
+      "path": "docs/assets/orbit-demo.mp4",
+      "url": "https://github.com/user-attachments/assets/f434d6c2-7424-4200-9b14-4a22924034e8",
+      "sha256": "c93a2a915c1a92aec7c4bf9c77f5bfe4faa2441adba8c3cfeaf912d995ee89a7",
+      "bytes": 3045667
+    }
+  ]
+}
