@@ -176,7 +176,7 @@ make test-terminal-packages
 
 Archives, Debian and RPM packages for amd64/arm64 are written to `dist/`, with
 `SHA256SUMS`, dependency notices, the `orbit.service` user unit, a terminal desktop entry,
-Bash/Zsh/Fish completions and operator runbooks. Cross builds are not native
+Bash, Zsh and Fish completions and operator runbooks. Cross builds are not native
 Pi execution. [Install and upgrade](docs/runbooks/install.md) explains startup
 modes. Low-level engine commands (scan, sync, membership, work, resolve and the
 rest) live under `orbit engine`; `orbit engine help` lists them.
