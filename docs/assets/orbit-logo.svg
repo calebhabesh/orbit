@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480" role="img" aria-labelledby="title description">
   <title id="title">Orbit</title>
-  <desc id="description">The Orbit terminal logo: cyan ASCII orbital rings and colorful planets circle a stack of files drawn in orange and yellow. Your folders, on every device.</desc>
+  <desc id="description">The Orbit terminal logo: cyan ASCII orbital rings and colorful planets circle a stack of files drawn in orange and yellow. Your files on every device.</desc>
   <!-- Generated from internal/terminal/theme.go by TestLogoSVGMatchesTerminal. -->
   <g font-family="DejaVu Sans Mono, monospace" font-size="18">
     <text y="48"><tspan x="76.10" fill="#94a3b8">*</tspan><tspan x="227.86" fill="#22d3ee">_.----------</tspan><tspan x="357.94" fill="#4ade80" font-weight="bold">o</tspan><tspan x="368.78" fill="#22d3ee">--._</tspan><tspan x="553.06" fill="#94a3b8">+</tspan></text>
@@ -34,6 +34,6 @@
     <text y="360" transform="translate(0 354) scale(1 1.2) translate(0 -354)"></text>
     <text y="384" transform="translate(0 378) scale(1 1.2) translate(0 -378)"></text>
     <text x="320" y="416" text-anchor="middle" fill="#22d3ee" font-weight="bold">O R B I T</text>
-    <text x="320" y="448" text-anchor="middle" fill="#94a3b8" font-size="16">Your folders, on every device</text>
+    <text x="320" y="448" text-anchor="middle" fill="#94a3b8" font-size="16">Your files on every device</text>
   </g>
 </svg>

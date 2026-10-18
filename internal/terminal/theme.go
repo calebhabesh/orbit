@@ -465,7 +465,7 @@ func (t theme) banner(width, height int) []string {
 		wide = max(wide, ansi.StringWidth(line))
 	}
 	centre := func(s string) string { return strings.Repeat(" ", max(0, (wide-len(s))/2)) + s }
-	name, tagline := centre("O R B I T"), centre("Your folders, on every device")
+	name, tagline := centre("O R B I T"), centre("Your files on every device")
 	if t.plain {
 		return append(append(slices.Clone(art), "", name, tagline), "")
 	}

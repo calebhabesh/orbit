@@ -95,14 +95,14 @@ func logoSVG() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, `<svg xmlns="http://www.w3.org/2000/svg" width="%.0f" height="%.0f" viewBox="0 0 %.0f %.0f" role="img" aria-labelledby="title description">`+"\n", width, height, width, height)
 	b.WriteString(`  <title id="title">Orbit</title>` + "\n")
-	b.WriteString(`  <desc id="description">The Orbit terminal logo: cyan ASCII orbital rings and colorful planets circle a stack of files drawn in orange and yellow. Your folders, on every device.</desc>` + "\n")
+	b.WriteString(`  <desc id="description">The Orbit terminal logo: cyan ASCII orbital rings and colorful planets circle a stack of files drawn in orange and yellow. Your files on every device.</desc>` + "\n")
 	b.WriteString(`  <!-- Generated from internal/terminal/theme.go by TestLogoSVGMatchesTerminal. -->` + "\n")
 	b.WriteString(`  <g font-family="DejaVu Sans Mono, monospace" font-size="18">` + "\n")
 	b.WriteString(art.String())
 	b.WriteString(core.String())
 	name := top + cellH*float64(len(l.art)) + 8
 	fmt.Fprintf(&b, `    <text x="%.0f" y="%.0f" text-anchor="middle" fill="%s" font-weight="bold">O R B I T</text>`+"\n", width/2, name, ring)
-	fmt.Fprintf(&b, `    <text x="%.0f" y="%.0f" text-anchor="middle" fill="%s" font-size="16">Your folders, on every device</text>`+"\n", width/2, name+32, muted)
+	fmt.Fprintf(&b, `    <text x="%.0f" y="%.0f" text-anchor="middle" fill="%s" font-size="16">Your files on every device</text>`+"\n", width/2, name+32, muted)
 	b.WriteString("  </g>\n</svg>\n")
 	return b.String()
 }
