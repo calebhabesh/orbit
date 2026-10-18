@@ -205,6 +205,18 @@ Complete 2026-10-11 (`8c3dbcf`, release `a0837a3`). Evidence:
 
 ## Handoff log
 
+- 2026-10-17: v2.5.2 re-tagged and republished at `0f656c6` (owner
+  decision) so its packages carry the new TUI tagline "Your files on every
+  device" (`internal/terminal/theme.go`, README logo). The previous tag
+  pointed at `6c6d5a4` (the entry below records `aead171`, which never
+  matched it). The old release and tag were deleted. The new tag also contains
+  docs-only commits `218f7ee`, `62bf172`, `cfd3c27`. On the new tag,
+  `full.yml` (run 39085366315, amd64 and arm64, all 8 jobs) and the release
+  workflow (run 39085366244) passed; CI on `main` (run 39085358772) passed. The
+  downloaded assets passed `SHA256SUMS`; amd64 reports v2.5.2 `0f656c6`, built
+  2026-10-11, no packaged service. Both binaries contain the new tagline, not
+  the old one. Asset checksums differ from the first 2.5.2 upload. Known:
+  `Makefile` `DATE` still 2026-10-11.
 - 2026-10-13: v2.5.2 published (tag `aead171`): batched durable receipts
   (S02). On the tag, `full.yml` (run 38481874115, amd64 and arm64) and the
   release workflow (run 38481874085) passed; the downloaded assets passed
